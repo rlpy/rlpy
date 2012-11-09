@@ -19,7 +19,10 @@ import datetime
 # matlibplot initializes the maping from the values to 
 # colors on the first time creating unless bounds are set manually. 
 # Hence you may update color values later but dont see any updates!  
-
+# in specifiying dimensions for reshape you can put -1 so it will be automatically infered
+# [2,2,2] = [2]*3
+# [1,2,2,1,2,2,1,2,2] = ([1]+[2]*2)*3
+# [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
 FONTSIZE = 12
 
 def prod(x):
@@ -177,5 +180,12 @@ def linearMap(x,a,b,A=0,B=1):
     if res < A: res = A
     if res > B: res = B
     return res
-
+def hashState(s,buckets_per_dim):
+    #returns a unique idea by calculating the enumerated number corresponding to a state
+    # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    id = 0
+    for d in arange(len(s)-1,-1,-1):
+        id *= buckets_per_dim[d]
+        id += s[d]
+        
 createColorMaps()

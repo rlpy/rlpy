@@ -17,7 +17,7 @@ EPSILON             = .1 # EGreedy
 SHOW_ALL            = 0
 SHOW_PERFORMANCE    = 1 
 MAZE                = '/Domains/PitMazeMaps/4by5.txt'
-
+    
 domain          = PitMaze(MAZE, noise = NOISE)
 representation  = Tabular(domain)
 policy          = eGreedy(representation, epsilon = EPSILON)
