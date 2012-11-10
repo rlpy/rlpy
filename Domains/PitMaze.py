@@ -107,8 +107,12 @@ class PitMaze(Domain):
                     Mask[c,r,As]             = False
                     arrowColors[c,r,bestA]   = 1
 #                    print r,c,Qs
+                    
                     arrowSize[c,r,As]        = vectorize(linearMap)(Qs,self.MIN_RETURN,self.MAX_RETURN,.4,2) #Vectorize creates a function that can be applied to matrixes
 #                    print vectorize(linearMap)(Qs,min(Qs),max(Qs),.4,2)
+                    if r == 2 and c == 1:
+                        print linearMap(Qs[1],self.MIN_RETURN,self.MAX_RETURN,.4,2)
+                        print Qs, As, arrowSize[c,r] 
         #Show Value Function
         self.valueFunction_fig.set_data(V)
         #Show Policy Up Arrows

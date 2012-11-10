@@ -5,6 +5,4 @@ from Domains import *
 createColorMaps()
 from scipy import *
 
-a = array([1,2])
-b = array([3,4])
-print a+b
+linearMap(-0.26007709,-1,1,.4,2)

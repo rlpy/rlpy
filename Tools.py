@@ -13,16 +13,18 @@ import matplotlib.cm as cm
 from time import *
 from hashlib import sha1
 import datetime
+from scipy import sparse
 
 # Tips:
 # array.astype(float) => convert elements
 # matlibplot initializes the maping from the values to 
 # colors on the first time creating unless bounds are set manually. 
 # Hence you may update color values later but dont see any updates!  
-# in specifiying dimensions for reshape you can put -1 so it will be automatically infered
+# in specifying dimensions for reshape you can put -1 so it will be automatically infered
 # [2,2,2] = [2]*3
 # [1,2,2,1,2,2,1,2,2] = ([1]+[2]*2)*3
 # [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
+# apply function foo to all elements of array A: vectorize(foo)(A)
 FONTSIZE = 12
 
 def prod(x):
@@ -187,5 +189,12 @@ def hashState(s,buckets_per_dim):
     for d in arange(len(s)-1,-1,-1):
         id *= buckets_per_dim[d]
         id += s[d]
-        
+def isSparse(x):
+    return isinstance(x,sparse.lil_matrix) or isinstance(x,sparse.csr_matrix)        
+def generalDot(x,y):
+    if isSparse(x):
+        #active_indecies = x.nonzero()[0].flatten()
+        return x.multiply(y).sum()
+    else:
+        return dot(x,y)
 createColorMaps()
