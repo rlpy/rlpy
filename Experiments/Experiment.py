@@ -17,6 +17,7 @@ class Experiment(object):
     show_all = 0            # Show the domain and the value function during the experiment
     show_performance = 0    # Show the domain and the value function during the performance runs
     result_fig = None       # Figure window generated to show the results
+    result  = None          # All data is saved in the result array: stats_num-by-performanceChecks
     def __init__(self,id, agent, domain, show_all, show_performance):
         self.id = id
         # Find the corresponding random seed for the experiment id
@@ -58,4 +59,6 @@ class Experiment(object):
         print '======================================='
         for property, value in vars(self).iteritems():
             print property, ": ", value
-    
+    def save(self,filename):
+        savetxt(filename,self.result)
+        print filename,'<== Saved Results!'

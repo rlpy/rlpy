@@ -2,6 +2,7 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
+from __future__ import division # This will cause "/" to always return float!
 from operator import *
 from numpy  import *
 #import matplotlib
@@ -10,10 +11,10 @@ from matplotlib import pylab as pl
 from matplotlib import mpl
 import matplotlib.colors as col
 import matplotlib.cm as cm
+from scipy import stats
 from time import *
 from hashlib import sha1
 import datetime
-from scipy import sparse
 
 # Tips:
 # array.astype(float) => convert elements
@@ -24,7 +25,7 @@ from scipy import sparse
 # [2,2,2] = [2]*3
 # [1,2,2,1,2,2,1,2,2] = ([1]+[2]*2)*3
 # [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
-# apply function foo to all elements of array A: vectorize(foo)(A)
+# apply function foo to all elements of array A: vectorize(foo)(A) (The operation may be unstable! Care!
 FONTSIZE = 12
 
 def prod(x):
@@ -178,7 +179,7 @@ def linearMap(x,a,b,A=0,B=1):
     if a == b:
         res = B
     else:
-        res = (x-a)/((b-a)*1.0)*(B-A)+A
+        res = (x-a)/(b-a)*(B-A)+A
     if res < A: res = A
     if res > B: res = B
     return res
@@ -197,4 +198,11 @@ def generalDot(x,y):
         return x.multiply(y).sum()
     else:
         return dot(x,y)
+def normpdf(x, mu, sigma):
+    #X, mu, sigam must have all the same size
+    #u = (x-mu)/abs(sigma)
+    #y = (1/(sqrt(2*pi)*abs(sigma)))*exp(-u*u/2)
+    #return y
+    return stats.norm.pdf(x,mu,sigma)
+
 createColorMaps()
