@@ -1,4 +1,4 @@
-agents: 2 
+qagents: 2 
 discount: 1.0
 values: reward
 states: s0 s1     

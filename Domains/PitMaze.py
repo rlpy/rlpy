@@ -48,7 +48,7 @@ class PitMaze(Domain):
         self.NOISE              = noise
         self.episodeCap         = min(self.ROWS*self.COLS,100)
         #reduce(mul,x,1)
-    def showDomain(self,s,a):
+    def showDomain(self,s,a = 0):
        #Draw the environment
        if self.domain_fig is None:
            pl.subplot(1,2,1)
