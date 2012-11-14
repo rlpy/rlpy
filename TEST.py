@@ -1,8 +1,7 @@
 from Tools import *
 from Representations import *
 from Domains import *
+import timeit
 
-#print factorial(4)
-D = BlocksWorld()
-D.showDomain(D.s0())
-pl.show()
+print hstack(([0],arange(0,2)))
+        

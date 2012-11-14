@@ -27,6 +27,7 @@ import datetime
 # [1,2,2,1,2,2,1,2,2] = ([1]+[2]*2)*3
 # [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
 # apply function foo to all elements of array A: vectorize(foo)(A) (The operation may be unstable! Care!
+# Set a property of a class:  vars(self)['prop'] = 2
 FONTSIZE = 12
 
 def prod(x):
@@ -188,13 +189,6 @@ def linearMap(x,a,b,A=0,B=1):
     if res < A: res = A
     if res > B: res = B
     return res
-def hashState(s,buckets_per_dim):
-    #returns a unique idea by calculating the enumerated number corresponding to a state
-    # I use a recursive calculation to save time by looping once backward on the array = O(n)
-    id = 0
-    for d in arange(len(s)-1,-1,-1):
-        id *= buckets_per_dim[d]
-        id += s[d]
 def isSparse(x):
     return isinstance(x,sparse.lil_matrix) or isinstance(x,sparse.csr_matrix)        
 def generalDot(x,y):
@@ -210,7 +204,78 @@ def factorial(x):
 def nchoosek(n,k):
     return misc.comb(n,k)
 def findElem(x,A):
+    if x in A:
+        return A.index(x)
+    else:
+        return []    
+def findElemArray1D(x,A):
+    res = where(A==x)
+    if len(res[0]):
+        return res[0].flatten()
+    else:
+        return []
+def findElemArray2D(x,A):
     # Find the index of element x in array A
     res = where(A==x)
-    return res[0].flatten(), res[1].flatten()
+    if len(res[0]):
+        return res[0].flatten(), res[1].flatten()
+    else:
+        return [], []
+def findRow(r,X):
+    # return the indices of X that are equal to X.
+    # row and X must have the same number of columns
+    #return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in range(len(r))])))
+    #return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
+    ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in range(len(r))]))
+    return ind[0] 
+def perms(X):
+    # Returns all permutations
+    # X = [2 3]
+    # res = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]
+    # X = [[1,3],[2,3]]
+    # res = [[1,2],[1,3],[3,2],[3,3]
+    # Outputs are in numpy array format
+    allPerms, _ = perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0)
+    return allPerms
+######################################################
+def perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0):
+    if allPerms is None:
+        #Get memory
+        if isinstance(X[0], list):
+            size        = prod([len(x) for x in X])
+        else:
+            size        = prod(X)
+        allPerms    = zeros((size,len(X)),'uint8')
+    if len(X) == 0:
+        allPerms[ind,:] = perm_sample
+        perm_sample = array([],'uint8')
+        ind = ind + 1;
+    else:
+        if isinstance(X[0], list):
+            for x in X[0]:
+                allPerms, ind = perms_r(X[1:],hstack((perm_sample, [x])), allPerms, ind)
+        else:
+            for x in arange(X[0]):
+                allPerms, ind = perms_r(X[1:],hstack((perm_sample, [x])), allPerms, ind)
+    return allPerms, ind
+######################################################
+def vec2id(x,limits):
+    #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
+    # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    _id = 0
+    for d in arange(len(x)-1,-1,-1):
+        _id *= limits[d]
+        _id += x[d]
+    return _id
+######################################################
+def id2vec(_id,limits):
+    #returns the vector corresponding to an id given the limits (invers of vec2id)
+    prods = cumprod(limits)
+    s = [0] * len(limits)
+    for d in arange(len(prods)-1,0,-1):
+        s[d] = int(_id / prods[d-1])
+        _id %= prods[d-1]
+    s[0] = _id
+    return s
 createColorMaps()
+
