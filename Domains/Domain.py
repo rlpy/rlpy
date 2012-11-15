@@ -2,6 +2,7 @@
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
 from Tools import *
+from pydoc import classname
 class Domain(object):
     gamma = .90             # Discount factor default = .9
     states_num = None       # Number of states
@@ -20,16 +21,27 @@ class Domain(object):
             if getattr(self,v) == None:
                 raise Exception('Missed domain initialization of '+ v)
         self.state_space_dims = len(self.statespace_limits)
-        self.states_num = prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]+1)
-        print "States: ", self.states_num
-        print "Actions: ", self.actions_num
+        
+        # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continous states
+        self.extendDiscreteDimensions()
+        if self.continous_dims == []:
+            self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
+        else:
+            self.states_num = inf
+        print join(["-"]*30)
+        print "Domain:\t\t", className(self)
+        print "Dimensions:\t", self.state_space_dims
+        print "|S|:\t\t", self.states_num
+        print "|A|:\t\t", self.actions_num
+        print "Episode Cap:\t", self.episodeCap
+        print "Gamma:\t\t", self.gamma
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)
     def showDomain(self,s,a = 0):
-        abstract
+        pass
     def showLearning(self,representation):
-        abstract
+        pass
     def s0(self):       
         # Returns the initial state
         abstract
@@ -59,4 +71,9 @@ class Domain(object):
         print '======================================='
         for property, value in vars(self).iteritems():
             print property, ": ", value
-         
+    def extendDiscreteDimensions(self):
+        self.statespace_limits = self.statespace_limits.astype('float')
+        for d in arange(self.state_space_dims):
+             if not d in self.continous_dims:
+                 self.statespace_limits[d,0] += -.5 
+                 self.statespace_limits[d,1] += .5 

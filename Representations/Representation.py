@@ -10,8 +10,9 @@ class Representation(object):
     hashed_s        = None  #Always remember the s corresponding to the last state
     hashed_phi      = None  #Always remember the phi corresponding to the last state
     features_num    = None  #Number of features
-    discretization  = 0     #Number of buckets used for discretization for each continuous dimension  
-    buckets_per_dim = None  #Number of possible states per dimension [1-by-dim] 
+    discretization  = 0     #Number of bins used for discretization for each continuous dimension  
+    bins_per_dim = None  #Number of possible states per dimension [1-by-dim]
+    agg_states_num  = None  #Number of aggregated states based on the discretization. If the represenation is adaptive set it to the best resolution possible  
     def __init__(self,domain,discretization = 20):
         # See if the child has set important attributes  
         for v in ['features_num']:
@@ -20,13 +21,19 @@ class Representation(object):
         self.domain = domain
         self.theta  = zeros(self.features_num*self.domain.actions_num) 
         self.discretization = discretization
-        #Calculate Buckets per Dimension
-        self.buckets_per_dim = zeros(self.domain.state_space_dims,uint8)
+        #Calculate bins per Dimension
+        self.bins_per_dim = zeros(self.domain.state_space_dims,uint8)
         for d in arange(self.domain.state_space_dims):
              if d in self.domain.continous_dims:
-                 self.buckets_per_dim[d] = self.discretization
+                 self.bins_per_dim[d] = self.discretization
              else:
-                 self.buckets_per_dim[d] = self.domain.statespace_limits[d,1] - self.domain.statespace_limits[d,0]+1
+                 self.bins_per_dim[d] = self.domain.statespace_limits[d,1] - self.domain.statespace_limits[d,0]
+        self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
+        print join(["-"]*30)
+        print "Representation:\t\t", className(self)
+        print "Discretization:\t\t", self.discretization
+        print "Starting Features:\t", self.features_num
+        print "Aggregated States:\t", self.agg_states_num
     def V(self,s):
         #Returns the value of a state
         AllQs   = self.Qs(s)
@@ -62,11 +69,6 @@ class Representation(object):
         ind_a       = range(a*self.features_num,(a+1)*self.features_num)
         F_sa[ind_a] = F_s
         return F_sa
-    def discretized(self,s):
-        # If domain has continuous dimensions, this function returns the closest state based on the discretization otherwise it returns the same state 
-        for dim in self.domain.continous_dims:
-                s[dim] = closestDiscretization(s[dim],self.discretization,self.domain.statespace_limits[dim][:]) 
-        return s
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.
         x               = self.theta.reshape(self.domain.actions_num,-1) # -1 means figure the other dimension yourself
@@ -74,8 +76,22 @@ class Representation(object):
         self.theta      = x.reshape(1,-1).flatten()
     def hashState(self,s,):
         #returns a unique idea by calculating the enumerated number corresponding to a state
-        # I use a recursive calculation to save time by looping once backward on the array = O(n)
-        return vec2id(s,self.buckets_per_dim)
+        # it first translate the state into a binState (bin number corresponding to each dimension)
+        # it then map the binstate to a an integer
+        ds = self.binState(s)
+        return vec2id(s,self.bins_per_dim)
+    def binState(self,s):
+        # Given a state it returns a vector with the same dimensionality of s
+        # each element of the returned valued is the zero-indexed bin number corresponding to s
+        # note that s can be continuous.  
+        # 1D examples: 
+        # s = 0, limits = [-1,5], bins = 6 => 1
+        # s = .001, limits = [-1,5], bins = 6 => 1
+        # s = .4, limits = [-.5,.5], bins = 3 => 2
+        bs  = empty(len(s),'uint16')
+        for d in arange(self.domain.state_space_dims):
+            bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+        return bs
     def printAll(self):
         print className(self)
         print '======================================='
@@ -95,3 +111,11 @@ class Representation(object):
             print 'Best:', A[ind], 'MAX:', Qs.max()
             raw_input()
         return A[ind]
+
+#    def discretized(self,s):
+#        ds = s.copy()
+#        for dim in self.domain.continous_dims:
+#                ds[dim] = closestDiscretization(ds[dim],self.discretization,self.domain.statespace_limits[dim][:]) 
+#        return ds
+    
+    

@@ -31,6 +31,9 @@ class Experiment(object):
         if show_all or show_performance: 
             self.result_fig = pl.figure(1,figsize=(14, 10))
             createColorMaps()
+        print join(["-"]*30)
+        print "Experiment:\t", className(self)
+        print "Agent:\t", className(self)
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0

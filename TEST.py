@@ -3,6 +3,5 @@ from Representations import *
 from Domains import *
 import timeit
 
-A = array([1,2])        
-b,c = A
-print b,c
+
+print binNumber(3,3,[0,3])
