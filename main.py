@@ -28,13 +28,13 @@ EPSILON             = .1 # EGreedy
 #Agent
 #----------------------
 initial_alpha       = .1
-learn_step          = 10000
+learn_step          = 100000
 
-domain          = PitMaze(MAZE, noise = NOISE)
-#domain          = BlocksWorld(blocks=3,noise = NOISE)
+#domain          = PitMaze(MAZE, noise = NOISE)
+domain          = BlocksWorld(blocks=3,noise = NOISE)
 #representation  = Tabular(domain)
-representation  = IncrementalTabular(domain)
-#representation  = IndependentDiscretization(domain)
+#representation  = IncrementalTabular(domain)
+representation  = IndependentDiscretization(domain)
 #representation  = RBF(domain, rbfs = RBFS)
 policy          = eGreedy(representation, epsilon = EPSILON)
 agent           = SARSA(representation,policy,domain,initial_alpha)

@@ -21,4 +21,3 @@ class IndependentDiscretization(Representation):
         index       = ds-self.domain.statespace_limits[:,0]+shifts
         F_s[index.astype('uint8')] = 1
         return F_s  
-        

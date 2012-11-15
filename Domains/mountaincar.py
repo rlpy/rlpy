@@ -1,30 +1,55 @@
-import numpy as np
-from Domain import Domain
+import sys, os
+# Add all paths
+sys.path.insert(0, os.path.abspath('..'))
+from Tools import *
+from Domain import *
 
-XMIN = -3.7
-XMAX = 0.5
-XDOTMIN = -0.07
-XDOTMAX = 0.07
-INITSTATE = np.array([-np.pi / 2.0 / 3.0, 0.0])
+#######################################################################
+# Developed by Josh Joseph and Alborz Geramifard Nov 15th 2012 at MIT #
+#######################################################################
+# Mountain Car Domain Based on http://library.rl-community.org/wiki/Mountain_Car_(Java)
 
-class Mountaincar(Domain):
-    actions_num = 2
+
+class MountainCar(Domain):
+    actions_num = 3
     state_space_dims = 2
     episodeCap = 500
-
-    def __init__(self):
-        self.actions = np.array([-1, 1])
-        self.bounds = np.array([[XMIN, XMAX],[XDOTMIN, XDOTMAX]]).transpose()
-        self.start = INITSTATE
-
-    def step(self, x, u):
-        x_next = x.copy()
-        x_next[0] = min(max(x[0]+x[1], self.bounds[0,0]), self.bounds[1,0])
-        x_next[1] = min(max(x[1]+0.001*u+(-0.0025*np.cos(3*x[0])), self.bounds[0,1]), self.bounds[1,1])
-        return x_next
-
+    XMIN = -1.2
+    XMAX = 0.6
+    XDOTMIN = -0.07
+    XDOTMAX = 0.07
+    INIT_STATE = array([-0.5, 0.0])
+    STEP_REWARD = -1
+    GOAL_REWARD = 0
+    GOAL = .5
+    actions = [-1, 0, 1] 
+    noise = 0
+    accelerationFactor = 0.001
+    gravityFactor = -0.0025;
+    hillPeakFrequency = 3.0;
+ 
+    def __init__(self, noise = 0):
+        self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
+        self.Noise = noise
+    def step(self, s, a):
+        position, velocity = s
+        noise = 2 * self.accelerationFactor * self.noise * (random.rand() - .5) 
+        velocity += (noise + 
+                                self.actions[a] * self.accelerationFactor + 
+                                cos(self.hillPeakFrequency * position) * self.gravityFactor)
+        velocity = bound(velocity, self.XDOTMIN, self.XDOTMAX)
+        position += velocity 
+        position = bound(position, self.XMIN, self.XMAX)
+        if position < self.XMIN and velocity < 0: velocity = 0  # Bump into wall
+        terminal = position > self.GOAL
+        r = self.GOAL_REWARD if terminal else self.STEP_REWARD
+        ns = array([position, velocity])        
+        return r, ns, terminal 
     def s0(self):
-        return self.start
-
-    def possibleActions(self, x):
-        return self.actions
+        return self.INIT_STATE
+    def showDomain(self, s, a):
+        print s, a
+if __name__ == '__main__':
+    # p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
+    p = MountainCar();
+    p.test(1000)
