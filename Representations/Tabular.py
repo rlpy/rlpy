@@ -1,30 +1,21 @@
 ######################################################
-# Developed by Alborz Geramiard Oct 30th 2012 at MIT #
+# Developed by Alborz Geramiard Nov 14th 2012 at MIT #
 ######################################################
 from Representation import *
 class Tabular(Representation):
-    hash = {}
+    def __init__(self,domain,discretization = 20):
+        self.buckets_per_dim = empty(domain.state_space_dims)
+        for d in arange(domain.state_space_dims):
+             if d in domain.continous_dims:
+                 self.buckets_per_dim[d] = discretization
+             else:
+                 self.buckets_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]+1
+        self.features_num = int(prod(self.buckets_per_dim))
+        super(Tabular,self).__init__(domain,discretization)
     def phi(self,s):
         ds      = self.discretized(s)
-        hash_id = self.hashState(s)
-        #hashable_state = tuple(ds.tolist())
-        id  = self.hash.get(hash_id)
-        F_s = zeros(self.features_num)
-        if id is not None:
-            F_s[id] = 1
+        id      = self.hashState(s)
+        F_s     = zeros(self.domain.states_num)
+        F_s[id] = 1
         return F_s
-    def addState(self,s):
-        ds      = self.discretized(s)
-        hash_id = self.hashState(s)
-        id  = self.hash.get(hash_id)
-        if id is None:
-            #New State
-            self.features_num += 1
-            #New id = feature_num - 1
-            id = self.features_num - 1
-            self.hash[hash_id] = id
-            #Add a new element to weight theta
-            self.addNewWeight()
 
-         
-        
