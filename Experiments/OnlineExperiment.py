@@ -63,7 +63,8 @@ class OnlineExperiment (Experiment):
             eps_steps   += 1
             eps_return  += r
             s,a          = ns,na
-            #print s,a,ns
+            #shout(self)
+            #print total_steps,":",s,a,ns
             #raw_input()
             
             #Check Performance

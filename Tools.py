@@ -290,6 +290,9 @@ def id2vec(_id,limits):
 def bound(x,m,M):
     # bound x between min (m) and Max (M)
     return min(max(x,m),M)
+def shout(obj,s=''):
+    # Print the name of the object and then the message. Use to remember to comment prints
+    print "In " + className(obj) + " :" + str(s) 
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
