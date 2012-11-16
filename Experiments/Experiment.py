@@ -58,10 +58,7 @@ class Experiment(object):
         self.agent.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
     def printAll(self):
-        print className(self)
-        print '======================================='
-        for property, value in vars(self).iteritems():
-            print property, ": ", value
+        printClass(self)
     def save(self,filename):
         savetxt(filename,self.result)
         print filename,'<== Saved Results!'

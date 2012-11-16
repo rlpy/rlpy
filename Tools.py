@@ -7,8 +7,7 @@ from numpy  import *
 #import matplotlib
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 from matplotlib import pylab as pl
-from matplotlib import mpl
-from matplotlib import rc
+from matplotlib import mpl,rc
 import matplotlib.colors as col
 import matplotlib.cm as cm
 from scipy import stats
@@ -17,6 +16,9 @@ from time import *
 from hashlib import sha1
 import datetime
 from string import *
+from sets import ImmutableSet
+from itertools  import *
+from copy import deepcopy
 
 # Tips:
 # array.astype(float) => convert elements
@@ -29,6 +31,10 @@ from string import *
 # [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
 # apply function foo to all elements of array A: vectorize(foo)(A) (The operation may be unstable! Care!
 # Set a property of a class:  vars(self)['prop'] = 2
+
+# Todo:
+# Replace vstack and hstack with the trick mentioned here:
+# http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
 
 def prod(x):
     #Returns the multiplications of the elements of a set
@@ -293,6 +299,18 @@ def bound(x,m,M):
 def shout(obj,s=''):
     # Print the name of the object and then the message. Use to remember to comment prints
     print "In " + className(obj) + " :" + str(s) 
+def powerset(iterable, ascending = 1):
+    s = list(iterable)
+    if ascending:
+        return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+    else:
+        return chain.from_iterable(combinations(s, r) for r in range(len(s)+1,-1,-1))
+def printClass(obj):
+        print className(obj)
+        print '======================================='
+        for property, value in vars(obj).iteritems():
+            print property, ": ", value
+
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

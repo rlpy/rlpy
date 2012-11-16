@@ -2,9 +2,16 @@ from Tools import *
 from Representations import *
 from Domains import *
 import timeit
+from sets import ImmutableSet
+from test.test_set import powerset
 
-x = array([1,2,3,4,5,6])
-x = x.reshape(2,-1)
-x = hstack((x,zeros((2,1))))
-x = x.reshape(1,-1).flatten()
-print x
+d = {}
+x = [1,2,3]
+for i in range(4):
+    d[ImmutableSet([i])] = i
+
+for c in powerset(x):
+    candid = ImmutableSet(c)
+    if d.get(candid) != None:
+        print d[candid] 
+    

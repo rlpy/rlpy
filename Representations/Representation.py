@@ -96,10 +96,7 @@ class Representation(object):
             bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
         return bs
     def printAll(self):
-        print className(self)
-        print '======================================='
-        for property, value in vars(self).iteritems():
-            print property, ": ", value
+        printClass(self)
     def bestActions(self,s):
     # Given a state returns the best action possibles at that state
         Qs, A = self.Qs(s)
