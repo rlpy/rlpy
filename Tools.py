@@ -313,6 +313,21 @@ def printClass(obj):
 def normalize(x):
     # normalize numpy array x
     return x/sum([e**2 for e in x])
+def addNewElementForAllActions(x,a,newElem = None):
+        # When features are expanded several parameters such as the weight vector should expand. Since we are adding the new feature for all actions
+        # these vectors should expand by size of the action as for each action phi(s) is expand by 1 element.
+        # Because we later stack all of them we need this function to insert the new element in proper locations 
+        # Add a new 0 weight corresponding to the new added feature for all actions.
+        # new elem = None means just insert zeros for new elements. x is a numpy array
+        # example:
+        # x = [1,2,3,4], a = 2, newElem = None => [1,2,0,3,4,0]
+        # x = [1,2,3], a = 3, newElem = [1,1,1] => [1,1,2,1,3,1]
+        if newElem is None:
+            newElem = zeros((a,1))
+        x   = x.reshape(a,-1) # -1 means figure the other dimension yourself
+        x   = hstack((x,newElem))
+        x   = x.reshape(1,-1).flatten()
+        return x
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

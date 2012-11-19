@@ -114,14 +114,13 @@ class iFDD(Representation):
     def updateWeight(self,p1_index,p2_index):
         # Add a new weight corresponding to the new added feature for all actions.
         # The new weight is set to zero if sparsify = False, and equal to the sum of weights corresponding to the parents if sparsify = True
-        x               = self.theta.reshape(self.domain.actions_num,-1) # -1 means figure the other dimension yourself
+        a = self.domain.actions_num
+        f = self.features_num-1 # Number of feature before adding the new one
         if self.sparsify:
-            parents_sum     = x[:,p1_index] + x[:,p2_index]
-            parents_sum     = reshape(parents_sum, (len(parents_sum),1))
-            x               = hstack((x,parents_sum))
+            newElem = (self.theta[p1_index::f] + self.theta[p1_index::f]).reshape((-1,1)) 
         else:
-            x           = hstack((x,zeros((self.domain.actions_num,1))))
-        self.theta      = x.reshape(1,-1).flatten()
+            newElem =  None
+        self.theta      = addNewElementForAllActions(self.theta,a,newElem)
         self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def add_initialFeatures(self):
         for i in range(self.features_num):
