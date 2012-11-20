@@ -45,8 +45,8 @@ representation  = Tabular(domain)
 #representation  = IndependentDiscretization(domain)
 #representation  = RBF(domain, rbfs = RBFS)
 policy          = eGreedy(representation, epsilon = EPSILON)
-agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
-#agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
+#agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
 experiment      = OnlineExperiment(agent,domain,max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
 
 if DEBUG:
