@@ -1,3 +1,8 @@
+#NOT FINISHED YET
+#NOT FINISHED YET
+#NOT FINISHED YET
+#NOT FINISHED YET
+#NOT FINISHED YET
 import sys, os
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
@@ -15,7 +20,7 @@ from Domain import *
 # 4: pit
 # The task is to reach the goal from the start while avoiding the pits
 ######################################################
-class CartPole(Domain):
+class PitMaze(Domain):
     #Rewards
     BALANCED_REWARD = 0
     UNBALANCED_REWARD = -1

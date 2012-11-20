@@ -14,11 +14,7 @@ class eGreedy(Policy):
             A = self.representation.domain.possibleActions(s)
             return randSet(A)
         else:
-            bestA = self.representation.bestActions(s)
-            if len(bestA) > 1:
-                return randSet(bestA)
-            else:
-                return bestA[0]
+            return self.representation.bestAction(s)
     def turnOffExploration(self):
         self.old_epsilon = self.epsilon 
         self.epsilon = 0
