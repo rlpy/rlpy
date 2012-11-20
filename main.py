@@ -11,16 +11,16 @@ from Experiments import *
 # Etc
 #----------------------
 DEBUG               = 0
-SHOW_ALL            = 0
+SHOW_ALL            = 1
 SHOW_PERFORMANCE    = 1
 LOG_INTERVAL        = 1 
-PERFORMANCE_CHECKS  = 10
-LEARNING_STEPS      = 10000
+PERFORMANCE_CHECKS  = 1
+LEARNING_STEPS      = 1000
 RESULT_FILE         = 'result.txt'
 # Domain
 #----------------------
-#MAZE                = '/Domains/PitMazeMaps/4by5.txt'
-MAZE                = '/Domains/PitMazeMaps/1by3.txt'
+MAZE                = '/Domains/PitMazeMaps/4by5.txt'
+#MAZE                = '/Domains/PitMazeMaps/1by2.txt'
 NOISE               = 0
 # Representation
 #----------------------
@@ -34,7 +34,7 @@ EPSILON             = .1 # EGreedy
 initial_alpha       = .1
 LAMBDA              = 0
 LSPI_iterations     = 5
-LSPI_windowSize     = 100
+LSPI_windowSize     = 1000
 
 domain          = PitMaze(MAZE, noise = NOISE)
 #domain          = BlocksWorld(blocks=3,noise = NOISE)

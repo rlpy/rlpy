@@ -2,8 +2,16 @@ from Tools import *
 from Representations import *
 from Domains import *
 
-a = array([[0,0],[2,4]])
-b  = array([5,6])
-aa = a + .1*eye(2)
-print linalg.solve(aa,b)
-print slinalg.lsmr(a,b)
+#A = array([[1,0],[0,1]])
+#b = [2,1]
+#print solveLinear(A,b)
+
+A = ones((2,2))
+b = A[:,1].copy()
+b[0] = 0
+print A
+c = array([0,0])
+A[1,:] = c
+print A
+c[0] = 1
+print A

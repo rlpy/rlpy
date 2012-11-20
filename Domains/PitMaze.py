@@ -17,7 +17,7 @@ from Domain import *
 ######################################################
 class PitMaze(Domain):
     map = start = goal              = None
-    upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None      # Used for graphics to show the domain
+    agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None      # Used for graphics to show the domain
     ROWS = COLS = 0                 # Number of rows and columns of the map
     #Rewards
     GOAL_REWARD = +1
@@ -50,15 +50,18 @@ class PitMaze(Domain):
     def showDomain(self,s,a = 0):
        #Draw the environment
        if self.domain_fig is None:
-           pl.subplot(1,2,1)
+           self.agent_fig = pl.subplot(1,2,1)
            self.domain_fig = pl.imshow(self.map, cmap='GridWorld',interpolation='nearest',vmin=0,vmax=5)
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            pl.tight_layout()
+           self.agent_fig = self.agent_fig.plot(s[1],s[0],'ko',markersize=30.0)
            pl.show(block=False)
-       mapcopy = copy(self.map) 
-       mapcopy[s[0],s[1]] = self.AGENT
-       self.domain_fig.set_data(mapcopy)
+       #mapcopy = copy(self.map) 
+       #mapcopy[s[0],s[1]] = self.AGENT
+       #self.domain_fig.set_data(mapcopy)
+       self.agent_fig.pop(0).remove()
+       self.agent_fig = pl.plot(s[1],s[0],'ko',markersize=30.0)
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
