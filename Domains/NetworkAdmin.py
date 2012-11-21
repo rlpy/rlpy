@@ -1,7 +1,4 @@
 import sys, os
-import csv
-import networkx as nx
-import matplotlib.pyplot as plt
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
@@ -32,8 +29,6 @@ class NetworkAdmin(Domain):
     # Possible values for each computer
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
-    
-    
     def getNetworkMap(self, path):
         _Neighbors = []
         with open(path, 'rb') as f:
@@ -41,7 +36,6 @@ class NetworkAdmin(Domain):
             for row in reader:
                 _Neighbors.append(map(int,row))
         return _Neighbors
-    
     def __init__(self, networkmapname='/NetworkAdminMaps/5Machines.txt'):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS          = self.getNetworkMap(path)
@@ -53,7 +47,6 @@ class NetworkAdmin(Domain):
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
         super(NetworkAdmin,self).__init__()
-    
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
@@ -86,12 +79,9 @@ class NetworkAdmin(Domain):
             if greenNodes:  nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=greenNodes, node_color="w")
             if blackEdges:  nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=blackEdges, edge_color="k")
             if redEdges:    nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=redEdges, edge_color="r")
-        plt.draw()    
-         
-    
+        pl.draw()    
     def showLearning(self,representation):
         pass
-    
     def step(self,s,a):
         ns = s # make copy of state so as not to affect original mid-step
         totalRebootReward = 0
@@ -119,16 +109,12 @@ class NetworkAdmin(Domain):
  # Optional                     else ns[computer_id] = self.BROKEN
         return sum(ns)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
-    
     def s0(self):
         return [self.RUNNING for dummy in range(0,self.state_space_dims)] # Omits final index
-    
     def possibleActions(self,s):
     # Returns the list of possible actions in each state the vanilla version returns all of the actions
         return arange(self.actions_num)
-    
 if __name__ == '__main__':
-        #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
         random.seed(0)
         p = NetworkAdmin('/NetworkAdminMaps/5Machines.txt');
         p.test(1000)
