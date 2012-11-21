@@ -11,9 +11,9 @@ from Experiments import *
 # Etc
 #----------------------
 PERFORMANCE_CHECKS  = 10
-LEARNING_STEPS      = 10000
+LEARNING_STEPS      = 1000
 SHOW_ALL            = 0
-SHOW_PERFORMANCE    = 1
+SHOW_PERFORMANCE    = 0
 LOG_INTERVAL        = 1 
 RESULT_FILE         = 'result.txt'
 JOB_ID              = 3
@@ -24,7 +24,7 @@ DEBUG               = 0
 MAZE                = '/Domains/PitMazeMaps/4x5.txt'
 #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
 NOISE               = 0
-BLOCKS              = 3 # For BlocksWorld
+BLOCKS              = 4 # For BlocksWorld
 # Representation
 #----------------------
 RBFS                = 9
@@ -53,8 +53,8 @@ representation  = Tabular(domain)
 policy          = eGreedy(representation, epsilon = EPSILON)
 #policy          = UniformRandom(representation)
 
-#agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
-agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
+agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+#agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
 
 experiment      = OnlineExperiment(agent,domain,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
 
