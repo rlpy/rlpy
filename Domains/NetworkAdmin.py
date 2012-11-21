@@ -83,7 +83,7 @@ class NetworkAdmin(Domain):
     def showLearning(self,representation):
         pass
     def step(self,s,a):
-        ns = s # make copy of state so as not to affect original mid-step
+        ns = s.copy() # make copy of state so as not to affect original mid-step
         totalRebootReward = 0
         for computer_id, compstatus in enumerate(s):
             if(a == computer_id): #Reboot action on this computer
