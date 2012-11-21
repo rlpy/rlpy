@@ -65,7 +65,7 @@ class BlocksWorld(Domain):
         pass #cant show 6 dimensional value function
     def step(self,s,a):
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
-        print 'taking action %d->%d' % (A,B)
+        #print 'taking action %d->%d' % (A,B)
         if not self.validAction(s,A,B):
             print 'State:%s, Invalid move from %d to %d' % (str(s),A,B)
             print self.possibleActions(s)
@@ -77,7 +77,6 @@ class BlocksWorld(Domain):
         ns[A]       = B # A is on top of B now.
         terminal    = self.isTerminal(s)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
-        print 'ns:', ns 
         return r,ns,terminal
     def expectedStep(self,s,a):
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
@@ -98,10 +97,10 @@ class BlocksWorld(Domain):
         empty_blocks    = [b for b in arange(self.blocks) if self.clear(b,s)]
         empty_num       = len(empty_blocks)
         actions         = [[a,b] for a in empty_blocks for b in empty_blocks if not self.destination_is_table(a,b) or not self.on_table(a,s)] #condition means if A sits on the table you can not pick it and put it on the table
-        print 'state',s
-        print "Empty Blocks", empty_blocks
-        print actions
-        raw_input()
+        #print 'state',s
+        #print "Empty Blocks", empty_blocks
+        #print actions
+        #raw_input()
         return array([vec2id(x,[self.blocks, self.blocks]) for x in actions])
     def validAction(self,s,A,B):
         #Returns true if B and A are both empty.
