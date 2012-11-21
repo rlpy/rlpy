@@ -8,6 +8,7 @@ from numpy  import *
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 from matplotlib import pylab as pl
 from matplotlib import mpl,rc
+import matplotlib.patches as mpatches
 import matplotlib.colors as col
 import matplotlib.cm as cm
 from scipy import stats
@@ -349,6 +350,19 @@ def rank(A, eps=1e-12):
 def easy2read(A, _precision=3):
     # returns an array easy to read (used for debugging mainly. _precision is the number of decimal digits
     return array_repr(A, precision=_precision, suppress_small=True)
+def fromAtoB(x1,y1,x2,y2,color_ = 'k'):
+    #draw an arrow from point A=(x1,y1) to point B=(x2,y2)
+    pl.annotate("",
+                xy=(x2,y2), xycoords='data',
+                xytext=(x1,y1), textcoords='data',
+                arrowprops=dict(arrowstyle="fancy", #linestyle="dashed",
+                                color= color_,
+                                shrinkA=10, shrinkB=10,
+                                patchA=None,
+                                patchB=None,
+                                connectionstyle="arc3,rad=-0.4"), 
+                )
+
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

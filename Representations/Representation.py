@@ -55,7 +55,10 @@ class Representation(object):
             return self.hashed_phi
     def phi(self,s):
         #Returns the phi(s)
-        abstract
+        if self.domain.isTerminal(s):
+            return zeros(self.features_num,'bool')
+        else:
+            return self.phi_nonTerminal(s)
     def phi_sa(self,s,a):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
         F_s = self.fastPhi(s)
@@ -125,7 +128,10 @@ class Representation(object):
             return randSet(bestA)
         else:
             return bestA[0]
-
+    def phi_nonTerminal(self,s):
+            # This is the actual function that each representation should fill
+            # if state is terminal the feature vector is always zero!
+            abstract
     def activeInitialFeatures(self,s):
         #return the index of active initial features based on bins on each dimensions
         bs          = self.binState(s)

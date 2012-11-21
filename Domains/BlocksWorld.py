@@ -67,7 +67,6 @@ class BlocksWorld(Domain):
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
         #print s
         #print a,':',A,'=>',B
-        terminal    = self.NOT_TERMINATED
         ns          = s
         if random.random_sample() < self.noise:
             B = A #Drop on Table
@@ -75,7 +74,7 @@ class BlocksWorld(Domain):
         if self.validAction(s,A,B):
             ns[A] = B # A is on top of B now.
         
-        terminal    = 1 if array_equal(s,self.GOAL_STATE) else 0
+        terminal    = self.isTerminal(s)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
          
         #print ns
@@ -101,6 +100,8 @@ class BlocksWorld(Domain):
                  len(position) == 0 or #Nothing is on block B
                  position == B # Only B is on B => B is on table
                  )
+    def isTerminal(self,s):
+        return array_equal(s,self.GOAL_STATE)
 if __name__ == '__main__':
     #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
     random.seed(0)
