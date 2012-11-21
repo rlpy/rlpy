@@ -53,8 +53,8 @@ representation  = Tabular(domain)
 policy          = eGreedy(representation, epsilon = EPSILON)
 #policy          = UniformRandom(representation)
 
-agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
-#agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
+#agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
 
 experiment      = OnlineExperiment(agent,domain,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
 
