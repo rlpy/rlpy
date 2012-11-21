@@ -75,7 +75,7 @@ class BlocksWorld(Domain):
         if random.random_sample() < self.noise: B = A #Drop on Table
         ns          = s.copy()
         ns[A]       = B # A is on top of B now.
-        terminal    = self.isTerminal(s)
+        terminal    = self.isTerminal(ns)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
     def expectedStep(self,s,a):

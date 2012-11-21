@@ -5,7 +5,7 @@ from OnlineAgent import *
 class SARSA(OnlineAgent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []  #
-    def __init__(self,representation,policy,domain,initial_alpha =.1, lambda_ = 0):
+    def __init__(self, representation, policy, domain, initial_alpha =.1, lambda_ = 0):
         self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
@@ -31,8 +31,6 @@ class SARSA(OnlineAgent):
         candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
         candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf 
         self.alpha      = min(self.alpha,candid_alpha)
-        
-        x = abs(dot(phi-gamma*phi_prime,self.eligibility_trace))
         #shout(self,self.alpha)
         theta               += self.alpha * td_error * self.eligibility_trace
         

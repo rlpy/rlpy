@@ -55,7 +55,7 @@ class OnlineExperiment (Experiment):
             if self.show_all: self.domain.show(s,a, self.agent.representation)
             #Act,Learn,Step
             r,ns,terminal   = self.domain.step(s, a)
-            na              = self.agent.policy.pi(s)
+            na              = self.agent.policy.pi(ns)
             # Hash new state for the tabular case
             if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(ns)
             self.agent.learn(s,a,r,ns,na,terminal)            

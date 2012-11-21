@@ -3,4 +3,4 @@ from Representations import *
 from Domains import *
 
 A = array([1,3,3])
-print max(A)
+print findElemArray1D(A,1)
