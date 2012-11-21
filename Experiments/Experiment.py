@@ -46,14 +46,11 @@ class Experiment(object):
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a               = self.agent.policy.pi(s)
-            print eps_length,s,a
-            raw_input()
             if self.show_performance: 
                 self.domain.showDomain(s,a)
                 pl.title('After '+str(total_steps)+' Steps')
 
             r,s,eps_term    = self.domain.step(s, a)
-            if eps_term: print 'coming out with s =',s 
             eps_return     += r
             eps_length     += 1
         if self.show_performance: self.domain.showDomain(s,a)
