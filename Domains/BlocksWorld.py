@@ -15,12 +15,11 @@ from Domain import *
 # [0 1 2 3 4 0] => means all blocks on table except block 5 which is on top of block 0 
 ######################################################
 class BlocksWorld(Domain):
-    trajCap                 = 1000
     STEP_REWARD             = -.001
     GOAL_REWARD             = 1
     blocks                  = 0    # Total number of blocks
     towersize               = 0    # Goal tower size   
-    episodeCap              = 100
+    episodeCap              = 1000
     domain_fig              = None  #Used to plot the domain
     def __init__(self, blocks = 6, towerSize = 6, noise = .3):
         self.blocks             = blocks    
@@ -69,11 +68,13 @@ class BlocksWorld(Domain):
         #print a,':',A,'=>',B
         ns          = s
         if random.random_sample() < self.noise:
+            print "Noise caused the box to drop on the table"
             B = A #Drop on Table
         
         if self.validAction(s,A,B):
             ns[A] = B # A is on top of B now.
-        
+        else:
+            print "Invalid Action"
         terminal    = self.isTerminal(s)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
          
@@ -103,9 +104,8 @@ class BlocksWorld(Domain):
     def isTerminal(self,s):
         return array_equal(s,self.GOAL_STATE)
 if __name__ == '__main__':
-    #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
     random.seed(0)
-    p = BlocksWorld(noise=0);
+    p = BlocksWorld(blocks=3,noise=0);
     p.test(1000)
     
     

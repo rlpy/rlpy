@@ -33,6 +33,7 @@ class Domain(object):
         print "Dimensions:\t", self.state_space_dims
         print "|S|:\t\t", self.states_num
         print "|A|:\t\t", self.actions_num
+        print "|S|x|A|:\t\t", self.actions_num*self.states_num
         print "Episode Cap:\t", self.episodeCap
         print "Gamma:\t\t", self.gamma
     def show(self,s,a, representation):     
@@ -64,7 +65,10 @@ class Domain(object):
                 s = self.s0()
             a = randSet(self.possibleActions(s))
             self.showDomain(s,a)
+            print s,a
             r,s,terminal = self.step(s, a)
+            if terminal: print '>>',s
+            print r
             steps += 1
     def printAll(self):
         printClass(self)
