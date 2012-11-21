@@ -47,11 +47,16 @@ class Domain(object):
         # Returns the initial state
         abstract
     def possibleActions(self,s):
+        # default. You may want to change it in your domain if all actions are not available at all times
         # Returns the list of possible actions in each state the vanilla version returns all of the actions
         return arange(self.actions_num)
     def step(self,s,a):
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
         abstract    
+    def expectedStep(self,s,a):
+        # returns r, ns, p. Each row of each output corresponds to one possibility.
+        # e.g. s,a -> r[i], ns[i] with probability p[i]
+        pass 
     def isTerminal(self,s):
         # Returns a boolean showing if s is terminal or not
         abstract
@@ -65,10 +70,7 @@ class Domain(object):
                 s = self.s0()
             a = randSet(self.possibleActions(s))
             self.showDomain(s,a)
-            print s,a
             r,s,terminal = self.step(s, a)
-            if terminal: print '>>',s
-            print r
             steps += 1
     def printAll(self):
         printClass(self)

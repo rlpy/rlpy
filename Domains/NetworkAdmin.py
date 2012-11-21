@@ -58,11 +58,11 @@ class NetworkAdmin(Domain):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
             for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,s)):
-                self.networkGraph.add_node(computer_id, node_color = "g")
+                self.networkGraph.add_node(computer_id, node_color = "w")
                 for neighbor_id in neighbors:
                     self.networkGraph.add_edge(computer_id,neighbor_id, edge_color = "k")
             self.networkPos = nx.circular_layout(self.networkGraph)
-            nx.draw_networkx_nodes(self.networkGraph, self.networkPos, node_color="g")
+            nx.draw_networkx_nodes(self.networkGraph, self.networkPos, node_color="w")
             nx.draw_networkx_edges(self.networkGraph, self.networkPos, edges_color="k")
             pl.show(block=False)
         else:
@@ -83,7 +83,7 @@ class NetworkAdmin(Domain):
             print "rednodes",redNodes
             print "rededges",redEdges
             if redNodes:    nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=redNodes, node_color="r")
-            if greenNodes:  nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=greenNodes, node_color="g")
+            if greenNodes:  nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=greenNodes, node_color="w")
             if blackEdges:  nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=blackEdges, edge_color="k")
             if redEdges:    nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=redEdges, edge_color="r")
         plt.draw()    

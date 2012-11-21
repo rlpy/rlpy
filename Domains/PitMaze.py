@@ -148,7 +148,7 @@ class PitMaze(Domain):
         pl.draw()   
     def step(self,s,a):
         r           = self.STEP_REWARD
-        ns          = s
+        ns          = s.copy()
         if random.random_sample() < self.NOISE:
             #Random Move  
             a = randSet(self.possibleActions(s))

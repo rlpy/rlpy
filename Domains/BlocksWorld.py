@@ -17,6 +17,7 @@ from Domain import *
 class BlocksWorld(Domain):
     STEP_REWARD             = -.001
     GOAL_REWARD             = 1
+    gamma                   = 1
     blocks                  = 0    # Total number of blocks
     towersize               = 0    # Goal tower size   
     episodeCap              = 1000
@@ -64,44 +65,63 @@ class BlocksWorld(Domain):
         pass #cant show 6 dimensional value function
     def step(self,s,a):
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
-        #print s
-        #print a,':',A,'=>',B
-        ns          = s
-        if random.random_sample() < self.noise:
-            B = A #Drop on Table
-        
-        if self.validAction(s,A,B):
-            ns[A] = B # A is on top of B now.
-        else:
-            print "Invalid Action"
+        print 'taking action %d->%d' % (A,B)
+        if not self.validAction(s,A,B):
+            print 'State:%s, Invalid move from %d to %d' % (str(s),A,B)
+            print self.possibleActions(s)
+            print id2vec(self.possibleActions(s),[self.blocks, self.blocks])
+            raw_input()
+
+        if random.random_sample() < self.noise: B = A #Drop on Table
+        ns          = s.copy()
+        ns[A]       = B # A is on top of B now.
         terminal    = self.isTerminal(s)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
-         
-        #print ns
+        print 'ns:', ns 
         return r,ns,terminal
+    def expectedStep(self,s,a):
+        [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
+        if not self.validAction(s,A,B):
+            print 'Invalid move from %d to %d' % (A,B)
+            return
+        #Scenario 1: Success
+        ns = s.copy()
+        ns[A] = B # A is on top of B now.
+        terminal    = self.isTerminal(s)
+        r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
     def s0(self):
         # all blocks on table
         return arange(self.blocks)
     def possibleActions(self,s):
         # return the id of possible actions
         # find empty blocks (nothing on top)
-        empty_blocks    = [b for b in arange(self.blocks) if (
-                                                              (s[b] == b and len(findElemArray1D(b,s)) == 1) or #sitting alone on the table
-                                                              len(findElemArray1D(b,s)) == 0) # nothing is on it
-                           ]
-        #print "Empty Blocks", empty_blocks
+        empty_blocks    = [b for b in arange(self.blocks) if self.clear(b,s)]
         empty_num       = len(empty_blocks)
-        actions         = [[a,b] for a in empty_blocks for b in empty_blocks if s[a] != b]
+        actions         = [[a,b] for a in empty_blocks for b in empty_blocks if not self.destination_is_table(a,b) or not self.on_table(a,s)] #condition means if A sits on the table you can not pick it and put it on the table
+        print 'state',s
+        print "Empty Blocks", empty_blocks
+        print actions
+        raw_input()
         return array([vec2id(x,[self.blocks, self.blocks]) for x in actions])
     def validAction(self,s,A,B):
-        #Returns true if B can be put on A
-        position = findElemArray1D(B,s)
-        return (A==B or # Destination is Table
-                 len(position) == 0 or #Nothing is on block B
-                 position == B # Only B is on B => B is on table
-                 )
+        #Returns true if B and A are both empty.
+        return (self.clear(A,s) and (self.destination_is_table(A,B) or self.clear(B,s)))
     def isTerminal(self,s):
         return array_equal(s,self.GOAL_STATE)
+    def top(self,A,s):
+        #returns the block on top of block A. Return [] if nothing is on top of A
+        on_A = findElemArray1D(A,s)
+        on_A = setdiff1d(on_A,[A]) # S[i] = i is the key for i is on table.
+        return on_A
+    def clear(self,A,s):
+        # returns true if block A is clear and can be moved
+        return len(self.top(A,s)) == 0
+    def destination_is_table(self,A,B):
+        # See for move A->B, B is table
+        return (A==B)
+    def on_table(self,A,s):
+        #returns true of A is on the table
+        return s[A] == A
 if __name__ == '__main__':
     random.seed(0)
     p = BlocksWorld(blocks=3,noise=0);
