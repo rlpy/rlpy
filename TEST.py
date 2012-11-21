@@ -27,11 +27,10 @@ for i in range(states):
 Shift = .3
 for i in range(states-1):
     fromAtoB(1+2*i+Shift,Y+Shift,1+2*(i+1)-Shift, Y+Shift)
-    fromAtoB(1+2*(i+1)-Shift,Y-Shift,1+2*i+Shift, Y-Shift, 'r')
-
+    if i != states-2: fromAtoB(1+2*(i+1)-Shift,Y-Shift,1+2*i+Shift, Y-Shift, 'r')
+#fromAtoB(.75,Y-2*Shift,.75,Y+1.5*Shift,'r',connectionstyle='arc,angleA=-90,angleB=0,armA=0,armB=40,rad=0')
+fromAtoB(.75,Y-1.5*Shift,.75,Y+1.5*Shift,'r',connectionstyle='arc3,rad=-1.2')
 states_fig[states-2].set_facecolor('b')
-ax.xaxis.set_visible(False)
-ax.yaxis.set_visible(False)
 
 
 

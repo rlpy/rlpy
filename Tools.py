@@ -282,6 +282,7 @@ def perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0):
 def vec2id(x,limits):
     #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    if isinstance(x,int): return x 
     _id = 0
     for d in arange(len(x)-1,-1,-1):
         _id *= limits[d]
@@ -350,17 +351,17 @@ def rank(A, eps=1e-12):
 def easy2read(A, _precision=3):
     # returns an array easy to read (used for debugging mainly. _precision is the number of decimal digits
     return array_repr(A, precision=_precision, suppress_small=True)
-def fromAtoB(x1,y1,x2,y2,color_ = 'k'):
+def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4"):
     #draw an arrow from point A=(x1,y1) to point B=(x2,y2)
     pl.annotate("",
                 xy=(x2,y2), xycoords='data',
                 xytext=(x1,y1), textcoords='data',
                 arrowprops=dict(arrowstyle="fancy", #linestyle="dashed",
-                                color= color_,
+                                color= color,
                                 shrinkA=10, shrinkB=10,
                                 patchA=None,
                                 patchB=None,
-                                connectionstyle="arc3,rad=-0.4"), 
+                                connectionstyle=connectionstyle), 
                 )
 
 createColorMaps()

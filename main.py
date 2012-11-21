@@ -37,7 +37,8 @@ LAMBDA              = 0
 LSPI_iterations     = 5
 LSPI_windowSize     = LEARNING_STEPS
 
-domain          = PitMaze(MAZE, noise = NOISE)
+#domain          = PitMaze(MAZE, noise = NOISE)
+domain          = ChainMDP(3)
 #domain          = BlocksWorld(blocks=3,noise = NOISE)
 #domain          = MountainCar(noise = NOISE)
 
@@ -49,7 +50,7 @@ representation  = Tabular(domain)
 
 policy          = eGreedy(representation, epsilon = EPSILON)
 
-agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+#agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
 #agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
 
 experiment      = OnlineExperiment(agent,domain,max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
