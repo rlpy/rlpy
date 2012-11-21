@@ -68,7 +68,6 @@ class BlocksWorld(Domain):
         #print a,':',A,'=>',B
         ns          = s
         if random.random_sample() < self.noise:
-            print "Noise caused the box to drop on the table"
             B = A #Drop on Table
         
         if self.validAction(s,A,B):
