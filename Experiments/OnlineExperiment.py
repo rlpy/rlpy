@@ -75,7 +75,7 @@ class OnlineExperiment (Experiment):
             eps_return  += r
             s,a          = ns,na
             
-            if deltaT(start_log_time) > self.LOG_INTERVAL:
+            if terminal and deltaT(start_log_time) > self.LOG_INTERVAL:
                 start_log_time  = time()
                 elapsedTime     = deltaT(start_time) 
                 print '%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num)

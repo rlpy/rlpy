@@ -11,10 +11,10 @@ from Experiments import *
 # Etc
 #----------------------
 PERFORMANCE_CHECKS  = 10
-LEARNING_STEPS      = 1000
+LEARNING_STEPS      = 10000
 SHOW_ALL            = 0
 SHOW_PERFORMANCE    = 0
-LOG_INTERVAL        = 1 
+LOG_INTERVAL        = 0 
 RESULT_FILE         = 'result.txt'
 JOB_ID              = 3
 SHOW_FINAL_PLOT     = 1
@@ -44,9 +44,9 @@ LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
 domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
 #domain          = MountainCar(noise = NOISE)
 
-representation  = Tabular(domain)
+#representation  = Tabular(domain)
 #representation  = IncrementalTabular(domain)
-#representation  = iFDD(domain,Discovery_Threshold)
+representation  = iFDD(domain,Discovery_Threshold)
 #representation  = IndependentDiscretization(domain)
 #representation  = RBF(domain, rbfs = RBFS)
 
