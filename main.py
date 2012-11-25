@@ -11,10 +11,10 @@ from Experiments import *
 # Etc
 #----------------------
 PERFORMANCE_CHECKS  = 10
-LEARNING_STEPS      = 10000
+LEARNING_STEPS      = 100000
 SHOW_ALL            = 0
 SHOW_PERFORMANCE    = 0
-LOG_INTERVAL        = 0 
+LOG_INTERVAL        = 1 
 RESULT_FILE         = 'result.txt'
 JOB_ID              = 3
 SHOW_FINAL_PLOT     = 1
@@ -23,8 +23,8 @@ DEBUG               = 0
 #----------------------
 MAZE                = '/Domains/PitMazeMaps/4x5.txt'
 #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
-NOISE               = 0
-BLOCKS              = 4 # For BlocksWorld
+NOISE               = .3
+BLOCKS              = 6 # For BlocksWorld
 # Representation
 #----------------------
 RBFS                = 9
