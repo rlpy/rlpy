@@ -16,6 +16,12 @@ For Lion: sudo easy_install -N -Z https://dl.dropbox.com/u/233041/matplotlib-1.2
 http://fonnesbeck.github.com/ScipySuperpack/
 * If you have mac os lion (10.7) do not install matplotlib 10.8 from the above!
 * If you did, delete it from the directory where the error during python execution refers to
+===============================================================
+4. networkx
+http://networkx.lanl.gov/
+
+
+
 
 Optional:
 =================

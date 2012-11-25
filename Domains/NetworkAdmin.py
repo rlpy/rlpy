@@ -59,6 +59,7 @@ class NetworkAdmin(Domain):
             nx.draw_networkx_edges(self.networkGraph, self.networkPos, edges_color="k")
             pl.show(block=False)
         else:
+            pl.clf()
             blackEdges = []
             redEdges = []
             greenNodes = []
@@ -75,15 +76,15 @@ class NetworkAdmin(Domain):
             print "gnnodes",greenNodes
             print "rednodes",redNodes
             print "rededges",redEdges
-            if redNodes:    nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=redNodes, node_color="r")
-            if greenNodes:  nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=greenNodes, node_color="w")
-            if blackEdges:  nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=blackEdges, edge_color="k")
-            if redEdges:    nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=redEdges, edge_color="r")
+            if redNodes:    nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=redNodes, node_color="r",linewidths=2)
+            if greenNodes:  nx.draw_networkx_nodes(self.networkGraph, self.networkPos, nodelist=greenNodes, node_color="w",linewidths=2)
+            if blackEdges:  nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=blackEdges, edge_color="k",width=2,style='solid')
+            if redEdges:    nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=redEdges, edge_color="k",width=2,style='dotted')
         pl.draw()    
     def showLearning(self,representation):
         pass
     def step(self,s,a):
-        ns = s.copy() # make copy of state so as not to affect original mid-step
+        ns = s # make copy of state so as not to affect original mid-step
         totalRebootReward = 0
         for computer_id, compstatus in enumerate(s):
             if(a == computer_id): #Reboot action on this computer
