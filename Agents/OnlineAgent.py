@@ -18,8 +18,8 @@ class OnlineAgent(Agent):
             self.representation.discover(phi_s,td_error)
 
         #Discover features using batch iFDD
-        if isinstance(self.representation,BatchiFDD):
-            self.representation.discover(s,td_error)
+        #if isinstance(self.representation,BatchiFDD):
+        #    self.representation.discover(s,td_error)
 
         #Set eligibility traces to zero if episode finishes
         if terminal:

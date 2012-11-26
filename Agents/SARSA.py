@@ -14,7 +14,7 @@ class SARSA(OnlineAgent):
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)
-        phi                 = self.representation.phi_saFromphi_s(phi_s,a)
+        phi                 = self.representation.phi_sa_from_phi_s(phi_s,a)
         phi_prime           = self.representation.phi_sa(ns,na)
         
         #Set eligibility traces:
