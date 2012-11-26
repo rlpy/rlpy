@@ -15,7 +15,7 @@ def main(jobID=-1):
     PERFORMANCE_CHECKS  = 10
     LEARNING_STEPS      = 10000
     SHOW_ALL            = 0
-    SHOW_PERFORMANCE    = 0
+    SHOW_PERFORMANCE    = 1
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'
     JOB_ID              = 1 if jobID == -1 else jobID
@@ -23,8 +23,8 @@ def main(jobID=-1):
     DEBUG               = 0
     # Domain
     #----------------------
-    #MAZE                = '/Domains/PitMazeMaps/4x5.txt'
-    MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
+    MAZE                = '/Domains/PitMazeMaps/4x5.txt'
+    #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
     NOISE               = 0
     BLOCKS              = 6 # For BlocksWorld
     # Representation
@@ -42,8 +42,8 @@ def main(jobID=-1):
     LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
     
     #domain          = ChainMDP(10)
-    #domain          = PitMaze(MAZE, noise = NOISE)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
+    domain          = PitMaze(MAZE, noise = NOISE)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)
     
     #representation  = Tabular(domain)

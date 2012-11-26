@@ -220,5 +220,5 @@ if __name__ == '__main__':
     s = domain.statespace_limits[:,0]
     print"s=",s
     print"Active Initial=", rep.activeInitialFeatures(s)
-    print "Phi(s)=", rep.phi_nonTerminal(s).astype(uint8)
+    print"Phi(s)=", rep.phi_nonTerminal(s).astype(uint8)
     

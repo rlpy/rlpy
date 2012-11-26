@@ -13,10 +13,12 @@ SHOW_PERFORMANCE    = 1
 LOG_INTERVAL        = 1 
 RESULT_FILE         = 'result.txt'
 learn_step          = 10000
+epsilon             = .1
+Noise               = 0
 
-domain          = PitMaze('/Domains/PitMazeMaps/4by5.txt')
+domain          = PitMaze('/Domains/PitMazeMaps/4x5.txt',Noise)
 representation  = Tabular(domain)
-policy          = eGreedy(representation)
+policy          = eGreedy(representation,epsilon)
 agent           = SARSA(representation,policy,domain)
 experiment      = OnlineExperiment(agent,domain,max_steps = learn_step,show_all= SHOW_ALL, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
 

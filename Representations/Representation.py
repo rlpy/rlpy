@@ -7,8 +7,6 @@ class Representation(object):
     DEBUG           = 0
     theta           = None  #Linear Weights
     domain          = None  #Link to the domain object 
-    hashed_s        = None  #Always remember the s corresponding to the last state
-    hashed_phi      = None  #Always remember the phi corresponding to the last state
     features_num    = None  #Number of features
     discretization  = 0     #Number of bins used for discretization for each continuous dimension  
     bins_per_dim = None  #Number of possible states per dimension [1-by-dim]
@@ -37,22 +35,17 @@ class Representation(object):
     # Q: array of Q(s,a)
     # A: Corresponding array of action numbers
         A = self.domain.possibleActions(s)
-        return array([self.Q(s, a) for a in A]), A     
+        phi_s   = self.phi(s)
+        return array([self.Q_using_phi_s(phi_s,a) for a in A]), A     
+    def Q_using_phi_s(self,phi_s,a):
+        # This is a function to speed up the Q calculation if phi_s for state s is already known
+        return dot(self.phi_sa_from_phi_s(phi_s, a), self.theta)
     def Q(self,s,a):
         #Returns the state-action value
         if len(self.theta) > 0: 
             return dot(self.phi_sa(s,a),self.theta)
         else:
             return 0.0
-    def fastPhi(self,s):
-        #Returns the feature corresponding to the state s using the hash
-        # Check bounds
-        if self.hashed_s is not None and array_equal(s,self.hashed_s):
-            return self.hashed_phi
-        else:
-            self.hashed_s = s
-            self.hashed_phi = self.phi(s) 
-            return self.hashed_phi
     def phi(self,s):
         #Returns the phi(s)
         if self.domain.isTerminal(s):
@@ -61,7 +54,7 @@ class Representation(object):
             return self.phi_nonTerminal(s)
     def phi_sa(self,s,a):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
-        F_s = self.fastPhi(s)
+        F_s = self.phi(s)
         return self.phi_sa_from_phi_s(F_s,a)
     def phi_sa_from_phi_s(self,F_s,a):
         #Given phi_s make phi_sa by copying it into the proper location
@@ -72,7 +65,6 @@ class Representation(object):
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.
         self.theta      = addNewElementForAllActions(self.theta,self.domain.actions_num)
-        self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def hashState(self,s,):
         #returns a unique idea by calculating the enumerated number corresponding to a state
         # it first translate the state into a binState (bin number corresponding to each dimension)
