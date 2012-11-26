@@ -9,18 +9,17 @@ class OnlineAgent(Agent):
     eligibility_trace   = []            #In case lambda parameter in SARSA definition is used
     def __init__(self,representation,policy,domain):
         super(OnlineAgent,self).__init__(representation,policy,domain)
-    def generalUpdates(self,s,td_error,terminal):
+    def generalUpdates(self,phi_s,td_error,terminal):
         # Call all necessary functions such as iFDD update
         # This function is often called at the end of <child>.learn()
         
         #Discover features using online iFDD
         if isinstance(self.representation,iFDD):
-            self.representation.discover(s,td_error)
+            self.representation.discover(phi_s,td_error)
 
         #Discover features using batch iFDD
-        #if isinstance(self.representation,BatchiFDD):
-            #EDIT ME
-        #    self.representation.discover(s,td_error)
+        if isinstance(self.representation,BatchiFDD):
+            self.representation.discover(s,td_error)
 
         #Set eligibility traces to zero if episode finishes
         if terminal:

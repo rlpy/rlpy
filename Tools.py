@@ -61,6 +61,8 @@ def binNumber(s,bins,limits):
     # s = .001, limits = [-1,5], bins = 6 => 1
     # s = .4, limits = [-.5,.5], bins = 3 => 2
     width = limits[1]-limits[0]
+    if not (s <= limits[1] and s>=limits[0]):
+        print "WARNING:",s,"is out of limits of ", limits, ". Using he chopped value of s"
     return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
     return time()-start_time
@@ -364,7 +366,12 @@ def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4"):
                                 patchB=None,
                                 connectionstyle=connectionstyle), 
                 )
-
+def drawHist(data,bins=50,fig=101):
+    hist, bins = histogram(data,bins = bins)
+    width = 0.7*(bins[1]-bins[0])
+    center = (bins[:-1]+bins[1:])/2
+    pl.figure(fig)
+    pl.bar(center, hist, align = 'center', width = width)
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

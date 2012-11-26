@@ -2,5 +2,5 @@ from Tools import *
 from Representations import *
 from Domains import *
 
-A = array([1,3,3])
-print findElemArray1D(A,1)
+A=array([1,2,3,0])
+print binNumber(0,20,[-1.2,.5])

@@ -13,7 +13,8 @@ class SARSA(OnlineAgent):
     def learn(self,s,a,r,ns,na,terminal):
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
-        phi                 = self.representation.phi_sa(s,a)
+        phi_s               = self.representation.phi(s)
+        phi                 = self.representation.phi_saFromphi_s(phi_s,a)
         phi_prime           = self.representation.phi_sa(ns,na)
         
         #Set eligibility traces:
@@ -37,4 +38,4 @@ class SARSA(OnlineAgent):
         #use this if you want to divide by the number of active features 
         #nnz                 = count_nonzero(phi)    #Number of non-zero elements
         #theta               += alpha * td_error * phi / (1.*nnz)  
-        super(SARSA,self).generalUpdates(s,td_error,terminal)
+        super(SARSA,self).generalUpdates(phi_s,td_error,terminal)
