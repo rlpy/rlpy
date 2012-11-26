@@ -45,5 +45,3 @@ class SARSA(OnlineAgent):
         
         # Set eligibility Traces to zero if it is end of the episode
         if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
-
-        super(SARSA,self).generalUpdates(phi_s,td_error,terminal)
