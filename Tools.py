@@ -40,7 +40,7 @@ import networkx as nx
 # Todo:
 # Replace vstack and hstack with the trick mentioned here:
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
-
+# if undeo redo does not work in eclipse, you may have an uninfinished process. Kill all
 def prod(x):
     #Returns the multiplications of the elements of a set
     return reduce(mul,x)

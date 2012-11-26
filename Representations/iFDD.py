@@ -51,11 +51,13 @@ class iFDD(Representation):
     iFDD_features           = {}   # dictionary mapping initial feature sets to iFDD_feature 
     iFDD_potentials         = {}   # dictionary mapping initial feature sets to iFDD_potential
     featureIndex2feature    = {}   # dictionary mapping each feature index (ID) to its feature object
-    def __init__(self,domain,discovery_threshold, sparsify = True, discretization = 20):
+    debug                   = 0
+    def __init__(self,domain,discovery_threshold, sparsify = True, discretization = 20,debug = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
-        self.features_num = int(sum(self.bins_per_dim))
+        self.features_num           = int(sum(self.bins_per_dim))
+        self.debug                  = debug
         self.add_initialFeatures()
         super(iFDD,self).__init__(domain,discretization)
     def phi_nonTerminal(self,s): #refer to Algorithm 2 in [Geramifard et al. 2011 ICML]
@@ -71,28 +73,11 @@ class iFDD(Representation):
                 F_s[feature.index]  = 1
                 if self.sparsify:
                     activeIndecies   = activeIndecies - feature.f_set
-        return F_s 
+        return F_s     
     def discover(self,phi_s,td_error):            
         activeFeatures = phi_s.nonzero()[0] # Indecies of non-zero elements of vector phi_s
-        for pair in combinations(activeFeatures,2):
-            g,h         = pair
-            g_initials  = self.featureIndex2feature[g].f_set 
-            h_initials  = self.featureIndex2feature[h].f_set
-            f           = g_initials.union(h_initials)
-            feature     = self.iFDD_features.get(f)
-            if feature is None:
-                #Look it up in potentials
-                potential = self.iFDD_potentials.get(f)
-                if potential is None:
-                    # Generate a new potential and put it in the dictionary
-                    potential = iFDD_potential(f,td_error,g,h)
-                    self.iFDD_potentials[f] = potential
-                else:
-                    potential.relevance += td_error
-                    potential.count     += 1
-                # Check for discovery
-                if abs(potential.relevance/sqrt(potential.count)) > self.discovery_threshold:
-                    self.addFeature(potential)
+        for g_index,h_index in combinations(activeFeatures,2):
+            self.inspectPair(g_index,h_index,td_error)
     def addFeature(self,potential):
         # Add it to the list of features
         potential.index                     = self.features_num # Features_num is always one more than the max index (0-based)
@@ -103,6 +88,27 @@ class iFDD(Representation):
         self.updateWeight(feature.p1,feature.p2)
         # Update the index to feature dictionary
         self.featureIndex2feature[feature.index] = feature
+        if self.debug: self.show()
+    def inspectPair(self,g_index,h_index,td_error):
+        # Inspect feature f = g union h where g_index and h_index are the indices of features g and h        
+        # If the relevance is > Threshold add it to the list of features
+        g  = self.featureIndex2feature[g_index].f_set 
+        h  = self.featureIndex2feature[h_index].f_set
+        f           = g.union(h)
+        feature     = self.iFDD_features.get(f)
+        if feature is None:
+            #Look it up in potentials
+            potential = self.iFDD_potentials.get(f)
+            if potential is None:
+                # Generate a new potential and put it in the dictionary
+                potential = iFDD_potential(f,td_error,g_index,h_index)
+                self.iFDD_potentials[f] = potential
+            else:
+                potential.relevance += td_error
+                potential.count     += 1
+            # Check for discovery
+            if abs(potential.relevance/sqrt(potential.count)) > self.discovery_threshold:
+                self.addFeature(potential)
     def show(self):
         print "Features:"
         print join(["-"]*30)
@@ -135,21 +141,21 @@ class iFDD(Representation):
             #shout(self,self.iFDD_features[ImmutableSet([i])].index)
             self.iFDD_features[ImmutableSet([i])] = feature
             self.featureIndex2feature[feature.index] = feature
-    def batchDiscover(self,td_error, phi, maxDiscovery = 1):
+    def batchDiscover(self,td_errors, phi, maxDiscovery = 1):
         # Discovers features using iFDD in batch setting.
         # TD_Error: p-by-1 (How much error observed for each sample)
         # phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
         
-        SHOW_HISTOGRAM  = 1      #Shows the histogram of relevances 
+        SHOW_HISTOGRAM  = 0      #Shows the histogram of relevances 
         max_excitement  = 0
         n               = self.features_num #number of features
-        p               = len(td_error)     #Number of samples
+        p               = len(td_errors)     #Number of samples
         counts          = zeros((n,n))
         relevances      = zeros((n,n))
         
         for i in range(p):
-            phiphiT     = outer(phi[:,i],phi[:,i])
-            relevances  += phiphiT*td_error(i)
+            phiphiT     = outer(phi[i,:],phi[i,:])
+            relevances  += phiphiT*td_errors[i]
             counts      += phiphiT
         
         #Remove Diagonal and upper part of the relevances as they are useless
@@ -168,37 +174,22 @@ class iFDD(Representation):
         (F1, F2)            = relevances.nonzero() # F1 and F2 are the parents of the potentials
         relevances          = relevances[F1,F2]
         #Sort based on relevances
-        sortedIndecies  = argsort(relevances).reverse() # We want high to low hence the reverse
-        max_relevance   = relevances(sortedIndecies[0]);
+        sortedIndecies  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
+        max_relevance   = relevances[sortedIndecies[0]];
 
         #Add top <maxDiscovery> features
         for j in range(min(maxDiscovery,len(relevances))):
             max_index   = sortedIndecies[j]
             f1          = F1[max_index]
             f2          = F2[max_index]
-            relevance   = relevances[max_index];
-            fprintf('Added Feature [%d,%d]\n',F1,F2);
-            # find initial sets for f1 and f2
-            f1_initial = self.featureID2feature[f1].f_set
-            f2_initial = self.featureID2feature[f2].f_set
-            
-#            % Different actions may translate into the same features! You
-#            % should add more code if you want excactly maxDiscovery number
-#            % of features added on each iteration           
-#        else
-#            break;
-#        end
-#        
-#    end
-#    
-#    ending_feature_size = length(agent.theta);
-#    expanded_rep = (ending_feature_size ~= starting_feature_size);
-#end   
+            relevance   = relevances[max_index]
+            print 'Added Feature [%d,%d]\n' % (f1,f2)
+            self.inspectPair(f1, f2, inf)
 
 if __name__ == '__main__':
     discovery_threshold = 1
     domain      = MountainCar()
-    rep         = iFDD(domain,discovery_threshold)
+    rep         = iFDD(domain,discovery_threshold,debug=1)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     rep.show()
     print 'discover 0,20'
@@ -206,19 +197,14 @@ if __name__ == '__main__':
     phi_s[0] = 1
     phi_s[20] = 1
     rep.discover(phi_s, discovery_threshold+1)
-    rep.show()
-    print rep.theta
     # Change the weight for new feature 40
     rep.theta[40] = -100
     print 'discover 0,1,20'
-    phi_s = zeros(rep.features_num)
-    phi_s[1] = 1
-    phi_s[40] = 1
-    rep.discover(phi_s, discovery_threshold+1)
+    rep.inspectPair(1,40, discovery_threshold+1)
     rep.show()
     print rep.theta
     s = domain.statespace_limits[:,0]
     print"s=",s
     print"Active Initial=", rep.activeInitialFeatures(s)
     print"Phi(s)=", rep.phi_nonTerminal(s).astype(uint8)
-    
+  

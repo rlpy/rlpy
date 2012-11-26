@@ -38,4 +38,12 @@ class SARSA(OnlineAgent):
         #use this if you want to divide by the number of active features 
         #nnz                 = count_nonzero(phi)    #Number of non-zero elements
         #theta               += alpha * td_error * phi / (1.*nnz)  
+        
+        #Discover features using online iFDD
+        if isinstance(self.representation,iFDD):
+            self.representation.discover(phi_s,td_error)
+        
+        # Set eligibility Traces to zero if it is end of the episode
+        if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
+
         super(SARSA,self).generalUpdates(phi_s,td_error,terminal)
