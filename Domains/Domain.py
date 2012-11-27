@@ -28,6 +28,7 @@ class Domain(object):
             self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
         else:
             self.states_num = inf
+    def printInfo(self):
         print join(["-"]*30)
         print "Domain:\t\t", className(self)
         print "Dimensions:\t", self.state_space_dims

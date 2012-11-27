@@ -33,6 +33,10 @@ class BlocksWorld(Domain):
         self.real_states_num    = sum([nchoosek(blocks,i)*factorial(blocks-i)*pow(i,blocks-i) for i in range(blocks)]) #This is the true size of the state space refer to [Geramifard11_ICML]
         self.GOAL_STATE         = hstack(([0],arange(0,blocks-1))) # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
         super(BlocksWorld,self).__init__()
+        super(BlocksWorld,self).printInfo()
+        print "noise\t\t", self.noise
+        print "blocks\t\t", self.blocks
+
     def showDomain(self,s,a =0):
         #Draw the environment
         world           = zeros((self.blocks,self.blocks),'uint8')

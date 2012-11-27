@@ -25,12 +25,12 @@ def main(jobID=-1):
     #----------------------
     MAZE                = '/Domains/PitMazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
-    NOISE               = .4
-    BLOCKS              = 6 # For BlocksWorld
+    NOISE               = 0
+    BLOCKS              = 5 # For BlocksWorld
     # Representation
     #----------------------
     RBFS                = 9
-    Discovery_Threshold = .01
+    Discovery_Threshold = .05
     # Policy
     #----------------------
     EPSILON             = .1 # EGreedy
@@ -42,8 +42,8 @@ def main(jobID=-1):
     LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
     
     #domain          = ChainMDP(10)
-    domain          = PitMaze(MAZE, noise = NOISE)
-    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
+    #domain          = PitMaze(MAZE, noise = NOISE)
+    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)
     
     #representation  = Tabular(domain)
