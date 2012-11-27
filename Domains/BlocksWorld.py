@@ -19,7 +19,7 @@ class BlocksWorld(Domain):
     GOAL_REWARD             = 1
     gamma                   = 1
     blocks                  = 0    # Total number of blocks
-    towersize               = 0    # Goal tower size   
+    towerSize               = 0    # Goal tower size   
     episodeCap              = 1000
     domain_fig              = None  #Used to plot the domain
     def __init__(self, blocks = 6, towerSize = 6, noise = .3):

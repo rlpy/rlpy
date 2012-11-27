@@ -59,5 +59,5 @@ class Experiment(object):
     def printAll(self):
         printClass(self)
     def save(self,filename):
-        savetxt(filename,self.result)
+        savetxt(filename,self.result, fmt='%0.4f', delimiter='\t')
         print filename,'<== Saved Results!'
