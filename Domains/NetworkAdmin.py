@@ -1,4 +1,5 @@
 import sys, os
+
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
@@ -9,6 +10,14 @@ from Domain import *
 ########################################################
 # Download NetworkX package for visualization.
 # Ubuntu: sudo apt-get install python-networkx
+#
+# Network Administrator with n computers, at most 1 reboot
+# action allowed per timestep.
+# Penalty -0.75 for taking a reboot action.
+# State is the vector of binary computer statuses:
+# RUNNING = 1 for working computers, BROKEN = 0 otherwise.
+# Example: [1 1 0 1] -> computers 0,1,3 are RUNNING,
+# computer 2 is BROKEN.
 ########################################################
 
 
@@ -47,6 +56,7 @@ class NetworkAdmin(Domain):
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
         super(NetworkAdmin,self).__init__()
+    
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
@@ -84,7 +94,7 @@ class NetworkAdmin(Domain):
     def showLearning(self,representation):
         pass
     def step(self,s,a):
-        ns = s # make copy of state so as not to affect original mid-step
+        ns = s[:] # make copy of state so as not to affect original mid-step
         totalRebootReward = 0
         for computer_id, compstatus in enumerate(s):
             if(a == computer_id): #Reboot action on this computer
