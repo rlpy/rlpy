@@ -19,7 +19,7 @@ from time import *
 from hashlib import sha1
 import datetime, csv
 from string import *
-from sets import ImmutableSet
+from sets import ImmutableSet,Set
 from itertools  import *
 from copy import deepcopy
 import networkx as nx
@@ -372,6 +372,11 @@ def drawHist(data,bins=50,fig=101):
     center = (bins[:-1]+bins[1:])/2
     pl.figure(fig)
     pl.bar(center, hist, align = 'center', width = width)
+def nonZeroIndex(A):
+    # Given a 1D array it returns the list of non-zero index of the Array
+    # [0,0,0,1] => [4]
+    return A.nonzero()[0]
+    
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

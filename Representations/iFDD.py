@@ -66,14 +66,12 @@ class iFDD(Representation):
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
-        activeIndecies          = self.activeInitialFeatures(s)
+        activeIndecies          = Set(self.activeInitialFeatures(s))
         if self.useCache:
-            key                     = ImmutableSet(activeIndecies)
-            finalActiveIndecies     = self.cache.get(key)
+            finalActiveIndecies     = self.cache.get(ImmutableSet(activeIndecies))
             if finalActiveIndecies is None:        
                 # run regular and update the cache
                 finalActiveIndecies     = self.findFinalActiveFeatures(activeIndecies)
-                self.cache[key]         = finalActiveIndecies
         else:
             finalActiveIndecies         = self.findFinalActiveFeatures(activeIndecies)
         F_s[finalActiveIndecies] = 1
@@ -81,14 +79,21 @@ class iFDD(Representation):
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
         finalActiveFeatures = []
-        for candidate in powerset(intialActiveFeatures,ascending=0):
-            if len(intialActiveFeatures) == 0:
-                break
-            feature = self.iFDD_features.get(ImmutableSet(candidate))
-            if feature != None:
-                finalActiveFeatures.append(feature.index)
-                if self.sparsify:
-                    intialActiveFeatures   = intialActiveFeatures - feature.f_set
+        initialSet          = Set(intialActiveFeatures)
+        for candidate in powerset(initialSet,ascending=0):
+            if len(initialSet) == 0:
+                break # No more initial features to be mapped to extended ones
+            
+            if initialSet.issuperset(Set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
+                feature = self.iFDD_features.get(ImmutableSet(candidate))
+                if feature != None:
+                    finalActiveFeatures.append(feature.index)
+                    if self.sparsify:
+                        #print "Sets:", initialSet, feature.f_set 
+                        initialSet   = initialSet - feature.f_set
+                        #print "Remaining Set:", initialSet 
+        if self.useCache:
+            self.cache[ImmutableSet(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures     
     def discover(self,phi_s,td_error):            
         activeFeatures = phi_s.nonzero()[0] # Indecies of non-zero elements of vector phi_s
@@ -115,25 +120,9 @@ class iFDD(Representation):
             if abs(potential.relevance/sqrt(potential.count)) > self.discovery_threshold:
                 self.addFeature(potential)
     def show(self):
-        print "Features:"
-        print join(["-"]*30)
-        print " index\t| f_set\t| p1\t| p2\t | Weights"
-        print join(["-"]*30)
-        for _,feature in self.iFDD_features.iteritems():
-            print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
-        print "Potentials:"
-        print join(["-"]*30)
-        print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
-        print join(["-"]*30)
-        for _,potential in self.iFDD_potentials.iteritems():
-            print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index,str(list(potential.f_set)),potential.relevance,potential.count,potential.p1,potential.p2)
-        if self.useCache: 
-            print "Cache:"
-            print join(["-"]*30)
-            print " initial\t| Final"
-            print join(["-"]*30)
-            for initial,active in self.cache.iteritems():
-                print " %s\t| %s" % (str(list(initial)), active)
+        self.showFeatures()
+        self.showPotentials()
+        self.showCache()
     def saveRepStat(self):
         pass
     def updateWeight(self,p1_index,p2_index):
@@ -166,7 +155,7 @@ class iFDD(Representation):
         
         #If you use cache, you should invalidate entries that their initial set contains the set corresponding to the new feature 
         if self.useCache:
-            for initialActiveFeatures,_ in self.cache:
+            for initialActiveFeatures in self.cache.keys():
                 if initialActiveFeatures.issuperset(feature.f_set):
                     self.cache.pop(initialActiveFeatures)
         
@@ -215,29 +204,62 @@ class iFDD(Representation):
             if relevance > minRelevance:
                 print 'Added Feature [%d,%d]' % (f1,f2)
                 self.inspectPair(f1, f2, inf)
+    def showFeatures(self):
+        print "Features:"
+        print join(["-"]*30)
+        print " index\t| f_set\t| p1\t| p2\t | Weights"
+        print join(["-"]*30)
+        for _,feature in self.iFDD_features.iteritems():
+            print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
+    def showPotentials(self):
+        print "Potentials:"
+        print join(["-"]*30)
+        print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
+        print join(["-"]*30)
+        for _,potential in self.iFDD_potentials.iteritems():
+            print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index,str(list(potential.f_set)),potential.relevance,potential.count,potential.p1,potential.p2)
+    def showCache(self):
+        if self.useCache: 
+            print "Cache:"
+            print join(["-"]*30)
+            print " initial\t| Final"
+            print join(["-"]*30)
+            for initial,active in self.cache.iteritems():
+                print " %s\t| %s" % (str(list(initial)), active)
 
 if __name__ == '__main__':
     discovery_threshold = 1
     domain      = MountainCar()
-    rep         = iFDD(domain,discovery_threshold,debug=1,useCache=1)
+    rep         = iFDD(domain,discovery_threshold,debug=0,useCache=1)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
+    print 'Initial [0,1,20] => ',
     print rep.findFinalActiveFeatures([0,1,20])
-    rep.show()
+    print 'Initial [0,20] => ',
+    print rep.findFinalActiveFeatures([0,20])
+    rep.showCache()
     print 'discover 0,20'
     phi_s = zeros(rep.features_num)
     phi_s[0] = 1
     phi_s[20] = 1
     rep.discover(phi_s, discovery_threshold+1)
+    rep.showFeatures()
+    rep.showCache()
+    print 'Initial [0,20] => ',
+    print rep.findFinalActiveFeatures([0,20])
+    print 'Initial [0,1,20] => ',
     print rep.findFinalActiveFeatures([0,1,20])
+    rep.showCache()
     # Change the weight for new feature 40
     rep.theta[40] = -100
+    print 'Initial [0,20] => ',
+    print rep.findFinalActiveFeatures([0,20])
     print 'discover 0,1,20'
     rep.inspectPair(1,40, discovery_threshold+1)
-    rep.show()
-    print rep.theta
-    s = domain.statespace_limits[:,0]
+    rep.showFeatures()
+    rep.showCache()
+    print 'Initial [0,1,20] => ',
     print rep.findFinalActiveFeatures([0,1,20])
-    rep.show()
+    rep.showCache()
     
     
     
