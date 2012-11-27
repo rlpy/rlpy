@@ -63,6 +63,9 @@ class iFDD(Representation):
         self.useCache               = useCache
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,discretization)
+        print "Threshold:\t\t", self.discovery_threshold
+        print "Sparsify:\t\t", self.sparsify
+        print "Cached:\t\t\t", self.useCache
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')

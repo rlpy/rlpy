@@ -56,7 +56,7 @@ class NetworkAdmin(Domain):
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
         super(NetworkAdmin,self).__init__()
-    
+        print "Nodes\t\t", self.NEIGHBORS
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()

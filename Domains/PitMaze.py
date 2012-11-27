@@ -50,6 +50,8 @@ class PitMaze(Domain):
         else:
             self.episodeCap         = episodeCap
         super(PitMaze,self).__init__()
+        print "Dims:\t\t", self.ROWS, "x", self.COLS
+
     def showDomain(self,s,a = 0):
        #Draw the environment
        if self.domain_fig is None:

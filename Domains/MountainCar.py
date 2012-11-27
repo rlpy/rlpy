@@ -32,6 +32,7 @@ class MountainCar(Domain):
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise
         super(MountainCar,self).__init__()
+        super(MountainCar,self).printInfo()
     def step(self, s, a):
         position, velocity = s
         noise = 2 * self.accelerationFactor * self.noise * (random.rand() - .5) 

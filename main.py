@@ -31,6 +31,7 @@ def main(jobID=-1):
     #----------------------
     RBFS                = 9
     Discovery_Threshold = .05
+    iFDD_CACHED         = 1
     # Policy
     #----------------------
     EPSILON             = .1 # EGreedy
@@ -41,14 +42,14 @@ def main(jobID=-1):
     LSPI_iterations     = 5
     LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
     
-    #domain          = ChainMDP(10)
+    domain          = ChainMDP(10)
     #domain          = PitMaze(MAZE, noise = NOISE)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)
     
-    #representation  = Tabular(domain)
+    representation  = Tabular(domain)
     #representation  = IncrementalTabular(domain)
-    representation  = iFDD(domain,Discovery_Threshold)
+    #representation  = iFDD(domain,Discovery_Threshold,useCache=iFDD_CACHED)
     #representation  = IndependentDiscretization(domain)
     #representation  = RBF(domain, rbfs = RBFS)
     

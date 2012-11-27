@@ -11,12 +11,13 @@ class Agent(object):
         self.representation = representation
         self.policy = policy
         self.domain = domain
-        print join(["-"]*30)
-        print "Agent:\t", className(self)
-        print "Policy:\t", className(self.policy)
     def learn(self,s,a,r,ns,na,terminal):
         abstract
     def printAll(self):
         printClass(self)
+    def printInfo(self):
+        print join(["-"]*30)
+        print "Agent:\t", className(self)
+        print "Policy:\t", className(self.policy)
 
         

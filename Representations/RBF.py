@@ -19,6 +19,7 @@ class RBF(Representation):
 #        pl.show()
 #        raw_input()
         super(RBF,self).__init__(domain)
+        print "RBFs:\t\t", self.rbfs
     def phi_nonTerminal(self,s):
         F_s         = ones(self.features_num)
         for i in range(0,self.features_num-1):

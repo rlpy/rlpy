@@ -136,4 +136,3 @@ class Representation(object):
         index       = bs+shifts
         return      index.astype('uint32')
     
-    

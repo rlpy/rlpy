@@ -10,6 +10,9 @@ class SARSA(OnlineAgent):
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
         super(SARSA,self).__init__(representation,policy,domain)
+        super(SARSA,self).printInfo()
+        print "Alpha_0:\t", initial_alpha
+        if lambda_: print "lambda:\t", lambda_
     def learn(self,s,a,r,ns,na,terminal):
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
