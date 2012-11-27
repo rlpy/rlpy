@@ -8,7 +8,7 @@ from Representations import *
 from Policies import *
 from Experiments import *
 
-def main(jobID=-1):
+def main(jobID=-1, SHOW_FINAL_PLOT=-1):
 
     # Etc
     #----------------------
@@ -19,7 +19,7 @@ def main(jobID=-1):
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'
     JOB_ID              = 1 if jobID == -1 else jobID
-    SHOW_FINAL_PLOT     = 1
+    SHOW_FINAL_PLOT     = 1 if SHOW_FINAL_PLOT == -1 else SHOW_FINAL_PLOT 
     DEBUG               = 0
     # Domain
     #----------------------
@@ -42,14 +42,14 @@ def main(jobID=-1):
     LSPI_iterations     = 5
     LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
     
-    domain          = ChainMDP(10)
+    #domain          = ChainMDP(10)
     #domain          = PitMaze(MAZE, noise = NOISE)
-    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
+    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)
     
-    representation  = Tabular(domain)
+    #representation  = Tabular(domain)
     #representation  = IncrementalTabular(domain)
-    #representation  = iFDD(domain,Discovery_Threshold,useCache=iFDD_CACHED)
+    representation  = iFDD(domain,Discovery_Threshold,useCache=iFDD_CACHED)
     #representation  = IndependentDiscretization(domain)
     #representation  = RBF(domain, rbfs = RBFS)
     
