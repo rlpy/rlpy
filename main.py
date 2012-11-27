@@ -26,7 +26,7 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     MAZE                = '/Domains/PitMazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
     NOISE               = .3
-    BLOCKS              = 6 # For BlocksWorld
+    BLOCKS              = 7 # For BlocksWorld
     # Representation
     #----------------------
     RBFS                = 9
