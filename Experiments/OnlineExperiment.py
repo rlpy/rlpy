@@ -30,8 +30,8 @@ class OnlineExperiment (Experiment):
     # Run the online experiment and collect statistics
         self.result         = zeros((self.STATS_NUM,self.performanceChecks))
         terminal            = True
-        total_steps         = 1
-        eps_steps           = 1
+        total_steps         = 0
+        eps_steps           = 0
         performance_tick    = 0
         eps_return          = 0
         start_log_time      = start_time = time()
@@ -56,6 +56,17 @@ class OnlineExperiment (Experiment):
             if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(ns)
             self.agent.learn(s,a,r,ns,na,terminal)            
                         
+            total_steps += 1
+            eps_steps   += 1
+            eps_return  += r
+            s,a          = ns,na
+
+            if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
+                start_log_time  = time()
+                elapsedTime     = deltaT(start_time) 
+                print '%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num)
+
+
             #Check Performance
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
                 performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
@@ -70,15 +81,7 @@ class OnlineExperiment (Experiment):
                 start_log_time      = time()
                 performance_tick    += 1
 
-            total_steps += 1
-            eps_steps   += 1
-            eps_return  += r
-            s,a          = ns,na
             
-            if terminal and deltaT(start_log_time) > self.LOG_INTERVAL:
-                start_log_time  = time()
-                elapsedTime     = deltaT(start_time) 
-                print '%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num)
 #shout(self)
             #print total_steps,":",s,a,ns
             #raw_input()

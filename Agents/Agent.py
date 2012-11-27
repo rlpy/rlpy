@@ -17,7 +17,7 @@ class Agent(object):
         printClass(self)
     def printInfo(self):
         print join(["-"]*30)
-        print "Agent:\t", className(self)
-        print "Policy:\t", className(self.policy)
+        print "Agent:\t\t", className(self)
+        print "Policy:\t\t", className(self.policy)
 
         

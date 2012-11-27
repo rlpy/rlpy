@@ -2,7 +2,7 @@ ALBORZ ACTION-
 
 Blocksworld-
 There's a minor typo; towersize is defined at the top of the class, but self.towerSize is referenced in all other places.
-
+Fixed, thanks.
 
 
 
