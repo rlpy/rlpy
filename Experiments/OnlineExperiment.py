@@ -26,6 +26,9 @@ class OnlineExperiment (Experiment):
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
         super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance)
+        print "Max Steps: \t\t", max_steps
+        print "Performance Checks:\t", performanceChecks
+        
     def run(self):
     # Run the online experiment and collect statistics
         self.result         = zeros((self.STATS_NUM,self.performanceChecks))

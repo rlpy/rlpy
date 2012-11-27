@@ -12,8 +12,8 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 100000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 1000
     SHOW_ALL            = 0
     SHOW_PERFORMANCE    = 0
     LOG_INTERVAL        = 1 
@@ -21,22 +21,18 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     JOB_ID              = 1 if jobID == -1 else jobID
     SHOW_FINAL_PLOT     = 1 if SHOW_FINAL_PLOT == -1 else SHOW_FINAL_PLOT 
     DEBUG               = 0
-    # Domain
-    #----------------------
+    # Domain ----------------------
     MAZE                = '/Domains/PitMazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
     NOISE               = .3
-    BLOCKS              = 7 # For BlocksWorld
-    # Representation
-    #----------------------
+    BLOCKS              = 6 # For BlocksWorld
+    # Representation ----------------------
     RBFS                = 9
     Discovery_Threshold = .05
     iFDD_CACHED         = 1
-    # Policy
-    #----------------------
+    # Policy ----------------------
     EPSILON             = .1 # EGreedy
-    #Agent
-    #----------------------
+    #Agent ----------------------
     initial_alpha       = .1
     LAMBDA              = 0#.95
     LSPI_iterations     = 5
@@ -56,8 +52,8 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     policy          = eGreedy(representation, epsilon = EPSILON)
     #policy          = UniformRandom(representation)
     
-    #agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
-    agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
+    agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+    #agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
     
     experiment      = OnlineExperiment(agent,domain,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
     
