@@ -16,7 +16,7 @@ learn_step          = 10000
 epsilon             = .1
 Noise               = 0
 
-domain          = PitMaze('/Domains/PitMazeMaps/4x5.txt',Noise)
+domain          = PitMaze('/Domains/PitmazeMaps/4x5.txt',Noise)
 representation  = Tabular(domain)
 policy          = eGreedy(representation,epsilon)
 agent           = SARSA(representation,policy,domain)
