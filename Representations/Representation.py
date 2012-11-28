@@ -39,7 +39,16 @@ class Representation(object):
         return array([self.Q_using_phi_s(phi_s,a) for a in A]), A     
     def Q_using_phi_s(self,phi_s,a):
         # This is a function to speed up the Q calculation if phi_s for state s is already known
-        return dot(self.phi_sa_from_phi_s(phi_s, a), self.theta)
+        #return self.phi_sa_from_phi_s(phi_s, a)*self.theta
+        nnz_ind = phi_s.nonzero()[0]
+        # shift index by action number
+        shifted_nnz_ind = nnz_ind + a*self.features_num
+        if phi_s.dtype == bool:
+            #Just sum the corresponding indexes of theta
+            return sum(self.theta[shifted_nnz_ind])
+        else:
+            # Multiply by feature values since they are not binary
+            return sum(self.theta[shifted_nnz_ind]*phi_s[nnz_ind,0])
     def Q(self,s,a):
         #Returns the state-action value
         if len(self.theta) > 0: 
@@ -49,7 +58,7 @@ class Representation(object):
     def phi(self,s):
         #Returns the phi(s)
         if self.domain.isTerminal(s):
-            return zeros(self.features_num,'bool')
+            return sp_matrix(self.features_num,dtype='bool')
         else:
             return self.phi_nonTerminal(s)
     def phi_sa(self,s,a):
@@ -57,14 +66,15 @@ class Representation(object):
         F_s = self.phi(s)
         return self.phi_sa_from_phi_s(F_s,a)
     def phi_sa_from_phi_s(self,F_s,a):
-        #Given phi_s make phi_sa by copying it into the proper location
-        F_sa        = zeros(self.features_num*self.domain.actions_num)  
-        ind_a       = range(a*self.features_num,(a+1)*self.features_num)
-        F_sa[ind_a] = F_s
+        # Given phi_s make phi_sa by copying it into the proper location
+        F_sa                = sp_matrix(self.features_num*self.domain.actions_num, dtype=F_s.dtype)  
+        ind                 = F_s.nonzero()[0]
+        shifted_ind         = ind + a*self.features_num    
+        F_sa[shifted_ind,0] = F_s.values() # Copy only non zero elements of F_s into correponding locations in F_sa
         # You can also use kron to generate F_sa check which on is faster
-        # A = zeros(self.domain.actions_num)
-        # A[a] = 1
-        # F_sa = kron(F_s,A)
+        #A       = sp_matrix(self.domain.actions_num)
+        #A[a,0]  = 1
+        #F_sa = kron(F_s,A)
         return F_sa        
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.

@@ -34,11 +34,11 @@ class LSPI(OnlineAgent):
             self.samples_count  = 0
             # Calculate the A and b matrixes in LSTD
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
-            A               = zeros((phi_sa_size,phi_sa_size))
-            b               = zeros(phi_sa_size)
-            all_phi_s       = zeros((self.sample_window,self.representation.features_num)) #phi_s will be saved for batch iFDD
-            all_phi_s_a     = zeros((self.sample_window,phi_sa_size)) #phi_sa will be fixed during iterations
-            all_phi_ns      = zeros((self.sample_window,self.representation.features_num)) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
+            A               = sp_matrix(phi_sa_size,phi_sa_size)
+            b               = sp_matrix(phi_sa_size)
+            all_phi_s       = sp_matrix(self.sample_window,self.representation.features_num,'bool') #phi_s will be saved for batch iFDD
+            all_phi_s_a     = sp_matrix(self.sample_window,phi_sa_size,'bool') #phi_sa will be fixed during iterations
+            all_phi_ns      = sp_matrix(self.sample_window,self.representation.features_num,'bool') #phi_ns_na will change according to na so we only cache the phi_na which remains the same
             td_errors       = zeros(self.sample_window) # holds the TD_errors for all samples
             #print "Making A,b"
             gamma               = self.representation.domain.gamma
@@ -56,8 +56,8 @@ class LSPI(OnlineAgent):
                 all_phi_s_a[i,:]    = phi_s_a
                 all_phi_ns[i,:]     = phi_ns
                 d                   = phi_s_a-gamma*phi_ns_na
-                A                   += outer(phi_s_a,d) #this is because phi_s_a is 1-by-n instead of n-by-1
-                b                   += r*phi_s_a
+                A                   = A + phi_s_a*d #this is because phi_s_a is 1-by-n instead of n-by-1
+                b                   = b + r*phi_s_a
 
             #Calculate theta
             #print "inverting"
@@ -67,7 +67,7 @@ class LSPI(OnlineAgent):
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
-                A = zeros((phi_sa_size,phi_sa_size))
+                A = sp_matrix(phi_sa_size,phi_sa_size)
                 for i in range(self.sample_window):
                     phi_s_a         = all_phi_s_a[i,:]
                     phi_ns          = all_phi_ns[i,:]

@@ -2,5 +2,15 @@ from Tools import *
 from Representations import *
 from Domains import *
 
-A = array([0,0,1])
-print A.nonzero()[0]
+#D = ChainMDP(5)
+#R = Tabular(D)
+#phi = R.phi(1)
+#print R.phi_sa_from_phi_s(phi,1)
+
+S       = sp_matrix(4)
+S[1:3,0] = 1
+A   = zeros(4)
+ind = S.nonzero()[0]
+print type(S)
+print ind
+print S[ind,0]

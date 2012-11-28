@@ -8,8 +8,8 @@ class Tabular(Representation):
         self.features_num = int(prod(self.bins_per_dim))
         super(Tabular,self).__init__(domain,discretization)
     def phi_nonTerminal(self,s):
-        id      = self.hashState(s)
-        F_s     = zeros(self.agg_states_num,'bool')
-        F_s[id] = 1
+        id          = self.hashState(s)
+        F_s         = sp_matrix(self.agg_states_num,dtype='bool')
+        F_s[id,0]   = 1
         return F_s
 

@@ -14,7 +14,8 @@ import matplotlib.cm as cm
 from scipy import stats
 from scipy import misc
 from scipy import linalg
-from scipy.sparse import linalg as slinalg
+#from scipy.sparse import linalg as slinalg
+from scipy.sparse import *
 from time import *
 from hashlib import sha1
 import datetime, csv
@@ -338,7 +339,10 @@ def addNewElementForAllActions(x,a,newElem = None):
         return x
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
-    x,res,rank_A,singular_values = linalg.lstsq(A,b)
+    if issparse(A):
+        x,res,rank_A,singular_values = slinalg.spsolve(A,b)
+    else:
+        x,res,rank_A,singular_values = linalg.lstsq(A,b)
     return x
 def rows(A):
     # return the rows of matrix A
@@ -376,7 +380,47 @@ def nonZeroIndex(A):
     # Given a 1D array it returns the list of non-zero index of the Array
     # [0,0,0,1] => [4]
     return A.nonzero()[0]
+def sp_matrix(m,n = 1, dtype = 'float'):
+    # returns a sparse matrix with m rows and n columns, with the dtype
+    # We use dok_matrix for sparse matrixies
+    return dok_matrix((m,n),dtype=dtype)
+def sp_dot_array(sp_m, A):
+    #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
+    assert sp_m.shape[0] == len(A)
+    ind = sp_m.nonzero()[0]
+    if len(ind) == 0:
+        return 0
+    if sp_m.dtype == bool:
+        #Just sum the corresponding indexes of theta
+        return sum(A[ind])
+    else:
+        # Multiply by feature values since they are not binary
+        print 'A,sp_m', A, sp_m
+        return sum(A[ind]*sp_m[ind,0].toarray())
+def sp_dot_sp(sp_1, sp_2):
+    #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
+    assert sp_1.shape[0] == sp_2.shape[0] and sp_1.shape[1] == 1 and sp_2.shape[1] == 1 
+    ind_1 = sp_1.nonzero()[0]
+    ind_2 = sp_2.nonzero()[0]
+    if len(ind_1)*len(ind_2) == 0:
+        return 0
     
+    ind = intersect1d(ind_1,ind_2)
+    # See if they are boolean
+    if sp_1.dtype == bool and sp_2.dtype == bool:
+        return len(ind)
+    sp_bool = None
+    if sp_1.dtype == bool:
+        sp_bool = sp_1
+        sp      = sp_2
+    if sp_2.dtype == bool:
+        sp_bool = sp_2
+        sp      = sp_1
+    if sp_bool is None:
+        # Multiply by feature values since they are not binary
+        return sum((sp_1[ind,0]*sp_2[ind,0]).toarray())
+    else:
+        return sum(sp[ind,0].toarray())
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
