@@ -19,9 +19,8 @@
 """Generate a dot graph from the output of several profilers."""
 
 __author__ = "Jose Fonseca"
-
 __version__ = "1.0"
-
+agf_TOTAL_TIME = 0
 
 import sys
 import math
@@ -1114,7 +1113,6 @@ class GprofParser(Parser):
         profile.call_ratios(CALLS)
         profile.integrate(TOTAL_TIME, TIME)
         profile.ratio(TOTAL_TIME_RATIO, TOTAL_TIME)
-
         return profile
 
 
@@ -2426,6 +2424,8 @@ class PstatsParser:
     def parse(self):
         self.profile[TIME] = 0.0
         self.profile[TOTAL_TIME] = self.stats.total_tt
+        global agf_TOTAL_TIME
+        agf_TOTAL_TIME = self.stats.total_tt
         for fn, (cc, nc, tt, ct, callers) in self.stats.stats.iteritems():
             callee = self.get_function(fn)
             callee.called = nc
@@ -2461,7 +2461,6 @@ class PstatsParser:
         self.profile.validate()
         self.profile.ratio(TIME_RATIO, TIME)
         self.profile.ratio(TOTAL_TIME_RATIO, TOTAL_TIME)
-
         return self.profile
 
 
@@ -2649,7 +2648,14 @@ class DotWriter:
         self.attr('graph', fontname=fontname, ranksep=0.25, nodesep=0.125)
         self.attr('node', fontname=fontname, shape="box", style="filled", fontcolor="white", width=0, height=0)
         self.attr('edge', fontname=fontname)
-
+        #By Alborz Geramifard - To create a Node showing the total time in seocnds:
+        TOTAL_TIME_STR = "%0.2f" % (agf_TOTAL_TIME)
+        self.node(0, 
+                label = 'TOTAL TIME\n'+TOTAL_TIME_STR + " (s)", 
+                color = 'Black', 
+                fontcolor = 'white', 
+                fontsize = "%.2f" % theme.node_fontsize(0.0),
+            )
         for function in profile.functions.itervalues():
             labels = []
             if function.process is not None:

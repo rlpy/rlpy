@@ -4,9 +4,9 @@ import cProfile
 import pstats
 
 
-Output = 'SARSA-Chain10-10K-iTabular-2'
+Output = 'SARSA-Chain10-10K-iTabular'
 print 'Profiling'
-cProfile.run('main(1,0)', 'Profiling/profile.dat')
+#                          cProfile.run('main(1,0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')
 p.sort_stats('time').print_stats(5)
 
