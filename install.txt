@@ -23,7 +23,9 @@ http://networkx.lanl.gov/
 5. graphvis
 http://www.graphviz.org/Download..php
 
-
+You need to run the following from the RL-Python Directory command line:
+===============================================================
+Nothing at the moment!
 
 
 Optional:

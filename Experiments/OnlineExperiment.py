@@ -39,7 +39,7 @@ class OnlineExperiment (Experiment):
         eps_return          = 0
         start_log_time      = start_time = time()
         if self.show_all: self.domain.showLearning(self.agent.representation)
-        while total_steps <= self.max_steps:
+        while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap: 
                 if self.show_all and total_steps != 1: self.domain.show(s,a, self.agent.representation)
                 s           = self.domain.s0() 
