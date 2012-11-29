@@ -68,7 +68,7 @@ class iFDD(Representation):
         print "Cached:\t\t\t", self.useCache
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
-        F_s                     = sp_matrix(self.features_num,dtype='bool')
+        F_s                     = zeros(self.features_num,'bool')
         activeIndecies          = Set(self.activeInitialFeatures(s))
         if self.useCache:
             finalActiveIndecies     = self.cache.get(ImmutableSet(activeIndecies))
@@ -172,8 +172,8 @@ class iFDD(Representation):
         max_excitement  = 0
         n               = self.features_num #number of features
         p               = len(td_errors)     #Number of samples
-        counts          = sp_matrix(n,n,uint32)
-        relevances      = sp_matrix(n,n)
+        counts          = zeros((n,n))
+        relevances      = zeros((n,n))
         
         for i in range(p):
             phiphiT     = outer(phi[i,:],phi[i,:])
@@ -241,7 +241,7 @@ if __name__ == '__main__':
     print rep.findFinalActiveFeatures([0,20])
     rep.showCache()
     print 'discover 0,20'
-    phi_s = sp_matrix(rep.features_num)
+    phi_s = zeros(rep.features_num)
     phi_s[0] = 1
     phi_s[20] = 1
     rep.discover(phi_s, discovery_threshold+1)

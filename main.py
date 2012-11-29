@@ -12,8 +12,8 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 100
+    PERFORMANCE_CHECKS  = 10
+    LEARNING_STEPS      = 10000
     SHOW_ALL            = 0
     SHOW_PERFORMANCE    = 0
     LOG_INTERVAL        = 1 
@@ -38,7 +38,7 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     LSPI_iterations     = 5
     LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
     
-    domain          = ChainMDP(2)
+    domain          = ChainMDP(10)
     #domain          = PitMaze(MAZE, noise = NOISE)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)

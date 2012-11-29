@@ -383,7 +383,7 @@ def nonZeroIndex(A):
 def sp_matrix(m,n = 1, dtype = 'float'):
     # returns a sparse matrix with m rows and n columns, with the dtype
     # We use dok_matrix for sparse matrixies
-    return dok_matrix((m,n),dtype=dtype)
+    return lil_matrix((m,n),dtype=dtype)
 def sp_dot_array(sp_m, A):
     #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
     assert sp_m.shape[0] == len(A)
@@ -395,8 +395,7 @@ def sp_dot_array(sp_m, A):
         return sum(A[ind])
     else:
         # Multiply by feature values since they are not binary
-        print 'A,sp_m', A, sp_m
-        return sum(A[ind]*sp_m[ind,0].toarray())
+        return sum([A[i]*sp_m[i,0] for i in ind])
 def sp_dot_sp(sp_1, sp_2):
     #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
     assert sp_1.shape[0] == sp_2.shape[0] and sp_1.shape[1] == 1 and sp_2.shape[1] == 1 
@@ -418,9 +417,17 @@ def sp_dot_sp(sp_1, sp_2):
         sp      = sp_1
     if sp_bool is None:
         # Multiply by feature values since they are not binary
-        return sum((sp_1[ind,0]*sp_2[ind,0]).toarray())
+        return sum([sp_1[i,0]*sp_2[i,0] for i in ind])
     else:
-        return sum(sp[ind,0].toarray())
+        return sum([sp[i,0] for i in ind])
+def sp_add2_array(sp,A):
+    # sp is a sparse matrix p-by-1
+    # A is an array of len p
+    # this function return an array corresponding to A+sp
+    ind = sp.nonzero()[0]
+    for i in ind:
+        A[i] += sp[i,0]
+    return A
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

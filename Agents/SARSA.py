@@ -6,7 +6,7 @@ class SARSA(OnlineAgent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []  #
     def __init__(self, representation, policy, domain, initial_alpha =.1, lambda_ = 0):
-        self.eligibility_trace  = sp_matrix(representation.features_num*domain.actions_num)
+        self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
         super(SARSA,self).__init__(representation,policy,domain)
@@ -22,18 +22,17 @@ class SARSA(OnlineAgent):
         
         #Set eligibility traces:
         if self.lambda_:
-            self.eligibility_trace   = self.eligibility_trace * gamma*self.lambda_
-            self.eligibility_trace   = self.eligibility_trace + phi
+            self.eligibility_trace   *= gamma*self.lambda_
+            self.eligibility_trace   += phi
             #Set max to 1
             self.eligibility_trace[self.eligibility_trace>1] = 1
         else:
-            self.eligibility_trace    = phi.astype(float)
-        print type(phi)
-        delta_phi           = (gamma*phi_prime.astype(float) - phi).todok()
-        td_error            = r + sp_dot_array(delta_phi, theta)
+            self.eligibility_trace    = phi
+        
+        td_error            = r + dot(gamma*phi_prime - phi, theta)
 
         #Automatic learning rate: [Dabney W. 2012]
-        candid_alpha    = abs(sp_dot_sp(-delta_phi,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
+        candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
         candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf 
         self.alpha      = min(self.alpha,candid_alpha)
         #shout(self,self.alpha)
