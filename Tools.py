@@ -15,7 +15,7 @@ from scipy import stats
 from scipy import misc
 from scipy import linalg
 #from scipy.sparse import linalg as slinalg
-from scipy.sparse import *
+from scipy import sparse as sp 
 from time import *
 from hashlib import sha1
 import datetime, csv
@@ -333,10 +333,13 @@ def addNewElementForAllActions(x,a,newElem = None):
         # x = [1,2,3], a = 3, newElem = [1,1,1] => [1,1,2,1,3,1]
         if newElem is None:
             newElem = zeros((a,1))
-        x   = x.reshape(a,-1) # -1 means figure the other dimension yourself
-        x   = hstack((x,newElem))
-        x   = x.reshape(1,-1).flatten()
-        return x
+        if len(x) == 0:
+            return newElem.flatten()
+        else:
+            x   = x.reshape(a,-1) # -1 means figure the other dimension yourself
+            x   = hstack((x,newElem))
+            x   = x.reshape(1,-1).flatten()
+            return x
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
     if issparse(A):
