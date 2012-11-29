@@ -4,7 +4,7 @@ import cProfile
 import pstats
 
 
-Output = 'LSPI-Chain10-10K-Sparse'
+Output = 'LSPI-PitMaze-4x5-Sparse'
 print 'Profiling'
 cProfile.run('main(1,0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

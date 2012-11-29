@@ -70,7 +70,7 @@ class NetworkAdmin(Domain):
     REBOOT_REWARD = -0.75
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
-    episodeCap = 100 # TODO this seems rather arbitrary
+    episodeCap = 200 # TODO this seems rather arbitrary
 
     networkGraph = None #Graph of network used for visualization
     networkPos = None
@@ -86,7 +86,7 @@ class NetworkAdmin(Domain):
             for row in reader:
                 _Neighbors.append(map(int,row))
         return _Neighbors
-    def __init__(self, networkmapname='/NetworkAdminMaps/5Machines.txt'):
+    def __init__(self, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt'):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS          = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
@@ -161,7 +161,7 @@ class NetworkAdmin(Domain):
                     sumOfNeighbors = sum([s[i] for i in self.NEIGHBORS[computer_id]])
                     # TODO this expression should be a function, or something
                     p_broken = 0.45 + 0.5 * (1+sumOfNeighbors) / (1+len(self.NEIGHBORS))
-                    print "P_broken",p_broken
+                    #print "P_broken",p_broken
                     if(random.random() < p_broken ):
                         ns[computer_id] = self.BROKEN
  # Optional                    else: ns[computer_id] = self.RUNNING
@@ -176,7 +176,8 @@ class NetworkAdmin(Domain):
     def possibleActions(self,s):
     # Returns the list of possible actions in each state the vanilla version returns all of the actions
         return arange(self.actions_num)
-    
+    def isTerminal(self,s):
+        return False   
     def getUniqueEdges(self):
         # Returns a list of tuples of unique edges in this map; choose the edge emanating from
         # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]

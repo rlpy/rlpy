@@ -43,7 +43,7 @@ import networkx as nx
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
 # if undeo redo does not work in eclipse, you may have an uninfinished process. Kill all
 def prod(x):
-    #Returns the multiplications of the elements of a set
+    #Returns the multiplications of the elements of an array
     return reduce(mul,x)
 def randSet(x):
     #Returns a random element of a list uniformly.
@@ -283,6 +283,14 @@ def perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0):
                 allPerms, ind = perms_r(X[1:],hstack((perm_sample, [x])), allPerms, ind)
     return allPerms, ind
 ######################################################
+def vec2id2(x,limits):
+    #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
+    # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    if isinstance(x,int): return x 
+    lim_prod = cumprod(limits[:-1])
+    print x[1:], lim_prod, x[0]
+    print sum(reduce(mul,zip(x[1:],lim_prod))) 
+    return x[0] + sum(reduce(mul,zip(x[1:],lim_prod))) 
 def vec2id(x,limits):
     #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
@@ -291,6 +299,7 @@ def vec2id(x,limits):
     for d in arange(len(x)-1,-1,-1):
         _id *= limits[d]
         _id += x[d]
+    
     return _id
 ######################################################
 def id2vec(_id,limits):

@@ -89,7 +89,7 @@ class PST(Domain):
     
     ###
     
-    def __init__(self, NUM_UAV = 3, motionNoise = .1):
+    def __init__(self, NUM_UAV = 3, motionNoise = 0):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
