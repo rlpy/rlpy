@@ -20,7 +20,7 @@ from Domain import *
 # 4: pit
 # The task is to reach the goal from the start while avoiding the pits
 ######################################################
-class PitMaze(Domain):
+class CartPole(Domain):
     #Rewards
     BALANCED_REWARD = 0
     UNBALANCED_REWARD = -1
@@ -32,7 +32,7 @@ class PitMaze(Domain):
     actions_num        = 3
     state_space_dims   = 2
     #Constants in the map
-    ACTIONS = array([TORQUE,0,TORQUE])
+    ACTIONS = array([-TORQUE,0,TORQUE])
     def __init__(self, noise = .1):
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)

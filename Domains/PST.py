@@ -102,6 +102,34 @@ class PST(Domain):
         super(PST,self).__init__()
     def showDomain(self,s,a = 0):
         pass
+#===============================================================================
+# #        if pass: # need to draw initial environment
+# 
+#        
+#        
+#        
+#         #Draw the environment
+#        if self.circles is None:
+#           fig = pl.figure(1, (self.chainSize*2, 2))
+#           ax = fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
+#           ax.set_xlim(0, self.chainSize*2)
+#           ax.set_ylim(0, 2)
+#           ax.add_patch(mpatches.Circle((1+2*(self.chainSize-1), self.Y), self.RADIUS*1.1, fc="w")) #Make the last one double circle
+#           ax.xaxis.set_visible(False)
+#           ax.yaxis.set_visible(False)
+#           self.circles = [mpatches.Circle((1+2*i, self.Y), self.RADIUS, fc="w") for i in range(self.chainSize)]
+#           for i in range(self.chainSize):
+#               ax.add_patch(self.circles[i])
+#               if i != self.chainSize-1:
+#                    fromAtoB(1+2*i+self.SHIFT,self.Y+self.SHIFT,1+2*(i+1)-self.SHIFT, self.Y+self.SHIFT)
+#                    if i != self.chainSize-2: fromAtoB(1+2*(i+1)-self.SHIFT,self.Y-self.SHIFT,1+2*i+self.SHIFT, self.Y-self.SHIFT, 'r')
+#               fromAtoB(.75,self.Y-1.5*self.SHIFT,.75,self.Y+1.5*self.SHIFT,'r',connectionstyle='arc3,rad=-1.2')
+#               pl.show(block=False)
+#            
+#        [p.set_facecolor('w') for p in self.circles]
+#        self.circles[s].set_facecolor('k')
+#        pl.draw()
+#===============================================================================
     def showLearning(self,representation):
         pass
     def step(self,s,a):
@@ -159,12 +187,12 @@ class PST(Domain):
                 # Actuator failure transition
                 if(random.random() < self.P_ACT_FAIL):
                     ns[uav_actuator_ind] = ActuatorState.FAILED
-                    print 'UAV',uav_id,'Failed actuator!'
+                    print '### UAV',uav_id,'Failed actuator! ###'
                 
                 if (ns[uav_fuel_ind] < 1): # We just crashed a UAV! Failed to get back to base after action a
                     self.numCrashed += 1
                     ns[uav_location_ind] = UAVLocation.CRASHED
-                    print '###### UAV',uav_id,'has crashed! #####'
+                    print '########### UAV',uav_id,'has crashed! ############'
                     continue
                 
                 if(ns[uav_actuator_ind] == ActuatorState.RUNNING): # If actuator works, comms are available in this state
