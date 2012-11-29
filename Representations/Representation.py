@@ -61,10 +61,11 @@ class Representation(object):
         F_sa        = zeros(self.features_num*self.domain.actions_num)  
         ind_a       = range(a*self.features_num,(a+1)*self.features_num)
         F_sa[ind_a] = F_s
-        # You can also use kron to generate F_sa check which on is faster
-        # A = zeros(self.domain.actions_num)
-        # A[a] = 1
-        # F_sa = kron(F_s,A)
+        return F_sa
+        # Use of Kron is slower!
+        #A = zeros(self.domain.actions_num)
+        #A[a] = 1
+        #F_sa = kron(A,F_s)
         return F_sa        
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.

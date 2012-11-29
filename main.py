@@ -44,10 +44,10 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     #domain          = MountainCar(noise = NOISE)
     
     #representation  = Tabular(domain)
-    #representation  = IncrementalTabular(domain)
+    representation  = IncrementalTabular(domain)
     #representation  = iFDD(domain,Discovery_Threshold,useCache=iFDD_CACHED)
     #representation  = IndependentDiscretization(domain)
-    representation  = RBF(domain, rbfs = RBFS)
+    #representation  = RBF(domain, rbfs = RBFS)
     
     policy          = eGreedy(representation, epsilon = EPSILON)
     #policy          = UniformRandom(representation)
