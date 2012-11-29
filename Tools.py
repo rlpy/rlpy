@@ -14,7 +14,7 @@ import matplotlib.cm as cm
 from scipy import stats
 from scipy import misc
 from scipy import linalg
-#from scipy.sparse import linalg as slinalg
+from scipy.sparse import linalg as slinalg
 from scipy import sparse as sp 
 from time import *
 from hashlib import sha1
@@ -342,11 +342,29 @@ def addNewElementForAllActions(x,a,newElem = None):
             return x
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
-    if issparse(A):
-        x,res,rank_A,singular_values = slinalg.spsolve(A,b)
+    if sp.issparse(A) and False:
+        result = slinalg.lsmr(A,b)
+        # Timing in seconds, for solving 100x100 with 100 elements in A for Ax=b problems
+        #def foo():
+        #    L = 100
+        #    o = ones(L)
+        #    rows = random.random_integers(0,L-1,L)
+        #    cols = random.random_integers(0,L-1,L)
+        #    M = sp.csc_matrix((o,(rows,cols)),shape=(L,L))
+        #    b = arange(L)
+        #    x = slinalg.lsmr(M,b)
+        #
+        #random.seed(999)
+        #t = timeit.Timer(stmt="foo()",setup="from __main__ import *")
+        #print t.timeit(number=100)          
+        # lsmr  = .54 (s)
+        # lsqr  = .58 (s)
+        # cg    = 3.5 (s)
+        # bicg  = 6.8 (s)
+        # qmr   = 9.5 (s)
     else:
-        x,res,rank_A,singular_values = linalg.lstsq(A,b)
-    return x
+        result = linalg.lstsq(A.todense(),b)
+    return result[0]
 def rows(A):
     # return the rows of matrix A
     r, c = A.shape
@@ -386,7 +404,7 @@ def nonZeroIndex(A):
 def sp_matrix(m,n = 1, dtype = 'float'):
     # returns a sparse matrix with m rows and n columns, with the dtype
     # We use dok_matrix for sparse matrixies
-    return lil_matrix((m,n),dtype=dtype)
+    return sp.lil_matrix((m,n),dtype=dtype)
 def sp_dot_array(sp_m, A):
     #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
     assert sp_m.shape[0] == len(A)

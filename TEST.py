@@ -2,8 +2,9 @@ from Tools import *
 from Representations import *
 from Domains import *
 
-F_s = array([1,0,0])
-A = zeros(5)
-A[3] = 1
-F_sa = kron(A,F_s)
-print F_sa
+L = 100
+o = ones(L)
+M = sp.csc_matrix((o,(range(L),range(L))),shape=(L,L))
+b = arange(L)
+x = slinalg.spsolve(M,b)
+print x

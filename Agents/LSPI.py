@@ -24,9 +24,9 @@ class LSPI(OnlineAgent):
         self.phi_sa_size        = domain.actions_num * representation.features_num
         self.data_s             = zeros((sample_window, domain.state_space_dims))
         self.data_ns            = zeros((sample_window, domain.state_space_dims))
-        self.data_a             = zeros((sample_window, 1))
-        self.data_na            = zeros((sample_window, 1))
-        self.data_r             = zeros((sample_window, 1))
+        self.data_a             = zeros(sample_window,dtype=uint16)
+        self.data_na            = zeros(sample_window,dtype=uint16)
+        self.data_r             = zeros(sample_window)
         super(LSPI, self).__init__(representation, policy, domain)
     def learn(self,s,a,r,ns,na,terminal):
         self.storeData(s,a,r,ns,na)        
@@ -34,12 +34,12 @@ class LSPI(OnlineAgent):
             self.samples_count  = 0
             # Calculate the A and b matrixes in LSTD
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
-            A               = sp_matrix(phi_sa_size,phi_sa_size)
-            b               = sp_matrix(phi_sa_size)
-            all_phi_s       = sp_matrix(self.sample_window,self.representation.features_num,'bool') #phi_s will be saved for batch iFDD
-            all_phi_s_a     = sp_matrix(self.sample_window,phi_sa_size,'bool') #phi_sa will be fixed during iterations
-            all_phi_ns      = sp_matrix(self.sample_window,self.representation.features_num,'bool') #phi_ns_na will change according to na so we only cache the phi_na which remains the same
-            td_errors       = zeros(self.sample_window) # holds the TD_errors for all samples
+            A               = sp.coo_matrix((phi_sa_size,phi_sa_size))
+            b               = zeros(phi_sa_size)
+            all_phi_s       = zeros((self.sample_window,self.representation.features_num)) #phi_s will be saved for batch iFDD
+            all_phi_s_a     = zeros((self.sample_window,phi_sa_size)) #phi_sa will be fixed during iterations
+            all_phi_ns      = zeros((self.sample_window,self.representation.features_num)) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
+            td_errors       = zeros((self.sample_window)) # holds the TD_errors for all samples
             #print "Making A,b"
             gamma               = self.representation.domain.gamma
             for i in range(self.sample_window):
@@ -56,18 +56,19 @@ class LSPI(OnlineAgent):
                 all_phi_s_a[i,:]    = phi_s_a
                 all_phi_ns[i,:]     = phi_ns
                 d                   = phi_s_a-gamma*phi_ns_na
-                A                   = A + phi_s_a*d #this is because phi_s_a is 1-by-n instead of n-by-1
+                A                   = A + outer(phi_s_a,d) 
+                #d                   = sp.coo_matrix(outer(phi_s_a-gamma*phi_ns_na)
+                #A                   = A + sp.coo_matrix(phi_s_a).T*d #this is because phi_s_a is 1-by-n instead of n-by-1
                 b                   = b + r*phi_s_a
 
             #Calculate theta
-            #print "inverting"
-            self.representation.theta = solveLinear(A,b)
+            self.representation.theta = solveLinear(sp.csc_matrix(A),b)
             
             #Begin updating the policy in LSPI loop
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
-                A = sp_matrix(phi_sa_size,phi_sa_size)
+                A = sp.coo_matrix((phi_sa_size,phi_sa_size))
                 for i in range(self.sample_window):
                     phi_s_a         = all_phi_s_a[i,:]
                     phi_ns          = all_phi_ns[i,:]
@@ -75,10 +76,10 @@ class LSPI(OnlineAgent):
                     new_na          = self.representation.bestAction(ns)
                     phi_ns_new_na   = self.representation.phi_sa_from_phi_s(phi_ns,new_na)
                     d               = phi_s_a-gamma*phi_ns_new_na
-                    A               += outer(phi_s_a,d) #this is because phi_s_a is 1-by-n instead of n-by-1
+                    A               = A + outer(phi_s_a,d) 
                     td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)
                 #Calculate theta
-                new_theta                   = solveLinear(A,b)
+                new_theta                   = solveLinear(sp.csc_matrix(A),b)
                 weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                 self.representation.theta   = new_theta
                 print "%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff)
@@ -88,8 +89,8 @@ class LSPI(OnlineAgent):
                 self.representation.batchDiscover(td_errors, all_phi_s)
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s
-        self.data_a[self.samples_count,:]   = a
-        self.data_r[self.samples_count,:]   = r
+        self.data_a[self.samples_count]   = a
+        self.data_r[self.samples_count]   = r
         self.data_ns[self.samples_count,:]  = ns
-        self.data_na[self.samples_count,:]  = na
+        self.data_na[self.samples_count]  = na
         self.samples_count                  += 1

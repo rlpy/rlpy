@@ -43,8 +43,8 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)
     
-    #representation  = Tabular(domain)
-    representation  = IncrementalTabular(domain)
+    representation  = Tabular(domain)
+    #representation  = IncrementalTabular(domain)
     #representation  = iFDD(domain,Discovery_Threshold,useCache=iFDD_CACHED)
     #representation  = IndependentDiscretization(domain)
     #representation  = RBF(domain, rbfs = RBFS)
@@ -52,8 +52,8 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     policy          = eGreedy(representation, epsilon = EPSILON)
     #policy          = UniformRandom(representation)
     
-    #agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
-    agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
+    agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+    #agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
     
     experiment      = OnlineExperiment(agent,domain,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
     
