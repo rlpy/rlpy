@@ -3,7 +3,7 @@
 ######################################################
 # Least-Squares Policy Iteration [Lagoudakis and Parr 2003]
 # This version recalculates the policy every <sample_window>. Samples are obtained using the recent version of the policy  
-from OnlineAgent import *
+from Agent import *
 class LSPI(Agent):
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution

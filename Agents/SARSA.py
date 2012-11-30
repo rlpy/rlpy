@@ -1,7 +1,7 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
-from OnlineAgent import *
+from Agent import *
 class SARSA(Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []  #

@@ -5,7 +5,7 @@
 # LOOP:
 # 1. Run LSPI
 # 2. Run iFDD to discover features 
-from OnlineAgent import *
+from Agent import *
 class iFDD_LSPI(LSPI):
     def __init__(self,representation,policy,domain, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3, outer_loop_iterations = 5):
         assert isinstance(representation,'iFDD')
