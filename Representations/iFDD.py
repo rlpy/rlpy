@@ -181,7 +181,7 @@ class iFDD(Representation):
         p               = len(td_errors)     #Number of samples
         counts          = zeros((n,n))
         relevances      = zeros((n,n))
-        
+        added_feature   = True
         for i in range(p):
             phiphiT     = outer(phi[i,:],phi[i,:])
             relevances  += phiphiT*td_errors[i]
@@ -215,6 +215,8 @@ class iFDD(Representation):
             if relevance > self.batchThreshold:
                 print 'Added Feature [%d,%d]' % (f1,f2)
                 self.inspectPair(f1, f2, inf)
+                added_feature = True
+        return added_feature # A signal to see if the representation has been expanded or not
     def showFeatures(self):
         print "Features:"
         print join(["-"]*30)

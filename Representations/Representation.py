@@ -26,9 +26,10 @@ class Representation(object):
         print "Discretization:\t\t", self.discretization
         print "Starting Features:\t", self.features_num
         print "Aggregated States:\t", self.agg_states_num
-    def V(self,s):
+    def V(self,s, phi_s = None):
         #Returns the value of a state
-        AllQs   = self.Qs(s)
+        if phi_s is None: phi_s = self.phi(s)
+        AllQs   = self.Qs(s,phi_s)
         V       = max(AllQs)
     def Qs(self,s, phi_s = None):
     #Returns two arrays

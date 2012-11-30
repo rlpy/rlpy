@@ -4,7 +4,7 @@ import cProfile
 import pstats
 
 
-Output = 'LSPI-Chain10-10K-2'
+Output = 'test'
 print 'Profiling'
 cProfile.run('main(1,0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

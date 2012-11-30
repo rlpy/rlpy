@@ -12,11 +12,18 @@ def f2():
     x = random.random_integers(0,L-1,L)
     y = [L]*L
     return vec2id2(x,y)
-
+def foo(L,solver):
+    o = ones(L)
+    rows = random.random_integers(0,L-1,L)
+    cols = random.random_integers(0,L-1,L)
+    M = sp.csc_matrix((o,(rows,cols)),shape=(L,L))
+    b = arange(L)
+    x = solver(M,b)
 random.seed(999)
-L = 10
-t = timeit.Timer(stmt="f1()",setup="from __main__ import *")
-print t.timeit(number=100)  
-t = timeit.Timer(stmt="f2()",setup="from __main__ import *")
-print t.timeit(number=100)  
+L = 1000000
+t = timeit.Timer(stmt="foo(L,slinalg.lsmr)",setup="from __main__ import *")
+print t.timeit(number=1) 
+random.seed(999)
+t = timeit.Timer(stmt="foo(L,slinalg.lsqr)",setup="from __main__ import *")
+print t.timeit(number=1)  
 

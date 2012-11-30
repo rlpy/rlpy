@@ -37,10 +37,11 @@ class LSPI(Agent):
             # Run LSTD for first solution
             A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
             # Run Policy Iteration to change a_prime and recalculate theta
-            self.policyIteration()
-    def policyIteration(self,all_phi_s_a,all_phi_ns):
+            self.policyIteration(b,all_phi_s_a, all_phi_ns)
+    def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             #Update the policy by recalculating A based on new na
             #Returns the TD error for each sample based on the latest weights and na
+            # b is passed because it remains unchanged.
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
             gamma           = self.domain.gamma
             td_errors       = empty((self.sample_window)) # holds the TD_errors for all samples
@@ -51,10 +52,11 @@ class LSPI(Agent):
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
                 A = sp.coo_matrix((phi_sa_size,phi_sa_size))
                 for i in range(self.sample_window):
+                    ns              = self.data_ns[i,:]
                     phi_s_a         = all_phi_s_a[i,:]
                     phi_ns          = all_phi_ns[i,:]
-                    new_na          = self.representation.bestAction(s,phi_ns)
-                    phi_ns_new_na   = self.representation.phi_sa(s,new_na,phi_ns)
+                    new_na          = self.representation.bestAction(ns,phi_ns)
+                    phi_ns_new_na   = self.representation.phi_sa(ns,new_na,phi_ns)
                     d               = phi_s_a-gamma*phi_ns_new_na
                     A               = A + outer(phi_s_a,d) 
                     td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)

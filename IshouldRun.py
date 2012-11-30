@@ -14,7 +14,7 @@ LOG_INTERVAL        = 1
 RESULT_FILE         = 'result.txt'
 learn_step          = 10000
 epsilon             = .1
-Noise               = 0
+Noise               = .2
 
 domain          = PitMaze('/Domains/PitmazeMaps/4x5.txt',Noise)
 representation  = Tabular(domain)
