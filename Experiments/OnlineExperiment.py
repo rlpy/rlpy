@@ -21,14 +21,14 @@ class OnlineExperiment (Experiment):
                  performanceChecks = 10,
                  show_all   = False, 
                  show_performance = False,
-                 log_interval = 1):
+                 log_interval = 1,
+                 output_filename = 'results.txt'):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
-        super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance)
+        super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance,output_filename = output_filename)
         print "Max Steps: \t\t", max_steps
         print "Performance Checks:\t", performanceChecks
-        
     def run(self):
     # Run the online experiment and collect statistics
         self.result         = zeros((self.STATS_NUM,self.performanceChecks))
@@ -92,10 +92,10 @@ class OnlineExperiment (Experiment):
 
         #Visual
         if self.show_all: self.domain.show(s,a, self.agent.representation)
-        if self.show_all or self.show_performance: self.result_fig.savefig('snapshot.pdf', transparent=True, pad_inches=0)
-    def save(self,filename):
-        super(OnlineExperiment,self).save(filename)
-        f = open(filename,'a')
+        if self.show_all or self.show_performance: self.result_fig.savefig(self.out_path+'/lastSnapShot.pdf', transparent=True, pad_inches=0)
+    def save(self):
+        super(OnlineExperiment,self).save()
+        f = open(self.output_filename,'a')
         f.write('# Column Info:\n')
         f.write('#1. Test Step\n#2. Return\n#3. Time(s)\n#4. Features\n#5. Traj-Steps\n#6. Terminal\n')
         f.close()

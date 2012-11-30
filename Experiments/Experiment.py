@@ -18,7 +18,8 @@ class Experiment(object):
     show_performance = 0    # Show the domain and the value function during the performance runs
     result_fig = None       # Figure window generated to show the results
     result  = None          # All data is saved in the result array: stats_num-by-performanceChecks
-    def __init__(self,id, agent, domain, show_all, show_performance):
+    output_filename = ''    # The name of the file used to store the data
+    def __init__(self,id, agent, domain, show_all, show_performance, output_filename = 'results.txt'):
         self.id = id
         # Find the corresponding random seed for the experiment id
         random.seed(self.mainSeed)
@@ -26,13 +27,16 @@ class Experiment(object):
         random.seed(self.randomSeeds[self.id])
         self.agent              = agent
         self.domain             = domain
+        self.output_filename    = output_filename
         self.show_all           = show_all
         self.show_performance   = show_performance
+        self.out_path           = 'Results/%d'%self.id
         if show_all or show_performance: 
             self.result_fig = pl.figure(1,figsize=(14, 10))
             createColorMaps()
         print join(["-"]*30)
         print "Experiment:\t\t", className(self)
+        print "Output:\t\t\tResults/%d/%s" % (self.id, self.output_filename)
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -58,6 +62,8 @@ class Experiment(object):
         return eps_return, eps_length, eps_term
     def printAll(self):
         printClass(self)
-    def save(self,filename):
-        savetxt(filename,self.result, fmt='%0.4f', delimiter='\t')
-        print filename,'<== Saved Results!'
+    def save(self):
+        if not os.path.exists(self.out_path):
+            os.makedirs(self.out_path)
+        savetxt(self.out_path+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
+        print self.output_filename,'<== Saved Results!'
