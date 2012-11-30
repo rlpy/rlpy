@@ -1,46 +1,29 @@
 ######################################################
-# Developed by Alborz Geramiard Nov 19th 2012 at MIT #
+# Developed by Alborz Geramiard Nov 30th 2012 at MIT #
 ######################################################
-# Least-Squares Policy Iteration [Lagoudakis and Parr 2003]
-# This version recalculates the policy every <sample_window>. Samples are obtained using the recent version of the policy  
+# Least-Squares Policy Iteration [Lagoudakis and Parr 2003] Integrated with iFDD
+# LOOP:
+# 1. Run LSPI
+# 2. Run iFDD to discover features 
 from OnlineAgent import *
-class LSPI(Agent):
-    lspi_iterations = 0         # Number of LSPI iterations
-    sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
-    samples_count   = 0         # Counter for the sample count
-    epsilon         = 0         # Minimum l_2 change required to continue iterations in LSPI
-    #Store Data in separate matrixes
-    data_s          = []        # 
-    data_a          = []        # 
-    data_r          = []        #
-    data_ns         = []        # 
-    data_na         = []        # 
-        
-    def __init__(self,representation,policy,domain, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3):
-        self.samples_count      = 0
-        self.sample_window      = sample_window
-        self.epsilon            = epsilon
-        self.lspi_iterations    = lspi_iterations
-        self.phi_sa_size        = domain.actions_num * representation.features_num
-        self.data_s             = zeros((sample_window, domain.state_space_dims))
-        self.data_ns            = zeros((sample_window, domain.state_space_dims))
-        self.data_a             = zeros(sample_window,dtype=uint16)
-        self.data_na            = zeros(sample_window,dtype=uint16)
-        self.data_r             = zeros(sample_window)
-        super(LSPI, self).__init__(representation, policy, domain)
+class iFDD_LSPI(LSPI):
+    def __init__(self,representation,policy,domain, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3, outer_loop_iterations = 5):
+        assert isinstance(representation,'iFDD')
+        self.outer_loop_iterations = outer_loop_iterations # Number of iterations over LSPI and iFDD
+        super(iFDD_LSPI, self).__init__(representation,policy,domain,lspi_iterations, sample_window, epsilon)
     def learn(self,s,a,r,ns,na,terminal):
-        
         self.storeData(s,a,r,ns,na)        
-        
         if self.samples_count == self.sample_window: #zero based hence the -1
-
-            # Run LSTD for first solution
-            A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
-            # Run Policy Iteration to change a_prime and recalculate theta
-            self.policyIteration()
+            outer_loop_iteration = 0
+            add_feature          = True
+            while added_feature and outer_loop_iteration < self.outer_loop_iterations:
+                # Run LSTD for first solution
+                A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+                # Run Policy Iteration to change a_prime and recalculate theta
+                td_errors = self.policyIteration(all_phi_s_a,all_phi_ns)
+                # Add new Features
+                self.representation.batchDiscover(td_errors, all_phi_s)
     def policyIteration(self,all_phi_s_a,all_phi_ns):
-            #Update the policy by recalculating A based on new na
-            #Returns the TD error for each sample based on the latest weights and na
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
             gamma           = self.domain.gamma
             td_errors       = empty((self.sample_window)) # holds the TD_errors for all samples
@@ -61,10 +44,9 @@ class LSPI(Agent):
                 #Calculate theta
                 new_theta                   = solveLinear(sp.csc_matrix(A),b)
                 weight_diff                 = linalg.norm(self.representation.theta - new_theta)
-                if weight_diff > self.epsilon: self.representation.theta   = new_theta
+                self.representation.theta   = new_theta
                 print "%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff)
                 lspi_iteration +=1
-            return td_errors
     def LSTD(self): 
         self.samples_count  = 0
         # Calculate the A and b matrixes in LSTD
