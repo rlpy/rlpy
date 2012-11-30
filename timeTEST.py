@@ -4,17 +4,19 @@ from Representations import *
 from Domains import *
 import timeit
 
-def foo():
-    L = 100
-    o = ones(L)
-    rows = random.random_integers(0,L-1,L)
-    cols = random.random_integers(0,L-1,L)
-    M = sp.csc_matrix((o,(rows,cols)),shape=(L,L))
-    b = arange(L)
-    x = slinalg.lsmr(M,b)
+def f1():
+    x = random.random_integers(0,L-1,L)
+    y = [L]*L
+    return vec2id(x,y)
+def f2():
+    x = random.random_integers(0,L-1,L)
+    y = [L]*L
+    return vec2id2(x,y)
 
 random.seed(999)
-t = timeit.Timer(stmt="foo()",setup="from __main__ import *")
+L = 10
+t = timeit.Timer(stmt="f1()",setup="from __main__ import *")
 print t.timeit(number=100)  
-
+t = timeit.Timer(stmt="f2()",setup="from __main__ import *")
+print t.timeit(number=100)  
 

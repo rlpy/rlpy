@@ -286,11 +286,10 @@ def perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0):
 def vec2id2(x,limits):
     #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    # Slower than the other implementation by a factor of 2
     if isinstance(x,int): return x 
     lim_prod = cumprod(limits[:-1])
-    print x[1:], lim_prod, x[0]
-    print sum(reduce(mul,zip(x[1:],lim_prod))) 
-    return x[0] + sum(reduce(mul,zip(x[1:],lim_prod))) 
+    return x[0] + sum(map(lambda (x,y):x*y,zip(x[1:],lim_prod))) 
 def vec2id(x,limits):
     #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
     # I use a recursive calculation to save time by looping once backward on the array = O(n)

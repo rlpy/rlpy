@@ -38,12 +38,12 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     LSPI_iterations     = 5
     LSPI_windowSize     = LEARNING_STEPS/PERFORMANCE_CHECKS
     
-    #domain          = ChainMDP(10)
+    domain          = ChainMDP(10)
     #domain          = PitMaze(MAZE, noise = NOISE)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(noise = NOISE)
     #domain          = NetworkAdmin()
-    domain          = PST() 
+    #domain          = PST() 
     
     representation  = Tabular(domain)
     #representation  = IncrementalTabular(domain)
@@ -54,8 +54,8 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     policy          = eGreedy(representation, epsilon = EPSILON)
     #policy          = UniformRandom(representation)
     
-    #agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
-    agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
+    agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+    #agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
     
     experiment      = OnlineExperiment(agent,domain,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
     
