@@ -30,20 +30,18 @@ class Representation(object):
         #Returns the value of a state
         AllQs   = self.Qs(s)
         V       = max(AllQs)
-    def Qs(self,s):
+    def Qs(self,s, phi_s = None):
     #Returns two arrays
     # Q: array of Q(s,a)
     # A: Corresponding array of action numbers
+    # If phi_s is given, it uses that to speed up the process
         A = self.domain.possibleActions(s)
-        phi_s   = self.phi(s)
-        return array([self.Q_using_phi_s(phi_s,a) for a in A]), A     
-    def Q_using_phi_s(self,phi_s,a):
-        # This is a function to speed up the Q calculation if phi_s for state s is already known
-        return dot(self.phi_sa_from_phi_s(phi_s, a), self.theta)
-    def Q(self,s,a):
+        if phi_s is None: phi_s   = self.phi(s)
+        return array([self.Q(s,a,phi_s) for a in A]), A     
+    def Q(self,s,a,phi_s = None):
         #Returns the state-action value
         if len(self.theta) > 0: 
-            return dot(self.phi_sa(s,a),self.theta)
+            return dot(self.phi_sa(s,a, phi_s),self.theta)
         else:
             return 0.0
     def phi(self,s):
@@ -52,21 +50,19 @@ class Representation(object):
             return zeros(self.features_num,'bool')
         else:
             return self.phi_nonTerminal(s)
-    def phi_sa(self,s,a):
+    def phi_sa(self,s,a, phi_s = None):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
-        F_s = self.phi(s)
-        return self.phi_sa_from_phi_s(F_s,a)
-    def phi_sa_from_phi_s(self,F_s,a):
-        #Given phi_s make phi_sa by copying it into the proper location
-        F_sa        = zeros(self.features_num*self.domain.actions_num)  
+        #If phi_s is passed it is used to avoid phi_s calculation
+        if phi_s is None: phi_s = self.phi(s)
+
+        phi_sa      = zeros(self.features_num*self.domain.actions_num)  
         ind_a       = range(a*self.features_num,(a+1)*self.features_num)
-        F_sa[ind_a] = F_s
-        return F_sa
+        phi_sa[ind_a] = phi_s
+        return phi_sa
         # Use of Kron is slower!
         #A = zeros(self.domain.actions_num)
         #A[a] = 1
         #F_sa = kron(A,F_s)
-        return F_sa        
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.
         self.theta      = addNewElementForAllActions(self.theta,self.domain.actions_num)
@@ -99,9 +95,10 @@ class Representation(object):
         return bs
     def printAll(self):
         printClass(self)
-    def bestActions(self,s):
+    def bestActions(self,s, phi_s = None):
     # Given a state returns the best action possibles at that state
-        Qs, A = self.Qs(s)
+    # If phi_s is given it is used to speed up
+        Qs, A = self.Qs(s,phi_s)
         # Find the index of best actions
         ind   = findElemArray1D(Qs,Qs.max())
         if self.DEBUG:
@@ -119,9 +116,9 @@ class Representation(object):
 #        for dim in self.domain.continous_dims:
 #                ds[dim] = closestDiscretization(ds[dim],self.discretization,self.domain.statespace_limits[dim][:]) 
 #        return ds
-    def bestAction(self,s):
+    def bestAction(self,s, phi_s = None):
         # return an action among the best actions uniformly randomly:
-        bestA = self.bestActions(s)
+        bestA = self.bestActions(s,phi_s)
         if len(bestA) > 1:
             return randSet(bestA)
         else:

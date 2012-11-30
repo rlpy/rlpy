@@ -54,18 +54,24 @@ class iFDD(Representation):
     debug                   = 0     # Print more stuff
     cache                   = {}    # dictionary mapping  initial active feature set phi_0(s) to its corresponding active features at phi(s). Based on Tuna's Trick to speed up iFDD
     useCache                = 0     # this should only increase speed. If results are different something is wrong
-    def __init__(self,domain,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0):
+    maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
+    batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
+    def __init__(self,domain,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
         self.features_num           = int(sum(self.bins_per_dim))
         self.debug                  = debug
         self.useCache               = useCache
+        self.maxBatchDicovery       = maxBatchDicovery
+        self.batchThreshold         = batchThreshold
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,discretization)
         print "Threshold:\t\t", self.discovery_threshold
         print "Sparsify:\t\t", self.sparsify
         print "Cached:\t\t\t", self.useCache
+        print "Max Batch Discovery:\t", self.maxBatchDicovery
+        print "Batch Threshold:\t\t", self.batchThreshold
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
@@ -163,13 +169,14 @@ class iFDD(Representation):
                     self.cache.pop(initialActiveFeatures)
         
         if self.debug: self.show()
-    def batchDiscover(self,td_errors, phi, maxDiscovery = 1, minRelevance  = 1e-2):
+    def batchDiscover(self,td_errors, phi):
         # Discovers features using iFDD in batch setting.
         # TD_Error: p-by-1 (How much error observed for each sample)
         # phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
-        # minRelevance is the minimum relevance value for the feature to be expanded
+        # self.batchThreshold is the minimum relevance value for the feature to be expanded
         SHOW_HISTOGRAM  = 0      #Shows the histogram of relevances 
         max_excitement  = 0
+        maxDiscovery    = self.maxBatchDicovery
         n               = self.features_num #number of features
         p               = len(td_errors)     #Number of samples
         counts          = zeros((n,n))
@@ -199,12 +206,13 @@ class iFDD(Representation):
         sortedIndecies  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
         max_relevance   = relevances[sortedIndecies[0]];
         #Add top <maxDiscovery> features
+        print "iFDD Batch: Max Relevance = %0.3f" % max_relevance
         for j in range(min(maxDiscovery,len(relevances))):
             max_index   = sortedIndecies[j]
             f1          = F1[max_index]
             f2          = F2[max_index]
             relevance   = relevances[max_index]
-            if relevance > minRelevance:
+            if relevance > self.batchThreshold:
                 print 'Added Feature [%d,%d]' % (f1,f2)
                 self.inspectPair(f1, f2, inf)
     def showFeatures(self):
