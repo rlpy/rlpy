@@ -2,7 +2,7 @@
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
 from OnlineAgent import *
-class SARSA(OnlineAgent):
+class SARSA(Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []  #
     def __init__(self, representation, policy, domain, initial_alpha =.1, lambda_ = 0):
@@ -17,7 +17,7 @@ class SARSA(OnlineAgent):
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)
-        phi                 = self.representation.phi_sa_from_phi_s(phi_s,a)
+        phi                 = self.representation.phi_sa(s,a,phi_s)
         phi_prime           = self.representation.phi_sa(ns,na)
         
         #Set eligibility traces:
