@@ -9,22 +9,23 @@ from Representations import *
 from Policies import *
 from Experiments import *
 
-def main(jobID=-1, SHOW_FINAL_PLOT=-1, OUT_PATH =-1):
+def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
 
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
     LEARNING_STEPS      = 10000
-    SHOW_ALL            = 0
-    SHOW_PERFORMANCE    = 0
+    RUN_IN_BATCH        = jobID != -1
+    SHOW_ALL            = 0 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1 if jobID == -1 else jobID
-    SHOW_FINAL_PLOT     = 1 if SHOW_FINAL_PLOT == -1 else SHOW_FINAL_PLOT 
     OUT_PATH            = 'Results/Temp' if OUT_PATH == -1 else OUT_PATH
     DEBUG               = 0
-    logger              = Logger('%s/%d/%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     # Domain ----------------------
     MAZE                = '/Domains/PitMazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
@@ -65,7 +66,7 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1, OUT_PATH =-1):
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
     #agent           = iFDD_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
     
-    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, output_filename = RESULT_FILE)
+    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, output_filename = RESULT_FILE, plot_performance =  PLOT_PERFORMANCE)
     
     if DEBUG:
         domain.printAll()
@@ -79,10 +80,10 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1, OUT_PATH =-1):
     if SHOW_FINAL_PLOT: pl.show()
 
 if __name__ == '__main__':
-     if len(sys.argv) == 1:
-         main()
-     else:
-         main(int(sys.argv[1]),0,sys.argv[2])
+     if len(sys.argv) == 1: #Single Run
+         main(jobID = -1,OUT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = True)
+     else: # Batch Mode through command line
+         main(int(sys.argv[1]),sys.argv[2])
      
      
      

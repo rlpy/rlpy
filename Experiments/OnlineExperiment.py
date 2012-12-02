@@ -23,11 +23,12 @@ class OnlineExperiment (Experiment):
                  show_performance = False,
                  log_interval = 1,
                  output_path     = 'Results/Temp',
-                 output_filename = 'results.txt'):
+                 output_filename = 'results.txt',
+                 plot_performance = True):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
-        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,output_path = output_path, output_filename = output_filename)
+        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,output_path = output_path, output_filename = output_filename, plot_performance=plot_performance)
         self.logger.log("Max Steps: \t\t%d" % max_steps)
         self.logger.log("Performance Checks:\t%d" % performanceChecks)
     def run(self):
@@ -98,12 +99,13 @@ class OnlineExperiment (Experiment):
     def save(self):
         super(OnlineExperiment,self).save()
         #Plot Performance
-        performance_fig = pl.figure(2)
-        pl.plot(self.result[0,:],self.result[1,:],'-bo',lw=3,markersize=10)
-        pl.xlim(0,self.result[0,-1])
-        m = min(self.result[1,:])
-        M = max(self.result[1,:])
-        pl.ylim(m-.1*abs(M),M+.1*abs(M))
-        pl.xlabel('steps',fontsize=16)
-        pl.ylabel('Performance',fontsize=16)
-        performance_fig.savefig(self.fullpath+'/performance.pdf', transparent=True, pad_inches=.1)
+        if self.plot_performance:
+            performance_fig = pl.figure(2)
+            pl.plot(self.result[0,:],self.result[1,:],'-bo',lw=3,markersize=10)
+            pl.xlim(0,self.result[0,-1])
+            m = min(self.result[1,:])
+            M = max(self.result[1,:])
+            pl.ylim(m-.1*abs(M),M+.1*abs(M))
+            pl.xlabel('steps',fontsize=16)
+            pl.ylabel('Performance',fontsize=16)
+            performance_fig.savefig(self.output_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)
