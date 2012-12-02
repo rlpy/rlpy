@@ -1,0 +1,65 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		iFDD
+Starting Features:	36
+Aggregated States:	46656
+Threshold:		0.050
+Sparsify:		1
+Cached:			1
+Max Batch Discovery:	1
+Batch Threshold:		0.001
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/BlocksWorld-SARSA-iFDD/6-6-result.txt
+Max Steps: 		30000
+Performance Checks:	10
+1000: E[0:00:03]-R[0:01:27]: Return=-1.00, Steps=1000, Features = 36
+2000: E[0:00:06]-R[0:01:21]: Return=-1.00, Steps=1000, Features = 36
+3000: E[0:00:08]-R[0:01:15]: Return=-1.00, Steps=1000, Features = 36
+3000 >>> E[0:00:09]-R[0:01:25]: Return=-1.00, Steps=1000, Features = 36
+4000: E[0:00:12]-R[0:01:17]: Return=-1.00, Steps=1000, Features = 36
+5000: E[0:00:14]-R[0:01:12]: Return=-1.00, Steps=1000, Features = 36
+6000: E[0:00:17]-R[0:01:07]: Return=-1.00, Steps=1000, Features = 36
+6000 >>> E[0:00:18]-R[0:01:12]: Return=-1.00, Steps=1000, Features = 36
+7000: E[0:00:20]-R[0:01:07]: Return=-1.00, Steps=1000, Features = 36
+8000: E[0:00:23]-R[0:01:03]: Return=-1.00, Steps=1000, Features = 36
+9000: E[0:00:26]-R[0:01:00]: Return=-1.00, Steps=1000, Features = 36
+9000 >>> E[0:00:27]-R[0:01:03]: Return=-1.00, Steps=1000, Features = 36
+10000: E[0:00:29]-R[0:00:58]: Return=-1.00, Steps=1000, Features = 36
+11000: E[0:00:31]-R[0:00:54]: Return=-1.00, Steps=1000, Features = 36
+12000: E[0:00:34]-R[0:00:51]: Return=-1.00, Steps=1000, Features = 36
+12000 >>> E[0:00:35]-R[0:00:53]: Return=-1.00, Steps=1000, Features = 36
+13000: E[0:00:37]-R[0:00:49]: Return=-1.00, Steps=1000, Features = 36
+14289: E[0:00:41]-R[0:00:45]: Return=-1.00, Steps=1000, Features = 41
+15000 >>> E[0:00:45]-R[0:00:45]: Return=-1.00, Steps=1000, Features = 59
+16289: E[0:00:48]-R[0:00:40]: Return=-1.00, Steps=1000, Features = 76
+17289: E[0:00:51]-R[0:00:37]: Return=-1.00, Steps=1000, Features = 86
+18000 >>> E[0:00:54]-R[0:00:36]: Return=-1.00, Steps=1000, Features = 88
+19289: E[0:00:57]-R[0:00:32]: Return=-1.00, Steps=1000, Features = 88
+20289: E[0:01:00]-R[0:00:29]: Return=-1.00, Steps=1000, Features = 93
+21000 >>> E[0:01:04]-R[0:00:27]: Return=-1.00, Steps=1000, Features = 103
+22289: E[0:01:07]-R[0:00:23]: Return=-1.00, Steps=1000, Features = 107
+23289: E[0:01:10]-R[0:00:20]: Return=-1.00, Steps=1000, Features = 116
+24000 >>> E[0:01:14]-R[0:00:18]: Return=-1.00, Steps=1000, Features = 116
+25289: E[0:01:17]-R[0:00:14]: Return=-1.00, Steps=1000, Features = 120
+26289: E[0:01:19]-R[0:00:11]: Return=-1.00, Steps=1000, Features = 122
+27000 >>> E[0:01:23]-R[0:00:09]: Return=-1.00, Steps=1000, Features = 122
+28289: E[0:01:26]-R[0:00:05]: Return=-1.00, Steps=1000, Features = 123
+29289: E[0:01:28]-R[0:00:02]: Return=-1.00, Steps=1000, Features = 123
+30000 >>> E[0:01:31]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 123
+============================================================
+Took 0:01:31
+Saved in 6-result.txt
