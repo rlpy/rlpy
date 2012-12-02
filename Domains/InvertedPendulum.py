@@ -62,7 +62,7 @@ class InvertedPendulum(Domain):
     pendulumArm = None
     domainFig = None
     subplotAxes = None
-    CIRCLE_RADIUS = 0.2
+    CIRCLE_RADIUS = 0.1
     PENDULUM_PIVOT = [0,0] # pivot point of pendulum
     
     # are constrained by the format expected by ode functions.
@@ -88,7 +88,7 @@ class InvertedPendulum(Domain):
         if self.domainFig == None: # Need to initialize the figure
             self.domainFig = pl.figure()
             self.subplotAxes = self.domainFig.gca()
-            self.pendulumArm = lines.Line2D([],[], color='black')
+            self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
             self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
             
             self.subplotAxes.add_patch(self.pendulumBob)
@@ -111,7 +111,7 @@ class InvertedPendulum(Domain):
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius)
         self.subplotAxes.add_patch(self.pendulumBob)
         pl.draw()
-#        sleep(.2)
+        sleep(.2)
         
     def showLearning(self,representation):
         pass
