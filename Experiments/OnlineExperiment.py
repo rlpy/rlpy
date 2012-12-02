@@ -110,4 +110,3 @@ class OnlineExperiment (Experiment):
         pl.xlabel('steps',fontsize=16)
         pl.ylabel('Performance',fontsize=16)
         performance_fig.savefig(self.out_path+'/performance.pdf', transparent=True, pad_inches=.1)
-        

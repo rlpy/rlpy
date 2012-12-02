@@ -1,3 +1,4 @@
+#!/usr/bin/python
 ######################################################
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
@@ -76,4 +77,12 @@ def main(jobID=-1, SHOW_FINAL_PLOT=-1):
     if SHOW_FINAL_PLOT: pl.show()
 
 if __name__ == '__main__':
-     main()
+     if len(sys.argv) == 1:
+         main()
+     else:
+         main(int(sys.argv[1]),0)
+     
+     
+     
+     
+     
