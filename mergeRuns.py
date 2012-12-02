@@ -19,7 +19,7 @@ class MergedData(object):
         self.experiments = len(paths) 
         self.means  = []
         self.std_errs = [] 
-        self.fig = None
+        self.fig = pl.figure(1)
         self.datapoints_per_graph = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         for p in paths:
             means, std_errs = self.parse(p)
@@ -41,7 +41,7 @@ class MergedData(object):
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis,X_axis = 'Learning Steps'):
-        self.fig = pl.figure(1)
+        self.fig.clear()
         min_ = +inf
         max_ = -inf    
         if Y_axis in self.AXES:
@@ -59,7 +59,7 @@ class MergedData(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            pl.plot(X,Y,'-o', linewidth = 2,color = self.colors[i],)
+            pl.plot(X,Y,'-o', linewidth = 2,alpha=.5,color = self.colors[i],)
             if self.bars:
                 pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i])
                 max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
@@ -80,7 +80,7 @@ class MergedData(object):
         self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1)
         finalArray = vstack((Xs,Ys,Errs))
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
-        print "Saved the plot in both txt and pdf format => %s" % fullfilename
+        print "Saved the plot in both txt and pdf formats => %s" % fullfilename
 
 paths = ['Results/BlocksWorld-SARSA-iFDD', 
          'Results/BlocksWorld-SARSA-IndependentDiscritization']
@@ -89,11 +89,9 @@ paths = ['Results/BlocksWorld-SARSA-iFDD',
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,'Results',colors = colors)
 mergedData.plot('Return')
-#mergedData.plot('Return','Time(s)')
-#mergedData.plot('Steps')
-#mergedData.plot('Features')
-#mergedData.plot('Time(s)')
-#mergedData.plot('Terminal')
-#mergedData.plot('Steps','Time(s)')
+mergedData.plot('Return','Time(s)')
+mergedData.plot('Steps')
+mergedData.plot('Features')
+mergedData.plot('Terminal')
 pl.show()
 
