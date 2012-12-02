@@ -71,8 +71,14 @@ class Domain(object):
                 if steps != 0: self.showDomain(s,a)
                 s = self.s0()
             a = randSet(self.possibleActions(s))
+            # DELETE ME
+#            print 'state at step',steps,'::',s
+#            print 'action selected ::',a
+            
+            
             self.showDomain(s,a)
             r,s,terminal = self.step(s, a)
+#            print "r,s,terminal",r,s,terminal
             steps += 1
     def printAll(self):
         printClass(self)

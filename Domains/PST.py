@@ -41,13 +41,14 @@ from Domain import *
 # fuel consumption are stochastic.
 ########################################################
 
+# NOTE Visualization relies on fact that "Crashed" state is the final one.
 class UAVLocation:
-    NUM_COMMS_LOC = 1 # Each comms location implicitly lies on [2, SIZE - 2]
+    BASE_LOC = 0
+    NUM_COMMS_LOC = 1 # Each comms location implicitly lies on [1, SIZE - 3]
     SIZE = 3 + NUM_COMMS_LOC   # Manually inputted
     # Possible location states, excluding communicatinons
-    CRASHED = 0
-    BASE_LOC = 1
-    SURVEIL_LOC = SIZE-1
+    SURVEIL_LOC = SIZE-2
+    CRASHED = SIZE-1
 class ActuatorState:
     FAILED, RUNNING = 0,1 # Status of actuator
     SIZE = 2
@@ -61,6 +62,35 @@ class UAVAction:
 class UAVIndex:
     UAV_LOC, UAV_FUEL, UAV_ACT_STATUS, UAV_SENS_STATUS = 0,1,2,3
     SIZE = 4 # Number of indices required for state of each UAV
+    
+#class UAVDispObject:
+#    UAV_RADIUS = 0.3
+#    uav_id = -1
+#    location = 0
+#    fuel_qty = 0
+#    sensor_status = 0
+#    actuator_status = 0
+#    vis_position = None
+#    circle_obj = None
+#    sensor_obj = None
+#    actuator_obj = None
+#    def __init__(self, uav_id = -1):
+#        self.uav_id = uav_id
+#    def setState(self,s):
+#        self.location = s[UAVIndex.UAV_LOC]
+#        self.fuel_qty = s[UAVIndex.UAV_FUEL]
+#        self.sensor_status = s[UAVIndex.UAV_SENS_STATUS]
+#        self.actuator_status = s[UAVIndex.UAV_ACT_STATUS]
+#        self.vis_position = (self.location, 1 + self.uav_id)
+#    def getCircleObject(self):
+#        return mpatches.Circle(self.vis_position, self.UAV_RADIUS, fc="w")
+#    def getTextObj(self):
+#        return pl.text(location[0], location[1], fuel_qty)
+#    def removeObjectsFromVis(self):
+#        self.circle_obj.remove()
+#        self.sensor_obj.remove()
+#        self.actuator_obj.remove()
+        
 
 class PST(Domain):
     
@@ -85,11 +115,29 @@ class PST(Domain):
     NOM_FUEL_BURN = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
     STOCH_FUEL_BURN = 2 # Alternative fuel burn rate
     
-
+    isCommStatesCovered = False # All comms states are covered
+    
+    # Plotting constants
+    UAV_RADIUS = 0.3
+    SENSOR_REL_X = 0.2 # Location of the sensor image relative to the uav
+    SENSOR_LENGTH = 0.2 # Height of the sensor 'antenna' image
+    ACTUATOR_REL_Y = 0.2 # Location of the sensor image relative to the uav
+    ACTUATOR_HEIGHT = 0.2 # Height of the sensor 'antenna' image
+    domain_fig = None
+    subplot_axes = None
+    location_rect_vis = None # List of rectangle objects used in the plot
+    uav_circ_vis = None
+    uav_text_vis = None
+    uav_sensor_vis = None
+    uav_actuator_vis = None
+    location_coord = None # Coordinates of the center of each rectangle
+#    uav_vis_list = None # List of UAV objects used in plot
+    LOCATION_WIDTH = 1.0 # Width of each rectangle used to represent a location
+    RECT_GAP = 1.0   # Gap to leave between rectangles
     
     ###
     
-    def __init__(self,logger, NUM_UAV = 3, motionNoise = 0):
+    def __init__(self, NUM_UAV = 6, motionNoise = 0):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
@@ -97,28 +145,88 @@ class PST(Domain):
         self.statespace_limits      = tile(_statespace_limits,(NUM_UAV,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.motionNoise = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
         self.LIMITS                 = tile(UAVAction.SIZE, (1,NUM_UAV))[0] # eg [3,3,3,3]
+        self.isCommStatesCovered    = False # Don't have communications available yet, so no surveillance reward allowed.
+        self.location_rect_vis          = None # 
+        self.location_coord         = None
+        self.uav_circ_vis           = None
+        self.uav_text_vis = None
+        self.uav_sensor_vis = None
+        self.uav_actuator_vis = None
+#        self.SENSOR_REL_X = self.UAV_RADIUS - self.SENSOR_LENGTH
+#        self.ACTUATOR_REL_Y = self.UAV_RADIUS - self.ACTUATOR_HEIGHT
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
-        super(PST,self).__init__(logger)
+        super(PST,self).__init__()
     def showDomain(self,s,a = 0):
-        pass
-#===============================================================================
-# #        if pass: # need to draw initial environment
-# 
-#        
-#        
-#        
-#         #Draw the environment
-#        if self.circles is None:
-#           fig = pl.figure(1, (self.chainSize*2, 2))
-#           ax = fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
-#           ax.set_xlim(0, self.chainSize*2)
-#           ax.set_ylim(0, 2)
-#           ax.add_patch(mpatches.Circle((1+2*(self.chainSize-1), self.Y), self.RADIUS*1.1, fc="w")) #Make the last one double circle
-#           ax.xaxis.set_visible(False)
-#           ax.yaxis.set_visible(False)
-#           self.circles = [mpatches.Circle((1+2*i, self.Y), self.RADIUS, fc="w") for i in range(self.chainSize)]
-#           for i in range(self.chainSize):
+        
+         #Draw the environment
+         # Allocate horizontal 'lanes' for UAVs to traverse
+        if self.location_rect_vis is None:
+            # Figure with x width corresponding to number of location states, UAVLocation.SIZE
+            # and rows (lanes) set aside in y for each UAV (NUM_UAV total lanes).  Add buffer of 1
+            distBetweenLocations = self.RECT_GAP + self.LOCATION_WIDTH
+            self.domain_fig = pl.figure(1, (UAVLocation.SIZE * distBetweenLocations + 1, self.NUM_UAV + 1))
+            self.subplot_axes = self.domain_fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
+            self.subplot_axes.set_xlim(0, 1 + UAVLocation.SIZE * distBetweenLocations)
+            self.subplot_axes.set_ylim(0, 1 + self.NUM_UAV)
+            self.subplot_axes.xaxis.set_visible(False)
+            self.subplot_axes.yaxis.set_visible(False)
+            middleFigure = self.NUM_UAV / 2.0 # Y coordinate at the middle of the figure
+            # Assign coordinates of each possible uav location on figure
+            self.location_coord = [0.5 + (self.LOCATION_WIDTH / 2) + (distBetweenLocations)*i for i in range(UAVLocation.SIZE-1)]
+            self.location_coord.append(2*UAVLocation.SIZE-0.5 + self.LOCATION_WIDTH / 2)
+             # Create rectangular patches at each of those locations
+            self.location_rect_vis = [mpatches.Rectangle([0.5 + (distBetweenLocations)*i, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'w') for i in range(UAVLocation.SIZE-1)]
+            self.location_rect_vis.append(mpatches.Rectangle([2*UAVLocation.SIZE-0.5, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'r'))
+            [self.subplot_axes.add_patch(self.location_rect_vis[i]) for i in range(4)]
+            # Initialize list of circle objects
+            
+            uav_x = self.location_coord[UAVLocation.BASE_LOC]
+            
+#            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
+            self.uav_circ_vis = [mpatches.Circle((uav_x,1+uav_id), self.UAV_RADIUS, fc="w") for uav_id in range(0,self.NUM_UAV)]
+            self.uav_text_vis = [pl.text(0, 0, 0) for uav_id in range(0,self.NUM_UAV)]
+            self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
+            self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
+            pl.show(block=False)
+            
+
+                      # For each UAV:
+         # Draw a circle, with text inside = amt fuel remaining
+         # Triangle on top of UAV for comms, black = good, red = bad
+         # Triangle below UAV for surveillance
+         
+         # Remove all UAV circle objects from visualization
+        else:
+            [self.uav_circ_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
+            [self.uav_text_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
+#            [self.uav_sensor_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
+        for uav_id in range(0,self.NUM_UAV):
+            uav_ind = uav_id * UAVIndex.SIZE
+            uav_location = s[uav_ind + UAVIndex.UAV_LOC] # State index corresponding to the location of this uav
+            uav_fuel = s[uav_ind + UAVIndex.UAV_FUEL]
+            uav_sensor = s[uav_ind + UAVIndex.UAV_SENS_STATUS]
+            uav_actuator = s[uav_ind + UAVIndex.UAV_ACT_STATUS]
+            
+            uav_x = self.location_coord[uav_location]
+            uav_y = 1 + uav_id
+            
+            self.uav_circ_vis[uav_id] = mpatches.Circle((uav_x,uav_y), self.UAV_RADIUS, fc="w")
+            self.uav_text_vis[uav_id] = pl.text(uav_x-0.05, uav_y-0.05, uav_fuel)
+            if uav_sensor == SensorState.RUNNING: objColor = 'black'
+            else: objColor = 'red'
+            self.uav_sensor_vis[uav_id] = mpatches.Wedge((uav_x+self.SENSOR_REL_X,uav_y),self.SENSOR_LENGTH, -30, 30, color=objColor)
+            
+            if uav_actuator == ActuatorState.RUNNING: objColor = 'black'
+            else: objColor = 'red'
+            self.uav_actuator_vis[uav_id] = mpatches.Wedge((uav_x,uav_y + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120, color=objColor)
+            
+            self.subplot_axes.add_patch(self.uav_circ_vis[uav_id])
+            self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
+            self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
+            
+             
+#for i in range(self.chainSize):
 #               ax.add_patch(self.circles[i])
 #               if i != self.chainSize-1:
 #                    fromAtoB(1+2*i+self.SHIFT,self.Y+self.SHIFT,1+2*(i+1)-self.SHIFT, self.Y+self.SHIFT)
@@ -128,7 +236,9 @@ class PST(Domain):
 #            
 #        [p.set_facecolor('w') for p in self.circles]
 #        self.circles[s].set_facecolor('k')
-#        pl.draw()
+
+        pl.draw()
+        sleep(1)
 #===============================================================================
     def showLearning(self,representation):
         pass
@@ -211,13 +321,20 @@ class PST(Domain):
         
         ##### Compute reward #####
         totalStepReward = 0
-        if(sum(commStatesCovered) == UAVLocation.SIZE): # All comms states have at least 1 functional UAV [I_comm = 1]
+        self.updateCommsCoverage(commStatesCovered) # Update member variable corresponding 
+        if(self.isCommStatesCovered == True):
             totalStepReward += self.SURVEIL_REWARD_COEFF * self.numHealthySurveil
         totalStepReward += self.CRASH_REWARD_COEFF * self.numCrashed
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned # Presently this component is set to zero.
  
         return totalStepReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+    # Update member variable indicating if comms link is available, ie, if at least
+    #1 uav with working sensor or actuator exists in each comms region
+    def updateCommsCoverage(self, commStatesCovered):
+        if(sum(commStatesCovered) == UAVLocation.SIZE): # All comms states have at least 1 functional UAV [I_comm = 1]
+            self.commStatesCovered = True
+        else: self.commStatesCovered = False
     def s0(self):
         returnList = []
         for dummy in range(0,self.NUM_UAV):
@@ -295,3 +412,4 @@ if __name__ == '__main__':
         
         
     
+

@@ -56,7 +56,7 @@ class InvertedPendulum(Domain):
     EPISODE_CAP = 200 # 200 used in tutorial
     
     cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers
-    s_continuous = None # Current actual, continuous state
+#NOT IMPLEMENTED    s_continuous = None # Current actual, continuous state
     
     # Plotting variables
     pendulumArm = None
