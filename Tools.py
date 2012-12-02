@@ -315,6 +315,14 @@ def id2vec(_id,limits):
 def bound(x,m,M):
     # bound x between min (m) and Max (M)
     return min(max(x,m),M)
+def wrap(x,m,M):
+    # wrap m between min (m) and Max (M)
+    diff = M - m
+    while x > M:
+        x = x - diff
+    while x < m:
+        x = x + diff
+    return x
 def shout(obj,s=''):
     # Print the name of the object and then the message. Use to remember to comment prints
     print "In " + className(obj) + " :" + str(s) 

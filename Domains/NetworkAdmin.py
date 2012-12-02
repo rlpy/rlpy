@@ -86,7 +86,7 @@ class NetworkAdmin(Domain):
             for row in reader:
                 _Neighbors.append(map(int,row))
         return _Neighbors
-    def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt'):
+    def __init__(self,logger, networkmapname='/NetworkAdminMaps/5Machines.txt'):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS          = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
