@@ -64,7 +64,7 @@ class UAVIndex:
 
 class PST(Domain):
     
-    episodeCap = 30 # TODO this seems rather arbitrary
+    episodeCap = 100 # 100 used in tutorial
     
     FULL_FUEL = 10 # Number of fuel units at start
     P_NOM_FUEL_BURN = 0.8 # Probability of nominal (1 unit) fuel burn on timestep

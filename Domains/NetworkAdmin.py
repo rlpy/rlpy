@@ -70,7 +70,7 @@ class NetworkAdmin(Domain):
     REBOOT_REWARD = -0.75
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
-    episodeCap = 200 # TODO this seems rather arbitrary
+    episodeCap = 200 # 200 used in tutorial
 
     networkGraph = None #Graph of network used for visualization
     networkPos = None
