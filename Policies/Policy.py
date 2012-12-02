@@ -6,8 +6,9 @@ from Representations import *
 class Policy(object):
     representation = None #Link to the representation
     DEBUG          = False
-    def __init__(self,representation):
+    def __init__(self,representation,logger):
         self.representation = representation
+        self.logger         = logger
     def pi(self,s):
     # Select an action given a state
        abstract 

@@ -11,12 +11,14 @@ class Domain(object):
     state_space_dims = None # Number of dimensions of the state space
     continous_dims = []     # List of continuous dimensions of the domain, default = None
     episodeCap = None       # The cap used to bound each episode (return to s0 after)
+    logger = None           # Used to capture the text in a file
     #Termination Signals of Episodes
     NOT_TERMINATED          = 0
     NOMINAL_TERMINATION     = 1
     CRITICAL_TERMINATION    = 2
 
-    def __init__(self):
+    def __init__(self,logger):
+        self.logger = logger
         for v in ['statespace_limits','actions_num','episodeCap']:
             if getattr(self,v) == None:
                 raise Exception('Missed domain initialization of '+ v)
@@ -28,14 +30,14 @@ class Domain(object):
             self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
         else:
             self.states_num = inf
-        print join(["-"]*30)
-        print "Domain:\t\t", className(self)
-        print "Dimensions:\t", self.state_space_dims
-        print "|S|:\t\t", self.states_num
-        print "|A|:\t\t", self.actions_num
-        print "|S|x|A|:\t\t", self.actions_num*self.states_num
-        print "Episode Cap:\t", self.episodeCap
-        print "Gamma:\t\t", self.gamma
+        self.logger.line()
+        self.logger.log("Domain:\t\t"+str(className(self)))
+        self.logger.log("Dimensions:\t"+str(self.state_space_dims))
+        self.logger.log("|S|:\t\t"+str(self.states_num))
+        self.logger.log("|A|:\t\t"+str(self.actions_num))
+        self.logger.log("|S|x|A|:\t\t"+str(self.actions_num*self.states_num))
+        self.logger.log("Episode Cap:\t"+str(self.episodeCap))
+        self.logger.log("Gamma:\t\t"+str(self.gamma))
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)

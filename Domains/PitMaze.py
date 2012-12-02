@@ -37,7 +37,7 @@ class PitMaze(Domain):
                [0,-1], #left
                [0,+1] #Right
                ])
-    def __init__(self,mapname='/Domains/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None):
+    def __init__(self,logger,mapname='/Domains/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None):
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
@@ -49,8 +49,8 @@ class PitMaze(Domain):
             self.episodeCap         = 2*self.ROWS*self.COLS
         else:
             self.episodeCap         = episodeCap
-        super(PitMaze,self).__init__()
-        print "Dims:\t\t", self.ROWS, "x", self.COLS
+        super(PitMaze,self).__init__(logger)
+        self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
 
     def showDomain(self,s,a = 0):
        #Draw the environment

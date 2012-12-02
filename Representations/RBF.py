@@ -5,7 +5,7 @@ from Representation import *
 class RBF(Representation):
     rbfs_mu     = None          # The mean of RBFs
     rbfs_sigma  = None          # The variance of the RBFs (uniformly selected between [0, dimension width]
-    def __init__(self,domain,rbfs = 20):
+    def __init__(self,domain,logger,rbfs = 20):
         self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
         dims                = domain.state_space_dims
         self.rbfs_mu        = zeros((rbfs,dims))
@@ -18,7 +18,7 @@ class RBF(Representation):
 #        pl.plot(self.rbfs_mu[:,1],self.rbfs_mu[:,0],'.k')
 #        pl.show()
 #        raw_input()
-        super(RBF,self).__init__(domain)
+        super(RBF,self).__init__(domain,logger)
     def phi_nonTerminal(self,s):
         F_s         = ones(self.features_num)
         for i in range(0,self.features_num-1):

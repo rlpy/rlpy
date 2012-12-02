@@ -7,10 +7,10 @@
 # 2. Run iFDD to discover features 
 from LSPI import *
 class iFDD_LSPI(LSPI):
-    def __init__(self,representation,policy,domain, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3, outer_loop_iterations = 5):
+    def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3, outer_loop_iterations = 5):
         assert isinstance(representation,iFDD)
         self.outer_loop_iterations = outer_loop_iterations # Number of iterations over LSPI and iFDD
-        super(iFDD_LSPI, self).__init__(representation,policy,domain,lspi_iterations, sample_window, epsilon)
+        super(iFDD_LSPI, self).__init__(representation,policy,domain,logger,lspi_iterations, sample_window, epsilon)
     def learn(self,s,a,r,ns,na,terminal):
         self.storeData(s,a,r,ns,na)        
         if self.samples_count == self.sample_window: #zero based hence the -1

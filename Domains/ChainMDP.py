@@ -26,13 +26,13 @@ class ChainMDP(Domain):
     Y           = 1             # Y values used for drawing circles
     actions_num = 2
     #Constants in the map
-    def __init__(self, chainSize=2):
+    def __init__(self,logger, chainSize=2):
         self.chainSize          = chainSize
         self.start              = 0
         self.goal               = chainSize - 1
         self.statespace_limits  = array([[0,chainSize-1]])
         self.episodeCap         = 2*chainSize
-        super(ChainMDP,self).__init__()
+        super(ChainMDP,self).__init__(logger)
     def showDomain(self,s,a = 0):
         #Draw the environment
         if self.circles is None:

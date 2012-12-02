@@ -15,7 +15,7 @@ class OnlineExperiment (Experiment):
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
     STATS_NUM           = 6     # Number of statistics to be saved
     LOG_INTERVAL        = 0     # Number of seconds between log prints
-    def __init__(self,agent,domain,
+    def __init__(self,agent,domain, logger,
                  id = 1,
                  max_steps = 10000, 
                  performanceChecks = 10,
@@ -26,9 +26,9 @@ class OnlineExperiment (Experiment):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
-        super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance,output_filename = output_filename)
-        print "Max Steps: \t\t", max_steps
-        print "Performance Checks:\t", performanceChecks
+        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,output_filename = output_filename)
+        self.logger.log("Max Steps: \t\t%d" % max_steps)
+        self.logger.log("Performance Checks:\t%d" % performanceChecks)
     def run(self):
     # Run the online experiment and collect statistics
         self.result         = zeros((self.STATS_NUM,self.performanceChecks))
@@ -37,7 +37,8 @@ class OnlineExperiment (Experiment):
         eps_steps           = 0
         performance_tick    = 0
         eps_return          = 0
-        start_log_time      = start_time = time()
+        start_log_time      = time() # Used to bound the number of logs in the file  
+        self.start_time     = time() # Used to show the total time took the process
         if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap: 
@@ -67,21 +68,21 @@ class OnlineExperiment (Experiment):
             #Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
                 start_log_time  = time()
-                elapsedTime     = deltaT(start_time) 
-                print '%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num)
+                elapsedTime     = deltaT(self.start_time) 
+                self.logger.log('%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num))
 
 
             #Check Performance
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
                 performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
-                elapsedTime                     = deltaT(start_time) 
+                elapsedTime                     = deltaT(self.start_time) 
                 self.result[:,performance_tick] = [total_steps, # index = 0 
                                                    performance_return, # index = 1 
                                                    elapsedTime, # index = 2
                                                    self.agent.representation.features_num, # index = 3
                                                    performance_steps,# index = 4
                                                    performance_term] # index = 5
-                print '%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num)
+                self.logger.log('%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
                 start_log_time      = time()
                 performance_tick    += 1
 
@@ -95,10 +96,10 @@ class OnlineExperiment (Experiment):
         if self.show_all or self.show_performance: self.result_fig.savefig(self.out_path+'/lastSnapShot.pdf', transparent=True, pad_inches=0)
     def save(self):
         super(OnlineExperiment,self).save()
-        f = open(self.output_filename,'a')
-        f.write('# Column Info:\n')
-        f.write('#1. Test Step\n#2. Return\n#3. Time(s)\n#4. Features\n#5. Traj-Steps\n#6. Terminal\n')
-        f.close()
+        #f = open(self.output_filename,'a')
+        #f.write('# Column Info:\n')
+        #f.write('#1. Test Step\n#2. Return\n#3. Time(s)\n#4. Features\n#5. Traj-Steps\n#6. Terminal\n')
+        #f.close()
         #Plot Performance
         performance_fig = pl.figure(2)
         pl.plot(self.result[0,:],self.result[1,:],'-bo',lw=3,markersize=10)
@@ -108,5 +109,5 @@ class OnlineExperiment (Experiment):
         pl.ylim(m-.1*abs(M),M+.1*abs(M))
         pl.xlabel('steps',fontsize=16)
         pl.ylabel('Performance',fontsize=16)
-        performance_fig.savefig('performance.pdf', transparent=True, pad_inches=.1)
+        performance_fig.savefig(self.out_path+'/performance.pdf', transparent=True, pad_inches=.1)
         

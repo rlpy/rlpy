@@ -5,9 +5,9 @@ from Policy import *
 class eGreedy(Policy):
     epsilon         = None
     old_epsilon     = None 
-    def __init__(self,representation,epsilon = .1):
+    def __init__(self,representation,logger,epsilon = .1):
         self.epsilon = epsilon
-        super(eGreedy,self).__init__(representation)
+        super(eGreedy,self).__init__(representation,logger)
     def pi(self,s):
         coin = random.rand()
         if coin < self.epsilon:

@@ -86,7 +86,7 @@ class NetworkAdmin(Domain):
             for row in reader:
                 _Neighbors.append(map(int,row))
         return _Neighbors
-    def __init__(self, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt'):
+    def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt'):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS          = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
@@ -97,8 +97,8 @@ class NetworkAdmin(Domain):
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
         self.UNIQUE_EDGES           = self.getUniqueEdges()
-        super(NetworkAdmin,self).__init__()
-        print "Nodes\t\t", self.NEIGHBORS
+        super(NetworkAdmin,self).__init__(logger)
+        self.logger.log("Nodes\t\t%d" % self.NEIGHBORS)
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()

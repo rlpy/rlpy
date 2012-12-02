@@ -56,7 +56,7 @@ class iFDD(Representation):
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
-    def __init__(self,domain,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
+    def __init__(self,domain,logger,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
@@ -66,12 +66,12 @@ class iFDD(Representation):
         self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold         = batchThreshold
         self.addInitialFeatures()
-        super(iFDD,self).__init__(domain,discretization)
-        print "Threshold:\t\t", self.discovery_threshold
-        print "Sparsify:\t\t", self.sparsify
-        print "Cached:\t\t\t", self.useCache
-        print "Max Batch Discovery:\t", self.maxBatchDicovery
-        print "Batch Threshold:\t\t", self.batchThreshold
+        super(iFDD,self).__init__(domain,logger,discretization)
+        self.logger.log("Threshold:\t\t%0.3f" % self.discovery_threshold)
+        self.logger.log("Sparsify:\t\t%d"% self.sparsify)
+        self.logger.log("Cached:\t\t\t%d"% self.useCache)
+        self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
+        self.logger.log("Batch Threshold:\t\t%0.3f"% self.batchThreshold)
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')

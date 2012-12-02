@@ -5,14 +5,14 @@ from Agent import *
 class SARSA(Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []  #
-    def __init__(self, representation, policy, domain, initial_alpha =.1, lambda_ = 0):
+    def __init__(self, representation, policy, domain,logger, initial_alpha =.1, lambda_ = 0):
         self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
-        super(SARSA,self).__init__(representation,policy,domain)
+        super(SARSA,self).__init__(representation,policy,domain,logger)
         super(SARSA,self).printInfo()
-        print "Alpha_0:\t\t", initial_alpha
-        if lambda_: print "lambda:\t", lambda_
+        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
+        if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta

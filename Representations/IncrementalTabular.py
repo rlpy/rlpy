@@ -4,9 +4,9 @@
 from Representation import *
 class IncrementalTabular(Representation):
     hash = {}
-    def __init__(self,domain,discretization = 20):
+    def __init__(self,domain,logger,discretization = 20):
         self.features_num = 0
-        super(IncrementalTabular,self).__init__(domain,discretization)
+        super(IncrementalTabular,self).__init__(domain,logger,discretization)
     def phi(self,s):
         hash_id = self.hashState(s)
         id  = self.hash.get(hash_id)

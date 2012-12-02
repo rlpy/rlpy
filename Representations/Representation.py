@@ -9,9 +9,10 @@ class Representation(object):
     domain          = None  #Link to the domain object 
     features_num    = None  #Number of features
     discretization  = 0     #Number of bins used for discretization for each continuous dimension  
-    bins_per_dim = None  #Number of possible states per dimension [1-by-dim]
+    bins_per_dim = None     #Number of possible states per dimension [1-by-dim]
     agg_states_num  = None  #Number of aggregated states based on the discretization. If the represenation is adaptive set it to the best resolution possible  
-    def __init__(self,domain,discretization = 20):
+    logger = None           # Object for capturing output text in a file
+    def __init__(self,domain,logger,discretization = 20):
         # See if the child has set important attributes  
         for v in ['features_num']:
             if getattr(self,v) == None:
@@ -21,11 +22,12 @@ class Representation(object):
         self.discretization = discretization
         self.theta  = zeros(self.features_num*self.domain.actions_num) 
         self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
-        print join(["-"]*30)
-        print "Representation:\t\t", className(self)
-        print "Discretization:\t\t", self.discretization
-        print "Starting Features:\t", self.features_num
-        print "Aggregated States:\t", self.agg_states_num
+        self.logger = logger
+        self.logger.line()
+        self.logger.log("Representation:\t\t%s" % className(self))
+        if len(self.domain.continous_dims): self.logger.log("Discretization:\t\t%d"% self.discretization)
+        self.logger.log("Starting Features:\t%d"% self.features_num)
+        self.logger.log("Aggregated States:\t%d"% self.agg_states_num)
     def V(self,s, phi_s = None):
         #Returns the value of a state
         if phi_s is None: phi_s = self.phi(s)

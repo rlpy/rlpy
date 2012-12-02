@@ -16,7 +16,7 @@ class LSPI(Agent):
     data_ns         = []        # 
     data_na         = []        # 
         
-    def __init__(self,representation,policy,domain, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3):
+    def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3):
         self.samples_count      = 0
         self.sample_window      = sample_window
         self.epsilon            = epsilon
@@ -27,7 +27,7 @@ class LSPI(Agent):
         self.data_a             = zeros(sample_window,dtype=uint16)
         self.data_na            = zeros(sample_window,dtype=uint16)
         self.data_r             = zeros(sample_window)
-        super(LSPI, self).__init__(representation, policy, domain)
+        super(LSPI, self).__init__(representation, policy, domain,logger)
     def learn(self,s,a,r,ns,na,terminal):
         
         self.storeData(s,a,r,ns,na)        
@@ -64,7 +64,7 @@ class LSPI(Agent):
                 new_theta                   = solveLinear(sp.csc_matrix(A),b)
                 weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                 if weight_diff > self.epsilon: self.representation.theta   = new_theta
-                print "%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff)
+                self.logger.log("%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff))
                 lspi_iteration +=1
             return td_errors
     def LSTD(self): 

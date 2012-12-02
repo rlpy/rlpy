@@ -64,7 +64,7 @@ def binNumber(s,bins,limits):
     # s = .4, limits = [-.5,.5], bins = 3 => 2
     width = limits[1]-limits[0]
     if not (s <= limits[1] and s>=limits[0]):
-        print "WARNING:",s,"is out of limits of ", limits, ". Using he chopped value of s"
+        self.logger.log("WARNING: %s is out of limits of %s . Using he chopped value of s" %(str(s),str(limits)))
     return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
     return time()-start_time
@@ -458,8 +458,26 @@ def sp_add2_array(sp,A):
     for i in ind:
         A[i] += sp[i,0]
     return A
+
+class Logger(object):
+    def __init__(self,fullfilename):
+        path,char,filename = fullfilename.rpartition('/')
+        print path, filename
+        if not os.path.exists(path):
+            os.makedirs(path) 
+        self.file = open(fullfilename,'w')
+    def log(self,str):
+    # Print something both in output and in a file
+        print str
+        self.file.write(str+"\n")
+    def line(self):
+        self.log(SEP_LINE)
+    def done(self):
+        self.file.close()
+
 createColorMaps()
 FONTSIZE = 12
+SEP_LINE = "="*60
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
 mpl.rcParams['font.size'] = 12.
 mpl.rcParams['font.weight'] = 'bold'
