@@ -20,7 +20,7 @@ class Experiment(object):
     result  = None          # All data is saved in the result array: stats_num-by-performanceChecks
     output_filename = ''    # The name of the file used to store the data
     logger = None           # An object to record the print outs in a file
-    def __init__(self,id, agent, domain,logger, show_all, show_performance, output_filename = 'results.txt'):
+    def __init__(self,id, agent, domain,logger, show_all, show_performance, output_path = 'Results/Test', output_filename = 'results.txt'):
         self.id = id
         # Find the corresponding random seed for the experiment id
         random.seed(self.mainSeed)
@@ -29,16 +29,17 @@ class Experiment(object):
         self.agent              = agent
         self.domain             = domain
         self.output_filename    = output_filename
+        self.output_path        = output_path
         self.show_all           = show_all
         self.show_performance   = show_performance
-        self.out_path           = 'Results/%d'%self.id
+        self.fullpath           = '%s/%d'% (self.output_path,self.id)
         self.logger             = logger
         if show_all or show_performance: 
             self.result_fig = pl.figure(1,figsize=(14, 10))
             createColorMaps()
         self.logger.line()
         self.logger.log("Experiment:\t\t%s" % className(self))
-        self.logger.log("Output:\t\t\tResults/%d/%s" % (self.id, self.output_filename))
+        self.logger.log("Output:\t\t\t%s/%d/%s" % (self.output_path, self.id, self.output_filename))
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -65,8 +66,8 @@ class Experiment(object):
     def printAll(self):
         printClass(self)
     def save(self):
-        if not os.path.exists(self.out_path):
-            os.makedirs(self.out_path)
-        savetxt(self.out_path+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
+        if not os.path.exists(self.fullpath):
+            os.makedirs(self.fullpath)
+        savetxt(self.fullpath+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
         self.logger.line()
         self.logger.log("Took %s\nSaved in %s" % (hhmmss(deltaT(self.start_time)), self.output_filename))

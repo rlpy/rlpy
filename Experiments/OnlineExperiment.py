@@ -22,11 +22,12 @@ class OnlineExperiment (Experiment):
                  show_all   = False, 
                  show_performance = False,
                  log_interval = 1,
+                 output_path     = 'Results/Temp',
                  output_filename = 'results.txt'):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
-        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,output_filename = output_filename)
+        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,output_path = output_path, output_filename = output_filename)
         self.logger.log("Max Steps: \t\t%d" % max_steps)
         self.logger.log("Performance Checks:\t%d" % performanceChecks)
     def run(self):
@@ -96,10 +97,6 @@ class OnlineExperiment (Experiment):
         if self.show_all or self.show_performance: self.result_fig.savefig(self.out_path+'/lastSnapShot.pdf', transparent=True, pad_inches=0)
     def save(self):
         super(OnlineExperiment,self).save()
-        #f = open(self.output_filename,'a')
-        #f.write('# Column Info:\n')
-        #f.write('#1. Test Step\n#2. Return\n#3. Time(s)\n#4. Features\n#5. Traj-Steps\n#6. Terminal\n')
-        #f.close()
         #Plot Performance
         performance_fig = pl.figure(2)
         pl.plot(self.result[0,:],self.result[1,:],'-bo',lw=3,markersize=10)
@@ -109,4 +106,4 @@ class OnlineExperiment (Experiment):
         pl.ylim(m-.1*abs(M),M+.1*abs(M))
         pl.xlabel('steps',fontsize=16)
         pl.ylabel('Performance',fontsize=16)
-        performance_fig.savefig(self.out_path+'/performance.pdf', transparent=True, pad_inches=.1)
+        performance_fig.savefig(self.fullpath+'/performance.pdf', transparent=True, pad_inches=.1)

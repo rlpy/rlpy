@@ -49,7 +49,7 @@ class InvertedPendulum(Domain):
     ACCEL_G = 9.81 # m/s^2 - gravitational constant
     ROT_INERTIA = 0 # kg * m^2 - rotational inertia of the pendulum
     
-    dt = .1 # Time between steps
+    dt = 0 # Time between steps
     
     torque_noise_sigma = 0.1 # Noise std deviation (in N*m) of applied pendulum torque [0.1 in tutorial]
     

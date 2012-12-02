@@ -471,7 +471,6 @@ def sp_add2_array(sp,A):
 class Logger(object):
     def __init__(self,fullfilename):
         path,char,filename = fullfilename.rpartition('/')
-        print path, filename
         if not os.path.exists(path):
             os.makedirs(path) 
         self.file = open(fullfilename,'w')
