@@ -27,6 +27,7 @@ import networkx as nx
 import os 
 import sys
 from os import path
+from scipy.stats import *
 # Tips:
 # array.astype(float) => convert elements
 # matlibplot initializes the maping from the values to 
@@ -40,6 +41,7 @@ from os import path
 # Set a property of a class:  vars(self)['prop'] = 2
 # dont use a=b=zeros((2,3)) because a and b will point to the same array!
 # b = A[:,1] does NOT create a new matrix. It is simply a pointer to that row! so if you change b you change A
+# DO NOT USE A = B = array() unless you know what you are doing. They will point to the same object!
 # Todo:
 # Replace vstack and hstack with the trick mentioned here:
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
@@ -467,12 +469,14 @@ def sp_add2_array(sp,A):
     for i in ind:
         A[i] += sp[i,0]
     return A
-
+def checkDirectory(fullfilename):
+    # See if a fullfilename exists if not create the required directory
+    path,char,filename = fullfilename.rpartition('/')
+    if not os.path.exists(path):
+        os.makedirs(path)
 class Logger(object):
     def __init__(self,fullfilename):
-        path,char,filename = fullfilename.rpartition('/')
-        if not os.path.exists(path):
-            os.makedirs(path) 
+        checkDirectory(fullfilename)
         self.file = open(fullfilename,'w')
     def log(self,str):
     # Print something both in output and in a file

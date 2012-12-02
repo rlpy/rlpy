@@ -5,8 +5,8 @@
 # Run the main file multiple times and store the result of each run in a separate directory:
 from main import *
 from os import *
-RUNS            = 10
-OUTPUT_PATH     = 'Results/TEST1'
+RUNS            = 6
+OUTPUT_PATH     = 'Results/BlocksWorld-SARSA-IndependentDiscritization'
 for i in arange(1,RUNS+1):
     os.system('chmod +x main.py')
     print "Started job %d" % i

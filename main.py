@@ -14,7 +14,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    LEARNING_STEPS      = 30000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
@@ -46,17 +46,17 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     iFDD_LSPI_iterations    = 10
     
-    domain          = ChainMDP(logger,10)
+    #domain          = ChainMDP(logger,10)
     #domain          = PitMaze(logger,MAZE, noise = NOISE)
-    #domain          = BlocksWorld(logger,blocks=BLOCKS,noise = NOISE)
+    domain          = BlocksWorld(logger,blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(logger,noise = NOISE)
     #domain          = NetworkAdmin(logger)
     #domain          = PST(logger) 
     
-    representation  = Tabular(domain,logger)
+    #representation  = Tabular(domain,logger)
     #representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
-    #representation  = IndependentDiscretization(domain,logger)
+    representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
