@@ -49,7 +49,7 @@ class InvertedPendulum(Domain):
     ACCEL_G = 9.81 # m/s^2 - gravitational constant
     ROT_INERTIA = 0 # kg * m^2 - rotational inertia of the pendulum
     
-    dt = 0 # Time between steps
+    dt = 0.20 # Time between steps
     
     torque_noise_var = 0.1 # Noise std deviation (in N*m) of applied pendulum torque [0.1 in tutorial]
     
@@ -73,12 +73,12 @@ class InvertedPendulum(Domain):
     PENDULUM_PIVOT = [0,0] # pivot point of pendulum
     
     # are constrained by the format expected by ode functions.
-    def __init__(self, logger, start_angle = 0, start_rate = 0, dt = 0.1, torque_noise_var = 0.1):
+    def __init__(self, logger, start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        self.state_space_limits = [self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS]
+        self.statespace_limits = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         self.states_num = self.NUM_ANGLE_INTERVALS * self.NUM_RATE_INTERVALS       # Number of states
         self.actions_num = len(self.AVAIL_TORQUES)      # Number of Actions
-        state_space_dims = 2 # Number of dimensions of the state space
+        self.state_space_dims = 2 # Number of dimensions of the state space
         self.episodeCap = self.EPISODE_CAP       # The cap used to bound each episode (return to s0 after)
         self.start_angle = start_angle
         self.start_rate = start_rate
@@ -203,5 +203,5 @@ class InvertedPendulum(Domain):
         return self.NOT_TERMINATED # Pendulum has no absorbing state
 if __name__ == '__main__':
     random.seed(0)
-    p = InvertedPendulum(logger = None, start_angle = 0, start_rate = 0, dt = 0.25, torque_noise_var = 1.0);
+    p = InvertedPendulum(logger = None, start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1);
     p.test(500)

@@ -116,14 +116,14 @@ class PST(Domain):
     
     episodeCap = 100 # 100 used in tutorial
     
-    FULL_FUEL = 10 # Number of fuel units at start
-    P_NOM_FUEL_BURN = 0.8 # Probability of nominal (1 unit) fuel burn on timestep
+    FULL_FUEL = 10 # Number of fuel units at start [10 in tutorial]
+    P_NOM_FUEL_BURN = 0.8 # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
  #   P_TWO_FUEL_BURN = 1.0 - P_NOM_FUEL_BURN # Probability of 2-unit fuel burn on timestep
-    P_ACT_FAIL = 0.02 # Probability that actuators fail on this timestep
-    P_SENSOR_FAIL = 0.05 #Probability that sensors fail on this timestep
-    CRASH_REWARD_COEFF = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash]
-    SURVEIL_REWARD_COEFF = 1.5 # Positive reward coefficient for performing surveillance on each step [C_cov]
-    FUEL_BURN_REWARD_COEFF = 0.0 # Negative reward coefficient: for fuel burn penalty, not mentioned in MDP Tutorial
+    P_ACT_FAIL = 0.02 # Probability that actuators fail on this timestep [0.02 in tutorial]
+    P_SENSOR_FAIL = 0.05 #Probability that sensors fail on this timestep [0.05 in tutorial]
+    CRASH_REWARD_COEFF = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
+    SURVEIL_REWARD_COEFF = 1.5 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
+    FUEL_BURN_REWARD_COEFF = 0.0 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
     numCrashed = 0 # Number of crashed UAVs [n_c]
     numHealthySurveil = 0 #Number of UAVs in surveillance area with working sensor and actuator [n_s]
     fuelUnitsBurned = 0
@@ -134,7 +134,7 @@ class PST(Domain):
     NOM_FUEL_BURN = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
     STOCH_FUEL_BURN = 2 # Alternative fuel burn rate
     
-    isCommStatesCovered = False # All comms states are covered
+    isCommStatesCovered = False # All comms states are covered on a given timestep, enabling surveillance rewards
     
     # Plotting constants
     UAV_RADIUS = 0.3
@@ -162,7 +162,7 @@ class PST(Domain):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
-        _statespace_limits = vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL-1],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]]) # 3 Location states, 2 status states
+        _statespace_limits = vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]]) # 3 Location states, 2 status states
         self.statespace_limits      = tile(_statespace_limits,(NUM_UAV,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.motionNoise = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
         self.LIMITS                 = tile(UAVAction.SIZE, (1,NUM_UAV))[0] # eg [3,3,3,3]
@@ -180,7 +180,8 @@ class PST(Domain):
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
 
-#        super(PST,self).__init__(logger)
+        super(PST,self).__init__(logger)
+        self.logger.log("NUM_UAV \t\t%2d" % self.NUM_UAV)
     def showDomain(self,s,a = 0):
  #       pl.cla()
         pl.clf()
@@ -204,6 +205,7 @@ class PST(Domain):
         self.location_coord = [0.5 + (self.LOCATION_WIDTH / 2) + (self.dist_between_locations)*i for i in range(UAVLocation.SIZE-1)]
         crashLocationX = 1.0 + (self.dist_between_locations)*(UAVLocation.SIZE-1)
         self.location_coord.append(crashLocationX + self.LOCATION_WIDTH / 2)
+        
          # Create rectangular patches at each of those locations
         self.location_rect_vis = [mpatches.Rectangle([0.5 + (self.dist_between_locations)*i, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'w') for i in range(UAVLocation.SIZE-1)]
         self.location_rect_vis.append(mpatches.Rectangle([crashLocationX, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'r'))
@@ -214,16 +216,12 @@ class PST(Domain):
         uav_x = self.location_coord[UAVLocation.BASE_LOC]
         
 #            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
+        # Update the member variables storing all the figure objects
         self.uav_circ_vis = [mpatches.Circle((uav_x,1+uav_id), self.UAV_RADIUS, fc="w") for uav_id in range(0,self.NUM_UAV)]
         self.uav_text_vis = [pl.text(0, 0, 0) for uav_id in range(0,self.NUM_UAV)]
         self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
         self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
         pl.show(block=False)
-
-                      # For each UAV:
-         # Draw a circle, with text inside = amt fuel remaining
-         # Triangle on top of UAV for comms, black = good, red = bad
-         # Triangle below UAV for surveillance
  
  # The following was executed when we used to check if the environment needed re-drawing: see above.        
          # Remove all UAV circle objects from visualization
@@ -232,16 +230,27 @@ class PST(Domain):
 #            [self.uav_text_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
 #            [self.uav_sensor_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
         
+    
+        # For each UAV:
+        # Draw a circle, with text inside = amt fuel remaining
+        # Triangle on top of UAV for comms, black = good, red = bad
+        # Triangle in front of UAV for surveillance
         for uav_id in range(0,self.NUM_UAV):
+            # Assign all the variables corresponding to this UAV for this iteration;
+            # this could alternately be done with a UAV class whose objects keep track
+            # of these variables.  Elect to use lists here since ultimately the state
+            # must be a vector anyway.
             uav_ind = uav_id * UAVIndex.SIZE
             uav_location = s[uav_ind + UAVIndex.UAV_LOC] # State index corresponding to the location of this uav
             uav_fuel = s[uav_ind + UAVIndex.UAV_FUEL]
             uav_sensor = s[uav_ind + UAVIndex.UAV_SENS_STATUS]
             uav_actuator = s[uav_ind + UAVIndex.UAV_ACT_STATUS]
             
+            # Assign coordinates on figure where UAV should be drawn
             uav_x = self.location_coord[uav_location]
             uav_y = 1 + uav_id
             
+            # Update plot wit this UAV
             self.uav_circ_vis[uav_id] = mpatches.Circle((uav_x,uav_y), self.UAV_RADIUS, fc="w")
             self.uav_text_vis[uav_id] = pl.text(uav_x-0.05, uav_y-0.05, uav_fuel)
             if uav_sensor == SensorState.RUNNING: objColor = 'black'
@@ -255,7 +264,7 @@ class PST(Domain):
             self.subplot_axes.add_patch(self.uav_circ_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
-
+            
         if self.isCommStatesCovered == True: # We have comms coverage: draw a line between comms states to show this
             if self.numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
                 commsColor = 'black'
@@ -344,8 +353,9 @@ class PST(Domain):
                           self.numHealthySurveil += 1
                 
             else: # We transitioned to or loitered in Base
-                ns[uav_fuel_ind] += self.REFUEL_RATE
-                ns[uav_fuel_ind] = bound(ns[uav_fuel_ind], 0, self.FULL_FUEL)
+                if (uav_action == UAVAction.LOITER): # We have been in base since last step, refuel
+                    ns[uav_fuel_ind] += self.REFUEL_RATE
+                    ns[uav_fuel_ind] = bound(ns[uav_fuel_ind], 0, self.FULL_FUEL)
                 ns[uav_sensor_ind] = SensorState.RUNNING;
                 ns[uav_actuator_ind] = ActuatorState.RUNNING;
 #DEBUG                 print 'UAV',uav_id,'at base.'
@@ -435,8 +445,12 @@ class PST(Domain):
 #        return actionIDs
     
 if __name__ == '__main__':
+        OUT_PATH            = 'Temp'
+        JOB_ID = 1
+        STDOUT_FILE         = 'out.txt'
         random.seed(0)
-        p = PST(logger = None, NUM_UAV = 3, motionNoise = 0);
+        testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+        p = PST(logger = testLogger, NUM_UAV = 3, motionNoise = 0);
         p.test(100)
         
         

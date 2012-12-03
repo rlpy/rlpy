@@ -37,7 +37,7 @@ class PitMaze(Domain):
                [0,-1], #left
                [0,+1] #Right
                ])
-    def __init__(self,logger,mapname='/Domains/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None):
+    def __init__(self,logger,mapname='/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None):
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
@@ -189,7 +189,12 @@ class PitMaze(Domain):
                 return self.CRITICAL_TERMINATION
         return self.NOT_TERMINATED
 if __name__ == '__main__':
-    p = PitMaze('/PitMazeMaps/4x5.txt');
+    OUT_PATH            = 'Temp'
+    JOB_ID = 1
+    STDOUT_FILE         = 'out.txt'
+    random.seed(0)
+    testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+    p = PitMaze(logger= testLogger, mapname='/PitmazeMaps/4x5.txt');
     p.test(1000)
     
     

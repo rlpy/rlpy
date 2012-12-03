@@ -86,7 +86,7 @@ class NetworkAdmin(Domain):
             for row in reader:
                 _Neighbors.append(map(int,row))
         return _Neighbors
-    def __init__(self,logger, networkmapname='/NetworkAdminMaps/5Machines.txt'):
+    def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt'):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS          = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
@@ -98,7 +98,8 @@ class NetworkAdmin(Domain):
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
         self.UNIQUE_EDGES           = self.getUniqueEdges()
         super(NetworkAdmin,self).__init__(logger)
-        self.logger.log("Nodes\t\t%d" % self.NEIGHBORS)
+#        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,s)):
+#        [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
@@ -189,6 +190,11 @@ class NetworkAdmin(Domain):
         return uniqueEdges
 if __name__ == '__main__':
         random.seed(0)
-        p = NetworkAdmin('/NetworkAdminMaps/5Machines.txt');
+        OUT_PATH            = 'Temp'
+        JOB_ID = 1
+        STDOUT_FILE         = 'out.txt'
+        random.seed(0)
+        testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+        p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/5Machines.txt');
         p.test(1000)
      
