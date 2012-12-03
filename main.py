@@ -27,7 +27,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     DEBUG               = 0
     logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     # Domain ----------------------
-    MAZE                = '/Domains/PitMazeMaps/4x5.txt'
+    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
     NOISE               = .3
     BLOCKS              = 6 # For BlocksWorld
@@ -48,10 +48,11 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     
     #domain          = ChainMDP(logger,10)
     #domain          = PitMaze(logger,MAZE, noise = NOISE)
-    domain          = BlocksWorld(logger,blocks=BLOCKS,noise = NOISE)
+    #domain          = BlocksWorld(logger,blocks=BLOCKS,noise = NOISE)
     #domain          = MountainCar(logger,noise = NOISE)
     #domain          = NetworkAdmin(logger)
-    #domain          = PST(logger) 
+    #domain          = PST(logger, NUM_UAV = 3, motionNoise = 0)
+    domain           = InvertedPendulum(logger, dt = 0.20, torque_noise_var = 0.1);
     
     #representation  = Tabular(domain,logger)
     #representation  = IncrementalTabular(domain,logger)
