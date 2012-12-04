@@ -4,7 +4,8 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 
-from scipy import integrate # for integration of state
+# from scipy import integrate # for integration of state
+from matplotlib.mlab import rk4
 from matplotlib import lines
 
 #######################################################
@@ -178,7 +179,10 @@ class InvertedPendulum(Domain):
         #ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
         
-        ns_continuous = integrate.quad(self._dsdt, 0, self.dt, args=(self.s_continuous))
+        ns_continuous = rk4(self._dsdt, self.s_continuous, [0, self.dt])
+        self.s_continuous = ns_continuous[-1]
+        
+        # ns_continuous = integrate.quad(self._dsdt, 0, self.dt, args=(self.s_continuous))
          # wrap angle between 0 and 2pi
         self.s_continuous[StateIndex.THETA] = wrap(self.s_continuous[StateIndex.THETA],self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         self.s_continuous[StateIndex.THETA_DOT] = bound(self.s_continuous[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
@@ -191,8 +195,8 @@ class InvertedPendulum(Domain):
     
     # From pybrain environment 'cartpole'
     # Used by odeint to numerically integrate the differential equation
-    #def _dsdt(self, s_continuous, t):
-    def _dsdt(self,t, s_continuous):
+    def _dsdt(self, s_continuous, t):
+    # def _dsdt(self,t, s_continuous):
         # This function is needed for ode integration.  It calculates and returns the derivatives
         # of the state, which can then 
         torque = self.cur_action + self.cur_torque_noise
