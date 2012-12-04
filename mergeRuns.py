@@ -72,7 +72,7 @@ class MergedData(object):
         pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
         pl.xlabel(X_axis,fontsize=16)
         pl.ylabel(Y_axis,fontsize=16)
-        pl.show(block=False)
+        pl.show()
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
@@ -88,8 +88,8 @@ paths = ['Results/BlocksWorld-SARSA-iFDD',
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,'Results',colors = colors)
-mergedData.plot('Return')
-mergedData.plot('Return','Time(s)')
+#mergedData.plot('Return')
+#mergedData.plot('Return','Time(s)')
 mergedData.plot('Steps')
 mergedData.plot('Features')
 mergedData.plot('Terminal')

@@ -28,11 +28,10 @@ class MountainCar(Domain):
     gravityFactor = -0.0025;
     hillPeakFrequency = 3.0;
     continous_dims = [0,1]
-    def __init__(self,logger, noise = 0):
+    def __init__(self, noise = 0, logger = None):
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise
         super(MountainCar,self).__init__(logger)
-        super(MountainCar,self).printInfo()
     def step(self, s, a):
         position, velocity = s
         noise = 2 * self.accelerationFactor * self.noise * (random.rand() - .5) 

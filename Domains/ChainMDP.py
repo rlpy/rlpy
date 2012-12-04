@@ -26,7 +26,7 @@ class ChainMDP(Domain):
     Y           = 1             # Y values used for drawing circles
     actions_num = 2
     #Constants in the map
-    def __init__(self,logger, chainSize=2):
+    def __init__(self, chainSize=2,logger = None):
         self.chainSize          = chainSize
         self.start              = 0
         self.goal               = chainSize - 1
@@ -50,7 +50,7 @@ class ChainMDP(Domain):
                     fromAtoB(1+2*i+self.SHIFT,self.Y+self.SHIFT,1+2*(i+1)-self.SHIFT, self.Y+self.SHIFT)
                     if i != self.chainSize-2: fromAtoB(1+2*(i+1)-self.SHIFT,self.Y-self.SHIFT,1+2*i+self.SHIFT, self.Y-self.SHIFT, 'r')
                fromAtoB(.75,self.Y-1.5*self.SHIFT,.75,self.Y+1.5*self.SHIFT,'r',connectionstyle='arc3,rad=-1.2')
-               pl.show(block=False)
+               pl.show()
             
         [p.set_facecolor('w') for p in self.circles]
         self.circles[s].set_facecolor('k')

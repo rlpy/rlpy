@@ -40,7 +40,7 @@ class IntruderMonitoring(Domain):
                ])
       
        
-    def __init__(self,logger, mapname, episodeCap = None):
+    def __init__(self, mapname, episodeCap = None, logger = None):
                  
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
@@ -220,7 +220,7 @@ class IntruderMonitoring(Domain):
                            
 if __name__ == '__main__':
    
-    p = IntruderMonitoring(logger = None, mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
+    p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
     p.test(100)
     
     

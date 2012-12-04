@@ -197,7 +197,7 @@ class iFDD(Representation):
             e_vec  = e_vec[e_vec != 0]
             e_vec  = sort(e_vec)
             drawHist(e_vec)
-            pl.show(block=False)
+            pl.show()
 
         #Find indexes to non-zero excited pairs
         (F1, F2)            = relevances.nonzero() # F1 and F2 are the parents of the potentials

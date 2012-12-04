@@ -76,7 +76,7 @@ class InvertedPendulum(Domain):
     PENDULUM_PIVOT = [0,0] # pivot point of pendulum
     
     # are constrained by the format expected by ode functions.
-    def __init__(self, logger, start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1):
+    def __init__(self, start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.statespace_limits = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         self.states_num = self.NUM_ANGLE_INTERVALS * self.NUM_RATE_INTERVALS       # Number of states
@@ -118,7 +118,7 @@ class InvertedPendulum(Domain):
             self.subplotAxes.set_ylim(-viewableDistance, viewableDistance)
  #           self.subplotAxes.set_aspect('equal')
             pl.axis('off')
-            pl.show(block=False)
+            pl.show()
         theta = self.s_continuous[StateIndex.THETA] # Using continuous state
         # theta = s[StateIndex.THETA] # using discretized state
         # recall we define 0 down, 90 deg right
@@ -219,5 +219,5 @@ class InvertedPendulum(Domain):
         return self.NOT_TERMINATED # Pendulum has no absorbing state
 if __name__ == '__main__':
     random.seed(0)
-    p = InvertedPendulum(logger = None, start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1);
+    p = InvertedPendulum(start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1);
     p.test(500)

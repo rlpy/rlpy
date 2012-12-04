@@ -9,6 +9,7 @@ from numpy  import *
 #import matplotlib
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 from matplotlib import pylab as pl
+pl.ion()
 from matplotlib import mpl,rc
 import matplotlib.patches as mpatches
 import matplotlib.colors as col

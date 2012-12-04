@@ -22,7 +22,7 @@ class BlocksWorld(Domain):
     towerSize               = 0    # Goal tower size   
     episodeCap              = 1000
     domain_fig              = None  #Used to plot the domain
-    def __init__(self, logger, blocks = 6, towerSize = 6, noise = .3):
+    def __init__(self, blocks = 6, towerSize = 6, noise = .3, logger = None):
         self.blocks             = blocks    
         self.towerSize          = towerSize    
         self.noise              = noise 
@@ -33,8 +33,9 @@ class BlocksWorld(Domain):
         self.real_states_num    = sum([nchoosek(blocks,i)*factorial(blocks-i)*pow(i,blocks-i) for i in range(blocks)]) #This is the true size of the state space refer to [Geramifard11_ICML]
         self.GOAL_STATE         = hstack(([0],arange(0,blocks-1))) # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
         super(BlocksWorld,self).__init__(logger)
-        self.logger.log("noise\t\t%0.1f" % self.noise)
-        self.logger.log("blocks\t\t%d" % self.blocks)
+        if logger:
+            self.logger.log("noise\t\t%0.1f" % self.noise)
+            self.logger.log("blocks\t\t%d" % self.blocks)
 
     def showDomain(self,s,a =0):
         #Draw the environment
@@ -60,7 +61,7 @@ class BlocksWorld(Domain):
             pl.yticks(arange(self.blocks), fontsize= FONTSIZE)
             #pl.tight_layout()
             pl.axis('off')
-            pl.show(block=False)
+            pl.show()
         else:
             self.domain_fig.set_data(world)
             pl.draw()   

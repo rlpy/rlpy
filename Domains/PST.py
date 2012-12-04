@@ -158,7 +158,7 @@ class PST(Domain):
     
     ###
     
-    def __init__(self, logger, NUM_UAV = 6, motionNoise = 0):
+    def __init__(self, NUM_UAV = 6, motionNoise = 0, logger = None):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
@@ -221,7 +221,7 @@ class PST(Domain):
         self.uav_text_vis = [pl.text(0, 0, 0) for uav_id in range(0,self.NUM_UAV)]
         self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
         self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
-        pl.show(block=False)
+        pl.show()
  
  # The following was executed when we used to check if the environment needed re-drawing: see above.        
          # Remove all UAV circle objects from visualization
@@ -452,7 +452,7 @@ if __name__ == '__main__':
         STDOUT_FILE         = 'out.txt'
         random.seed(0)
         testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
-        p = PST(logger = testLogger, NUM_UAV = 3, motionNoise = 0);
+        p = PST(NUM_UAV = 3, motionNoise = 0,logger = testLogger);
         p.test(100)
         
         

@@ -14,10 +14,10 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 30000
+    LEARNING_STEPS      = 10000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'
@@ -46,13 +46,13 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     iFDD_LSPI_iterations    = 10
     
-    #domain          = ChainMDP(logger,10)
-    #domain          = PitMaze(logger,MAZE, noise = NOISE)
-    #domain          = BlocksWorld(logger,blocks=BLOCKS,noise = NOISE)
-    #domain          = MountainCar(logger,noise = NOISE)
-    #domain          = NetworkAdmin(logger)
-    #domain          = PST(logger, NUM_UAV = 3, motionNoise = 0)
-    domain           = InvertedPendulum(logger, dt = 0.20, torque_noise_var = 0.1);
+    #domain          = ChainMDP(10, logger = logger)
+    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = MountainCar(noise = NOISE,logger = logger)
+    #domain          = NetworkAdmin(logger = logger)
+    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    domain           = InvertedPendulum(dt = 0.20, torque_noise_var = 0.1, logger = logger);
     
     #representation  = Tabular(domain,logger)
     #representation  = IncrementalTabular(domain,logger)

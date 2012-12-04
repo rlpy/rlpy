@@ -30,14 +30,15 @@ class Domain(object):
             self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
         else:
             self.states_num = inf
-        self.logger.line()
-        self.logger.log("Domain:\t\t"+str(className(self)))
-        self.logger.log("Dimensions:\t"+str(self.state_space_dims))
-        self.logger.log("|S|:\t\t"+str(self.states_num))
-        self.logger.log("|A|:\t\t"+str(self.actions_num))
-        self.logger.log("|S|x|A|:\t\t"+str(self.actions_num*self.states_num))
-        self.logger.log("Episode Cap:\t"+str(self.episodeCap))
-        self.logger.log("Gamma:\t\t"+str(self.gamma))
+        if logger:
+            self.logger.line()
+            self.logger.log("Domain:\t\t"+str(className(self)))
+            self.logger.log("Dimensions:\t"+str(self.state_space_dims))
+            self.logger.log("|S|:\t\t"+str(self.states_num))
+            self.logger.log("|A|:\t\t"+str(self.actions_num))
+            self.logger.log("|S|x|A|:\t\t"+str(self.actions_num*self.states_num))
+            self.logger.log("Episode Cap:\t"+str(self.episodeCap))
+            self.logger.log("Gamma:\t\t"+str(self.gamma))
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)

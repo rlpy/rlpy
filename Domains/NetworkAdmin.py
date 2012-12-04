@@ -80,7 +80,7 @@ class NetworkAdmin(Domain):
     _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
             
     # Note that you must pass a network map name as well as its format type; see top of this module.
-    def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5):
+    def __init__(self, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5, logger = None):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS, self.UNIQUE_EDGES = self.getNetworkMap(path,maptype,numNodes) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
@@ -128,7 +128,7 @@ class NetworkAdmin(Domain):
             nx.draw_networkx_nodes(self.networkGraph, self.networkPos, node_color="w")
             nx.draw_networkx_edges(self.networkGraph, self.networkPos, edges_color="k")
             nx.draw_networkx_labels(self.networkGraph, self.networkPos)
-            pl.show(block=False)
+            pl.show()
         else:
             pl.clf()
             blackEdges = []
@@ -231,6 +231,6 @@ if __name__ == '__main__':
         random.seed(0)
         testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
         #p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5);
-        p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=20);
+        p = NetworkAdmin(networkmapname='/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=20,logger = testLogger);
         p.test(1000)
      

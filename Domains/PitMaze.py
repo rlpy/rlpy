@@ -37,7 +37,7 @@ class PitMaze(Domain):
                [0,-1], #left
                [0,+1] #Right
                ])
-    def __init__(self,logger,mapname='/Domains/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None):
+    def __init__(self,mapname='/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
@@ -50,7 +50,7 @@ class PitMaze(Domain):
         else:
             self.episodeCap         = episodeCap
         super(PitMaze,self).__init__(logger)
-        self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
+        if logger: self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
 
     def showDomain(self,s,a = 0):
        #Draw the environment
@@ -59,9 +59,9 @@ class PitMaze(Domain):
            self.domain_fig = pl.imshow(self.map, cmap='GridWorld',interpolation='nearest',vmin=0,vmax=5)
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
-           pl.tight_layout()
+           #pl.tight_layout()
            self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0)
-           pl.show(block=False)
+           pl.show()
        #mapcopy = copy(self.map) 
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
@@ -70,6 +70,7 @@ class PitMaze(Domain):
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
+            pl.ioff()
             pl.subplot(1,2,2)
             self.valueFunction_fig   = pl.imshow(self.map, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
             pl.xticks(arange(self.COLS), fontsize=12)
@@ -95,8 +96,9 @@ class PitMaze(Domain):
             self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
             f = pl.gcf()
 #            f.set_size_inches(10,20)
-            pl.show(block=False)
-            pl.tight_layout()
+            pl.ioff()
+            pl.show()
+            #pl.tight_layout()
         V            = zeros((self.ROWS,self.COLS))
         Mask         = ones((self.COLS,self.ROWS,self.actions_num), dtype='bool') #Boolean 3 dimensional array. The third array highlights the action. Thie mask is used to see in which cells what actions should exist
         arrowSize    = zeros((self.COLS,self.ROWS,self.actions_num), dtype ='float')
@@ -189,7 +191,7 @@ class PitMaze(Domain):
                 return self.CRITICAL_TERMINATION
         return self.NOT_TERMINATED
 if __name__ == '__main__':
-    p = PitMaze('PitmazeMaps/4x5.txt');
+    p = PitMaze(mapname='/PitmazeMaps/4x5.txt');
     p.test(1000)
     
     

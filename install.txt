@@ -1,7 +1,8 @@
+You need python > 2.7
 You need the following packages:
 ===============================================================
-1. scipy, numpy
-http://fonnesbeck.github.com/ScipySuperpack/
+1. numpy
+(Has 1,2,3 together for OS Lion) http://fonnesbeck.github.com/ScipySuperpack/
 http://penandpants.com/2012/02/24/install-python/
 http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/
 ===============================================================
