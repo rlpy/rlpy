@@ -174,8 +174,11 @@ class InvertedPendulum(Domain):
         else: self.cur_torque_noise = 0
         # Unfortunate that scipy ode methods do not allow additional parameters to be passed.
         ns = s[:]
-        ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
-        self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
+        # ODEINT IS TOO SLOW!
+        #ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
+        #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
+        
+        ns_continuous = integrate.quad(self._dsdt, 0, self.dt, args=(self.s_continuous))
          # wrap angle between 0 and 2pi
         self.s_continuous[StateIndex.THETA] = wrap(self.s_continuous[StateIndex.THETA],self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         self.s_continuous[StateIndex.THETA_DOT] = bound(self.s_continuous[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
@@ -185,8 +188,11 @@ class InvertedPendulum(Domain):
         ns[StateIndex.THETA] = closestDiscretization(theta, self.NUM_ANGLE_INTERVALS, self.ANGLE_LIMITS)
         ns[StateIndex.THETA_DOT] = closestDiscretization(thetaDot, self.NUM_RATE_INTERVALS, self.ANGULAR_RATE_LIMITS)
         return self._earnedReward(ns), ns, self.NOT_TERMINATED
-    # From pybrain environment 'cartpole' 
-    def _dsdt(self, s_continuous, t):
+    
+    # From pybrain environment 'cartpole'
+    # Used by odeint to numerically integrate the differential equation
+    #def _dsdt(self, s_continuous, t):
+    def _dsdt(self,t, s_continuous):
         # This function is needed for ode integration.  It calculates and returns the derivatives
         # of the state, which can then 
         torque = self.cur_action + self.cur_torque_noise

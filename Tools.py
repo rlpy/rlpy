@@ -2,6 +2,8 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
+#TODO in binNumber, no self.logger associated with this module.
+
 from operator import *
 from numpy  import *
 #import matplotlib
@@ -67,7 +69,9 @@ def binNumber(s,bins,limits):
     # s = .4, limits = [-.5,.5], bins = 3 => 2
     width = limits[1]-limits[0]
     if not (s <= limits[1] and s>=limits[0]):
-        self.logger.log("WARNING: %s is out of limits of %s . Using he chopped value of s" %(str(s),str(limits)))
+        print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
+        # TODO - pass logger in? Assign logger to tools.py?
+#        self.logger.log("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
     return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
     return time()-start_time
@@ -236,7 +240,7 @@ def findElem(x,A):
         return A.index(x)
     else:
         return []    
-def findElemArray1D(x,A):
+def findElemArray1D(x,A): # Returns an array of indices in x where x[i] == A
     res = where(A==x)
     if len(res[0]):
         return res[0].flatten()

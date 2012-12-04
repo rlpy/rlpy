@@ -162,8 +162,8 @@ class PST(Domain):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
-        _statespace_limits = vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]]) # 3 Location states, 2 status states
-        self.statespace_limits      = tile(_statespace_limits,(NUM_UAV,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+        _statespace_limits = array(vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]])) # 3 Location states, 2 status states
+        self.statespace_limits      = array(tile(_statespace_limits,(NUM_UAV,1)))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.motionNoise = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
         self.LIMITS                 = tile(UAVAction.SIZE, (1,NUM_UAV))[0] # eg [3,3,3,3]
         self.isCommStatesCovered    = False # Don't have communications available yet, so no surveillance reward allowed.
@@ -341,6 +341,7 @@ class PST(Domain):
                 
                 if (ns[uav_fuel_ind] < 1): # We just crashed a UAV! Failed to get back to base after action a
                     self.numCrashed += 1
+                    ns[uav_fuel_ind] = 0 # Prevent negative numbers
                     ns[uav_location_ind] = UAVLocation.CRASHED
 #DEBUG                     print '########### UAV',uav_id,'has crashed! ############'
                     continue
@@ -380,7 +381,7 @@ class PST(Domain):
         returnList = []
         for dummy in range(0,self.NUM_UAV):
             returnList = returnList + [UAVLocation.BASE_LOC, self.FULL_FUEL, ActuatorState.RUNNING, SensorState.RUNNING]
-        return returnList # Omits final index
+        return array(returnList) # Omits final index
     def possibleActions(self,s):
         # return the id of possible actions
         # find empty blocks (nothing on top)
@@ -410,7 +411,7 @@ class PST(Domain):
                 validActions.append([uav_actions])
             else:
                 validActions.append(uav_actions)
-        return self.vecList2id(validActions, UAVAction.SIZE) # TODO place this in tools
+        return array(self.vecList2id(validActions, UAVAction.SIZE)) # TODO place this in tools
     
             # Given a list of lists 'validActions' of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
         # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
@@ -443,7 +444,8 @@ class PST(Domain):
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
-    
+    def isTerminal(self,s):
+        return False
 if __name__ == '__main__':
         OUT_PATH            = 'Temp'
         JOB_ID = 1
