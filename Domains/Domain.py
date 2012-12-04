@@ -62,6 +62,17 @@ class Domain(object):
     def isTerminal(self,s):
         # Returns a boolean showing if s is terminal or not
         abstract
+    
+    def saturateState(self,s):
+
+        dim = len(s)
+        print 'dim',dim
+        
+        for i in range(0,dim):
+            if s[i] < self.statespace_limits[i][0]: s[i] = self.statespace_limits[i][0]
+            if s[i] > self.statespace_limits[i][1]: s[i] = self.statespace_limits[i][1]
+            
+            
     def test(self,T):
         # Run the environment with a random Agent for T steps
         terminal    = True

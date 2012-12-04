@@ -49,7 +49,13 @@ class IntruderMonitoring(Domain):
         self.ROWS,self.COLS     = shape(self.map)
         self.GetAgentAndIntruderNumbers()
         
-        self.statespace_limits = array([[0,self.ROWS-1],[0,self.COLS-1]])*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
+        #self.statespace_limits = array([[0,self.ROWS-1],[0,self.COLS-1]])*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
+        self.statespace_limits = []
+        for i in range(0,self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS):
+            self.statespace_limits += [[0,self.ROWS-1]]
+            self.statespace_limits += [[0,self.COLS-1]]
+            
+        
         
         self.states_num = (self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)^(self.ROWS*self.COLS)    
         self.state_space_dims = self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS             
@@ -66,7 +72,7 @@ class IntruderMonitoring(Domain):
         print 'Number of Intruders', self.NUMBER_OF_INTRUDERS
         print 'Initial State',self.s0()
         print 'Possible Actions',self.possibleActions(self.s0())
-        
+        print 'limits', self.statespace_limits
         #super(IntruderMonitoring,self).__init__(logger)
         #self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
    
@@ -87,9 +93,10 @@ class IntruderMonitoring(Domain):
             #ns_a = ns_a + self.ACTIONS_PER_AGENT[action_a]
             self.move(ns_a, action_a)
                                 
-            if(ns_a[0] < 0 or ns_a[0] == self.ROWS-1 or ns_a[1] < 0 or ns_a[1] == self.COLS-1):
-                ns_a = s_a
+            #if(ns_a[0] < 0 or ns_a[0] == self.ROWS-1 or ns_a[1] < 0 or ns_a[1] == self.COLS-1):
+            #    ns_a = s_a
             
+                       
             # Merge the state
            
             ns +=  ns_a
@@ -106,16 +113,17 @@ class IntruderMonitoring(Domain):
             #ns_i = ns_i + self.ACTIONS_PER_AGENT[action_i]
             self.move(ns_i, action_i)
                     
-            if(ns_i[0] < 0 or ns_i[0] == self.ROWS-1 or ns_i[1] < 0 or ns_i[1] == self.COLS-1):
-                ns_i = s_i  
+           # if(ns_i[0] < 0 or ns_i[0] == self.ROWS-1 or ns_i[1] < 0 or ns_i[1] == self.COLS-1):
+           #     ns_i = s_i  
                 
             # Check if there is an intrusion
             IntruderMonitoring
             if self.map[ns_i[0],ns_i[1]] == self.DANGER: # Intruder is in a danger zone !!
-                print 'Danger !'
-                for j in range(0,self.NUMBER_OF_AGENTS-1):
+                
+                for j in range(0,self.NUMBER_OF_AGENTS):
                     ns_a=  ns[j*2:j*2+2]
                     if (ns_a != ns_i): # Intrusion occured !
+                        print 'Intrusion !!'
                         intrusion_counter += 1
                          
              # Merge the state
@@ -123,6 +131,7 @@ class IntruderMonitoring(Domain):
                 
         # Reward Calculation           
        
+        self.saturateState(ns)
         r = intrusion_counter*self.INTRUSION_PENALTY
                 
         return r,ns,False
@@ -212,6 +221,6 @@ class IntruderMonitoring(Domain):
 if __name__ == '__main__':
    
     p = IntruderMonitoring(logger = None, mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
-    p.test(10)
+    p.test(100)
     
     
