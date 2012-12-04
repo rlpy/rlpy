@@ -32,7 +32,9 @@ class StateIndex:
 
 
 class InvertedPendulum(Domain):
-    AVAIL_TORQUES = [-10,0,10] # Newtons, N - Torque values available as actions
+    DEBUG = 0 # Set to non-zero to enable print statements
+    
+    AVAIL_TORQUES = array([-10,0,10]) # Newtons, N - Torque values available as actions
 #    AVAIL_TORQUES = [-1,0,1] # Newtons, N - Torque values available as actions
     
     GOAL_REGION = [pi - pi/6, pi + pi/6] # radians, rad - Goal region,
@@ -100,6 +102,7 @@ class InvertedPendulum(Domain):
         # Note that we show the actual, continuous state of the pendulum as recorded
         # internally by the domain, s_continuous - THE DISCRETIZED STATE PASSED IN, 's', IS IGNORED
         # To use discretized state instead, merely change the assignment of 'theta' below
+        torqueAction = self.AVAIL_TORQUES[a]
         if self.domainFig == None: # Need to initialize the figure
             self.domainFig = pl.figure()
             self.subplotAxes = self.domainFig.gca()
@@ -120,7 +123,7 @@ class InvertedPendulum(Domain):
         # recall we define 0 down, 90 deg right
         pendulumBobX = self.PENDULUM_PIVOT[0] + self.length * sin(theta)
         pendulumBobY = self.PENDULUM_PIVOT[0] - self.length * cos(theta)
-#DEBUG        print pendulumBobX,pendulumBobY
+        if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
         # update pendulum arm on figure
         self.pendulumArm.set_data([self.PENDULUM_PIVOT[0], pendulumBobX],[self.PENDULUM_PIVOT[1], pendulumBobY])
         if self.pendulumBob is not None:
@@ -133,9 +136,9 @@ class InvertedPendulum(Domain):
             self.actionArrowTop.remove()
             self.actionArrowTop = None
         #if self.actionArrow is not None: self.actionArrow.remove()
-        if a == 0: pass # no torque
+        if torqueAction == 0: pass # no torque
         else: # cw or ccw torque
-            if a > 0: # counterclockwise torque
+            if torqueAction > 0: # counterclockwise torque
                 self.actionArrowBottom = pl.Arrow(self.action_arrow_x_left, -self.length - 0.3, self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='red')
                 self.actionArrowTop = pl.Arrow(self.action_arrow_x_right, self.length + 0.3, -self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='red')
             else:# clockwise torque
@@ -155,8 +158,8 @@ class InvertedPendulum(Domain):
     def s0(self):       
         # Returns the initial state
         return [self.start_angle, self.start_rate]
-    def possibleActions(self,s):
-        return self.AVAIL_TORQUES
+    def possibleActions(self,s): # Return list of all indices corresponding to actions available
+        return arange(len(self.AVAIL_TORQUES))
     def step(self,s,a):
         # Simulate one step of the pendulum after taking torque action a
         # Note that the discretized state passed in is IGNORED - only the state internal
@@ -165,7 +168,7 @@ class InvertedPendulum(Domain):
         # be accessed by the function _dsdt below, which has a pre-defined header
         # expected by integrate.odeint (so we cannot pass further parameters.)
         # Adapted from pybrain code for cartpole
-        self.cur_action = a # store action so it can be retrieved by other methods;
+        self.cur_action = self.AVAIL_TORQUES[a] # store action so it can be retrieved by other methods;
         if self.torque_noise_var > 0:  # Store random noise so it can be retrieved by other methods
             self.cur_torque_noise = random.normal(scale = sqrt(self.torque_noise_var))
         else: self.cur_torque_noise = 0
@@ -173,7 +176,6 @@ class InvertedPendulum(Domain):
         ns = s[:]
         ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
-#        print 'After -1',ns
          # wrap angle between 0 and 2pi
         theta = wrap(self.s_continuous[StateIndex.THETA],self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         thetaDot = self.s_continuous[StateIndex.THETA_DOT]
@@ -191,8 +193,10 @@ class InvertedPendulum(Domain):
         theta = s_continuous[StateIndex.THETA]
         # -g/l sin(theta) + tau / I   [[mgl sin(theta) + tau) / (m * l^2) ]]
         thetaDotDot = -(g / l) * sin(theta) + (torque / self.rot_inertia)
-#        print 'g,l,theta',g,l,theta
-#        print 'thetaDot,thetaDotDot,torque',s[StateIndex.THETA_DOT],thetaDotDot,torque
+        if self.DEBUG:
+            print 'g,l,theta, t',g,l,theta,t
+            print 'thetaDot,thetaDotDot,torque',s[StateIndex.THETA_DOT],thetaDotDot,torque
+            
         return (s_continuous[StateIndex.THETA_DOT], thetaDotDot)
     def _earnedReward(self, s):
         if(self.GOAL_REGION[0] < s[StateIndex.THETA] < self.GOAL_REGION[1]):

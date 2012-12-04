@@ -26,7 +26,7 @@ from Domain import *
 ########################################################
 
 ########################################################
-# Map form 1:
+# Map form 1, 'eachNeighbor'
 # Each row is implicitly indexed starting at 0,
 # corresponding to the id of a computer.
 # The sequence of numbers (arbitrary order) corresponds
@@ -43,7 +43,7 @@ from Domain import *
 #0,1,2,4
 #3
 ######################
-# Map type 2
+# Map type 2, 'edges'
 # Each row contains a pair corresponding to an edge
 # Ordering of id's in a pair, as well as ordering of pairs themselves,
 # is arbitrary.
@@ -79,24 +79,38 @@ class NetworkAdmin(Domain):
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
     # The below method gets a network map of the form 
-    def getNetworkMap(self, path):
+    def getNetworkMap(self, path, maptype, numNodes):
+        if maptype == 'eachNeighbor': return self.getNeighborMap(path)
+        elif maptype == 'edges': return self.getEdgeMap(path, numNodes)
+        else:
+            print 'Error: unrecognized maptype parameter.  Valid entries are <eachNeighbor> and <edges>.  See comment header of NetworkAdmin.py'
+            return None
+    def getNeighborMap(self, path):
         _Neighbors = []
         with open(path, 'rb') as f:
             reader = csv.reader(f, delimiter=',')
             for row in reader:
                 _Neighbors.append(map(int,row))
-        return _Neighbors
-    def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt'):
-        path                    = os.getcwd() + networkmapname
-        self.NEIGHBORS          = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
-        # TODO Need a check here for degenerate
+        return _Neighbors, self.getUniqueEdges(_Neighbors)
         
+    def getEdgeMap(self,path, numNodes):
+        # initialize neighbors list 
+        _edges = loadtxt(path, dtype = uint8)
+        return self.populateNeighbors(_edges, numNodes), _edges
+            
+        #return _Neighbors
+    # Note that you must pass a network map name as well as its format type; see top of this module.
+    def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5):
+        path                    = os.getcwd() + networkmapname
+        self.NEIGHBORS, self.UNIQUE_EDGES = self.getNetworkMap(path,maptype,numNodes) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
+        # TODO Need a check here for degenerate
+        print 'edges',self.UNIQUE_EDGES
+        print 'neighbors',self.NEIGHBORS
         self.states_num             = len(self.NEIGHBORS)       # Number of states
         self.actions_num            = self.states_num + 1     # Number of Actions, including no-op
         self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.states_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
-        self.UNIQUE_EDGES           = self.getUniqueEdges()
         super(NetworkAdmin,self).__init__(logger)
 #        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,s)):
 #        [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
@@ -178,16 +192,26 @@ class NetworkAdmin(Domain):
     # Returns the list of possible actions in each state the vanilla version returns all of the actions
         return arange(self.actions_num)
     def isTerminal(self,s):
-        return False   
-    def getUniqueEdges(self):
+        return False
+    def getUniqueEdges(self, neighborsList):
         # Returns a list of tuples of unique edges in this map; choose the edge emanating from
         # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]
         uniqueEdges = []
-        for computer_id, neighbors in enumerate(self.NEIGHBORS):
+        for computer_id, neighbors in enumerate(neighborsList):
             for neighbor_id in neighbors:
                 if computer_id < neighbor_id:
                     uniqueEdges.append((neighbor_id, computer_id))
         return uniqueEdges
+    def populateNeighbors(self, uniqueEdges, numNodes):
+        _Neighbors = numNodes * [-1] # Initialize list so we don't get out of bounds errors
+        for edgePair in uniqueEdges:
+            # Add each node as a neighbor to each other
+            if(_Neighbors[edgePair[0]] == -1): _Neighbors[edgePair[0]] = [edgePair[1]] # Adding first element
+            else: _Neighbors[edgePair[0]].append(edgePair[1]) # Adding to pre-existing list
+            # Add each node as a neighbor to each other
+            if(_Neighbors[edgePair[1]] == -1): _Neighbors[edgePair[1]] = [edgePair[0]] # Adding first element
+            else: _Neighbors[edgePair[1]].append(edgePair[0]) # Adding to pre-existing list
+        return _Neighbors
 if __name__ == '__main__':
         random.seed(0)
         OUT_PATH            = 'Temp'
@@ -195,6 +219,7 @@ if __name__ == '__main__':
         STDOUT_FILE         = 'out.txt'
         random.seed(0)
         testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
-        p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/5Machines.txt');
+        #p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5);
+        p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=20);
         p.test(1000)
      
