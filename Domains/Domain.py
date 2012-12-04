@@ -66,11 +66,10 @@ class Domain(object):
     def saturateState(self,s):
 
         dim = len(s)
-        print 'dim',dim
-        
+               
         for i in range(0,dim):
-            if s[i] < self.statespace_limits[i][0]: s[i] = self.statespace_limits[i][0]
-            if s[i] > self.statespace_limits[i][1]: s[i] = self.statespace_limits[i][1]
+            if s[i] < self.statespace_limits[i,0]: s[i] = self.statespace_limits[i,0]
+            if s[i] > self.statespace_limits[i,1]: s[i] = self.statespace_limits[i,1]
             
             
     def test(self,T):

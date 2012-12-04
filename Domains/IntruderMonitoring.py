@@ -49,16 +49,11 @@ class IntruderMonitoring(Domain):
         self.ROWS,self.COLS     = shape(self.map)
         self.GetAgentAndIntruderNumbers()
         
-        #self.statespace_limits = array([[0,self.ROWS-1],[0,self.COLS-1]])*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
-        self.statespace_limits = []
-        for i in range(0,self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS):
-            self.statespace_limits += [[0,self.ROWS-1]]
-            self.statespace_limits += [[0,self.COLS-1]]
-            
-        
-        
-        self.states_num = (self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)^(self.ROWS*self.COLS)    
-        self.state_space_dims = self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS             
+        _statespace_limits = vstack([[0,self.ROWS-1],[0,self.COLS-1]])
+        self.statespace_limits      = tile(_statespace_limits,((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS),1))     
+                
+        self.states_num = ((self.ROWS-1)*(self.COLS-1))^((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS))    
+        self.state_space_dims = 2*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)             
         self.actions_num        = 4*self.NUMBER_OF_AGENTS
         self.ACTION_LIMITS = [4]*self.NUMBER_OF_AGENTS
                                       
@@ -67,14 +62,17 @@ class IntruderMonitoring(Domain):
         else:
             self.episodeCap         = episodeCap
         
+        '''
         print 'Initialization Finished'    
         print 'Number of Agents', self.NUMBER_OF_AGENTS
         print 'Number of Intruders', self.NUMBER_OF_INTRUDERS
         print 'Initial State',self.s0()
         print 'Possible Actions',self.possibleActions(self.s0())
         print 'limits', self.statespace_limits
-        #super(IntruderMonitoring,self).__init__(logger)
-        #self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
+        '''
+            
+        super(IntruderMonitoring,self).__init__(logger)
+        self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
    
     def step(self,s,a):
                     
@@ -123,7 +121,7 @@ class IntruderMonitoring(Domain):
                 for j in range(0,self.NUMBER_OF_AGENTS):
                     ns_a=  ns[j*2:j*2+2]
                     if (ns_a != ns_i): # Intrusion occured !
-                        print 'Intrusion !!'
+                       # print 'Intrusion !!'
                         intrusion_counter += 1
                          
              # Merge the state
@@ -169,10 +167,12 @@ class IntruderMonitoring(Domain):
         
     def possibleActions(self,s):
               
-        #possibleA = array([],uint8)
+       possibleA = array([],uint8)
        
-       possibleA = [i for i in range(4*self.NUMBER_OF_AGENTS)]
-              
+       for a in arange(self.actions_num):
+               possibleA = append(possibleA,[a])
+           
+       
        return possibleA
     
     
