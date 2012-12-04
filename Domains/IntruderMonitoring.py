@@ -40,7 +40,7 @@ class IntruderMonitoring(Domain):
                ])
       
        
-    def __init__(self,logger,mapname, episodeCap = None):
+    def __init__(self,logger, mapname, episodeCap = None):
                  
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
@@ -50,18 +50,25 @@ class IntruderMonitoring(Domain):
         self.GetAgentAndIntruderNumbers()
         
         self.statespace_limits = array([[0,self.ROWS-1],[0,self.COLS-1]])*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
-                        
+        
+        self.states_num = (self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)^(self.ROWS*self.COLS)    
+        self.state_space_dims = self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS             
         self.actions_num        = 4*self.NUMBER_OF_AGENTS
         self.ACTION_LIMITS = [4]*self.NUMBER_OF_AGENTS
-              
-                        
+                                      
         if episodeCap is None:
             self.episodeCap         = 2*self.ROWS*self.COLS
         else:
             self.episodeCap         = episodeCap
-            
-        super(IntruderMonitoring,self).__init__(logger)
-        self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
+        
+        print 'Initialization Finished'    
+        print 'Number of Agents', self.NUMBER_OF_AGENTS
+        print 'Number of Intruders', self.NUMBER_OF_INTRUDERS
+        print 'Initial State',self.s0()
+        print 'Possible Actions',self.possibleActions(self.s0())
+        
+        #super(IntruderMonitoring,self).__init__(logger)
+        #self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
    
     def step(self,s,a):
                     
@@ -72,43 +79,47 @@ class IntruderMonitoring(Domain):
                       
         ns = []            
                         
-        for i in range(0,self.NUMBER_OF_AGENTS-1):
-            s_a = s[i*2:i*2+1]
-            ns_a = s_a.copy()
+        for i in range(0,self.NUMBER_OF_AGENTS):
+            s_a = s[i*2:i*2+2]
+                                              
             action_a = action_vector[i]
-                       
-            ns_a = ns_a + self.ACTIONS_PER_AGENT[action_a]
-                    
-            if(ns_a[0] < 0 or ns_a[0] == self.ROWS or ns_a[1] < 0 or ns_a[1] == self.COLS):
+            ns_a = list(s_a)#s_a.copy()                                   
+            #ns_a = ns_a + self.ACTIONS_PER_AGENT[action_a]
+            self.move(ns_a, action_a)
+                                
+            if(ns_a[0] < 0 or ns_a[0] == self.ROWS-1 or ns_a[1] < 0 or ns_a[1] == self.COLS-1):
                 ns_a = s_a
             
             # Merge the state
-            ns.append(ns_a)
+           
+            ns +=  ns_a
             
         # Intruder Step
         
         intrusion_counter = 0
-                        
-        for i in range(0,self.NUMBER_OF_INTRUDERS-1):
-            s_i = s[2*self.NUMBER_OF_AGENTS+ i*2:i*2+1]
-            ns_i = s_a.copy()
+        offset = 2*self.NUMBER_OF_AGENTS                
+        for i in range(0,self.NUMBER_OF_INTRUDERS):
+            s_i = s[offset+ i*2:offset+i*2+2]
+            ns_i = list(s_i)#s_i.copy()    
             action_i =   randSet(self.possibleActionsPerAgent(s_i))
                                     
-            ns_i = ns_i + self.ACTIONS_PER_AGENT[action_i]
+            #ns_i = ns_i + self.ACTIONS_PER_AGENT[action_i]
+            self.move(ns_i, action_i)
                     
-            if(ns_i[0] < 0 or ns_i[0] == self.ROWS or ns_i[1] < 0 or ns_i[1] == self.COLS):
+            if(ns_i[0] < 0 or ns_i[0] == self.ROWS-1 or ns_i[1] < 0 or ns_i[1] == self.COLS-1):
                 ns_i = s_i  
                 
             # Check if there is an intrusion
             IntruderMonitoring
             if self.map[ns_i[0],ns_i[1]] == self.DANGER: # Intruder is in a danger zone !!
+                print 'Danger !'
                 for j in range(0,self.NUMBER_OF_AGENTS-1):
-                    ns_a=  ns[j*2:j*2+1]
+                    ns_a=  ns[j*2:j*2+2]
                     if (ns_a != ns_i): # Intrusion occured !
                         intrusion_counter += 1
                          
              # Merge the state
-            ns.append(ns_i)                            
+            ns += ns_i                         
                 
         # Reward Calculation           
        
@@ -116,6 +127,18 @@ class IntruderMonitoring(Domain):
                 
         return r,ns,False
     
+    def move(self,s,a):
+        
+        if (a == 0):
+            s[0] -= 1
+        if (a == 1):
+            s[0] += 1
+        if (a == 2):
+            s[1] -= 1
+        if (a == 3):
+            s[1] += 1      
+        
+        
     
     def s0(self):
         
@@ -125,11 +148,12 @@ class IntruderMonitoring(Domain):
         
         for r in arange(self.ROWS):
             for c in arange(self.COLS):
-                if self.map[r,c] == self.AGENT: ns_a.append([r,c])
-                if self.map[r,c] == self.INTRUDER: ns_i.append([r,c])
+                if self.map[r,c] == self.AGENT: ns_a += [r,c]
+                if self.map[r,c] == self.INTRUDER: ns_i += [r,c]
                                       
-        s_init.append(ns_a)
-        s_init.append(ns_i)
+        #s_init.append(ns_a)
+        #s_init.append(ns_i)
+        s_init = ns_a + ns_i
         
         return s_init
     
@@ -154,8 +178,7 @@ class IntruderMonitoring(Domain):
             ns = s + self.ACTIONS_PER_AGENT[a]
             if (
                 ns[0] < 0 or ns[0] == self.ROWS or
-                ns[1] < 0 or ns[1] == self.COLS or
-                self.map[ns[0],ns[1]] == self.BLOCKED):
+                ns[1] < 0 or ns[1] == self.COLS):
                 continue
             possibleA = append(possibleA,[a])
         return possibleA
@@ -167,11 +190,28 @@ class IntruderMonitoring(Domain):
               for c in arange(self.COLS):
                 if self.map[r,c] == self.AGENT: self.NUMBER_OF_AGENTS +=1
                 if self.map[r,c] == self.INTRUDER: self.NUMBER_OF_INTRUDERS +=1
-                                      
+                                
+    def showDomain(self,s,a):
+        print '--------------'
+       
+        for i in range(0,self.NUMBER_OF_AGENTS):
+             s_a = s[i*2:i*2+2]
+             aa = id2vec(a,self.ACTION_LIMITS)
+             #print 'Agent {} X: {} Y: {}'.format(i,s_a[0],s_a[1])
+             print 'Agent {} Location: {} Action {}'.format(i,s_a,aa)
+        offset = 2*self.NUMBER_OF_AGENTS
+        for i in range(0,self.NUMBER_OF_INTRUDERS):
+            s_i = s[offset+ i*2:offset + i*2+2]
+            #print 'Intruder {} X: {} Y: {}'.format(i,s_i[0],s_i[1])
+            print 'Intruder',s_i    
+        r,ns,terminal = self.step(s, a)
         
+        print 'Reward ',r               
+                              
+                           
 if __name__ == '__main__':
-    
-    p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
-    p.test(1000)
+   
+    p = IntruderMonitoring(logger = None, mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
+    p.test(10)
     
     
