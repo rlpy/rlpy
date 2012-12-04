@@ -49,7 +49,7 @@ class InvertedPendulum(Domain):
     MASS_BOB = 1 # kilograms, kg - Mass of the bob at the end of the pendulum (assume zero arm mass)
     LENGTH = 1.0 # meters, m - Length of the pendulum, meters
     ACCEL_G = 9.81 # m/s^2 - gravitational constant
-    ROT_INERTIA = 0 # kg * m^2 - rotational inertia of the pendulum
+    ROT_INERTIA = 0 # kg * m^2 - rotational inertia of the pendulum, computed in __init__
     
     dt = 0.20 # Time between steps
     
@@ -177,7 +177,9 @@ class InvertedPendulum(Domain):
         ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
          # wrap angle between 0 and 2pi
-        theta = wrap(self.s_continuous[StateIndex.THETA],self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
+        self.s_continuous[StateIndex.THETA] = wrap(self.s_continuous[StateIndex.THETA],self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
+        self.s_continuous[StateIndex.THETA_DOT] = bound(self.s_continuous[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
+        theta = self.s_continuous[StateIndex.THETA]
         thetaDot = self.s_continuous[StateIndex.THETA_DOT]
         # collapse angles to their respective discretizations
         ns[StateIndex.THETA] = closestDiscretization(theta, self.NUM_ANGLE_INTERVALS, self.ANGLE_LIMITS)

@@ -78,27 +78,7 @@ class NetworkAdmin(Domain):
     # Possible values for each computer
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
-    # The below method gets a network map of the form 
-    def getNetworkMap(self, path, maptype, numNodes):
-        if maptype == 'eachNeighbor': return self.getNeighborMap(path)
-        elif maptype == 'edges': return self.getEdgeMap(path, numNodes)
-        else:
-            print 'Error: unrecognized maptype parameter.  Valid entries are <eachNeighbor> and <edges>.  See comment header of NetworkAdmin.py'
-            return None
-    def getNeighborMap(self, path):
-        _Neighbors = []
-        with open(path, 'rb') as f:
-            reader = csv.reader(f, delimiter=',')
-            for row in reader:
-                _Neighbors.append(map(int,row))
-        return _Neighbors, self.getUniqueEdges(_Neighbors)
-        
-    def getEdgeMap(self,path, numNodes):
-        # initialize neighbors list 
-        _edges = loadtxt(path, dtype = uint8)
-        return self.populateNeighbors(_edges, numNodes), _edges
             
-        #return _Neighbors
     # Note that you must pass a network map name as well as its format type; see top of this module.
     def __init__(self,logger, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5):
         path                    = os.getcwd() + networkmapname
@@ -114,6 +94,28 @@ class NetworkAdmin(Domain):
         super(NetworkAdmin,self).__init__(logger)
 #        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,s)):
 #        [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
+
+    # The below method gets a network map of the form 
+    def getNetworkMap(self, path, maptype, numNodes):
+        if maptype == 'eachNeighbor': return self.getNeighborMap(path)
+        elif maptype == 'edges': return self.getEdgeMap(path, numNodes)
+        else:
+            print 'Error: unrecognized maptype parameter.  Valid entries are <eachNeighbor> and <edges>.  See comment header of NetworkAdmin.py'
+            return None
+
+    def getNeighborMap(self, path):
+        _Neighbors = []
+        with open(path, 'rb') as f:
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                _Neighbors.append(map(int,row))
+        return _Neighbors, self.getUniqueEdges(_Neighbors)
+        
+    def getEdgeMap(self,path, numNodes):
+        # initialize neighbors list 
+        _edges = loadtxt(path, dtype = uint8)
+        return self.populateNeighbors(_edges, numNodes), _edges
+
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
@@ -157,8 +159,10 @@ class NetworkAdmin(Domain):
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
         pl.draw()
         sleep(.25)    
+
     def showLearning(self,representation):
         pass
+
     def step(self,s,a):
         ns = s[:] # make copy of state so as not to affect original mid-step
         totalRebootReward = 0
@@ -186,13 +190,17 @@ class NetworkAdmin(Domain):
  # Optional                     else ns[computer_id] = self.BROKEN
         return sum(ns)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+
     def s0(self):
         return [self.RUNNING for dummy in range(0,self.state_space_dims)] # Omits final index
+
     def possibleActions(self,s):
     # Returns the list of possible actions in each state the vanilla version returns all of the actions
         return arange(self.actions_num)
+
     def isTerminal(self,s):
         return False
+
     def getUniqueEdges(self, neighborsList):
         # Returns a list of tuples of unique edges in this map; choose the edge emanating from
         # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]
@@ -202,6 +210,7 @@ class NetworkAdmin(Domain):
                 if computer_id < neighbor_id:
                     uniqueEdges.append((neighbor_id, computer_id))
         return uniqueEdges
+
     def populateNeighbors(self, uniqueEdges, numNodes):
         _Neighbors = numNodes * [-1] # Initialize list so we don't get out of bounds errors
         for edgePair in uniqueEdges:
@@ -212,6 +221,8 @@ class NetworkAdmin(Domain):
             if(_Neighbors[edgePair[1]] == -1): _Neighbors[edgePair[1]] = [edgePair[0]] # Adding first element
             else: _Neighbors[edgePair[1]].append(edgePair[0]) # Adding to pre-existing list
         return _Neighbors
+
+
 if __name__ == '__main__':
         random.seed(0)
         OUT_PATH            = 'Temp'
