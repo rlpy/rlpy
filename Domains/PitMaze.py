@@ -70,7 +70,6 @@ class PitMaze(Domain):
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
-            pl.ioff()
             pl.subplot(1,2,2)
             self.valueFunction_fig   = pl.imshow(self.map, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
             pl.xticks(arange(self.COLS), fontsize=12)
@@ -96,7 +95,6 @@ class PitMaze(Domain):
             self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
             f = pl.gcf()
 #            f.set_size_inches(10,20)
-            pl.ioff()
             pl.show()
             #pl.tight_layout()
         V            = zeros((self.ROWS,self.COLS))

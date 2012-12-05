@@ -95,7 +95,7 @@ class OnlineExperiment (Experiment):
 
         #Visual
         if self.show_all: self.domain.show(s,a, self.agent.representation)
-        if self.show_all or self.show_performance: self.result_fig.savefig(self.out_path+'/lastSnapShot.pdf', transparent=True, pad_inches=0)
+        if self.show_all or self.show_performance: self.result_fig.savefig(self.output_path+'/lastSnapShot.pdf', transparent=True, pad_inches=0)
     def save(self):
         super(OnlineExperiment,self).save()
         #Plot Performance

@@ -29,7 +29,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Domain ----------------------
     MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
-    NOISE               = .3
+    NOISE               = 0
     BLOCKS              = 6 # For BlocksWorld
     # Representation ----------------------
     RBFS                    = 9
@@ -48,16 +48,16 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
-    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    domain           = InvertedPendulum(dt = 0.20, torque_noise_var = 0.1, logger = logger);
+    #domain           = InvertedPendulum(dt = 0.20, torque_noise_var = 0.1, logger = logger);
     
-    #representation  = Tabular(domain,logger)
+    representation  = Tabular(domain,logger)
     #representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
-    representation  = IndependentDiscretization(domain,logger)
+    #representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
@@ -78,7 +78,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     experiment.run()
     experiment.save()
     logger.done()
-    if SHOW_FINAL_PLOT: pl.show()
+    if SHOW_FINAL_PLOT: pl.ioff(); pl.show()
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
