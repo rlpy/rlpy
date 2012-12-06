@@ -94,7 +94,7 @@ class InvertedPendulum(Domain):
         self.action_arrow_x_right = self.PENDULUM_PIVOT[0] + self.ACTION_ARROW_LENGTH/2
         
         self.s_continuous = self.s0()
-#        super(InvertedPendulum,self).__init__(logger)
+        super(InvertedPendulum,self).__init__(logger)
         
     def showDomain(self,s,a = 0):
         # Plot the pendulum and its angle, along with an arc-arrow indicating the 
@@ -122,8 +122,8 @@ class InvertedPendulum(Domain):
         theta = self.s_continuous[StateIndex.THETA] # Using continuous state
         # theta = s[StateIndex.THETA] # using discretized state
         # recall we define 0 down, 90 deg right
-        pendulumBobX = self.PENDULUM_PIVOT[0] + self.length * sin(theta)
-        pendulumBobY = self.PENDULUM_PIVOT[0] - self.length * cos(theta)
+        pendulumBobX = self.PENDULUM_PIVOT[1] + self.length * sin(theta)
+        pendulumBobY = self.PENDULUM_PIVOT[1] - self.length * cos(theta)
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
         # update pendulum arm on figure
         self.pendulumArm.set_data([self.PENDULUM_PIVOT[0], pendulumBobX],[self.PENDULUM_PIVOT[1], pendulumBobY])
@@ -219,5 +219,5 @@ class InvertedPendulum(Domain):
         return self.NOT_TERMINATED # Pendulum has no absorbing state
 if __name__ == '__main__':
     random.seed(0)
-    p = InvertedPendulum(start_angle = 0, start_rate = 0, dt = 0.20, torque_noise_var = 0.1);
+    p = InvertedPendulum(start_angle = pi, start_rate = 0, dt = 0.10, torque_noise_var = 10);
     p.test(500)

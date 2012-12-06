@@ -20,7 +20,7 @@ class BlocksWorld(Domain):
     gamma                   = 1
     blocks                  = 0    # Total number of blocks
     towerSize               = 0    # Goal tower size   
-    episodeCap              = 1000
+    episodeCap              = 1000 # 1000 in Tutorial
     domain_fig              = None  #Used to plot the domain
     def __init__(self, blocks = 6, towerSize = 6, noise = .3, logger = None):
         self.blocks             = blocks    
@@ -127,7 +127,7 @@ class BlocksWorld(Domain):
         return s[A] == A
 if __name__ == '__main__':
     random.seed(0)
-    p = BlocksWorld(blocks=3,noise=0);
+    p = BlocksWorld(blocks=6,noise=0);
     p.test(1000)
     
     

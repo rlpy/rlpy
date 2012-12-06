@@ -182,8 +182,14 @@ class PST(Domain):
 
         super(PST,self).__init__(logger)
         self.logger.log("NUM_UAV \t\t%2d" % self.NUM_UAV)
+        
+    def resetLocalVariables(self):
+        self.numCrashed = 0 # Number of crashed UAVs [n_c]
+        
     def showDomain(self,s,a = 0):
- #       pl.cla()
+        if self.domain_fig is None:
+            self.domain_fig = pl.figure(1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
+            pl.show()
         pl.clf()
          #Draw the environment
          # Allocate horizontal 'lanes' for UAVs to traverse
@@ -194,7 +200,6 @@ class PST(Domain):
 #        if self.location_rect_vis is None:
         # Figure with x width corresponding to number of location states, UAVLocation.SIZE
         # and rows (lanes) set aside in y for each UAV (NUM_UAV total lanes).  Add buffer of 1
-        self.domain_fig = pl.figure(1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
         self.subplot_axes = self.domain_fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
         self.subplot_axes.set_xlim(0, 1 + UAVLocation.SIZE * self.dist_between_locations)
         self.subplot_axes.set_ylim(0, 1 + self.NUM_UAV)
@@ -221,7 +226,6 @@ class PST(Domain):
         self.uav_text_vis = [pl.text(0, 0, 0) for uav_id in range(0,self.NUM_UAV)]
         self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
         self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
-        pl.show()
  
  # The following was executed when we used to check if the environment needed re-drawing: see above.        
          # Remove all UAV circle objects from visualization
@@ -298,6 +302,8 @@ class PST(Domain):
         self.numHealthySurveil = 0
         self.fuelUnitsBurned = 0
         
+        totalStepReward = 0
+        
         for uav_id in range(0,self.NUM_UAV):            
             uav_ind = uav_id * UAVIndex.SIZE
             uav_location_ind = uav_ind + UAVIndex.UAV_LOC # State index corresponding to the location of this uav
@@ -343,6 +349,7 @@ class PST(Domain):
                     self.numCrashed += 1
                     ns[uav_fuel_ind] = 0 # Prevent negative numbers
                     ns[uav_location_ind] = UAVLocation.CRASHED
+                    totalStepReward += self.CRASH_REWARD_COEFF # Only penalize for transition to crashed state
 #DEBUG                     print '########### UAV',uav_id,'has crashed! ############'
                     continue
                 
@@ -362,13 +369,11 @@ class PST(Domain):
 #DEBUG                 print 'UAV',uav_id,'at base.'
         
         ##### Compute reward #####
-        totalStepReward = 0
         self.updateCommsCoverage(commStatesCovered) # Update member variable corresponding 
         if(self.isCommStatesCovered == True):
             totalStepReward += self.SURVEIL_REWARD_COEFF * self.numHealthySurveil
-        totalStepReward += self.CRASH_REWARD_COEFF * self.numCrashed
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned # Presently this component is set to zero.
- 
+#DEBUG        print 'reward',totalStepReward
         return totalStepReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     # Update member variable indicating if comms link is available, ie, if at least
@@ -378,6 +383,7 @@ class PST(Domain):
             self.isCommStatesCovered = True
         else: self.isCommStatesCovered = False
     def s0(self):
+        self.resetLocalVariables()
         returnList = []
         for dummy in range(0,self.NUM_UAV):
             returnList = returnList + [UAVLocation.BASE_LOC, self.FULL_FUEL, ActuatorState.RUNNING, SensorState.RUNNING]
@@ -428,7 +434,8 @@ class PST(Domain):
         _id = 0
         actionIDs = []
         curActionList = []
-        limits = tile(maxValue, (1,len(x)))[0] # eg [3,3,3,3] # TODO redundant computation
+        lenX = len(x)
+        limits = tile(maxValue, (1,lenX))[0] # eg [3,3,3,3] # TODO redundant computation
         self.vecList2idHelper(x,actionIDs,0, curActionList, maxValue,limits) # TODO remove self
         
         return actionIDs
@@ -445,7 +452,8 @@ class PST(Domain):
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
     def isTerminal(self,s):
-        return False
+        if self.numCrashed == self.NUM_UAV: return True
+        else: return False
 if __name__ == '__main__':
         OUT_PATH            = 'Temp'
         JOB_ID = 1
