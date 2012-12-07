@@ -9,14 +9,15 @@ from matplotlib.mlab import rk4
 from matplotlib import lines
 
 #######################################################
-# Robert Klein, Alborz Geramifard at MIT, Nov. 30 2012#
+# Robert Klein, Alborz Geramifard at MIT, Dec. 6 2012#
 #######################################################
-# State is angular position of pendulum on [-pi, pi),
+# State is angular position of pendulum on [-pi/2, pi.2),
 # (relative to straight up at 0 rad),and positive cw.
 # Positive force acts to the right on the cart
-# Angular rate of pendulum, [-15*pi, 15*pi].
+# Angular rate of pendulum, [-2, 2].
 # State space is discretized into uniform intervals, default
-# 40 intervals each, for a state space size of 40^2=1600.
+# 20 intervals each, for a state space size of 21^2=441.
+#(See mkpendulumonelink.m of "1Link" implementation by Parr)
 # Actions take the form of force applied to cart
 # [-50, 0, 50] N force are the default available actions.
 #
@@ -24,6 +25,8 @@ from matplotlib import lines
 # region for as long as possible; default goal
 # region is [-pi/6,+ pi/6], no reward is
 # obtained anywhere else.
+# Default has the pendulum upright, episode ends when
+# pendulum falls below horizontal
 # Optional noise is added in the form of force on cart.
 ######################################################
 
@@ -36,7 +39,7 @@ class StateIndex:
     # integrate, and track them along with angular states.
 
 
-class CartPole(Domain):
+class CartPoleParr(Domain):
     DEBUG = 0 # Set to non-zero to enable print statements
     visualize = True # Whether or not to compute x states, for visualization
     
@@ -51,19 +54,20 @@ class CartPole(Domain):
     start_rate = 0 # rad/s - Starting rate of the pendulum
     start_pos = 0 # m - Starting position of the cart
     start_vel = 0 # m/s - Starting velocity of the cart
-    NUM_ANGLE_INTERVALS = 40 # Number of discrete states in the angular range [20 in tutorial]
-    NUM_RATE_INTERVALS = 40 # Number of discrete states in the angular velocity [20 in tutorial]
+    HORIZONTAL_ANGLE = pi/2 # Horizontal angle, below absolute value of which terminate episode
+    NUM_ANGLE_INTERVALS = 21 # Number of discrete states in the angular range [20 in tutorial]
+    NUM_RATE_INTERVALS = 21 # Number of discrete states in the angular velocity [20 in tutorial]
     MASS_BOB = 2.0 # kilograms, kg - Mass of the bob at the end of the pendulum (assume zero arm mass) [2 per DPF]
     MASS_CART = 8.0 # kilograms, kg - Mass of cart [8 per DPF]
     LENGTH = 0.5 # meters, m - Length of the pendulum, meters [0.5 in DPF]
-    ACCEL_G = 9.81 # m/s^2 - gravitational constant
+    ACCEL_G = 9.8 # m/s^2 - gravitational constant
     ROT_INERTIA = 0 # kg * m^2 - rotational inertia of the pendulum, computed in __init__
     
     dt = 0.10 # Time between steps [0.1 in DPF]
     
     force_noise_max = 10 # Newtons, N - Maximum noise possible, uniformly distributed [10 in tutorial]
     
-    EPISODE_CAP = 300 # [200 in tutorial, 300 in DPF]
+    EPISODE_CAP = 50 # [200 in tutorial, 300 in DPF, 50 in Parr's Matlab]
     
     cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
     s_continuous = None # Current actual, continuous state.  NOTE that this contains values for x, xdot as well
@@ -100,6 +104,7 @@ class CartPole(Domain):
         self.visualize = visualize
         if self.visualize: self.s_continuous = self.s0WithCartPosition()
         else: self.s_continuous = self.s0()
+        self.alpha = 1.0 / (self.MASS_CART + self.MASS_BOB)
 #        super(InvertedPendulum,self).__init__(logger)
         
     def resetLocalVariables(self):
@@ -203,7 +208,7 @@ class CartPole(Domain):
         # collapse angles to their respective discretizations
         ns[StateIndex.THETA] = closestDiscretization(theta, self.NUM_ANGLE_INTERVALS, self.ANGLE_LIMITS)
         ns[StateIndex.THETA_DOT] = closestDiscretization(thetaDot, self.NUM_RATE_INTERVALS, self.ANGULAR_RATE_LIMITS)
-        return self._earnedReward(ns), ns, self.NOT_TERMINATED
+        return self._earnedReward(ns), ns, self.isTerminal(ns)
     
     # From pybrain environment 'cartpole'
     # Used by odeint to numerically integrate the differential equation
@@ -215,7 +220,6 @@ class CartPole(Domain):
         g = self.ACCEL_G
         l = self.length
         m_p = self.MASS_BOB
-        alpha = 1.0 / (self.MASS_CART + m_p)
         theta = s_continuous[StateIndex.THETA]
         thetaDot = s_continuous[StateIndex.THETA_DOT]
         
@@ -223,9 +227,9 @@ class CartPole(Domain):
         cosTheta = cos(theta)
         thetaDotSq = thetaDot ** 2
         
-        numer1 = g * sinTheta - alpha * m_p * l * thetaDotSq * sin(2 * theta) / 2.0
-        numer2 = -alpha * cosTheta * force
-        denom = 4.0 * l / 3.0  -  alpha * m_p * l * (cosTheta ** 2)
+        numer1 = g * sinTheta - self.alpha * m_p * l * thetaDotSq * sin(2 * theta) / 2.0
+        numer2 = -self.alpha * cosTheta * force
+        denom = 4.0 * l / 3.0  -  self.alpha * m_p * l * (cosTheta ** 2)
         # g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
         # -----------------------------------------------------------------------
         #                     4l/3  -  (alpha)ml*cos^2(theta)
@@ -250,7 +254,6 @@ class CartPole(Domain):
         g = self.ACCEL_G
         l = self.length
         m_p = self.MASS_BOB
-        alpha = 1.0 / (self.MASS_CART + m_p)
         theta = s_continuous[StateIndex.THETA]
         thetaDot = s_continuous[StateIndex.THETA_DOT]
         
@@ -258,9 +261,9 @@ class CartPole(Domain):
         cosTheta = cos(theta)
         thetaDotSq = thetaDot ** 2
         
-        numer1 = g * sinTheta - alpha * m_p * l * thetaDotSq * sin(2 * theta) / 2.0
-        numer2 = -alpha * cosTheta * force
-        denom = 4.0 * l / 3.0  -  alpha * m_p * l * (cosTheta ** 2)
+        numer1 = g * sinTheta - self.alpha * m_p * l * thetaDotSq * sin(2 * theta) / 2.0
+        numer2 = -self.alpha * cosTheta * force
+        denom = 4.0 * l / 3.0  -  self.alpha * m_p * l * (cosTheta ** 2)
         # g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
         # -----------------------------------------------------------------------
         #                     4l/3  -  (alpha)ml*cos^2(theta)
@@ -269,7 +272,7 @@ class CartPole(Domain):
         # because of different conventions in Wang
 #        xDotDot = -(l**2) / cos(theta) * thetaDotDot + g*sin(theta)
         xDot = s_continuous[StateIndex.X_DOT]
-        xDotDot = alpha * force - m_p*l*alpha*sinTheta*thetaDotSq + m_p*l*alpha*cosTheta*thetaDot
+        xDotDot = self.alpha * force - m_p*l*self.alpha*sinTheta*thetaDotSq + m_p*l*self.alpha*cosTheta*thetaDot
         return (thetaDot, thetaDotDot, xDot, xDotDot)
         
     def _earnedReward(self, s):
@@ -278,8 +281,8 @@ class CartPole(Domain):
         else: return 0
     def isTerminal(self,s):
         # Returns a boolean showing if s is terminal or not
-        return self.NOT_TERMINATED # Pendulum has no absorbing state
+        return (abs(s[StateIndex.THETA]) >= self.HORIZONTAL_ANGLE)
 if __name__ == '__main__':
     random.seed(0)
-    p = CartPole(start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, visualize = True);
+    p = CartPoleParr(start_angle = .01, start_rate = 0, dt = 0.10, force_noise_max = 10, visualize = True);
     p.test(1000)

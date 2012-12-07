@@ -67,7 +67,7 @@ class NetworkAdmin(Domain):
     P_SELF_REPAIR = 0.04
     P_REBOOT_REPAIR = 1.0
     
-    REBOOT_REWARD = -0.75
+    REBOOT_REWARD = -1.75
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
     episodeCap = 200 # 200 used in tutorial
@@ -80,7 +80,7 @@ class NetworkAdmin(Domain):
     _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
             
     # Note that you must pass a network map name as well as its format type; see top of this module.
-    def __init__(self, networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5, logger = None):
+    def __init__(self, networkmapname='/Domains/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=5, logger = None):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS, self.UNIQUE_EDGES = self.getNetworkMap(path,maptype,numNodes) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
@@ -179,8 +179,8 @@ class NetworkAdmin(Domain):
                     # take neighbors of computer_id and sum over each of their current values
                     sumOfNeighbors = sum([s[i] for i in self.NEIGHBORS[computer_id]])
                     # TODO this expression should be a function, or something
-                    p_broken = 0.45 + 0.5 * (1+sumOfNeighbors) / (1+len(self.NEIGHBORS))
-                    #print "P_broken",p_broken
+                    p_broken = 1.0 - (0.45 + 0.5 * (1+sumOfNeighbors) / (1+len(self.NEIGHBORS[computer_id])))
+#                    print "P_broken",p_broken
                     if(random.random() < p_broken ):
                         ns[computer_id] = self.BROKEN
  # Optional                    else: ns[computer_id] = self.RUNNING
