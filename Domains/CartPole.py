@@ -153,7 +153,7 @@ class CartPole(Domain):
         self.subplotAxes.add_patch(self.pendulumBob)
         self.subplotAxes.add_line(self.pendulumArm)
         pl.draw()
-        sleep(self.dt)
+        #sleep(self.dt)
         
     def showLearning(self,representation):
         pass

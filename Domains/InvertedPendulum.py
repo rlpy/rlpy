@@ -219,5 +219,5 @@ class InvertedPendulum(Domain):
         return self.NOT_TERMINATED # Pendulum has no absorbing state
 if __name__ == '__main__':
     random.seed(0)
-    p = InvertedPendulum(start_angle = pi, start_rate = 0, dt = 0.10, torque_noise_var = 10);
+    p = InvertedPendulum(start_angle = 0, start_rate = 0, dt = 0.10, torque_noise_var = 10);
     p.test(500)

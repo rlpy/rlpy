@@ -55,8 +55,9 @@ class CartPoleParr(Domain):
     start_pos = 0 # m - Starting position of the cart
     start_vel = 0 # m/s - Starting velocity of the cart
     HORIZONTAL_ANGLE = pi/2 # Horizontal angle, below absolute value of which terminate episode
-    NUM_ANGLE_INTERVALS = 21 # Number of discrete states in the angular range [20 in tutorial]
-    NUM_RATE_INTERVALS = 21 # Number of discrete states in the angular velocity [20 in tutorial]
+    #domain should not meddle with the representation!
+    #NUM_ANGLE_INTERVALS = 21 # Number of discrete states in the angular range [20 in tutorial]
+    #NUM_RATE_INTERVALS = 21 # Number of discrete states in the angular velocity [20 in tutorial]
     MASS_BOB = 2.0 # kilograms, kg - Mass of the bob at the end of the pendulum (assume zero arm mass) [2 per DPF]
     MASS_CART = 8.0 # kilograms, kg - Mass of cart [8 per DPF]
     LENGTH = 0.5 # meters, m - Length of the pendulum, meters [0.5 in DPF]
@@ -67,7 +68,7 @@ class CartPoleParr(Domain):
     
     force_noise_max = 10 # Newtons, N - Maximum noise possible, uniformly distributed [10 in tutorial]
     
-    EPISODE_CAP = 50 # [200 in tutorial, 300 in DPF, 50 in Parr's Matlab]
+    EPISODE_CAP = 3000 # [200 in tutorial, 300 in DPF, 50 in Parr's Matlab]
     
     cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
     s_continuous = None # Current actual, continuous state.  NOTE that this contains values for x, xdot as well
@@ -83,14 +84,14 @@ class CartPoleParr(Domain):
     action_arrow_x_right = 0
     domainFig = None
     subplotAxes = None
-    CIRCLE_RADIUS = 0.1
+    CIRCLE_RADIUS = 0.02
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     
     # are constrained by the format expected by ode functions.
     def __init__(self, start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, visualize = visualize, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.statespace_limits = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
-        self.states_num = self.NUM_ANGLE_INTERVALS * self.NUM_RATE_INTERVALS       # Number of states
+        self.states_num = inf       # Number of states
         self.actions_num = len(self.AVAIL_FORCE)      # Number of Actions
         self.state_space_dims = 2 # Number of dimensions of the state space
         self.episodeCap = self.EPISODE_CAP       # The cap used to bound each episode (return to s0 after)
@@ -105,12 +106,13 @@ class CartPoleParr(Domain):
         if self.visualize: self.s_continuous = self.s0WithCartPosition()
         else: self.s_continuous = self.s0()
         self.alpha = 1.0 / (self.MASS_CART + self.MASS_BOB)
-#        super(InvertedPendulum,self).__init__(logger)
-        
+        if self.logger: 
+            self.logger.log("length:\t\t%0.2f(m)" % self.length)
+            self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
+        super(CartPoleParr,self).__init__(logger)
     def resetLocalVariables(self):
         if self.visualize: self.s_continuous = array([self.start_angle, self.start_rate, self.start_pos, self.start_vel])
         else: self.s_continuous = array([self.start_angle, self.start_rate])
-        
     def showDomain(self,s,a = 0):
         if self.visualize == False:
             pass
@@ -158,25 +160,21 @@ class CartPoleParr(Domain):
         self.subplotAxes.add_patch(self.pendulumBob)
         self.subplotAxes.add_line(self.pendulumArm)
         pl.draw()
-        sleep(self.dt)
+        #sleep(self.dt)
         
     def showLearning(self,representation):
         pass
-
     def s0(self):   
         # ASSUME that any time s0 is called, we should reset the internal values of s_continuous    
         # Returns the initial state, [theta0, thetaDot0]
         self.resetLocalVariables()
         return array([self.start_angle, self.start_rate])
-    
     def s0WithCartPosition(self):
         # Returns the initial state (4 states) [theta0, thetaDot0, x0, xDot0]
         self.s_continuous = array([self.start_angle, self.start_rate, self.start_pos, self.start_vel])
         return array([self.start_angle, self.start_rate, self.start_pos, self.start_vel])
-
     def possibleActions(self,s): # Return list of all indices corresponding to actions available
         return arange(len(self.AVAIL_FORCE))
-
     def step(self,s,a):
         # Simulate one step of the pendulum after taking torque action a
         # Note that the discretized state passed in is IGNORED - only the state internal
@@ -205,11 +203,10 @@ class CartPoleParr(Domain):
         self.s_continuous[StateIndex.THETA_DOT] = bound(self.s_continuous[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         theta = self.s_continuous[StateIndex.THETA]
         thetaDot = self.s_continuous[StateIndex.THETA_DOT]
-        # collapse angles to their respective discretizations
-        ns[StateIndex.THETA] = closestDiscretization(theta, self.NUM_ANGLE_INTERVALS, self.ANGLE_LIMITS)
-        ns[StateIndex.THETA_DOT] = closestDiscretization(thetaDot, self.NUM_RATE_INTERVALS, self.ANGULAR_RATE_LIMITS)
+
+        ns[StateIndex.THETA] = theta
+        ns[StateIndex.THETA_DOT] = thetaDot
         return self._earnedReward(ns), ns, self.isTerminal(ns)
-    
     # From pybrain environment 'cartpole'
     # Used by odeint to numerically integrate the differential equation
     def _dsdt(self, s_continuous, t):
@@ -274,7 +271,6 @@ class CartPoleParr(Domain):
         xDot = s_continuous[StateIndex.X_DOT]
         xDotDot = self.alpha * force - m_p*l*self.alpha*sinTheta*thetaDotSq + m_p*l*self.alpha*cosTheta*thetaDot
         return (thetaDot, thetaDotDot, xDot, xDotDot)
-        
     def _earnedReward(self, s):
         if(self.GOAL_REGION[0] < s[StateIndex.THETA] < self.GOAL_REGION[1]):
             return self.GOAL_REWARD
