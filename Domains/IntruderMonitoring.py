@@ -72,7 +72,7 @@ class IntruderMonitoring(Domain):
         '''
             
         super(IntruderMonitoring,self).__init__(logger)
-        self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
+        if self.logger: self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
    
     def step(self,s,a):
                     

@@ -41,14 +41,14 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     EPSILON             = .1 # EGreedy
     #Agent ----------------------
     initial_alpha           = .1
-    LAMBDA                  = 0#.95
+    LAMBDA                  = .95
     LSPI_iterations         = 5
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     iFDD_LSPI_iterations    = 10
     
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
