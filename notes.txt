@@ -1,0 +1,39 @@
+Progress:
+================
+- Inverted Pendulum
+	(DONE) - Implement (Bobby)
+	- Visualize (Bobby)
+	- Run Sarsa with Tabular and iFDD and check results (Kemal)
+- SysAdmin 
+	(DONE) - 20 machines txt file. (Kemal)
+	- Check the code with Sarsa with Tabular and iFDD make sure results are good (Kemal)
+- PST
+	(DONE) - Visualize (Bobby)
+	- Make sure it makes sense (Bobby)
+	- Check Sarsa with Tabular and iFDD (Kemal)
+- Implement 
+	- OMP-TD (Kemal)
+	- BEBF (Kemal)
+
+
+
+Bobby's Notes:
+
+State transitions appear reasonable / sound
+Note: UAV Crashes when fuel reaches 0 after an action (ie, with FULL_FUEL = 10, if the uav hasn't visited the base after the 10th action, it crashes. UAV cannot exist with 0 fuel outside of base)
+
+Multiple chained communication states between base and goal are possible by setting NUM_COMMS_LOC
+
+Direct Cost of fuel burn not mentioned in the tutorial, but included in paper; incorporate in model, currently FUEL_BURNED_REWARD_COEFF = 0.0
+
+Visualization forthcoming
+
+
+
+
+
+NetworkAdmin -
+
+Soundness needs verification
+
+Visualization will be changed; graph needs to be directed; presently nodes compete for 'good' or 'bad' edges, since the edge color is set by each node's output [i.e. if a good node and bad node are connected, the good node will attempt to set its outgoing edge green, and the bad node will attempt to set the same edge red]
