@@ -29,6 +29,13 @@ Direct Cost of fuel burn not mentioned in the tutorial, but included in paper; i
 Visualization forthcoming
 
 
+Kemal's notes:
+
+IntruderMonitoring domain seems to be ok now, but I will check it with larger scale implementations and add visualization
+
+
+
+
 
 
 
