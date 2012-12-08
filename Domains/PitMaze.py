@@ -50,8 +50,9 @@ class PitMaze(Domain):
         else:
             self.episodeCap         = episodeCap
         super(PitMaze,self).__init__(logger)
-        if logger: self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
-
+        if logger: 
+            self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
+            self.logger.log("Movement Noise:\t%0.0f%%" %(self.NOISE*100))
     def showDomain(self,s,a = 0):
        #Draw the environment
        if self.domain_fig is None:
