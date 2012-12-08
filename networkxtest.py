@@ -14,5 +14,5 @@ nx.draw_networkx_nodes(networkGraph,networkPos,nodelist=[0,1],node_color="b")
 #nx.draw_networkx_nodes(networkGraph,networkPos,nodelist=[1],node_color="r")
 
 # self.networkGraph.add_edge(computer_id,neighbor_id, edge_color = "k")
-
+plt.ioff()
 plt.show()
