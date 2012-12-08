@@ -13,8 +13,8 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 20000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 1000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
@@ -47,13 +47,13 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     iFDD_LSPI_iterations    = 10
     
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain           = InvertedPendulum(dt = 0.20, torque_noise_var = 0.1, logger = logger);
-    domain           = CartPoleParr(start_angle = .01, start_rate = 0, dt = 0.10, force_noise_max = 10, visualize = True, logger = logger);
+    #domain           = CartPoleParr(start_angle = .01, start_rate = 0, dt = 0.10, force_noise_max = 10, visualize = True, logger = logger);
     
     #representation  = Tabular(domain,logger)
     #representation  = IncrementalTabular(domain,logger)
@@ -64,9 +64,9 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    #agent           = iFDD_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
     
     experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, output_filename = RESULT_FILE, plot_performance =  PLOT_PERFORMANCE)
     

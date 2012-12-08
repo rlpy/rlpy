@@ -479,6 +479,9 @@ def checkDirectory(fullfilename):
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.makedirs(path)
+def hasFunction(object,methodname):
+    method = getattr(object, methodname, None)
+    return callable(method)
 class Logger(object):
     def __init__(self,fullfilename):
         checkDirectory(fullfilename)
