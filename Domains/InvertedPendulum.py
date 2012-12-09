@@ -87,7 +87,7 @@ class InvertedPendulum(Domain):
     PENDULUM_PIVOT_X = 0 # X position is also fixed in this visualization
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     
-    #
+    main_fig = None
     valueFunction_fig = None
     policy_fig = None
     policy_axes = None
@@ -153,8 +153,11 @@ class InvertedPendulum(Domain):
         # direction of torque applied (not including noise!)
         # Pendulum rotation is centered at origin
         
-        if self.domain_fig == None: # Need to initialize the figure
-            self.domain_fig = pl.subplot(1,3,1)
+        if self.main_fig == None: # Need to initialize the figure
+            self.main_fig,ax = pl.subplots(1,3)
+            print self.main_fig
+            self.main_fig.subplots_adjust(wspace=0.5) 
+            self.domain_fig = self.main_fig.add_subplot(1,3,1)
             #self.domainFigAxes = self.domain_fig.gca()
             self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
             self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
@@ -167,6 +170,7 @@ class InvertedPendulum(Domain):
             self.domain_fig.set_ylim(-viewableDistance, viewableDistance)
  #           self.domainFigAxes.set_aspect('equal')
             pl.axis('off')
+            self.domain_fig.set_aspect('equal')
             pl.show()
             
         forceAction = self.AVAIL_FORCE[a]
@@ -189,16 +193,16 @@ class InvertedPendulum(Domain):
         
         if forceAction == 0: pass # no torque
         else: # cw or ccw torque
+            SHIFT = .5
             if forceAction > 0: # counterclockwise torque
-                self.actionArrowBottom = pl.Arrow(self.action_arrow_x_left, -self.length - 0.3, self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='red')
+                self.actionArrowBottom = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=+1.2")
             else:# clockwise torque
-                self.actionArrowBottom = pl.Arrow(self.action_arrow_x_right, -self.length - 0.3, -self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='black')
-            self.domain_fig.add_patch(self.actionArrowBottom)
+                self.actionArrowBottom = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=-1.2")#pl.Arrow(self.action_arrow_x_right, -self.length - 0.3, -self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='black')
             
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
         self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
-        sleep(self.dt)
+        #9sleep(self.dt)
         
     def showLearning(self,representation):
         numDiscrR = 20 # TODO get this some other way
@@ -226,31 +230,29 @@ class InvertedPendulum(Domain):
         yTickTuple = array([(row,int(thetaDot_list[row] * 180/pi)) for row in arange(numDiscrR) if row % 2 == 0])
         
         if self.valueFunction_fig is None:
-            self.valueFunction_fig = pl.subplot(1,3,2)
+            self.valueFunction_fig = self.main_fig.add_subplot(1,3,2)
             minV = min(min(v) for v in V)
             maxV = max(max(v) for v in V)
             self.valueFunction_fig   = pl.imshow(valueFuncGrid, cmap='ValueFunction',interpolation='nearest',vmin=minV,vmax=maxV) 
-            pl.colorbar() # Show the colorbar corresponding to the value function
+            #pl.colorbar() # Show the colorbar corresponding to the value function
             pl.xticks(xTickTuple[:,0], xTickTuple[:,1], fontsize=12)
             pl.yticks(yTickTuple[:,0], yTickTuple[:,1], fontsize=12)
-            pl.xlabel('theta (deg)')
-            pl.ylabel('theta (deg/s)')
+            pl.xlabel(r"$\theta$")
+            pl.ylabel(r"$\dot{\theta}$")
             pl.title('Value Function')
-            f = pl.gcf()
+            #f = pl.gcf()
 #            f.set_size_inches(10,20)
             pl.show()
-            #pl.tight_layout()
         if self.policy_fig is None:
-            self.policy_fig = pl.subplot(1,3,3)
+            self.policy_fig = self.main_fig.add_subplot(1,3,3)
             #self.policy_axes = self.policy_fig.gca()
             # Note that we re-use the value function color map below, since it contains
             self.policy_fig = pl.imshow(policyGrid, cmap=self.policy_cmap, norm = self.policy_cmap_norm, interpolation='nearest',vmin=0,vmax=self.actions_num)
             pl.xticks(xTickTuple[:,0], xTickTuple[:,1], fontsize=12)
             pl.yticks(yTickTuple[:,0], yTickTuple[:,1], fontsize=12)
-            pl.xlabel('theta (deg)')
-            pl.ylabel('thetaDot (deg/s)')
-            pl.title('Policy (Red = Right, bLack = Left, white = no action)')
-            f = pl.gcf()
+            pl.xlabel(r"$\theta$")
+            pl.ylabel(r"$\dot{\theta}$")
+            pl.title('Policy')
 #            f.set_size_inches(10,20)
             pl.show()
             #pl.tight_layout()
@@ -258,6 +260,7 @@ class InvertedPendulum(Domain):
         
         self.valueFunction_fig.set_data(V)
         self.policy_fig.set_data(bestA)
+        f = pl.gcf()
         pl.draw()   
 
     def s0(self):    

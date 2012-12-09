@@ -416,7 +416,7 @@ def easy2read(A, _precision=3):
     return array_repr(A, precision=_precision, suppress_small=True)
 def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4"):
     #draw an arrow from point A=(x1,y1) to point B=(x2,y2)
-    pl.annotate("",
+    return pl.annotate("",
                 xy=(x2,y2), xycoords='data',
                 xytext=(x1,y1), textcoords='data',
                 arrowprops=dict(arrowstyle="fancy", #linestyle="dashed",
@@ -509,9 +509,10 @@ createColorMaps()
 FONTSIZE = 12
 SEP_LINE = "="*60
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
+rc('text',usetex=True)
 mpl.rcParams['font.size'] = 12.
 mpl.rcParams['font.weight'] = 'bold'
 mpl.rcParams['axes.labelsize'] = 12.
 mpl.rcParams['xtick.labelsize'] = 12.
 mpl.rcParams['ytick.labelsize'] = 12.
-
+os.environ['PATH'] += ':/usr/texbin'

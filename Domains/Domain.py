@@ -4,7 +4,7 @@
 
 # NOTE That though the state s can take on almost any
 # value, if a dimension is not marked as 'continuous'
-# then it is assumed to be integral.
+# then it is assumed to be integer.
 
 from Tools import *
 from pydoc import classname
