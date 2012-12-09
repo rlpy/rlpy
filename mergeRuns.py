@@ -88,10 +88,10 @@ paths = ['Results/BlocksWorld-SARSA-iFDD',
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,'Results',colors = colors)
-#mergedData.plot('Return')
+mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
 #mergedData.plot('Steps')
-mergedData.plot('Features')
+#mergedData.plot('Features')
 #mergedData.plot('Terminal')
 pl.ioff()
 pl.show()

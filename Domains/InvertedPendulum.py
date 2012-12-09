@@ -81,7 +81,7 @@ class InvertedPendulum(Domain):
     ACTION_ARROW_LENGTH = 0.4
     action_arrow_x_left = 0
     action_arrow_x_right = 0
-    domainFig = None
+    domain_fig = None
     domainFigAxes = None
     circle_radius = 0.1
     PENDULUM_PIVOT_X = 0 # X position is also fixed in this visualization
@@ -89,7 +89,6 @@ class InvertedPendulum(Domain):
     
     #
     valueFunction_fig = None
-    valueFunction_axes = None
     policy_fig = None
     policy_axes = None
     MIN_RETURN = 0 # Minimum return possible, used for graphical normalization, computed in init
@@ -154,18 +153,18 @@ class InvertedPendulum(Domain):
         # direction of torque applied (not including noise!)
         # Pendulum rotation is centered at origin
         
-        if self.domainFig == None: # Need to initialize the figure
-            self.domainFig = pl.figure(2)
-            self.domainFigAxes = self.domainFig.gca()
+        if self.domain_fig == None: # Need to initialize the figure
+            self.domain_fig = pl.subplot(1,3,1)
+            #self.domainFigAxes = self.domain_fig.gca()
             self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
             self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
             
-            self.domainFigAxes.add_patch(self.pendulumBob)
-            self.domainFigAxes.add_line(self.pendulumArm)
+            self.domain_fig.add_patch(self.pendulumBob)
+            self.domain_fig.add_line(self.pendulumArm)
             # Allow room for pendulum to swing without getting cut off on graph
             viewableDistance = self.length + self.circle_radius + 0.5
-            self.domainFigAxes.set_xlim(-viewableDistance, viewableDistance)
-            self.domainFigAxes.set_ylim(-viewableDistance, viewableDistance)
+            self.domain_fig.set_xlim(-viewableDistance, viewableDistance)
+            self.domain_fig.set_ylim(-viewableDistance, viewableDistance)
  #           self.domainFigAxes.set_aspect('equal')
             pl.axis('off')
             pl.show()
@@ -194,10 +193,10 @@ class InvertedPendulum(Domain):
                 self.actionArrowBottom = pl.Arrow(self.action_arrow_x_left, -self.length - 0.3, self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='red')
             else:# clockwise torque
                 self.actionArrowBottom = pl.Arrow(self.action_arrow_x_right, -self.length - 0.3, -self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='black')
-            self.domainFigAxes.add_patch(self.actionArrowBottom)
+            self.domain_fig.add_patch(self.actionArrowBottom)
             
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
-        self.domainFigAxes.add_patch(self.pendulumBob)
+        self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
         sleep(self.dt)
         
@@ -227,8 +226,7 @@ class InvertedPendulum(Domain):
         yTickTuple = array([(row,int(thetaDot_list[row] * 180/pi)) for row in arange(numDiscrR) if row % 2 == 0])
         
         if self.valueFunction_fig is None:
-            self.valueFunction_fig = pl.figure(3)
-            self.valueFunction_axes = self.valueFunction_fig.gca()
+            self.valueFunction_fig = pl.subplot(1,3,2)
             minV = min(min(v) for v in V)
             maxV = max(max(v) for v in V)
             self.valueFunction_fig   = pl.imshow(valueFuncGrid, cmap='ValueFunction',interpolation='nearest',vmin=minV,vmax=maxV) 
@@ -243,8 +241,8 @@ class InvertedPendulum(Domain):
             pl.show()
             #pl.tight_layout()
         if self.policy_fig is None:
-            self.policy_fig = pl.figure(4)
-            self.policy_axes = self.policy_fig.gca()
+            self.policy_fig = pl.subplot(1,3,3)
+            #self.policy_axes = self.policy_fig.gca()
             # Note that we re-use the value function color map below, since it contains
             self.policy_fig = pl.imshow(policyGrid, cmap=self.policy_cmap, norm = self.policy_cmap_norm, interpolation='nearest',vmin=0,vmax=self.actions_num)
             pl.xticks(xTickTuple[:,0], xTickTuple[:,1], fontsize=12)

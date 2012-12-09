@@ -14,8 +14,8 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 500000
+    PERFORMANCE_CHECKS  = 10
+    LEARNING_STEPS      = 10000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -53,10 +53,9 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
+    #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
-    #domain           = InvertedPendulum(start_angle = pi, start_rate = 0, dt = 0.10, force_noise_max = 1, logger = logger);
-    #domain          = CartPoleParr(start_angle = 0.01, start_rate = 0, dt = 0.10, force_noise_max = 0, visualize = False, logger = logger)
+    domain           = InvertedPendulum(start_angle = pi, start_rate = 0, dt = 0.10, force_noise_max = 1, logger = logger);
     #domain          = CartPole(start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, logger = logger)
     
     representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
