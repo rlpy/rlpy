@@ -78,16 +78,13 @@ class InvertedPendulum(Domain):
     pendulumArm = None
     pendulumBob = None
     actionArrowBottom = None
-    ACTION_ARROW_LENGTH = 0.4
-    action_arrow_x_left = 0
-    action_arrow_x_right = 0
     domain_fig = None
     domainFigAxes = None
     circle_radius = 0.1
     PENDULUM_PIVOT_X = 0 # X position is also fixed in this visualization
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     
-    main_fig = None
+    #
     valueFunction_fig = None
     policy_fig = None
     policy_axes = None
@@ -139,8 +136,8 @@ class InvertedPendulum(Domain):
             print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
             print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
         #plotting - these are constants
-        self.action_arrow_x_left = self.PENDULUM_PIVOT_X - self.ACTION_ARROW_LENGTH/2
-        self.action_arrow_x_right = self.PENDULUM_PIVOT_Y + self.ACTION_ARROW_LENGTH/2
+        #self.action_arrow_x_left = self.PENDULUM_PIVOT_X - self.ACTION_ARROW_LENGTH/2
+        #self.action_arrow_x_right = self.PENDULUM_PIVOT_Y + self.ACTION_ARROW_LENGTH/2
         
         self.MAX_RETURN = self.GOAL_REWARD * self.episodeCap / 4 # Divide by 2 to emphasize other features of the graph
         self.MIN_RETURN = 0
@@ -153,11 +150,8 @@ class InvertedPendulum(Domain):
         # direction of torque applied (not including noise!)
         # Pendulum rotation is centered at origin
         
-        if self.main_fig == None: # Need to initialize the figure
-            self.main_fig,ax = pl.subplots(1,3)
-            print self.main_fig
-            self.main_fig.subplots_adjust(wspace=0.5) 
-            self.domain_fig = self.main_fig.add_subplot(1,3,1)
+        if self.domain_fig == None: # Need to initialize the figure
+            self.domain_fig = pl.subplot(1,3,1)
             #self.domainFigAxes = self.domain_fig.gca()
             self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
             self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
@@ -230,7 +224,7 @@ class InvertedPendulum(Domain):
         yTickTuple = array([(row,int(thetaDot_list[row] * 180/pi)) for row in arange(numDiscrR) if row % 2 == 0])
         
         if self.valueFunction_fig is None:
-            self.valueFunction_fig = self.main_fig.add_subplot(1,3,2)
+            self.valueFunction_fig = pl.subplot(1,3,2)
             minV = min(min(v) for v in V)
             maxV = max(max(v) for v in V)
             self.valueFunction_fig   = pl.imshow(valueFuncGrid, cmap='ValueFunction',interpolation='nearest',vmin=minV,vmax=maxV) 
@@ -244,7 +238,7 @@ class InvertedPendulum(Domain):
 #            f.set_size_inches(10,20)
             pl.show()
         if self.policy_fig is None:
-            self.policy_fig = self.main_fig.add_subplot(1,3,3)
+            self.policy_fig = pl.subplot(1,3,3)
             #self.policy_axes = self.policy_fig.gca()
             # Note that we re-use the value function color map below, since it contains
             self.policy_fig = pl.imshow(policyGrid, cmap=self.policy_cmap, norm = self.policy_cmap_norm, interpolation='nearest',vmin=0,vmax=self.actions_num)
@@ -261,6 +255,7 @@ class InvertedPendulum(Domain):
         self.valueFunction_fig.set_data(V)
         self.policy_fig.set_data(bestA)
         f = pl.gcf()
+        f.subplots_adjust(left=0,wspace=.3)
         pl.draw()   
 
     def s0(self):    
