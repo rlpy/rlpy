@@ -2,6 +2,7 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
+
 from Tools import *
 from Domains import *
 from Agents import *
@@ -14,7 +15,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 1000
+    LEARNING_STEPS      = 500000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -29,11 +30,13 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Domain ----------------------
     MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
-    NOISE               = .3
+    NOISE               = 0.3
     BLOCKS              = 6 # For BlocksWorld
     # Representation ----------------------
-    RBFS                    = 9
-    iFDD_Threshold          = .05 # Good for bloackWorld
+    #RBFS                    = 9
+    RBFS                    = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
+                                'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
+    iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
     iFDD_BatchThreshold     = .001 
     iFDD_CACHED             = 1
     iFDDMaxBatchDicovery    = 1
@@ -47,25 +50,26 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     iFDD_LSPI_iterations    = 10
     
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    #domain          = NetworkAdmin(logger = logger)
-    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    #domain           = InvertedPendulum(dt = 0.20, torque_noise_var = 0.1, logger = logger);
-    #domain           = CartPoleParr(start_angle = .01, start_rate = 0, dt = 0.10, force_noise_max = 10, visualize = True, logger = logger);
+    domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
+    #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
+    #domain           = InvertedPendulum(start_angle = pi, start_rate = 0, dt = 0.10, force_noise_max = 1, logger = logger);
+    #domain          = CartPoleParr(start_angle = 0.01, start_rate = 0, dt = 0.10, force_noise_max = 0, visualize = False, logger = logger)
+    #domain          = CartPole(start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, logger = logger)
     
-    #representation  = Tabular(domain,logger)
+    representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
+    #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
     #representation  = IndependentDiscretization(domain,logger)
-    #representation  = RBF(domain,logger, rbfs = RBFS)
+    #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
-    agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
     
     experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, output_filename = RESULT_FILE, plot_performance =  PLOT_PERFORMANCE)
@@ -78,6 +82,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     
     experiment.run()
     experiment.save()
+    #domain.showLearning(representation)
     logger.done()
     if SHOW_FINAL_PLOT: pl.ioff(); pl.show()
 

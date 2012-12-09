@@ -1,6 +1,11 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
+
+# NOTE That though the state s can take on almost any
+# value, if a dimension is not marked as 'continuous'
+# then it is assumed to be integral.
+
 from Tools import *
 from pydoc import classname
 class Domain(object):
@@ -9,7 +14,7 @@ class Domain(object):
     actions_num = None      # Number of Actions
     statespace_limits = None# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
     state_space_dims = None # Number of dimensions of the state space
-    continous_dims = []     # List of continuous dimensions of the domain, default = None
+    continuous_dims = []     # List of continuous dimensions of the domain, default = empty []
     episodeCap = None       # The cap used to bound each episode (return to s0 after)
     logger = None           # Used to capture the text in a file
     #Termination Signals of Episodes
@@ -26,7 +31,7 @@ class Domain(object):
         
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continous states
         self.extendDiscreteDimensions()
-        if self.continous_dims == []:
+        if self.continuous_dims == []:
             self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
         else:
             self.states_num = inf
@@ -81,6 +86,8 @@ class Domain(object):
             if terminal:
                 if steps != 0: self.showDomain(s,a)
                 s = self.s0()
+            elif steps % self.episodeCap == 0:
+                s = self.s0()
             a = randSet(self.possibleActions(s))
             self.showDomain(s,a)
             r,s,terminal = self.step(s, a)
@@ -90,7 +97,7 @@ class Domain(object):
     def extendDiscreteDimensions(self):
         self.statespace_limits = self.statespace_limits.astype('float')
         for d in arange(self.state_space_dims):
-             if not d in self.continous_dims:
+             if not d in self.continuous_dims:
                  self.statespace_limits[d,0] += -.5 
                  self.statespace_limits[d,1] += .5 
     def isTerminal(self,s):

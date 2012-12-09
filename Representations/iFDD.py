@@ -241,9 +241,13 @@ class iFDD(Representation):
                 print " %s\t| %s" % (str(list(initial)), active)
 
 if __name__ == '__main__':
+    STDOUT_FILE         = 'out.txt'
+    JOB_ID              = 1
+    OUT_PATH            = 'Results/Temp'
+    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     discovery_threshold = 1
     domain      = MountainCar()
-    rep         = iFDD(domain,discovery_threshold,debug=0,useCache=1)
+    rep         = iFDD(domain,logger,discovery_threshold,debug=0,useCache=1)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     print 'Initial [0,1,20] => ',
     print rep.findFinalActiveFeatures([0,1,20])

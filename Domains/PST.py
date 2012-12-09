@@ -194,7 +194,7 @@ class PST(Domain):
          #Draw the environment
          # Allocate horizontal 'lanes' for UAVs to traverse
          
-# Fomerly, we checked if this was the first time plotting; wedge shapes cannot be removed from
+# Formerly, we checked if this was the first time plotting; wedge shapes cannot be removed from
 # matplotlib environment, nor can their properties be changed, without clearing the figure
 # Thus, we must redraw the figure on each timestep
 #        if self.location_rect_vis is None:
@@ -282,7 +282,7 @@ class PST(Domain):
                 self.subplot_axes.add_line(lines.Line2D([self.location_coord[i] + self.LOCATION_WIDTH, self.location_coord[i] + self.LOCATION_WIDTH],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
-        sleep(1)
+        sleep(.25)
 #===============================================================================
     def showLearning(self,representation):
         pass
@@ -374,7 +374,7 @@ class PST(Domain):
             totalStepReward += self.SURVEIL_REWARD_COEFF * self.numHealthySurveil
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned # Presently this component is set to zero.
 #DEBUG        print 'reward',totalStepReward
-        return totalStepReward,ns,self.NOT_TERMINATED
+        return totalStepReward,ns,self.isTerminal(ns)
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     # Update member variable indicating if comms link is available, ie, if at least
     #1 uav with working sensor or actuator exists in each comms region

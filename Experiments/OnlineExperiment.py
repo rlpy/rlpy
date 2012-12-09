@@ -44,9 +44,10 @@ class OnlineExperiment (Experiment):
         if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap: 
-                if self.show_all and total_steps != 1: self.domain.show(s,a, self.agent.representation)
                 s           = self.domain.s0() 
                 a           = self.agent.policy.pi(s)
+                
+                if self.show_all and total_steps != 1: self.domain.show(s,a, self.agent.representation)
                 # Hash new state for the tabular case
                 if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(s)
                 # Output the current status if certain amount of time has been passed

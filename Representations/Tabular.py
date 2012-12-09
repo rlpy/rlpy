@@ -4,7 +4,7 @@
 from Representation import *
 class Tabular(Representation):
     def __init__(self,domain,logger,discretization = 20):
-        self.setBinsPerDimension(domain,discretization)
+        self.setBinsPerDimension(domain,discretization) # Already performed in call to superclass
         self.features_num = int(prod(self.bins_per_dim))
         super(Tabular,self).__init__(domain,logger,discretization)
     def phi_nonTerminal(self,s):

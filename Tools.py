@@ -58,8 +58,9 @@ def randSet(x):
     return x[i]
 def closestDiscretization(x, bins, limits):
     #Return the closest point to x based on the discretization defined by the number of bins and limits
+    # equivalent to binNumber(x) / (bins-1) * width + limits[0]
     width = limits[1]-limits[0]
-    return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
+    return round((x-limits[0])*(bins-1)/(width*1.)) / (bins-1) * width + limits[0]
 def binNumber(s,bins,limits):
     # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
     # each element of the returned valued is the zero-indexed bin number corresponding to s
@@ -69,11 +70,15 @@ def binNumber(s,bins,limits):
     # s = .001, limits = [-1,5], bins = 6 => 1
     # s = .4, limits = [-.5,.5], bins = 3 => 2
     width = limits[1]-limits[0]
-    if not (s <= limits[1] and s>=limits[0]):
+    if not (s <= limits[1]):
+        s = limits[1]
+        print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
+    elif not(s>=limits[0]):
+        s = limits[0]
         print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
         # TODO - pass logger in? Assign logger to tools.py?
 #        self.logger.log("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
-    return int((s-limits[0])*bins/(width*1.))
+    return int((s-limits[0])*(bins-1)/(width*1.))
 def deltaT(start_time):
     return time()-start_time
 def hhmmss(t):
@@ -99,6 +104,7 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap)
     mycmap = make_colormap({0:'r', 1: 'w', 2.:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
+    cm.register_cmap(cmap=mycmap,name='InvertedPendulumActions')
 #    Some useful Colormaps
 #    red_yellow_blue = make_colormap({0.:'r', 0.5:'#ffff00', 1.:'b'})
 #    blue_yellow_red = make_colormap({0.:'b', 0.5:'#ffff00', 1.:'r'})
@@ -212,6 +218,9 @@ def make_amrcolors(nlevels=4):
         print "*** Warning, suggest nlevels <= 16"
 
     return (linecolors, bgcolors)
+
+
+
 def linearMap(x,a,b,A=0,B=1):
     # This function takes scalar X in range [a1,b1] and maps it to [A1,B1]
     # values oout of a and b are clipped to boundaries 
@@ -315,8 +324,9 @@ def id2vec(_id,limits):
     prods = cumprod(limits)
     s = [0] * len(limits)
     for d in arange(len(prods)-1,0,-1):
-        s[d] = _id / prods[d-1]
-        _id %= prods[d-1]
+#       s[d] = _id / prods[d-1]
+#       _id %= prods[d-1]
+        s[d], _id = divmod(_id, prods[d-1])
     s[0] = _id
     return s
 def bound(x,m,M):

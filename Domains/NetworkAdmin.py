@@ -230,7 +230,7 @@ if __name__ == '__main__':
         STDOUT_FILE         = 'out.txt'
         random.seed(0)
         testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
-        #p = NetworkAdmin(logger = testLogger, networkmapname='/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5);
-        p = NetworkAdmin(networkmapname='/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=20,logger = testLogger);
+        p = NetworkAdmin(networkmapname='/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = testLogger);
+        #p = NetworkAdmin(networkmapname='/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=20,logger = testLogger);
         p.test(1000)
      
