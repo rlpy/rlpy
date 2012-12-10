@@ -74,8 +74,8 @@ class Domain(object):
         dim = len(s)
                
         for i in range(0,dim):
-            if s[i] < self.statespace_limits[i,0]: s[i] = self.statespace_limits[i,0]
-            if s[i] > self.statespace_limits[i,1]: s[i] = self.statespace_limits[i,1]
+            if s[i] < self.statespace_limits[i,0]+0.5: s[i] = int(self.statespace_limits[i,0]+0.5)
+            if s[i] > self.statespace_limits[i,1]-0.5: s[i] = int(self.statespace_limits[i,1]-0.5)
             
             
     def test(self,T):
