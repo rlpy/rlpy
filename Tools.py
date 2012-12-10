@@ -76,9 +76,8 @@ def binNumber(s,bins,limits):
     elif not(s>=limits[0]):
         s = limits[0]
         print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
-        # TODO - pass logger in? Assign logger to tools.py?
-#        self.logger.log("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
-    return int((s-limits[0])*(bins-1)/(width*1.))
+#        print("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
+    return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
     return time()-start_time
 def hhmmss(t):

@@ -29,7 +29,7 @@ class Domain(object):
                 raise Exception('Missed domain initialization of '+ v)
         self.state_space_dims = len(self.statespace_limits)
         
-        # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continous states
+        # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
         self.extendDiscreteDimensions()
         if self.continuous_dims == []:
             self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
@@ -70,7 +70,7 @@ class Domain(object):
         abstract
     
     def saturateState(self,s):
-
+        # Kemal put more info on this. Why do you need this?
         dim = len(s)
                
         for i in range(0,dim):
@@ -99,7 +99,7 @@ class Domain(object):
         for d in arange(self.state_space_dims):
              if not d in self.continuous_dims:
                  self.statespace_limits[d,0] += -.5 
-                 self.statespace_limits[d,1] += .5 
+                 self.statespace_limits[d,1] += +.5 
     def isTerminal(self,s):
         # Returns true if state s is terminal
         abstract
