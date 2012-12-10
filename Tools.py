@@ -101,10 +101,10 @@ def createColorMaps():
     mycmap = col.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
     mycmap = col.ListedColormap(['.6','k'], 'Actions')
-    cm.register_cmap(cmap=mycmap)
     mycmap = make_colormap({0:'r', 1: 'w', 2.:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
-    cm.register_cmap(cmap=mycmap,name='InvertedPendulumActions')
+    mycmap = col.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
+    cm.register_cmap(cmap=mycmap)
 #    Some useful Colormaps
 #    red_yellow_blue = make_colormap({0.:'r', 0.5:'#ffff00', 1.:'b'})
 #    blue_yellow_red = make_colormap({0.:'b', 0.5:'#ffff00', 1.:'r'})
