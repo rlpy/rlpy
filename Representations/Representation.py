@@ -31,8 +31,9 @@ class Representation(object):
     def V(self,s, phi_s = None):
         #Returns the value of a state
         if phi_s is None: phi_s = self.phi(s)
-        AllQs   = self.Qs(s,phi_s)
+        AllQs,A   = self.Qs(s,phi_s)
         V       = max(AllQs)
+        return V
     def Qs(self,s, phi_s = None):
     #Returns two arrays
     # Q: array of Q(s,a)

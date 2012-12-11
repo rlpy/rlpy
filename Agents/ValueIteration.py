@@ -33,37 +33,14 @@ class ValueIteration(Agent):
             #print 'next state', ns            
             r = rewards[i]
             #print 'reward', r
-            Qns = []                          
-            # Get the best action for the next state
             
-            next_actions = self.domain.possibleActions(ns)
-            
-            for j in next_actions:
-                
-                phi_ns = self.representation.phi(ns)
-                
-                phi_n = self.representation.phi_sa(ns,j,phi_ns)
-                
-                #print 'phi_n', phi_n 
-                              
-                Qns.append(dot(phi_n,theta)) 
-            
-            #print 'Qns', Qns 
-                           
-            val = max(Qns)    
-            #print 'val', val
+            val = 0
+            phi_ns = self.representation.phi(ns)
+            if(len(self.domain.possibleActions(ns))>0):   
+                val = self.representation.V(ns,phi_ns)
             
             update += prob*(r + gamma*val)
             
-            #if(len(self.domain.possibleActions(ns)) != 0):
-               
-                
-                
-             #   update += prob*(r + gamma*val)
-                #print 'update', update
-                
-            #print 'update', update
-        
         # Update the representation
         
         s_index = vec2id( self.representation.binState(s),self.representation.bins_per_dim)
