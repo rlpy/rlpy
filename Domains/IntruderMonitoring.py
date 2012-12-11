@@ -36,7 +36,8 @@ class IntruderMonitoring(Domain):
     ACTIONS_PER_AGENT = array([[-1,0], #Up
                [+1,0], #Down
                [0,-1], #left
-               [0,+1] #Right
+               [0,+1], #Right
+               [0,0], # Null
                ])
       
        
@@ -49,13 +50,16 @@ class IntruderMonitoring(Domain):
         self.ROWS,self.COLS     = shape(self.map)
         self.GetAgentAndIntruderNumbers()
         
+        self.state_space_dims = 2*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
+        
         _statespace_limits = vstack([[0,self.ROWS-1],[0,self.COLS-1]])
-        self.statespace_limits      = tile(_statespace_limits,((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS),1))     
-                
-        self.states_num = ((self.ROWS-1)*(self.COLS-1))^((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS))    
-        self.state_space_dims = 2*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)             
-        self.actions_num        = 4*self.NUMBER_OF_AGENTS
-        self.ACTION_LIMITS = [4]*self.NUMBER_OF_AGENTS
+        self.statespace_limits      = tile(_statespace_limits,((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS),1))
+        self.statespace_limits_non_extended      = tile(_statespace_limits,((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS),1))
+                        
+        #self.states_num = ((self.ROWS-1)*(self.COLS-1))^((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS))    
+                     
+        self.actions_num        = 5*self.NUMBER_OF_AGENTS
+        self.ACTION_LIMITS = [5]*self.NUMBER_OF_AGENTS
                                       
         if episodeCap is None:
             self.episodeCap         = 2*self.ROWS*self.COLS
@@ -78,11 +82,32 @@ class IntruderMonitoring(Domain):
                     
         action_vector = id2vec(a,self.ACTION_LIMITS)
         r = 0
-                                          
-        # Agent Step
-                      
-        ns = []            
-                        
+        ns = [] 
+        
+        # Intrusion Check
+        intrusion_counter = 0
+        offset = 2*self.NUMBER_OF_AGENTS
+        
+        for i in range(0,self.NUMBER_OF_INTRUDERS):
+            s_i = s[offset+ i*2:offset+i*2+2]
+            ns_i = list(s_i)#s_i.copy()    
+            
+             # Check if there is an intrusion
+           
+            if (self.map[ns_i[0],ns_i[1]] == self.DANGER): # Intruder is in a danger zone !!
+                #print 'DANGER'
+                for j in range(0,self.NUMBER_OF_AGENTS):
+                    ns_a=  s[j*2:j*2+2]
+                    if ( (ns_a[0] != ns_i[0]) or (ns_a[1] != ns_i[1])): # Intrusion occured !
+                       # print 'Intrusion !!'
+                        intrusion_counter += 1
+                    #else:
+                      # print 'No intrusion'
+            #else:
+                #print 'SAFE'     
+                
+         # Agent Step
+                               
         for i in range(0,self.NUMBER_OF_AGENTS):
             s_a = s[i*2:i*2+2]
                                               
@@ -98,14 +123,15 @@ class IntruderMonitoring(Domain):
             # Merge the state
            
             ns +=  ns_a
-            
+                          
         # Intruder Step
         
-        intrusion_counter = 0
-        offset = 2*self.NUMBER_OF_AGENTS                
+     
+                        
         for i in range(0,self.NUMBER_OF_INTRUDERS):
             s_i = s[offset+ i*2:offset+i*2+2]
             ns_i = list(s_i)#s_i.copy()    
+                                           
             action_i =   randSet(self.possibleActionsPerAgent(s_i))
                                     
             #ns_i = ns_i + self.ACTIONS_PER_AGENT[action_i]
@@ -113,26 +139,17 @@ class IntruderMonitoring(Domain):
                     
            # if(ns_i[0] < 0 or ns_i[0] == self.ROWS-1 or ns_i[1] < 0 or ns_i[1] == self.COLS-1):
            #     ns_i = s_i  
-                
-            # Check if there is an intrusion
-            IntruderMonitoring
-            if self.map[ns_i[0],ns_i[1]] == self.DANGER: # Intruder is in a danger zone !!
-                
-                for j in range(0,self.NUMBER_OF_AGENTS):
-                    ns_a=  ns[j*2:j*2+2]
-                    if (ns_a != ns_i): # Intrusion occured !
-                       # print 'Intrusion !!'
-                        intrusion_counter += 1
-                         
+                  
              # Merge the state
-            ns += ns_i                         
-                
+            ns += ns_i                    
+                                          
+                     
         # Reward Calculation           
-       
-        self.saturateState(ns)
         r = intrusion_counter*self.INTRUSION_PENALTY
+        self.saturateState(ns)
+        
                 
-        return r,ns,False
+        return r,array(ns),False
     
     def move(self,s,a):
         
@@ -143,8 +160,8 @@ class IntruderMonitoring(Domain):
         if (a == 2):
             s[1] -= 1
         if (a == 3):
-            s[1] += 1      
-        
+            s[1] += 1
+                       
         
     
     def s0(self):
@@ -162,18 +179,18 @@ class IntruderMonitoring(Domain):
         #s_init.append(ns_i)
         s_init = ns_a + ns_i
         
-        return s_init
+        return array(s_init)
     
         
-    def possibleActions(self,s):
-              
-       possibleA = array([],uint8)
-       
-       for a in arange(self.actions_num):
-               possibleA = append(possibleA,[a])
-           
-       
-       return possibleA
+#    def possibleActions(self,s):
+#              
+#       possibleA = array([],uint8)
+#       
+#       for a in arange(self.actions_num):
+#               possibleA = append(possibleA,[a])
+#           
+#       
+#       return possibleA
     
     
     def isTerminal(self,s):
@@ -221,6 +238,11 @@ class IntruderMonitoring(Domain):
 if __name__ == '__main__':
    
     p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
-    p.test(100)
+    s = p.s0()
+    a = 0
+    next_states,rewards = p.MCExpectedStep(s,a,10)
+    print next_states
+    print rewards
+    #p.test(100)
     
     

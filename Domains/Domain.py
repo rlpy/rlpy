@@ -103,3 +103,20 @@ class Domain(object):
     def isTerminal(self,s):
         # Returns true if state s is terminal
         abstract
+    
+    def MCExpectedStep(self,s,a,no_samples):
+        
+        # Sample no_samples of next states and rewards from the domain
+        
+        next_states = []
+        rewards = []
+        
+        for i in range(0,no_samples):
+        
+            r,ns,terminal = self.step(s, a)
+        
+            next_states.append(ns)
+            rewards.append(r)
+                
+        return array(next_states),array(rewards) 
+    
