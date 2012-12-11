@@ -1,3 +1,2 @@
 from BatchExperiment import BatchExperiment
 from OnlineExperiment import OnlineExperiment
-from SweepExperiment import SweepExperiment
