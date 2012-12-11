@@ -18,7 +18,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     LEARNING_STEPS      = 10000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'

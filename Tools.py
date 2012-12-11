@@ -97,8 +97,9 @@ def scale(x,m,M):
     #x(pos_ind) = x(pos_ind)
 def createColorMaps():
     #Make Grid World ColorMap
-    mycmap = col.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
-    #Make Blocks World ColorMap
+    mycmap = col.ListedColormap(['w', 'gray','b','g','r','k'], 'GridWorld')
+    cm.register_cmap(cmap=mycmap)
+    mycmap = col.ListedColormap(['w','gray','b','r'], 'IntruderMonitorying')
     cm.register_cmap(cmap=mycmap)
     mycmap = col.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)

@@ -26,10 +26,10 @@ class IntruderMonitoring(Domain):
     NUMBER_OF_AGENTS = 0            # Number of Cooperating agents
     NUMBER_OF_INTRUDERS = 0         # Number of Intruders
     NUMBER_OF_DANGER_ZONES = 0
+    
     #Rewards
     INTRUSION_PENALTY = -1.0
     episodeCap  = 0                 # Set by the domain = min(100,rows*cols)
-        
     
     #Constants in the map
     EMPTY, INTRUDER, AGENT, DANGER = range(4)
@@ -39,6 +39,12 @@ class IntruderMonitoring(Domain):
                [0,+1], #Right
                [0,0], # Null
                ])
+
+    #Visual Variables
+    domain_fig      = None    
+    ally_fig        = None
+    intruder_fig    = None
+    
       
        
     def __init__(self, mapname, episodeCap = None, logger = None):
@@ -77,7 +83,6 @@ class IntruderMonitoring(Domain):
             
         super(IntruderMonitoring,self).__init__(logger)
         if self.logger: self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
-   
     def step(self,s,a):
                     
         action_vector = id2vec(a,self.ACTION_LIMITS)
@@ -151,7 +156,6 @@ class IntruderMonitoring(Domain):
         
                 
         return r,array(ns),False
-    
     def move(self,s,a):
         
         if (a == 0):
@@ -162,9 +166,6 @@ class IntruderMonitoring(Domain):
             s[1] -= 1
         if (a == 3):
             s[1] += 1
-                       
-        
-    
     def s0(self):
         
         s_init = []
@@ -192,12 +193,8 @@ class IntruderMonitoring(Domain):
 #           
 #       
 #       return possibleA
-    
-    
     def isTerminal(self,s):
-       
         return False
-    
     def possibleActionsPerAgent(self,s):
               
         possibleA = array([],uint8)
@@ -209,16 +206,12 @@ class IntruderMonitoring(Domain):
                 continue
             possibleA = append(possibleA,[a])
         return possibleA
-    
     def GetAgentAndIntruderNumbers(self):
-         
-        
         for r in arange(self.ROWS):
               for c in arange(self.COLS):
                 if self.map[r,c] == self.AGENT: self.NUMBER_OF_AGENTS +=1
                 if self.map[r,c] == self.INTRUDER: self.NUMBER_OF_INTRUDERS +=1
-                                
-    def showDomain(self,s,a):
+    def printDomain(self,s,a):
         print '--------------'
        
         for i in range(0,self.NUMBER_OF_AGENTS):
@@ -234,16 +227,30 @@ class IntruderMonitoring(Domain):
         r,ns,terminal = self.step(s, a)
         
         print 'Reward ',r               
-                              
-                           
     def IntruderPolicy(self,s_i):
          return randSet(self.possibleActionsPerAgent(s_i))
-         
-                               
-                           
+    def showDomain(self,s,a):
+       #Draw the environment
+       if self.domain_fig is None:
+           fig              = pl.figure()
+           self.domain_fig  = pl.imshow(self.map, cmap='IntruderMonitorying',interpolation='nearest',vmin=0,vmax=3)
+           pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
+           pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
+           pl.show()
+       if self.ally_fig != None:
+           self.ally_fig.pop(0).remove()
+           self.intruder_fig.pop(0).remove()
+
+       s_ally               = s[0:self.NUMBER_OF_AGENTS*2].reshape((-1,2))
+       s_intruder           = s[self.NUMBER_OF_AGENTS*2:].reshape((-1,2)) 
+       self.ally_fig        = pl.plot(s_ally[:,1],s_ally[:,0],'b>',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
+       self.intruder_fig    = pl.plot(s_intruder[:,1],s_intruder[:,0],'go',color='gray',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
+       pl.draw()   
+       sleep(0)
 if __name__ == '__main__':
    
-    p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
-    p.test(100)
+    #p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/2x3_2A_1I.txt')
+    p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_2I.txt')
+    p.test(1000)
     
     
