@@ -71,7 +71,8 @@ class InvertedPendulum(Domain):
     pendulumBob         = None
     actionArrow         = None
     domain_fig          = None
-    circle_radius       = 0.1
+    circle_radius       = 0.05
+    ARM_LENGTH          = 1.0 
     PENDULUM_PIVOT_X    = 0 # X position is also fixed in this visualization
     PENDULUM_PIVOT_Y    = 0 # Y position of pendulum pivot
     valueFunction_fig   = None
@@ -177,7 +178,7 @@ class InvertedPendulum(Domain):
         if forceAction == 0: 
             pass # no torque
         else: # cw or ccw torque
-            SHIFT = .5
+            SHIFT = .3
             if forceAction > 0: # counterclockwise torque
                 self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2")
             else:# clockwise torque

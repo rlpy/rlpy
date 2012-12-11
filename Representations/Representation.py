@@ -94,12 +94,9 @@ class Representation(object):
         # s = .4, limits = [-.5,.5], bins = 3 => 2
         if isinstance(s,int): return s 
         bs  = empty(len(s),'uint16')
-        shout(self,s)
-        shout(self,self.domain.statespace_limits)
         
         for d in arange(self.domain.state_space_dims):
             bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
-        shout(self,s)
         return bs
     def printAll(self):
         printClass(self)
