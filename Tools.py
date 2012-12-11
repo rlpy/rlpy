@@ -12,6 +12,7 @@ from matplotlib import pylab as pl
 pl.ion()
 from matplotlib import mpl,rc
 import matplotlib.patches as mpatches
+import matplotlib.path as mpath
 import matplotlib.colors as col
 import matplotlib.cm as cm
 from scipy import stats
@@ -60,7 +61,7 @@ def closestDiscretization(x, bins, limits):
     #Return the closest point to x based on the discretization defined by the number of bins and limits
     # equivalent to binNumber(x) / (bins-1) * width + limits[0]
     width = limits[1]-limits[0]
-    return round((x-limits[0])*(bins-1)/(width*1.)) / (bins-1) * width + limits[0]
+    return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
 def binNumber(s,bins,limits):
     # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
     # each element of the returned valued is the zero-indexed bin number corresponding to s
@@ -413,14 +414,14 @@ def rank(A, eps=1e-12):
 def easy2read(A, _precision=3):
     # returns an array easy to read (used for debugging mainly. _precision is the number of decimal digits
     return array_repr(A, precision=_precision, suppress_small=True)
-def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4"):
+def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10,shrinkB=10,arrowstyle="fancy"):
     #draw an arrow from point A=(x1,y1) to point B=(x2,y2)
     return pl.annotate("",
                 xy=(x2,y2), xycoords='data',
                 xytext=(x1,y1), textcoords='data',
-                arrowprops=dict(arrowstyle="fancy", #linestyle="dashed",
+                arrowprops=dict(arrowstyle=arrowstyle, #linestyle="dashed",
                                 color= color,
-                                shrinkA=10, shrinkB=10,
+                                shrinkA=shrinkA, shrinkB=shrinkB,
                                 patchA=None,
                                 patchB=None,
                                 connectionstyle=connectionstyle), 

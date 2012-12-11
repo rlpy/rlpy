@@ -57,7 +57,7 @@ class InvertedPendulum(Domain):
     MASS_PEND           = 2.0 # kilograms, kg - Mass of the bob at the end of the pendulum (assume zero arm mass) [2 per DPF]
     MASS_CART           = 8.0 # kilograms, kg - Mass of cart [8 per DPF]
     length              = 0.5 # meters, m - Length of the pendulum, meters [0.5 in DPF]
-    ACCEL_G             = 9.81 # m/s^2 - gravitational constant
+    ACCEL_G             = 9.8 # m/s^2 - gravitational constant
     ROT_INERTIA         = 0 # kg * m^2 - rotational inertia of the pendulum, computed in __init__
     dt                  = 0.1 # Time between steps [0.1 in DPF]
     force_noise_max     = 10 # Newtons, N - Maximum noise possible, uniformly distributed [10 in tutorial]
@@ -192,7 +192,7 @@ class InvertedPendulum(Domain):
         V       = zeros((self.Theta_discritization,self.ThetaDot_discritization))
 
         if self.valueFunction_fig is None:
-            self.valueFunction_fig  = pl.subplot(1,3,2)
+            self.valueFunction_fig   = pl.subplot(1,3,2)
             self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
             #pl.colorbar() # Show the colorbar corresponding to the value function
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)

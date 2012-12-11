@@ -1,4 +1,5 @@
 import sys, os
+from matplotlib.patches import ConnectionStyle
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
@@ -103,9 +104,23 @@ class CartPole(Domain):
     circle_radius = 0.05
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     RECT_WIDTH = 0.5 
-    RECT_HEIGHT = 0 # If this value is left as zero, it is computed automatically based on mass.
+    BLOB_WIDTH = 0.2
+    RECT_HEIGHT = MASS_CART/20.0
     PEND_WIDTH = 0 # If this value is left as zero, it is computed automatically based on mass.
-    
+    GROUND_WIDTH = 2
+    GROUND_HEIGHT = 1
+    CARTBLOB_R = .3/4.0 # The radius of the blob on the cart
+    # vertecies for the ground:
+    GROUND_VERTS = array([
+                          (POSITON_LIMITS[0],-RECT_HEIGHT/2.0),
+                          (POSITON_LIMITS[0],RECT_HEIGHT/2.0),
+                          (POSITON_LIMITS[0]-GROUND_WIDTH, RECT_HEIGHT/2.0),
+                          (POSITON_LIMITS[0]-GROUND_WIDTH, RECT_HEIGHT/2.0-GROUND_HEIGHT),
+                          (POSITON_LIMITS[1]+GROUND_WIDTH, RECT_HEIGHT/2.0-GROUND_HEIGHT),
+                          (POSITON_LIMITS[1]+GROUND_WIDTH, RECT_HEIGHT/2.0),
+                          (POSITON_LIMITS[1], RECT_HEIGHT/2.0),
+                          (POSITON_LIMITS[1], -RECT_HEIGHT/2.0),
+                          ])
     # are constrained by the format expected by ode functions.
     def __init__(self, start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
@@ -144,17 +159,24 @@ class CartPole(Domain):
         
         if self.domainFig == None: # Need to initialize the figure
             self.domainFig = pl.figure()
-            self.domainFigAxes = self.domainFig.gca()
+            ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
             self.pendulumArm = lines.Line2D([],[], linewidth = self.PEND_WIDTH, color='black')
-            self.cartBox = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT], self.RECT_WIDTH, self.RECT_HEIGHT, color='black')
-            
-            self.domainFigAxes.add_patch(self.cartBox)
-            self.domainFigAxes.add_line(self.pendulumArm)
+            self.cartBox    = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT/2.0], self.RECT_WIDTH, self.RECT_HEIGHT,alpha=.4)
+            self.cartBlob   = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.BLOB_WIDTH/2.0], self.BLOB_WIDTH, self.BLOB_WIDTH,alpha=.4) 
+            ax.add_patch(self.cartBox)
+            ax.add_line(self.pendulumArm)
+            ax.add_patch(self.cartBlob)
+            #Draw Ground
+            path    = mpath.Path(self.GROUND_VERTS)
+            patch   = mpatches.PathPatch(path,hatch="//")
+            ax.add_patch(patch)
+
             # Allow room for pendulum to swing without getting cut off on graph
             viewableDistance = self.length + self.circle_radius + 0.5
-            self.domainFigAxes.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
-            self.domainFigAxes.set_ylim(-viewableDistance, viewableDistance)
-            self.domainFigAxes.set_aspect('equal')
+            ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
+            ax.set_ylim(-viewableDistance, viewableDistance)
+            #ax.set_aspect('equal')
+            
             pl.show()
             
         forceAction = self.AVAIL_FORCE[a]
@@ -166,25 +188,35 @@ class CartPole(Domain):
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.length * cos(curTheta)
 
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
+        
         # update pendulum arm on figure
         self.pendulumArm.set_data([curX, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])
         self.cartBox.set_x(curX - self.RECT_WIDTH/2.0)
+        self.cartBlob.set_x(curX - self.BLOB_WIDTH/2.0)
+        
         
         if self.actionArrowBottom is not None:
             self.actionArrowBottom.remove()
             self.actionArrowBottom = None
             
-        if forceAction == 0: pass # no torque
+        if forceAction == 0: pass # no force
         else: # cw or ccw torque
             if forceAction > 0: # rightward force
-                self.actionArrowBottom = pl.Arrow(curX - self.ACTION_ARROW_LENGTH - self.RECT_WIDTH/2.0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT/2.0, self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='red')
-            else:# clockwise torque
-                self.actionArrowBottom = pl.Arrow(curX + self.ACTION_ARROW_LENGTH + self.RECT_WIDTH/2.0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT/2.0, -self.ACTION_ARROW_LENGTH, 0.0, width=0.2, color='black')
-            self.domainFigAxes.add_patch(self.actionArrowBottom)
+                self.actionArrowBottom = fromAtoB(
+                                                  curX - self.ACTION_ARROW_LENGTH - self.RECT_WIDTH/2.0, 0, 
+                                                  curX - self.RECT_WIDTH/2.0,  0, 
+                                                  'k',"arc3,rad=0",
+                                                  0,0, 'simple'
+                                                  )
+            else:# leftward force
+                self.actionArrowBottom = fromAtoB(
+                                                  curX + self.ACTION_ARROW_LENGTH + self.RECT_WIDTH/2.0, 0,
+                                                  curX + self.RECT_WIDTH/2.0, 0, 
+                                                  'r',"arc3,rad=0",
+                                                  0,0,'simple'
+                                                  )
             
         pl.draw()
-        sleep(self.dt)
-        
     def showLearning(self,representation):
         pass
     
