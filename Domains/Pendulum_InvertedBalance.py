@@ -1,0 +1,52 @@
+import sys, os
+#Add all paths
+sys.path.insert(0, os.path.abspath('..'))
+from Tools import *
+from Domain import *
+from Pendulum import *
+
+#####################################################################
+# Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
+#####################################################################
+# (See 1Link implementation by Lagoudakis & Parr, 2003)
+#
+# ---OBJECTIVE---
+# Reward is 0 everywhere, -1 if theta falls below horizontal.
+# This is also the terminal condition for an episode.
+#
+# theta:    [-pi/2, pi/2]
+# thetaDot: [-2,2]    Limits imposed per L & P 2003
+#
+# Pendulum starts unmoving, straight up, theta = 0.
+# (see Pendulum parent class for coordinate definitions).
+#
+#####################################################################
+
+class Pendulum_InvertedBalance(Pendulum):
+    # Domain constants
+    FELL_REWARD         = -1            # Reward received when the pendulum falls below the horizontal
+    ANGLE_LIMITS        = [-pi/2.0, pi/2.0] # Limit on theta (used for discretization)
+    ANGULAR_RATE_LIMITS = [-2, 2]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
+                                # NOTE that those rate limits are actually unphysically slow; more realistic to use 2*pi
+    episodeCap          = 3000          # Max number of steps per trajectory
+    
+    def __init__(self, logger = None):
+        self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
+        super(Pendulum_InvertedBalance,self).__init__(logger)
+    
+    def s0(self):    
+        # Returns the initial state, pendulum vertical
+        return array([0,0])
+    
+    def _getReward(self, s, a):
+        # Return the reward earned for this state-action pair
+        # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
+        return self.FELL_REWARD if self.isTerminal(s) else 0
+    
+    def isTerminal(self,s):
+        return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0) # per L & P 2003
+    
+if __name__ == '__main__':
+    random.seed(0)
+    p = Pendulum_InvertedBalance();
+    p.test(1000)
