@@ -211,8 +211,11 @@ class CartPole(Domain):
 
         ns[StateIndex.THETA]    = wrap(ns[StateIndex.THETA],-pi, pi)
         ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
+        ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
-        
+        print ns
+        print self.POSITON_LIMITS
+        raw_input()
         terminal                    = self.isTerminal(ns)
         reward                      = self._getReward(ns,a)
         return reward, ns, terminal

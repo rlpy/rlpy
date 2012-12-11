@@ -6,7 +6,6 @@
 
 from operator import *
 from numpy  import *
-#import matplotlib
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 from matplotlib import pylab as pl
 pl.ion()
@@ -49,10 +48,7 @@ from scipy.stats import *
 # Todo:
 # Replace vstack and hstack with the trick mentioned here:
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
-# if undeo redo does not work in eclipse, you may have an uninfinished process. Kill all
-def prod(x):
-    #Returns the multiplications of the elements of an array
-    return reduce(mul,x)
+# if undo redo does not work in eclipse, you may have an uninfinished process. Kill all
 def randSet(x):
     #Returns a random element of a list uniformly.
     i = random.random_integers(0,size(x)-1)
@@ -74,12 +70,13 @@ def binNumber(s,bins,limits):
         return bins-1
     width = limits[1]-limits[0]
     if s > limits[1]:
+        print 'Tools.py: WARNING: ',s,' > ',limits[1],'. Using the chopped value of s'
+        print 'Ignoring', limits[1] - s
         s = limits[1]
-        print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
     elif s < limits[0]:
-        s = limits[0]
-        print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
+        print 'Tools.py: WARNING: ',s,' < ',limits[0],'. Using the chopped value of s'
 #        print("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
+        s = limits[0]
     return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
     return time()-start_time
@@ -221,9 +218,6 @@ def make_amrcolors(nlevels=4):
         print "*** Warning, suggest nlevels <= 16"
 
     return (linecolors, bgcolors)
-
-
-
 def linearMap(x,a,b,A=0,B=1):
     # This function takes scalar X in range [a1,b1] and maps it to [A1,B1]
     # values oout of a and b are clipped to boundaries 
@@ -509,7 +503,7 @@ class Logger(object):
         self.file.close()
 
 createColorMaps()
-FONTSIZE = 12
+FONTSIZE = 15
 SEP_LINE = "="*60
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
 rc('text',usetex=True)
