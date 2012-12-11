@@ -1,4 +1,6 @@
-You need python > 2.7
+You need 
+- python > 2.7
+- Latex
 You need the following packages:
 ===============================================================
 1. numpy

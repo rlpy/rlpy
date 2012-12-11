@@ -36,7 +36,6 @@ class CartPole_SwingUp(CartPole):
     ANGULAR_RATE_LIMITS = [-0, 0]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
     POSITON_LIMITS      = [-2.4, 2.4]   # m - Limits on cart position [Per RL Community CartPole]
     VELOCITY_LIMITS     = [-6.0, 6.0]   # m/s - Limits on cart velocity [per RL Community CartPole]  
-    episodeCap          = 0             # Max number of steps per trajectory
     
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
