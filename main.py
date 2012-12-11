@@ -30,9 +30,10 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     MAX_ITERATIONS      = 10
     # Domain ----------------------
     MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
     NOISE               = 0.3
-    BLOCKS              = 6 # For BlocksWorld
+    BLOCKS              = 4 # For BlocksWorld
     # Representation ----------------------
     #RBFS                    = 9
     RBFS                    = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
@@ -56,8 +57,9 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
-    domain           = InvertedPendulum(logger = logger);
+    #domain           = InvertedPendulum(logger = logger);
     #domain          = CartPole(start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, logger = logger)
+    domain          = IntruderMonitoring(INTRUDERMAP,logger)
     
     representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)

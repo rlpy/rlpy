@@ -132,7 +132,8 @@ class IntruderMonitoring(Domain):
             s_i = s[offset+ i*2:offset+i*2+2]
             ns_i = list(s_i)#s_i.copy()    
                                            
-            action_i =   randSet(self.possibleActionsPerAgent(s_i))
+            #action_i =   randSet(self.possibleActionsPerAgent(s_i))
+            action_i =   self.IntruderPolicy(s_i)
                                     
             #ns_i = ns_i + self.ACTIONS_PER_AGENT[action_i]
             self.move(ns_i, action_i)
@@ -235,14 +236,14 @@ class IntruderMonitoring(Domain):
         print 'Reward ',r               
                               
                            
+    def IntruderPolicy(self,s_i):
+         return randSet(self.possibleActionsPerAgent(s_i))
+         
+                               
+                           
 if __name__ == '__main__':
    
     p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_1I.txt')
-    s = p.s0()
-    a = 0
-    next_states,rewards = p.MCExpectedStep(s,a,10)
-    print next_states
-    print rewards
-    #p.test(100)
+    p.test(100)
     
     
