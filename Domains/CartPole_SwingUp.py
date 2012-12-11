@@ -12,7 +12,8 @@ from CartPole import *
 # http://library.rl-community.org/wiki/CartPole)
 #
 # ---OBJECTIVE---
-# Reward is 1 within the goal region, 0 elsewhere.
+# Reward 1 is received on each timestep spent within the goal region,
+# zero elsewhere.
 # The episode terminates if x leaves its bounds, [-2.4, 2.4]
 #
 # Pendulum starts straight down, theta = pi, with the
@@ -28,7 +29,7 @@ from CartPole import *
 #
 #####################################################################
 
-class CartPole_SwingUp(Pendulum):
+class CartPole_SwingUp(CartPole):
     # Domain constants
     GOAL_REWARD         = 1             # Reward received on each step the pendulum is in the goal region
     ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)
@@ -47,7 +48,8 @@ class CartPole_SwingUp(Pendulum):
     
     
     ## Return the reward earned for this state-action pair
-    # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
+    # On this domain, reward of 1 is given for each step spent within goal region.
+    # There is no specific penalty for failure.
     def _getReward(self, s, a):
         return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
     

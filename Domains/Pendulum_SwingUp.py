@@ -30,8 +30,9 @@ class Pendulum_SwingUp(Pendulum):
     # Domain constants
     GOAL_REWARD         = 1            # Reward received on each step the pendulum is in the goal region
     ANGLE_LIMITS        = [-pi, pi] # Limit on theta (used for discretization)
-    ANGULAR_RATE_LIMITS = [-0, 0]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
+    ANGULAR_RATE_LIMITS = [-6, 6]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
                                 # NOTE that those rate limits are actually unphysically slow; more realistic to use 2*pi
+    episodeCap          = 3000          # Max number of steps per trajectory
     
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])

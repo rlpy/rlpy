@@ -11,8 +11,11 @@ from CartPole import *
 # (See CartPole implementation in the RL Community,
 # http://library.rl-community.org/wiki/CartPole)
 #
+# NOTE the different reward scheme from Pendulum_InvertedBalance
+#
 # ---OBJECTIVE---
-# Reward is 0 everywhere, -1 if x or theta exceeds bounds.
+# Reward 1 is received on each timestep spent within the goal region,
+# zero elsewhere.
 # This is also the terminal condition.
 #
 # RL Community has the following bounds for failure:
@@ -33,7 +36,7 @@ from CartPole import *
 
 class CartPole_InvertedBalance(CartPole):
     
-    GOAL_EXIT_REWARD    = -1 		 	# Reward for exiting the goal region
+    GOAL_REWARD         = 1             # Reward received on each step the pendulum is in the goal region
     ANGLE_LIMITS        = [-pi/15, pi/15] # rad - Limits on pendulum angle per RL Community CartPole (NOTE we wrap the angle at 2*pi)
     ANGULAR_RATE_LIMITS = [-6*pi, 6*pi] # Limits on pendulum rate [per RL Community CartPole]
     POSITON_LIMITS 		= [-2.4, 2.4] 	# m - Limits on cart position [Per RL Community CartPole]
@@ -49,9 +52,11 @@ class CartPole_InvertedBalance(CartPole):
         # Returns the initial state, pendulum vertical
         return array([0,0,0,0])
     
+    ## Return the reward earned for this state-action pair
+    # On this domain, reward of 1 is given for each step spent within goal region.
+    # There is no specific penalty for failure.
     def _getReward(self, s, a):
-        # Return the reward earned for this state-action pair
-        return self.GOAL_EXIT_REWARD if self.isTerminal(s) else 0
+        return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
     
     def isTerminal(self,s):
         return (not (-pi/15 < s[StateIndex.THETA] < pi/15) or \

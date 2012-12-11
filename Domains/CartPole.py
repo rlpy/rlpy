@@ -59,12 +59,12 @@ class CartPole(Domain):
     ANGULAR_RATE_LIMITS = None
     POSITON_LIMITS      = None
     VELOCITY_LIMITS     = None
+    GROUND_VERTS        = None  # Used for plotting, based on POSITION_LIMITS
     
     # Domain constants computed in __init__
     MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
                             # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
-    _ALPHA_MASS          = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
-    
+    _ALPHA_MASS         = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
     
 #    cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
 #    cur_force_noise = 0 # Randomly generated noise for this timestep, stored here for the same reasons as cur_action
@@ -73,12 +73,9 @@ class CartPole(Domain):
     # Plotting variables
     pendulumArm = None
     cartBox = None
-    actionArrowBottom = None
+    actionArrow = None
     ACTION_ARROW_LENGTH = 0.4
-    action_arrow_x_left = 0
-    action_arrow_x_right = 0
     domainFig = None
-    domainFigAxes = None
     circle_radius = 0.05
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     RECT_WIDTH = 0.5 
@@ -87,18 +84,8 @@ class CartPole(Domain):
     PEND_WIDTH = 0 # If this value is left as zero, it is computed automatically based on mass.
     GROUND_WIDTH = 2
     GROUND_HEIGHT = 1
-    CARTBLOB_R = .3/4.0 # The radius of the blob on the cart
-    # vertecies for the ground:
-    GROUND_VERTS = array([
-                          (POSITON_LIMITS[0],-RECT_HEIGHT/2.0),
-                          (POSITON_LIMITS[0],RECT_HEIGHT/2.0),
-                          (POSITON_LIMITS[0]-GROUND_WIDTH, RECT_HEIGHT/2.0),
-                          (POSITON_LIMITS[0]-GROUND_WIDTH, RECT_HEIGHT/2.0-GROUND_HEIGHT),
-                          (POSITON_LIMITS[1]+GROUND_WIDTH, RECT_HEIGHT/2.0-GROUND_HEIGHT),
-                          (POSITON_LIMITS[1]+GROUND_WIDTH, RECT_HEIGHT/2.0),
-                          (POSITON_LIMITS[1], RECT_HEIGHT/2.0),
-                          (POSITON_LIMITS[1], -RECT_HEIGHT/2.0),
-                          ])
+    # vertices for the ground:
+
     # are constrained by the format expected by ode functions.
     def __init__(self, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
@@ -117,6 +104,7 @@ class CartPole(Domain):
         if self.logger: 
             self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
+        self._assignGroundVerts()
         super(CartPole,self).__init__(logger)
         
     def showDomain(self,s,a = 0):
@@ -139,7 +127,7 @@ class CartPole(Domain):
             ax.add_patch(patch)
 
             # Allow room for pendulum to swing without getting cut off on graph
-            viewableDistance = self.length + self.circle_radius + 0.5
+            viewableDistance = self.LENGTH + self.circle_radius + 0.5
             ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
             ax.set_ylim(-viewableDistance, viewableDistance)
             #ax.set_aspect('equal')
@@ -151,8 +139,8 @@ class CartPole(Domain):
         curXDot = s[StateIndex.X_DOT]
         curTheta = s[StateIndex.THETA]
         
-        pendulumBobX = curX + self.length  * sin(curTheta)
-        pendulumBobY = self.PENDULUM_PIVOT_Y + self.length * cos(curTheta)
+        pendulumBobX = curX + self.LENGTH  * sin(curTheta)
+        pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * cos(curTheta)
 
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
         
@@ -162,21 +150,21 @@ class CartPole(Domain):
         self.cartBlob.set_x(curX - self.BLOB_WIDTH/2.0)
         
         
-        if self.actionArrowBottom is not None:
-            self.actionArrowBottom.remove()
-            self.actionArrowBottom = None
+        if self.actionArrow is not None:
+            self.actionArrow.remove()
+            self.actionArrow = None
             
         if forceAction == 0: pass # no force
         else: # cw or ccw torque
             if forceAction > 0: # rightward force
-                self.actionArrowBottom = fromAtoB(
+                self.actionArrow = fromAtoB(
                                                   curX - self.ACTION_ARROW_LENGTH - self.RECT_WIDTH/2.0, 0, 
                                                   curX - self.RECT_WIDTH/2.0,  0, 
                                                   'k',"arc3,rad=0",
                                                   0,0, 'simple'
                                                   )
             else:# leftward force
-                self.actionArrowBottom = fromAtoB(
+                self.actionArrow = fromAtoB(
                                                   curX + self.ACTION_ARROW_LENGTH + self.RECT_WIDTH/2.0, 0,
                                                   curX + self.RECT_WIDTH/2.0, 0, 
                                                   'r',"arc3,rad=0",
@@ -217,22 +205,19 @@ class CartPole(Domain):
         # ODEINT IS TOO SLOW!
         # ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
-        
-        ns = rk4(self._dsdt, s, [0, self.dt])
-        ns = ns[-1] # only care about final timestep of integration returned by integrator
 
         ns[StateIndex.THETA]    = wrap(ns[StateIndex.THETA],-pi, pi)
         ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
         
         terminal                    = self.isTerminal(ns)
-        reward                      = self._getReward(s,a)
+        reward                      = self._getReward(ns,a)
         return reward, ns, terminal
     
     ## From CartPole implementation described in class definition, from rlcommunity.org
     # (http://library.rl-community.org/wiki/CartPole)
     # Used by odeint to numerically integrate the differential equation
-    def _dsdt(self, s_continuous, t):
+    def _dsdt(self, s_augmented, t):
         # This function is needed for ode integration.  It calculates and returns the
         # derivatives at a given state, s.  The last element of s_augmented is the
         # force action taken, required to compute these derivatives.
@@ -256,9 +241,9 @@ class CartPole(Domain):
         g = self.ACCEL_G
         l = self.MOMENT_ARM
         m_pendAlphaTimesL = self.MASS_PEND * self._ALPHA_MASS * l
-        theta       = s_continuous[StateIndex.THETA]
-        thetaDot    = s_continuous[StateIndex.THETA_DOT]
-        xDot        = s_continuous[StateIndex.X_DOT]
+        theta       = s_augmented[StateIndex.THETA]
+        thetaDot    = s_augmented[StateIndex.THETA_DOT]
+        xDot        = s_augmented[StateIndex.X_DOT]
         force       = s_augmented[StateIndex.FORCE]
         
         sinTheta = sin(theta)
@@ -274,7 +259,29 @@ class CartPole(Domain):
         thetaDotDot = numer / denom
         
         xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
-        return (thetaDot, thetaDotDot, xDot, xDotDot)
+        return (thetaDot, thetaDotDot, xDot, xDotDot, 0) # final cell corresponds to action passed in
+    
+    ## @param s: state
+    #  @param a: action
+    ## @return: Reward earned for this state-action pair.
+    def _getReward(self, s, a):
+        # Return the reward earned for this state-action pair
+        abstract
+    
+    ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
+    def _assignGroundVerts(self):
+        minPosition = self.POSITON_LIMITS[0]
+        maxPosition = self.POSITON_LIMITS[1]
+        self.GROUND_VERTS = array([
+                          (minPosition,-self.RECT_HEIGHT/2.0),
+                          (minPosition,self.RECT_HEIGHT/2.0),
+                          (minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
+                          (minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
+                          (maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
+                          (maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
+                          (maxPosition, self.RECT_HEIGHT/2.0),
+                          (maxPosition, -self.RECT_HEIGHT/2.0),
+                          ])
     
 ## Flexible way to index states in this domain.
 #
