@@ -8,3 +8,8 @@ from PST import PST
 from InvertedPendulum import InvertedPendulum
 from IntruderMonitoring import IntruderMonitoring
 from CartPole import CartPole
+from Pendulum import Pendulum
+from CartPole_InvertedBalance import CartPole_InvertedBalance
+from CartPole_SwingUp import CartPole_SwingUp
+from Pendulum_InvertedBalance import Pendulum_InvertedBalance
+from Pendulum_SwingUp import Pendulum_SwingUp

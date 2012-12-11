@@ -10,86 +10,64 @@ from matplotlib.mlab import rk4
 from matplotlib import lines
 
 #######################################################
-# Robert Klein, Alborz Geramifard at MIT, Dec. 6 2012#
+# Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012#
 #######################################################
-# Objective is to hold the pendulum vertical, rather than
-# having to swing it up to balance.
-# Essentially a sub-problem of the InvertedPendulum Domain,
-# except that the pendulum is never allowed to fall below
-# the horizontal (or some specified angle).
-# Additionally, limits in the motion of the cart are imposed.
-# (Those these can be set to float("-inf") and float("inf") ).
-# Note though, that Lagoudakis and Parr did not actually impose
-# any such constraints.
 #
-# Per Lagoudakis and Parr LSPI 2003, derived from Wang 1996.
-# (See mkpendulumonelink.m of "1Link" implementation by Parr)
+# Per Lagoudakis and Parr 2003, derived from Wang 1996.
+# (See "1Link" implementation by L & P.)
+# Dynamics in x, xdot derived from CartPole implementation
+# of rl-community.org, from Sutton and Barto's Pole-balancing
+# task in <Reinforcement Learning: An Introduction> (1998)
 # (See CartPole implementation in the RL Community,
 # http://library.rl-community.org/wiki/CartPole)
-# Used those domain implementations to define limits not 
-# specifically mentioned in the papers.
 #
-# State is angular position of pendulum on [-pi/2, pi/2),
-# (relative to straight up at 0 rad),and positive cw.
-# Positive force acts to the right on the cart
-# Angular rate of pendulum, [-2, 2] rad/s.
-# Actions take the form of force applied to cart
+# State: [theta, thetaDot, x, xDot].
+# Actions: [-50, 0, 50]
+#
+# theta    = Angular position of pendulum
+# (relative to straight up at 0 rad),and positive clockwise.
+# thetaDot = Angular rate of pendulum
+# x        = Linear position of the cart on its track (positive right).
+# xDot     = Linear velocity of the cart on its track.
+#
+# Actions take the form of force applied to cart;
 # [-50, 0, 50] N force are the default available actions.
+# Positive force acts to the right on the cart.
 #
-# The objective is to keep the pendulum in the goal
-# region for as long as possible; default goal
-# region is [-pi/6,+ pi/6], no reward is
-# obtained anywhere else.
-# Default has the pendulum upright, episode ends when
-# pendulum falls below horizontal
-# Optional noise is added in the form of force on cart.
+# Uniformly distributed noise is added with magnitude 10 N.
+#
 ######################################################
 
-# Size of objects in visualization is computed automatically
-# based on assigned mass.
-
-# In comments below, "DPF" refers to Kemal's Java implementation
-
-class StateIndex:
-    THETA, THETA_DOT = 0,1
-    X, X_DOT = 2,3
-
+# TODO - can eliminate an entire dimension of the state space, xdot.
+# However, must internally keep track of it for use in dynamics.
 
 class CartPole(Domain):
-    DEBUG = 0 # Set to non-zero to enable print statements
+    DEBUG               = 0     # Set to non-zero to enable print statements
     
-    AVAIL_FORCE = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    # Domain constants
+    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
+    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
+    dt                  = 0.1   # Time between steps
+    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
+    episodeCap          = 3000  # Max number of steps per trajectory
     
-    GOAL_REGION = [-pi/6, pi/6] # radians, rad - Goal region [5pi/6, 7pi/6 per tutorial]
-    GOAL_REWARD = 1 # Reward obtained for remaining in the goal region [1 per tutorial]
-    TERMINAL_REWARD = -1 # Reward (penalty) for allowing the pendulum to drop out of the angle_limits
+    # Domain constants from children
+    ANGLE_LIMITS        = None
+    ANGULAR_RATE_LIMITS = None
+    POSITON_LIMITS      = None
+    VELOCITY_LIMITS     = None
     
-    ANGLE_LIMITS = [-pi/2, pi/2] # rad - Limits on pendulum angle
-    ANGULAR_RATE_LIMITS=  [-2, 2] # rad / s - Limits on pendulum rate
-#    POSITON_LIMITS = [float("-inf"), float("inf")]
-#    VELOCITY_LIMITS = [float("-inf"), float("inf")] 
-    POSITON_LIMITS = [-2.0, 2.0] # m - Limits on cart position (unspecified) (Approx. -2,2 gives good results)
-    VELOCITY_LIMITS = [-5.0, 5.0] # m/s - Limits on cart velocity
-    start_angle = 0 # rad - Starting angle of the pendulum
-    start_rate = 0 # rad/s - Starting rate of the pendulum
-    start_pos = 0 # m - Starting position of the cart
-    start_vel = 0 # m/s - Starting velocity of the cart
-    HORIZONTAL_ANGLE = pi/2 # Horizontal angle, below absolute value of which terminate episode
-    # Note that we implicitly terminate the episode of cart position x exceeds POSITION_LIMITS above
-    MASS_PEND = 2.0 # kilograms, kg - Mass of the pendulum [2 per DPF]
-    MASS_CART = 8.0 # kilograms, kg - Mass of cart [8 per DPF]
-    LENGTH = 1.0 # meters, m - Length to the pendulum center of mass, meters [0.5 in DPF]
-    ACCEL_G = 9.8 # m/s^2 - gravitational constant
-    ROT_INERTIA = 0 # kg * m^2 - rotational inertia of the pendulum, computed in __init__
+    # Domain constants computed in __init__
+    MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+                            # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
+    _ALPHA_MASS          = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
     
-    dt = 0.10 # Time between steps [0.1 in DPF]
     
-    force_noise_max = 10 # Newtons, N - Maximum noise possible, uniformly distributed [10 in tutorial]
-    
-    EPISODE_CAP = 300 # [200 in tutorial, 300 in DPF, 50 in Parr's Matlab]
-    
-    cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
-    cur_force_noise = 0 # Randomly generated noise for this timestep, stored here for the same reasons as cur_action
+#    cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
+#    cur_force_noise = 0 # Randomly generated noise for this timestep, stored here for the same reasons as cur_action
     
     
     # Plotting variables
@@ -122,33 +100,22 @@ class CartPole(Domain):
                           (POSITON_LIMITS[1], -RECT_HEIGHT/2.0),
                           ])
     # are constrained by the format expected by ode functions.
-    def __init__(self, start_angle = 0, start_rate = 0, dt = 0.10, force_noise_max = 10, logger = None):
+    def __init__(self, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        self.statespace_limits = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
 #        self.states_num = inf       # Number of states
-        self.actions_num = len(self.AVAIL_FORCE)      # Number of Actions
-        self.state_space_dims = 4 # Number of dimensions of the state space
-        self.continuous_dims = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
-        self.episodeCap = self.EPISODE_CAP       # The cap used to bound each episode (return to s0 after)
-        self.start_angle = start_angle
-        self.start_rate = start_rate
-#        self.start_pos = 0 # Optionally add these to init parameter list
-#        self.start_vel = 0# Optionally add these to init parameter list
-        self.dt = dt
-        self.length = self.LENGTH
-        self.moment_arm = self.length / 2.0
-        self.rot_inertia = self.MASS_PEND * self.moment_arm ** 2
-        self.force_noise_max = force_noise_max
+        self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
+        self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
         
-        self.alpha = 1.0 / (self.MASS_CART + self.MASS_PEND)
+        self.MOMENT_ARM         = self.LENGTH / 2.0
+        self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         
         if self.RECT_HEIGHT == 0: # No rectangle height specified
             self.RECT_HEIGHT = self.MASS_CART / 20 # Arbitrary number, reasonable visualization
         if self.PEND_WIDTH == 0: # No rectangle height specified
-            self.PEND_WIDTH = int(self.MASS_PEND / self.length)+1 # Arbitrary number, reasonable visualization
+            self.PEND_WIDTH = int(self.MASS_PEND / self.LENGTH)+1 # Arbitrary number, reasonable visualization
         
         if self.logger: 
-            self.logger.log("length:\t\t%0.2f(m)" % self.length)
+            self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
         super(CartPole,self).__init__(logger)
         
@@ -217,28 +184,36 @@ class CartPole(Domain):
                                                   )
             
         pl.draw()
+#        sleep(self.dt)
+    
     def showLearning(self,representation):
         pass
     
-    def s0(self):   
-        # ASSUME that any time s0 is called, we should reset the internal values of s_continuous    
-        # Returns the initial state, [theta0, thetaDot0]
-        return array([self.start_angle, self.start_rate, self.start_pos, self.start_vel])
+    def s0(self):
+        # Defined by children
+        abstract
     
     def possibleActions(self,s): # Return list of all indices corresponding to actions available
-        return arange(len(self.AVAIL_FORCE))
+        return arange(self.actions_num)
+
     def step(self,s,a):
-        # Simulate one step of the pendulum after taking force action a
-        # Note that we store the current action and noise in member variables so they can
-        # be accessed by the function _dsdt below, which has a pre-defined header
-        # expected by integrate.odeint (so we cannot pass further parameters.)
+        # Simulate one step of the CartPole after taking action a
+        # Note that at present, this is almost identical to the step for the Pendulum.
+             
+        forceAction = self.AVAIL_FORCE[a]
         
-        self.cur_action = self.AVAIL_FORCE[a] # store action so it can be retrieved by other methods;
-        if self.force_noise_max > 0:  # Store random noise so it can be retrieved by other methods
-            self.cur_force_noise = random.uniform(-self.force_noise_max, self.force_noise_max)
-        else: self.cur_force_noise = 0
-        # Unfortunate that scipy ode methods do not allow additional parameters to be passed.
+        # Add noise to the force action
+        if self.force_noise_max > 0:
+            forceAction += random.uniform(-self.force_noise_max, self.force_noise_max)
+        else: forceNoise = 0
         
+        # Now, augment the state with our force action so it can be passed to _dsdt
+        s_augmented = append(s, forceAction)
+        
+        # Decomment the line below to use inbuilt runge-kutta method.
+        ns = rk4(self._dsdt, s_augmented, [0, self.dt])
+        ns = ns[-1] # only care about final timestep of integration returned by integrator
+        ns = ns[0:4] # [theta, thetadot, x, xDot]
         # ODEINT IS TOO SLOW!
         # ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
@@ -246,29 +221,51 @@ class CartPole(Domain):
         ns = rk4(self._dsdt, s, [0, self.dt])
         ns = ns[-1] # only care about final timestep of integration returned by integrator
 
-
-        ns[StateIndex.THETA_DOT] = bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
-        ns[StateIndex.X_DOT] = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
-        return self._earnedReward(ns), ns, self.isTerminal(ns)
-    # From CartPole implementation described at top, from rlcommunity.org
+        ns[StateIndex.THETA]    = wrap(ns[StateIndex.THETA],-pi, pi)
+        ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
+        ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
+        
+        terminal                    = self.isTerminal(ns)
+        reward                      = self._getReward(s,a)
+        return reward, ns, terminal
+    
+    ## From CartPole implementation described in class definition, from rlcommunity.org
+    # (http://library.rl-community.org/wiki/CartPole)
     # Used by odeint to numerically integrate the differential equation
     def _dsdt(self, s_continuous, t):
-    # def _dsdt(self,t, s_continuous):
-        # This function is needed for ode integration.  It calculates and returns the derivatives
-        # at a given state
-        force = self.cur_action + self.cur_force_noise
+        # This function is needed for ode integration.  It calculates and returns the
+        # derivatives at a given state, s.  The last element of s_augmented is the
+        # force action taken, required to compute these derivatives.
+        #
+        # ThetaDotDot = 
+        #
+        #     g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
+        #     -----------------------------------------------------------------------
+        #                           4l/3  -  (alpha)ml*cos^2(theta)
+        #     
+        #         g sin(theta) - w cos(theta)
+        #   =     ---------------------------
+        #         4l/3 - (alpha)ml*cos^2(theta)
+        #
+        # where w = (alpha)u + (alpha)ml*(tdot)^2*sin(theta)
+        # Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
+        #
+        # xDotDot = w - (alpha)ml * thetaDotDot * cos(theta)
+
+#        force = self.cur_action + self.cur_force_noise
         g = self.ACCEL_G
-        l = self.moment_arm
-        m_pendAlphaTimesL = self.MASS_PEND * self.alpha * l
-        theta = s_continuous[StateIndex.THETA]
-        thetaDot = s_continuous[StateIndex.THETA_DOT]
-        xDot = s_continuous[StateIndex.X_DOT]
+        l = self.MOMENT_ARM
+        m_pendAlphaTimesL = self.MASS_PEND * self._ALPHA_MASS * l
+        theta       = s_continuous[StateIndex.THETA]
+        thetaDot    = s_continuous[StateIndex.THETA_DOT]
+        xDot        = s_continuous[StateIndex.X_DOT]
+        force       = s_augmented[StateIndex.FORCE]
         
         sinTheta = sin(theta)
         cosTheta = cos(theta)
         thetaDotSq = thetaDot ** 2
         
-        term1 = force*self.alpha + m_pendAlphaTimesL * thetaDotSq * sinTheta
+        term1 = force*self._ALPHA_MASS + m_pendAlphaTimesL * thetaDotSq * sinTheta
         numer = g * sinTheta - cosTheta * term1
         denom = 4.0 * l / 3.0  -  m_pendAlphaTimesL * (cosTheta ** 2)
         # g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
@@ -279,16 +276,16 @@ class CartPole(Domain):
         xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
         return (thetaDot, thetaDotDot, xDot, xDotDot)
     
-    def _earnedReward(self, s):
-        if(self.GOAL_REGION[0] < s[StateIndex.THETA] < self.GOAL_REGION[1]):
-            return self.GOAL_REWARD
-        else: return 0
-    def isTerminal(self,s):
-        # Returns a boolean showing if s is terminal or not
-        return not(self.POSITON_LIMITS[0] < s[StateIndex.X] < self.POSITON_LIMITS[1]) or \
-                abs(s[StateIndex.THETA]) >= self.HORIZONTAL_ANGLE
+## Flexible way to index states in this domain.
+#
+# This class enumerates the different indices used when indexing the state.
+# e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
+class StateIndex:
+    THETA, THETA_DOT = 0,1
+    X, X_DOT = 2,3
+    FORCE = 4
                 
 if __name__ == '__main__':
     random.seed(0)
-    p = CartPole(start_angle = .01, start_rate = 0, dt = 0.10, force_noise_max = 10);
+    p = CartPole();
     p.test(1000)

@@ -9,62 +9,62 @@ from matplotlib.mlab import rk4
 from matplotlib import lines
 
 #######################################################
-# Robert Klein, Alborz Geramifard at MIT, Nov. 30 2012#
+# Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012#
 #######################################################
-# Perhaps more aptly described as "Invert-The-Pendulum"
-
-# State is [theta, thetaDot]:
-# theta = angular position of pendulum on [-pi, pi) rad
-# (relative to straight up at 0 rad),and positive cw.
-# thetaDot = Angular rate of pendulum, [-15*pi, 15*pi] rad/s.
-# Positive force acts to the right on the cart
+# This is the parent class for pendulum-type problems with two
+# (continuous) states only, and three discrete possible actions.
+#
+# NOTE: Despite the naming convention in common use
+# here and in the community, the dynamics of the
+# Pendulum actually correspond to the 4-state system
+# with a pendulum on a cart, with x and xDot states omitted.
+# Thus, actions still take the form of forces and not torques.
+#
+# All dynamics and conventions per Lagoudakis & Parr, 2003
+#
+# State: [theta, thetaDot].
+# Actions: [-50, 0, 50]
+#
+# theta = angular position of pendulum
+# (relative to straight up at 0 rad),and positive clockwise.
+# thetaDot = Angular rate of pendulum
 #
 # Actions take the form of force applied to cart;
 # [-50, 0, 50] N force are the default available actions.
+# Positive force acts to the right on the cart.
 #
-# The objective is to keep the pendulum in the goal
-# region for as long as possible, with +1 reward for
-# each step in which this condition is met; the expected
-# optimum then is to swing the pendulum vertically and
-# hold it there, collapsing the problem to CartPole
-# but without any restrictions in x.
-# Default goal region is [-pi/6,+ pi/6].
-# No reward is obtained anywhere else.
-# Optional noise is added in the form of force on cart.
-# Note that THERE IS NO TERMINAL STATE FOR THIS TASK -
-# the pendulum is allowed to swing in its full rotation.
-# Typically, the pendulum starts down, and must be
-# swung upright and held there for as long as possible.
+# Uniformly distributed noise is added with magnitude 10 N.
+#
 ######################################################
 
-# In comments below, "DPF" refers to Kemal's Java implementation
 
-class StateIndex:
-    THETA, THETA_DOT = 0,1
-    X, X_DOT = 2,3
-    # X, X_DOT NOT YET COMPUTED - optionally in ds_dt, also return states for xDot and xDotDot,
-    # integrate, and track them along with angular states.
-
-
-class InvertedPendulum(Domain):
-    DEBUG               = 0 # Set to non-zero to enable print statements
-    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
-    FELL_REWARD         = -1
-    ANGLE_LIMITS        = [-pi, pi] # rad - Limits on pendulum angle (NOTE we wrap the angle at 2*pi)
-    ANGULAR_RATE_LIMITS =  [-8*pi, 8*pi] # Limits on pendulum rate [+-15pi in tutorial]
-    start_angle         = 0 # rad - Starting angle of the pendulum
-    start_rate          = 0 # rad/s - Starting rate of the pendulum
-    MASS_PEND           = 2.0 # kilograms, kg - Mass of the bob at the end of the pendulum (assume zero arm mass) [2 per DPF]
-    MASS_CART           = 8.0 # kilograms, kg - Mass of cart [8 per DPF]
-    length              = 0.5 # meters, m - Length of the pendulum, meters [0.5 in DPF]
-    ACCEL_G             = 9.8 # m/s^2 - gravitational constant
-    ROT_INERTIA         = 0 # kg * m^2 - rotational inertia of the pendulum, computed in __init__
-    dt                  = 0.1 # Time between steps [0.1 in DPF]
-    force_noise_max     = 10 # Newtons, N - Maximum noise possible, uniformly distributed [10 in tutorial]
-    episodeCap          = 3000 #Max Steps
+## 
+# NOTE: This domain cannot be instantiated; it is a superclass for the specific domains
+# Pendulum_SwingUp and Pendulum_InvertedBalance.
+class Pendulum(Domain):
+    DEBUG               = 0     # Set to non-zero to enable print statements
     
-    cur_action      = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
-    cur_force_noise = 0 # Randomly generated noise for this timestep, stored here for the same reasons as cur_action
+    # Domain constants
+    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
+    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
+    dt                  = 0.1   # Time between steps
+    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
+    episodeCap          = 3000  # Max number of steps per trajectory
+    
+    # Domain constants from children
+    ANGLE_LIMITS        = None
+    ANGULAR_RATE_LIMITS = None
+    
+    # Domain constants computed in __init__
+    MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+                            # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
+    _ALPHA_MASS          = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    
+    # Internal Constants
+    tol                 = 10 ** -5 # Tolerance in Runge-Kutta 
     
     # Plotting variables
     pendulumArm         = None
@@ -83,29 +83,29 @@ class InvertedPendulum(Domain):
     Theta_discritization    = 20 #Used for visualizing the policy and the value function
     ThetaDot_discritization = 20 #Used for visualizing the policy and the value function
 
-    # Variables from pendulum_ode45.m of the code Lagoudaki and Parr 2003
+    # Variables from pendulum_ode45.m of the 1Link code, Lagoudakis & Parr 2003
     # The Fehlberg coefficients: 
     _alpha = array([1/4.0, 3/8.0, 12/13.0, 1, 1/2.0])
     _beta = array([
                [1/4.0,      0,      0,    0,      0,    0],
                [3/32.0,9/32.0,      0,     0,      0,    0],
                [ 1932/2197.0,  -7200/2197.0,   7296/2197.0,     0,      0,    0], 
-               [ 8341/4104.0, -32832/4104.0,  29440/4104.0,  -845/4104.0,      0,    0] ,
+               [ 8341/4104.0, -32832/4104.0,  29440/4104.0,  -845/4104.0,      0,    0],
                [-6080/20520.0,  41040/20520.0, -28352/20520.0,  9295/20520.0,  -5643/20520.0,    0],
                ])
-    _gamma = [ 
+    _gamma = array([ 
               [902880/7618050.0,  0,  3953664/7618050.0,  3855735/7618050.0,  -1371249/7618050.0,  277020/7618050.0], 
               [ -2090/752400.0,  0,    22528/752400.0,    21970/752400.0,    -15048/752400.0,  -27360/752400.0], 
-              ]
+              ])
     _pow    = 1/5.0
+    
     def __init__(self, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
-        self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
-        self.moment_arm         = self.length / 2.0
-        self.rot_inertia        = self.MASS_PEND * self.moment_arm ** 2
-        self.alpha              = 1.0 / (self.MASS_CART + self.MASS_PEND)
+        self.actions_num        = len(self.AVAIL_FORCE)
         self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT]
+        
+        self.MOMENT_ARM         = self.LENGTH / 2.0
+        self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         
         self.xTicks         = linspace(0,self.Theta_discritization-1,5)
         self.xTicksLabels   = ["$-\\pi$","$-\\frac{\\pi}{2}$","$0$","$\\frac{\\pi}{2}$","$\\pi$"]
@@ -113,7 +113,7 @@ class InvertedPendulum(Domain):
         self.yTicksLabels   = ["$-8\\pi$","$-4\\pi$","$0$","$4\\pi$","$8\\pi$"]
         
         if self.logger: 
-            self.logger.log("length:\t\t%0.2f(m)" % self.length)
+            self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
 
 #        if not ((2*pi / dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / dt > -self.ANGULAR_RATE_LIMITS[0])):
@@ -135,9 +135,13 @@ class InvertedPendulum(Domain):
 #            print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
 #            print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
         self.MAX_RETURN = 0
-        self.MIN_RETURN = self.FELL_REWARD
+        self.MIN_RETURN = -1
         
-        super(InvertedPendulum,self).__init__(logger)       
+        # Transpose the matrices shown above, if they have not been already by another instance of the domain.
+        if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
+        if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
+        super(Pendulum,self).__init__(logger)     
+          
     def showDomain(self,s,a = 0):
         # Plot the pendulum and its angle, along with an arc-arrow indicating the 
         # direction of torque applied (not including noise!)
@@ -150,7 +154,7 @@ class InvertedPendulum(Domain):
             self.domain_fig.add_patch(self.pendulumBob)
             self.domain_fig.add_line(self.pendulumArm)
             # Allow room for pendulum to swing without getting cut off on graph
-            viewableDistance = self.length + self.circle_radius + 0.5
+            viewableDistance = self.LENGTH + self.circle_radius + 0.5
             self.domain_fig.set_xlim(-viewableDistance, viewableDistance)
             self.domain_fig.set_ylim(-viewableDistance, viewableDistance)
             pl.axis('off')
@@ -161,8 +165,8 @@ class InvertedPendulum(Domain):
         theta = s[StateIndex.THETA] # Using continuous state
         
         # recall we define 0deg  up, 90 deg right
-        pendulumBobX = self.PENDULUM_PIVOT_X + self.length * sin(theta)
-        pendulumBobY = self.PENDULUM_PIVOT_Y + self.length * cos(theta)
+        pendulumBobX = self.PENDULUM_PIVOT_X + self.LENGTH * sin(theta)
+        pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * cos(theta)
         
         # update pendulum arm on figure
         self.pendulumArm.set_data([self.PENDULUM_PIVOT_X, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])        
@@ -178,7 +182,7 @@ class InvertedPendulum(Domain):
         if forceAction == 0: 
             pass # no torque
         else: # cw or ccw torque
-            SHIFT = .3
+            SHIFT = .5
             if forceAction > 0: # counterclockwise torque
                 self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2")
             else:# clockwise torque
@@ -187,6 +191,8 @@ class InvertedPendulum(Domain):
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
         self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
+#        sleep(self.dt)
+
     def showLearning(self,representation):
         
         pi      = zeros((self.Theta_discritization, self.ThetaDot_discritization),'uint8')            
@@ -225,169 +231,219 @@ class InvertedPendulum(Domain):
         self.valueFunction_fig.set_data(V)
         self.policy_fig.set_data(pi)
         pl.draw()
-    def s0(self):    
-        # Returns the initial state, [theta0, thetaDot0]
-        return array([0,0])
+
+    def s0(self):
+        # Defined by children
+        abstract
+
+    def possibleActions(self,s): # Return list of all indices corresponding to actions available
+        return arange(self.actions_num)
+
     def step(self,s,a):
-        # Simulate one step of the pendulum after taking force action a
-        # Note that we store the current action and noise in member variables so they can
-        # be accessed by the function _dsdt below, which has a pre-defined header
-        # expected by integrate.odeint (so we cannot pass further parameters.)
+    # Simulate one step of the pendulum after taking force action a
+    
+        forceAction = self.AVAIL_FORCE[a]
         
-        self.cur_action = self.AVAIL_FORCE[a] # store action so it can be retrieved by other methods;
-        if self.force_noise_max > 0:  # Store random noise so it can be retrieved by other methods
-            self.cur_force_noise = random.uniform(-self.force_noise_max, self.force_noise_max)
-        else: self.cur_force_noise = 0
-        # Unfortunate that scipy ode methods do not allow additional parameters to be passed.
-        # ODEINT IS TOO SLOW!
+        # Add noise to the force action
+        if self.force_noise_max > 0:
+            forceAction += random.uniform(-self.force_noise_max, self.force_noise_max)
+        else: forceNoise = 0
         
-        ns = rk4(self._dsdt, s, [0, self.dt])
+        # Now, augment the state with our force action so it can be passed to _dsdt
+        s_augmented = append(s, forceAction)
+        
+        # Decomment the line below to use inbuilt runge-kutta method.
+        ns = rk4(self._dsdt, s_augmented, [0, self.dt])
         ns = ns[-1] # only care about final timestep of integration returned by integrator
+        ns = ns[0:2] # [theta, thetaDot]
+        
+        # Decomment the 2 lines below to use L & P's pendulum_ode45 method
+#        ns = self.pendulum_ode45(0, self.dt, s_augmented, self.tol)
+#        ns = ns[0:2] # omit the augmented state with action stored
 
          # wrap angle between -pi and pi (or whatever values assigned to ANGLE_LIMITS)
-        ns[StateIndex.THETA]        = wrap(ns[StateIndex.THETA],self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
+        ns[StateIndex.THETA]        = wrap(ns[StateIndex.THETA],-pi, pi)
         ns[StateIndex.THETA_DOT]    = bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         terminal                    = self.isTerminal(ns)
-        reward                      = self.FELL_REWARD if terminal else 0 
+        reward                      = self._getReward(s,a)
         return reward, ns, terminal
-    def _dsdt(self, s_continuous, t):
-    # def _dsdt(self,t, s_continuous):
-        # This function is needed for ode integration.  It calculates and returns the derivatives
-        # at a given state
-        force = self.cur_action + self.cur_force_noise
+   
+    ##
+    # @param s_augmented: {The state at which to compute derivatives, augmented with the current action.
+    # Specifically @code (theta,thetaDot,forceAction) @endcode .}
+    #
+    # @return: {The derivatives of the state s_augmented, here (thetaDot, thetaDotDot).}
+    #
+    # Numerically integrate the differential equations forFrom Lagoudakis & Parr, 2003, described in class definition.
+    # NOTE: These dynamics are, in reality, for a CartPole system, despite
+    # Lagoudakis and Parr's terminology.
+    def _dsdt(self, s_augmented, t):
+        
+
+        # This function is needed for ode integration.  It calculates and returns the
+        # derivatives at a given state, s.  The last element of s_augmented is the
+        # force action taken, required to compute these derivatives.
+        #
+        # ThetaDotDot = 
+        #
+        #     g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
+        #     -----------------------------------------------------------------------
+        #                           4l/3  -  (alpha)ml*cos^2(theta)
+        #     
+        #         g sin(theta) - w cos(theta)
+        #   =     ---------------------------
+        #         4l/3 - (alpha)ml*cos^2(theta)
+        #
+        # where w = (alpha)u + (alpha)ml*(tdot)^2*sin(theta)
+        #
+        # Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
+        
+        
         g = self.ACCEL_G
-        l = self.moment_arm
-        m_pendAlphaTimesL = self.MASS_PEND * self.alpha * l
-        theta       = s_continuous[StateIndex.THETA]
-        thetaDot    = s_continuous[StateIndex.THETA_DOT]
+        l = self.MOMENT_ARM # NOTE that 'length' in these computations is actually the length of the center of mass
+        m_pendAlphaTimesL = self.MASS_PEND * self._ALPHA_MASS * l
+        theta       = s_augmented[StateIndex.THETA]
+        thetaDot    = s_augmented[StateIndex.THETA_DOT]
+        force       = s_augmented[StateIndex.FORCE]
         
         sinTheta = sin(theta)
         cosTheta = cos(theta)
         thetaDotSq = thetaDot ** 2
         
-        term1 = force*self.alpha + m_pendAlphaTimesL * thetaDotSq * sinTheta
+        term1 = force*self._ALPHA_MASS + m_pendAlphaTimesL * thetaDotSq * sinTheta
         numer = g * sinTheta - cosTheta * term1
         denom = 4.0 * l / 3.0  -  m_pendAlphaTimesL * (cosTheta ** 2)
-        # g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
-        # -----------------------------------------------------------------------
-        #                     4l/3  -  (alpha)ml*cos^2(theta)
+        
         thetaDotDot = numer / denom
-        return (thetaDot, thetaDotDot)
-        # reverse signs from http://www.ece.ucsb.edu/courses/ECE594/594D_W10Byl/hw/cartpole_eom.pdf
-        # because of different conventions in Wang
-    def isTerminal(self,s):
-        return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0)
-#    def pendulum_ode45(self,t0,tfinal,y0,tol): 
-#        # ode45_us customized for the pendulum
+        return (thetaDot, thetaDotDot, 0) # final cell corresponds to action passed in
+    
+#    def _dsdt(self, s_augmented, t):
+#        # NOTE These dynamics correspond to a true pendulum, pinned at its base.
+#        # Accepts TORQUE as input, not force.
+#        # This function is needed for ode integration.  It calculates and returns the
+#        # derivatives at a given state, s.  The last element of s_augmented is the
+#        # force action taken, required to compute these derivatives.
 #        #
-#        #ODE45  Integrate a system of ordinary differential equations using 
-#        #       4th and 5th order Runge-Kutta formulas.  See also ODE23 and 
-#        #       ODEDEMO.M. 
-#        #       [T,Y] = ODE45('yprime', T0, Tfinal, Y0, ... 
-#        #                A, B1, B2, C, OBsq ) integrates the system 
-#        #       of ordinary differential equations described by the M-file 
-#        #       YPRIME.M over the interval T0 to Tfinal and using initial 
-#        #       conditions Y0. 
-#        #       [T, Y] = ODE45(F, T0, Tfinal, Y0, TOL, 1) uses tolerance TOL 
-#        #       and displays status while the integration proceeds. 
-#        # 
-#        # INPUT: 
-#        # t0    - Initial value of t. 
-#        # tfinal- Final value of t. 
-#        # y0    - Initial value column-vector. 
-#        # tol   - The desired accuracy. (Default: tol = 1.e-6). 
-#        # 
-#        # OUTPUT: 
-#        # T  - Returned integration time points (row-vector). 
-#        # Y  - Returned solution, one solution column-vector per tout-value. 
-#        # 
-#        # The result can be displayed by: plot(tout, yout). 
-#         
-#        #   C.B. Moler, 3-25-87. 
-#        #   Copyright (c) 1987 by the MathWorks, Inc. 
-#        #   All rights reserved.
-#        t = t0 
+#        # ThetaDotDot = 
+#        #
+#        #         mlg sin(theta) + T
+#        #         -------------------
+#        #                4l^2/3
+#        #
+#        # where T is the applied torque
 #        
-#        hmax = (tfinal - t) 
-#        hmin = (tfinal - t)/1000 
-#        h = (tfinal - t)
-#        y = y0.flatten()
-#        f = y*zeros(1,6) 
-#        tout = t 
-#        yout = y.transpose() 
-#        tau = tol * max(norm(y, inf), 1) 
+#        
+#        g = self.ACCEL_G
+#        l = self.MOMENT_ARM # NOTE that 'length' in these computations is actually the length of the center of mass
+#        theta       = s_augmented[StateIndex.THETA]
+#        torque       = s_augmented[StateIndex.TORQUE]
+#        
+#        thetaDotDot = (self.MASS_PEND *l * g * sin(theta) + torque) / (4.0/3.0 * l**2)
+#        
+#        return (s_augmented[StateIndex.THETA_DOT], thetaDotDot, 0) # final cell corresponds to action passed in
+    
+    ## 
+    def pendulum_ode45(self, t0, tfinal, y0, tol):
+    ### CURRENTLY NOT IN USE - scipy.integrate functions preferred. ###
+    # ODE function from "1Link" inverted pendulum implementation,
+    # Lagoudakis & Parr 2003.
+    #
+    # Identical to L & P, with the change that only the
+    # final state is outputted.  This improves performance, since
+    # the output array does not need to be extended on each timestep.
+    # An alternative would be to preallocate and limit the output to a finite size.
+    ###########################################################################
+    #
+    # ode45_us customized for the pendulum
+    #
+    #ODE45  Integrate a system of ordinary differential equations using 
+    #       4th and 5th order Runge-Kutta formulas.  See also ODE23 and 
+    #       ODEDEMO.M. 
+    #       [T,Y] = ODE45('yprime', T0, Tfinal, Y0, ... 
+    #                A, B1, B2, C, OBsq ) integrates the system 
+    #       of ordinary differential equations described by the M-file 
+    #       YPRIME.M over the interval T0 to Tfinal and using initial 
+    #       conditions Y0. 
+    #       [T, Y] = ODE45(F, T0, Tfinal, Y0, TOL, 1) uses tolerance TOL 
+    #       and displays status while the integration proceeds. 
+    # 
+    # INPUT: 
+    # t0    - Initial value of t. 
+    # tfinal- Final value of t. 
+    # y0    - Initial value column-vector. 
+    # tol   - The desired accuracy. (Default: tol = 1.e-6). 
+    # 
+    # OUTPUT: 
+    # T  - Returned integration time points (row-vector). 
+    # Y  - Returned solution, one solution column-vector per tout-value. 
+    # 
+    # The result can be displayed by: plot(tout, yout). 
+     
+    #   C.B. Moler, 3-25-87. 
+    #   Copyright (c) 1987 by the MathWorks, Inc. 
+    #   All rights reserved. 
+    
+    # TODO - an option would be to pre-allocate 
+        t = t0; 
+            
+        hmax = (tfinal - t)
+        hmin = (tfinal - t)/1000.0
+        h = (tfinal - t)
+        y = y0[:] # y[2] contains force action
+        #numStates = len(y)-1 # subtract 1 since last state element is actually an action
+        numStates = len(y)
+    #    y.shape = (numStates, 1)
+        yStates = y[0:numStates]
+        f = zeros([numStates, 6])
+        tout = array([t])
+        yout = y[:]
+        tau = tol * max(linalg.norm(yStates, ord=inf), 1); #numpy.inf nump.linalg.norm
+         
+        
+        ##### The main loop 
+        
+        while (t < tfinal) and (h >= hmin):
+            if t + h > tfinal: h = tfinal - t 
+            
+            # Compute the slopes 
+            f[:,0] = self._dsdt(y,t)
+            dotHF = dot(h,f)
+            for j in arange(0,5):
+    # note that 'dot' is used to multiply numpy arrays (even shaped as matrices)
+                f[:,j+1] = self._dsdt(y+dot(dotHF,self._beta[:,j]), t+self._alpha[j]*h)
+    
+            # Estimate the error and the acceptable error
+            delta = linalg.norm(dot(dotHF,self._gamma[:,1]),ord=inf)
+            tau = tol*max(linalg.norm(y,ord=inf),1.0); 
+     
+            # Update the solution only if the error is acceptable 
+            if delta <= tau:
+                t = t + h
+                y = y + dot(dotHF,self._gamma[:,0])
+                # Replace the two lines below to output all states and a vector of associated times.
+#                tout = append(tout, t)
+#                yout = vstack((yout,y))
+                tout = t
+                yout = y
+     
+          # Update the step size 
+            if delta != 0.0: h = min(hmax, 0.8*h*(tau/delta) ** self._pow)          
+        if (t < tfinal): print 'SINGULARITY LIKELY at: ',t 
+        return yout # Optionally also return tout here.
+
+
+    ## @param s: state
+    #  @param a: action
+    ## @return: Reward earned for this state-action pair.
+    def _getReward(self, s, a):
+        # Return the reward earned for this state-action pair
+        abstract
+
+## Flexible way to index states in this domain.
 #
-#        # Main Loop        
-#        while (t < tfinal) and (h >= hmin): 
-#            if t + h > tfinal: h = tfinal - t
-#            # Compute the slopes 
-#            f[:,1] = pendulum(t,y); 
-#              for j = 1:5 
-#                 f(:,j+1) = pendulum(t+alpha(j)*h, y+h*f*beta(:,j));
-#              end 
-#        
-#              % Estimate the error and the acceptable error 
-#              delta = norm(h*f*gamma(:,2),'inf'); 
-#              tau = tol*max(norm(y,'inf'),1.0); 
-#         
-#              % Update the solution only if the error is acceptable 
-#              if delta <= tau 
-#                 t = t + h; 
-#                 y = y + h*f*gamma(:,1); 
-#                 tout = [tout; t]; 
-#                 yout = [yout; y.']; 
-#               end 
-#         
-#              % Update the step size 
-#              if delta ~= 0.0 
-#                 h = min(hmax, 0.8*h*(tau/delta)^pow); 
-#              end 
-#           end; 
-#         
-#           if (t < tfinal) 
-#              disp('SINGULARITY LIKELY.') 
-#              t 
-#           end 
-#        
-#        return; 
-#
-#    def pendulum_eqn(self,t,x):
-#      
-#    ################################################################
-#    #
-#    # Copyright 2000-2002 
-#    #
-#    # Michail G. Lagoudakis (mgl@cs.duke.edu)
-#    # Ronald Parr (parr@cs.duke.edu)
-#    #
-#    # Department of Computer Science
-#    # Box 90129
-#    # Duke University
-#    # Durham, NC 27708
-#    # 
-#    #
-#    # xdot = pendulum(t, x) 
-#    #
-#    # Equation of the pendulum
-#    #
-#    ################################################################
-#     
-#  
-#     g=9.8;         % Gravity constant
-#     a=1.0/(m+M); 
-#    
-#      
-#      % Nonlinear model 
-#    
-#      u = x(3); 
-#      xdot(1)=x(2); 
-#      xdot(2)=( g*sin(x(1)) - a*m*l*x(2)^2*sin(2*x(1))/2 - a*cos(x(1))*u ) / ...
-#          ( 4/3*l - a*m*l*cos(x(1))^2 ); 
-#      xdot(3)=0;
-#    
-#      xdot=xdot(:); 
-  
-if __name__ == '__main__':
-    random.seed(0)
-    p = InvertedPendulum();
-    p.test(1000)
+# This class enumerates the different indices used when indexing the state.
+# e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
+class StateIndex:
+    THETA, THETA_DOT = 0,1
+    FORCE = 2 # Used by the state augmented with input in dynamics calculations
+

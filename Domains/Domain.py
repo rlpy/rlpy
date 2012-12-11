@@ -52,21 +52,27 @@ class Domain(object):
     def showLearning(self,representation):
         pass
     def s0(self):       
-        # Returns the initial state
+        ## Returns the initial state
         abstract
+        
+    ## Returns the list of possible actions in each state.
+    # The vanilla (default) version returns all actions [0, 1, 2...]
+    # You may want to change this in your domain if all actions are not available at all times.
     def possibleActions(self,s):
-        # default. You may want to change it in your domain if all actions are not available at all times
-        # Returns the list of possible actions in each state the vanilla version returns all of the actions
         return arange(self.actions_num)
+    
+    ## Perform action a while in state s:
+    # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def step(self,s,a):
-        # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
-        abstract    
+        abstract
+        
+    ## Returns r, ns, p. Each row of each output corresponds to one possibility.
+    # e.g. s,a -> r[i], ns[i] with probability p[i]"""
     def expectedStep(self,s,a):
-        # returns r, ns, p. Each row of each output corresponds to one possibility.
-        # e.g. s,a -> r[i], ns[i] with probability p[i]
         pass 
+    
+    ## Returns True if the state s is a terminal state, False otherwise."""
     def isTerminal(self,s):
-        # Returns a boolean showing if s is terminal or not
         abstract
     
     def saturateState(self,s):
@@ -94,15 +100,13 @@ class Domain(object):
             steps += 1
     def printAll(self):
         printClass(self)
+
     def extendDiscreteDimensions(self):
         self.statespace_limits = self.statespace_limits.astype('float')
         for d in arange(self.state_space_dims):
              if not d in self.continuous_dims:
                  self.statespace_limits[d,0] += -.5 
                  self.statespace_limits[d,1] += +.5 
-    def isTerminal(self,s):
-        # Returns true if state s is terminal
-        abstract
     
     def MCExpectedStep(self,s,a,no_samples):
         
