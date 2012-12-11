@@ -270,8 +270,8 @@ class CartPole(Domain):
     
     ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
     def _assignGroundVerts(self):
-        minPosition = self.POSITON_LIMITS[0]
-        maxPosition = self.POSITON_LIMITS[1]
+        minPosition = self.POSITON_LIMITS[0]-self.RECT_WIDTH/2.0
+        maxPosition = self.POSITON_LIMITS[1]+self.RECT_WIDTH/2.0
         self.GROUND_VERTS = array([
                           (minPosition,-self.RECT_HEIGHT/2.0),
                           (minPosition,self.RECT_HEIGHT/2.0),
