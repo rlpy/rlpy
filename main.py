@@ -27,6 +27,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     OUT_PATH            = 'Results/Temp' if OUT_PATH == -1 else OUT_PATH
     DEBUG               = 0
     logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+    MAX_ITERATIONS      = 10
     # Domain ----------------------
     MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'

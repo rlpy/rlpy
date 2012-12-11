@@ -70,11 +70,13 @@ def binNumber(s,bins,limits):
     # s = 0, limits = [-1,5], bins = 6 => 1
     # s = .001, limits = [-1,5], bins = 6 => 1
     # s = .4, limits = [-.5,.5], bins = 3 => 2
+    if s == limits[1]: 
+        return bins-1
     width = limits[1]-limits[0]
-    if not (s <= limits[1]):
+    if s > limits[1]:
         s = limits[1]
         print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
-    elif not(s>=limits[0]):
+    elif s < limits[0]:
         s = limits[0]
         print 'Tools.py: WARNING: ',s,' is out of limits of ',limits[0],',',limits[1],' cant place in bins ',bins,'. Using the chopped value of s'
 #        print("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
