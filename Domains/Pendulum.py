@@ -4,13 +4,13 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 
-from scipy import integrate # for integration of state
+from scipy import integrate # For integrate.odeint (accurate, slow)
 from matplotlib.mlab import rk4
 from matplotlib import lines
 
-#######################################################
+##########################################################
 # Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012#
-#######################################################
+##########################################################
 # This is the parent class for pendulum-type problems with two
 # (continuous) states only, and three discrete possible actions.
 #
@@ -41,27 +41,28 @@ from matplotlib import lines
 ## 
 # NOTE: This domain cannot be instantiated; it is a superclass for the specific domains
 # Pendulum_SwingUp and Pendulum_InvertedBalance.
+# @author: Robert H. Klein
 class Pendulum(Domain):
+
     DEBUG               = 0     # Set to non-zero to enable print statements
     
-    # Domain constants
-    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
-    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
-    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
-    dt                  = 0.1   # Time between steps
-    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
-    episodeCap          = 3000  # Max number of steps per trajectory
-    
     # Domain constants from children
+    AVAIL_FORCE         = None # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    MASS_PEND           = None # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = None # kilograms, kg - Mass of cart
+    LENGTH              = None # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = None # m/s^2 - gravitational constant
+    dt                  = None # Time between steps
+    force_noise_max     = None # Newtons, N - Maximum noise possible, uniformly distributed
+    
     ANGLE_LIMITS        = None
     ANGULAR_RATE_LIMITS = None
+    episodeCap          = None  # Max number of steps per trajectory
     
     # Domain constants computed in __init__
     MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
                             # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
-    _ALPHA_MASS          = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    _ALPHA_MASS         = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
     
     # Internal Constants
     tol                 = 10 ** -5 # Tolerance in Runge-Kutta 
@@ -80,8 +81,8 @@ class Pendulum(Domain):
     MIN_RETURN          = 0 # Minimum return possible, used for graphical normalization, computed in init
     MAX_RETURN          = 0
     
-    Theta_discritization    = 20 #Used for visualizing the policy and the value function
-    ThetaDot_discritization = 20 #Used for visualizing the policy and the value function
+    Theta_discretization    = 20 #Used for visualizing the policy and the value function
+    ThetaDot_discretization = 20 #Used for visualizing the policy and the value function
 
     # Variables from pendulum_ode45.m of the 1Link code, Lagoudakis & Parr 2003
     # The Fehlberg coefficients: 
@@ -107,9 +108,9 @@ class Pendulum(Domain):
         self.MOMENT_ARM         = self.LENGTH / 2.0
         self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         
-        self.xTicks         = linspace(0,self.Theta_discritization-1,5)
+        self.xTicks         = linspace(0,self.Theta_discretization-1,5)
         self.xTicksLabels   = ["$-\\pi$","$-\\frac{\\pi}{2}$","$0$","$\\frac{\\pi}{2}$","$\\pi$"]
-        self.yTicks         = [0,self.Theta_discritization/4.0,self.ThetaDot_discritization/2.0,self.ThetaDot_discritization*3/4.0,self.ThetaDot_discritization-1]
+        self.yTicks         = [0,self.Theta_discretization/4.0,self.ThetaDot_discretization/2.0,self.ThetaDot_discretization*3/4.0,self.ThetaDot_discretization-1]
         self.yTicksLabels   = ["$-8\\pi$","$-4\\pi$","$0$","$4\\pi$","$8\\pi$"]
         
         if self.logger: 
@@ -143,94 +144,96 @@ class Pendulum(Domain):
         super(Pendulum,self).__init__(logger)     
           
     def showDomain(self,s,a = 0):
+        
         # Plot the pendulum and its angle, along with an arc-arrow indicating the 
         # direction of torque applied (not including noise!)
-        pass
-#        if self.domain_fig == None: # Need to initialize the figure
-#            self.domain_fig = pl.subplot(1,3,1)
-#            self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
-#            self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
-#            
-#            self.domain_fig.add_patch(self.pendulumBob)
-#            self.domain_fig.add_line(self.pendulumArm)
-#            # Allow room for pendulum to swing without getting cut off on graph
-#            viewableDistance = self.LENGTH + self.circle_radius + 0.5
-#            self.domain_fig.set_xlim(-viewableDistance, viewableDistance)
-#            self.domain_fig.set_ylim(-viewableDistance, viewableDistance)
-#            pl.axis('off')
-#            self.domain_fig.set_aspect('equal')
-#            pl.show()
-#            
-#        forceAction = self.AVAIL_FORCE[a]
-#        theta = s[StateIndex.THETA] # Using continuous state
-#        
-#        # recall we define 0deg  up, 90 deg right
-#        pendulumBobX = self.PENDULUM_PIVOT_X + self.LENGTH * sin(theta)
-#        pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * cos(theta)
-#        
-#        # update pendulum arm on figure
-#        self.pendulumArm.set_data([self.PENDULUM_PIVOT_X, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])        
-#  
-#        if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
-#        if self.pendulumBob is not None:
-#            self.pendulumBob.remove()
-#            self.pendulumBob = None
-#        if self.actionArrow is not None:
-#            self.actionArrow.remove()
-#            self.actionArrow = None
-#        
-#        if forceAction == 0: 
-#            pass # no torque
-#        else: # cw or ccw torque
-#            SHIFT = .5
-#            if forceAction > 0: # counterclockwise torque
-#                self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2")
-#            else:# clockwise torque
-#                self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2")
-#            
-#        self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
-#        self.domain_fig.add_patch(self.pendulumBob)
-#        pl.draw()
-##        sleep(self.dt)
+        if self.domain_fig == None: # Need to initialize the figure
+            self.domain_fig = pl.subplot(1,3,1)
+            self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
+            self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
+            
+            self.domain_fig.add_patch(self.pendulumBob)
+            self.domain_fig.add_line(self.pendulumArm)
+            # Allow room for pendulum to swing without getting cut off on graph
+            viewableDistance = self.LENGTH + self.circle_radius + 0.5
+            self.domain_fig.set_xlim(-viewableDistance, viewableDistance)
+            self.domain_fig.set_ylim(-viewableDistance, viewableDistance)
+            pl.axis('off')
+            self.domain_fig.set_aspect('equal')
+            pl.show()
+            
+        forceAction = self.AVAIL_FORCE[a]
+        theta = s[StateIndex.THETA] # Using continuous state
+        
+        # recall we define 0deg  up, 90 deg right
+        pendulumBobX = self.PENDULUM_PIVOT_X + self.LENGTH * sin(theta)
+        pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * cos(theta)
+        
+        # update pendulum arm on figure
+        self.pendulumArm.set_data([self.PENDULUM_PIVOT_X, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])        
+  
+        if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
+        if self.pendulumBob is not None:
+            self.pendulumBob.remove()
+            self.pendulumBob = None
+        if self.actionArrow is not None:
+            self.actionArrow.remove()
+            self.actionArrow = None
+        
+        if forceAction == 0: 
+            pass # no torque
+        else: # cw or ccw torque
+            SHIFT = .5
+            if forceAction > 0: # counterclockwise torque
+                self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2")
+            else:# clockwise torque
+                self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2")
+            
+        self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
+        self.domain_fig.add_patch(self.pendulumBob)
+        pl.draw()
+#        sleep(self.dt)
 
+    
     def showLearning(self,representation):
-        pass
-#        pi      = zeros((self.Theta_discritization, self.ThetaDot_discritization),'uint8')            
-#        V       = zeros((self.Theta_discritization,self.ThetaDot_discritization))
-#
-#        if self.valueFunction_fig is None:
-#            self.valueFunction_fig   = pl.subplot(1,3,2)
-#            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
-#            #pl.colorbar() # Show the colorbar corresponding to the value function
-#            pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-#            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-#            pl.xlabel(r"$\theta$")
-#            pl.ylabel(r"$\dot{\theta}$")
-#            pl.title('Value Function')
-#            
-#            self.policy_fig = pl.subplot(1,3,3)
-#            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',vmin=0,vmax=self.actions_num)
-#            pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-#            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-#            pl.xlabel(r"$\theta$")
-#            pl.ylabel(r"$\dot{\theta}$")
-#            pl.title('Policy')
-##            f.set_size_inches(10,20)
-#            pl.show()
-#            f = pl.gcf()
-#            f.subplots_adjust(left=0,wspace=.3)
-#            #pl.tight_layout()
-#        
-#        for row, thetaDot in enumerate(linspace(self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1], self.ThetaDot_discritization)):
-#            for col, theta in enumerate(linspace(self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1], self.ThetaDot_discritization)):
-#                s           = [theta,thetaDot]
-#                Qs,As       = representation.Qs(s)
-#                pi[row,col] = representation.bestAction(s)
-#                V[row,col]  = max(Qs)
-#        
-#        self.valueFunction_fig.set_data(V)
-#        self.policy_fig.set_data(pi)
-#        pl.draw()
+        
+        pi      = zeros((self.Theta_discretization, self.ThetaDot_discretization),'uint8')            
+        V       = zeros((self.Theta_discretization,self.ThetaDot_discretization))
+
+        if self.valueFunction_fig is None:
+            self.valueFunction_fig   = pl.subplot(1,3,2)
+            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
+            #pl.colorbar() # Show the colorbar corresponding to the value function
+            pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$")
+            pl.ylabel(r"$\dot{\theta}$")
+            pl.title('Value Function')
+            
+            self.policy_fig = pl.subplot(1,3,3)
+            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',vmin=0,vmax=self.actions_num)
+            pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$")
+            pl.ylabel(r"$\dot{\theta}$")
+            pl.title('Policy')
+#            f.set_size_inches(10,20)
+            pl.show()
+            f = pl.gcf()
+            f.subplots_adjust(left=0,wspace=.3)
+            #pl.tight_layout()
+        
+        for row, thetaDot in enumerate(linspace(self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1], self.ThetaDot_discretization)):
+            for col, theta in enumerate(linspace(self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1], self.ThetaDot_discretization)):
+                s           = [theta,thetaDot]
+                Qs,As       = representation.Qs(s)
+                pi[row,col] = representation.bestAction(s)
+                V[row,col]  = max(Qs)
+        
+        self.valueFunction_fig.set_data(V)
+        self.policy_fig.set_data(pi)
+        pl.draw()
+#        sleep(self.dt)
 
     def s0(self):
         # Defined by children
@@ -251,20 +254,38 @@ class Pendulum(Domain):
         
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = append(s, forceAction)
-        
-        # Decomment the line below to use inbuilt runge-kutta method.
-#        ns = rk4(self._dsdt, s_augmented, [0, self.dt])
-#        ns = ns[-1] # only care about final timestep of integration returned by integrator
-#        ns = ns[0:2] # [theta, thetaDot]
+
+    ###########################################################################
+    # There are several ways of integrating the nonlinear dynamics equations. #
+    # For consistency with prior results, we include the custom integration   #
+    # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
+    # Balance task, despite its slightly poorer performance in execution time #
+    # and accuracy of result.                                                 #
+    # For our own experiments we use rk4 from mlab.                           #
+    #                                                                         #
+    # Integration method         Sample runtime  Error with scipy.integrate   #
+    #                                              (most accurate method)     #
+    #  rk4 (mlab)                  3min 15sec            < 0.01%              #
+    #  pendulum_ode45 (L&P '03)    7min 15sec            ~ 2.00%              #
+    #  integrate.odeint (scipy)    9min 30sec            -------              #
+    #                                                                         #
+    # Use of any of these methods is supported by selectively commenting      #
+    # sections below.                                                         #
+    ###########################################################################
+    
+        # Decomment the 3 lines below to use mlab rk4 method.
+        ns = rk4(self._dsdt, s_augmented, [0, self.dt])
+        ns = ns[-1] # only care about final timestep of integration returned by integrator
+        ns = ns[0:2] # [theta, thetaDot]
         
         # Decomment the 2 lines below to use L & P's pendulum_ode45 method
-        nsL = self.pendulum_ode45(0, self.dt, s_augmented, self.tol)
-        nsL = nsL[0:2] # omit the augmented state with action stored
+#        ns = self.pendulum_ode45(0, self.dt, s_augmented, self.tol)
+#        ns = ns[0:2] # omit the augmented state with action stored
         
-        #Decomment the 2 lines below (as well as the import scipy.integrate at top) to use scipy.integrate
-        ns = integrate.odeint(self._dsdt, s_augmented, [0, self.dt], rtol = self.tol)
-        ns = ns[-1]
-        ns = ns[0:2]
+        # Decomment the 3 lines below to use scipy.integrate.odeint
+#        ns = integrate.odeint(self._dsdt, s_augmented, [0, self.dt], rtol = self.tol)
+#        ns = ns[-1]
+#        ns = ns[0:2]
 
          # wrap angle between -pi and pi (or whatever values assigned to ANGLE_LIMITS)
         ns[StateIndex.THETA]        = wrap(ns[StateIndex.THETA],-pi, pi)

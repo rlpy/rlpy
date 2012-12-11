@@ -14,7 +14,7 @@ from Domain import *
 from matplotlib import lines
 
 ########################################################
-# Robert Klein, Alborz Geramifard Nov 26 2012 at MIT #
+# Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT #
 ########################################################
 # Persistent Search and Track Mission with:
 # NUM_UAV:       num vehicles present
@@ -111,7 +111,7 @@ class UAVIndex:
 #        self.sensor_obj.remove()
 #        self.actuator_obj.remove()
         
-
+## @author Robert H. Klein
 class PST(Domain):
     
     episodeCap = 100 # 100 used in tutorial

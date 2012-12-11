@@ -22,8 +22,18 @@ from Pendulum import *
 #
 #####################################################################
 
+## @author: Robert H. Klein
 class Pendulum_InvertedBalance(Pendulum):
-    # Domain constants
+    
+    # Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
+    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
+    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
+    dt                  = 0.1   # Time between steps
+    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
+
     FELL_REWARD         = -1            # Reward received when the pendulum falls below the horizontal
     ANGLE_LIMITS        = [-pi/2.0, pi/2.0] # Limit on theta (used for discretization)
     ANGULAR_RATE_LIMITS = [-2, 2]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr

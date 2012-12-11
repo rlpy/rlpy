@@ -10,15 +10,16 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 
-########################################################
-# Robert Klein, Alborz Geramifard Nov 21st 2012 at MIT #
-########################################################
+##########################################################
+# Robert H Klein, Alborz Geramifard Nov 21st 2012 at MIT #
+##########################################################
 # Download NetworkX package for visualization.
 # Ubuntu: sudo apt-get install python-networkx
 #
 # Network Administrator with n computers, at most 1 reboot
 # action allowed per timestep.
-# Penalty -0.75 for taking a reboot action.
+# Penalty -1.75 for taking a reboot action. [netting -0.75
+# since the computer status becomes 'RUNNING' after action].
 # State is the vector of binary computer statuses:
 # RUNNING = 1 for working computers, BROKEN = 0 otherwise.
 # Example: [1 1 0 1] -> computers 0,1,3 are RUNNING,
@@ -26,6 +27,7 @@ from Domain import *
 ########################################################
 
 ########################################################
+##########               INPUT                ##########
 # Map form 1, 'eachNeighbor'
 # Each row is implicitly indexed starting at 0,
 # corresponding to the id of a computer.
@@ -59,10 +61,11 @@ from Domain import *
 # 3,4
 ##########
 
-
+## @author: Robert H Klein
 class NetworkAdmin(Domain):
+
     NEIGHBORS = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
-    UNIQUE_EDGES = []
+    UNIQUE_EDGES = [] # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     
     P_SELF_REPAIR = 0.04
     P_REBOOT_REPAIR = 1.0
@@ -79,7 +82,8 @@ class NetworkAdmin(Domain):
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
             
-    # Note that you must pass a network map name as well as its format type; see top of this module.
+    ## Note that you must pass a network map name as well as its format type.
+    # @see NetworkAdmin(Domain)
     def __init__(self, networkmapname='/Domains/NetworkAdminMaps/20MachTutorial.txt',maptype='eachNeighbor',numNodes=5, logger = None):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS, self.UNIQUE_EDGES = self.getNetworkMap(path,maptype,numNodes) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
@@ -89,20 +93,26 @@ class NetworkAdmin(Domain):
         self.states_num             = len(self.NEIGHBORS)       # Number of states
         self.actions_num            = self.states_num + 1     # Number of Actions, including no-op
         self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.states_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-#        state_space_dims = None # Number of dimensions of the state space
-#        episodeCap = None       # The cap used to bound each episode (return to s0 after)
         super(NetworkAdmin,self).__init__(logger)
-#        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,s)):
-#        [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
+#        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,self.s0())):
+#            [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
 
-    # The below method gets a network map of the form 
+    ## @param path: Path to the map file, of form '/Domains/NetworkAdminMaps/<mapname>.txt'
+    # @param maptype: Specify the format for the map file, 'eachNeighbor' or 'edges'.
+    # @param numNodes: Number of nodes in the map.
+    # @see: NetworkAdmin(Domain) for a description of 'eachNeighbor' and 'edges'.
+    #
+    # @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
+    # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
+    # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def getNetworkMap(self, path, maptype, numNodes):
         if maptype == 'eachNeighbor': return self.getNeighborMap(path)
         elif maptype == 'edges': return self.getEdgeMap(path, numNodes)
         else:
             print 'Error: unrecognized maptype parameter.  Valid entries are <eachNeighbor> and <edges>.  See comment header of NetworkAdmin.py'
             return None
-
+    
+    ## @param path: Path of form '/Domains/NetworkAdminMaps/<mapname>.txt' to the map file, with <mapname>.txt of 'Map format 1' per class documentation.
     def getNeighborMap(self, path):
         _Neighbors = []
         with open(path, 'rb') as f:
@@ -110,7 +120,9 @@ class NetworkAdmin(Domain):
             for row in reader:
                 _Neighbors.append(map(int,row))
         return _Neighbors, self.getUniqueEdges(_Neighbors)
-        
+    
+    ## @param path: Path of form '/Domains/NetworkAdminMaps/<mapname>.txt' to the map file, with <mapname>.txt of 'Map format 2' per class documentation.
+    # @param numNodes: Number of nodes in the map.
     def getEdgeMap(self,path, numNodes):
         # initialize neighbors list 
         _edges = loadtxt(path, dtype = uint8)
@@ -201,6 +213,8 @@ class NetworkAdmin(Domain):
     def isTerminal(self,s):
         return False
 
+    ## @param neighborsList: each element at index <i> is a list of nodes connected to the node at <i>.
+    # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def getUniqueEdges(self, neighborsList):
         # Returns a list of tuples of unique edges in this map; choose the edge emanating from
         # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]
@@ -211,6 +225,9 @@ class NetworkAdmin(Domain):
                     uniqueEdges.append((neighbor_id, computer_id))
         return uniqueEdges
 
+    ## @param uniqueEdges: a list of tuples (node1, node2) where node1 and node2 share an edge. No guarantee of node order is made.
+    # @param numNodes: Number of nodes in the map.
+    # @return: A list, where each element at index <i> is a list of nodes connected to the node at <i>.
     def populateNeighbors(self, uniqueEdges, numNodes):
         _Neighbors = numNodes * [-1] # Initialize list so we don't get out of bounds errors
         for edgePair in uniqueEdges:

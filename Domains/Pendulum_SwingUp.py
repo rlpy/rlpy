@@ -26,11 +26,22 @@ from Pendulum import *
 #
 #####################################################################
 
+## @author: Robert H. Klein
 class Pendulum_SwingUp(Pendulum):
-    # Domain constants
-    GOAL_REWARD         = 1            # Reward received on each step the pendulum is in the goal region
-    ANGLE_LIMITS        = [-pi, pi] # Limit on theta (used for discretization)
-    ANGULAR_RATE_LIMITS = [-6, 6]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
+    
+    # Domain constants [temporary, per Lagoudakis & Parr 2003, for InvertedBalance Task]
+    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions
+    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
+    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
+    dt                  = 0.1   # Time between steps
+    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
+    
+    GOAL_REWARD         = 1             # Reward received on each step the pendulum is in the goal region
+    GOAL_LIMITS         = [-pi/6, pi/6] # Goal region for reward [temporary values]
+    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta
+    ANGULAR_RATE_LIMITS = [-3*pi, 3*pi] # Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
                                 # NOTE that those rate limits are actually unphysically slow; more realistic to use 2*pi
     episodeCap          = 3000          # Max number of steps per trajectory
     

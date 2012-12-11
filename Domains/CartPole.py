@@ -9,9 +9,9 @@ from Domain import *
 from matplotlib.mlab import rk4
 from matplotlib import lines
 
-#######################################################
-# Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012#
-#######################################################
+#########################################################
+# Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012 #
+#########################################################
 #
 # Per Lagoudakis and Parr 2003, derived from Wang 1996.
 # (See "1Link" implementation by L & P.)
@@ -38,23 +38,26 @@ from matplotlib import lines
 #
 ######################################################
 
-# TODO - can eliminate an entire dimension of the state space, xdot.
-# However, must internally keep track of it for use in dynamics.
 
+## @todo: can eliminate an entire dimension of the state space, xdot.
+# However, must internally keep track of it for use in dynamics.
+# RL_Glue and RL Community use the full 4-state system.
+# @author: Robert H. Klein
 class CartPole(Domain):
     DEBUG               = 0     # Set to non-zero to enable print statements
-    
-    # Domain constants
-    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
-    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
-    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
-    dt                  = 0.1   # Time between steps
-    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
-    episodeCap          = 3000  # Max number of steps per trajectory
+
     
     # Domain constants from children
+    AVAIL_FORCE         = None # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    MASS_PEND           = None # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = None # kilograms, kg - Mass of cart
+    LENGTH              = None # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = None # m/s^2 - gravitational constant
+    dt                  = None # Time between steps
+    force_noise_max     = None # Newtons, N - Maximum noise possible, uniformly distributed
+    episodeCap          = None # Max number of steps per trajectory
+    
+    
     ANGLE_LIMITS        = None
     ANGULAR_RATE_LIMITS = None
     POSITON_LIMITS      = None
@@ -80,7 +83,7 @@ class CartPole(Domain):
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     RECT_WIDTH = 0.5 
     BLOB_WIDTH = 0.2
-    RECT_HEIGHT = MASS_CART/20.0
+    RECT_HEIGHT = 0
     PEND_WIDTH = 0 # If this value is left as zero, it is computed automatically based on mass.
     GROUND_WIDTH = 2
     GROUND_HEIGHT = 1

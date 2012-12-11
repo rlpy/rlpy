@@ -47,15 +47,21 @@ class Domain(object):
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)
+    
+    ## Show a visualization of the current state of the domain
     def showDomain(self,s,a = 0):
         pass
+    
+    ## Show a visualization of the current learning, usually in the form
+    # of a value gridded value function and policy (really only possible for 1 or 2-state domains).
     def showLearning(self,representation):
         pass
+    
+    ## @return: the initial state
     def s0(self):       
-        ## Returns the initial state
         abstract
         
-    ## Returns the list of possible actions in each state.
+    ## @return: the numpy array of possible actions in each state.
     # The vanilla (default) version returns all actions [0, 1, 2...]
     # You may want to change this in your domain if all actions are not available at all times.
     def possibleActions(self,s):
