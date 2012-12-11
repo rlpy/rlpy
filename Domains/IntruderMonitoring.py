@@ -29,7 +29,7 @@ class IntruderMonitoring(Domain):
     
     #Rewards
     INTRUSION_PENALTY = -1.0
-    episodeCap  = 0                 # Set by the domain = min(100,rows*cols)
+    episodeCap  = 1000              # Episode Cap
     
     #Constants in the map
     EMPTY, INTRUDER, AGENT, DANGER = range(4)
@@ -47,7 +47,7 @@ class IntruderMonitoring(Domain):
     
       
        
-    def __init__(self, mapname, episodeCap = None, logger = None):
+    def __init__(self, mapname, logger = None):
                  
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
@@ -65,12 +65,7 @@ class IntruderMonitoring(Domain):
         #self.states_num = ((self.ROWS-1)*(self.COLS-1))^((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS))    
                      
         self.actions_num        = 5*self.NUMBER_OF_AGENTS
-        self.ACTION_LIMITS = [5]*self.NUMBER_OF_AGENTS
-                                      
-        if episodeCap is None:
-            self.episodeCap         = 2*self.ROWS*self.COLS
-        else:
-            self.episodeCap         = episodeCap
+        self.ACTION_LIMITS      = [5]*self.NUMBER_OF_AGENTS
         
         '''
         print 'Initialization Finished'    
@@ -232,7 +227,6 @@ class IntruderMonitoring(Domain):
     def showDomain(self,s,a):
        #Draw the environment
        if self.domain_fig is None:
-           fig              = pl.figure()
            self.domain_fig  = pl.imshow(self.map, cmap='IntruderMonitorying',interpolation='nearest',vmin=0,vmax=3)
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)

@@ -513,9 +513,9 @@ FONTSIZE = 12
 SEP_LINE = "="*60
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
 rc('text',usetex=True)
-mpl.rcParams['font.size'] = 12.
+mpl.rcParams['font.size'] = 15.
 mpl.rcParams['font.weight'] = 'bold'
-mpl.rcParams['axes.labelsize'] = 12.
-mpl.rcParams['xtick.labelsize'] = 12.
-mpl.rcParams['ytick.labelsize'] = 12.
+mpl.rcParams['axes.labelsize'] = 15.
+mpl.rcParams['xtick.labelsize'] = 15.
+mpl.rcParams['ytick.labelsize'] = 15.
 os.environ['PATH'] += ':/usr/texbin'
