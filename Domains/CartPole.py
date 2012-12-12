@@ -84,7 +84,7 @@ class CartPole(Domain):
     RECT_WIDTH = 0.5 
     RECT_HEIGHT = .4
     BLOB_WIDTH = RECT_HEIGHT/2.0
-    PEND_WIDTH = 0 # If this value is left as zero, it is computed automatically based on mass.
+    PEND_WIDTH = 2 
     GROUND_WIDTH = 2
     GROUND_HEIGHT = 1
     # vertices for the ground:
@@ -99,10 +99,10 @@ class CartPole(Domain):
         self.MOMENT_ARM         = self.LENGTH / 2.0
         self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         
-        if self.RECT_HEIGHT == 0: # No rectangle height specified
-            self.RECT_HEIGHT = self.MASS_CART / 20 # Arbitrary number, reasonable visualization
-        if self.PEND_WIDTH == 0: # No rectangle height specified
-            self.PEND_WIDTH = int(self.MASS_PEND / self.LENGTH)+1 # Arbitrary number, reasonable visualization
+#        if self.RECT_HEIGHT == 0: # No rectangle height specified
+#            self.RECT_HEIGHT = self.MASS_CART / 20 # Arbitrary number, reasonable visualization
+#        if self.PEND_WIDTH == 0: # No rectangle height specified
+#            self.PEND_WIDTH = int(self.MASS_PEND / self.LENGTH)+1 # Arbitrary number, reasonable visualization
         
         if self.logger: 
             self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
