@@ -116,7 +116,7 @@ class CartPole(Domain):
         # Pendulum rotation is centered at origin
         
         if self.domainFig == None: # Need to initialize the figure
-            self.domainFig = pl.figure()
+            self.domainFig = pl.gcf()
             ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
             self.pendulumArm = lines.Line2D([],[], linewidth = self.PEND_WIDTH, color='black')
             self.cartBox    = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT/2.0], self.RECT_WIDTH, self.RECT_HEIGHT,alpha=.4)
@@ -209,13 +209,11 @@ class CartPole(Domain):
         # ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
 
-        ns[StateIndex.THETA]    = wrap(ns[StateIndex.THETA],-pi, pi)
+        theta                   = wrap(ns[StateIndex.THETA],-pi,pi)
+        ns[StateIndex.THETA]    = bound(theta,self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
-        print ns
-        print self.POSITON_LIMITS
-        raw_input()
         terminal                    = self.isTerminal(ns)
         reward                      = self._getReward(ns,a)
         return reward, ns, terminal

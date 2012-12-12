@@ -58,7 +58,6 @@ class CartPole_InvertedBalance(CartPole):
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_InvertedBalance,self).__init__(logger)
-    
     def s0(self):    
         # Returns the initial state, pendulum vertical
         return array([0,0,0,0])
