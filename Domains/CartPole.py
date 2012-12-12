@@ -82,8 +82,8 @@ class CartPole(Domain):
     circle_radius = 0.05
     PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
     RECT_WIDTH = 0.5 
-    BLOB_WIDTH = 0.2
-    RECT_HEIGHT = 0
+    RECT_HEIGHT = .4
+    BLOB_WIDTH = RECT_HEIGHT/2.0
     PEND_WIDTH = 0 # If this value is left as zero, it is computed automatically based on mass.
     GROUND_WIDTH = 2
     GROUND_HEIGHT = 1
