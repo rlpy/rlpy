@@ -30,6 +30,7 @@ from CartPole import *
 
 class CartPole_SwingUp(CartPole):
     # Domain constants
+    AVAIL_FORCE         = array([-50,0,50])
     GOAL_REWARD         = 1             # Reward received on each step the pendulum is in the goal region
     ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)
     ANGULAR_RATE_LIMITS = [-0, 0]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
