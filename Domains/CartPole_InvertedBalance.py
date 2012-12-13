@@ -37,24 +37,6 @@ from CartPole import *
 ## @author: Robert H. Klein
 class CartPole_InvertedBalance(CartPole):
     
-    # Domain constants per RL Community / RL_Glue CartPole implementation.
-    # (http://code.google.com/p/rl-library/wiki/CartpoleJava)
-    AVAIL_FORCE         = array([-10,0,10]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
-    MASS_PEND           = 0.1   # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = 1.0   # kilograms, kg - Mass of cart
-    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
-    dt                  = 0.02  # Time between steps
-    force_noise_max     = 1     # Newtons, N - Maximum noise possible, uniformly distributed
-    
-    GOAL_REWARD         = 1               # Reward received on each step the pendulum is in the goal region
-    ANGLE_LIMITS        = [-pi/15, pi/15] # rad - Limits on pendulum angle per RL Community CartPole (NOTE we wrap the angle at 2*pi)
-    ANGULAR_RATE_LIMITS = [-6.0, 6.0]     # Limits on pendulum rate [per RL Community CartPole]
-    POSITON_LIMITS      = [-2.4, 2.4] 	  # m - Limits on cart position [Per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0] 	  # m/s - Limits on cart velocity [per RL Community CartPole]   
-
-    episodeCap          = 3000      # Max number of steps per trajectory
-    
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_InvertedBalance,self).__init__(logger)

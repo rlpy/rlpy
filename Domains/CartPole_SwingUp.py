@@ -28,16 +28,7 @@ from CartPole import *
 #
 #####################################################################
 
-class CartPole_SwingUp(CartPole):
-    # Domain constants
-    AVAIL_FORCE         = array([-50,0,50])
-    GOAL_REWARD         = 1             # Reward received on each step the pendulum is in the goal region
-    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)
-    ANGULAR_RATE_LIMITS = [-0, 0]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
-    POSITON_LIMITS      = [-2.4, 2.4]   # m - Limits on cart position [Per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]   # m/s - Limits on cart velocity [per RL Community CartPole]  
-    episodeCap          = 0             # Max number of steps per trajectory
-    
+class CartPole_SwingUp(CartPole):    
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_SwingUp,self).__init__(logger)

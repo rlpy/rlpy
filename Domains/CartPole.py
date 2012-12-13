@@ -44,26 +44,32 @@ from matplotlib import lines
 # RL_Glue and RL Community use the full 4-state system.
 # @author: Robert H. Klein
 class CartPole(Domain):
+    
+    # Domain constants per RL Community / RL_Glue CartPole implementation.
+    # (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+    AVAIL_FORCE         = array([-10,0,10]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    MASS_PEND           = 0.1   # kilograms, kg - Mass of the pendulum arm
+    MASS_CART           = 1.0   # kilograms, kg - Mass of cart
+    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
+    dt                  = 0.02  # Time between steps
+    force_noise_max     = 1     # Newtons, N - Maximum noise possible, uniformly distributed
+    
+    #RL_Glue Balanced
+    #ANGLE_LIMITS        = [-pi/15, pi/15] # rad - Limits on pendulum angle per RL Community CartPole (NOTE we wrap the angle at 2*pi)
+    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)
+
+    ANGULAR_RATE_LIMITS = [-6.0, 6.0]     # Limits on pendulum rate [per RL Community CartPole]
+    GOAL_REWARD         = 1               # Reward received on each step the pendulum is in the goal region
+    POSITON_LIMITS      = [-2.4, 2.4]       # m - Limits on cart position [Per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]       # m/s - Limits on cart velocity [per RL Community CartPole]   
+    
+    # Domain constants
+
+
+    episodeCap          = 3000      # Max number of steps per trajectory
     DEBUG               = 0     # Set to non-zero to enable print statements
 
-    
-    # Domain constants from children
-    AVAIL_FORCE         = None # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
-    MASS_PEND           = None # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = None # kilograms, kg - Mass of cart
-    LENGTH              = None # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = None # m/s^2 - gravitational constant
-    dt                  = None # Time between steps
-    force_noise_max     = None # Newtons, N - Maximum noise possible, uniformly distributed
-    episodeCap          = None # Max number of steps per trajectory
-    
-    
-    ANGLE_LIMITS        = None
-    ANGULAR_RATE_LIMITS = None
-    POSITON_LIMITS      = None
-    VELOCITY_LIMITS     = None
-    GROUND_VERTS        = None  # Used for plotting, based on POSITION_LIMITS
-    
     # Domain constants computed in __init__
     MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
                             # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
