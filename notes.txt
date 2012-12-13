@@ -12,8 +12,8 @@ Progress:
 	(DONE)- Make sure it makes sense (Bobby)
 	- Check Sarsa with Tabular and iFDD (Kemal)
 - Implement 
-	- OMP-TD (Kemal)
-	- BEBF (Kemal)
+	- OMP-TD (Kemal,Bobby)
+	- BEBF (Kemal,Bobby)
 
 
 
