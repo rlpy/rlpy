@@ -2,8 +2,6 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
-#TODO in binNumber, no self.logger associated with this module.
-
 from operator import *
 from numpy  import *
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet

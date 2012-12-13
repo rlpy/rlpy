@@ -99,7 +99,6 @@ class Pendulum(Domain):
               [ -2090/752400.0,  0,    22528/752400.0,    21970/752400.0,    -15048/752400.0,  -27360/752400.0], 
               ])
     _pow    = 1/5.0
-    
     def __init__(self, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.actions_num        = len(self.AVAIL_FORCE)
@@ -142,7 +141,6 @@ class Pendulum(Domain):
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
         super(Pendulum,self).__init__(logger)     
-          
     def showDomain(self,s,a = 0):
         
         # Plot the pendulum and its angle, along with an arc-arrow indicating the 
@@ -172,6 +170,7 @@ class Pendulum(Domain):
         # update pendulum arm on figure
         self.pendulumArm.set_data([self.PENDULUM_PIVOT_X, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])        
   
+        #Fix the arrows because they are forces not torques
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
         if self.pendulumBob is not None:
             self.pendulumBob.remove()
@@ -193,8 +192,6 @@ class Pendulum(Domain):
         self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
 #        sleep(self.dt)
-
-    
     def showLearning(self,representation):
         
         pi      = zeros((self.Theta_discretization, self.ThetaDot_discretization),'uint8')            
@@ -234,14 +231,11 @@ class Pendulum(Domain):
         self.policy_fig.set_data(pi)
         pl.draw()
 #        sleep(self.dt)
-
     def s0(self):
         # Defined by children
         abstract
-
     def possibleActions(self,s): # Return list of all indices corresponding to actions available
         return arange(self.actions_num)
-
     def step(self,s,a):
     # Simulate one step of the pendulum after taking force action a
     
@@ -469,6 +463,7 @@ class Pendulum(Domain):
 #
 # This class enumerates the different indices used when indexing the state.
 # e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
+
 class StateIndex:
     THETA, THETA_DOT = 0,1
     FORCE = 2 # Used by the state augmented with input in dynamics calculations

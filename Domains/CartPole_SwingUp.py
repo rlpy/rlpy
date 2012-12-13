@@ -28,7 +28,8 @@ from CartPole import *
 #
 #####################################################################
 
-class CartPole_SwingUp(CartPole):    
+class CartPole_SwingUp(CartPole):
+    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)    
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_SwingUp,self).__init__(logger)

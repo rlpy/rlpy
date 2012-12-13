@@ -15,6 +15,12 @@ Progress:
 	- OMP-TD (Kemal,Bobby)
 	- BEBF (Kemal,Bobby)
 
+TO DO:
+=========
+MountianCar Visualization
+Correct the Visualization of the Pendulum Swingup because the actions are not torques but forces to the art!
+ 
+
 
 
 Bobby's Notes:

@@ -55,10 +55,6 @@ class CartPole(Domain):
     dt                  = 0.02  # Time between steps
     force_noise_max     = 1     # Newtons, N - Maximum noise possible, uniformly distributed
     
-    #RL_Glue Balanced
-    #ANGLE_LIMITS        = [-pi/15, pi/15] # rad - Limits on pendulum angle per RL Community CartPole (NOTE we wrap the angle at 2*pi)
-    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)
-
     ANGULAR_RATE_LIMITS = [-6.0, 6.0]     # Limits on pendulum rate [per RL Community CartPole]
     GOAL_REWARD         = 1               # Reward received on each step the pendulum is in the goal region
     POSITON_LIMITS      = [-2.4, 2.4]       # m - Limits on cart position [Per RL Community CartPole]
