@@ -32,6 +32,8 @@ Nothing at the moment!
 
 
 Optional:
+scikit-learn
+http://scikit-learn.org/stable/install.html
 =================
 SymPy 
 git clone git://github.com/sympy/sympy.git
