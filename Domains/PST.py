@@ -181,7 +181,7 @@ class PST(Domain):
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
 
         super(PST,self).__init__(logger)
-        self.logger.log("NUM_UAV \t\t%2d" % self.NUM_UAV)
+        self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
         
     def resetLocalVariables(self):
         self.numCrashed = 0 # Number of crashed UAVs [n_c]
@@ -282,7 +282,6 @@ class PST(Domain):
                 self.subplot_axes.add_line(lines.Line2D([self.location_coord[i] + self.LOCATION_WIDTH, self.location_coord[i] + self.LOCATION_WIDTH],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
-        sleep(.25)
 #===============================================================================
     def showLearning(self,representation):
         pass

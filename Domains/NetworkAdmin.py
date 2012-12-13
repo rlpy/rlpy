@@ -170,7 +170,6 @@ class NetworkAdmin(Domain):
             if redEdges:    nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=redEdges, edge_color="k",width=2,style='dotted')
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
         pl.draw()
-        sleep(.25)    
 
     def showLearning(self,representation):
         pass
