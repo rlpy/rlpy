@@ -66,7 +66,7 @@ class CartPole_InvertedBalance(CartPole):
     # On this domain, reward of 1 is given for each step spent within goal region.
     # There is no specific penalty for failure.
     def _getReward(self, s, a):
-        return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
+        return self.GOAL_REWARD if -pi/15 < s[StateIndex.THETA] < pi/15 else 0
     
     def isTerminal(self,s):
         return (not (-pi/15 < s[StateIndex.THETA] < pi/15) or \
