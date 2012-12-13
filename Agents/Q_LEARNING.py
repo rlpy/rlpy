@@ -10,7 +10,7 @@ class Q_LEARNING(Agent):
         self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
-        super(Q_LEARNING,self).__init__(representation,policy,domain)
+        super(Q_LEARNING,self).__init__(representation,policy,domain,logger)
         super(Q_LEARNING,self).printInfo()
         self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
