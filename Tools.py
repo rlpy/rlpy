@@ -94,13 +94,14 @@ def scale(x,m,M):
     #x(pos_ind) = x(pos_ind)
 def createColorMaps():
     #Make Grid World ColorMap
-    mycmap = col.ListedColormap(['w', 'gray','b','g','r','k'], 'GridWorld')
+    mycmap = col.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
     cm.register_cmap(cmap=mycmap)
-    mycmap = col.ListedColormap(['w','gray','b','r'], 'IntruderMonitorying')
+    mycmap = col.ListedColormap(['w','.75','b','r'], 'IntruderMonitorying')
     cm.register_cmap(cmap=mycmap)
     mycmap = col.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
     mycmap = col.ListedColormap(['.6','k'], 'Actions')
+    cm.register_cmap(cmap=mycmap)
     mycmap = make_colormap({0:'r', 1: 'w', 2.:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
     mycmap = col.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
