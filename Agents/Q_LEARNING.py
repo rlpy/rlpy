@@ -6,7 +6,7 @@ from Agent import *
 class Q_LEARNING(Agent):
     lambda_ = 0        #lambda Parameter in [Sutton Book 1998]
     eligibility_trace = []  #
-    def __init__(self, representation, policy, domain, initial_alpha =.1, lambda_ = 0):
+    def __init__(self, representation, policy, domain, logger = None, initial_alpha =.1, lambda_ = 0):
         self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
@@ -19,7 +19,6 @@ class Q_LEARNING(Agent):
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)
         phi                 = self.representation.phi_sa(s,a,phi_s)
-       # phi_prime           = self.representation.phi_sa(ns,na)
         
         #Set eligibility traces:
         if self.lambda_:
@@ -31,7 +30,7 @@ class Q_LEARNING(Agent):
             self.eligibility_trace    = phi
         
         ## find the best guess of Q^*: \hat{Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. Busoniu et al.'s book 2010
-        Q_max=self.representation.V(ns)
+        Q_max               = self.representation.V(ns)
         td_error            = r + gamma*Q_max-dot(phi, theta)
 
         #Automatic learning rate: [Dabney W. 2012]
