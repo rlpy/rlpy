@@ -15,7 +15,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 100000
+    LEARNING_STEPS      = 10000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -29,8 +29,8 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
+    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     #MAZE                = '/Domains/PitMazeMaps/11x11-Rooms.txt'
     NOISE               = 0.3
