@@ -47,6 +47,9 @@ http://pydev.org/updates
 Visual Python
 http://www.vpython.org/index.html
 =================
+dvipng
+sudo apt-get install dvipng
+
 
 glumly 
 sudo easy_install glumpy
@@ -63,3 +66,16 @@ S2: sudo easy_install -U numpy
 ===============================================================
 E: In eclipse sty is out of synch with the file system
 S: Refresh (F5)
+===============================================================
+E: RuntimeError: LaTeX was not able to process the following string: 'lp'
+[Note that many other errors can follow; this would be the first]
+S: 1. Locate tex directory: kpsewhich --var-value=TEXMFMAIN
+   2. Add this path at the bottom of Tools.py:
+   e.g.
+   1. :~$ kpsewhich --var-value=TEXMFMAIN
+	-----> /usr/share/texmf
+   2. os.environ['PATH'] += ':/usr/share/texmf'
+===============================================================
+E: ! LaTeX Error: File `type1cm.sty' not found.
+S: sudo apt-get install texlive-latex-extra
+===============================================================

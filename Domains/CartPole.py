@@ -57,8 +57,8 @@ class CartPole(Domain):
     
     ANGULAR_RATE_LIMITS = [-6.0, 6.0]     # Limits on pendulum rate [per RL Community CartPole]
     GOAL_REWARD         = 1               # Reward received on each step the pendulum is in the goal region
-    POSITON_LIMITS      = [-2.4, 2.4]       # m - Limits on cart position [Per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]       # m/s - Limits on cart velocity [per RL Community CartPole]   
+    POSITON_LIMITS      = [-2.4, 2.4]     # m - Limits on cart position [Per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]     # m/s - Limits on cart velocity [per RL Community CartPole]   
     
     # Domain constants
 

@@ -512,3 +512,4 @@ mpl.rcParams['axes.labelsize'] = 15.
 mpl.rcParams['xtick.labelsize'] = 15.
 mpl.rcParams['ytick.labelsize'] = 15.
 os.environ['PATH'] += ':/usr/texbin'
+os.environ['PATH'] += ':/usr/share/texmf'

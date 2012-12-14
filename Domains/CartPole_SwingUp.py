@@ -34,7 +34,7 @@ class CartPole_SwingUp(CartPole):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_SwingUp,self).__init__(logger)
     
-    def s0(self):    
+    def s0(self):
         # Returns the initial state, pendulum vertical
         return array([pi,0,0,0])
     

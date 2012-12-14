@@ -26,7 +26,7 @@ from Pendulum import *
 class Pendulum_InvertedBalance(Pendulum):
     
     # Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
-    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions
     MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
     MASS_CART           = 8.0   # kilograms, kg - Mass of cart
     LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
@@ -34,25 +34,23 @@ class Pendulum_InvertedBalance(Pendulum):
     dt                  = 0.1   # Time between steps
     force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
 
-    FELL_REWARD         = -1            # Reward received when the pendulum falls below the horizontal
-    ANGLE_LIMITS        = [-pi/2.0, pi/2.0] # Limit on theta (used for discretization)
-    ANGULAR_RATE_LIMITS = [-2, 2]       # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
-                                # NOTE that those rate limits are actually unphysically slow; more realistic to use 2*pi
-    episodeCap          = 3000          # Max number of steps per trajectory
+    FELL_REWARD         = -1    # Reward received when the pendulum falls below the horizontal
+    ANGLE_LIMITS        = [-pi/2.0, pi/2.0] # Limit on theta (Note that this may affect your representation's discretization)
+    ANGULAR_RATE_LIMITS = [-2, 2] # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
+                                # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
+                                # saturates them frequently when falling; more realistic to use 2*pi.
+    episodeCap          = 3000    # Max number of steps per trajectory
     
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(Pendulum_InvertedBalance,self).__init__(logger)
-    
     def s0(self):    
         # Returns the initial state, pendulum vertical
         return array([0,0])
-    
     def _getReward(self, s, a):
         # Return the reward earned for this state-action pair
         # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
         return self.FELL_REWARD if self.isTerminal(s) else 0
-    
     def isTerminal(self,s):
         return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0) # per L & P 2003
     

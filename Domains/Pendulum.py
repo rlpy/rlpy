@@ -46,8 +46,9 @@ class Pendulum(Domain):
 
     DEBUG               = 0     # Set to non-zero to enable print statements
     
-    # Domain constants from children
-    AVAIL_FORCE         = None # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    # Domain constants from children - Pendulum parameters are not standardized
+    # (SwingUp and InvertedBalance parameters are different in the literature)
+    AVAIL_FORCE         = None # Newtons, N - Torque values available as actions
     MASS_PEND           = None # kilograms, kg - Mass of the pendulum arm
     MASS_CART           = None # kilograms, kg - Mass of cart
     LENGTH              = None # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
@@ -60,12 +61,12 @@ class Pendulum(Domain):
     episodeCap          = None  # Max number of steps per trajectory
     
     # Domain constants computed in __init__
-    MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+    MOMENT_ARM          = 0 # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
                             # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
-    _ALPHA_MASS         = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    _ALPHA_MASS         = 0 # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
     
     # Internal Constants
-    tol                 = 10 ** -5 # Tolerance in Runge-Kutta 
+    tol                 = 10 ** -5 # Tolerance used for pendulum_ode45 integration
     
     # Plotting variables
     pendulumArm         = None
@@ -454,7 +455,7 @@ class Pendulum(Domain):
 
     ## @param s: state
     #  @param a: action
-    ## @return: Reward earned for this state-action pair.
+    #  @return: Reward earned for this state-action pair.
     def _getReward(self, s, a):
         # Return the reward earned for this state-action pair
         abstract

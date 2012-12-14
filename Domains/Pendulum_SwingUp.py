@@ -42,22 +42,18 @@ class Pendulum_SwingUp(Pendulum):
     GOAL_LIMITS         = [-pi/6, pi/6] # Goal region for reward [temporary values]
     ANGLE_LIMITS        = [-pi, pi]     # Limit on theta
     ANGULAR_RATE_LIMITS = [-3*pi, 3*pi] # Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
-                                # NOTE that those rate limits are actually unphysically slow; more realistic to use 2*pi
     episodeCap          = 3000          # Max number of steps per trajectory
     
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
-        super(Pendulum_SwingUp,self).__init__(logger)
-    
+        super(Pendulum_SwingUp,self).__init__(logger)  
     def s0(self):    
         """Returns the initial state: pendulum straight up and unmoving."""
         return array([pi,0])
-    
     def _getReward(self, s, a):
         """Return the reward earned for this state-action pair.
         On this domain, reward of -1 is given for failure, which occurs when |theta| exceeds pi/2"""
         return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
-    
     def isTerminal(self,s):
         return False
     
