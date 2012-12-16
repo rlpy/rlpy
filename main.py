@@ -15,10 +15,10 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 300000
+    LEARNING_STEPS      = 30000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'
@@ -46,20 +46,20 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Policy ----------------------
     EPSILON             = .1 # EGreedy
     #Agent ----------------------
-    initial_alpha           = 1
-    LAMBDA                  = 0.95
+    initial_alpha           = .1
+    LAMBDA                  = 0
     LSPI_iterations         = 5
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     iFDD_LSPI_iterations    = 10
     
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -73,10 +73,10 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
-    #agent           =  Q_LEARNING(representation,policy,domain,logger)
+    agent           =  Q_LEARNING(representation,policy,domain,logger)
     
     experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, output_filename = RESULT_FILE, plot_performance =  PLOT_PERFORMANCE)
     

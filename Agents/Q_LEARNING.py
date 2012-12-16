@@ -32,7 +32,10 @@ class Q_LEARNING(Agent):
         ## find the best guess of Q^*: \hat{Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. Busoniu et al.'s book 2010
         na                  = self.representation.bestAction(ns)
         phi_prime           = self.representation.phi_sa(ns,na)
-        Q_max               = self.representation.Q(ns,na,phi_prime)
+        # Girish I think this is your bug - passing state-action phi(s,a) using copy-paste method instead of phi(s)
+        #Q_max               = self.representation.Q(ns,na,phi_prime)
+        
+        Q_max               = dot(phi_prime, theta)
         td_error            = r + gamma*Q_max-dot(phi, theta)
 
         #Automatic learning rate: [Dabney W. 2012]
