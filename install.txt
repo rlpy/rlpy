@@ -79,3 +79,5 @@ S: 1. Locate tex directory: kpsewhich --var-value=TEXMFMAIN
 E: ! LaTeX Error: File `type1cm.sty' not found.
 S: sudo apt-get install texlive-latex-extra
 ===============================================================
+E: ! I can't find file `pncr7t'.
+S: sudo apt-get install texlive-fonts-recommended

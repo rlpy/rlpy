@@ -15,10 +15,10 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    LEARNING_STEPS      = 300000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     RESULT_FILE         = 'result.txt'
@@ -46,23 +46,23 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     # Policy ----------------------
     EPSILON             = .1 # EGreedy
     #Agent ----------------------
-    initial_alpha           = .1
-    LAMBDA                  = 0
+    initial_alpha           = 1
+    LAMBDA                  = 0.95
     LSPI_iterations         = 5
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     iFDD_LSPI_iterations    = 10
     
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    #domain           = Pendulum_InvertedBalance(logger = logger);
-    #domain           = Pendulum_SwingUp(logger = logger);
-    #domain           = CartPole_InvertedBalance(logger = logger);
-    #domain           = CartPole_SwingUp(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_SwingUp(logger = logger);
+    #domain          = CartPole_InvertedBalance(logger = logger);
+    #domain          = CartPole_SwingUp(logger = logger);
     
     representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
@@ -94,7 +94,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,OUT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = True)
+         main(jobID = -1,OUT_PATH = 'Results/InvertedPendulum-SARSA-Tabular',SHOW_FINAL_PLOT = True)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2])
      

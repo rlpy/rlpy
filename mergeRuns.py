@@ -82,15 +82,15 @@ class MergedData(object):
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "Saved the plot in both txt and pdf formats => %s" % fullfilename
 
-paths = ['Results/BlocksWorld-SARSA-iFDD', 
-         'Results/BlocksWorld-SARSA-IndependentDiscritization']
-#paths = ['Results/Test1'] 
+#paths = ['Results/BlocksWorld-SARSA-iFDD', 
+#         'Results/BlocksWorld-SARSA-IndependentDiscritization']
+paths = ['Results/InvertedPendulum-SARSA-Tabular'] 
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,'Results',colors = colors)
-mergedData.plot('Return')
+#mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
-#mergedData.plot('Steps')
+mergedData.plot('Steps')
 #mergedData.plot('Features')
 #mergedData.plot('Terminal')
 pl.ioff()
