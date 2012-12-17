@@ -75,6 +75,7 @@ class Representation(object):
         # it first translate the state into a binState (bin number corresponding to each dimension)
         # it then map the binstate to a an integer
         ds = self.binState(s)
+        self.logger.log(str(s)+"=>"+str(ds))
         return vec2id(ds,self.bins_per_dim)
     def setBinsPerDimension(self,domain,discretization):
         # Set the number of bins for each dimension of the domain (continuous spaces will be slices using the discritization parameter)

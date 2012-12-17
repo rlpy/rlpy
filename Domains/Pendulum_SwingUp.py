@@ -52,8 +52,8 @@ class Pendulum_SwingUp(Pendulum):
         return array([pi,0])
     def _getReward(self, s, a):
         """Return the reward earned for this state-action pair.
-        On this domain, reward of -1 is given for failure, which occurs when |theta| exceeds pi/2"""
-        return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
+        On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6"""
+        return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
     def isTerminal(self,s):
         return False
     
