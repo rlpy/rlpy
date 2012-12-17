@@ -31,8 +31,8 @@ class MergedData(object):
             self.std_errs.append(std_errs)
     def parse(self,path):
         # Parses all the files in form of <number>-results.txt and return 
-        # two matricies corresponding to mean and std_err
-        files       = glob.glob('%s/*-result.txt'%path)
+        # two matrices corresponding to mean and std_err
+        files       = glob.glob('%s/*-results.txt'%path)
         samples_num = len(files)
         if samples_num == 0:
             print 'Error: %s is empty!' % path
@@ -86,11 +86,8 @@ class MergedData(object):
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
-paths = [#'Results/Example_Project/InvertedPendulum-SARSA-iFDD', 
-         'Results/Example_Project/InvertedPendulum-SARSA-Tabular']
-#paths = ['Results/BlocksWorld-SARSA-iFDD', 
-#         'Results/BlocksWorld-SARSA-IndependentDiscritization']
-#paths = ['Results/InvertedPendulum-SARSA-Tabular'] 
+paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-iFDD', 
+         'Results/Example_Project/Pendulum_InvertedBalance-SARSA-Tabular']
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,colors = colors)
@@ -98,7 +95,7 @@ mergedData = MergedData(paths,colors = colors)
 #mergedData.plot('Return','Time(s)')
 mergedData.plot('Steps')
 #mergedData.plot('Steps','Time(s)')
-#mergedData.plot('Features')
+mergedData.plot('Features')
 #mergedData.plot('Terminal')
 pl.ioff()
 pl.show()

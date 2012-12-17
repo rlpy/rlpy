@@ -39,12 +39,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #RBFS                    = 9
     RBFS                    = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
+    iFDD_Threshold          = .01 # Good for bloackWorld #10 good for NetworkAdmin
     iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
     iFDD_BatchThreshold     = .001 
     iFDD_CACHED             = 1
     iFDDMaxBatchDicovery    = 1
     # Policy ----------------------
-    EPSILON             = .1 # EGreedy
+    EPSILON                 = .1 # EGreedy
     #Agent ----------------------
     initial_alpha           = .1
     LAMBDA                  = 0
