@@ -35,7 +35,8 @@ class Pendulum_InvertedBalance(Pendulum):
     force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
 
     FELL_REWARD         = -1    # Reward received when the pendulum falls below the horizontal
-    ANGLE_LIMITS        = [-pi/2.0, pi/2.0] # Limit on theta (Note that this may affect your representation's discretization)
+    #ANGLE_LIMITS        = [-pi/2.0, pi/2.0] # Limit on theta (Note that this may affect your representation's discretization)
+    ANGLE_LIMITS        = [-pi, pi] # Limit on theta (Note that this may affect your representation's discretization)
     ANGULAR_RATE_LIMITS = [-2, 2] # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
                                 # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.

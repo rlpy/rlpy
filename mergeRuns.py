@@ -93,9 +93,9 @@ paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-iFDD',
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,colors = colors)
-mergedData.plot('Return')
+#mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
-#mergedData.plot('Steps')
+mergedData.plot('Steps')
 #mergedData.plot('Steps','Time(s)')
 #mergedData.plot('Features')
 #mergedData.plot('Terminal')

@@ -17,7 +17,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    LEARNING_STEPS      = 20000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -39,8 +39,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #RBFS                    = 9
     RBFS                    = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
-    iFDD_Threshold          = .01 # Good for bloackWorld #10 good for NetworkAdmin
-    iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
+    iFDD_Threshold          = .02 # Good for Inverted Pendulum 
+    #iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
     iFDD_BatchThreshold     = .001 
     iFDD_CACHED             = 1
     iFDDMaxBatchDicovery    = 1
@@ -65,8 +65,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     
-    representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
-    #representation  = IncrementalTabular(domain,logger)
+    #representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
+    representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
     #representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
