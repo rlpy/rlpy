@@ -468,3 +468,5 @@ class StateIndex:
     THETA, THETA_DOT = 0,1
     FORCE = 2 # Used by the state augmented with input in dynamics calculations
 
+if __name__ == '__main__':
+    print 'Please run one of my children: Swingup, InvertedBalanced'

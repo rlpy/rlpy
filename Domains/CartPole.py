@@ -299,6 +299,4 @@ class StateIndex:
     FORCE = 4
                 
 if __name__ == '__main__':
-    random.seed(0)
-    p = CartPole();
-    p.test(1000)
+    print 'Please run one of my children: Swingup, InvertedBalanced'

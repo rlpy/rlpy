@@ -181,7 +181,7 @@ class PST(Domain):
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
 
         super(PST,self).__init__(logger)
-        self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
+        if self.logger: self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
         
     def resetLocalVariables(self):
         self.numCrashed = 0 # Number of crashed UAVs [n_c]
@@ -454,12 +454,8 @@ class PST(Domain):
         if self.numCrashed == self.NUM_UAV: return True
         else: return False
 if __name__ == '__main__':
-        OUT_PATH            = 'Temp'
-        JOB_ID = 1
-        STDOUT_FILE         = 'out.txt'
         random.seed(0)
-        testLogger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
-        p = PST(NUM_UAV = 3, motionNoise = 0,logger = testLogger);
+        p = PST(NUM_UAV = 3, motionNoise = 0);
         p.test(100)
         
         

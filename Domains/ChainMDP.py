@@ -67,6 +67,7 @@ class ChainMDP(Domain):
         return 0
     def isTerminal(self,s):
         return (s == self.chainSize - 1)
+
 if __name__ == '__main__':
     #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
     p = ChainMDP(5);

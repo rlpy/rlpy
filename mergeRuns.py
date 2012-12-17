@@ -86,14 +86,16 @@ class MergedData(object):
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
-paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-iFDD', 
-         'Results/Example_Project/Pendulum_InvertedBalance-SARSA-Tabular']
+#paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-iFDD', 
+#         'Results/Example_Project/Pendulum_InvertedBalance-SARSA-Tabular']
+
+paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-Tabular']
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(paths,colors = colors)
 #mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
-mergedData.plot('Steps')
+#mergedData.plot('Steps')
 #mergedData.plot('Steps','Time(s)')
 mergedData.plot('Features')
 #mergedData.plot('Terminal')

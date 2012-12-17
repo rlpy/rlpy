@@ -2,7 +2,7 @@ Q&A:
 ==========
 Q1: Which file should I use to run the framework?
 A1: In the beginning, use main.py to run your experiment. You can user 
-	multipleRuns.py to run the code in main.py in serveral threads.
+	multipleRuns.py to run the code in main.py in several threads.
 
 Q2: What does each line of output mean?
 A2: "88825: E[0:01:23]-R[0:00:10]: Return=-1.00, Steps=56, Features = 174" means
