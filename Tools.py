@@ -480,7 +480,7 @@ def sp_add2_array(sp,A):
     for i in ind:
         A[i] += sp[i,0]
     return A
-def checkDirectory(fullfilename):
+def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
@@ -489,17 +489,23 @@ def hasFunction(object,methodname):
     method = getattr(object, methodname, None)
     return callable(method)
 class Logger(object):
-    def __init__(self,fullfilename):
-        checkDirectory(fullfilename)
-        self.file = open(fullfilename,'w')
+    buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
+    def save(self,filename):
+            checkNCreateDirectory(filename)
+            self.file = open(filename,'w')
+            lastprint = 'Log\t=> %s' % filename
+            print lastprint
+            self.buffer += lastprint
+            self.file.write(self.buffer)
+            buffer = ''
+            self.file.close()
     def log(self,str):
     # Print something both in output and in a file
         print str
-        self.file.write(str+"\n")
+        self.buffer += str +'\n'
     def line(self):
         self.log(SEP_LINE)
-    def done(self):
-        self.file.close()
+            
 
 createColorMaps()
 FONTSIZE = 15

@@ -22,13 +22,13 @@ class OnlineExperiment (Experiment):
                  show_all   = False, 
                  show_performance = False,
                  log_interval = 1,
-                 output_path     = 'Results/Temp',
+                 project_path    = 'Results/Temp_Project',
                  output_filename = 'results.txt',
                  plot_performance = True):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
-        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,output_path = output_path, output_filename = output_filename, plot_performance=plot_performance)
+        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,project_path = project_path, plot_performance=plot_performance)
         self.logger.log("Max Steps: \t\t%d" % max_steps)
         self.logger.log("Performance Checks:\t%d" % performanceChecks)
     def run(self):
@@ -115,4 +115,4 @@ class OnlineExperiment (Experiment):
             pl.ylim(m-.1*abs(M),M+.1*abs(M))
             pl.xlabel('steps', fontsize=16)
             pl.ylabel(ylabel, fontsize=16)
-            performance_fig.savefig(self.output_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)
+            performance_fig.savefig(self.full_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)

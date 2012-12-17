@@ -6,8 +6,8 @@
 from main import *
 from os import *
 RUNS            = 6
-OUTPUT_PATH     = 'Results/Example_Project'
+PROJECT_PATH    = 'Results/Example_Project'
 for i in arange(1,RUNS+1):
     os.system('chmod +x main.py')
     print "Started job %d" % i
-    os.system('./main.py %d %s &' % (i, OUTPUT_PATH))
+    os.system('./main.py %d %s &' % (i, PROJECT_PATH))

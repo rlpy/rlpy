@@ -20,7 +20,7 @@ class Experiment(object):
     result  = None          # All data is saved in the result array: stats_num-by-performanceChecks
     output_filename = ''    # The name of the file used to store the data
     logger = None           # An object to record the print outs in a file
-    def __init__(self,id, agent, domain,logger, show_all, show_performance, output_path = 'Results/Test', output_filename = 'results.txt', plot_performance = 1):
+    def __init__(self,id, agent, domain,logger, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
         self.id = id
         # Find the corresponding random seed for the experiment id
         random.seed(self.mainSeed)
@@ -28,8 +28,10 @@ class Experiment(object):
         random.seed(self.randomSeeds[self.id])
         self.agent              = agent
         self.domain             = domain
-        self.output_filename    = '%d-%s' % (id, output_filename)
-        self.output_path        = output_path
+        self.output_filename    = '%d-results.txt' % (id)
+        self.project_path       = project_path
+        self.experiment_path    = "%s-%s-%s" % (className(self.domain),className(self.agent),className(self.agent.representation))
+        self.full_path          = self.project_path+ '/' + self.experiment_path
         self.show_all           = show_all
         self.show_performance   = show_performance
         self.plot_performance   = plot_performance   
@@ -39,7 +41,7 @@ class Experiment(object):
             createColorMaps()
         self.logger.line()
         self.logger.log("Experiment:\t\t%s" % className(self))
-        self.logger.log("Output:\t\t\t%s/%d-%s" % (self.output_path, self.id, self.output_filename))
+        self.logger.log("Output:\t\t\t%s/%d-%s" % (self.full_path, self.id, self.output_filename))
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -66,8 +68,11 @@ class Experiment(object):
     def printAll(self):
         printClass(self)
     def save(self):
-        if not os.path.exists(self.output_path):
-            os.makedirs(self.output_path)
-        savetxt(self.output_path+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
+        if not os.path.exists(self.full_path):
+            os.makedirs(self.full_path)
+        savetxt(self.full_path+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
         self.logger.line()
-        self.logger.log("Took %s\nSaved => %s/%s" % (hhmmss(deltaT(self.start_time)), self.output_path, self.output_filename))
+        self.logger.log("Took %s\nResults\t=> %s/%s" % (hhmmss(deltaT(self.start_time)), self.full_path, self.output_filename))
+        # Set the output path for the logger
+        # This is done here because it is dependent on the combination of agent, representation, and domain
+        self.logger.save("%s/%d-out.txt" % (self.full_path, self.id))

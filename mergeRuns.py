@@ -80,7 +80,7 @@ class MergedData(object):
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
-        checkDirectory(fullfilename)
+        checkNCreateDirectory(fullfilename)
         self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1)
         finalArray = vstack((Xs,Ys,Errs))
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')

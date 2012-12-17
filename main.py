@@ -11,7 +11,7 @@ from Policies import *
 from Experiments import *
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
-         OUT_PATH ='',          # Path to store the results 
+         PROJECT_PATH ='',      # Path to store the results. Notice that a directory is automatically generated within this directory based on the selection of domain,agent,representation, 
          SHOW_FINAL_PLOT=0):    # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
 
     # Etc
@@ -24,9 +24,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     JOB_ID              = 1 if jobID == -1 else jobID
-    OUT_PATH            = 'Results/Temp' if OUT_PATH == '' else OUT_PATH
+    PROJECT_PATH        = 'Results/TempProject' if PROJECT_PATH == '' else PROJECT_PATH
     DEBUG               = 0
-    logger              = Logger('%s/%d-out.txt'%(OUT_PATH,JOB_ID))
+    logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
@@ -78,7 +78,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
-    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, plot_performance =  PLOT_PERFORMANCE)
+    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     
     if DEBUG:
         domain.printAll()
@@ -89,12 +89,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     experiment.run()
     experiment.save()
     #domain.showLearning(representation)
-    logger.done()
     if SHOW_FINAL_PLOT: pl.ioff(); pl.show()
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,OUT_PATH = 'Results/Test_Project/Example',SHOW_FINAL_PLOT = True)
+         main(jobID = -1,PROJECT_PATH = 'Results/Test_Project',SHOW_FINAL_PLOT = True)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2])
      
