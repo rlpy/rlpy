@@ -4,9 +4,9 @@ import cProfile
 import pstats
 
 
-Output = 'test'
+Output = 'Inverted_Pendulum-TabularSarsa.pdf'
 print 'Profiling'
-cProfile.run('main(1,0)', 'Profiling/profile.dat')
+cProfile.run('main(1,SHOW_FINAL_PLOT=0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')
 p.sort_stats('time').print_stats(5)
 
@@ -19,6 +19,6 @@ command = './Profiling/gprof2dot.py -f pstats ./Profiling/profile.dat > ./Profil
 os.system(command)
 
 #Call Graphvis to generate the pdf 
-command = '/usr/local/bin/dot -T pdf ./Profiling/graph.txt -o ./Profiling/'+Output+'.pdf'
+command = '/usr/local/bin/dot -T pdf ./Profiling/graph.txt -o ./Profiling/'+Output
 os.system(command)
 print 'Done!'

@@ -80,7 +80,6 @@ class Domain(object):
     ## Returns True if the state s is a terminal state, False otherwise."""
     def isTerminal(self,s):
         abstract
-    
     def saturateState(self,s):
         # Kemal put more info on this. Why do you need this?
         dim = len(s)
@@ -88,8 +87,6 @@ class Domain(object):
         for i in range(0,dim):
             if s[i] < self.statespace_limits[i,0]+0.5: s[i] = int(self.statespace_limits[i,0]+0.5)
             if s[i] > self.statespace_limits[i,1]-0.5: s[i] = int(self.statespace_limits[i,1]-0.5)
-            
-            
     def test(self,T):
         # Run the environment with a random Agent for T steps
         terminal    = True
@@ -106,14 +103,12 @@ class Domain(object):
             steps += 1
     def printAll(self):
         printClass(self)
-
     def extendDiscreteDimensions(self):
         self.statespace_limits = self.statespace_limits.astype('float')
         for d in arange(self.state_space_dims):
              if not d in self.continuous_dims:
                  self.statespace_limits[d,0] += -.5 
                  self.statespace_limits[d,1] += +.5 
-    
     def MCExpectedStep(self,s,a,no_samples):
         
         # Sample no_samples of next states and rewards from the domain

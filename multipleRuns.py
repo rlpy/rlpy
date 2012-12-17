@@ -6,7 +6,7 @@
 from main import *
 from os import *
 RUNS            = 6
-OUTPUT_PATH     = 'Results/InvertedPendulum-SARSA-Tabular'
+OUTPUT_PATH     = 'Results/Example_Project'
 for i in arange(1,RUNS+1):
     os.system('chmod +x main.py')
     print "Started job %d" % i

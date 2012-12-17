@@ -9,13 +9,17 @@ import glob
 
 class MergedData(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal']
-    def __init__(self,paths,output_path,colors,bars=1):
+    def __init__(self,paths, output_path = None, colors = ['r','b','g','k'],bars=1):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means       = []
         self.std_errs    = [] 
         self.bars   = bars  #Draw bars?
         self.colors = colors
-        self.output_path = output_path
+        if output_path == None:
+            path,char,filename = paths[0].rpartition('/')
+            self.output_path = path
+        else:
+            self.output_path = output_path
         self.experiments = len(paths) 
         self.means  = []
         self.std_errs = [] 
@@ -80,17 +84,20 @@ class MergedData(object):
         self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1)
         finalArray = vstack((Xs,Ys,Errs))
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
-        print "Saved the plot in both txt and pdf formats => %s" % fullfilename
+        print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
+paths = ['Results/13ICML_BatchiFDD/InvertedPendulum-SARSA-iFDD', 
+         'Results/13ICML_BatchiFDD/InvertedPendulum-SARSA-Tabular']
 #paths = ['Results/BlocksWorld-SARSA-iFDD', 
 #         'Results/BlocksWorld-SARSA-IndependentDiscritization']
-paths = ['Results/InvertedPendulum-SARSA-Tabular'] 
+#paths = ['Results/InvertedPendulum-SARSA-Tabular'] 
 
 colors = ['r','b','g','k'] 
-mergedData = MergedData(paths,'Results',colors = colors)
+mergedData = MergedData(paths,colors = colors)
 #mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
 mergedData.plot('Steps')
+#mergedData.plot('Steps','Time(s)')
 #mergedData.plot('Features')
 #mergedData.plot('Terminal')
 pl.ioff()

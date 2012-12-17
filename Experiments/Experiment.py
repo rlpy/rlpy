@@ -70,4 +70,4 @@ class Experiment(object):
             os.makedirs(self.output_path)
         savetxt(self.output_path+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
         self.logger.line()
-        self.logger.log("Took %s\nSaved in %s" % (hhmmss(deltaT(self.start_time)), self.output_filename))
+        self.logger.log("Took %s\nSaved => %s/%s" % (hhmmss(deltaT(self.start_time)), self.output_path, self.output_filename))

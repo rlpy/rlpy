@@ -10,23 +10,23 @@ from Representations import *
 from Policies import *
 from Experiments import *
 
-def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
+def main(jobID=-1,              # Used as an indicator for each run of the algorithm
+         OUT_PATH ='',          # Path to store the results 
+         SHOW_FINAL_PLOT=0):    # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
 
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 30000
+    LEARNING_STEPS      = 10000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
-    PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
-    RESULT_FILE         = 'result.txt'
-    STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1 if jobID == -1 else jobID
-    OUT_PATH            = 'Results/Temp' if OUT_PATH == -1 else OUT_PATH
+    OUT_PATH            = 'Results/Temp' if OUT_PATH == '' else OUT_PATH
     DEBUG               = 0
-    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+    logger              = Logger('%s/%d-out.txt'%(OUT_PATH,JOB_ID))
     MAX_ITERATIONS      = 10
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
@@ -53,13 +53,13 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     iFDD_LSPI_iterations    = 10
     
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
-    #domain          = MountainCar(noise = NOISE,logger = logger)
+    #domain           = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -73,12 +73,12 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
-    agent           =  Q_LEARNING(representation,policy,domain,logger)
+    #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
-    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, output_filename = RESULT_FILE, plot_performance =  PLOT_PERFORMANCE)
+    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,output_path = OUT_PATH, plot_performance =  PLOT_PERFORMANCE)
     
     if DEBUG:
         domain.printAll()
@@ -94,7 +94,7 @@ def main(jobID=-1, OUT_PATH =-1, SHOW_FINAL_PLOT=0):
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,OUT_PATH = 'Results/InvertedPendulum-SARSA-Tabular',SHOW_FINAL_PLOT = True)
+         main(jobID = -1,OUT_PATH = 'Results/Test_Project/Example',SHOW_FINAL_PLOT = True)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2])
      

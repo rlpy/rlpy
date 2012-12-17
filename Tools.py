@@ -494,7 +494,7 @@ class Logger(object):
         self.file = open(fullfilename,'w')
     def log(self,str):
     # Print something both in output and in a file
- #       print str
+        print str
         self.file.write(str+"\n")
     def line(self):
         self.log(SEP_LINE)
