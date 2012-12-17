@@ -17,11 +17,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    LEARNING_STEPS      = 100000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
-    PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     JOB_ID              = 1 if jobID == -1 else jobID
     PROJECT_PATH        = 'Results/TempProject' if PROJECT_PATH == '' else PROJECT_PATH
@@ -64,9 +64,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     
-    representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
+    #representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
+    representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
     #representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     

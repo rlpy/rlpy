@@ -86,8 +86,8 @@ class MergedData(object):
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
-paths = ['Results/13ICML_BatchiFDD/InvertedPendulum-SARSA-iFDD', 
-         'Results/13ICML_BatchiFDD/InvertedPendulum-SARSA-Tabular']
+paths = [#'Results/Example_Project/InvertedPendulum-SARSA-iFDD', 
+         'Results/Example_Project/InvertedPendulum-SARSA-Tabular']
 #paths = ['Results/BlocksWorld-SARSA-iFDD', 
 #         'Results/BlocksWorld-SARSA-IndependentDiscritization']
 #paths = ['Results/InvertedPendulum-SARSA-Tabular'] 
