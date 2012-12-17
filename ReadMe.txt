@@ -26,3 +26,8 @@ A3: ProfileMe.py runs the code at main.py and generates a pictorial profile of t
 
 Q4: My project does not work. Do I need to install packages?
 A4: Please read install.txt
+
+Q5: I used to plot my figures based on number of episodes why you prefer steps?
+A5: The use of episode numbers does not provide accurate plots as the number of
+	samples can vary within each episode. The use of steps gurantees that all
+	methods saw exactly the same amount of data before being tested.

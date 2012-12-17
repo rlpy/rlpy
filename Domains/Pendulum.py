@@ -282,7 +282,7 @@ class Pendulum(Domain):
 #        ns = ns[0:2]
 
          # wrap angle between -pi and pi (or whatever values assigned to ANGLE_LIMITS)
-        ns[StateIndex.THETA]        = wrap(ns[StateIndex.THETA],-pi, pi)
+        ns[StateIndex.THETA]        = bound(wrap(ns[StateIndex.THETA],-pi, pi), self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         ns[StateIndex.THETA_DOT]    = bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         terminal                    = self.isTerminal(ns)
         reward                      = self._getReward(ns,a)
@@ -468,5 +468,4 @@ class StateIndex:
     THETA, THETA_DOT = 0,1
     FORCE = 2 # Used by the state augmented with input in dynamics calculations
 
-if __name__ == '__main__':
-    print 'Please run one of my children: Swingup, InvertedBalanced'
+
