@@ -5,12 +5,12 @@ from Experiment import *
 
 class OnlineExperiment (Experiment):
     # Statistics are saved as : 
-    # STEP            = 0 
-    # RETURN          = 1 
-    # CLOCK_TIME      = 2 
-    # FEATURE_SIZE    = 3 
-    # EPISODE_LENGTH  = 4
-    # TERMINAL        = 5       # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
+    STEP            = 0 
+    RETURN          = 1 
+    CLOCK_TIME      = 2 
+    FEATURE_SIZE    = 3 
+    EPISODE_LENGTH  = 4
+    TERMINAL        = 5       # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
     STATS_NUM           = 6     # Number of statistics to be saved
@@ -102,11 +102,17 @@ class OnlineExperiment (Experiment):
         #Plot Performance
         if self.plot_performance:
             performance_fig = pl.figure(2)
-            pl.plot(self.result[0,:],self.result[1,:],'-bo',lw=3,markersize=10)
-            pl.xlim(0,self.result[0,-1])
-            m = min(self.result[1,:])
-            M = max(self.result[1,:])
+            if isinstance(self.agent.representation.domain,Pendulum_InvertedBalance):
+                row = self.EPISODE_LENGTH
+                ylabel = "Episode Length"
+            else:
+                row = self.RETURN
+                ylabel = "Performance"
+            pl.plot(self.result[0,:],self.result[row,:],'-bo',lw=3,markersize=10)
+            pl.xlim(0,self.result[0,-1]*1.01)
+            m = min(self.result[row,:])
+            M = max(self.result[row,:])
             pl.ylim(m-.1*abs(M),M+.1*abs(M))
-            pl.xlabel('steps',fontsize=16)
-            pl.ylabel('Performance',fontsize=16)
+            pl.xlabel('steps', fontsize=16)
+            pl.ylabel(ylabel, fontsize=16)
             performance_fig.savefig(self.output_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)

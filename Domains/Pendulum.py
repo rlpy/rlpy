@@ -192,7 +192,6 @@ class Pendulum(Domain):
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
         self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
-#        sleep(self.dt)
     def showLearning(self,representation):
         
         pi      = zeros((self.Theta_discretization, self.ThetaDot_discretization),'uint8')            
