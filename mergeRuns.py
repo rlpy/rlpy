@@ -18,7 +18,7 @@ class MergedData(object):
         self.path                   = path
         self.output_path            = path if output_path == None else output_path
         self.exp_paths              = os.listdir(path)
-        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p)]
+        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and p[0] != '.']
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 
@@ -91,9 +91,9 @@ path = 'Results/Example_Project'
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(path,colors = colors)
-#mergedData.plot('Return')
+mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
-mergedData.plot('Steps')
+#mergedData.plot('Steps')
 #mergedData.plot('Steps','Time(s)')
 #mergedData.plot('Features')
 #mergedData.plot('Terminal')
