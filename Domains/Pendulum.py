@@ -41,7 +41,7 @@ from matplotlib import lines
 ## 
 # NOTE: This domain cannot be instantiated; it is a superclass for the specific domains
 # Pendulum_SwingUp and Pendulum_InvertedBalance.
-# @author: Robert H. Klein
+# @author Robert H. Klein
 class Pendulum(Domain):
 
     DEBUG               = 0     # Set to non-zero to enable print statements
@@ -143,7 +143,6 @@ class Pendulum(Domain):
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
         super(Pendulum,self).__init__(logger)     
     def showDomain(self,s,a = 0):
-        
         # Plot the pendulum and its angle, along with an arc-arrow indicating the 
         # direction of torque applied (not including noise!)
         if self.domain_fig == None: # Need to initialize the figure

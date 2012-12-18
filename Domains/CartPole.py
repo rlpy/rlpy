@@ -113,7 +113,7 @@ class CartPole(Domain):
         super(CartPole,self).__init__(logger)
         
     def showDomain(self,s,a = 0):
-        # Plot the pendulum and its angle, along with an arc-arrow indicating the 
+        ## Plot the pendulum and its angle, along with an arc-arrow indicating the 
         # direction of torque applied (not including noise!)
         # Pendulum rotation is centered at origin
         

@@ -1,6 +1,22 @@
 You need 
 - python > 2.7
 - Latex
+
+Installation FAQ at bottom.
+
+===============================================================
+===============================================================
+Ubuntu:
+
+You may run the provided script in a terminal with:
+./ubuntu_setup.sh
+If an error results, enter:
+chmod u+x ubuntu_setup.sh and re-run.
+
+===============================================================
+===============================================================
+Other operating systems:
+
 You need the following packages:
 ===============================================================
 1. numpy
@@ -24,7 +40,7 @@ http://fonnesbeck.github.com/ScipySuperpack/
 http://networkx.lanl.gov/
 ===============================================================
 5. graphvis
-http://www.graphviz.org/Download..php
+http://www.graphviz.org/Download.php
 
 You need to run the following from the RL-Python Directory command line:
 ===============================================================
@@ -56,6 +72,9 @@ sudo easy_install glumpy
 
 PyOpenGL
 sudo easy_install PyOpenGL
+
+
+
 
 
 FAQ: Error/Solutions

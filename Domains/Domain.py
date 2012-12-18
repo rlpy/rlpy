@@ -57,18 +57,18 @@ class Domain(object):
     def showLearning(self,representation):
         pass
     
-    ## @return: the initial state
+    ## @return numpy array: the initial state.
     def s0(self):       
         abstract
         
-    ## @return: the numpy array of possible actions in each state.
+    ## @return numpy array: possible actions in each state.
     # The vanilla (default) version returns all actions [0, 1, 2...]
     # You may want to change this in your domain if all actions are not available at all times.
     def possibleActions(self,s):
         return arange(self.actions_num)
     
     ## Perform action a while in state s:
-    # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+    # @return [r,ns,t] => Reward, next state, isTerminal (boolean)
     def step(self,s,a):
         abstract
         
