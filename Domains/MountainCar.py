@@ -28,6 +28,8 @@ class MountainCar(Domain):
     gravityFactor = -0.0025;
     hillPeakFrequency = 3.0;
     continous_dims = [0,1]
+    gamma = 1
+    episodeCap = 3000
     def __init__(self, noise = 0, logger = None):
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise

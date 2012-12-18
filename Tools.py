@@ -29,7 +29,6 @@ import networkx as nx
 import os 
 import sys
 from os import path
-from scipy.stats import *
 # Tips:
 # array.astype(float) => convert elements
 # matlibplot initializes the maping from the values to 
