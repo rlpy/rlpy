@@ -59,7 +59,9 @@ class Experiment(object):
                 self.domain.showDomain(s,a)
                 pl.title('After '+str(total_steps)+' Steps')
 
-            r,s,eps_term    = self.domain.step(s, a)
+            r,ns,eps_term    = self.domain.step(s, a)
+            #self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
+            s               = ns
             eps_return     += r
             eps_length     += 1
         if self.show_performance: self.domain.showDomain(s,a)

@@ -57,11 +57,19 @@ class Representation(object):
     def phi_sa(self,s,a, phi_s = None):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
         #If phi_s is passed it is used to avoid phi_s calculation
+        if self.DEBUG: self.logger.log('Terminal? '+str(self.domain.isTerminal(s)))
+        phi_s = None
+        if self.DEBUG: phi_s_is_given = (phi_s != None)
         if phi_s is None: phi_s = self.phi(s)
 
         phi_sa      = zeros(self.features_num*self.domain.actions_num)
         ind_a       = range(a*self.features_num,(a+1)*self.features_num)
         phi_sa[ind_a] = phi_s
+        if self.DEBUG: 
+            self.logger.log('phi_s is given = ' +str(phi_s_is_given))
+            self.logger.log('(s,a) = ' +str(s)+str(a))
+            self.logger.log('non_zero_ids: '+str(phi_sa.nonzero()))
+            self.logger.log('Active Theta = ' +str(self.theta[phi_sa.nonzero()]))
         return phi_sa
         # Use of Kron is slower!
         #A = zeros(self.domain.actions_num)
@@ -75,7 +83,7 @@ class Representation(object):
         # it first translate the state into a binState (bin number corresponding to each dimension)
         # it then map the binstate to a an integer
         ds = self.binState(s)
-        self.logger.log(str(s)+"=>"+str(ds))
+        #self.logger.log(str(s)+"=>"+str(ds))
         return vec2id(ds,self.bins_per_dim)
     def setBinsPerDimension(self,domain,discretization):
         # Set the number of bins for each dimension of the domain (continuous spaces will be slices using the discritization parameter)
@@ -108,12 +116,12 @@ class Representation(object):
         # Find the index of best actions
         ind   = findElemArray1D(Qs,Qs.max())
         if self.DEBUG:
-            print 'State:',s
-            print '======================================='
+            self.logger.log('State:' +str(s))
+            self.logger.line()
             for i in arange(len(A)):
-                print 'Action %d, Q = %0.5f' % (A[i], Qs[i])
-            print '======================================='
-            print 'Best:', A[ind], 'MAX:', Qs.max()
+                self.logger.log('Action %d, Q = %0.3f' % (A[i], Qs[i]))
+            self.logger.line()
+            self.logger.log('Best: %s, Max: %s' % (str(A[ind]),str(Qs.max())))
             #raw_input()
         return A[ind]
 

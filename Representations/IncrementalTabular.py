@@ -7,7 +7,7 @@ class IncrementalTabular(Representation):
     def __init__(self,domain,logger,discretization = 20):
         self.features_num = 0
         super(IncrementalTabular,self).__init__(domain,logger,discretization)
-    def phi(self,s):
+    def phi_nonTerminal(self,s):
         hash_id = self.hashState(s)
         id  = self.hash.get(hash_id)
         F_s = zeros(self.features_num,'bool')
