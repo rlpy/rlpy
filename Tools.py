@@ -516,7 +516,7 @@ class MergedData(object):
         self.path                   = path
         self.output_path            = path if output_path == None else output_path
         self.exp_paths              = os.listdir(path)
-        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and p[0] != '.']
+        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(path+'/'+p+'/1-out.txt')]
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 

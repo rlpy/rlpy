@@ -9,11 +9,11 @@ path = 'Results/Example_Project'
 
 colors = ['r','b','g','k'] 
 mergedData = MergedData(path,colors = colors)
-#mergedData.plot('Return')
+mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
 #mergedData.plot('Steps')
 #mergedData.plot('Steps','Time(s)')
-mergedData.plot('Features')
+#mergedData.plot('Features')
 #mergedData.plot('Terminal')
 pl.ioff()
 pl.show()
