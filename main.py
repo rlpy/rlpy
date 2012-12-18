@@ -17,8 +17,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 20000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -45,8 +45,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     iFDD_BatchThreshold     = .001 
     iFDD_CACHED             = 1     # Results will remiain IDENTICAL, but often faster
     iFDDMaxBatchDicovery    = 1
+    FourierOrder            = 4
     # Policy ----------------------
-    EPSILON                 = 0 # EGreedy
+    EPSILON                 = .1 # EGreedy
     #Agent ----------------------
     initial_alpha           = .01
     LAMBDA                  = 0
@@ -68,17 +69,17 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
+    representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
     #representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
-    representation  = Fourier(domain,logger,order=3)
+    #representation  = Fourier(domain,logger,order=FourierOrder)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
     experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)

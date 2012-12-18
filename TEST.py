@@ -1,8 +1,6 @@
 from Tools import *
 from Representations import *
 from Domains import *
-from scipy.stats import *
-import matplotlib.pyplot as plt
-sys.path.insert(0, os.path.abspath('.'))
-from Tools import *
-from visual import *
+
+x = loadtxt('Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-RE_LSPI-iFDD/1-results.txt')
+print len(x.shape)

@@ -90,6 +90,13 @@ def scale(x,m,M):
     # negative numbers are scaled [m,0] -> [-1,0]
     pos_ind = where(x>0)
     #x(pos_ind) = x(pos_ind)
+def readMatrixFromFile(filename):
+    # Reads a matrix in a text file specified by filename into a numpy matrix and returns it
+        x = loadtxt(filename)
+        if len(x.shape) == 1:
+            #Special Case where only one column is in the file
+            x = x.reshape((-1,1))
+        return x
 def createColorMaps():
     #Make Grid World ColorMap
     mycmap = col.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
@@ -488,6 +495,7 @@ def checkNCreateDirectory(fullfilename):
 def hasFunction(object,methodname):
     method = getattr(object, methodname, None)
     return callable(method)
+
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     def save(self,filename):
@@ -505,7 +513,7 @@ class Logger(object):
         self.buffer += str +'\n'
     def line(self):
         self.log(SEP_LINE)
-class MergedData(object):
+class Merger(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal']
     def __init__(self,path, output_path = None, colors = ['r','b','g','k'],bars=1):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
@@ -536,10 +544,11 @@ class MergedData(object):
             print 'Error: %s is empty!' % path
         print "%s => %d Samples" % (exp,samples_num)
         #read the first file to initialize the matricies
-        rows, cols  = loadtxt(files[0]).shape
+        matrix = readMatrixFromFile(files[0])
+        rows, cols  = matrix.shape
         samples     = zeros((rows,cols,samples_num)) 
         for i,f in enumerate(files):
-            samples[:,:,i] = loadtxt(files[i])
+            samples[:,:,i] = matrix = readMatrixFromFile(files[i])
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis,X_axis = 'Learning Steps'):
@@ -570,8 +579,9 @@ class MergedData(object):
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
-        pl.xlim(0,max(Xs[:,-1]))
-        pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
+        pl.xlim(0,max(Xs[:,-1])*1.02)
+        if min_ != max_: 
+            pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
         pl.xlabel(X_axis,fontsize=16)
         pl.ylabel(Y_axis,fontsize=16)
         pl.show()
@@ -583,7 +593,7 @@ class MergedData(object):
         finalArray = vstack((Xs,Ys,Errs))
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
-            
+
 
 createColorMaps()
 FONTSIZE = 15

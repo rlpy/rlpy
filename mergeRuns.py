@@ -5,16 +5,18 @@
 
 from Tools import *
 
-path = 'Results/Example_Project' 
+#path = 'Results/Example_Project' 
+path = 'Results/13ICML-BatchiFDD' 
 
 colors = ['r','b','g','k'] 
-mergedData = MergedData(path,colors = colors)
-mergedData.plot('Return')
-#mergedData.plot('Return','Time(s)')
-#mergedData.plot('Steps')
-#mergedData.plot('Steps','Time(s)')
-#mergedData.plot('Features')
-#mergedData.plot('Terminal')
+merger = Merger(path,colors = colors)
+#print mergedData.means[0].shape
+#merger.plot('Return')
+#merger.plot('Return','Time(s)')
+merger.plot('Steps')
+#merger.plot('Steps','Time(s)')
+#merger.plot('Features')
+#merger.plot('Terminal')
 pl.ioff()
 pl.show()
 

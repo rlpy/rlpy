@@ -6,7 +6,7 @@
 from main import *
 from os import *
 RUNS            = 10
-PROJECT_PATH    = 'Results/Example_Project'
+PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
 for i in arange(1,RUNS+1):
     os.system('chmod +x main.py')
     print "Started job %d" % i
