@@ -32,6 +32,7 @@ class Experiment(object):
         self.project_path       = project_path
         self.experiment_path    = "%s-%s-%s" % (className(self.domain),className(self.agent),className(self.agent.representation))
         self.full_path          = self.project_path+ '/' + self.experiment_path
+        checkNCreateDirectory(self.full_path+'/')
         self.show_all           = show_all
         self.show_performance   = show_performance
         self.plot_performance   = plot_performance   
