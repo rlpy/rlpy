@@ -57,19 +57,12 @@ class Representation(object):
     def phi_sa(self,s,a, phi_s = None):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
         #If phi_s is passed it is used to avoid phi_s calculation
-        if self.DEBUG: self.logger.log('Terminal? '+str(self.domain.isTerminal(s)))
-        phi_s = None
-        if self.DEBUG: phi_s_is_given = (phi_s != None)
+        phi_sa = zeros(self.features_num*self.domain.actions_num)
         if phi_s is None: phi_s = self.phi(s)
-
-        phi_sa      = zeros(self.features_num*self.domain.actions_num)
-        ind_a       = range(a*self.features_num,(a+1)*self.features_num)
-        phi_sa[ind_a] = phi_s
-        if self.DEBUG: 
-            self.logger.log('phi_s is given = ' +str(phi_s_is_given))
-            self.logger.log('(s,a) = ' +str(s)+str(a))
-            self.logger.log('non_zero_ids: '+str(phi_sa.nonzero()))
-            self.logger.log('Active Theta = ' +str(self.theta[phi_sa.nonzero()]))
+        #ind_a = range(a*self.features_num,(a+1)*self.features_num)
+        #phi_sa[ind_a] = phi_s
+        nnz_ind = phi_s.nonzero()
+        phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
         return phi_sa
         # Use of Kron is slower!
         #A = zeros(self.domain.actions_num)

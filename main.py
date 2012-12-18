@@ -39,10 +39,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #RBFS                    = 9
     RBFS                    = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
-    iFDD_Threshold          = .02 # Good for Inverted Pendulum 
+    iFDD_Threshold          = .001 # Good for Inverted Pendulum 
     #iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
     iFDD_BatchThreshold     = .001 
-    iFDD_CACHED             = 1
+    iFDD_CACHED             = 1     # Results will remiain IDENTICAL, but often faster
     iFDDMaxBatchDicovery    = 1
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy
