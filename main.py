@@ -9,6 +9,7 @@ from Agents import *
 from Representations import *  
 from Policies import *
 from Experiments import *
+from pandas.tests.test_series import CheckNameIntegration
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
          PROJECT_PATH ='',      # Path to store the results. Notice that a directory is automatically generated within this directory based on the selection of domain,agent,representation, 
@@ -16,8 +17,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 1000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -94,6 +95,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
+         checkNCreateDirectory('Results/Test_Project')
          main(jobID = -1,PROJECT_PATH = 'Results/Test_Project',SHOW_FINAL_PLOT = True)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2])
