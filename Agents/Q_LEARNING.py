@@ -19,6 +19,7 @@ class Q_LEARNING(Agent):
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)
         phi                 = self.representation.phi_sa(s,a,phi_s)
+        phi_ns              = self.representation.phi(ns)
         
         #Set eligibility traces:
         if self.lambda_:
@@ -30,11 +31,8 @@ class Q_LEARNING(Agent):
             self.eligibility_trace    = phi
         
         ## find the best guess of Q^*: \hat{Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. Busoniu et al.'s book 2010
-        na                  = self.representation.bestAction(ns)
-        phi_prime           = self.representation.phi_sa(ns,na)
-        # Girish I think this is your bug - passing state-action phi(s,a) using copy-paste method instead of phi(s)
-        #Q_max               = self.representation.Q(ns,na,phi_prime)
-        
+        na                  = self.representation.bestAction(ns,phi_ns)
+        phi_prime           = self.representation.phi_sa(ns,na,phi_ns)
         Q_max               = dot(phi_prime, theta)
         td_error            = r + gamma*Q_max-dot(phi, theta)
 
