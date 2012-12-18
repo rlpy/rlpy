@@ -4,7 +4,7 @@ import cProfile
 import pstats
 
 
-Output = 'iFDD-nnz.pdf'
+Output = 'CJ.pdf'
 print 'Profiling'
 cProfile.run('main(1,SHOW_FINAL_PLOT=0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

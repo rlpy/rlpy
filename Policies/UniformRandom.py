@@ -6,10 +6,6 @@ class UniformRandom(Policy):
     def pi(self,s):
         A = self.representation.domain.possibleActions(s)
         return randSet(A)
-    def turnOffExploration(self):
-        pass
-    def turnOnExploration(self):
-        pass
          
         
         

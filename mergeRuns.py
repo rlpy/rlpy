@@ -3,100 +3,17 @@
 ######################################################
 # Merge multiple results of several algorithms and show them on one plot
 
-from main import *
-from os import *
-import glob
-
-class MergedData(object):
-    AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal']
-    def __init__(self,path, output_path = None, colors = ['r','b','g','k'],bars=1):
-        #import the data from each path. Results in each of the paths has to be consistent in terms of size
-        self.means                  = []
-        self.std_errs               = [] 
-        self.bars                   = bars  #Draw bars?
-        self.colors                 = colors
-        self.path                   = path
-        self.output_path            = path if output_path == None else output_path
-        self.exp_paths              = os.listdir(path)
-        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and p[0] != '.']
-        self.exp_num                = len(self.exp_paths) 
-        self.means                  = []
-        self.std_errs               = [] 
-        self.fig                    = pl.figure(1)
-        self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
-        for exp in self.exp_paths:
-            means, std_errs = self.parseExperiment(exp)
-            self.means.append(means)
-            self.std_errs.append(std_errs)
-    def parseExperiment(self,exp):
-        # Parses all the files in form of <number>-results.txt and return 
-        # two matrices corresponding to mean and std_err
-        path        = self.path + '/'+exp
-        files       = glob.glob('%s/*-results.txt'%path)
-        samples_num = len(files)
-        if samples_num == 0:
-            print 'Error: %s is empty!' % path
-        print "%s => %d Samples" % (exp,samples_num)
-        #read the first file to initialize the matricies
-        rows, cols  = loadtxt(files[0]).shape
-        samples     = zeros((rows,cols,samples_num)) 
-        for i,f in enumerate(files):
-            samples[:,:,i] = loadtxt(files[i])
-        _,self.datapoints_per_graph,_ = samples.shape
-        return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
-    def plot(self,Y_axis,X_axis = 'Learning Steps'):
-        self.fig.clear()
-        min_ = +inf
-        max_ = -inf    
-        if Y_axis in self.AXES:
-            y_ind = self.AXES.index(Y_axis)
-        else:
-            print 'unknown Y_axis = %s', Y_axis
-        if X_axis in [self.AXES[0],self.AXES[2]]:
-            x_ind = self.AXES.index(X_axis)
-        else:
-            print 'unknown X_axis = %s', X_axis
-        Xs      = zeros((self.exp_num,self.datapoints_per_graph))
-        Ys      = zeros((self.exp_num,self.datapoints_per_graph))
-        Errs    = zeros((self.exp_num,self.datapoints_per_graph))
-        for i in range(self.exp_num):
-            X   = self.means[i][x_ind,:]
-            Y   = self.means[i][y_ind,:]
-            Err = self.std_errs[i][y_ind,:]
-            pl.plot(X,Y,'-o', linewidth = 2,alpha=.5,color = self.colors[i],)
-            if self.bars:
-                pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i])
-                max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
-            else:
-                max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
-            Xs[i,:]     = X
-            Ys[i,:]     = Y
-            Errs[i,:]   = Err
-        pl.xlim(0,max(Xs[:,-1]))
-        pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-        pl.xlabel(X_axis,fontsize=16)
-        pl.ylabel(Y_axis,fontsize=16)
-        pl.show()
-        self.save(Y_axis,X_axis,Xs,Ys,Errs)
-    def save(self,Y_axis,X_axis,Xs,Ys,Errs):
-        fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
-        checkNCreateDirectory(fullfilename)
-        self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1)
-        finalArray = vstack((Xs,Ys,Errs))
-        savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
-        print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
-
+from Tools import *
 
 path = 'Results/Example_Project' 
 
-
 colors = ['r','b','g','k'] 
 mergedData = MergedData(path,colors = colors)
-mergedData.plot('Return')
+#mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
 #mergedData.plot('Steps')
 #mergedData.plot('Steps','Time(s)')
-#mergedData.plot('Features')
+mergedData.plot('Features')
 #mergedData.plot('Terminal')
 pl.ioff()
 pl.show()

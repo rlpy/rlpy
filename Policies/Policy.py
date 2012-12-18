@@ -14,10 +14,10 @@ class Policy(object):
        abstract 
     def turnOffExploration(self):
         #Turn exploration off
-        abstract
+        pass
     def turnOnExploration(self):
         #Turn exploration off
-        abstract
+        pass
     def printAll(self):
         print className(self)
         print '======================================='
