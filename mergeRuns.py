@@ -9,34 +9,34 @@ import glob
 
 class MergedData(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal']
-    def __init__(self,paths, output_path = None, colors = ['r','b','g','k'],bars=1):
+    def __init__(self,path, output_path = None, colors = ['r','b','g','k'],bars=1):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
-        self.means       = []
-        self.std_errs    = [] 
-        self.bars   = bars  #Draw bars?
-        self.colors = colors
-        if output_path == None:
-            path,char,filename = paths[0].rpartition('/')
-            self.output_path = path
-        else:
-            self.output_path = output_path
-        self.experiments = len(paths) 
-        self.means  = []
-        self.std_errs = [] 
-        self.fig = pl.figure(1)
-        self.datapoints_per_graph = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
-        for p in paths:
-            means, std_errs = self.parse(p)
+        self.means                  = []
+        self.std_errs               = [] 
+        self.bars                   = bars  #Draw bars?
+        self.colors                 = colors
+        self.path                   = path
+        self.output_path            = path if output_path == None else output_path
+        self.exp_paths              = os.listdir(path)
+        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p)]
+        self.exp_num                = len(self.exp_paths) 
+        self.means                  = []
+        self.std_errs               = [] 
+        self.fig                    = pl.figure(1)
+        self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
+        for exp in self.exp_paths:
+            means, std_errs = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)
-    def parse(self,path):
+    def parseExperiment(self,exp):
         # Parses all the files in form of <number>-results.txt and return 
         # two matrices corresponding to mean and std_err
+        path        = self.path + '/'+exp
         files       = glob.glob('%s/*-results.txt'%path)
         samples_num = len(files)
         if samples_num == 0:
             print 'Error: %s is empty!' % path
-        print "%s => %d Samples" % (path,samples_num)
+        print "%s => %d Samples" % (exp,samples_num)
         #read the first file to initialize the matricies
         rows, cols  = loadtxt(files[0]).shape
         samples     = zeros((rows,cols,samples_num)) 
@@ -56,10 +56,10 @@ class MergedData(object):
             x_ind = self.AXES.index(X_axis)
         else:
             print 'unknown X_axis = %s', X_axis
-        Xs      = zeros((self.experiments,self.datapoints_per_graph))
-        Ys      = zeros((self.experiments,self.datapoints_per_graph))
-        Errs    = zeros((self.experiments,self.datapoints_per_graph))
-        for i in range(self.experiments):
+        Xs      = zeros((self.exp_num,self.datapoints_per_graph))
+        Ys      = zeros((self.exp_num,self.datapoints_per_graph))
+        Errs    = zeros((self.exp_num,self.datapoints_per_graph))
+        for i in range(self.exp_num):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
@@ -86,13 +86,11 @@ class MergedData(object):
         savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
-paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-iFDD', 
-         'Results/Example_Project/Pendulum_InvertedBalance-SARSA-Tabular']
+path = 'Results/Example_Project' 
 
-#paths = ['Results/Example_Project/Pendulum_InvertedBalance-SARSA-Tabular']
 
 colors = ['r','b','g','k'] 
-mergedData = MergedData(paths,colors = colors)
+mergedData = MergedData(path,colors = colors)
 #mergedData.plot('Return')
 #mergedData.plot('Return','Time(s)')
 mergedData.plot('Steps')
