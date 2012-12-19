@@ -223,7 +223,7 @@ class Pendulum(Domain):
             #pl.tight_layout()
         
         for row, thetaDot in enumerate(linspace(self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1], self.ThetaDot_discretization)):
-            for col, theta in enumerate(linspace(self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1], self.ThetaDot_discretization)):
+            for col, theta in enumerate(linspace(self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1], self.Theta_discretization)):
                 s           = [theta,thetaDot]
                 Qs,As       = representation.Qs(s)
                 pi[row,col] = representation.bestAction(s)

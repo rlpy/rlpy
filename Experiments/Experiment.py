@@ -42,7 +42,7 @@ class Experiment(object):
             createColorMaps()
         self.logger.line()
         self.logger.log("Experiment:\t\t%s" % className(self))
-        self.logger.log("Output:\t\t\t%s/%d-%s" % (self.full_path, self.id, self.output_filename))
+        self.logger.log("Output:\t\t\t%s/%s" % (self.full_path, self.output_filename))
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0

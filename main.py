@@ -18,9 +18,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 10000
-    #EXPERIMENT_NAMING   = ['domain','agent','representation','representation.batchThreshold']
-    EXPERIMENT_NAMING   = ['domain','representation','representation.batchThreshold']
+    LEARNING_STEPS      = 20000
+    EXPERIMENT_NAMING   = ['domain','agent','representation']
+    #EXPERIMENT_NAMING   = ['domain','representation','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -44,7 +44,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
     iFDD_Threshold              = .001 # Good for Inverted Pendulum 
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for NetworkAdmin
-    FeatureExpandThreshold      = .2   # Minimum relevance required for representation expansion techniques to add a feature 
+    FeatureExpandThreshold      = .25   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1    # Results will remiain IDENTICAL, but often faster
     iFDDMaxBatchDicovery        = 1
     FourierOrder                = 4
@@ -53,25 +53,25 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #Agent ----------------------
     initial_alpha           = .01
     LAMBDA                  = 0
-    LSPI_iterations         = 5
+    LSPI_iterations         = 10
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
-    LSPI_WEIGHT_DIFF_TOL    = .1 # Minimum Weight Difference required to keep the LSPI loop going
+    LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 100
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
-    #domain          = MountainCar(noise = NOISE,logger = logger)
+    domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     
-    #representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = FeatureExpandThreshold)
+    #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = FeatureExpandThreshold)
     #representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
@@ -79,9 +79,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     

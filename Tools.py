@@ -13,6 +13,8 @@ import matplotlib.patches as mpatches
 import matplotlib.path as mpath
 import matplotlib.colors as col
 import matplotlib.cm as cm
+from matplotlib.mlab import rk4
+from matplotlib import lines
 from scipy import stats
 from scipy import misc
 from scipy import linalg
@@ -110,6 +112,8 @@ def createColorMaps():
     mycmap = make_colormap({0:'r', 1: 'w', 2.:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
     mycmap = col.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
+    cm.register_cmap(cmap=mycmap)
+    mycmap = col.ListedColormap(['r','w','k'], 'MountainCarActions')
     cm.register_cmap(cmap=mycmap)
 #    Some useful Colormaps
 #    red_yellow_blue = make_colormap({0.:'r', 0.5:'#ffff00', 1.:'b'})

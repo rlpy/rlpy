@@ -11,7 +11,7 @@ Ubuntu:
 You may run the provided script in a terminal with:
 ./ubuntu_setup.sh
 If an error results, enter:
-chmod u+x ubuntu_setup.sh and re-run.
+chmod u+x ubuntu_setup.sh and rerun.
 
 ===============================================================
 ===============================================================

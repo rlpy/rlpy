@@ -6,8 +6,6 @@ from Tools import *
 from Domain import *
 
 #from scipy import integrate # for integration of state
-from matplotlib.mlab import rk4
-from matplotlib import lines
 
 #########################################################
 # Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012 #
