@@ -183,7 +183,10 @@ class Pendulum(Domain):
             pass # no torque
         else: # cw or ccw torque
             SHIFT = .5
-            if forceAction > 0: # counterclockwise torque
+            if (
+                (forceAction > 0 and (-pi/2. < theta < pi/2.)) or
+                (forceAction < 0 and not (-pi/2. < theta < pi/2.))
+                ): # counterclockwise torque
                 self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2")
             else:# clockwise torque
                 self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2")
