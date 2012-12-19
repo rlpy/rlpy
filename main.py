@@ -18,7 +18,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 1000
+    LEARNING_STEPS      = 10000
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -42,8 +42,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
     iFDD_Threshold          = .001 # Good for Inverted Pendulum 
     #iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
-    iFDD_BatchThreshold     = .001 
-    iFDD_CACHED             = 1     # Results will remiain IDENTICAL, but often faster
+    iFDD_BatchThreshold     = .2   # Minimum relevance required for iFDD to add a feature in the batch setting
+    iFDD_CACHED             = 1    # Results will remiain IDENTICAL, but often faster
     iFDDMaxBatchDicovery    = 1
     FourierOrder            = 4
     # Policy ----------------------
@@ -53,8 +53,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LAMBDA                  = 0
     LSPI_iterations         = 5
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
-    iFDD_LSPI_iterations    = 10
-    
+    LSPI_WEIGHT_DIFF_TOL    = .1 # Minimum Weight Difference required to keep the LSPI loop going
+    RE_LSPI_iterations      = 100
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
@@ -62,8 +62,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
-    domain          = Pendulum_SwingUp(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     
@@ -79,7 +79,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,iFDD_LSPI_iterations)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
     experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)

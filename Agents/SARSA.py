@@ -10,7 +10,6 @@ class SARSA(Agent):
         self.lambda_            = lambda_
         self.alpha              = initial_alpha 
         super(SARSA,self).__init__(representation,policy,domain,logger)
-        super(SARSA,self).printInfo()
         self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):

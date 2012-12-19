@@ -17,11 +17,11 @@ class Agent(object):
         self.policy = policy
         self.domain = domain
         self.logger = logger
+        if self.logger:
+            self.logger.line()
+            self.logger.log("Agent:\t\t"+str(className(self)))
+            self.logger.log("Policy:\t\t"+str(className(self.policy)))    
     def learn(self,s,a,r,ns,na,terminal):
         abstract
     def printAll(self):
         printClass(self)
-    def printInfo(self):
-        self.logger.line()
-        self.logger.log("Agent:\t\t"+str(className(self)))
-        self.logger.log("Policy:\t\t"+str(className(self.policy)))

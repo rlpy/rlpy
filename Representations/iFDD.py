@@ -207,6 +207,7 @@ class iFDD(Representation):
         max_relevance   = relevances[sortedIndecies[0]];
         #Add top <maxDiscovery> features
         print "iFDD Batch: Max Relevance = %0.3f" % max_relevance
+        added_feature = False
         for j in range(min(maxDiscovery,len(relevances))):
             max_index   = sortedIndecies[j]
             f1          = F1[max_index]
@@ -216,6 +217,9 @@ class iFDD(Representation):
                 print 'Added Feature [%d,%d]' % (f1,f2)
                 self.inspectPair(f1, f2, inf)
                 added_feature = True
+            else:
+                #Because the list is sorted, there is no use to look at the others
+                break
         return added_feature # A signal to see if the representation has been expanded or not
     def showFeatures(self):
         print "Features:"

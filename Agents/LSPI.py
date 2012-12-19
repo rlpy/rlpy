@@ -28,6 +28,10 @@ class LSPI(Agent):
         self.data_na            = zeros(sample_window,dtype=uint16)
         self.data_r             = zeros(sample_window)
         super(LSPI, self).__init__(representation, policy, domain,logger)
+        if logger:
+                logger.log('Max LSPI Iterations:\t%d' % lspi_iterations)
+                logger.log('Data Size:\t\t%d' % sample_window)
+                logger.log('Weight Difference tol.:\t%0.3f' % epsilon)
     def learn(self,s,a,r,ns,na,terminal):
         
         self.storeData(s,a,r,ns,na)        
@@ -49,6 +53,7 @@ class LSPI(Agent):
             #Begin updating the policy in LSPI loop
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
+            self.logger.log('Running LSPI:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
                 A = sp.coo_matrix((phi_sa_size,phi_sa_size))
                 for i in range(self.sample_window):
