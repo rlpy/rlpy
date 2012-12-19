@@ -491,11 +491,10 @@ def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
-        os.makedirs(path)
+        os.system('mkdir -p %s' % path)
 def hasFunction(object,methodname):
     method = getattr(object, methodname, None)
     return callable(method)
-
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     def save(self,filename):

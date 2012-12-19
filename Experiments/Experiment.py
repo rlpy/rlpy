@@ -20,7 +20,7 @@ class Experiment(object):
     result  = None          # All data is saved in the result array: stats_num-by-performanceChecks
     output_filename = ''    # The name of the file used to store the data
     logger = None           # An object to record the print outs in a file
-    def __init__(self,id, agent, domain,logger, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
+    def __init__(self,id, agent, domain,logger, exp_naming, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
         self.id = id
         # Find the corresponding random seed for the experiment id
         random.seed(self.mainSeed)
@@ -30,7 +30,7 @@ class Experiment(object):
         self.domain             = domain
         self.output_filename    = '%d-results.txt' % (id)
         self.project_path       = project_path
-        self.experiment_path    = "%s-%s-%s" % (className(self.domain),className(self.agent),className(self.agent.representation))
+        self.experiment_path    = self.makeExperimentName(exp_naming)
         self.full_path          = self.project_path+ '/' + self.experiment_path
         checkNCreateDirectory(self.full_path+'/')
         self.show_all           = show_all
@@ -79,3 +79,21 @@ class Experiment(object):
         # Set the output path for the logger
         # This is done here because it is dependent on the combination of agent, representation, and domain
         self.logger.save("%s/%d-out.txt" % (self.full_path, self.id))
+    def makeExperimentName(self,variables):
+        # Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X  
+        # Example: X = ['domain','agent','representation','LEARNING_STEPS']
+        # Output: 'PitMaze-SARSA-Tabular-10000'
+        exp_name = ''
+        for v in variables:
+            #Append required prefixes to make variables reachable:
+            if lower(v).startswith('representation') or lower(v).startswith('policy'):
+                v = 'self.agent.' + v
+            else:
+                v = 'self.' + v
+            
+            if len([x for x in ['self.domain','self.agent','self.agent.policy','self.agent.representation'] if x == lower(v)]):
+                exp_name += eval('className(%s)' % v)
+            else:
+                exp_name += str(eval('%s' % v))
+            exp_name += '-'
+        return exp_name[:-1]  

@@ -16,6 +16,7 @@ class OnlineExperiment (Experiment):
     STATS_NUM           = 6     # Number of statistics to be saved
     LOG_INTERVAL        = 0     # Number of seconds between log prints
     def __init__(self,agent,domain, logger,
+                 exp_naming = ['domain','agent','representation'],
                  id = 1,
                  max_steps = 10000, 
                  performanceChecks = 10,
@@ -28,7 +29,7 @@ class OnlineExperiment (Experiment):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
         self.LOG_INTERVAL       = log_interval
-        super(OnlineExperiment,self).__init__(id,agent,domain,logger, show_all, show_performance,project_path = project_path, plot_performance=plot_performance)
+        super(OnlineExperiment,self).__init__(id,agent,domain,logger, exp_naming, show_all, show_performance,project_path = project_path, plot_performance=plot_performance)
         self.logger.log("Max Steps: \t\t%d" % max_steps)
         self.logger.log("Performance Checks:\t%d" % performanceChecks)
     def run(self):

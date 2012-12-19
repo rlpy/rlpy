@@ -19,6 +19,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #----------------------
     PERFORMANCE_CHECKS  = 1
     LEARNING_STEPS      = 10000
+    #EXPERIMENT_NAMING   = ['domain','agent','representation','representation.batchThreshold']
+    EXPERIMENT_NAMING   = ['domain','representation','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
@@ -37,15 +39,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NOISE               = 0.3
     BLOCKS              = 4 # For BlocksWorld
     # Representation ----------------------
-    #RBFS                    = 9
-    RBFS                    = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
+    #RBFS                        = 9
+    RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
-    iFDD_Threshold          = .001 # Good for Inverted Pendulum 
-    #iFDD_Threshold          = .05 # Good for bloackWorld #10 good for NetworkAdmin
-    iFDD_BatchThreshold     = .2   # Minimum relevance required for iFDD to add a feature in the batch setting
-    iFDD_CACHED             = 1    # Results will remiain IDENTICAL, but often faster
-    iFDDMaxBatchDicovery    = 1
-    FourierOrder            = 4
+    iFDD_Threshold              = .001 # Good for Inverted Pendulum 
+    #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for NetworkAdmin
+    FeatureExpandThreshold      = .2   # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDD_CACHED                 = 1    # Results will remiain IDENTICAL, but often faster
+    iFDDMaxBatchDicovery        = 1
+    FourierOrder                = 4
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy
     #Agent ----------------------
@@ -69,7 +71,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = iFDD_BatchThreshold)
+    representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = FeatureExpandThreshold)
     #representation  = IndependentDiscretization(domain,logger)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
@@ -81,8 +83,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
     agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
-    
-    experiment      = OnlineExperiment(agent,domain,logger,id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
+    experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     
     if DEBUG:
         domain.printAll()
