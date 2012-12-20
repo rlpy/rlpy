@@ -95,11 +95,11 @@ class MountainCar(Domain):
         #a = 0    
         car_middle_x    = pos
         car_middle_y    = sin(3*pos)
-        steepness       = arctan(3*cos(3*pos))
-        car_back_x      = car_middle_x - self.CAR_WIDTH*cos(steepness)/2.
-        car_front_x     = car_middle_x + self.CAR_WIDTH*cos(steepness)/2.
-        car_back_y      = car_middle_y - self.CAR_WIDTH*sin(steepness)/2.
-        car_front_y     = car_middle_y + self.CAR_WIDTH*sin(steepness)/2.
+        slope           = arctan(3*cos(3*pos))
+        car_back_x      = car_middle_x - self.CAR_WIDTH*cos(slope)/2.
+        car_front_x     = car_middle_x + self.CAR_WIDTH*cos(slope)/2.
+        car_back_y      = car_middle_y - self.CAR_WIDTH*sin(slope)/2.
+        car_front_y     = car_middle_y + self.CAR_WIDTH*sin(slope)/2.
         self.car.set_data([car_back_x, car_front_x], [car_back_y, car_front_y])
         #wheels
         #plott(x(1)-0.05,sin(3*(x(1)-0.05))+0.06,'ok','markersize',12,'MarkerFaceColor',[.5 .5 .5]);
@@ -113,16 +113,16 @@ class MountainCar(Domain):
         if self.actions[a] > 0:
             self.actionArrow = fromAtoB(
                                           car_front_x , car_front_y,
-                                          car_front_x +self.ARROW_LENGTH*cos(steepness), car_front_y+self.ARROW_LENGTH*sin(steepness), 
-                                          #car_front_x + self.CAR_WIDTH*cos(steepness)/2., car_front_y + self.CAR_WIDTH*sin(steepness)/2.+self.CAR_HEIGHT, 
+                                          car_front_x +self.ARROW_LENGTH*cos(slope), car_front_y+self.ARROW_LENGTH*sin(slope), 
+                                          #car_front_x + self.CAR_WIDTH*cos(slope)/2., car_front_y + self.CAR_WIDTH*sin(slope)/2.+self.CAR_HEIGHT, 
                                           'k',"arc3,rad=0",
                                           0,0, 'simple'
                                           )
         if self.actions[a] < 0:
             self.actionArrow = fromAtoB(
                                           car_back_x , car_back_y,
-                                          car_back_x - self.ARROW_LENGTH*cos(steepness), car_back_y-self.ARROW_LENGTH*sin(steepness), 
-                                          #car_front_x + self.CAR_WIDTH*cos(steepness)/2., car_front_y + self.CAR_WIDTH*sin(steepness)/2.+self.CAR_HEIGHT, 
+                                          car_back_x - self.ARROW_LENGTH*cos(slope), car_back_y-self.ARROW_LENGTH*sin(slope), 
+                                          #car_front_x + self.CAR_WIDTH*cos(slope)/2., car_front_y + self.CAR_WIDTH*sin(slope)/2.+self.CAR_HEIGHT, 
                                           'r',"arc3,rad=0",
                                           0,0, 'simple'
                                           )

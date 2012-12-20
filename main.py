@@ -58,9 +58,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 100
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
-    #domain          = MountainCar(noise = NOISE,logger = logger)
+    domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
