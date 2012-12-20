@@ -13,7 +13,6 @@ from Domain import *
 class MountainCar(Domain):
     actions_num = 3
     state_space_dims = 2
-    episodeCap = 500
     XMIN = -1.2
     XMAX = 0.6
     XDOTMIN = -0.07
@@ -28,7 +27,7 @@ class MountainCar(Domain):
     gravityFactor = -0.0025;
     hillPeakFrequency = 3.0;
     continous_dims = [0,1]
-    gamma = .9
+    #gamma = .9
     episodeCap = 10000
     
     #Used for visual stuff:
@@ -40,18 +39,18 @@ class MountainCar(Domain):
     XDot_discretization = 20
     CAR_HEIGHT          = .2
     CAR_WIDTH           = .1
-    MIN_RETURN          = STEP_REWARD*(1-gamma**episodeCap)/(1-gamma) 
-    MAX_RETURN          = 0
     ARROW_LENGTH        = .2
     def __init__(self, noise = 0, logger = None):
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise
-
+        self.continuous_dims    = [0,1]
         #Visual stuff:
         self.xTicks         = linspace(0,self.X_discretization-1,5)
         self.xTicksLabels   = linspace(self.XMIN,self.XMAX,5)
         self.yTicks         = linspace(0,self.XDot_discretization-1,5)
         self.yTicksLabels   = linspace(self.XDOTMIN,self.XDOTMAX,5)
+        self.MIN_RETURN     = self.STEP_REWARD*(1-self.gamma**self.episodeCap)/(1-self.gamma) if self.gamma != 1 else self.STEP_REWARD*self.episodeCap  
+        self.MAX_RETURN     = 0
 
         super(MountainCar,self).__init__(logger)
     def step(self, s, a):

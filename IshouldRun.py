@@ -1,28 +1,36 @@
+#!/usr/bin/python
+######################################################
+# Developed by Alborz Geramiard Oct 25th 2012 at MIT #
+######################################################
+
 from Tools import *
 from Domains import *
 from Agents import *
 from Representations import *
 from Policies import *
 from Experiments import *
+#from pandas.tests.test_series import CheckNameIntegration
 
-# Etc
-#----------------------
-DEBUG               = 0
+PERFORMANCE_CHECKS  = 10
+LEARNING_STEPS      = 10000
 SHOW_ALL            = 0
 SHOW_PERFORMANCE    = 1
+PLOT_PERFORMANCE    = 1
 LOG_INTERVAL        = 1 
-RESULT_FILE         = 'result.txt'
-learn_step          = 10000
-epsilon             = .1
-Noise               = .2
+JOB_ID              = 1
+PROJECT_PATH        = 'Results/TempProject' 
+logger              = Logger()
+MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+NOISE               = 0.3
+EPSILON                 = .1 # EGreedy
+initial_alpha           = .1
 
-domain          = PitMaze('/Domains/PitmazeMaps/4x5.txt',Noise)
-representation  = Tabular(domain)
-policy          = eGreedy(representation,epsilon)
-agent           = SARSA(representation,policy,domain)
-experiment      = OnlineExperiment(agent,domain,max_steps = learn_step,show_all= SHOW_ALL, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
+domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
+policy          = eGreedy(representation,logger, epsilon = EPSILON)
+agent           = SARSA(representation,policy,domain,logger,initial_alpha)
+experiment      = OnlineExperiment(agent,domain,logger, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
 
 experiment.run()
-experiment.save(RESULT_FILE)
-pl.show()
+pl.ioff(); pl.show()
 

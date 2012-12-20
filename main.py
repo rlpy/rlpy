@@ -47,7 +47,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     FeatureExpandThreshold      = .25   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1    # Results will remiain IDENTICAL, but often faster
     iFDDMaxBatchDicovery        = 1
-    FourierOrder                = 4
+    FourierOrder                = 3
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy
     #Agent ----------------------
@@ -57,6 +57,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 100
+    
     #domain          = ChainMDP(10, logger = logger)
     domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
