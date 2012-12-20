@@ -48,7 +48,8 @@ A6: Use mergeRuns.py. You should be able to call the mergeRuns.py with the commi
 		'Terminal': 	Did the episode finish due to reaching a terminal state
 		 			or because the episode cap was reached.
 	The X-axis can be:
-	'Learning Steps': 	Number of interations between the agent and domain
-	'Time(s)': 			Clock Time in number of seconds 
+	'Learning Steps': 	Number of interactions between the agent and domain
+	'Time(s)': 			Clock Time in number of seconds
+	'Episodes': 			Number of episodes finished between the agent and the domain 
 	 
 	  
