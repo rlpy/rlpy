@@ -518,7 +518,7 @@ class Logger(object):
         self.log(SEP_LINE)
 class Merger(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
-    def __init__(self,path, output_path = None, colors = ['r','b','g','k'], styles = ['-*','->','-d','o'], markersize = 5, bars=1, legend = False):
+    def __init__(self,path, output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = [] 
@@ -578,7 +578,7 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            plt = pl.plot(X,Y,self.styles[i], linewidth = 2,alpha=.7,color = self.colors[i],markersize = self.markersize, label = self.labels[i])
+            plt = pl.plot(X,Y,linestyle ='-', marker = self.styles[i], linewidth = 2,alpha=.7,color = self.colors[i],markersize = self.markersize, label = self.labels[i])
             if self.bars:
                 pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i])
                 max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)

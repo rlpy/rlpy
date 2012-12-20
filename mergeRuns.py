@@ -8,8 +8,8 @@ from Tools import *
 #path = 'Results/Example_Project' 
 path = 'Results/13ICML-BatchiFDD' 
 #path = 'Results/Test_Project'
-colors      = ['r','b','purple','k']
-styles      = ['-*','->','-d','o',]
+colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
+styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
 MarkerSize  = 15
 Legend      = True
 
