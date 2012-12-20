@@ -115,7 +115,8 @@ class OnlineExperiment (Experiment):
             pl.xlim(0,self.result[0,-1]*1.01)
             m = min(self.result[row,:])
             M = max(self.result[row,:])
-            pl.ylim(m-.1*abs(M),M+.1*abs(M))
+            delta = M-m
+            pl.ylim(m-.1*delta-.1,M+.1*delta+.1)
             pl.xlabel('steps', fontsize=16)
             pl.ylabel(ylabel, fontsize=16)
             performance_fig.savefig(self.full_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)

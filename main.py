@@ -17,13 +17,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 5000
     EXPERIMENT_NAMING   = ['domain','agent','representation']
     #EXPERIMENT_NAMING   = ['domain','representation','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     JOB_ID              = 1 if jobID == -1 else jobID
@@ -40,14 +40,16 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     BLOCKS              = 4 # For BlocksWorld
     # Representation ----------------------
     #RBFS                        = 9
+    DISCRITIZATION              = 10    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
-    iFDD_Threshold              = .001 # Good for Inverted Pendulum 
+    iFDD_Threshold              = .001  # Good for Inverted Pendulum
+    iFDD_Sparsify               = 1     # Sparsify the output feature vectors at iFDD? 
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for NetworkAdmin
-    FeatureExpandThreshold      = .25   # Minimum relevance required for representation expansion techniques to add a feature 
-    iFDD_CACHED                 = 1    # Results will remiain IDENTICAL, but often faster
-    iFDDMaxBatchDicovery        = 1
-    FourierOrder                = 3
+    FeatureExpandThreshold      = .5   # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDD_CACHED                 = 1     # Results will remiain IDENTICAL, but often faster
+    iFDDMaxBatchDicovery        = 1     # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
+    FourierOrder                = 3     # 
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy
     #Agent ----------------------
@@ -59,30 +61,30 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RE_LSPI_iterations      = 100
     
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     
-    representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
+    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    #representation  = iFDD(domain,logger,iFDD_Threshold,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = FeatureExpandThreshold)
-    #representation  = IndependentDiscretization(domain,logger)
+    representation  = iFDD(domain,logger,iFDD_Threshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = iFDDMaxBatchDicovery, batchThreshold = FeatureExpandThreshold)
+    #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     

@@ -13,6 +13,8 @@ from Domain import *
 class MountainCar(Domain):
     actions_num = 3
     state_space_dims = 2
+    continuous_dims = [0,1]
+
     XMIN = -1.2
     XMAX = 0.6
     XDOTMIN = -0.07
@@ -26,7 +28,6 @@ class MountainCar(Domain):
     accelerationFactor = 0.001
     gravityFactor = -0.0025;
     hillPeakFrequency = 3.0;
-    continous_dims = [0,1]
     #gamma = .9
     episodeCap = 10000
     
@@ -43,7 +44,6 @@ class MountainCar(Domain):
     def __init__(self, noise = 0, logger = None):
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise
-        self.continuous_dims    = [0,1]
         #Visual stuff:
         self.xTicks         = linspace(0,self.X_discretization-1,5)
         self.xTicksLabels   = linspace(self.XMIN,self.XMAX,5)
