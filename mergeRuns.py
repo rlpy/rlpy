@@ -9,7 +9,7 @@ from Tools import *
 path = 'Results/13ICML-BatchiFDD' 
 #path = 'Results/Test_Project'
 colors      = ['r','b','purple','k']
-styles      = ['-*','->','-d','o']
+styles      = ['-*','->','-d','o',]
 MarkerSize  = 15
 Legend      = True
 

@@ -31,9 +31,9 @@ class RE_LSPI(LSPI):
                     added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
                 else:
                     self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
-                    added_features = 0
+                    added_feature = False
                 re_iteration += 1
-            
+            'o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'
             if added_features:
                 # Run LSPI one last time with the new features
                 A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
