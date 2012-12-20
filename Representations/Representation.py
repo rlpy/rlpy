@@ -59,16 +59,17 @@ class Representation(object):
         #If phi_s is passed it is used to avoid phi_s calculation
         phi_sa = zeros(self.features_num*self.domain.actions_num)
         if phi_s is None: phi_s = self.phi(s)
-        nnz_ind = phi_s.nonzero()
-        phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
+        ind_a = range(a*self.features_num,(a+1)*self.features_num)
+        phi_sa[ind_a] = phi_s
+        ##Slower alternatives
+        ##Alternative 1: Set only non_zeros (Very close on running time with the current solution. In fact it is sometimes better)
+        #nnz_ind = phi_s.nonzero()
+        #phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
+        ##Alternative 2: Use of Kron 
+        #A = zeros(self.domain.actions_num)
+        #A[a] = 1
+        #F_sa = kron(A,F_s)
         return phi_sa
-        # Slower alternatives
-        # Alternative 1: Set all elements#ind_a = range(a*self.features_num,(a+1)*self.features_num)
-        # phi_sa[ind_a] = phi_s
-        # Alternative 2: Use of Kron 
-        # A = zeros(self.domain.actions_num)
-        # A[a] = 1
-        # F_sa = kron(A,F_s)
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.
         self.theta      = addNewElementForAllActions(self.theta,self.domain.actions_num)

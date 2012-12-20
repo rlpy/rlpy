@@ -40,7 +40,11 @@ class Pendulum_InvertedBalance(Pendulum):
                                 # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.
     episodeCap          = 3000    # Max number of steps per trajectory
-    
+
+    # For Visual Stuff
+    MAX_RETURN = 0
+    MIN_RETURN = -1
+
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(Pendulum_InvertedBalance,self).__init__(logger)

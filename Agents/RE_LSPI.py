@@ -21,7 +21,7 @@ class RE_LSPI(LSPI):
             while added_feature and re_iteration <= self.re_iterations:
                 self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
                 # Run LSTD for first solution
-                A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+                A,b, all_phi_s, all_phi_s_a, all_phi_ns, td_errors = self.LSTD()
                 # Run Policy Iteration to change a_prime and recalculate theta
                 td_errors = self.policyIteration(b,all_phi_s_a,all_phi_ns)
                 # Add new Features

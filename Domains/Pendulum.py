@@ -135,8 +135,6 @@ class Pendulum(Domain):
 #            print 'Your selection, dt=',self.dt,'and limits',self.ANGULAR_RATE_LIMITS,'Are at risk.'
 #            print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
 #            print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
-        self.MAX_RETURN = 0
-        self.MIN_RETURN = -1
         
         # Transpose the matrices shown above, if they have not been already by another instance of the domain.
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
