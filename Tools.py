@@ -517,7 +517,7 @@ class Logger(object):
     def line(self):
         self.log(SEP_LINE)
 class Merger(object):
-    AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal']
+    AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
     def __init__(self,path, output_path = None, colors = ['r','b','g','k'],bars=1):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
@@ -562,7 +562,7 @@ class Merger(object):
             y_ind = self.AXES.index(Y_axis)
         else:
             print 'unknown Y_axis = %s', Y_axis
-        if X_axis in [self.AXES[0],self.AXES[2]]:
+        if X_axis in [self.AXES[0],self.AXES[2],self.AXES[6]]:
             x_ind = self.AXES.index(X_axis)
         else:
             print 'unknown X_axis = %s', X_axis

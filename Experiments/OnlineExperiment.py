@@ -5,15 +5,17 @@ from Experiment import *
 
 class OnlineExperiment (Experiment):
     # Statistics are saved as : 
-    STEP            = 0 
-    RETURN          = 1 
-    CLOCK_TIME      = 2 
-    FEATURE_SIZE    = 3 
+    STEP            = 0         # Learning Steps
+    RETURN          = 1         # Sum of Rewards
+    CLOCK_TIME      = 2         # Time in seconds so far
+    FEATURE_SIZE    = 3         # Number of features used for value function representation
     EPISODE_LENGTH  = 4
-    TERMINAL        = 5       # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
+    TERMINAL        = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
+    EPISODE_NUMBER  = 6        
+    STATS_NUM       = 7         # Number of statistics to be saved
+    
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
-    STATS_NUM           = 6     # Number of statistics to be saved
     LOG_INTERVAL        = 0     # Number of seconds between log prints
     def __init__(self,agent,domain, logger,
                  exp_naming = ['domain','agent','representation'],
@@ -40,6 +42,7 @@ class OnlineExperiment (Experiment):
         eps_steps           = 0
         performance_tick    = 0
         eps_return          = 0
+        episode_number      = 0
         start_log_time      = time() # Used to bound the number of logs in the file  
         self.start_time     = time() # Used to show the total time took the process
         if self.show_all: self.domain.showLearning(self.agent.representation)
@@ -52,8 +55,9 @@ class OnlineExperiment (Experiment):
                 # Hash new state for the tabular case
                 if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(s)
                 # Output the current status if certain amount of time has been passed
-                eps_return  = 0
-                eps_steps   = 0
+                eps_return      = 0
+                eps_steps       = 0
+                episode_number += 1
 
             #Visual
             if self.show_all: self.domain.show(s,a, self.agent.representation)
@@ -86,7 +90,8 @@ class OnlineExperiment (Experiment):
                                                    elapsedTime, # index = 2
                                                    self.agent.representation.features_num, # index = 3
                                                    performance_steps,# index = 4
-                                                   performance_term] # index = 5
+                                                   performance_term, # index = 5
+                                                   episode_number] # index = 6
                 self.logger.log('%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
                 start_log_time      = time()
                 performance_tick    += 1
