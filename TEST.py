@@ -1,15 +1,18 @@
+from sklearn import svm
 from Tools import *
-from Representations import *
-from Domains import *
+from Domains import PitMaze
 
-import numpy as np
+numDims = 2
+numSamples = 10
+y = zeros(numSamples)
+X = random.randn(numSamples,numDims)
+bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+                                         # C = penalty parameter of error term, default 1
+y = [0.0, 0.1, 0.2, 0.1, 0.2, 0.1, 0.3,0.4,0.2,0.1]
+bebfApprox.fit(X,y)
+feature = bebfApprox
 
-fig = pl.figure()
-ax = fig.add_subplot(111, projection='3d')
-X, Y, Z = axes3d.get_test_data(0.05)
-#ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
-#ax.contourf3D(X, Y, Z, rstride=10, cstride=10)
-ax.plot_surface(X, Y, Z)
-pl.ioff()
-pl.show()
+print X
+print y
 
+print feature.predict([0,0])

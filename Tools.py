@@ -27,7 +27,7 @@ from string import *
 from sets import ImmutableSet,Set
 from itertools  import *
 from copy import deepcopy
-import networkx as nx
+#import networkx as nx
 import os 
 import sys
 from os import path

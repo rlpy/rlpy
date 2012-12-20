@@ -8,7 +8,7 @@
 from LSPI import *
 class RE_LSPI(LSPI):
     def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3, re_iterations = 100):
-        assert isinstance(representation,iFDD)
+        assert isinstance(representation,iFDD) or isinstance(representation,BEBF)
         self.re_iterations = re_iterations # Number of iterations over LSPI and iFDD
         super(RE_LSPI, self).__init__(representation,policy,domain,logger,lspi_iterations, sample_window, epsilon)
         if logger:
