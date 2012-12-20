@@ -17,8 +17,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 20000
+    PERFORMANCE_CHECKS  = 10
+    LEARNING_STEPS      = 10000
     EXPERIMENT_NAMING   = ['domain','agent','representation']
     #EXPERIMENT_NAMING   = ['domain','representation','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
@@ -51,16 +51,16 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy
     #Agent ----------------------
-    initial_alpha           = .01
+    initial_alpha           = .1
     LAMBDA                  = 0
     LSPI_iterations         = 10
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 100
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
-    domain          = MountainCar(noise = NOISE,logger = logger)
+    #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname='/Domains/NetworkAdminMaps/5Machines.txt',maptype='eachNeighbor',numNodes=5,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
