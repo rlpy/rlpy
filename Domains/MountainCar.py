@@ -134,7 +134,7 @@ class MountainCar(Domain):
 
         if self.valueFunction_fig is None:
             self.valueFunction_fig   = pl.subplot(1,3,2)
-            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
+            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
 
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
@@ -144,7 +144,7 @@ class MountainCar(Domain):
             
             self.policy_fig = pl.subplot(1,3,3)
             #red = <-, white: ., black: ->
-            self.policy_fig = pl.imshow(pi, cmap='MountainCarActions', interpolation='nearest',vmin=0,vmax=self.actions_num)
+            self.policy_fig = pl.imshow(pi, cmap='MountainCarActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
             
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)

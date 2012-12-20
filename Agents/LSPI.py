@@ -81,7 +81,7 @@ class LSPI(Agent):
         all_phi_s       = zeros((self.sample_window,self.representation.features_num)) #phi_s will be saved for batch iFDD
         all_phi_s_a     = zeros((self.sample_window,phi_sa_size)) #phi_sa will be fixed during iterations
         all_phi_ns      = zeros((self.sample_window,self.representation.features_num)) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
-        all_phi_ns_na   = zeros((self.sample_window,phi_sa_size)) # Temporary. We might want to remove it
+        
         #print "Making A,b"
         gamma               = self.representation.domain.gamma
         for i in range(self.sample_window):
@@ -104,8 +104,7 @@ class LSPI(Agent):
         #Calculate theta
         self.representation.theta = solveLinear(sp.csc_matrix(A),b)
         #Calculate TD-Error
-        td_errors = self.data_r+dot(gamma*all_phi_s-d,self.representation.theta) 
-        return A,b, all_phi_s, all_phi_s_a, all_phi_ns 
+        return A,b, all_phi_s, all_phi_s_a, all_phi_ns
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s
         self.data_a[self.samples_count]   = a

@@ -169,7 +169,7 @@ class iFDD(Representation):
                     self.cache.pop(initialActiveFeatures)
         
         if self.debug: self.show()
-    def batchDiscover(self,td_errors, phi):
+    def batchDiscover(self,td_errors, phi, states):
         # Discovers features using iFDD in batch setting.
         # TD_Error: p-by-1 (How much error observed for each sample)
         # phi: n-by-p features corresponding to all samples (each column corresponds to one sample)

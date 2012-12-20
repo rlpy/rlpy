@@ -7,12 +7,12 @@ from numpy  import *
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 from matplotlib import pylab as pl
 pl.ion()
-from matplotlib import mpl,rc
+from matplotlib import mpl,rc,colors
 import glob
 import matplotlib.patches as mpatches
 import matplotlib.path as mpath
-import matplotlib.colors as col
 import matplotlib.cm as cm
+from mpl_toolkits.mplot3d import axes3d
 from matplotlib.mlab import rk4
 from matplotlib import lines
 from scipy import stats
@@ -101,19 +101,19 @@ def readMatrixFromFile(filename):
         return x
 def createColorMaps():
     #Make Grid World ColorMap
-    mycmap = col.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
+    mycmap = colors.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
     cm.register_cmap(cmap=mycmap)
-    mycmap = col.ListedColormap(['w','.75','b','r'], 'IntruderMonitorying')
+    mycmap = colors.ListedColormap(['w','.75','b','r'], 'IntruderMonitorying')
     cm.register_cmap(cmap=mycmap)
-    mycmap = col.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
+    mycmap = colors.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
-    mycmap = col.ListedColormap(['.6','k'], 'Actions')
+    mycmap = colors.ListedColormap(['.6','k'], 'Actions')
     cm.register_cmap(cmap=mycmap)
     mycmap = make_colormap({0:'r', 1: 'w', 2.:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
-    mycmap = col.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
+    mycmap = colors.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
     cm.register_cmap(cmap=mycmap)
-    mycmap = col.ListedColormap(['r','w','k'], 'MountainCarActions')
+    mycmap = colors.ListedColormap(['r','w','k'], 'MountainCarActions')
     cm.register_cmap(cmap=mycmap)
 #    Some useful Colormaps
 #    red_yellow_blue = make_colormap({0.:'r', 0.5:'#ffff00', 1.:'b'})
