@@ -22,8 +22,8 @@ PROJECT_PATH        = 'Results/TempProject'
 logger              = Logger()
 MAZE                = '/Domains/PitmazeMaps/4x5.txt'
 NOISE               = 0.3
-EPSILON                 = .1 # EGreedy
-initial_alpha           = .1
+EPSILON             = .1 # Used for EGreedy
+initial_alpha       = .1
 
 domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
 representation  = Tabular(domain,logger,discretization = 20) # Optional parameter discretization, for continuous domains
