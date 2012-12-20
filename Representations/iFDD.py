@@ -202,6 +202,9 @@ class iFDD(Representation):
         #Find indexes to non-zero excited pairs
         (F1, F2)            = relevances.nonzero() # F1 and F2 are the parents of the potentials
         relevances          = relevances[F1,F2]
+        if len(relevances) == 0:
+            # No feature to add
+            return False
         #Sort based on relevances
         sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
         max_relevance   = relevances[sortedIndices[0]];

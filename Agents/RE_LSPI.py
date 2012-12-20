@@ -24,6 +24,8 @@ class RE_LSPI(LSPI):
                 A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
                 # Run Policy Iteration to change a_prime and recalculate theta
                 td_errors = self.policyIteration(b,all_phi_s_a,all_phi_ns)
+                # Check Performance (We dont record it as result)
+                eps_return, eps_length, _ = self.checkPerformance(); self.logger.log("Performance Check >>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
                 # Add new Features
                 if hasFunction(self.representation,'batchDiscover'):
                     added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
@@ -31,3 +33,5 @@ class RE_LSPI(LSPI):
                     self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
                     added_features = 0
                 re_iteration += 1
+                
+                

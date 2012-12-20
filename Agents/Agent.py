@@ -25,3 +25,22 @@ class Agent(object):
         abstract
     def printAll(self):
         printClass(self)
+    def checkPerformance(self):
+        # This function should not be here. This is just for debugging and getting insight into the performance evolution
+        # Set Exploration to zero and sample one episode from the domain
+        eps_length  = 0
+        eps_return  = 0
+        eps_term    = 0
+        self.policy.turnOffExploration()
+        s           = self.domain.s0()
+        terminal    = False
+
+        while not eps_term and eps_length < self.domain.episodeCap:
+            a               = self.policy.pi(s)
+            r,ns,eps_term   = self.domain.step(s, a)
+            s               = ns
+            eps_return     += r
+            eps_length     += 1
+        self.policy.turnOnExploration()
+        return eps_return, eps_length, eps_term
+    

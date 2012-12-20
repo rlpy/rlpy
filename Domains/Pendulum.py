@@ -224,7 +224,6 @@ class Pendulum(Domain):
                 Qs,As       = representation.Qs(s)
                 pi[row,col] = representation.bestAction(s)
                 V[row,col]  = max(Qs)
-        print max(V.flatten())
         #Update the value function
         # Wireframe, needs some work
         #X = linspace(self.ANGLE_LIMITS[0],self.ANGLE_LIMITS[1],self.Theta_discretization)

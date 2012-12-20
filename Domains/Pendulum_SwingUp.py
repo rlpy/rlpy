@@ -43,11 +43,10 @@ class Pendulum_SwingUp(Pendulum):
     ANGLE_LIMITS        = [-pi, pi]     # Limit on theta
     ANGULAR_RATE_LIMITS = [-3*pi, 3*pi] # Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
     episodeCap          = 300          # Max number of steps per trajectory
-    
     # For Visual Stuff
     MAX_RETURN = episodeCap*GOAL_REWARD
     MIN_RETURN = 0
-    print MAX_RETURN
+    
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(Pendulum_SwingUp,self).__init__(logger)  
