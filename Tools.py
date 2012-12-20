@@ -518,16 +518,21 @@ class Logger(object):
         self.log(SEP_LINE)
 class Merger(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
-    def __init__(self,path, output_path = None, colors = ['r','b','g','k'],bars=1):
+    def __init__(self,path, output_path = None, colors = ['r','b','g','k'], styles = ['-*','->','-d','o'], markersize = 5, bars=1, legend = False):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = [] 
         self.bars                   = bars  #Draw bars?
         self.colors                 = colors
+        self.styles                 = styles
+        self.markersize             = markersize
+        self.legend                 = legend
         self.path                   = path
         self.output_path            = path if output_path == None else output_path
         self.exp_paths              = os.listdir(path)
         self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(path+'/'+p+'/1-out.txt')]
+        self.labels                 = [p.rpartition('-')[-1] for p in self.exp_paths]
+        print self.labels
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 
@@ -573,7 +578,7 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            pl.plot(X,Y,'-o', linewidth = 2,alpha=.7,color = self.colors[i],)
+            plt = pl.plot(X,Y,self.styles[i], linewidth = 2,alpha=.7,color = self.colors[i],markersize = self.markersize, label = self.labels[i])
             if self.bars:
                 pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i])
                 max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
@@ -582,6 +587,8 @@ class Merger(object):
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
+        if self.legend:
+            pl.legend()
         pl.xlim(0,max(Xs[:,-1])*1.02)
         if min_ != max_: 
             pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))

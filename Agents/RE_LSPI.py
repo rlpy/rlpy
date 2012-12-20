@@ -33,5 +33,8 @@ class RE_LSPI(LSPI):
                     self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
                     added_features = 0
                 re_iteration += 1
-                
-                
+            
+            if added_features:
+                # Run LSPI one last time with the new features
+                A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+                self.policyIteration(b,all_phi_s_a,all_phi_ns)    
