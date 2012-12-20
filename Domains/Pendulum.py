@@ -197,8 +197,8 @@ class Pendulum(Domain):
         V       = zeros((self.Theta_discretization,self.ThetaDot_discretization))
 
         if self.valueFunction_fig is None:
-            #self.valueFunction_fig   = pl.subplot(1,3,2)
-            #self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
+            self.valueFunction_fig   = pl.subplot(1,3,2)
+            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
             pl.xlabel(r"$\theta$")
@@ -226,15 +226,18 @@ class Pendulum(Domain):
                 V[row,col]  = max(Qs)
         print max(V.flatten())
         #Update the value function
-        X = linspace(self.ANGLE_LIMITS[0],self.ANGLE_LIMITS[1],self.Theta_discretization)
-        Y = linspace(self.ANGULAR_RATE_LIMITS[0],self.ANGULAR_RATE_LIMITS[1],self.ThetaDot_discretization)
-        X, Y = meshgrid(X, Y)
-        ax = pl.gcf().add_subplot(132,projection='3d')
-        self.valueFunction_fig = ax.plot_surface(X, Y, V)
-        self.valueFunction_fig.
-        #self.valueFunction_fig.set_data(V)
-        #norm = colors.Normalize(vmin=V.min(), vmax=V.max())
-        #self.valueFunction_fig.set_norm(norm)
+        # Wireframe, needs some work
+        #X = linspace(self.ANGLE_LIMITS[0],self.ANGLE_LIMITS[1],self.Theta_discretization)
+        #Y = linspace(self.ANGULAR_RATE_LIMITS[0],self.ANGULAR_RATE_LIMITS[1],self.ThetaDot_discretization)
+        #X, Y = meshgrid(X, Y)
+        #ax = pl.gcf().add_subplot(132,projection='3d',aspect='1')
+        #ax.set_size_inches(6,6)
+        #self.valueFunction_fig = ax.plot_surface(X, Y, V)#cmap='ValueFunction')
+        #self.valueFunction_fig = ax.plot_wireframe(X, Y, V)#cmap='ValueFunction')
+        
+        norm = colors.Normalize(vmin=V.min(), vmax=V.max())
+        self.valueFunction_fig.set_data(V)
+        self.valueFunction_fig.set_norm(norm)
         self.policy_fig.set_data(pi)
         pl.draw()
 #        sleep(self.dt)
