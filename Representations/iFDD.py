@@ -217,7 +217,7 @@ class iFDD(Representation):
             f2          = F2[max_index]
             relevance   = relevances[max_index]
             if relevance > self.batchThreshold:
-                print 'Added Feature [%d,%d]' % (f1,f2)
+                self.logger.log('%d: Added Feature [%d,%d]' % (j, f1,f2))
                 self.inspectPair(f1, f2, inf)
                 added_feature = True
             else:

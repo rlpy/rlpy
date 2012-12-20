@@ -573,7 +573,7 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            pl.plot(X,Y,'-o', linewidth = 2,alpha=.5,color = self.colors[i],)
+            pl.plot(X,Y,'-o', linewidth = 2,alpha=.7,color = self.colors[i],)
             if self.bars:
                 pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i])
                 max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
