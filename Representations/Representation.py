@@ -74,9 +74,9 @@ class Representation(object):
         # Add a new 0 weight corresponding to the new added feature for all actions.
         self.theta      = addNewElementForAllActions(self.theta,self.domain.actions_num)
     def hashState(self,s,):
-        #returns a unique idea by calculating the enumerated number corresponding to a state
-        # it first translate the state into a binState (bin number corresponding to each dimension)
-        # it then map the binstate to a an integer
+        #returns a unique id by calculating the enumerated number corresponding to a state
+        # it first translates the state into a binState (bin number corresponding to each dimension)
+        # it then maps the binstate to an integer
         ds = self.binState(s)
         #self.logger.log(str(s)+"=>"+str(ds))
         return vec2id(ds,self.bins_per_dim)

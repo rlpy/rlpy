@@ -75,15 +75,15 @@ class iFDD(Representation):
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
-        activeIndecies          = Set(self.activeInitialFeatures(s))
+        activeIndices          = Set(self.activeInitialFeatures(s))
         if self.useCache:
-            finalActiveIndecies     = self.cache.get(ImmutableSet(activeIndecies))
-            if finalActiveIndecies is None:        
+            finalActiveIndices     = self.cache.get(ImmutableSet(activeIndices))
+            if finalActiveIndices is None:        
                 # run regular and update the cache
-                finalActiveIndecies     = self.findFinalActiveFeatures(activeIndecies)
+                finalActiveIndices     = self.findFinalActiveFeatures(activeIndices)
         else:
-            finalActiveIndecies         = self.findFinalActiveFeatures(activeIndecies)
-        F_s[finalActiveIndecies] = 1
+            finalActiveIndices         = self.findFinalActiveFeatures(activeIndices)
+        F_s[finalActiveIndices] = 1
         return F_s
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
@@ -105,7 +105,7 @@ class iFDD(Representation):
             self.cache[ImmutableSet(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures     
     def discover(self,phi_s,td_error):            
-        activeFeatures = phi_s.nonzero()[0] # Indecies of non-zero elements of vector phi_s
+        activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
         for g_index,h_index in combinations(activeFeatures,2):
             self.inspectPair(g_index,h_index,td_error)
     def inspectPair(self,g_index,h_index,td_error):
@@ -203,13 +203,13 @@ class iFDD(Representation):
         (F1, F2)            = relevances.nonzero() # F1 and F2 are the parents of the potentials
         relevances          = relevances[F1,F2]
         #Sort based on relevances
-        sortedIndecies  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
-        max_relevance   = relevances[sortedIndecies[0]];
+        sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
+        max_relevance   = relevances[sortedIndices[0]];
         #Add top <maxDiscovery> features
         print "iFDD Batch: Max Relevance = %0.3f" % max_relevance
         added_feature = False
         for j in range(min(maxDiscovery,len(relevances))):
-            max_index   = sortedIndecies[j]
+            max_index   = sortedIndices[j]
             f1          = F1[max_index]
             f2          = F2[max_index]
             relevance   = relevances[max_index]
@@ -248,7 +248,8 @@ if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1
     OUT_PATH            = 'Results/Temp'
-    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+#    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
+    logger              = Logger()
     discovery_threshold = 1
     domain      = MountainCar()
     rep         = iFDD(domain,logger,discovery_threshold,debug=0,useCache=1)

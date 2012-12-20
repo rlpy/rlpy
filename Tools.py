@@ -242,7 +242,7 @@ def isSparse(x):
     return isinstance(x,sparse.lil_matrix) or isinstance(x,sparse.csr_matrix)        
 def generalDot(x,y):
     if isSparse(x):
-        #active_indecies = x.nonzero()[0].flatten()
+        #active_indices = x.nonzero()[0].flatten()
         return x.multiply(y).sum()
     else:
         return dot(x,y)

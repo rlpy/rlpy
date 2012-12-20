@@ -31,8 +31,16 @@ do
 done
 
 echo -e "\nBeginning installation of required packages.\n\n"
-sudo apt-get install python-numpy python-scipy python-matplotlib python-networkx graphviz
+sudo apt-get install python-dev python-setuptools python-numpy python-scipy python-matplotlib python-networkx graphviz
 
+echo -e "\nDo you want to install the package scikit-learn as well?"
+select yes_no in "Yes" "No";
+do
+    case $yes_no in
+        Yes ) sudo apt-get install libatlas-dev python-pip; sudo pip install -U scikit-learn; echo -e "\nInstallation of scikit-learn complete.\n"; break;;
+        No ) echo -e "\nUser opted to ignore scikit-learn.\n"; break;;
+    esac
+done
 echo ""
 echo "Installation script complete."
 

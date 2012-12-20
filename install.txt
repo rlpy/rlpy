@@ -8,7 +8,9 @@ Installation FAQ at bottom.
 ===============================================================
 Ubuntu:
 
-You may run the provided script in a terminal with:
+After installing python 2.7 and the IDE of your choice (for example,
+Eclipse + PyDev Extension - see below), You may run the provided
+script in a terminal with:
 ./ubuntu_setup.sh
 If an error results, enter:
 chmod u+x ubuntu_setup.sh and rerun.
@@ -36,7 +38,7 @@ http://fonnesbeck.github.com/ScipySuperpack/
 * If you have mac os lion (10.7) do not install matplotlib 10.8 from the above!
 * If you did, delete it from the directory where the error during python execution refers to
 ===============================================================
-4. networkx
+4. networkx (for NetworkAdmin domain)
 http://networkx.lanl.gov/
 ===============================================================
 5. graphvis
