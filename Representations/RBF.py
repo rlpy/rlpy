@@ -21,7 +21,7 @@ class RBF(Representation):
         super(RBF,self).__init__(domain,logger)
     def phi_nonTerminal(self,s):
         F_s         = ones(self.features_num)
-        for i in range(0,self.features_num-1):
+        for i in arange(0,self.features_num-1):
             F_s[i] = prod(normpdf(s,self.rbfs_mu[i,:], self.rbfs_sigma[i,:]))
         return normalize(F_s)
         

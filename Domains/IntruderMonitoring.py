@@ -32,7 +32,7 @@ class IntruderMonitoring(Domain):
     episodeCap  = 1000              # Episode Cap
     
     #Constants in the map
-    EMPTY, INTRUDER, AGENT, DANGER = range(4)
+    EMPTY, INTRUDER, AGENT, DANGER = arange(4)
     ACTIONS_PER_AGENT = array([[-1,0], #Up
                [+1,0], #Down
                [0,-1], #left
@@ -88,7 +88,7 @@ class IntruderMonitoring(Domain):
         intrusion_counter = 0
         offset = 2*self.NUMBER_OF_AGENTS
         
-        for i in range(0,self.NUMBER_OF_INTRUDERS):
+        for i in arange(0,self.NUMBER_OF_INTRUDERS):
             s_i = s[offset+ i*2:offset+i*2+2]
             ns_i = list(s_i)#s_i.copy()    
             
@@ -96,7 +96,7 @@ class IntruderMonitoring(Domain):
            
             if (self.map[ns_i[0],ns_i[1]] == self.DANGER): # Intruder is in a danger zone !!
                 #print 'DANGER'
-                for j in range(0,self.NUMBER_OF_AGENTS):
+                for j in arange(0,self.NUMBER_OF_AGENTS):
                     ns_a=  s[j*2:j*2+2]
                     if ( (ns_a[0] != ns_i[0]) or (ns_a[1] != ns_i[1])): # Intrusion occured !
                        # print 'Intrusion !!'
@@ -108,7 +108,7 @@ class IntruderMonitoring(Domain):
                 
          # Agent Step
                                
-        for i in range(0,self.NUMBER_OF_AGENTS):
+        for i in arange(0,self.NUMBER_OF_AGENTS):
             s_a = s[i*2:i*2+2]
                                               
             action_a = action_vector[i]
@@ -128,7 +128,7 @@ class IntruderMonitoring(Domain):
         
      
                         
-        for i in range(0,self.NUMBER_OF_INTRUDERS):
+        for i in arange(0,self.NUMBER_OF_INTRUDERS):
             s_i = s[offset+ i*2:offset+i*2+2]
             ns_i = list(s_i)#s_i.copy()    
                                            
@@ -209,13 +209,13 @@ class IntruderMonitoring(Domain):
     def printDomain(self,s,a):
         print '--------------'
        
-        for i in range(0,self.NUMBER_OF_AGENTS):
+        for i in arange(0,self.NUMBER_OF_AGENTS):
              s_a = s[i*2:i*2+2]
              aa = id2vec(a,self.ACTION_LIMITS)
              #print 'Agent {} X: {} Y: {}'.format(i,s_a[0],s_a[1])
              print 'Agent {} Location: {} Action {}'.format(i,s_a,aa)
         offset = 2*self.NUMBER_OF_AGENTS
-        for i in range(0,self.NUMBER_OF_INTRUDERS):
+        for i in arange(0,self.NUMBER_OF_INTRUDERS):
             s_i = s[offset+ i*2:offset + i*2+2]
             #print 'Intruder {} X: {} Y: {}'.format(i,s_i[0],s_i[1])
             print 'Intruder',s_i    

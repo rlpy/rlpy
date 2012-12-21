@@ -5,9 +5,13 @@
 # Run the main file multiple times and store the result of each run in a separate directory:
 from main import *
 from os import *
-RUNS            = 30
+
+StartID         = 25
+FinishId        = 30
+RUNS            = arange(StartID,FinishId+1)
 PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
-for i in arange(1,RUNS+1):
+max_cpu         = multiprocessing.cpu_count()
+for i in RUNS:
     os.system('chmod +x main.py')
-    print "Started job %d" % i
     os.system('./main.py %d %s &' % (i, PROJECT_PATH))
+    print "Started job %d" % i

@@ -28,8 +28,7 @@ from sets import ImmutableSet,Set
 from itertools  import *
 from copy import deepcopy
 #import networkx as nx
-import os 
-import sys
+import os, sys, multiprocessing
 from os import path
 # Tips:
 # array.astype(float) => convert elements
@@ -150,7 +149,7 @@ def make_colormap(colors):
     R = []
     G = []
     B = []
-    for i in range(n):
+    for i in arange(n):
         #i'th color at level z[i]:
         Ci = colors[z[i]]      
         if type(Ci) == str:
@@ -164,9 +163,9 @@ def make_colormap(colors):
         B.append(RGB[2])
 
     cmap_dict = {}
-    cmap_dict['red'] = [(x0[i],R[i],R[i]) for i in range(len(R))]
-    cmap_dict['green'] = [(x0[i],G[i],G[i]) for i in range(len(G))]
-    cmap_dict['blue'] = [(x0[i],B[i],B[i]) for i in range(len(B))]
+    cmap_dict['red'] = [(x0[i],R[i],R[i]) for i in arange(len(R))]
+    cmap_dict['green'] = [(x0[i],G[i],G[i]) for i in arange(len(G))]
+    cmap_dict['blue'] = [(x0[i],B[i],B[i]) for i in arange(len(B))]
     mymap = LinearSegmentedColormap('mymap',cmap_dict)
     return mymap
 def showcolors(cmap):
@@ -273,9 +272,9 @@ def findElemArray2D(x,A):
 def findRow(r,X):
     # return the indices of X that are equal to X.
     # row and X must have the same number of columns
-    #return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in range(len(r))])))
+    #return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
     #return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
-    ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in range(len(r))]))
+    ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))]))
     return ind[0] 
 def perms(X):
     # Returns all permutations
@@ -353,9 +352,9 @@ def shout(obj,s=''):
 def powerset(iterable, ascending = 1):
     s = list(iterable)
     if ascending:
-        return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+        return chain.from_iterable(combinations(s, r) for r in arange(len(s)+1))
     else:
-        return chain.from_iterable(combinations(s, r) for r in range(len(s)+1,-1,-1))
+        return chain.from_iterable(combinations(s, r) for r in arange(len(s)+1,-1,-1))
 def printClass(obj):
         print className(obj)
         print '======================================='
@@ -579,7 +578,7 @@ class Merger(object):
         Xs      = zeros((self.exp_num,self.datapoints_per_graph))
         Ys      = zeros((self.exp_num,self.datapoints_per_graph))
         Errs    = zeros((self.exp_num,self.datapoints_per_graph))
-        for i in range(self.exp_num):
+        for i in arange(self.exp_num):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]

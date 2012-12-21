@@ -146,7 +146,7 @@ class iFDD(Representation):
         self.theta      = addNewElementForAllActions(self.theta,a,newElem)
         self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def addInitialFeatures(self):
-        for i in range(self.features_num):
+        for i in arange(self.features_num):
             feature = iFDD_feature(i)
             #shout(self,self.iFDD_features[ImmutableSet([i])].index)
             self.iFDD_features[ImmutableSet([i])] = feature
@@ -182,7 +182,7 @@ class iFDD(Representation):
         counts          = zeros((n,n))
         relevances      = zeros((n,n))
         added_feature   = True
-        for i in range(p):
+        for i in arange(p):
             phiphiT     = outer(phi[i,:],phi[i,:])
             relevances  += phiphiT*td_errors[i]
             counts      += phiphiT
@@ -211,7 +211,7 @@ class iFDD(Representation):
         #Add top <maxDiscovery> features
         print "iFDD Batch: Max Relevance = %0.3f" % max_relevance
         added_feature = False
-        for j in range(min(maxDiscovery,len(relevances))):
+        for j in arange(min(maxDiscovery,len(relevances))):
             max_index   = sortedIndices[j]
             f1          = F1[max_index]
             f2          = F2[max_index]

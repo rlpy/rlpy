@@ -42,8 +42,8 @@ class ChainMDP(Domain):
            ax.add_patch(mpatches.Circle((1+2*(self.chainSize-1), self.Y), self.RADIUS*1.1, fc="w")) #Make the last one double circle
            ax.xaxis.set_visible(False)
            ax.yaxis.set_visible(False)
-           self.circles = [mpatches.Circle((1+2*i, self.Y), self.RADIUS, fc="w") for i in range(self.chainSize)]
-           for i in range(self.chainSize):
+           self.circles = [mpatches.Circle((1+2*i, self.Y), self.RADIUS, fc="w") for i in arange(self.chainSize)]
+           for i in arange(self.chainSize):
                ax.add_patch(self.circles[i])
                if i != self.chainSize-1:
                     fromAtoB(1+2*i+self.SHIFT,self.Y+self.SHIFT,1+2*(i+1)-self.SHIFT, self.Y+self.SHIFT)

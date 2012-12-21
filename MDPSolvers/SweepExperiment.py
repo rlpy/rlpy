@@ -47,10 +47,10 @@ class SweepExperiment (Experiment):
             
             #print 'Limits :', rep.bins_per_dim
             #print 'Number of total iterations ',self.max_iterations
-            for iter in range(0,self.max_iterations):
+            for iter in arange(0,self.max_iterations):
             #    print 'At Sweep ', iter
                 prev_theta =  self.agent.representation.theta.copy()
-                for i in range(0,no_of_states):
+                for i in arange(0,no_of_states):
                     #print 'At state index: ',i
                     
                     s = id2vec(i,rep.bins_per_dim)

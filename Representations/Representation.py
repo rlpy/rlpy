@@ -59,7 +59,7 @@ class Representation(object):
         #If phi_s is passed it is used to avoid phi_s calculation
         phi_sa = zeros(self.features_num*self.domain.actions_num)
         if phi_s is None: phi_s = self.phi(s)
-        ind_a = range(a*self.features_num,(a+1)*self.features_num)
+        ind_a = arange(a*self.features_num,(a+1)*self.features_num)
         phi_sa[ind_a] = phi_s
         ##Slower alternatives
         ##Alternative 1: Set only non_zeros (Very close on running time with the current solution. In fact it is sometimes better)

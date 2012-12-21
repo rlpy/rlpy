@@ -31,7 +31,7 @@ class PitMaze(Domain):
 
     actions_num        = 4
     #Constants in the map
-    EMPTY, BLOCKED, START, GOAL, PIT, AGENT = range(6)
+    EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
     ACTIONS = array([[-1,0], #Up
                [+1,0], #Down
                [0,-1], #left
@@ -116,7 +116,7 @@ class PitMaze(Domain):
                     arrowColors[c,r,bestA]   = 1
 #                    print r,c,Qs
                     
-                    for i in range(len(As)):
+                    for i in arange(len(As)):
                         a = As[i]
                         Q = Qs[i]
                         value = linearMap(Q,self.MIN_RETURN,self.MAX_RETURN,.4,2)

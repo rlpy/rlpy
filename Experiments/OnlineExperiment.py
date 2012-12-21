@@ -25,8 +25,8 @@ class OnlineExperiment (Experiment):
                  show_all   = False, 
                  show_performance = False,
                  log_interval = 1,
-                 project_path    = 'Results/Temp_Project',
-                 output_filename = 'results.txt',
+                 project_path    = 'Results/Temp',
+                 output_filename = '1-results.txt',
                  plot_performance = True):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks

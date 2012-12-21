@@ -84,7 +84,7 @@ class Domain(object):
         # Kemal put more info on this. Why do you need this?
         dim = len(s)
                
-        for i in range(0,dim):
+        for i in arange(0,dim):
             if s[i] < self.statespace_limits[i,0]+0.5: s[i] = int(self.statespace_limits[i,0]+0.5)
             if s[i] > self.statespace_limits[i,1]-0.5: s[i] = int(self.statespace_limits[i,1]-0.5)
     def test(self,T):
@@ -116,7 +116,7 @@ class Domain(object):
         next_states = []
         rewards = []
         
-        for i in range(0,no_samples):
+        for i in arange(0,no_samples):
         
             r,ns,terminal = self.step(s, a)
         

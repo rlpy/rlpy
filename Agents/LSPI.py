@@ -56,7 +56,7 @@ class LSPI(Agent):
             self.logger.log('Running LSPI:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
                 A = sp.coo_matrix((phi_sa_size,phi_sa_size))
-                for i in range(self.sample_window):
+                for i in arange(self.sample_window):
                     ns              = self.data_ns[i,:]
                     phi_s_a         = all_phi_s_a[i,:]
                     phi_ns          = all_phi_ns[i,:]
@@ -84,7 +84,7 @@ class LSPI(Agent):
         
         #print "Making A,b"
         gamma               = self.representation.domain.gamma
-        for i in range(self.sample_window):
+        for i in arange(self.sample_window):
             s                   = self.data_s[i]
             ns                  = self.data_ns[i]
             a                   = self.data_a[i]

@@ -27,7 +27,7 @@ class ValueIteration(Agent):
         
         update = 0
         
-        for i in range(0,self.mc_ns_samples):
+        for i in arange(0,self.mc_ns_samples):
                         
             ns =   array(next_states[i,:],int)
             #print 'next state', ns            

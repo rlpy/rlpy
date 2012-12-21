@@ -30,7 +30,7 @@ class BlocksWorld(Domain):
         self.actions_num        = blocks*blocks
         self.gamma              = 1
         self.statespace_limits  = tile([0,blocks-1],(blocks,1)) #Block i is on top of what? if block i is on top of block i => block i is on top of table
-        self.real_states_num    = sum([nchoosek(blocks,i)*factorial(blocks-i)*pow(i,blocks-i) for i in range(blocks)]) #This is the true size of the state space refer to [Geramifard11_ICML]
+        self.real_states_num    = sum([nchoosek(blocks,i)*factorial(blocks-i)*pow(i,blocks-i) for i in arange(blocks)]) #This is the true size of the state space refer to [Geramifard11_ICML]
         self.GOAL_STATE         = hstack(([0],arange(0,blocks-1))) # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
         super(BlocksWorld,self).__init__(logger)
         if logger:

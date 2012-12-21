@@ -203,7 +203,7 @@ class NetworkAdmin(Domain):
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
 
     def s0(self):
-        return [self.RUNNING for dummy in range(0,self.state_space_dims)] # Omits final index
+        return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
 
     def possibleActions(self,s):
     # Returns the list of possible actions in each state the vanilla version returns all of the actions
