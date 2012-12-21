@@ -12,4 +12,4 @@ from CartPole_InvertedBalance import CartPole_InvertedBalance
 from CartPole_SwingUp import CartPole_SwingUp
 from Pendulum_InvertedBalance import Pendulum_InvertedBalance
 from Pendulum_SwingUp import Pendulum_SwingUp
-from FiftyState import FiftyState
+from FiftyChain import FiftyChain
