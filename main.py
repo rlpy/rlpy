@@ -74,13 +74,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_SwingUp(logger = logger);
     domain          = FiftyChain(logger = logger)
     
-    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDD_Threshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = FeatureExpandThreshold)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
-    #representation   = BEBF(domain,logger)
+    representation   = BEBF(domain,logger)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)

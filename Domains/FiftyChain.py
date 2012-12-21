@@ -58,8 +58,6 @@ class FiftyChain(Domain):
             self.optimal_policy[arange(goalState1, averageState)] = self.LEFT
             self.optimal_policy[arange(averageState, goalState2)] = self.RIGHT
         self.optimal_policy[arange(self.GOAL_STATES[-1], self.chainSize)] = self.LEFT
-        print self.optimal_policy
-    
     def showDomain(self,s,a = 0):
         #Draw the environment
         if self.circles is None:
