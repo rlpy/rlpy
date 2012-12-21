@@ -59,7 +59,7 @@ class BEBF(Representation):
         return bebfApprox
     
     def addInitialFeatures(self):
-        numDims = 2
+        numDims = 1
         numSamples = 100
         y = random.randn(numSamples)
         X = random.randn(numSamples,numDims)

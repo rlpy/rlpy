@@ -9,7 +9,7 @@
 from Tools import *
 from pydoc import classname
 class Domain(object):
-    gamma = .90             # Discount factor default = .9
+    gamma = .80             # Discount factor default = .9
     states_num = None       # Number of states
     actions_num = None      # Number of Actions
     statespace_limits = None# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
