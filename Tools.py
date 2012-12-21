@@ -529,8 +529,13 @@ class Merger(object):
         self.legend                 = legend
         self.path                   = path
         self.output_path            = path if output_path == None else output_path
-        self.exp_paths              = os.listdir(path)
-        self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(path+'/'+p+'/1-out.txt')]
+        # See if the path is an experiment. If so just parse that directory
+        # Otherwise parse all subdirectories with experiment results
+        if os.path.exists(path+'/1-out.txt'):
+            self.exp_paths = [path]
+        else:
+            self.exp_paths              = os.listdir(path)
+            self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(path+'/'+p+'/1-out.txt')]
         self.labels                 = [p.rpartition('-')[-1] for p in self.exp_paths]
         print self.labels
         self.exp_num                = len(self.exp_paths) 
@@ -588,7 +593,9 @@ class Merger(object):
             Ys[i,:]     = Y
             Errs[i,:]   = Err
         if self.legend:
-            pl.legend()
+            #pl.legend(loc='lower right',bbox_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
+            pl.legend(fancybox=True,shadow=True, ncol=1, loc=2, frameon=True)
+            
         pl.xlim(0,max(Xs[:,-1])*1.02)
         if min_ != max_: 
             pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
