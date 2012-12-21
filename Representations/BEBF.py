@@ -81,10 +81,13 @@ class BEBF(Representation):
     ## Adds new features based on the Bellman Error in batch setting.
     # @param td_errors: p-by-1 (How much error observed for each sample)
     # @param phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
+    # @param s: List of states corresponding to each td_error in td_errors (note that the same state may appear multiple times because of different actions taken while there)
     # self.normThreshold is threshold below which no more BEBFs are added.
     def batchDiscover(self,td_errors, all_phi_s, s):
         # need states here instead?
         addedFeature = False
+        # PLACEHOLDER for norm of function
+        norm = max(abs(td_errors))# Norm of function
         for j in range(self.maxBatchDicovery):
 #            print 's'
 #            print 'tderr',td_errors[0:20]
@@ -93,8 +96,6 @@ class BEBF(Representation):
             if self.debug:
                 shout('s',s)
                 shout('td_errors',td_errors)
-            # PLACEHOLDER for norm of function
-            norm = max(abs(td_errors))# Norm of function
             print 'norm',norm
             if norm > self.normThreshold:
 #                print 'added feature'
@@ -118,7 +119,7 @@ if __name__ == '__main__':
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     print 'initial features'
     print rep.features_num,'---',rep.features
-    s           = domain.s0() 
+    s           = domain.s0()
     a           = domain.possibleActions(s)
     a = a[0]
     r,ns,terminal   = domain.step(s, a)
