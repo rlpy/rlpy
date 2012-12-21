@@ -18,7 +18,7 @@ class FiftyState(Domain):
     episodeCap  = 50             # Set by the domain = min(100,rows*cols)
     MAX_RETURN  = 2.5             # Used for graphical normalization
     MIN_RETURN  = 0             # Used for graphical normalization
-    SHIFT       = .03            # Used for graphical shifting of arrows
+    SHIFT       = .01            # Used for graphical shifting of arrows
     RADIUS      = .05            # Used for graphical radius of states
     circles     = None          # Stores the graphical pathes for states so that we can later change their colors 
     chainSize   = 50             # Number of states in the chain
@@ -32,11 +32,11 @@ class FiftyState(Domain):
     
     #Plotting values
     domain_fig          = None
-    value_function_fig = None
+    value_function_fig  = None
     policy_fig          = None
-    V_star_line        = None
-    V_approx_line      = None
-    
+    V_star_line         = None
+    V_approx_line       = None
+    COLORS              = ['g','k']
     LEFT = 0
     RIGHT = 1
     
@@ -48,7 +48,6 @@ class FiftyState(Domain):
         self.optimal_policy = array( [-1 for dummy in range(0, self.chainSize)]) # To catch errors
         self.storeOptimalPolicy()
         self.gamma = 0.8 # Set gamma to be 0.8 for this domain per L & P 2007
-        
     def storeOptimalPolicy(self):
         self.optimal_policy[arange(self.GOAL_STATES[0])] = self.RIGHT            
         goalStateIndices = arange(1,len(self.GOAL_STATES))
@@ -79,54 +78,43 @@ class FiftyState(Domain):
         [self.circles[p].set_facecolor('g') for p in self.GOAL_STATES]
         self.circles[s].set_facecolor('k')
         pl.draw()
-    
     def showLearning(self, representation):
         allStates = arange(0,self.chainSize)
         X   = arange(self.chainSize)*2.0/10.0-self.SHIFT
         Y   = ones(self.chainSize) * self.Y
         DY  = zeros(self.chainSize)  
-        DX = zeros(self.chainSize)
-        
+        DX  = zeros(self.chainSize)
+        C   = zeros(self.chainSize)
+
         if self.value_function_fig is None:
             self.value_function_fig = pl.subplot(3,1,2)
             self.V_star = zeros(self.chainSize) #### # Value function at each state.
             self.V_star_line = self.value_function_fig.plot(allStates,self.V_star)
-            VApprox = [representation.V(s) for s in allStates]
-            piApprox = [representation.bestAction(s) for s in allStates]
+            V   = [representation.V(s) for s in allStates]
+            
             # Note the comma below, since a tuple of line objects is returned
             self.V_approx_line, = self.value_function_fig.plot(allStates, self.V_star, 'r-')
-            self.V_star_line = self.value_function_fig.plot(allStates, VApprox, 'b--')
-            
+            self.V_star_line    = self.value_function_fig.plot(allStates, V, 'b--')
             pl.ylim([0, self.GOAL_REWARD * (len(self.GOAL_STATES)+1)]) # Maximum value function is sum of all possible rewards
             
             self.policy_fig = pl.subplot(3,1,3)
             self.policy_fig.set_xlim(0, self.chainSize*2/10.0)
             self.policy_fig.set_ylim(0, 2)
-            self.arrows = pl.quiver(X,Y,DX,DY, units='x', headwidth=.15, headlength = .03, headaxislength = .22)
+            self.arrows = pl.quiver(X,Y,DX,DY, C, cmap = 'fiftyChainActions', units='x', width=0.05,scale=.008, alpha= .8 )#headwidth=.05, headlength = .03, headaxislength = .02)
             self.policy_fig.xaxis.set_visible(False)
             self.policy_fig.yaxis.set_visible(False)
-        VApprox = [representation.V(s) for s in allStates]
-        piApprox = [representation.bestAction(s) for s in allStates]
         
-        for s in allStates:
-            Qs,As    = representation.Qs(s)
-            bestAction    = representation.bestAction(s)
-            VApprox[s]   = max(Qs)
-            X[s] = 1/5.0+2/10.0*s
-            if(bestAction == self.LEFT):
-                DX[s] = -self.SHIFT
-                Y[s] = 0.5
-            else:
-                DX[s] = self.SHIFT
-                Y[s] = 0
+        V   = [representation.V(s) for s in allStates]
+        pi  = [representation.bestAction(s) for s in allStates]
+        #pi  = [self.optimal_policy[s] for s in allStates]
         
+        DX  = [(2*a-1)*self.SHIFT*.1 for a in pi]
         
-        self.V_approx_line.set_ydata(VApprox)
-#        self.value_function_fig.canvas.draw()
-        self.arrows.set_UVC(DX,DY,)
+        self.V_approx_line.set_ydata(V)
+        self.arrows.set_UVC(DX,DY,pi)
         pl.draw()
-    
     def step(self,s,a):
+        a = self.optimal_policy[s]
         actionFailure = (random.random() < self.p_action_failure)
         if a == self.LEFT or (a == self.RIGHT and actionFailure): #left
             ns = max(0,s-1)

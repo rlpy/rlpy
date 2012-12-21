@@ -93,7 +93,12 @@ class Experiment(object):
             
             if len([x for x in ['self.domain','self.agent','self.agent.policy','self.agent.representation'] if x == lower(v)]):
                 exp_name += eval('className(%s)' % v)
+                exp_name += '-'
             else:
-                exp_name += str(eval('%s' % v))
-            exp_name += '-'
+                try:
+                    eval('%s' % v)
+                    exp_name += str(eval('%s' % v))
+                    exp_name += '-'
+                except:
+                    pass
         return exp_name[:-1]  

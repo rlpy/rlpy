@@ -27,7 +27,7 @@ from string import *
 from sets import ImmutableSet,Set
 from itertools  import *
 from copy import deepcopy
-#import networkx as nx
+import networkx as nx
 import os, sys, multiprocessing
 from os import path
 # Tips:
@@ -102,6 +102,8 @@ def createColorMaps():
     #Make Grid World ColorMap
     mycmap = colors.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
     cm.register_cmap(cmap=mycmap)
+    mycmap = colors.ListedColormap(['r','k'], 'fiftyChainActions')
+    cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['w','.75','b','r'], 'IntruderMonitorying')
     cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
@@ -112,6 +114,7 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
     mycmap = colors.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
     cm.register_cmap(cmap=mycmap)
+
     mycmap = colors.ListedColormap(['r','w','k'], 'MountainCarActions')
     cm.register_cmap(cmap=mycmap)
 #    Some useful Colormaps
@@ -582,9 +585,9 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            plt = pl.plot(X,Y,linestyle ='-', marker = self.styles[i], linewidth = 2,alpha=.7,color = self.colors[i],markersize = self.markersize, label = self.labels[i])
+            plt = pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
             if self.bars:
-                pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i])
+                pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
                 max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
             else:
                 max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
