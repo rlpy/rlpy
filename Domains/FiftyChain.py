@@ -127,7 +127,9 @@ class FiftyChain(Domain):
     def possibleActions(self,s):
         if self.using_optimal_policy: return array([self.optimal_policy[s]])
         else: return arange(self.actions_num)
-    
+    def L_inf_distance_to_V_star(self, representation):
+            V   = array([representation.V(s) for s in arange(self.chainSize)])
+            return linalg.norm(V-self.V_star,inf) 
 
 if __name__ == '__main__':
     p = FiftyChain();

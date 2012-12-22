@@ -15,7 +15,7 @@
 # 3. Train function approximator on bellman error of present solution above
 # 4. Add the above as a new basis function.
 # 5. Repeat the process using the new basis until the most
-# recently added basis function has norm <= normThreshold, which
+# recently added basis function has norm <= batchThreshold, which
 # Parr et al. used as 10^-5.
 
 import sys, os
@@ -31,23 +31,23 @@ from Representation import *
 
 class BEBF(Representation):
     debug                   = 0
-#    memoized_phi            = {}    # dictionary mapping each feature index 
+#    memoized_phi            = {}   # dictionary mapping each feature index 
     featureIndex2feature    = {}    # dictionary mapping each feature index (ID) to its feature (function) object
-#    useCache                = 0     # this should only increase speed. If results are different something is wrong
+#    useCache                = 0    # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
-    normThreshold           = 0     # Minimum value of feature relevance for the batch setting (10^-5 per Parr et al.)
-    features                = None # Array of pointers to feature functions, indexed by order created
-    def __init__(self,domain,logger, discretization = 20, debug = 0,maxBatchDicovery = 1, normThreshold = 10 ** -3):
+    features                = []    # Array of pointers to feature functions, indexed by order created
+    batchThreshold          = None  # Minimum value of feature relevance for the batch setting (10^-5 per Parr et al.)
+    def __init__(self,domain,logger, discretization = 20, debug = 0,maxBatchDicovery = 1, batchThreshold = 10 ** -3):
         self.setBinsPerDimension(domain,discretization)
         # self.features_num           = int(sum(self.bins_per_dim))
-        self.features_num           = 1
+        self.features_num           = 0
         self.debug                  = debug
         self.maxBatchDicovery       = maxBatchDicovery
-        self.normThreshold          = normThreshold
+        self.batchThreshold          = batchThreshold
         self.addInitialFeatures()
         super(BEBF,self).__init__(domain,logger,discretization)
         self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
-        self.logger.log("Norm Threshold:\t\t%0.3f"% self.normThreshold)
+        self.logger.log("Norm Threshold:\t\t%0.3f"% self.batchThreshold)
     ## Adds an initial basis function estimated using only immediate reward.
     
         ## @return: a function object corresponding to the 
@@ -57,14 +57,14 @@ class BEBF(Representation):
                                                  # C = penalty parameter of error term, default 1
         bebfApprox.fit(X,y)
         return bebfApprox
-    
     def addInitialFeatures(self):
+        return 
         numDims = 1
         numSamples = 100
         y = random.randn(numSamples)
         X = random.randn(numSamples,numDims)
         self.features = array([self.getFunctionApproximation(X, y)])
-#        for i in range(self.features_num):
+#        for i in arange(self.features_num):
 #            feature = iFDD_feature(i)
 #            #shout(self,self.iFDD_features[ImmutableSet([i])].index)
 #            self.iFDD_features[ImmutableSet([i])] = feature
@@ -72,7 +72,7 @@ class BEBF(Representation):
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s = zeros(self.features_num)
-        for i in range(self.features_num):
+        for i in arange(self.features_num):
             F_s[i] = self.features[i].predict(s)
 #        print 's,F_s',s,F_s
 #        shout('F_s:',F_s)
@@ -82,30 +82,28 @@ class BEBF(Representation):
     # @param td_errors: p-by-1 (How much error observed for each sample)
     # @param phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
     # @param s: List of states corresponding to each td_error in td_errors (note that the same state may appear multiple times because of different actions taken while there)
-    # self.normThreshold is threshold below which no more BEBFs are added.
+    # self.batchThreshold is threshold below which no more BEBFs are added.
     def batchDiscover(self,td_errors, all_phi_s, s):
         # need states here instead?
         addedFeature = False
         # PLACEHOLDER for norm of function
         norm = max(abs(td_errors))# Norm of function
-        for j in range(self.maxBatchDicovery):
+        for j in arange(self.maxBatchDicovery):
 #            print 's'
 #            print 'tderr',td_errors[0:20]
-            newFeature = self.getFunctionApproximation(s, td_errors)
-            self.features = append(self.features,newFeature)
+            self.features.append(self.getFunctionApproximation(s, td_errors))
             if self.debug:
                 shout('s',s)
                 shout('td_errors',td_errors)
             print 'norm',norm
-            if norm > self.normThreshold:
+            if norm > self.batchThreshold:
 #                print 'added feature'
                 self.addNewWeight()
-                addedFeature = True
-                self.features_num+= 1
-                
-            else: break
+                addedFeature        = True
+                self.features_num   += 1
+            else: 
+                break
         return addedFeature
-    
     
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
@@ -115,7 +113,7 @@ if __name__ == '__main__':
     logger              = Logger()
     discovery_threshold = 1
     domain      = PitMaze()
-    rep         = BEBF(domain,logger,debug=1,normThreshold = 10 ** -5)
+    rep         = BEBF(domain,logger,debug=1,batchThreshold = 10 ** -5)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     print 'initial features'
     print rep.features_num,'---',rep.features

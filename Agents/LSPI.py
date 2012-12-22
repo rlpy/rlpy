@@ -55,24 +55,36 @@ class LSPI(Agent):
             lspi_iteration  = 0
             self.logger.log('Running LSPI:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
-                A = sp.coo_matrix((phi_sa_size,phi_sa_size))
+                if phi_sa_size != 0: A = sp.coo_matrix((phi_sa_size,phi_sa_size))
                 for i in arange(self.sample_window):
                     ns              = self.data_ns[i,:]
-                    phi_s_a         = all_phi_s_a[i,:]
-                    phi_ns          = all_phi_ns[i,:]
-                    new_na          = self.representation.bestAction(ns,phi_ns)
-                    phi_ns_new_na   = self.representation.phi_sa(ns,new_na,phi_ns)
-                    d               = phi_s_a-gamma*phi_ns_new_na
-                    A               = A + outer(phi_s_a,d) 
-                    td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)
+                    if phi_sa_size != 0:
+                        phi_s_a         = all_phi_s_a[i,:]
+                        phi_ns          = all_phi_ns[i,:]
+                        new_na          = self.representation.bestAction(ns,phi_ns)
+                        phi_ns_new_na   = self.representation.phi_sa(ns,new_na,phi_ns)
+                        d               = phi_s_a-gamma*phi_ns_new_na
+                        A = A + outer(phi_s_a,d)
+                        td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)
+                    else:
+                        td_errors[i]    = self.data_r[i]
                 #Calculate theta
-                new_theta                   = solveLinear(sp.csc_matrix(A),b)
-                weight_diff                 = linalg.norm(self.representation.theta - new_theta)
-                if weight_diff > self.epsilon: self.representation.theta   = new_theta
-                self.logger.log("%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff))
+                if phi_sa_size != 0:
+                    new_theta                   = solveLinear(sp.csc_matrix(A),b)
+                    weight_diff                 = linalg.norm(self.representation.theta - new_theta)
+                    if weight_diff > self.epsilon: self.representation.theta   = new_theta
+                    self.logger.log("%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff))
+                else:
+                    print "No features, hence no more iterations is necessary!"
+                    weight_diff = 0
                 lspi_iteration +=1
             return td_errors
     def LSTD(self): 
+        
+        #No features means empty matrices
+        if self.representation.features_num == 0:
+            return array([]), array([]), array([]), array([]), array([])
+         
         self.samples_count  = 0
         # Calculate the A and b matrixes in LSTD
         phi_sa_size     = self.domain.actions_num*self.representation.features_num

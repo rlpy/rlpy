@@ -50,7 +50,7 @@ class Representation(object):
             return 0.0
     def phi(self,s):
         #Returns the phi(s)
-        if self.domain.isTerminal(s):
+        if self.domain.isTerminal(s) or self.features_num == 0:
             return zeros(self.features_num,'bool')
         else:
             return self.phi_nonTerminal(s)

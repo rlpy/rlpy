@@ -33,7 +33,7 @@ class RE_LSPI(LSPI):
                     self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
                     added_feature = False
                 re_iteration += 1
-
+                print 'L_inf distance to V*= ', self.domain.L_inf_distance_to_V_star(self.representation)
             if added_feature:
                 # Run LSPI one last time with the new features
                 A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()

@@ -1,3 +1,4 @@
+# TODO: Merge update weight with the parent's function (AddNewWeight or sth)
 ######################################################
 # Developed by Alborz Geramiard Nov 14th 2012 at MIT #
 ######################################################
