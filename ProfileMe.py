@@ -1,10 +1,11 @@
 from main import *
+#from mainDP import *
 import os
 import cProfile
 import pstats
 
 
-Output = 'RE_LSPI+iFDD2.pdf'
+Output = 'DP.pdf'
 print 'Profiling'
 cProfile.run('main(1,SHOW_FINAL_PLOT=0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

@@ -26,7 +26,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     PROJECT_PATH        = 'Results/Temp' if PROJECT_PATH == '' else PROJECT_PATH
     DEBUG               = 0
     logger              = Logger()
-    MAX_ITERATIONS      = 20
+    MAX_ITERATIONS      = 1
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
     MAZE                = '/Domains/PitmazeMaps/4x5.txt'
@@ -56,12 +56,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = NetworkAdmin(networkmapname=NETWORKADMINMAP,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
-    domain          = IntruderMonitoring(INTRUDERMAP,logger)
+    #domain          = IntruderMonitoring(INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     #domain          = FiftyChain(logger = logger)
+    domain          = FlipBoard(logger=logger)
     
     representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
@@ -71,7 +72,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation   = BEBF(domain,logger)
       
-    MDPsolver = ValueIteration(representation,domain,logger, mc_ns_samples= 10,max_iterations = MAX_ITERATIONS)
+    #MDPsolver = ValueIteration(representation,domain,logger, mc_ns_samples= 10,max_iterations = MAX_ITERATIONS)
+    MDPsolver = ValueIteration(representation,domain,logger, mc_ns_samples= 1,max_iterations = MAX_ITERATIONS)
     
     MDPsolver.solve()
     

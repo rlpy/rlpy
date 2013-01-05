@@ -73,7 +73,7 @@ class MDPSolver(object):
         #    self.domain.showLearning(self.representation)
 
         while not eps_term and eps_length < self.domain.episodeCap:
-            a               = self.representation.bestAction(s=s)
+            a               = self.representation.bestAction(s)
             #if self.show_performance: 
                 #self.domain.showDomain(s,a)
              #   pl.title('After '+str(total_steps)+' Steps')

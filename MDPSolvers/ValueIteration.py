@@ -34,11 +34,12 @@ class ValueIteration(MDPSolver):
                 print 'At Sweep: ', iter
                 prev_theta =  self.representation.theta.copy()
                 for i in arange(0,no_of_states):
+                #for i in arange(0,3):
                     #print 'At state index: ',i
                     
-                    s = id2vec(i,rep.bins_per_dim)
-                    s = array(s, int)
-                    #print 'At state: ',s
+                    s = array(id2vec(i,rep.bins_per_dim))
+                    #s = array(s, int)
+                    print 'At state: ',s
                     #if(not self.domain.isTerminal(s)):
                                       
                     actions = self.domain.possibleActions(s)

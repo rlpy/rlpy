@@ -17,8 +17,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 8000
+    PERFORMANCE_CHECKS  = 10
+    LEARNING_STEPS      = 10000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
@@ -68,26 +68,26 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = NetworkAdmin(networkmapname=NETWORKADMINMAP,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
-    domain          = FiftyChain(logger = logger)
+    #domain          = FiftyChain(logger = logger)
     
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDD_Threshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = FeatureExpandThreshold)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
-    representation   = BEBF(domain,logger)
+    #representation   = BEBF(domain,logger)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
