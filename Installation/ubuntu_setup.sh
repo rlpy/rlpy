@@ -42,5 +42,19 @@ do
     esac
 done
 echo ""
-echo "Installation script complete."
 
+echo "The status of optional packages is shown below:"
+dpkg -s texlive-latex-extra |  grep Status
+dpkg -s texlive-fonts-recommended |  grep Status
+dpkg -s libatlas-dev |  grep Status
+
+echo -e "\n\nThe status of all required packages are shown below:"
+dpkg -s python-dev |  grep Status
+dpkg -s python-setuptools |  grep Status
+dpkg -s python-numpy |  grep Status
+dpkg -s python-scipy |  grep Status
+dpkg -s python-matplotlib |  grep Status
+dpkg -s graphviz |  grep Status
+dpkg -s python-networkx |  grep Status
+
+echo -e "\n\nInstallation script complete."

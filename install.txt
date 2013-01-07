@@ -1,8 +1,8 @@
 The only requirements to run and contribute to RL-Python are
-installation of the required package dependencies.  Once Python, Latex,
-and pip are installed, dependencies can be installed using the provided
-script.  Detailed installation instruction are provided for common
-operating systems below.
+installation of the required package dependencies.  Once Python and Latex
+are installed, users of one of the recommended operating systems can
+install dependencies using one of the provided scripts.
+Detailed installation instructions are shown below.
 Installation FAQ available at bottom.
 
 Recommended Operating Systems:
@@ -13,8 +13,7 @@ c) Ubuntu Linux
 Requirements for Installation (Detailed in next section):
 1. Python 2.7
 2. An IDE capable of development in Python
-3. pip
-4. Latex (with extra fonts, for plotting)
+3. Latex (with extra fonts, for plotting)
 Then run install_dep.py to obtain RL-Python dependencies.
 
 ===============================================================
@@ -42,38 +41,47 @@ See FAQ if eclipse fails to run.
 
 ===============================================================
 ===============================================================
-3. pip
-
-The installation of pip varies based on your operating system:
-
+2.5. pip
 a) Windows 32/64-bit
 Install per instructions here: http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows
 
-b) Mac OSX
-
-c) Ubuntu Linux
+b) Mac OSX - automated in script
+c) Ubuntu Linux - automated in script
 
 ===============================================================
 ===============================================================
-4. Latex (with extra fonts)
+3. Latex (with extra fonts)
 a) Windows 32/64-bit
 We recommend installing Miktex (  )
 which includes dvipng and all required font packages.
 
-The installation of
+b) Mac OSX - 
 
-b) Mac OSX
+c) Ubuntu Linux - automated in script
 
 ===============================================================
 ===============================================================
-4. Run install_dep.py
+4. Run the dependency installer script
+a) Windows 32-bit
+a.i)  Extract Win32_files.zip to a temporary directory of choice
+a.ii) Open a command prompt window with administrative privileges:
+	Windows 8: 		 WindowsKey-X, select "Command Prompt Admin"
+	Windows 7,Vista: type 'cmd' in the start menu, right click and open with admin privileges
+	Windows XP:      Start-->Run cmd.exe
+a.iii) Navigate to the temporary directory and run the .bat script.
 
+b) Mac OSX - Open a terminal window, navigate to the Installation folder,
+and run the provided script with ./OSX_setup.sh
+
+c) Ubuntu - Open a terminal window, navigate to the Installation folder,
+and run the provided script with ./ubuntu_setup.sh
 ===============================================================
 ===============================================================
 Installation of RL-Python is now complete! Test the installation by
-running [[]]
+running IshouldRun.py
 
-If you are running an operating system which does not support pip,
+
+If your setup does not match those recommended above,
 you must download the following packages manually:
 ===============================================================
 1. numpy
@@ -137,6 +145,11 @@ sudo easy_install PyOpenGL
 
 
 FAQ: Error/Solutions
+U = Ubuntu, W = Windows, X = OSX
+===============================================================
+If you are having trouble installing on OSX, see the following:
+http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/#numpy
+
 ===============================================================
 E: ImportError: numpy.core.multiarray failed to import
 S1: Dont import pylab directly. Use Matplotlib.pylab
@@ -159,15 +172,14 @@ E: In Windows: Python does not appear to be installed (Eclipse
 fails to locate python, or running 'python' in a command prompt gives
 'python' is not recognized as an internal or external command, operable
 program or batch file."
-S: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )
+S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )
 ===============================================================
 E: In Windows, Latex fonts do not appear to be installed
-S: Set the latex environment variable per:
+S-W: Set the latex environment variable per:
 For example, C:\Program Files\MiKTeX 2.9\miktex\bin\x64
-
-
+===============================================================
 E: ! LaTeX Error: File `type1cm.sty' not found.
-S: sudo apt-get install texlive-latex-extra
+S-U: sudo apt-get install texlive-latex-extra
 ===============================================================
 E: ! I can't find file `pncr7t'.
-S: sudo apt-get install texlive-fonts-recommended
+S-U: sudo apt-get install texlive-fonts-recommended
