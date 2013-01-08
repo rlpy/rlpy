@@ -24,7 +24,7 @@ from time import *
 from hashlib import sha1
 import datetime, csv
 from string import *
-from sets import ImmutableSet,Set
+#from Sets import ImmutableSet
 from itertools  import *
 from copy import deepcopy
 import networkx as nx
@@ -503,6 +503,11 @@ def checkNCreateDirectory(fullfilename):
 def hasFunction(object,methodname):
     method = getattr(object, methodname, None)
     return callable(method)
+def pretty(X,format='%0.3f'):
+    # convert a numpy array in given format to str
+    # [1,2,3], %0.3f => 1.000    2.000    3.000
+    format = format + '\t'
+    return ''.join(format% x for x in X)
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     def save(self,filename):
@@ -605,14 +610,22 @@ class Merger(object):
             pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
         pl.xlabel(X_axis,fontsize=16)
         pl.ylabel(Y_axis,fontsize=16)
-        pl.show()
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
         self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1)
-        finalArray = vstack((Xs,Ys,Errs))
-        savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
+        # Store the numbers in a txt file
+        f = open(fullfilename+'.txt','w')
+        for i in range(self.exp_num):
+            f.write("Algorithm:" + self.labels[i] +"\n")
+            
+            f.write('X:' + pretty(Xs[i,:])+'\n')
+            f.write('Y:' + pretty(Ys[i,:])+'\n')
+            f.write('Err:' + pretty(Errs[i,:])+'\n')
+            f.write("========\n")
+        f.close()
+        #savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
 

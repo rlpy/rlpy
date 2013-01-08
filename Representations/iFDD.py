@@ -25,7 +25,7 @@ class iFDD_feature(object):
             # This is the case where a single integer is passed to generate an initial feature
             index           = potential
             self.index      = index
-            self.f_set      = ImmutableSet([index])
+            self.f_set      = frozenset([index])
             self.p1         = -1
             self.p2         = -1
     def show(self):
@@ -57,6 +57,7 @@ class iFDD(Representation):
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
+    iFDDplus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     def __init__(self,domain,logger,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
@@ -68,6 +69,7 @@ class iFDD(Representation):
         self.batchThreshold         = batchThreshold
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
+        self.logger.log("Plus:\t\t\t%d" % self.iFDDplus)
         self.logger.log("Threshold:\t\t%0.3f" % self.discovery_threshold)
         self.logger.log("Sparsify:\t\t%d"% self.sparsify)
         self.logger.log("Cached:\t\t\t%d"% self.useCache)
@@ -76,9 +78,9 @@ class iFDD(Representation):
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
-        activeIndices          = Set(self.activeInitialFeatures(s))
+        activeIndices          = set(self.activeInitialFeatures(s))
         if self.useCache:
-            finalActiveIndices     = self.cache.get(ImmutableSet(activeIndices))
+            finalActiveIndices     = self.cache.get(frozenset(activeIndices))
             if finalActiveIndices is None:        
                 # run regular and update the cache
                 finalActiveIndices     = self.findFinalActiveFeatures(activeIndices)
@@ -89,13 +91,13 @@ class iFDD(Representation):
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
         finalActiveFeatures = []
-        initialSet          = Set(intialActiveFeatures)
+        initialSet          = set(intialActiveFeatures)
         for candidate in powerset(initialSet,ascending=0):
             if len(initialSet) == 0:
                 break # No more initial features to be mapped to extended ones
             
-            if initialSet.issuperset(Set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
-                feature = self.iFDD_features.get(ImmutableSet(candidate))
+            if initialSet.issuperset(set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
+                feature = self.iFDD_features.get(frozenset(candidate))
                 if feature != None:
                     finalActiveFeatures.append(feature.index)
                     if self.sparsify:
@@ -103,7 +105,7 @@ class iFDD(Representation):
                         initialSet   = initialSet - feature.f_set
                         #print "Remaining Set:", initialSet 
         if self.useCache:
-            self.cache[ImmutableSet(intialActiveFeatures)] = finalActiveFeatures
+            self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures     
     def discover(self,phi_s,td_error):            
         activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
@@ -124,11 +126,16 @@ class iFDD(Representation):
                 potential = iFDD_potential(f,td_error,g_index,h_index)
                 self.iFDD_potentials[f] = potential
             else:
-                potential.relevance += td_error
+                if self.iFDDplus:
+                    potential.relevance += td_error
+                else:
+                    potential.relevance += abs(td_error)
                 potential.count     += 1
             # Check for discovery
-            if abs(potential.relevance/sqrt(potential.count)) > self.discovery_threshold:
+            relevance = potential.relevance if not self.iFDDplus else abs(potential.relevance/sqrt(potential.count)) 
+            if relevance > self.discovery_threshold:
                 self.addFeature(potential)
+                    
     def show(self):
         self.showFeatures()
         self.showPotentials()
@@ -149,8 +156,8 @@ class iFDD(Representation):
     def addInitialFeatures(self):
         for i in arange(self.features_num):
             feature = iFDD_feature(i)
-            #shout(self,self.iFDD_features[ImmutableSet([i])].index)
-            self.iFDD_features[ImmutableSet([i])] = feature
+            #shout(self,self.iFDD_features[frozenset([i])].index)
+            self.iFDD_features[frozenset([i])] = feature
             self.featureIndex2feature[feature.index] = feature
     def addFeature(self,potential):
         # Add it to the list of features
@@ -185,13 +192,19 @@ class iFDD(Representation):
         added_feature   = True
         for i in arange(p):
             phiphiT     = outer(phi[i,:],phi[i,:])
-            relevances  += phiphiT*td_errors[i]
+            if self.iFDDplus:
+                relevances  += phiphiT*td_errors[i]
+            else:
+                relevances  += phiphiT*abs(td_errors[i])
             counts      += phiphiT
         
         #Remove Diagonal and upper part of the relevances as they are useless
         relevances      = triu(relevances,1)
         non_zero_index  = nonzero(relevances)
-        relevances[non_zero_index] = divide(abs(relevances[non_zero_index]), sqrt(counts[non_zero_index])) #Calculate relevances based on theoretical results of ICML 2013 potential submission 
+        if self.iFDDplus:
+            relevances[non_zero_index] = divide(abs(relevances[non_zero_index]), sqrt(counts[non_zero_index])) #Calculate relevances based on theoretical results of ICML 2013 potential submission
+        else:
+            relevances[non_zero_index] = relevances[non_zero_index] #Based on Geramifard11_ICML Paper
 
         if SHOW_HISTOGRAM:
             e_vec  = relevances.flatten()

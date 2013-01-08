@@ -17,8 +17,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 10000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 20000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
@@ -47,8 +47,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for NetworkAdmin
     iFDD_Sparsify               = 1     # Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces. 
-    FeatureExpandThreshold      = .5    # Minimum relevance required for representation expansion techniques to add a feature 
-    iFDD_CACHED                 = 1     # Results will remiain IDENTICAL, but often faster
+    FeatureExpandThreshold      = .4    # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20     # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     FourierOrder                = 3     # 
     # Policy ----------------------
@@ -74,9 +74,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_SwingUp(logger = logger);
     #domain          = FiftyChain(logger = logger)
     
-    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDD_Threshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = FeatureExpandThreshold)
+    representation  = iFDD(domain,logger,iFDD_Threshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = FeatureExpandThreshold)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)

@@ -66,8 +66,8 @@ class BEBF(Representation):
         self.features = array([self.getFunctionApproximation(X, y)])
 #        for i in arange(self.features_num):
 #            feature = iFDD_feature(i)
-#            #shout(self,self.iFDD_features[ImmutableSet([i])].index)
-#            self.iFDD_features[ImmutableSet([i])] = feature
+#            #shout(self,self.iFDD_features[frozenset([i])].index)
+#            self.iFDD_features[frozenset([i])] = feature
 #            self.featureIndex2feature[feature.index] = feature
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
