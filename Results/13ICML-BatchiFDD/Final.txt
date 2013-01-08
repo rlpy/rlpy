@@ -4,5 +4,27 @@ Representation
 Initial
 OMP-TD			
 BEBF					
-iFDD	
-iFDD+			2552.200+160.724
+iFDD				
+
+
+* iFDD means the one in the theory not ICML11 Version
+
+Inverted Pendulum
+=======
+Samples 			= 20K
+Gamma 			= .95
+Min_threshold
+iFDD, OMP-TD 	= .4
+
+BlocksWorld
+=======
+Samples 			= 20K
+Gamma 			= 1
+
+SystemAdmin
+=======
+Samples 			= 20K
+
+PST
+=======
+Samples 			= 20K
