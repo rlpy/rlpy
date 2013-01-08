@@ -1,0 +1,109 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.9
+============================================================
+Representation:		iFDD
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Threshold:		0.100
+Sparsify:		1
+Cached:			1
+Max Batch Discovery:	20
+Batch Threshold:		0.400
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.4/11-results.txt
+Max Steps: 		20000
+Performance Checks:	1
+2113: E[0:00:01]-R[0:00:08]: Return=-1.00, Steps=8, Features = 40
+4230: E[0:00:02]-R[0:00:07]: Return=-1.00, Steps=10, Features = 40
+6536: E[0:00:03]-R[0:00:06]: Return=-1.00, Steps=10, Features = 40
+8463: E[0:00:04]-R[0:00:05]: Return=-1.00, Steps=13, Features = 40
+10334: E[0:00:05]-R[0:00:05]: Return=-1.00, Steps=9, Features = 40
+12289: E[0:00:06]-R[0:00:04]: Return=-1.00, Steps=12, Features = 40
+14526: E[0:00:07]-R[0:00:03]: Return=-1.00, Steps=9, Features = 40
+16822: E[0:00:08]-R[0:00:02]: Return=-1.00, Steps=10, Features = 40
+18927: E[0:00:09]-R[0:00:01]: Return=-1.00, Steps=12, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 3.445
+1: L2_norm of weight difference = 3.298
+2: L2_norm of weight difference = 3.414
+3: L2_norm of weight difference = 0.510
+4: L2_norm of weight difference = 3.598
+5: L2_norm of weight difference = 0.000
+Performance Check >>> -1.000 Return, 272 Steps, 40 Features
+New Feature 1: [9,33]
+New Feature 2: [9,34]
+New Feature 3: [11,27]
+New Feature 4: [8,32]
+New Feature 5: [10,26]
+New Feature 6: [10,24]
+New Feature 7: [10,27]
+New Feature 8: [9,32]
+New Feature 9: [9,27]
+New Feature 10: [9,35]
+New Feature 11: [10,23]
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 4.219
+1: L2_norm of weight difference = 1.833
+2: L2_norm of weight difference = 2.898
+3: L2_norm of weight difference = 2.505
+4: L2_norm of weight difference = 2.505
+5: L2_norm of weight difference = 2.505
+6: L2_norm of weight difference = 2.505
+7: L2_norm of weight difference = 2.505
+8: L2_norm of weight difference = 2.505
+9: L2_norm of weight difference = 2.505
+Performance Check >>> 0.000 Return, 3000 Steps, 51 Features
+New Feature 1: [11,26]
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 3.938
+1: L2_norm of weight difference = 1.531
+2: L2_norm of weight difference = 3.163
+3: L2_norm of weight difference = 3.676
+4: L2_norm of weight difference = 2.048
+5: L2_norm of weight difference = 3.431
+6: L2_norm of weight difference = 3.676
+7: L2_norm of weight difference = 2.048
+8: L2_norm of weight difference = 3.431
+9: L2_norm of weight difference = 3.676
+Performance Check >>> -1.000 Return, 1128 Steps, 52 Features
+New Feature 1: [11,28]
+Representation Expansion iteration #4
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 4.154
+1: L2_norm of weight difference = 2.305
+2: L2_norm of weight difference = 2.224
+3: L2_norm of weight difference = 0.434
+4: L2_norm of weight difference = 3.012
+5: L2_norm of weight difference = 3.468
+6: L2_norm of weight difference = 3.128
+7: L2_norm of weight difference = 3.128
+8: L2_norm of weight difference = 3.128
+9: L2_norm of weight difference = 3.128
+Performance Check >>> 0.000 Return, 3000 Steps, 53 Features
+20000 >>> E[0:04:12]-R[0:00:00]: Return=-1.00, Steps=1754, Features = 53
+============================================================
+Took 0:04:12
+Results	=> Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.4/11-results.txt
+Log	=> Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.4/11-out.txt

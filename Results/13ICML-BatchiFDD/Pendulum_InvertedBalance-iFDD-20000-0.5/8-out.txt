@@ -1,0 +1,88 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.9
+============================================================
+Representation:		iFDD
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Threshold:		0.100
+Sparsify:		1
+Cached:			1
+Max Batch Discovery:	20
+Batch Threshold:		0.500
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.5/8-results.txt
+Max Steps: 		20000
+Performance Checks:	1
+1092: E[0:00:01]-R[0:00:17]: Return=-1.00, Steps=11, Features = 40
+2185: E[0:00:02]-R[0:00:16]: Return=-1.00, Steps=9, Features = 40
+3253: E[0:00:03]-R[0:00:16]: Return=-1.00, Steps=8, Features = 40
+4307: E[0:00:04]-R[0:00:15]: Return=-1.00, Steps=22, Features = 40
+5384: E[0:00:05]-R[0:00:14]: Return=-1.00, Steps=10, Features = 40
+6517: E[0:00:06]-R[0:00:12]: Return=-1.00, Steps=11, Features = 40
+7610: E[0:00:07]-R[0:00:11]: Return=-1.00, Steps=10, Features = 40
+8708: E[0:00:08]-R[0:00:10]: Return=-1.00, Steps=9, Features = 40
+9836: E[0:00:09]-R[0:00:09]: Return=-1.00, Steps=9, Features = 40
+10998: E[0:00:10]-R[0:00:08]: Return=-1.00, Steps=13, Features = 40
+12179: E[0:00:11]-R[0:00:07]: Return=-1.00, Steps=8, Features = 40
+13388: E[0:00:12]-R[0:00:06]: Return=-1.00, Steps=10, Features = 40
+14550: E[0:00:13]-R[0:00:05]: Return=-1.00, Steps=11, Features = 40
+15750: E[0:00:14]-R[0:00:04]: Return=-1.00, Steps=13, Features = 40
+16940: E[0:00:15]-R[0:00:03]: Return=-1.00, Steps=12, Features = 40
+18135: E[0:00:16]-R[0:00:02]: Return=-1.00, Steps=8, Features = 40
+19296: E[0:00:17]-R[0:00:01]: Return=-1.00, Steps=18, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 3.163
+1: L2_norm of weight difference = 0.772
+2: L2_norm of weight difference = 1.937
+3: L2_norm of weight difference = 1.937
+4: L2_norm of weight difference = 1.937
+5: L2_norm of weight difference = 1.937
+6: L2_norm of weight difference = 1.937
+7: L2_norm of weight difference = 1.937
+8: L2_norm of weight difference = 1.937
+9: L2_norm of weight difference = 1.937
+Performance Check >>> 0.000 Return, 3000 Steps, 40 Features
+New Feature 1: [9,32]
+New Feature 2: [9,35]
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 3.440
+1: L2_norm of weight difference = 2.164
+2: L2_norm of weight difference = 0.000
+Performance Check >>> -1.000 Return, 2401 Steps, 42 Features
+New Feature 1: [9,33]
+New Feature 2: [9,34]
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 4.151
+1: L2_norm of weight difference = 1.025
+2: L2_norm of weight difference = 1.994
+3: L2_norm of weight difference = 1.481
+4: L2_norm of weight difference = 0.400
+5: L2_norm of weight difference = 0.527
+6: L2_norm of weight difference = 0.000
+Performance Check >>> 0.000 Return, 3000 Steps, 44 Features
+20000 >>> E[0:03:35]-R[0:00:00]: Return=0.00, Steps=3000, Features = 44
+============================================================
+Took 0:03:35
+Results	=> Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.5/8-results.txt
+Log	=> Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.5/8-out.txt

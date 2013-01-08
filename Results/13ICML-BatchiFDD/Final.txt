@@ -1,0 +1,8 @@
+
+Domain			InvertedPendulum		BlocksWorld 		SystemAdmin		PST			
+Representation	
+Initial
+OMP-TD			
+BEBF					
+iFDD	
+iFDD+			2552.200+160.724
