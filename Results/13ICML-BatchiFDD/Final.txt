@@ -1,10 +1,10 @@
 
 Domain			InvertedPendulum		BlocksWorld 		SystemAdmin		PST			
 Representation	
-Initial
+Initial			389.700+105.115
 OMP-TD			
 BEBF					
-iFDD				
+iFDD				2497.667+185.985	
 
 
 * iFDD means the one in the theory not ICML11 Version
@@ -14,12 +14,12 @@ Inverted Pendulum
 Samples 			= 20K
 Gamma 			= .95
 Min_threshold
-iFDD, OMP-TD 	= .4
+iFDD 			= .3 	(.2,.3,.4,.5,.6)
 
 BlocksWorld
 =======
 Samples 			= 20K
-Gamma 			= 1
+Gamma 			= .95
 
 SystemAdmin
 =======
