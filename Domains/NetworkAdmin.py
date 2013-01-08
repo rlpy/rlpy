@@ -46,8 +46,8 @@ from Domain import *
 ## @author: Robert H Klein
 class NetworkAdmin(Domain):
 
-    NEIGHBORS = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
-    UNIQUE_EDGES = [] # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
+    NEIGHBORS = []          # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
+    UNIQUE_EDGES = []       # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     
     P_SELF_REPAIR = 0.04
     P_REBOOT_REPAIR = 1.0
@@ -55,14 +55,15 @@ class NetworkAdmin(Domain):
     REBOOT_REWARD = -1.75
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
-    episodeCap = 200 # 200 used in tutorial
+    episodeCap = 200        # 200 used in tutorial
 
-    networkGraph = None #Graph of network used for visualization
-    networkPos = None
+    # Plotting Variables
+    networkGraph = None     # Graph of network used for visualization
+    networkPos = None       # Position of network graph
     
     # Possible values for each computer
     BROKEN, RUNNING = 0,1
-    _NUM_VALUES = 2 # Number of values possible for each state, must be hand-coded to match number defined above
+    _NUM_VALUES = 2         # Number of values possible for each state, must be hand-coded to match number defined above
             
     ## Note that you must pass a network map name as well as its format type.
     # @see NetworkAdmin(Domain)

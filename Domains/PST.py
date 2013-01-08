@@ -114,19 +114,18 @@ class UAVIndex:
 ## @author Robert H. Klein
 class PST(Domain):
     
-    episodeCap = 100 # 100 used in tutorial
+    episodeCap          = 100  # 100 used in tutorial
     
-    FULL_FUEL = 10 # Number of fuel units at start [10 in tutorial]
-    P_NOM_FUEL_BURN = 0.8 # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
- #   P_TWO_FUEL_BURN = 1.0 - P_NOM_FUEL_BURN # Probability of 2-unit fuel burn on timestep
-    P_ACT_FAIL = 0.02 # Probability that actuators fail on this timestep [0.02 in tutorial]
-    P_SENSOR_FAIL = 0.05 #Probability that sensors fail on this timestep [0.05 in tutorial]
-    CRASH_REWARD_COEFF = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
+    FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
+    P_NOM_FUEL_BURN     = 0.8  # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
+    P_ACT_FAIL          = 0.02 # Probability that actuators fail on this timestep [0.02 in tutorial]
+    P_SENSOR_FAIL       = 0.05 # Probability that sensors fail on this timestep [0.05 in tutorial]
+    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
     SURVEIL_REWARD_COEFF = 1.5 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
     FUEL_BURN_REWARD_COEFF = 0.0 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
-    numCrashed = 0 # Number of crashed UAVs [n_c]
-    numHealthySurveil = 0 #Number of UAVs in surveillance area with working sensor and actuator [n_s]
-    fuelUnitsBurned = 0
+    numCrashed          = 0    # Number of crashed UAVs [n_c]
+    numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
+    fuelUnitsBurned     = 0
     LIMITS = []
     
     NUM_UAV = 0 # Number of UAVs present in the mission
@@ -164,16 +163,16 @@ class PST(Domain):
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
         _statespace_limits = array(vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]])) # 3 Location states, 2 status states
         self.statespace_limits      = array(tile(_statespace_limits,(NUM_UAV,1)))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        self.motionNoise = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
+        self.motionNoise            = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
         self.LIMITS                 = tile(UAVAction.SIZE, (1,NUM_UAV))[0] # eg [3,3,3,3]
         self.isCommStatesCovered    = False # Don't have communications available yet, so no surveillance reward allowed.
-        self.location_rect_vis          = None # 
+        self.location_rect_vis      = None # 
         self.location_coord         = None
         self.uav_circ_vis           = None
-        self.uav_text_vis = None
-        self.uav_sensor_vis = None
-        self.uav_actuator_vis = None
-        self.comms_line = None
+        self.uav_text_vis           = None
+        self.uav_sensor_vis         = None
+        self.uav_actuator_vis       = None
+        self.comms_line             = None
         self.dist_between_locations = self.RECT_GAP + self.LOCATION_WIDTH
 #        self.SENSOR_REL_X = self.UAV_RADIUS - self.SENSOR_LENGTH
 #        self.ACTUATOR_REL_Y = self.UAV_RADIUS - self.ACTUATOR_HEIGHT
