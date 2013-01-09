@@ -56,12 +56,12 @@ class BEBF(Representation):
 #        bebfApprox.fit(X,y)
 #        return bebfApprox
     
-    def getFunctionApproximation(self,X,y):
-        #return Rbf(X,y,function='multiquadric') # function = gaussian
-        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+#    def getFunctionApproximation(self,X,y):
+#        #return Rbf(X,y,function='multiquadric') # function = gaussian
+#        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
                                                  # C = penalty parameter of error term, default 1
-        bebfApprox.fit(X,y)
-        return bebfApprox
+#        bebfApprox.fit(X,y)
+#        return bebfApprox
     
     
     def addInitialFeatures(self):

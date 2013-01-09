@@ -6,7 +6,7 @@
 from Tools import *
 
 #path = 'Results/Example_Project' 
-paths = ['Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-iFDD-20000-0.3'] 
+paths = ['Results/13ICML-BatchiFDD/Pendulum/Pendulum_InvertedBalance-iFDD-20000-0.3'] 
 
 
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
