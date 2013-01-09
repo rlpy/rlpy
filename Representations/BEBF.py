@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 #from scipy.interpolate import Rbf
 from sklearn import svm
+from sklearn.gaussian_process import GaussianProcess
 from Tools import *
 from Domains import PitMaze
 from Representation import *
@@ -31,17 +32,16 @@ from Representation import *
 
 class BEBF(Representation):
     debug                   = 0
-    maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
+    maxBatchDicovery        = 1     # Number of features to be expanded in the batch setting; here 1 since each BEBF will be identical on a given iteration
     features                = []    # Array of pointers to feature functions, indexed by order created
     batchThreshold          = None  # Minimum value of feature relevance for the batch setting (10^-5 per Parr et al.
     initial_features_num    = 0     # Initial number of features, initialized in __init__
-    def __init__(self,domain,logger, discretization = 20, debug = 0,maxBatchDicovery = 1, batchThreshold = 10 ** -3):
+    def __init__(self,domain,logger, discretization = 20, debug = 0, batchThreshold = 10 ** -3):
         self.setBinsPerDimension(domain,discretization)
         self.initial_features_num      = int(sum(self.bins_per_dim)) # Effectively initialize with IndependentDiscretization
         self.features_num           = self.initial_features_num # Starting number of features equals the above, changes during execution
        # self.features_num           = 0
         self.debug                  = debug
-        self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold          = batchThreshold
         self.addInitialFeatures()
         super(BEBF,self).__init__(domain,logger,discretization)
@@ -56,10 +56,13 @@ class BEBF(Representation):
 #        bebfApprox.fit(X,y)
 #        return bebfApprox
     
-#    def getFunctionApproximation(self,X,y):
-#        #return Rbf(X,y,function='multiquadric') # function = gaussian
-#        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
-                                                 # C = penalty parameter of error term, default 1
+    def getFunctionApproximation(self,X,y):
+        #return Rbf(X,y,function='multiquadric') # function = gaussian
+        #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+                                                # C = penalty parameter of error term, default 1
+        gp = GaussianProcess(theta0=0.1, thetaL=.001, thetaU=1.)
+        gp.fit(X, y)
+        return gp
 #        bebfApprox.fit(X,y)
 #        return bebfApprox
     
