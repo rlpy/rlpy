@@ -115,7 +115,9 @@ class UAVIndex:
 class PST(Domain):
     
     episodeCap          = 100  # 100 used in tutorial
+    gamma               = 0.9  # 0.9 used in tutorial
     
+    # Domain constants
     FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
     P_NOM_FUEL_BURN     = 0.8  # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
     P_ACT_FAIL          = 0.02 # Probability that actuators fail on this timestep [0.02 in tutorial]
@@ -123,41 +125,41 @@ class PST(Domain):
     CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
     SURVEIL_REWARD_COEFF = 1.5 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
     FUEL_BURN_REWARD_COEFF = 0.0 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
+    
+    NUM_UAV             = 3 # Number of UAVs present in the mission [3 in tutorial
+    REFUEL_RATE         = 1 # Rate of refueling per timestep
+    NOM_FUEL_BURN       = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
+    STOCH_FUEL_BURN     = 2 # Alternative fuel burn rate
+    
+    # Domain variables
     numCrashed          = 0    # Number of crashed UAVs [n_c]
     numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
     fuelUnitsBurned     = 0
-    LIMITS = []
-    
-    NUM_UAV = 0 # Number of UAVs present in the mission
-    REFUEL_RATE = 1 # Rate of refueling per timestep
-    NOM_FUEL_BURN = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
-    STOCH_FUEL_BURN = 2 # Alternative fuel burn rate
-    
+    LIMITS = []    
     isCommStatesCovered = False # All comms states are covered on a given timestep, enabling surveillance rewards
     
     # Plotting constants
     UAV_RADIUS = 0.3
-    SENSOR_REL_X = 0.2 # Location of the sensor image relative to the uav
-    SENSOR_LENGTH = 0.2 # Length of the sensor surveillance image
-    ACTUATOR_REL_Y = 0.2 # Location of the actuator image relative to the uav
-    ACTUATOR_HEIGHT = 0.2 # Height of the actuator comms image
-    domain_fig = None
-    subplot_axes = None
-    location_rect_vis = None # List of rectangle objects used in the plot
-    uav_circ_vis = None # List of circles used to represent UAVs in plot
-    uav_text_vis = None # List of fuel text used in plot
-    uav_sensor_vis = None # List of sensor wedges used in plot
-    uav_actuator_vis = None # List of actuator wedges used in plot
-    comms_line = None # List of communication lines used in plot
-    location_coord = None # Coordinates of the center of each rectangle
+    SENSOR_REL_X        = 0.2 # Location of the sensor image relative to the uav
+    SENSOR_LENGTH       = 0.2 # Length of the sensor surveillance image
+    ACTUATOR_REL_Y      = 0.2 # Location of the actuator image relative to the uav
+    ACTUATOR_HEIGHT     = 0.2 # Height of the actuator comms image
+    domain_fig          = None
+    subplot_axes        = None
+    location_rect_vis   = None # List of rectangle objects used in the plot
+    uav_circ_vis        = None # List of circles used to represent UAVs in plot
+    uav_text_vis        = None # List of fuel text used in plot
+    uav_sensor_vis      = None # List of sensor wedges used in plot
+    uav_actuator_vis    = None # List of actuator wedges used in plot
+    comms_line          = None # List of communication lines used in plot
+    location_coord      = None # Coordinates of the center of each rectangle
 #    uav_vis_list = None # List of UAV objects used in plot
-    LOCATION_WIDTH = 1.0 # Width of each rectangle used to represent a location
-    RECT_GAP = 0.9   # Gap to leave between rectangles
+    LOCATION_WIDTH      = 1.0 # Width of each rectangle used to represent a location
+    RECT_GAP            = 0.9   # Gap to leave between rectangles
     dist_between_locations = 0 # Total distance between location rectangles in plot, computed in init()
     
     ###
-    
-    def __init__(self, NUM_UAV = 6, motionNoise = 0, logger = None):
+    def __init__(self, NUM_UAV = 3, motionNoise = 0, logger = None):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
@@ -306,6 +308,7 @@ class PST(Domain):
             uav_ind = uav_id * UAVIndex.SIZE
             uav_location_ind = uav_ind + UAVIndex.UAV_LOC # State index corresponding to the location of this uav
             # First check for crashing uavs; short-circuit the loop
+            # NOTE: Kemal said penalty only occurred once, but that doesn't match tutorial description + results.
             if(s[uav_location_ind] == UAVLocation.CRASHED):
                 continue
             
