@@ -9,7 +9,8 @@ from os import *
 StartID         = 1
 FinishId        = 5
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
+#PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
+PROJECT_PATH    = 'Results/13ICML-SARSA'
 max_cpu         = multiprocessing.cpu_count()
 for i in RUNS:
     os.system('chmod +x main.py')

@@ -49,12 +49,12 @@ class BEBF(Representation):
         self.logger.log("Norm Threshold:\t\t%0.3f"% self.batchThreshold)
     
         ## @return: a function object corresponding to the 
-    def getFunctionApproximation(self,X,y):
+#    def getFunctionApproximation(self,X,y):
         #return Rbf(X,y,function='multiquadric') # function = gaussian
-        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+#        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
                                                  # C = penalty parameter of error term, default 1
-        bebfApprox.fit(X,y)
-        return bebfApprox
+#        bebfApprox.fit(X,y)
+#        return bebfApprox
     
     def getFunctionApproximation(self,X,y):
         #return Rbf(X,y,function='multiquadric') # function = gaussian
