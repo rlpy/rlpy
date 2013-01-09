@@ -31,16 +31,15 @@ from Representation import *
 
 class BEBF(Representation):
     debug                   = 0
-#    memoized_phi            = {}   # dictionary mapping each feature index 
-    featureIndex2feature    = {}    # dictionary mapping each feature index (ID) to its feature (function) object
-#    useCache                = 0    # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     features                = []    # Array of pointers to feature functions, indexed by order created
-    batchThreshold          = None  # Minimum value of feature relevance for the batch setting (10^-5 per Parr et al.)
+    batchThreshold          = None  # Minimum value of feature relevance for the batch setting (10^-5 per Parr et al.
+    initial_features_num    = 0     # Initial number of features, initialized in __init__
     def __init__(self,domain,logger, discretization = 20, debug = 0,maxBatchDicovery = 1, batchThreshold = 10 ** -3):
         self.setBinsPerDimension(domain,discretization)
-        # self.features_num           = int(sum(self.bins_per_dim))
-        self.features_num           = 0
+        self.initial_features_num      = int(sum(self.bins_per_dim)) # Effectively initialize with IndependentDiscretization
+        self.features_num           = self.initial_features_num # Starting number of features equals the above, changes during execution
+       # self.features_num           = 0
         self.debug                  = debug
         self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold          = batchThreshold
@@ -48,7 +47,6 @@ class BEBF(Representation):
         super(BEBF,self).__init__(domain,logger,discretization)
         self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
         self.logger.log("Norm Threshold:\t\t%0.3f"% self.batchThreshold)
-    ## Adds an initial basis function estimated using only immediate reward.
     
         ## @return: a function object corresponding to the 
     def getFunctionApproximation(self,X,y):
@@ -57,23 +55,28 @@ class BEBF(Representation):
                                                  # C = penalty parameter of error term, default 1
         bebfApprox.fit(X,y)
         return bebfApprox
+    
+    def getFunctionApproximation(self,X,y):
+        #return Rbf(X,y,function='multiquadric') # function = gaussian
+        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+                                                 # C = penalty parameter of error term, default 1
+        bebfApprox.fit(X,y)
+        return bebfApprox
+    
+    
     def addInitialFeatures(self):
-        return 
-        numDims = 1
-        numSamples = 100
-        y = random.randn(numSamples)
-        X = random.randn(numSamples,numDims)
-        self.features = array([self.getFunctionApproximation(X, y)])
-#        for i in arange(self.features_num):
-#            feature = iFDD_feature(i)
-#            #shout(self,self.iFDD_features[frozenset([i])].index)
-#            self.iFDD_features[frozenset([i])] = feature
-#            self.featureIndex2feature[feature.index] = feature
+#        numDims = 1
+#        numSamples = 100
+#        y = random.randn(numSamples)
+#        X = random.randn(numSamples,numDims)
+#        self.features = array([self.getFunctionApproximation(X, y)])
+        pass
     def phi_nonTerminal(self,s):
-        # Based on Tuna's Master Thesis 2012
         F_s = zeros(self.features_num)
-        for i in arange(self.features_num):
-            F_s[i] = self.features[i].predict(s)
+        F_s[self.activeInitialFeatures(s)]  = 1 # From IndependentDiscretization
+        bebf_features_num = self.features_num - self.initial_features_num
+        for features_ind, F_s_ind in enumerate(arange(bebf_features_num) + self.initial_features_num):
+            F_s[F_s_ind] = self.features[features_ind].predict(s)
 #        print 's,F_s',s,F_s
 #        shout('F_s:',F_s)
         return F_s
