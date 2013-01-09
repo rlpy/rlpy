@@ -1,0 +1,24 @@
+Algorithm: 30
+======================
+Learning Steps: 20000.000	
+Steps: 48.200	
+Standard-Error: 14.329	
+======================
+Algorithm: 35
+======================
+Learning Steps: 20000.000	
+Steps: 48.200	
+Standard-Error: 14.329	
+======================
+Algorithm: 40
+======================
+Learning Steps: 20000.000	
+Steps: 30.000	
+Standard-Error: 9.654	
+======================
+Algorithm: 45
+======================
+Learning Steps: 20000.000	
+Steps: 48.400	
+Standard-Error: 14.217	
+======================

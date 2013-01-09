@@ -1,0 +1,104 @@
+============================================================
+Domain:		PST
+Dimensions:	8
+|S|:		30976
+|A|:		9
+|S|x|A|:		278784
+Episode Cap:	100
+Gamma:		0.9
+NUM_UAV:		2
+============================================================
+Representation:		iFDD
+Starting Features:	38
+Aggregated States:	30976
+Plus:			1
+Threshold:		0.100
+Sparsify:		1
+Cached:			1
+Max Batch Discovery:	20
+Batch Threshold:		30.000
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/PST-iFDD-20000-30/2-results.txt
+Max Steps: 		20000
+Performance Checks:	1
+1535: E[0:00:01]-R[0:00:12]: Return=-2.50, Steps=60, Features = 38
+3260: E[0:00:02]-R[0:00:10]: Return=-4.00, Steps=13, Features = 38
+4974: E[0:00:03]-R[0:00:09]: Return=0.50, Steps=55, Features = 38
+6758: E[0:00:04]-R[0:00:08]: Return=-0.50, Steps=100, Features = 38
+8631: E[0:00:05]-R[0:00:07]: Return=-1.00, Steps=90, Features = 38
+10346: E[0:00:06]-R[0:00:06]: Return=0.50, Steps=77, Features = 38
+11900: E[0:00:07]-R[0:00:05]: Return=-4.00, Steps=54, Features = 38
+13306: E[0:00:08]-R[0:00:04]: Return=5.00, Steps=96, Features = 38
+14496: E[0:00:09]-R[0:00:04]: Return=-2.50, Steps=50, Features = 38
+15663: E[0:00:10]-R[0:00:03]: Return=-4.00, Steps=89, Features = 38
+16831: E[0:00:11]-R[0:00:02]: Return=-2.50, Steps=100, Features = 38
+17797: E[0:00:12]-R[0:00:02]: Return=-4.00, Steps=94, Features = 38
+18635: E[0:00:13]-R[0:00:01]: Return=-2.50, Steps=35, Features = 38
+19518: E[0:00:15]-R[0:00:00]: Return=-2.00, Steps=100, Features = 38
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 11.550
+1: L2_norm of weight difference = 9.051
+2: L2_norm of weight difference = 11.870
+3: L2_norm of weight difference = 10.488
+4: L2_norm of weight difference = 10.918
+5: L2_norm of weight difference = 5.969
+6: L2_norm of weight difference = 6.310
+7: L2_norm of weight difference = 7.933
+8: L2_norm of weight difference = 8.769
+9: L2_norm of weight difference = 8.787
+Performance Check >>> 1.000 Return, 100 Steps, 38 Features
+New Feature 1: [1,21]
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 22.809
+1: L2_norm of weight difference = 9.275
+2: L2_norm of weight difference = 9.603
+3: L2_norm of weight difference = 9.022
+4: L2_norm of weight difference = 8.574
+5: L2_norm of weight difference = 8.768
+6: L2_norm of weight difference = 9.348
+7: L2_norm of weight difference = 9.241
+8: L2_norm of weight difference = 8.048
+9: L2_norm of weight difference = 7.967
+Performance Check >>> -1.000 Return, 12 Steps, 39 Features
+New Feature 1: [14,33]
+New Feature 2: [18,33]
+New Feature 3: [16,33]
+New Feature 4: [33,37]
+New Feature 5: [19,33]
+New Feature 6: [33,35]
+New Feature 7: [14,37]
+New Feature 8: [14,16]
+New Feature 9: [14,18]
+New Feature 10: [0,14]
+New Feature 11: [14,35]
+New Feature 12: [1,33]
+New Feature 13: [14,20]
+New Feature 14: [14,19]
+New Feature 15: [0,33]
+New Feature 16: [18,19]
+New Feature 17: [16,19]
+New Feature 18: [19,37]
+New Feature 19: [19,35]
+New Feature 20: [18,37]
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 0.000
+Performance Check >>> 5.500 Return, 100 Steps, 59 Features
+20000 >>> E[0:46:13]-R[0:00:00]: Return=2.00, Steps=8, Features = 59
+============================================================
+Took 0:46:13
+Results	=> Results/13ICML-BatchiFDD/PST-iFDD-20000-30/2-results.txt
+Log	=> Results/13ICML-BatchiFDD/PST-iFDD-20000-30/2-out.txt

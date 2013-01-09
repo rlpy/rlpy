@@ -1,0 +1,56 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretization
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-IndependentDiscretization-20000/26-results.txt
+Max Steps: 		20000
+Performance Checks:	1
+1573: E[0:00:01]-R[0:00:12]: Return=-1.00, Steps=8, Features = 40
+3134: E[0:00:02]-R[0:00:11]: Return=-1.00, Steps=16, Features = 40
+4738: E[0:00:03]-R[0:00:10]: Return=-1.00, Steps=11, Features = 40
+6301: E[0:00:04]-R[0:00:09]: Return=-1.00, Steps=9, Features = 40
+7899: E[0:00:05]-R[0:00:08]: Return=-1.00, Steps=8, Features = 40
+9446: E[0:00:06]-R[0:00:07]: Return=-1.00, Steps=11, Features = 40
+11040: E[0:00:07]-R[0:00:06]: Return=-1.00, Steps=12, Features = 40
+12625: E[0:00:08]-R[0:00:05]: Return=-1.00, Steps=9, Features = 40
+14226: E[0:00:09]-R[0:00:04]: Return=-1.00, Steps=11, Features = 40
+15872: E[0:00:10]-R[0:00:03]: Return=-1.00, Steps=11, Features = 40
+17479: E[0:00:11]-R[0:00:02]: Return=-1.00, Steps=12, Features = 40
+19059: E[0:00:12]-R[0:00:01]: Return=-1.00, Steps=13, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 4.490
+1: L2_norm of weight difference = 0.370
+2: L2_norm of weight difference = 0.494
+3: L2_norm of weight difference = 0.494
+4: L2_norm of weight difference = 0.908
+5: L2_norm of weight difference = 1.716
+6: L2_norm of weight difference = 1.056
+7: L2_norm of weight difference = 0.908
+8: L2_norm of weight difference = 1.716
+9: L2_norm of weight difference = 1.056
+Performance Check >>> -1.000 Return, 187 Steps, 40 Features
+20000 >>> E[0:01:47]-R[0:00:00]: Return=-1.00, Steps=161, Features = 40
+============================================================
+Took 0:01:47
+Results	=> Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-IndependentDiscretization-20000/26-results.txt
+Log	=> Results/13ICML-BatchiFDD/Pendulum_InvertedBalance-IndependentDiscretization-20000/26-out.txt

@@ -1,0 +1,121 @@
+============================================================
+Domain:		PST
+Dimensions:	8
+|S|:		30976
+|A|:		9
+|S|x|A|:		278784
+Episode Cap:	100
+Gamma:		0.9
+NUM_UAV:		2
+============================================================
+Representation:		iFDD
+Starting Features:	38
+Aggregated States:	30976
+Plus:			1
+Threshold:		0.100
+Sparsify:		1
+Cached:			1
+Max Batch Discovery:	20
+Batch Threshold:		30.000
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/PST-iFDD-20000-30/3-results.txt
+Max Steps: 		20000
+Performance Checks:	1
+1562: E[0:00:01]-R[0:00:12]: Return=-2.00, Steps=100, Features = 38
+3349: E[0:00:02]-R[0:00:10]: Return=-2.50, Steps=56, Features = 38
+5057: E[0:00:03]-R[0:00:09]: Return=-2.50, Steps=44, Features = 38
+6873: E[0:00:04]-R[0:00:08]: Return=-4.00, Steps=26, Features = 38
+8699: E[0:00:05]-R[0:00:07]: Return=8.00, Steps=82, Features = 38
+10591: E[0:00:06]-R[0:00:05]: Return=-1.00, Steps=65, Features = 38
+12311: E[0:00:07]-R[0:00:04]: Return=-2.00, Steps=100, Features = 38
+13631: E[0:00:08]-R[0:00:04]: Return=-4.00, Steps=62, Features = 38
+14925: E[0:00:09]-R[0:00:03]: Return=1.00, Steps=100, Features = 38
+16105: E[0:00:10]-R[0:00:02]: Return=-1.00, Steps=58, Features = 38
+17271: E[0:00:11]-R[0:00:02]: Return=1.00, Steps=100, Features = 38
+18260: E[0:00:12]-R[0:00:01]: Return=-2.50, Steps=57, Features = 38
+19065: E[0:00:13]-R[0:00:01]: Return=-4.00, Steps=18, Features = 38
+19877: E[0:00:14]-R[0:00:00]: Return=-2.00, Steps=100, Features = 38
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 12.618
+1: L2_norm of weight difference = 9.430
+2: L2_norm of weight difference = 8.813
+3: L2_norm of weight difference = 9.283
+4: L2_norm of weight difference = 9.284
+5: L2_norm of weight difference = 12.130
+6: L2_norm of weight difference = 11.790
+7: L2_norm of weight difference = 10.246
+8: L2_norm of weight difference = 8.563
+9: L2_norm of weight difference = 9.074
+Performance Check >>> 0.000 Return, 100 Steps, 38 Features
+New Feature 1: [19,33]
+New Feature 2: [33,37]
+New Feature 3: [33,35]
+New Feature 4: [16,33]
+New Feature 5: [18,33]
+New Feature 6: [14,18]
+New Feature 7: [0,14]
+New Feature 8: [14,16]
+New Feature 9: [14,35]
+New Feature 10: [14,20]
+New Feature 11: [14,37]
+New Feature 12: [0,33]
+New Feature 13: [19,35]
+New Feature 14: [19,37]
+New Feature 15: [14,33]
+New Feature 16: [16,19]
+New Feature 17: [1,33]
+New Feature 18: [35,37]
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 17.087
+1: L2_norm of weight difference = 14.440
+2: L2_norm of weight difference = 9.576
+3: L2_norm of weight difference = 14.933
+4: L2_norm of weight difference = 14.270
+5: L2_norm of weight difference = 14.196
+6: L2_norm of weight difference = 14.205
+7: L2_norm of weight difference = 14.075
+8: L2_norm of weight difference = 13.954
+9: L2_norm of weight difference = 13.814
+Performance Check >>> -1.000 Return, 15 Steps, 56 Features
+New Feature 1: [18,44]
+New Feature 2: [16,44]
+New Feature 3: [44,55]
+New Feature 4: [20,44]
+New Feature 5: [23,44]
+New Feature 6: [22,44]
+New Feature 7: [32,44]
+New Feature 8: [16,18]
+New Feature 9: [36,44]
+New Feature 10: [21,44]
+New Feature 11: [18,55]
+New Feature 12: [35,44]
+New Feature 13: [31,44]
+New Feature 14: [16,55]
+New Feature 15: [18,20]
+New Feature 16: [44,53]
+New Feature 17: [34,44]
+New Feature 18: [16,20]
+New Feature 19: [30,44]
+New Feature 20: [20,55]
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 0.000
+Performance Check >>> 0.500 Return, 10 Steps, 76 Features
+20000 >>> E[0:51:31]-R[0:00:00]: Return=-4.00, Steps=60, Features = 76
+============================================================
+Took 0:51:31
+Results	=> Results/13ICML-BatchiFDD/PST-iFDD-20000-30/3-results.txt
+Log	=> Results/13ICML-BatchiFDD/PST-iFDD-20000-30/3-out.txt
