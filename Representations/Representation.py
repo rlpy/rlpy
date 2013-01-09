@@ -142,4 +142,12 @@ class Representation(object):
         shifts      = hstack((0, cumsum(self.bins_per_dim)[:-1]))
         index       = bs+shifts
         return      index.astype('uint32')
-    
+    def batchDiscover(self, td_errors, all_phi_s, data_s):
+        # Discovers features and adds it to the representation
+        # If it adds any feature it should return True, otherwise False
+        # This is a dummy function for representations with no discovery
+        # TD_error is a vector of TD-Errors for all samples p-by-1
+        # all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
+        # data_s is the states p-by-|dim(s)|
+        return False
+            

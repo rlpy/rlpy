@@ -16,10 +16,10 @@ Gamma 			= .95
 Min_threshold
 iFDD 			= .3 	(.2,.3,.4,.5,.6)
 
-BlocksWorld
+BlocksWorld (4)
 =======
-Samples 			= 20K
-Gamma 			= .95
+Samples 			= 5K
+Gamma 			= 1
 
 SystemAdmin
 =======

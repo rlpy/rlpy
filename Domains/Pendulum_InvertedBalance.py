@@ -40,7 +40,8 @@ class Pendulum_InvertedBalance(Pendulum):
                                 # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.
     episodeCap          = 3000    # Max number of steps per trajectory
-
+    gamma               = .95   # Based on Parr 2003 and ICML 11 (RL-Matlab)
+    
     # For Visual Stuff
     MAX_RETURN = 0
     MIN_RETURN = -1

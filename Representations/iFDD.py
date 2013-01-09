@@ -57,7 +57,7 @@ class iFDD(Representation):
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
-    iFDDplus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
+    iFDDplus                = 1     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     def __init__(self,domain,logger,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
@@ -70,11 +70,11 @@ class iFDD(Representation):
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
         self.logger.log("Plus:\t\t\t%d" % self.iFDDplus)
-        self.logger.log("Threshold:\t\t%0.3f" % self.discovery_threshold)
         self.logger.log("Sparsify:\t\t%d"% self.sparsify)
         self.logger.log("Cached:\t\t\t%d"% self.useCache)
-        self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
+        self.logger.log("Online Threshold:\t%0.3f" % self.discovery_threshold)
         self.logger.log("Batch Threshold:\t\t%0.3f"% self.batchThreshold)
+        self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
@@ -231,7 +231,7 @@ class iFDD(Representation):
             f2          = F2[max_index]
             relevance   = relevances[max_index]
             if relevance > self.batchThreshold:
-                self.logger.log('New Feature %d: [%d,%d]' % (j+1, f1,f2))
+                self.logger.log('New Feature %d: [%d,%d], Relevance = %0.3f' % (j+1, f1,f2,relevances[max_index]))
                 self.inspectPair(f1, f2, inf)
                 added_feature = True
             else:

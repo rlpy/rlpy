@@ -7,7 +7,7 @@ from main import *
 from os import *
 
 StartID         = 1
-FinishId        = 10
+FinishId        = 5
 RUNS            = arange(StartID,FinishId+1)
 PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
 max_cpu         = multiprocessing.cpu_count()

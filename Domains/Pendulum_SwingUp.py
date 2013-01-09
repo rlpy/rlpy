@@ -46,7 +46,7 @@ class Pendulum_SwingUp(Pendulum):
     # For Visual Stuff
     MAX_RETURN = episodeCap*GOAL_REWARD
     MIN_RETURN = 0
-    
+    gamma               = .9   # 
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(Pendulum_SwingUp,self).__init__(logger)  

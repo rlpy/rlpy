@@ -527,7 +527,8 @@ class Logger(object):
         self.log(SEP_LINE)
 class Merger(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
-    def __init__(self,path, output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False):
+    prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
+    def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = [] 
@@ -536,17 +537,24 @@ class Merger(object):
         self.styles                 = styles
         self.markersize             = markersize
         self.legend                 = legend
-        self.path                   = path
-        self.output_path            = path if output_path == None else output_path
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
-        if os.path.exists(path+'/1-out.txt'):
-            self.exp_paths = [path]
+        if os.path.exists(paths[0]+'/1-out.txt'):
+            self.exp_paths = []
+            for path in paths:
+                #Fix the local accessing
+                if path.find('/') == -1:
+                    path = './'+path
+                self.path,char,exp_path = path.rpartition('/')
+                self.exp_paths += [exp_path]
         else:
+            path                        = paths[0]
+            self.path                   = path
             self.exp_paths              = os.listdir(path)
-            self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(path+'/'+p+'/1-out.txt')]
-        self.labels                 = [p.rpartition('-')[-1] for p in self.exp_paths]
-        print self.labels
+            self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(self.path+'/'+p+'/1-out.txt')]
+        self.output_path            = path if output_path == None else output_path
+        self.labels                 = labels if labels != [] else [p.rpartition('-')[-1] for p in self.exp_paths]
+        print "Experiment Labels: ", self.labels
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 
@@ -618,14 +626,18 @@ class Merger(object):
         # Store the numbers in a txt file
         f = open(fullfilename+'.txt','w')
         for i in range(self.exp_num):
-            f.write("Algorithm:" + self.labels[i] +"\n")
-            
-            f.write('X:' + pretty(Xs[i,:])+'\n')
-            f.write('Y:' + pretty(Ys[i,:])+'\n')
-            f.write('Err:' + pretty(Errs[i,:])+'\n')
-            f.write("========\n")
+            if self.prettyText:
+                f.write("Algorithm: " + self.labels[i] +"\n")
+                f.write("======================\n")
+                f.write(X_axis +': ' + pretty(Xs[i,:])+'\n')
+                f.write(Y_axis +': ' + pretty(Ys[i,:])+'\n')
+                f.write('Standard-Error: ' + pretty(Errs[i,:])+'\n')
+                f.write("======================\n")
+            else:
+                savetxt(f,Xs[i,:], fmt='%0.4f', delimiter='\t')
+                savetxt(f,Ys[i,:], fmt='%0.4f', delimiter='\t')
+                savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
-        #savetxt(fullfilename+'.txt',finalArray, fmt='%0.4f', delimiter='\t')
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
 
 
