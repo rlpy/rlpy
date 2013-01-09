@@ -120,11 +120,10 @@ class PST(Domain):
     # Domain constants
     FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
     P_NOM_FUEL_BURN     = 0.8  # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
-    P_ACT_FAIL          = 0.05 # Probability that actuators fail on this timestep [0.02 in tutorial]
+    P_ACT_FAIL          = 0.02 # Probability that actuators fail on this timestep [0.02 in tutorial]
     P_SENSOR_FAIL       = 0.05 # Probability that sensors fail on this timestep [0.05 in tutorial]
-#    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
-    CRASH_REWARD        = -50
-    SURVEIL_REWARD      = 20 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
+    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
+    SURVEIL_REWARD_COEFF = 1.5 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
     FUEL_BURN_REWARD_COEFF = 0.0 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
     
     NUM_UAV             = 3 # Number of UAVs present in the mission [3 in tutorial
@@ -310,8 +309,8 @@ class PST(Domain):
             uav_location_ind = uav_ind + UAVIndex.UAV_LOC # State index corresponding to the location of this uav
             # First check for crashing uavs; short-circuit the loop
             # NOTE: Kemal said penalty only occurred once, but that doesn't match tutorial description + results.
-#            if(s[uav_location_ind] == UAVLocation.CRASHED):
-#                continue
+            if(s[uav_location_ind] == UAVLocation.CRASHED):
+                continue
             
             uav_fuel_ind = uav_ind + UAVIndex.UAV_FUEL
             uav_sensor_ind = uav_ind + UAVIndex.UAV_SENS_STATUS
@@ -351,7 +350,7 @@ class PST(Domain):
                     self.numCrashed += 1
                     ns[uav_fuel_ind] = 0 # Prevent negative numbers
                     ns[uav_location_ind] = UAVLocation.CRASHED
-#                    totalStepReward += self.CRASH_REWARD_COEFF # Only penalize for transition to crashed state
+                    totalStepReward += self.CRASH_REWARD_COEFF # Only penalize for transition to crashed state
 #DEBUG                     print '########### UAV',uav_id,'has crashed! ############'
 #                    continue
                     break
@@ -373,9 +372,8 @@ class PST(Domain):
         
         ##### Compute reward #####
         self.updateCommsCoverage(commStatesCovered) # Update member variable corresponding 
-        if(self.isCommStatesCovered == True and self.numHealthySurveil > 0):
-            totalStepReward += self.SURVEIL_REWARD
-        if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
+        if(self.isCommStatesCovered == True):
+            totalStepReward += self.SURVEIL_REWARD_COEFF * self.numHealthySurveil
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned # Presently this component is set to zero.
 #DEBUG        print 'reward',totalStepReward
         return totalStepReward,ns,self.isTerminal(ns)
@@ -456,7 +454,7 @@ class PST(Domain):
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
     def isTerminal(self,s):
-        if self.numCrashed > 0: return True
+        if self.numCrashed == self.NUM_UAV: return True
         else: return False
 if __name__ == '__main__':
         random.seed(0)
