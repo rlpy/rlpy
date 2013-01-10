@@ -37,7 +37,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     NETWORKADMINMAP     = '/Domains/NetworkAdminMaps/20MachTutorial.txt'
     #NETWORKADMINMAP     = '/Domains/NetworkAdminMaps/5Machines.txt'
-    NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = 0.25   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
@@ -49,7 +49,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     BatchDiscoveryThreshold     = .1   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20     # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
-    BEBFNormThreshold           = 0.3  # If the maximum norm of the td_errors exceeds this value, representation expansion halts until the next LSPI iteration (if any).
+    BEBFNormThreshold           = {'BlocksWorld':0.007, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     FourierOrder                = 3     # 
     iFDD_Sparsify               = 1     # Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces. 
     # Policy ----------------------
@@ -82,7 +82,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
-    representation   = BEBF(domain,logger, batchThreshold=BEBFNormThreshold)
+    representation   = BEBF(domain,logger, batchThreshold=BEBFNormThreshold['Pendulum_InvertedBalance'])
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
