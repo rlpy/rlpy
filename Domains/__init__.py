@@ -3,7 +3,7 @@ from PitMaze import PitMaze
 from BlocksWorld import BlocksWorld
 from MountainCar import MountainCar
 from ChainMDP import ChainMDP
-from NetworkAdmin import NetworkAdmin
+from SystemAdministrator import SystemAdministrator
 from PST import PST
 from IntruderMonitoring import IntruderMonitoring
 from CartPole import CartPole

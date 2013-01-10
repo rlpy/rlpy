@@ -44,7 +44,7 @@ from Domain import *
 #0,1,2,4
 #3
 ## @author: Robert H Klein
-class NetworkAdmin(Domain):
+class SystemAdministrator(Domain):
 
     NEIGHBORS = []          # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
     UNIQUE_EDGES = []       # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
@@ -66,8 +66,8 @@ class NetworkAdmin(Domain):
     _NUM_VALUES = 2         # Number of values possible for each state, must be hand-coded to match number defined above
             
     ## Note that you must pass a network map name as well as its format type.
-    # @see NetworkAdmin(Domain)
-    def __init__(self, networkmapname='/Domains/NetworkAdminMaps/20MachTutorial.txt', logger = None):
+    # @see SystemAdministrator(Domain)
+    def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
         path                    = os.getcwd() + networkmapname
         self.NEIGHBORS, self.UNIQUE_EDGES = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
         # TODO Need a check here for degenerate
@@ -76,14 +76,14 @@ class NetworkAdmin(Domain):
         self.states_num             = len(self.NEIGHBORS)       # Number of states
         self.actions_num            = self.states_num + 1     # Number of Actions, including no-op
         self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.states_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        super(NetworkAdmin,self).__init__(logger)
+        super(SystemAdministrator,self).__init__(logger)
 #        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,self.s0())):
 #            [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
 
-    ## @param path: Path to the map file, of form '/Domains/NetworkAdminMaps/<mapname>.txt'
+    ## @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/<mapname>.txt'
     # @param maptype: Specify the format for the map file, 'eachNeighbor' or 'edges'.
     # @param numNodes: Number of nodes in the map.
-    # @see: NetworkAdmin(Domain) for a description of 'eachNeighbor' and 'edges'.
+    # @see: SystemAdministrator(Domain) for a description of 'eachNeighbor' and 'edges'.
     #
     # @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
     # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
@@ -138,7 +138,8 @@ class NetworkAdmin(Domain):
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
         pl.draw()
     def step(self,s,a):
-        ns = s[:] # make copy of state so as not to affect original mid-step
+        #ns = s[:] # make copy of state so as not to affect original mid-step
+        ns = s.copy()
         totalRebootReward = 0
         for computer_id, compstatus in enumerate(s):
             if(a == computer_id): #Reboot action on this computer
@@ -165,7 +166,8 @@ class NetworkAdmin(Domain):
         return sum(ns)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
-        return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
+        #return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
+        return array([self.RUNNING]* self.state_space_dims)
     def isTerminal(self,s):
         return False
     ## @param neighborsList: each element at index <i> is a list of nodes connected to the node at <i>.
@@ -174,12 +176,12 @@ class NetworkAdmin(Domain):
         # Returns a list of tuples of unique edges in this map; choose the edge emanating from
         # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]
         uniqueEdges = []
+        print neighborsList
         for computer_id, neighbors in enumerate(neighborsList):
             for neighbor_id in neighbors:
                 if computer_id < neighbor_id:
                     uniqueEdges.append((neighbor_id, computer_id))
         return uniqueEdges
-
     ## @param uniqueEdges: a list of tuples (node1, node2) where node1 and node2 share an edge. No guarantee of node order is made.
     # @param numNodes: Number of nodes in the map.
     # @return: A list, where each element at index <i> is a list of nodes connected to the node at <i>.
@@ -196,7 +198,9 @@ class NetworkAdmin(Domain):
 
 if __name__ == '__main__':
         random.seed(0)
-        p = NetworkAdmin(networkmapname='/NetworkAdminMaps/5Machines.txt');
-        #p = NetworkAdmin(networkmapname='/NetworkAdminMaps/20MachTutorial.txt',logger = testLogger);
+        p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/3Machines.txt');
+        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/5Machines.txt');
+        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/10Machines.txt');
+        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/20MachTutorial.txt');
         p.test(1000)
      
