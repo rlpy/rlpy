@@ -1,3 +1,15 @@
+Algorithm: 0.2
+======================
+Learning Steps: 20000.000	
+Steps: 2506.583	
+Standard-Error: 225.223	
+======================
+Algorithm: 0.25
+======================
+Learning Steps: 20000.000	
+Steps: 2037.350	
+Standard-Error: 296.426	
+======================
 Algorithm: 0.3
 ======================
 Learning Steps: 20000.000	
