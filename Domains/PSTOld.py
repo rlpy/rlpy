@@ -320,16 +320,16 @@ class PST(Domain):
             ##### STATE TRANSITIONS #####            
             # Position state transition
             if(uav_action == UAVAction.ADVANCE):
-                if(random.random() > self.motionNoise): # With some noise, don't transition to new state
+                if(random.random() >= self.motionNoise): # With some noise, don't transition to new state
                     ns[uav_location_ind] += 1
             elif(uav_action == UAVAction.RETREAT):
-                if(random.random() > self.motionNoise): # With some noise, don't transition to new state
+                if(random.random() >= self.motionNoise): # With some noise, don't transition to new state
                     ns[uav_location_ind] -= 1
             # else, action is loiter, no motion taken.
             
             if (ns[uav_location_ind] != UAVLocation.BASE_LOC): # Not at base, failures can occur
                 # Fuel burn transition
-                if(random.random() < self.P_NOM_FUEL_BURN):
+                if(random.random() <= self.P_NOM_FUEL_BURN):
                     ns[uav_fuel_ind] -= self.NOM_FUEL_BURN
                     self.fuelUnitsBurned += self.NOM_FUEL_BURN
                 else:
@@ -337,7 +337,7 @@ class PST(Domain):
                     self.fuelUnitsBurned += self.STOCH_FUEL_BURN
                 
                 # Sensor failure transition
-                if(random.random() < self.P_SENSOR_FAIL):
+                if(random.random() <= self.P_SENSOR_FAIL):
                     ns[uav_sensor_ind] = SensorState.FAILED
 #DEBUG                    print 'UAV',uav_id,'Failed sensor!'
                

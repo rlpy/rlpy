@@ -18,7 +18,7 @@ from matplotlib import lines
 ########################################################
 # Persistent Search and Track Mission with:
 # NUM_UAV:       num vehicles present
-# NUM_COMMS_LOC  num intermediate communication states
+# NUM_COMMS  num intermediate communication states
 # Other associated parameters shown below.
 #
 #   Goal is to maintain as many UAVs with functional
@@ -60,15 +60,13 @@ from matplotlib import lines
 # line cutting down its center.
 # 
 ########################################################
-
-# NOTE Visualization relies on fact that "Crashed" state is the final one.
 class UAVLocation:
-    BASE_LOC = 0
-    NUM_COMMS_LOC = 1 # Each comms location implicitly lies on [1, SIZE - 3]
-    SIZE = 3 + NUM_COMMS_LOC   # Manually inputted
-    # Possible location states, excluding communicatinons
-    SURVEIL_LOC = SIZE-2
-    CRASHED = SIZE-1
+    MAINTENANCE = 0
+    REFUEL      = 1
+    COMMS       = 2
+    SURVEIL     = 3
+    SIZE        = 4
+    
 class ActuatorState:
     FAILED, RUNNING = 0,1 # Status of actuator
     SIZE = 2
@@ -82,57 +80,30 @@ class UAVAction:
 class UAVIndex:
     UAV_LOC, UAV_FUEL, UAV_ACT_STATUS, UAV_SENS_STATUS = 0,1,2,3
     SIZE = 4 # Number of indices required for state of each UAV
-    
-#class UAVDispObject:
-#    UAV_RADIUS = 0.3
-#    uav_id = -1
-#    location = 0
-#    fuel_qty = 0
-#    sensor_status = 0
-#    actuator_status = 0
-#    vis_position = None
-#    circle_obj = None
-#    sensor_obj = None
-#    actuator_obj = None
-#    def __init__(self, uav_id = -1):
-#        self.uav_id = uav_id
-#    def setState(self,s):
-#        self.location = s[UAVIndex.UAV_LOC]
-#        self.fuel_qty = s[UAVIndex.UAV_FUEL]
-#        self.sensor_status = s[UAVIndex.UAV_SENS_STATUS]
-#        self.actuator_status = s[UAVIndex.UAV_ACT_STATUS]
-#        self.vis_position = (self.location, 1 + self.uav_id)
-#    def getCircleObject(self):
-#        return mpatches.Circle(self.vis_position, self.UAV_RADIUS, fc="w")
-#    def getTextObj(self):
-#        return pl.text(location[0], location[1], fuel_qty)
-#    def removeObjectsFromVis(self):
-#        self.circle_obj.remove()
-#        self.sensor_obj.remove()
-#        self.actuator_obj.remove()
         
 ## @author Robert H. Klein
 class PST(Domain):
     
-    episodeCap          = 100  # 100 used in tutorial
-    gamma               = 0.9  # 0.9 used in tutorial
+    episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
+    gamma               = 0.9  # 0.9 used in tutorial and matlab
     
     # Domain constants
     FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
-    P_NOM_FUEL_BURN     = 0.8  # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
+    P_NOM_FUEL_BURN     = 1.0  # Probability of nominal (1 unit) fuel burn on timestep [0.8 in tutorial]
     P_ACT_FAIL          = 0.05 # Probability that actuators fail on this timestep [0.02 in tutorial]
     P_SENSOR_FAIL       = 0.05 # Probability that sensors fail on this timestep [0.05 in tutorial]
 #    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
     CRASH_REWARD        = -50
     SURVEIL_REWARD      = 20 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
-    FUEL_BURN_REWARD_COEFF = 0.0 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
-    
-    NUM_UAV             = 3 # Number of UAVs present in the mission [3 in tutorial
-    REFUEL_RATE         = 1 # Rate of refueling per timestep
+    FUEL_BURN_REWARD_COEFF = -1 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
+    MOVE_REWARD_COEFF   = 0   # Reward (negative) coefficient for movement (i.e., fuel burned while loitering might be penalized above, but no movement cost)
+    NUM_TARGET          = 1   # Number of targets; SURVEIL_REWARD is multiplied by the number of targets successfully observed
+    NUM_UAV             = None # Number of UAVs present in the mission [3 in tutorial
     NOM_FUEL_BURN       = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
-    STOCH_FUEL_BURN     = 2 # Alternative fuel burn rate
+    STOCH_FUEL_BURN     = None # 2 in Tutorial, set to NONE here to throw an error if future code changes involve this variable, not used in ICML.
     
     # Domain variables
+    motionNoise         = 0    # Noise in action (with some probability, loiter rather than move)
     numCrashed          = 0    # Number of crashed UAVs [n_c]
     numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
     fuelUnitsBurned     = 0
@@ -162,7 +133,7 @@ class PST(Domain):
     ###
     def __init__(self, NUM_UAV = 3, motionNoise = 0, logger = None):
         self.NUM_UAV                = NUM_UAV
-        self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...)
+        self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...) * NUM_UAV
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
         _statespace_limits = array(vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]])) # 3 Location states, 2 status states
         self.statespace_limits      = array(tile(_statespace_limits,(NUM_UAV,1)))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
@@ -187,6 +158,7 @@ class PST(Domain):
         
     def resetLocalVariables(self):
         self.numCrashed = 0 # Number of crashed UAVs [n_c]
+        
         
     def showDomain(self,s,a = 0):
         if self.domain_fig is None:
@@ -220,7 +192,7 @@ class PST(Domain):
         self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV + 0.5, self.NUM_UAV + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
         # Initialize list of circle objects
         
-        uav_x = self.location_coord[UAVLocation.BASE_LOC]
+        uav_x = self.location_coord[UAVLocation.MAINTENANCE]
         
 #            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
         # Update the member variables storing all the figure objects
@@ -295,17 +267,15 @@ class PST(Domain):
         # Create array with value 0 in all states corresponding to comms locations
         # Update this while iterate over each UAV; used to determine if comms link is functioning
         # i.e., all communications states are occupied by UAVs with functioning actuators and sensors
-        commStatesCovered = [0] * UAVLocation.SIZE
-        commStatesCovered[UAVLocation.BASE_LOC] = 1
-        commStatesCovered[UAVLocation.CRASHED] = 1
-        commStatesCovered[UAVLocation.SURVEIL_LOC] = 1
+        self.isCommStatesCovered = False
         
         self.numHealthySurveil = 0
         self.fuelUnitsBurned = 0
+        distanceTraveled = 0
         
         totalStepReward = 0
         
-        for uav_id in range(0,self.NUM_UAV):            
+        for uav_id in arange(0,self.NUM_UAV):            
             uav_ind = uav_id * UAVIndex.SIZE
             uav_location_ind = uav_ind + UAVIndex.UAV_LOC # State index corresponding to the location of this uav
             # First check for crashing uavs; short-circuit the loop
@@ -318,79 +288,74 @@ class PST(Domain):
             uav_actuator_ind = uav_ind + UAVIndex.UAV_ACT_STATUS
             
             uav_action = actionVector[uav_id]
-            ##### STATE TRANSITIONS #####            
+            ##### STATE TRANSITIONS #####
+            
+            # Sensor failure transition
+            if(random.random() < self.P_SENSOR_FAIL):
+                ns[uav_sensor_ind] = SensorState.FAILED
+#DEBUG                    print 'UAV',uav_id,'Failed sensor!'
+
+            # Actuator failure transition
+            if(random.random() < self.P_ACT_FAIL):
+                ns[uav_actuator_ind] = ActuatorState.FAILED
+                
             # Position state transition
             if(uav_action == UAVAction.ADVANCE):
-                if(random.random() > self.motionNoise): # With some noise, don't transition to new state
+                if(random.random() >= self.motionNoise): # With some noise, don't transition to new state
                     ns[uav_location_ind] += 1
+                    distanceTraveled += 1
             elif(uav_action == UAVAction.RETREAT):
-                if(random.random() > self.motionNoise): # With some noise, don't transition to new state
+                if(random.random() >= self.motionNoise): # With some noise, don't transition to new state
                     ns[uav_location_ind] -= 1
-            # else, action is loiter, no motion taken.
+                    distanceTraveled += 1
             
-            if (ns[uav_location_ind] != UAVLocation.BASE_LOC): # Not at base, failures can occur
+            # Take refuel/repair actions as necessary
+            if(uav_action == UAVAction.LOITER):
+                if(ns[uav_location_ind] == UAVLocation.REFUEL): # Refuel those which remain at base, immediately
+                    ns[uav_fuel_ind] = self.FULL_FUEL
+                elif(ns[uav_location_ind] == UAVLocation.MAINTENANCE): # Repair those which remain in maint
+                    ns[uav_sensor_ind] = SensorState.RUNNING
+                    ns[uav_actuator_ind] = ActuatorState.RUNNING
+            # No refuel/repair action taken for loitering in base, but fuel is burned
+            else:
                 # Fuel burn transition
-                if(random.random() < self.P_NOM_FUEL_BURN):
+                if(random.random() <= self.P_NOM_FUEL_BURN):
                     ns[uav_fuel_ind] -= self.NOM_FUEL_BURN
                     self.fuelUnitsBurned += self.NOM_FUEL_BURN
                 else:
                     ns[uav_fuel_ind] -= self.STOCH_FUEL_BURN
                     self.fuelUnitsBurned += self.STOCH_FUEL_BURN
-                
-                # Sensor failure transition
-                if(random.random() < self.P_SENSOR_FAIL):
-                    ns[uav_sensor_ind] = SensorState.FAILED
-#DEBUG                    print 'UAV',uav_id,'Failed sensor!'
-               
-                # Actuator failure transition
-                if(random.random() < self.P_ACT_FAIL):
-                    ns[uav_actuator_ind] = ActuatorState.FAILED
 #DEBUG                     print '### UAV',uav_id,'Failed actuator! ###'
-                
-                if (ns[uav_fuel_ind] < 1): # We just crashed a UAV! Failed to get back to base after action a
-                    self.numCrashed += 1
-                    ns[uav_fuel_ind] = 0 # Prevent negative numbers
-                    ns[uav_location_ind] = UAVLocation.CRASHED
-#                    totalStepReward += self.CRASH_REWARD_COEFF # Only penalize for transition to crashed state
-#DEBUG                     print '########### UAV',uav_id,'has crashed! ############'
-#                    continue
-                    break
-                
-                if(ns[uav_actuator_ind] == ActuatorState.RUNNING): # If actuator works, comms are available in this state
-                    commStatesCovered[ns[uav_location_ind]] = 1
-                    # If actuator and sensor works, surveillance available in this state
-                    # If this uav is also in the surveillance region, then increment the number of uavs available for surveilance
-                    if((ns[uav_location_ind] == UAVLocation.SURVEIL_LOC) and (ns[uav_sensor_ind] == SensorState.RUNNING)):
-                          self.numHealthySurveil += 1
-                
-            else: # We transitioned to or loitered in Base
-                if (uav_action == UAVAction.LOITER): # We have been in base since last step, refuel
-                    ns[uav_fuel_ind] += self.REFUEL_RATE
-                    ns[uav_fuel_ind] = bound(ns[uav_fuel_ind], 0, self.FULL_FUEL)
-                ns[uav_sensor_ind] = SensorState.RUNNING;
-                ns[uav_actuator_ind] = ActuatorState.RUNNING;
-#DEBUG                 print 'UAV',uav_id,'at base.'
-        
+                           
+            if (ns[uav_fuel_ind] < 1): # We just crashed a UAV! Failed to get back to base after action a
+                self.numCrashed += 1
+                ns[uav_fuel_ind] = 0 # Prevent negative numbers
+#                break
+            # Note above that we do not 'break', since the matlab version has reward for crashed UAVs also.  Makes sense if using s and not ns, as below.
+            
+            # Update status of comms availability / surveillance
+            # TODO - matlab code uses previous location to determine if surveillance and comms are available; is this desired?
+            if(s[uav_location_ind] == UAVLocation.COMMS):
+                self.isCommStatesCovered = True
+                # If actuator and sensor works, surveillance available in this state
+                # If this uav is also in the surveillance region, then increment the number of uavs available for surveilance
+            elif((s[uav_location_ind] == UAVLocation.SURVEIL) and (s[uav_sensor_ind] == SensorState.RUNNING)):
+                  self.numHealthySurveil += 1
+                      
         ##### Compute reward #####
-        self.updateCommsCoverage(commStatesCovered) # Update member variable corresponding 
-        if(self.isCommStatesCovered == True and self.numHealthySurveil > 0):
-            totalStepReward += self.SURVEIL_REWARD
+        if(self.isCommStatesCovered == True):
+            totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
         if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
-        totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned # Presently this component is set to zero.
+        totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
 #DEBUG        print 'reward',totalStepReward
+        print totalStepReward,ns,self.isTerminal(ns)
         return totalStepReward,ns,self.isTerminal(ns)
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
-    # Update member variable indicating if comms link is available, ie, if at least
-    #1 uav with working sensor or actuator exists in each comms region
-    def updateCommsCoverage(self, commStatesCovered):
-        if(sum(commStatesCovered) == UAVLocation.SIZE): # All comms states have at least 1 functional UAV [I_comm = 1]
-            self.isCommStatesCovered = True
-        else: self.isCommStatesCovered = False
     def s0(self):
         self.resetLocalVariables()
-        returnList = []
-        for dummy in range(0,self.NUM_UAV):
-            returnList = returnList + [UAVLocation.BASE_LOC, self.FULL_FUEL, ActuatorState.RUNNING, SensorState.RUNNING]
+        returnList = zeros(self.NUM_UAV * UAVIndex.SIZE, dtype='int')
+        for uav_ind in arange(0,self.NUM_UAV):
+            returnList[uav_ind*UAVIndex.SIZE:(uav_ind+1)*UAVIndex.SIZE] = array([UAVLocation.MAINTENANCE, self.FULL_FUEL, ActuatorState.RUNNING, SensorState.RUNNING])
         return array(returnList) # Omits final index
     def possibleActions(self,s):
         # return the id of possible actions
@@ -402,21 +367,21 @@ class PST(Domain):
             uav_ind = uav_id * UAVIndex.SIZE
             uav_location = s[uav_ind + UAVIndex.UAV_LOC] # State index corresponding to the location of this uav
             uav_fuel = s[uav_ind + UAVIndex.UAV_FUEL]
-            uav_sensor = s[uav_ind + UAVIndex.UAV_SENS_STATUS]
+#            uav_sensor = s[uav_ind + UAVIndex.UAV_SENS_STATUS]
             uav_actuator = s[uav_ind + UAVIndex.UAV_ACT_STATUS]
-            
-            uav_actions.append(UAVAction.LOITER)
-            
-            if (uav_location == UAVLocation.CRASHED): # Only action available is loiter.
-                pass
-            elif (uav_location == UAVLocation.BASE_LOC):
-                if(uav_fuel == self.FULL_FUEL): # Without full fuel, uav cannot leave base
+            if(uav_actuator == ActuatorState.RUNNING or \
+            uav_location == UAVLocation.REFUEL or \
+            uav_location == UAVLocation.MAINTENANCE):
+                uav_actions.append(UAVAction.LOITER)
+                
+            if(uav_fuel > 0): # This UAV is not crashed
+                if(uav_location != UAVLocation.SURVEIL and \
+                uav_actuator == ActuatorState.RUNNING):
                     uav_actions.append(UAVAction.ADVANCE)
-            elif (uav_location == UAVLocation.SURVEIL_LOC):
-                uav_actions.append(UAVAction.RETREAT)
-            else: # uav_location is in one of the communications regions
-                uav_actions.append(UAVAction.ADVANCE)
-                uav_actions.append(UAVAction.RETREAT)
+                    
+                if(uav_location != UAVLocation.MAINTENANCE):
+                    uav_actions.append(UAVAction.RETREAT)
+                    
             if(isinstance(uav_actions,int)):
                 validActions.append([uav_actions])
             else:
@@ -461,7 +426,7 @@ class PST(Domain):
 if __name__ == '__main__':
         random.seed(0)
         p = PST(NUM_UAV = 3, motionNoise = 0);
-        p.test(100)
+        p.test(1000)
         
         
         
