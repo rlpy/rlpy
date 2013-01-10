@@ -50,9 +50,16 @@ class BEBF(Representation):
     
         ## @return: a function object corresponding to the 
     def getFunctionApproximation(self,X,y):
-        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = 0.0005) # support vector regression
                                                  # C = penalty parameter of error term, default 1
         bebfApprox.fit(X,y)
+        for vecid in arange(256):
+            if vecid % 13 == 0:
+                state = id2vec(vecid, [4] * 4)
+                prediction = bebfApprox.predict(state)
+                print 'vecid, state, prediction', vecid, state, prediction
+#        for x,yi in zip(X, y):
+#            print x,'  ',yi
         return bebfApprox
     
 #    def getFunctionApproximation(self,X,y):
