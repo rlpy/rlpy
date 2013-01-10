@@ -347,8 +347,7 @@ class PST(Domain):
             totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
         if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
-#DEBUG        print 'reward',totalStepReward
-        print totalStepReward,ns,self.isTerminal(ns)
+#debug        print totalStepReward,ns,self.isTerminal(ns)
         return totalStepReward,ns,self.isTerminal(ns)
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
@@ -382,6 +381,9 @@ class PST(Domain):
                 if(uav_location != UAVLocation.MAINTENANCE):
                     uav_actions.append(UAVAction.RETREAT)
                     
+            else: # This UAV is crashed; give it a dummy action for now
+                if(len(uav_actions) < 1): uav_actions.append(UAVAction.LOITER)
+                
             if(isinstance(uav_actions,int)):
                 validActions.append([uav_actions])
             else:
