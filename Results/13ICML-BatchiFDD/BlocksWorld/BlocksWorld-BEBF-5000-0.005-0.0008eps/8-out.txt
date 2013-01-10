@@ -1,0 +1,64 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		BEBF
+Starting Features:	16
+Aggregated States:	256
+Max Batch Discovery:	1
+Norm Threshold:		0.005
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-5000-0.005/8-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		1(s)
+660: E[0:00:01]-R[0:00:08]: Return=0.44, Steps=559, Features = 16
+2114: E[0:00:04]-R[0:00:05]: Return=0.21, Steps=791, Features = 16
+2618: E[0:00:05]-R[0:00:04]: Return=0.50, Steps=504, Features = 16
+3173: E[0:00:06]-R[0:00:03]: Return=0.75, Steps=254, Features = 16
+4198: E[0:00:08]-R[0:00:02]: Return=0.44, Steps=561, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.319
+2: L2_norm of weight difference = 0.605
+3: L2_norm of weight difference = 0.552
+4: L2_norm of weight difference = 0.381
+5: L2_norm of weight difference = 0.438
+6: L2_norm of weight difference = 0.503
+7: L2_norm of weight difference = 0.000
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+Added feature. 	 17 total feats
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 181.816
+2: L2_norm of weight difference = 133.183
+3: L2_norm of weight difference = 137.842
+4: L2_norm of weight difference = 37.235
+5: L2_norm of weight difference = 18.946
+6: L2_norm of weight difference = 18.434
+7: L2_norm of weight difference = 1.543
+8: L2_norm of weight difference = 0.879
+9: L2_norm of weight difference = 0.000
+Performance Check >>> 0.997 Return, 4 Steps, 17 Features
+5000 >>> E[0:04:04]-R[0:00:00]: Return=1.00, Steps=3, Features = 17
+============================================================
+Took 0:04:04
+Results	=> Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-5000-0.005/8-results.txt
+Log	=> Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-5000-0.005/8-out.txt

@@ -1,0 +1,75 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		BEBF
+Starting Features:	16
+Aggregated States:	256
+Max Batch Discovery:	1
+Norm Threshold:		0.005
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BEBF/BlocksWorld008/BlocksWorld-BEBF-5000-0.005/24-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		1(s)
+1165: E[0:00:01]-R[0:00:04]: Return=-1.00, Steps=1000, Features = 16
+2337: E[0:00:02]-R[0:00:03]: Return=0.06, Steps=939, Features = 16
+3951: E[0:00:03]-R[0:00:01]: Return=0.39, Steps=614, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.331
+2: L2_norm of weight difference = 0.790
+3: L2_norm of weight difference = 0.616
+4: L2_norm of weight difference = 0.303
+5: L2_norm of weight difference = 0.498
+6: L2_norm of weight difference = 0.666
+7: L2_norm of weight difference = 0.938
+8: L2_norm of weight difference = 0.824
+9: L2_norm of weight difference = 0.735
+10: L2_norm of weight difference = 0.000
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+Added feature. 	 17 total feats
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 310.011
+2: L2_norm of weight difference = 14.982
+3: L2_norm of weight difference = 68.961
+4: L2_norm of weight difference = 82.155
+5: L2_norm of weight difference = 79.246
+6: L2_norm of weight difference = 159.638
+7: L2_norm of weight difference = 201.565
+8: L2_norm of weight difference = 203.826
+9: L2_norm of weight difference = 91.904
+10: L2_norm of weight difference = 68.313
+Performance Check >>> -1.000 Return, 1000 Steps, 17 Features
+Added feature. 	 18 total feats
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 283.667
+2: L2_norm of weight difference = 24.514
+3: L2_norm of weight difference = 12.831
+4: L2_norm of weight difference = 3.371
+5: L2_norm of weight difference = 0.692
+6: L2_norm of weight difference = 0.000
+Performance Check >>> 0.995 Return, 6 Steps, 18 Features
+5000 >>> E[0:02:30]-R[0:00:00]: Return=1.00, Steps=5, Features = 18
+============================================================
+Log	=> Results/13ICML-BEBF/BlocksWorld008/BlocksWorld-BEBF-5000-0.005/24-out.txt
