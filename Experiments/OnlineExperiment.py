@@ -34,7 +34,7 @@ class OnlineExperiment (Experiment):
         super(OnlineExperiment,self).__init__(id,agent,domain,logger, exp_naming, show_all, show_performance,project_path = project_path, plot_performance=plot_performance)
         self.logger.log("Learning Steps:\t\t%d" % max_steps)
         self.logger.log("Performance Checks:\t%d" % performanceChecks)
-        self.logger.log("Print Intervals:\t%d(s)" % self.LOG_INTERVAL)
+        self.logger.log("Log Intervals:\t\t%d(s)" % self.LOG_INTERVAL)
     def run(self):
     # Run the online experiment and collect statistics
         self.result         = zeros((self.STATS_NUM,self.performanceChecks))

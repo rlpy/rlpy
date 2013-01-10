@@ -64,12 +64,13 @@ class SystemAdministrator(Domain):
         path                    = os.getcwd() + networkmapname
         self.loadNetwork(path)   
         # TODO Need a check here for degenerate
-        print 'edges',self.UNIQUE_EDGES
-        print 'neighbors',self.NEIGHBORS
         self.states_num             = len(self.NEIGHBORS)       # Number of states
         self.actions_num            = self.states_num + 1     # Number of Actions, including no-op
         self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.states_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         super(SystemAdministrator,self).__init__(logger)
+        if self.logger: 
+            self.logger.log('Edges:\t\t%s' % str(self.UNIQUE_EDGES))
+            self.logger.log('Neighbors:\t%s' % str(self.NEIGHBORS))
 #        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,self.s0())):
 #            [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
 

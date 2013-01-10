@@ -31,17 +31,17 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
     MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
-    NETWORKADMINMAP     = '/Domains/NetworkAdminMaps/20MachTutorial.txt'
-    #NETWORKADMINMAP     = '/Domains/NetworkAdminMaps/5Machines.txt'
+    NETWORKNMAP     = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
+    #NETWORKNMAP     = '/Domains/SystemAdministratorMaps/5Machines.txt'
     NOISE               = 0.1   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 3     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
-                                'NetworkAdmin':500, 'PST':1000} # Values used in tutorial
+                                'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     iFDD_Threshold              = 0.1  
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
-    #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for NetworkAdmin
+    #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
     iFDD_Sparsify               = 1     # Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces. 
     FeatureExpandThreshold      = .5    # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remiain IDENTICAL, but often faster
@@ -54,7 +54,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    #domain          = NetworkAdmin(networkmapname=NETWORKADMINMAP,logger = logger)
+    #domain          = SystemAdministrator(networkmapname=NETWORKMAP,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);

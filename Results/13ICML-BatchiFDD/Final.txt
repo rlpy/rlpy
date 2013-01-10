@@ -1,7 +1,7 @@
 
-Domain			InvertedPendulum		BlocksWorld 		SystemAdmin		PST			
+Domain			InvertedPendulum		BlocksWorld 		NetworkAdmin		PST			
 Representation	
-Initial			389.700+105.115
+Initial			389.700+105.115		-0.734+0.124
 OMP-TD			
 BEBF					
 iFDD				2497.667+185.985	
@@ -20,6 +20,8 @@ BlocksWorld (4)
 =======
 Samples 			= 5K
 Gamma 			= 1
+Min_threshold
+iFDD 			= .007 	(.007,.05,.1,.2,.5)
 
 SystemAdmin
 =======

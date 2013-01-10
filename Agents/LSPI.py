@@ -64,7 +64,7 @@ class LSPI(Agent):
                         new_na          = self.representation.bestAction(ns,phi_ns)
                         phi_ns_new_na   = self.representation.phi_sa(ns,new_na,phi_ns)
                         d               = phi_s_a-gamma*phi_ns_new_na
-                        A = A + outer(phi_s_a,d)
+                        A               = A + outer(phi_s_a,d)
                         td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)
                     else:
                         td_errors[i]    = self.data_r[i]
@@ -73,7 +73,7 @@ class LSPI(Agent):
                     new_theta                   = solveLinear(sp.csc_matrix(A),b)
                     weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                     if weight_diff > self.epsilon: self.representation.theta   = new_theta
-                    self.logger.log("%d: L2_norm of weight difference = %0.3f" % (lspi_iteration,weight_diff))
+                    self.logger.log("%d: L2_norm of weight difference = %0.3f" % (lspi_iteration+1,weight_diff))
                 else:
                     print "No features, hence no more iterations is necessary!"
                     weight_diff = 0
