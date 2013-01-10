@@ -49,20 +49,19 @@ class BEBF(Representation):
         self.logger.log("Norm Threshold:\t\t%0.3f"% self.batchThreshold)
     
         ## @return: a function object corresponding to the 
-#    def getFunctionApproximation(self,X,y):
-        #return Rbf(X,y,function='multiquadric') # function = gaussian
-#        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
-                                                 # C = penalty parameter of error term, default 1
-#        bebfApprox.fit(X,y)
-#        return bebfApprox
-    
     def getFunctionApproximation(self,X,y):
+        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
+                                                 # C = penalty parameter of error term, default 1
+        bebfApprox.fit(X,y)
+        return bebfApprox
+    
+#    def getFunctionApproximation(self,X,y):
         #return Rbf(X,y,function='multiquadric') # function = gaussian
         #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
                                                 # C = penalty parameter of error term, default 1
-        gp = GaussianProcess(theta0=0.1, thetaL=.001, thetaU=1.)
-        gp.fit(X, y)
-        return gp
+#        gp = GaussianProcess(theta0=0.1, thetaL=.001, thetaU=1.)
+#        gp.fit(X, y)
+#        return gp
 #        bebfApprox.fit(X,y)
 #        return bebfApprox
     
@@ -101,12 +100,12 @@ class BEBF(Representation):
             if self.debug:
                 shout('s',s)
                 shout('td_errors',td_errors)
-            print 'norm',norm
             if norm > self.batchThreshold:
 #                print 'added feature'
                 self.addNewWeight()
                 addedFeature        = True
                 self.features_num   += 1
+                self.logger.log('Added feature. \t %d total feats, %0.3f norm' % (self.features_num, norm))
             else: 
                 break
         return addedFeature
