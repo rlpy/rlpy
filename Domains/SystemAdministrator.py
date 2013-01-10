@@ -64,13 +64,15 @@ class SystemAdministrator(Domain):
         path                    = os.getcwd() + networkmapname
         self.loadNetwork(path)   
         # TODO Need a check here for degenerate
-        self.states_num             = len(self.NEIGHBORS)       # Number of states
-        self.actions_num            = self.states_num + 1     # Number of Actions, including no-op
-        self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.states_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+        self.actions_num            = self.computers_num + 1     # Number of Actions, including no-op
+        self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.computers_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         super(SystemAdministrator,self).__init__(logger)
         if self.logger: 
+            self.logger.log('Computers:\t%d' % self.computers_num)
             self.logger.log('Edges:\t\t%s' % str(self.UNIQUE_EDGES))
-            self.logger.log('Neighbors:\t%s' % str(self.NEIGHBORS))
+            self.logger.log('Neighbors:')
+            for i in range(self.computers_num):
+                self.logger.log('%d : %s' % (i,str(list(self.NEIGHBORS[i]))))
 #        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,self.s0())):
 #            [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
 
@@ -86,9 +88,11 @@ class SystemAdministrator(Domain):
         _Neighbors = []
         f = open(path, 'rb')
         reader = csv.reader(f, delimiter=',')
+        self.computers_num = 0
         for row in reader:
-            _Neighbors.append(map(int,row))
-        self.computers_num = len(_Neighbors)
+            row = map(int,row)
+            _Neighbors.append(row)
+            self.computers_num = max(max(row)+1,self.computers_num)
         self.setUniqueEdges(_Neighbors)
         self.setNeighbors()
     def showDomain(self,s,a = 0):
@@ -193,9 +197,10 @@ class SystemAdministrator(Domain):
             self.NEIGHBORS[i] = array(self.NEIGHBORS[i])
 if __name__ == '__main__':
         random.seed(0)
-        p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/8Ring.txt');
+        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/8Ring.txt');
         #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/5Machines.txt');
         #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/10Machines.txt');
+        p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/16-5Branches.txt');
         #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/20MachTutorial.txt');
         p.test(1000)
      

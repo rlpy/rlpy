@@ -553,7 +553,16 @@ class Merger(object):
             self.path                   = path
             self.exp_paths              = os.listdir(path)
             self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(self.path+'/'+p+'/1-out.txt')]
-        self.output_path            = path if output_path == None else output_path
+        
+        #Setup the output path:
+        if output_path == None:
+            if len(paths) > 1:
+                self.output_path = '.'
+            else:
+                self.output_path = path
+        else:
+             self.output_path = output_path
+        
         self.labels                 = labels if labels != [] else [p.rpartition('-')[-1] for p in self.exp_paths]
         print "Experiment Labels: ", self.labels
         self.exp_num                = len(self.exp_paths) 

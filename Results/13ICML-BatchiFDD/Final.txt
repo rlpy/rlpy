@@ -1,10 +1,10 @@
 
-Domain			InvertedPendulum		BlocksWorld 		NetworkAdmin		PST			
+Domain			InvertedPendulum		BlocksWorld 		SystemAmin		PST			
 Representation	
 Initial			389.700+105.115		-0.734+0.124
 OMP-TD			
-BEBF			2564.233+185.231	
-iFDD				2497.667+185.985	
+BEBF				2564.233+185.231	
+iFDD				2497.667+185.985		0.863+0.091
 
 
 * iFDD means the one in the theory not ICML11 Version
@@ -13,11 +13,11 @@ Inverted Pendulum
 =======
 Samples 			= 20K
 Gamma 			= .95
-Min_threshold
-iFDD 			= .3 	(.2,.3,.4,.5,.6)
+Min_DiscoveryThreshold:
+iFDD 			= .3 (.2, .3, .4, .5, .6)
+BEBF 			= .2 (.15, .2, .25, .3)
 
-BEBF svm_epsilon	= .1
-BEBF batch_threshold= .2 (.15, .2, .25, .3)
+* BEBF svm_epsilon	 	  	= .1
 
 BlocksWorld (4)
 =======

@@ -18,7 +18,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 500
+    LEARNING_STEPS      = 100000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
@@ -47,7 +47,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
-    iFDDOnlineThreshold         = .5  
+    iFDDOnlineThreshold         = 100  
     BatchDiscoveryThreshold     = 4   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
@@ -67,8 +67,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = SystemAdministrator(networkmapname=NETWORKNMAP,logger = logger)
-    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    #domain          = SystemAdministrator(networkmapname=NETWORKNMAP,logger = logger)
+    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
@@ -87,9 +87,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     

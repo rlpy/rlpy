@@ -33,6 +33,7 @@ pl.ioff()
 #print mergedData.means[0].shape
 #merger.plot('Return')
 merger.plot('Steps','Time(s)')
+merger.plot('Steps','Features')
 #merger.plot('Steps')
 #merger.plot('Steps','Learning Steps')
 #merger.plot('Steps','Episodes')
