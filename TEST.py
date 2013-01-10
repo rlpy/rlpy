@@ -1,18 +1,8 @@
 from sklearn import svm
 from Tools import *
 from Domains import PitMaze
-    
-class foo():
-    def __init__(self,x):
-        self.x = x
-q = PriorityQueueWithNovelty()
-q.push(1,foo(1))
-q.push(2,foo(2))
-q.push(1,foo(3))
-q.push(10,foo(4))
 
-q.show()
-sorted = q.toList()
-for x in sorted:
-    print x.x
-
+row  = array([0,0,1,3,1,0,0])
+col  = array([0,2,1,3,1,0,0])
+data = array([1,1,1,1,1,1,1])
+A = sp.coo_matrix((data, (row,col)), shape=(4,4))

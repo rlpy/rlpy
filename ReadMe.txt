@@ -41,15 +41,14 @@ A6: Use mergeRuns.py. You should be able to call the mergeRuns.py with the commi
 					- Domain-Algorithm-Representation2
 					- Domain-Algorithm-Representation3
 	Set the initial path for mergeRuns to "Results/MyProject". Also use the desired
-	Y and X Axes. The Y-axis can be one of the following:
-		'Return': 	Sum of rewards
-		'Features': 	Number of basis functions used
-		'Steps': 	Length of the episode
-		'Terminal': 	Did the episode finish due to reaching a terminal state
-		 			or because the episode cap was reached.
-	The X-axis can be:
-	'Learning Steps': 	Number of interactions between the agent and domain
-	'Time(s)': 			Clock Time in number of seconds
-	'Episodes': 			Number of episodes finished between the agent and the domain 
+	Y and X Axes from the following set:
+		'Return': 			Sum of rewards
+		'Features': 			Number of basis functions used
+		'Steps': 			Length of the episode
+		'Terminal': 			Did the episode finish due to reaching a terminal state
+		 					or because the episode cap was reached.
+		'Learning Steps': 	Number of interactions between the agent and domain
+		'Time(s)': 			Clock Time in number of seconds
+		'Episodes': 			Number of episodes finished between the agent and the domain 
 	 
 	  

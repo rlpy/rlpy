@@ -590,7 +590,7 @@ class Merger(object):
             y_ind = self.AXES.index(Y_axis)
         else:
             print 'unknown Y_axis = %s', Y_axis
-        if X_axis in [self.AXES[0],self.AXES[2],self.AXES[6]]:
+        if X_axis in self.AXES:
             x_ind = self.AXES.index(X_axis)
         else:
             print 'unknown X_axis = %s', X_axis

@@ -73,7 +73,7 @@ class LSPI(Agent):
                     new_theta                   = solveLinear(sp.csc_matrix(A),b)
                     weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                     if weight_diff > self.epsilon: self.representation.theta   = new_theta
-                    self.logger.log("%d: L2_norm of weight difference = %0.3f" % (lspi_iteration+1,weight_diff))
+                    self.logger.log("%d: L2_norm of weight difference = %0.3f, Density of A: %0.2f%%" % (lspi_iteration+1,weight_diff, count_nonzero(A)/(prod(A.shape)*1.)*100))
                 else:
                     print "No features, hence no more iterations is necessary!"
                     weight_diff = 0

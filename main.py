@@ -18,7 +18,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 20000
+    LEARNING_STEPS      = 500
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
@@ -39,7 +39,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NETWORKNMAP         = '/Domains/SystemAdministratorMaps/9Star.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Machines.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
-    NOISE               = 0   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
@@ -48,11 +48,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
     iFDDOnlineThreshold         = .5  
-    BatchDiscoveryThreshold     = 10   # Minimum relevance required for representation expansion techniques to add a feature 
+    BatchDiscoveryThreshold     = 4   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
-    BEBFNormThreshold           = {'BlocksWorld':0.007, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
-    BEBF_svm_epsilon            = {'Blocksworld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 
     iFDD_Sparsify               = 1     # Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces. 
     # Policy ----------------------
@@ -63,16 +61,16 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_iterations         = 10
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
-    RE_LSPI_iterations      = 3
+    RE_LSPI_iterations      = 100
     
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    #domain          = SystemAdministrator(networkmapname=NETWORKNMAP,logger = logger)
+    domain          = SystemAdministrator(networkmapname=NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -80,11 +78,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold)
+    representation  = iFDD(domain,logger,iFDDOnlineThreshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
-    representation   = BEBF(domain,logger, batchThreshold=BEBFNormThreshold['Pendulum_InvertedBalance'], svm_epsilon=BEBF_svm_epsilon['Pendulum_InvertedBalance'])
+    #representation   = BEBF(domain,logger)
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
