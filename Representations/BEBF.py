@@ -100,12 +100,13 @@ class BEBF(Representation):
             if self.debug:
                 shout('s',s)
                 shout('td_errors',td_errors)
+            self.logger.log('Norm: %0.4f' % norm)
             if norm > self.batchThreshold:
 #                print 'added feature'
                 self.addNewWeight()
                 addedFeature        = True
                 self.features_num   += 1
-                self.logger.log('Added feature. \t %d total feats, %0.3f norm' % (self.features_num, norm))
+                self.logger.log('Added feature. \t %d total feats' % self.features_num)
             else: 
                 break
         return addedFeature
