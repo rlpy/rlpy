@@ -32,18 +32,11 @@ from Domain import *
 # corresponding to the id of a computer.
 # The sequence of numbers (arbitrary order) corresponds
 # to the computers connected to this one.
-# NOTE that it is the user's responsibility to ensure
-# that any computer which claims to be connected to another
-# is also listed as a neighbor by that computer.
-# ie, the row index of a computer must appear in the list
-# corresponding to any neighbor indexes that it references.
-# 
-#1,2,3
-#0,2,3
-#0,1,3
-#0,1,2,4
-#3
-## @author: Robert H Klein
+# NOTE: The graph is assumed to be bidirectional.
+# You dont have to specify both edges between the nodes!
+# 1,2 on the first line means these edges: (0,1),(1,0),(2,0),(0,2)
+# Each line has to have at least one element
+## @author: Robert H Klein and Alborz Geramifard
 class SystemAdministrator(Domain):
 
     NEIGHBORS = []          # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
@@ -56,7 +49,7 @@ class SystemAdministrator(Domain):
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
     episodeCap = 200        # 200 used in tutorial
-
+    gamma      = .95        # Based on IJCAI01 Paper
     # Plotting Variables
     networkGraph = None     # Graph of network used for visualization
     networkPos = None       # Position of network graph
@@ -69,7 +62,7 @@ class SystemAdministrator(Domain):
     # @see SystemAdministrator(Domain)
     def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
         path                    = os.getcwd() + networkmapname
-        self.NEIGHBORS, self.UNIQUE_EDGES = self.getNetworkMap(path) # Each cell 'i' 'NEIGHBORS' contains the list of computers connected to the computer with id 'i' 
+        self.loadNetwork(path)   
         # TODO Need a check here for degenerate
         print 'edges',self.UNIQUE_EDGES
         print 'neighbors',self.NEIGHBORS
@@ -88,13 +81,15 @@ class SystemAdministrator(Domain):
     # @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
     # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
     # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
-    def getNetworkMap(self, path):
+    def loadNetwork(self, path):
         _Neighbors = []
-        with open(path, 'rb') as f:
-            reader = csv.reader(f, delimiter=',')
-            for row in reader:
-                _Neighbors.append(map(int,row))
-        return _Neighbors, self.getUniqueEdges(_Neighbors)
+        f = open(path, 'rb')
+        reader = csv.reader(f, delimiter=',')
+        for row in reader:
+            _Neighbors.append(map(int,row))
+        self.computers_num = len(_Neighbors)
+        self.setUniqueEdges(_Neighbors)
+        self.setNeighbors()
     def showDomain(self,s,a = 0):
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
@@ -145,7 +140,7 @@ class SystemAdministrator(Domain):
             if(a == computer_id): #Reboot action on this computer
                 totalRebootReward += self.REBOOT_REWARD
                 # NOTE can break up if-statement below to separate cases
-                if (random.random() < self.P_REBOOT_REPAIR):
+                if (random.random() <= self.P_REBOOT_REPAIR):
                     ns[computer_id] = self.RUNNING
                 else:
                     ns[computer_id] = self.BROKEN
@@ -168,37 +163,36 @@ class SystemAdministrator(Domain):
     def s0(self):
         #return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
         return array([self.RUNNING]* self.state_space_dims)
-    def isTerminal(self,s):
-        return False
     ## @param neighborsList: each element at index <i> is a list of nodes connected to the node at <i>.
     # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
-    def getUniqueEdges(self, neighborsList):
-        # Returns a list of tuples of unique edges in this map; choose the edge emanating from
+    def setUniqueEdges(self, neighborsList):
+        # set Unique Edges of the network (all edges are bidirectional)
         # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]
-        uniqueEdges = []
-        print neighborsList
+        self.UNIQUE_EDGES = []
         for computer_id, neighbors in enumerate(neighborsList):
             for neighbor_id in neighbors:
-                if computer_id < neighbor_id:
-                    uniqueEdges.append((neighbor_id, computer_id))
-        return uniqueEdges
-    ## @param uniqueEdges: a list of tuples (node1, node2) where node1 and node2 share an edge. No guarantee of node order is made.
-    # @param numNodes: Number of nodes in the map.
-    # @return: A list, where each element at index <i> is a list of nodes connected to the node at <i>.
-    def populateNeighbors(self, uniqueEdges, numNodes):
-        _Neighbors = numNodes * [-1] # Initialize list so we don't get out of bounds errors
-        for edgePair in uniqueEdges:
+                edge = (min(neighbor_id,computer_id), max(neighbor_id,computer_id))
+                found = [t for t in self.UNIQUE_EDGES if t[0] == edge[0] and t[1] == edge[1]]
+                if found == []:
+                    self.UNIQUE_EDGES.append(edge)
+    def setNeighbors(self):
+        self.NEIGHBORS = {} # Initialize list so we don't get out of bounds errors
+        for edgePair in self.UNIQUE_EDGES:
             # Add each node as a neighbor to each other
-            if(_Neighbors[edgePair[0]] == -1): _Neighbors[edgePair[0]] = [edgePair[1]] # Adding first element
-            else: _Neighbors[edgePair[0]].append(edgePair[1]) # Adding to pre-existing list
-            # Add each node as a neighbor to each other
-            if(_Neighbors[edgePair[1]] == -1): _Neighbors[edgePair[1]] = [edgePair[0]] # Adding first element
-            else: _Neighbors[edgePair[1]].append(edgePair[0]) # Adding to pre-existing list
-        return _Neighbors
-
+            s,d = edgePair
+            if s in self.NEIGHBORS:
+                self.NEIGHBORS[s] += [d]
+            else:
+                self.NEIGHBORS[s] = [d]
+            if d in self.NEIGHBORS:
+                self.NEIGHBORS[d] += [s]
+            else:
+                self.NEIGHBORS[d] = [s]
+        for i in range(self.computers_num):
+            self.NEIGHBORS[i] = array(self.NEIGHBORS[i])
 if __name__ == '__main__':
         random.seed(0)
-        p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/3Machines.txt');
+        p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/8Ring.txt');
         #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/5Machines.txt');
         #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/10Machines.txt');
         #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/20MachTutorial.txt');

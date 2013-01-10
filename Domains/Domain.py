@@ -79,7 +79,7 @@ class Domain(object):
     
     ## Returns True if the state s is a terminal state, False otherwise."""
     def isTerminal(self,s):
-        abstract
+        return False # By default the domain does not terminate unless it specifies the otherwise
     def saturateState(self,s):
         # Kemal put more info on this. Why do you need this?
         dim = len(s)
