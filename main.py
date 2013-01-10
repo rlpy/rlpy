@@ -47,10 +47,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
-    iFDDOnlineThreshold         = 100  
-    BatchDiscoveryThreshold     = 4   # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDDOnlineThreshold         = .5 
+    BatchDiscoveryThreshold     = 500   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
+    BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
+    BEBF_svm_epsilon            = {'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 
     iFDD_Sparsify               = 1     # Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces. 
     # Policy ----------------------
@@ -61,7 +63,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_iterations         = 10
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
-    RE_LSPI_iterations      = 100
+    RE_LSPI_iterations      = 20
     
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
@@ -82,7 +84,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
-    #representation   = BEBF(domain,logger)
+    #representation   = BEBF(domain,logger, batchThreshold=BEBFNormThreshold['BlocksWorld'], svm_epsilon=BEBF_svm_epsilon['BlocksWorld'])
     
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
