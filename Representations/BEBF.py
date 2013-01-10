@@ -33,15 +33,17 @@ from Representation import *
 class BEBF(Representation):
     debug                   = 0
     maxBatchDicovery        = 1     # Number of features to be expanded in the batch setting; here 1 since each BEBF will be identical on a given iteration
+    svm_epsilon             = None  # from sklearn: "epsilon in the epsilon-SVR model. It specifies the epsilon-tube within which no penalty is associated in the training loss function with points predicted within a distance epsilon from the actual value."
     features                = []    # Array of pointers to feature functions, indexed by order created
     batchThreshold          = None  # Minimum value of feature relevance for the batch setting (10^-5 per Parr et al.
     initial_features_num    = 0     # Initial number of features, initialized in __init__
-    def __init__(self,domain,logger, discretization = 20, debug = 0, batchThreshold = 10 ** -3):
+    def __init__(self,domain,logger, discretization = 20, debug = 0, batchThreshold = 10 ** -3, svm_epsilon = .1):
         self.setBinsPerDimension(domain,discretization)
         self.initial_features_num      = int(sum(self.bins_per_dim)) # Effectively initialize with IndependentDiscretization
         self.features_num           = self.initial_features_num # Starting number of features equals the above, changes during execution
        # self.features_num           = 0
         self.debug                  = debug
+        self.svm_epsilon            = svm_epsilon
         self.batchThreshold          = batchThreshold
         self.addInitialFeatures()
         super(BEBF,self).__init__(domain,logger,discretization)
@@ -50,16 +52,10 @@ class BEBF(Representation):
     
         ## @return: a function object corresponding to the 
     def getFunctionApproximation(self,X,y):
-        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = 0.0005) # support vector regression
+        #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = 0.0005) # support vector regression
                                                  # C = penalty parameter of error term, default 1
+        bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = self.svm_epsilon)
         bebfApprox.fit(X,y)
-        for vecid in arange(256):
-            if vecid % 13 == 0:
-                state = id2vec(vecid, [4] * 4)
-                prediction = bebfApprox.predict(state)
-                print 'vecid, state, prediction', vecid, state, prediction
-#        for x,yi in zip(X, y):
-#            print x,'  ',yi
         return bebfApprox
     
 #    def getFunctionApproximation(self,X,y):
