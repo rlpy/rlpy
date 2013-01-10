@@ -1,0 +1,114 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.2
+blocks		4
+============================================================
+Representation:		BEBF
+Starting Features:	16
+Aggregated States:	256
+Max Batch Discovery:	1
+Norm Threshold:		0.007
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	25
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-20000-0.007/4-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Print Intervals:	1(s)
+2044: E[0:00:01]-R[0:00:13]: Return=-1.00, Steps=1000, Features = 16
+4524: E[0:00:03]-R[0:00:11]: Return=-1.00, Steps=1000, Features = 16
+6373: E[0:00:04]-R[0:00:10]: Return=0.19, Steps=806, Features = 16
+8028: E[0:00:06]-R[0:00:08]: Return=0.05, Steps=948, Features = 16
+10028: E[0:00:07]-R[0:00:07]: Return=-1.00, Steps=1000, Features = 16
+11782: E[0:00:08]-R[0:00:06]: Return=0.68, Steps=321, Features = 16
+13880: E[0:00:10]-R[0:00:04]: Return=-1.00, Steps=1000, Features = 16
+15464: E[0:00:11]-R[0:00:03]: Return=0.66, Steps=337, Features = 16
+17122: E[0:00:12]-R[0:00:02]: Return=-1.00, Steps=1000, Features = 16
+18753: E[0:00:13]-R[0:00:01]: Return=0.78, Steps=217, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 2.448
+1: L2_norm of weight difference = 0.512
+2: L2_norm of weight difference = 0.624
+3: L2_norm of weight difference = 0.665
+4: L2_norm of weight difference = 1.388
+5: L2_norm of weight difference = 1.284
+6: L2_norm of weight difference = 0.393
+7: L2_norm of weight difference = 0.514
+8: L2_norm of weight difference = 0.603
+9: L2_norm of weight difference = 0.512
+Performance Check >>> 0.998 Return, 3 Steps, 16 Features
+Norm: 0.0113
+Added feature. 	 17 total feats
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 498.703
+1: L2_norm of weight difference = 5.602
+2: L2_norm of weight difference = 1.650
+3: L2_norm of weight difference = 0.257
+4: L2_norm of weight difference = 0.001
+Performance Check >>> 0.995 Return, 6 Steps, 17 Features
+Norm: 0.0074
+Added feature. 	 18 total feats
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 1171.747
+1: L2_norm of weight difference = 981.017
+2: L2_norm of weight difference = 1298.985
+3: L2_norm of weight difference = 863.234
+4: L2_norm of weight difference = 394.128
+5: L2_norm of weight difference = 254.384
+6: L2_norm of weight difference = 537.005
+7: L2_norm of weight difference = 219.165
+8: L2_norm of weight difference = 313.875
+9: L2_norm of weight difference = 1784.687
+Performance Check >>> -1.000 Return, 1000 Steps, 18 Features
+Norm: 0.0663
+Added feature. 	 19 total feats
+Representation Expansion iteration #4
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 1465.818
+1: L2_norm of weight difference = 147.441
+2: L2_norm of weight difference = 175.771
+3: L2_norm of weight difference = 6012.438
+4: L2_norm of weight difference = 74752.267
+5: L2_norm of weight difference = 78097.310
+6: L2_norm of weight difference = 7130.621
+7: L2_norm of weight difference = 6914.816
+8: L2_norm of weight difference = 301.656
+9: L2_norm of weight difference = 169.116
+Performance Check >>> -1.000 Return, 1000 Steps, 19 Features
+Norm: 0.0234
+Added feature. 	 20 total feats
+Representation Expansion iteration #5
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 2542.837
+1: L2_norm of weight difference = 47.130
+2: L2_norm of weight difference = 23.247
+3: L2_norm of weight difference = 2.189
+4: L2_norm of weight difference = 0.663
+5: L2_norm of weight difference = 0.000
+Performance Check >>> 0.997 Return, 4 Steps, 20 Features
+Norm: 0.0020
+20000 >>> E[0:24:58]-R[0:00:00]: Return=1.00, Steps=5, Features = 20
+============================================================
+Took 0:24:58
+Results	=> Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-20000-0.007/4-results.txt
+Log	=> Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-20000-0.007/4-out.txt

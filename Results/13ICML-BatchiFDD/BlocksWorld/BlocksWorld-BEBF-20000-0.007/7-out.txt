@@ -1,0 +1,90 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.2
+blocks		4
+============================================================
+Representation:		BEBF
+Starting Features:	16
+Aggregated States:	256
+Max Batch Discovery:	1
+Norm Threshold:		0.007
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	25
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-20000-0.007/7-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Print Intervals:	1(s)
+2000: E[0:00:02]-R[0:00:16]: Return=-1.00, Steps=1000, Features = 16
+3590: E[0:00:03]-R[0:00:15]: Return=0.41, Steps=590, Features = 16
+5337: E[0:00:05]-R[0:00:14]: Return=-1.00, Steps=1000, Features = 16
+6593: E[0:00:06]-R[0:00:13]: Return=0.02, Steps=984, Features = 16
+7662: E[0:00:07]-R[0:00:12]: Return=0.69, Steps=310, Features = 16
+9063: E[0:00:09]-R[0:00:10]: Return=-1.00, Steps=1000, Features = 16
+11103: E[0:00:10]-R[0:00:08]: Return=-1.00, Steps=1000, Features = 16
+12251: E[0:00:11]-R[0:00:07]: Return=0.37, Steps=626, Features = 16
+14209: E[0:00:13]-R[0:00:05]: Return=-1.00, Steps=1000, Features = 16
+15930: E[0:00:14]-R[0:00:04]: Return=0.28, Steps=721, Features = 16
+17254: E[0:00:15]-R[0:00:02]: Return=-1.00, Steps=1000, Features = 16
+18526: E[0:00:16]-R[0:00:01]: Return=0.50, Steps=496, Features = 16
+19945: E[0:00:17]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 2.396
+1: L2_norm of weight difference = 0.746
+2: L2_norm of weight difference = 0.855
+3: L2_norm of weight difference = 1.475
+4: L2_norm of weight difference = 1.130
+5: L2_norm of weight difference = 0.810
+6: L2_norm of weight difference = 0.001
+Performance Check >>> 0.997 Return, 4 Steps, 16 Features
+Norm: 0.0111
+Added feature. 	 17 total feats
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 411.425
+1: L2_norm of weight difference = 102.082
+2: L2_norm of weight difference = 592723.603
+3: L2_norm of weight difference = 592722.468
+4: L2_norm of weight difference = 123.420
+5: L2_norm of weight difference = 320.857
+6: L2_norm of weight difference = 263.334
+7: L2_norm of weight difference = 337.405
+8: L2_norm of weight difference = 158.628
+9: L2_norm of weight difference = 25.253
+Performance Check >>> 0.997 Return, 4 Steps, 17 Features
+Norm: 0.0126
+Added feature. 	 18 total feats
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 238.000
+1: L2_norm of weight difference = 4696.264
+2: L2_norm of weight difference = 4705.351
+3: L2_norm of weight difference = 83.879
+4: L2_norm of weight difference = 58.555
+5: L2_norm of weight difference = 8.410
+6: L2_norm of weight difference = 1.431
+7: L2_norm of weight difference = 0.793
+8: L2_norm of weight difference = 0.000
+Performance Check >>> 0.998 Return, 3 Steps, 18 Features
+Norm: 0.0018
+20000 >>> E[0:13:47]-R[0:00:00]: Return=1.00, Steps=3, Features = 18
+============================================================
+Took 0:13:47
+Results	=> Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-20000-0.007/7-results.txt
+Log	=> Results/13ICML-BEBF/BlocksWorld//BlocksWorld-BEBF-20000-0.007/7-out.txt

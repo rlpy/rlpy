@@ -1,0 +1,223 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		BEBF
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Max Batch Discovery:	1
+Norm Threshold:		0.200
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BEBF/PendulumFin//Pendulum_InvertedBalance-BEBF-20000-0.2/24-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Print Intervals:	1(s)
+2538: E[0:00:01]-R[0:00:07]: Return=-1.00, Steps=9, Features = 40
+5085: E[0:00:02]-R[0:00:06]: Return=-1.00, Steps=9, Features = 40
+7652: E[0:00:03]-R[0:00:05]: Return=-1.00, Steps=10, Features = 40
+10160: E[0:00:04]-R[0:00:04]: Return=-1.00, Steps=14, Features = 40
+12739: E[0:00:05]-R[0:00:03]: Return=-1.00, Steps=14, Features = 40
+15339: E[0:00:06]-R[0:00:02]: Return=-1.00, Steps=11, Features = 40
+17951: E[0:00:07]-R[0:00:01]: Return=-1.00, Steps=13, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 4.285
+1: L2_norm of weight difference = 1.605
+2: L2_norm of weight difference = 0.929
+3: L2_norm of weight difference = 0.350
+4: L2_norm of weight difference = 1.047
+5: L2_norm of weight difference = 1.628
+6: L2_norm of weight difference = 1.628
+7: L2_norm of weight difference = 1.628
+8: L2_norm of weight difference = 1.628
+9: L2_norm of weight difference = 1.628
+Performance Check >>> -1.000 Return, 85 Steps, 40 Features
+Norm: 0.4282
+Added feature. 	 41 total feats
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 5.576
+1: L2_norm of weight difference = 2.209
+2: L2_norm of weight difference = 0.476
+3: L2_norm of weight difference = 0.451
+4: L2_norm of weight difference = 0.020
+5: L2_norm of weight difference = 0.020
+6: L2_norm of weight difference = 0.020
+7: L2_norm of weight difference = 0.020
+8: L2_norm of weight difference = 0.020
+9: L2_norm of weight difference = 0.020
+Performance Check >>> 0.000 Return, 3000 Steps, 41 Features
+Norm: 0.8342
+Added feature. 	 42 total feats
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 6.391
+1: L2_norm of weight difference = 1.522
+2: L2_norm of weight difference = 0.559
+3: L2_norm of weight difference = 0.277
+4: L2_norm of weight difference = 0.516
+5: L2_norm of weight difference = 0.031
+6: L2_norm of weight difference = 0.031
+7: L2_norm of weight difference = 0.031
+8: L2_norm of weight difference = 0.031
+9: L2_norm of weight difference = 0.031
+Performance Check >>> -1.000 Return, 593 Steps, 42 Features
+Norm: 0.5233
+Added feature. 	 43 total feats
+Representation Expansion iteration #4
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 6.362
+1: L2_norm of weight difference = 2.842
+2: L2_norm of weight difference = 0.186
+3: L2_norm of weight difference = 0.001
+Performance Check >>> -1.000 Return, 1332 Steps, 43 Features
+Norm: 0.6156
+Added feature. 	 44 total feats
+Representation Expansion iteration #5
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 12.993
+1: L2_norm of weight difference = 7.123
+2: L2_norm of weight difference = 0.545
+3: L2_norm of weight difference = 0.235
+4: L2_norm of weight difference = 0.000
+Performance Check >>> -1.000 Return, 239 Steps, 44 Features
+Norm: 0.6791
+Added feature. 	 45 total feats
+Representation Expansion iteration #6
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 23.874
+1: L2_norm of weight difference = 18.052
+2: L2_norm of weight difference = 3.440
+3: L2_norm of weight difference = 0.484
+4: L2_norm of weight difference = 0.008
+5: L2_norm of weight difference = 0.008
+6: L2_norm of weight difference = 0.008
+7: L2_norm of weight difference = 0.008
+8: L2_norm of weight difference = 0.008
+9: L2_norm of weight difference = 0.008
+Performance Check >>> 0.000 Return, 3000 Steps, 45 Features
+Norm: 1.3200
+Added feature. 	 46 total feats
+Representation Expansion iteration #7
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 27.088
+1: L2_norm of weight difference = 53.488
+2: L2_norm of weight difference = 3.616
+3: L2_norm of weight difference = 1.134
+4: L2_norm of weight difference = 0.000
+Performance Check >>> 0.000 Return, 3000 Steps, 46 Features
+Norm: 2.1583
+Added feature. 	 47 total feats
+Representation Expansion iteration #8
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 25.088
+1: L2_norm of weight difference = 43.248
+2: L2_norm of weight difference = 4.957
+3: L2_norm of weight difference = 0.842
+4: L2_norm of weight difference = 0.628
+5: L2_norm of weight difference = 0.002
+6: L2_norm of weight difference = 0.002
+7: L2_norm of weight difference = 0.002
+8: L2_norm of weight difference = 0.002
+9: L2_norm of weight difference = 0.002
+Performance Check >>> 0.000 Return, 3000 Steps, 47 Features
+Norm: 1.8017
+Added feature. 	 48 total feats
+Representation Expansion iteration #9
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 42.485
+1: L2_norm of weight difference = 239.270
+2: L2_norm of weight difference = 82.108
+3: L2_norm of weight difference = 5.425
+4: L2_norm of weight difference = 0.034
+5: L2_norm of weight difference = 0.034
+6: L2_norm of weight difference = 0.034
+7: L2_norm of weight difference = 0.034
+8: L2_norm of weight difference = 0.034
+9: L2_norm of weight difference = 0.034
+Performance Check >>> 0.000 Return, 3000 Steps, 48 Features
+Norm: 8.0148
+Added feature. 	 49 total feats
+Representation Expansion iteration #10
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 40.740
+1: L2_norm of weight difference = 160.647
+2: L2_norm of weight difference = 45.773
+3: L2_norm of weight difference = 8.062
+4: L2_norm of weight difference = 10.087
+5: L2_norm of weight difference = 0.000
+Performance Check >>> 0.000 Return, 3000 Steps, 49 Features
+Norm: 5.4067
+Added feature. 	 50 total feats
+Representation Expansion iteration #11
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 45.643
+1: L2_norm of weight difference = 299.316
+2: L2_norm of weight difference = 196.596
+3: L2_norm of weight difference = 20.077
+4: L2_norm of weight difference = 16.644
+5: L2_norm of weight difference = 0.007
+6: L2_norm of weight difference = 0.007
+7: L2_norm of weight difference = 0.007
+8: L2_norm of weight difference = 0.007
+9: L2_norm of weight difference = 0.007
+Performance Check >>> 0.000 Return, 3000 Steps, 50 Features
+Norm: 10.2755
+Added feature. 	 51 total feats
+Representation Expansion iteration #12
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 83.153
+1: L2_norm of weight difference = 698.410
+2: L2_norm of weight difference = 1992.874
+3: L2_norm of weight difference = 11.356
+4: L2_norm of weight difference = 16.713
+5: L2_norm of weight difference = 0.000
+Performance Check >>> 0.000 Return, 3000 Steps, 51 Features
+Norm: 35.8248
+Added feature. 	 52 total feats
+Representation Expansion iteration #13
+-----------------
+Running LSPI:
+0: L2_norm of weight difference = 247.827
+1: L2_norm of weight difference = 557.428
+2: L2_norm of weight difference = 312.240
+3: L2_norm of weight difference = 47.018
+4: L2_norm of weight difference = 369.283
+5: L2_norm of weight difference = 324.077
+6: L2_norm of weight difference = 48.923
+7: L2_norm of weight difference = 372.706
+8: L2_norm of weight difference = 325.593
+9: L2_norm of weight difference = 49.037
+Performance Check >>> 0.000 Return, 3000 Steps, 52 Features
+Norm: 0.0950
+20000 >>> E[0:29:24]-R[0:00:00]: Return=0.00, Steps=3000, Features = 52
+============================================================
+Took 0:29:24
+Results	=> Results/13ICML-BEBF/PendulumFin//Pendulum_InvertedBalance-BEBF-20000-0.2/24-results.txt
+Log	=> Results/13ICML-BEBF/PendulumFin//Pendulum_InvertedBalance-BEBF-20000-0.2/24-out.txt

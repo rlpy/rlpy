@@ -1,0 +1,12 @@
+Algorithm: 0.1
+======================
+Learning Steps: 5000.000	
+Steps: 254.500	
+Standard-Error: 215.208	
+======================
+Algorithm: 0.2
+======================
+Learning Steps: 5000.000	
+Steps: 253.250	
+Standard-Error: 215.569	
+======================

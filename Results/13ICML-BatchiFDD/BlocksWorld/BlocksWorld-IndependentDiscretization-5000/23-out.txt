@@ -1,0 +1,49 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretization
+Starting Features:	16
+Aggregated States:	256
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/BlocksWorld-IndependentDiscretization-5000/23-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Print Intervals:	1(s)
+1213: E[0:00:01]-R[0:00:04]: Return=0.08, Steps=922, Features = 16
+2847: E[0:00:03]-R[0:00:02]: Return=-1.00, Steps=1000, Features = 16
+4152: E[0:00:05]-R[0:00:01]: Return=-1.00, Steps=1000, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.747
+2: L2_norm of weight difference = 0.404
+3: L2_norm of weight difference = 7766262957.566
+4: L2_norm of weight difference = 7766262957.445
+5: L2_norm of weight difference = 1.733
+6: L2_norm of weight difference = 2.074
+7: L2_norm of weight difference = 19506328876.210
+8: L2_norm of weight difference = 19506328876.040
+9: L2_norm of weight difference = 2.145
+10: L2_norm of weight difference = 2.530
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+5000 >>> E[0:01:53]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 16
+============================================================
+Took 0:01:53
+Results	=> Results/13ICML-BatchiFDD/BlocksWorld-IndependentDiscretization-5000/23-results.txt
+Log	=> Results/13ICML-BatchiFDD/BlocksWorld-IndependentDiscretization-5000/23-out.txt

@@ -1,0 +1,89 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		iFDD
+Starting Features:	16
+Aggregated States:	256
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	0.500
+Batch Threshold:		0.200
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/BlocksWorld-iFDD-5000-0.2/6-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Print Intervals:	1(s)
+621: E[0:00:02]-R[0:00:15]: Return=0.50, Steps=498, Features = 16
+995: E[0:00:03]-R[0:00:13]: Return=0.63, Steps=374, Features = 16
+1995: E[0:00:07]-R[0:00:10]: Return=-1.00, Steps=1000, Features = 16
+2591: E[0:00:09]-R[0:00:08]: Return=0.63, Steps=375, Features = 16
+3591: E[0:00:12]-R[0:00:05]: Return=-1.00, Steps=1000, Features = 16
+4333: E[0:00:14]-R[0:00:02]: Return=0.26, Steps=742, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.936
+2: L2_norm of weight difference = 0.326
+3: L2_norm of weight difference = 5.917
+4: L2_norm of weight difference = 4564076552.549
+5: L2_norm of weight difference = 4564076552.525
+6: L2_norm of weight difference = 27.689
+7: L2_norm of weight difference = 27.736
+8: L2_norm of weight difference = 3.354
+9: L2_norm of weight difference = 2.493
+10: L2_norm of weight difference = 0.832
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+iFDD Batch: Max Relevance = 3.882
+New Feature 1: [0,15], Relevance = 3.882
+New Feature 2: [0,5], Relevance = 3.628
+New Feature 3: [5,15], Relevance = 3.598
+New Feature 4: [0,10], Relevance = 3.370
+New Feature 5: [10,15], Relevance = 3.158
+New Feature 6: [5,10], Relevance = 2.930
+New Feature 7: [11,15], Relevance = 1.717
+New Feature 8: [0,8], Relevance = 1.651
+New Feature 9: [8,15], Relevance = 1.585
+New Feature 10: [0,11], Relevance = 1.575
+New Feature 11: [0,4], Relevance = 1.541
+New Feature 12: [0,12], Relevance = 1.464
+New Feature 13: [5,11], Relevance = 1.463
+New Feature 14: [5,8], Relevance = 1.406
+New Feature 15: [4,15], Relevance = 1.361
+New Feature 16: [3,15], Relevance = 1.323
+New Feature 17: [5,9], Relevance = 1.238
+New Feature 18: [9,15], Relevance = 1.205
+New Feature 19: [5,12], Relevance = 1.175
+New Feature 20: [4,10], Relevance = 1.173
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.888
+2: L2_norm of weight difference = 0.454
+3: L2_norm of weight difference = 0.770
+4: L2_norm of weight difference = 0.560
+5: L2_norm of weight difference = 0.000
+Performance Check >>> 0.998 Return, 3 Steps, 36 Features
+iFDD Batch: Max Relevance = 0.001
+5000 >>> E[0:12:17]-R[0:00:00]: Return=1.00, Steps=4, Features = 36
+============================================================
+Took 0:12:17
+Results	=> Results/13ICML-BatchiFDD/BlocksWorld-iFDD-5000-0.2/6-results.txt
+Log	=> Results/13ICML-BatchiFDD/BlocksWorld-iFDD-5000-0.2/6-out.txt

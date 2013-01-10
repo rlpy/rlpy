@@ -1,0 +1,51 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretization
+Starting Features:	16
+Aggregated States:	256
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/BlocksWorld-IndependentDiscretization-5000/15-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Print Intervals:	1(s)
+1000: E[0:00:02]-R[0:00:06]: Return=-1.00, Steps=1000, Features = 16
+1848: E[0:00:03]-R[0:00:05]: Return=0.15, Steps=848, Features = 16
+2848: E[0:00:04]-R[0:00:03]: Return=-1.00, Steps=1000, Features = 16
+3825: E[0:00:06]-R[0:00:02]: Return=0.64, Steps=363, Features = 16
+4471: E[0:00:07]-R[0:00:01]: Return=0.54, Steps=462, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.638
+2: L2_norm of weight difference = 87.770
+3: L2_norm of weight difference = 87.254
+4: L2_norm of weight difference = 3785048902.278
+5: L2_norm of weight difference = 3785048902.257
+6: L2_norm of weight difference = 30704052.975
+7: L2_norm of weight difference = 30704052.990
+8: L2_norm of weight difference = 66.309
+9: L2_norm of weight difference = 66.837
+10: L2_norm of weight difference = 0.687
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+5000 >>> E[0:01:26]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 16
+============================================================
+Took 0:01:26
+Results	=> Results/13ICML-BatchiFDD/BlocksWorld-IndependentDiscretization-5000/15-results.txt
+Log	=> Results/13ICML-BatchiFDD/BlocksWorld-IndependentDiscretization-5000/15-out.txt
