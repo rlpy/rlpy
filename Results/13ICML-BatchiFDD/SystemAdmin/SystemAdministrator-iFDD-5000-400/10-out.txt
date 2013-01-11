@@ -1,0 +1,112 @@
+============================================================
+Domain:		SystemAdministrator
+Dimensions:	16
+|S|:		65536
+|A|:		17
+|S|x|A|:		1114112
+Episode Cap:	200
+Gamma:		0.95
+Computers:	16
+Edges:		[(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 6), (1, 7), (2, 8), (2, 9), (3, 10), (3, 11), (4, 12), (4, 13), (5, 14), (5, 15)]
+Neighbors:
+0 : [1, 2, 3, 4, 5]
+1 : [0, 6, 7]
+2 : [0, 8, 9]
+3 : [0, 10, 11]
+4 : [0, 12, 13]
+5 : [0, 14, 15]
+6 : [1]
+7 : [1]
+8 : [2]
+9 : [2]
+10 : [3]
+11 : [3]
+12 : [4]
+13 : [4]
+14 : [5]
+15 : [5]
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15]
+============================================================
+Representation:		iFDD
+Features per action:	17
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	50.000
+Batch Threshold:		400.000
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/SystemAdmin/SystemAdministrator-iFDD-5000-400/10-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		1(s)
+200: E[0:00:01]-R[0:00:28]: Return=775.50, Steps=200, Features = 17
+400: E[0:00:02]-R[0:00:27]: Return=676.50, Steps=200, Features = 17
+600: E[0:00:03]-R[0:00:26]: Return=584.75, Steps=200, Features = 17
+800: E[0:00:04]-R[0:00:24]: Return=689.50, Steps=200, Features = 17
+1000: E[0:00:05]-R[0:00:22]: Return=707.25, Steps=200, Features = 17
+1400: E[0:00:07]-R[0:00:19]: Return=705.25, Steps=200, Features = 17
+1800: E[0:00:09]-R[0:00:17]: Return=682.25, Steps=200, Features = 17
+2200: E[0:00:11]-R[0:00:14]: Return=637.50, Steps=200, Features = 17
+2600: E[0:00:13]-R[0:00:12]: Return=902.50, Steps=200, Features = 17
+3000: E[0:00:15]-R[0:00:10]: Return=814.00, Steps=200, Features = 17
+3400: E[0:00:16]-R[0:00:08]: Return=654.75, Steps=200, Features = 17
+3800: E[0:00:18]-R[0:00:06]: Return=697.25, Steps=200, Features = 17
+4200: E[0:00:20]-R[0:00:04]: Return=811.75, Steps=200, Features = 17
+4600: E[0:00:22]-R[0:00:02]: Return=664.50, Steps=200, Features = 17
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1263.799, Density of A: 49.64%
+2: L2_norm of weight difference = 1180.595, Density of A: 43.67%
+3: L2_norm of weight difference = 1713.510, Density of A: 37.58%
+4: L2_norm of weight difference = 2418.050, Density of A: 48.32%
+5: L2_norm of weight difference = 707.159, Density of A: 43.45%
+6: L2_norm of weight difference = 2084.875, Density of A: 37.55%
+7: L2_norm of weight difference = 2809.511, Density of A: 47.20%
+8: L2_norm of weight difference = 727.687, Density of A: 43.52%
+9: L2_norm of weight difference = 1662.890, Density of A: 37.60%
+10: L2_norm of weight difference = 2359.530, Density of A: 46.61%
+Performance Check >>> 249.500 Return, 200 Steps, 17 Features
+iFDD Batch: Max Relevance = 746.270
+New Feature 1: [3, 11], Relevance = 746.270
+New Feature 2: [3, 10], Relevance = 628.413
+New Feature 3: [4, 13], Relevance = 612.793
+New Feature 4: [5, 15], Relevance = 610.060
+New Feature 5: [4, 12], Relevance = 591.662
+New Feature 6: [10, 11], Relevance = 570.058
+New Feature 7: [5, 14], Relevance = 516.263
+New Feature 8: [12, 13], Relevance = 466.655
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 927.290, Density of A: 28.16%
+2: L2_norm of weight difference = 778.416, Density of A: 26.13%
+3: L2_norm of weight difference = 4313.523, Density of A: 27.43%
+4: L2_norm of weight difference = 4306.995, Density of A: 26.99%
+5: L2_norm of weight difference = 8479.778, Density of A: 27.51%
+6: L2_norm of weight difference = 9092.861, Density of A: 25.63%
+7: L2_norm of weight difference = 631.324, Density of A: 25.64%
+8: L2_norm of weight difference = 1856.474, Density of A: 26.95%
+9: L2_norm of weight difference = 1844.401, Density of A: 26.70%
+10: L2_norm of weight difference = 18853.434, Density of A: 27.00%
+Performance Check >>> 394.500 Return, 200 Steps, 25 Features
+iFDD Batch: Max Relevance = 224.119
+5000: E[0:07:26]-R[0:00:00]: Return=655.00, Steps=200, Features = 25
+5000 >>> E[0:07:27]-R[0:00:00]: Return=365.25, Steps=200, Features = 25
+============================================================
+Took 0:07:27
+Results	=> Results/13ICML-BatchiFDD/SystemAdmin/SystemAdministrator-iFDD-5000-400/10-results.txt
+Log	=> Results/13ICML-BatchiFDD/SystemAdmin/SystemAdministrator-iFDD-5000-400/10-out.txt

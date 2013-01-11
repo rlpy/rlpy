@@ -1,0 +1,30 @@
+Algorithm: 400
+======================
+Learning Steps: 5000.000	
+Return: 757.200	
+Standard-Error: 82.876	
+======================
+Algorithm: 500
+======================
+Learning Steps: 5000.000	
+Return: 632.200	
+Standard-Error: 68.483	
+======================
+Algorithm: 600
+======================
+Learning Steps: 5000.000	
+Return: 549.950	
+Standard-Error: 115.229	
+======================
+Algorithm: 700
+======================
+Learning Steps: 5000.000	
+Return: 502.450	
+Standard-Error: 101.831	
+======================
+Algorithm: 5000
+======================
+Learning Steps: 5000.000	
+Return: 686.767	
+Standard-Error: 60.429	
+======================

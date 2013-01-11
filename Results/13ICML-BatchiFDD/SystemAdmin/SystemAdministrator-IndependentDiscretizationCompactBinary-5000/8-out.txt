@@ -1,0 +1,88 @@
+============================================================
+Domain:		SystemAdministrator
+Dimensions:	16
+|S|:		65536
+|A|:		17
+|S|x|A|:		1114112
+Episode Cap:	200
+Gamma:		0.95
+Computers:	16
+Edges:		[(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 6), (1, 7), (2, 8), (2, 9), (3, 10), (3, 11), (4, 12), (4, 13), (5, 14), (5, 15)]
+Neighbors:
+0 : [1, 2, 3, 4, 5]
+1 : [0, 6, 7]
+2 : [0, 8, 9]
+3 : [0, 10, 11]
+4 : [0, 12, 13]
+5 : [0, 14, 15]
+6 : [1]
+7 : [1]
+8 : [2]
+9 : [2]
+10 : [3]
+11 : [3]
+12 : [4]
+13 : [4]
+14 : [5]
+15 : [5]
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15]
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/SystemAdmin/SystemAdministrator-IndependentDiscretizationCompactBinary-5000/8-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		1(s)
+200: E[0:00:02]-R[0:00:56]: Return=623.50, Steps=200, Features = 17
+400: E[0:00:05]-R[0:00:53]: Return=646.50, Steps=200, Features = 17
+600: E[0:00:07]-R[0:00:51]: Return=739.75, Steps=200, Features = 17
+800: E[0:00:09]-R[0:00:50]: Return=705.25, Steps=200, Features = 17
+1000: E[0:00:12]-R[0:00:48]: Return=812.00, Steps=200, Features = 17
+1200: E[0:00:14]-R[0:00:45]: Return=637.50, Steps=200, Features = 17
+1400: E[0:00:17]-R[0:00:43]: Return=713.00, Steps=200, Features = 17
+1600: E[0:00:19]-R[0:00:41]: Return=752.50, Steps=200, Features = 17
+1800: E[0:00:22]-R[0:00:38]: Return=778.00, Steps=200, Features = 17
+2000: E[0:00:24]-R[0:00:36]: Return=769.50, Steps=200, Features = 17
+2200: E[0:00:26]-R[0:00:33]: Return=664.25, Steps=200, Features = 17
+2400: E[0:00:28]-R[0:00:31]: Return=819.25, Steps=200, Features = 17
+2600: E[0:00:31]-R[0:00:28]: Return=665.25, Steps=200, Features = 17
+2800: E[0:00:33]-R[0:00:26]: Return=710.50, Steps=200, Features = 17
+3000: E[0:00:36]-R[0:00:24]: Return=805.25, Steps=200, Features = 17
+3200: E[0:00:38]-R[0:00:21]: Return=765.00, Steps=200, Features = 17
+3400: E[0:00:40]-R[0:00:19]: Return=737.75, Steps=200, Features = 17
+3600: E[0:00:43]-R[0:00:17]: Return=704.50, Steps=200, Features = 17
+3800: E[0:00:45]-R[0:00:14]: Return=822.75, Steps=200, Features = 17
+4000: E[0:00:48]-R[0:00:12]: Return=676.75, Steps=200, Features = 17
+4200: E[0:00:50]-R[0:00:09]: Return=786.25, Steps=200, Features = 17
+4400: E[0:00:52]-R[0:00:07]: Return=666.75, Steps=200, Features = 17
+4600: E[0:00:54]-R[0:00:05]: Return=727.25, Steps=200, Features = 17
+4800: E[0:00:57]-R[0:00:02]: Return=648.50, Steps=200, Features = 17
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1302.495, Density of A: 55.63%
+2: L2_norm of weight difference = 1219.988, Density of A: 47.69%
+3: L2_norm of weight difference = 1661.212, Density of A: 49.62%
+4: L2_norm of weight difference = 2388.098, Density of A: 53.51%
+5: L2_norm of weight difference = 728.188, Density of A: 47.55%
+6: L2_norm of weight difference = 1444.537, Density of A: 49.95%
+7: L2_norm of weight difference = 2170.476, Density of A: 53.66%
+8: L2_norm of weight difference = 727.122, Density of A: 47.39%
+9: L2_norm of weight difference = 1423.810, Density of A: 49.31%
+10: L2_norm of weight difference = 2171.761, Density of A: 53.00%
+Performance Check >>> 438.500 Return, 200 Steps, 17 Features
+5000: E[0:12:41]-R[0:00:00]: Return=646.25, Steps=200, Features = 17
+5000 >>> E[0:12:44]-R[0:00:00]: Return=316.00, Steps=200, Features = 17
+============================================================
+Took 0:12:44
+Results	=> Results/13ICML-BatchiFDD/SystemAdmin/SystemAdministrator-IndependentDiscretizationCompactBinary-5000/8-results.txt
+Log	=> Results/13ICML-BatchiFDD/SystemAdmin/SystemAdministrator-IndependentDiscretizationCompactBinary-5000/8-out.txt
