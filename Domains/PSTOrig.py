@@ -1,5 +1,4 @@
 import sys, os
-import copy
 
 import csv
 import networkx as nx
@@ -61,7 +60,6 @@ from matplotlib import lines
 # line cutting down its center.
 # 
 ########################################################
-
 class UAVLocation:
     MAINTENANCE = 0
     REFUEL      = 1
@@ -69,28 +67,18 @@ class UAVLocation:
     SURVEIL     = 3
     SIZE        = 4
     
-class StateStruct:
-    def __init__(self, locations, fuel, actuator, sensor):
-        self.locations = locations
-        self.fuel       = fuel
-        self.actuator   = actuator
-        self.sensor     = sensor
-    
 class ActuatorState:
     FAILED, RUNNING = 0,1 # Status of actuator
     SIZE = 2
 class SensorState:
     FAILED, RUNNING = 0,1 # Status of sensor
     SIZE = 2
-
-# Future code (in 'step') assumes that these can be summed, ie, 0,1,2 retreat, advance, loiter
 class UAVAction:
     ADVANCE,RETREAT,LOITER = 2,0,1 # Available actions
     SIZE = 3 # number of states above
 
-# NOTE: properties2StateVec assumes the order loc,fuel,actuator,sensor
 class UAVIndex:
-    LOC, FUEL, ACT_STATUS, SENS_STATUS = 0,1,2,3
+    UAV_LOC, UAV_FUEL, UAV_ACT_STATUS, UAV_SENS_STATUS = 0,1,2,3
     SIZE = 4 # Number of indices required for state of each UAV
         
 ## @author Robert H. Klein
@@ -110,14 +98,14 @@ class PST(Domain):
     MOVE_REWARD_COEFF   = 0   # Reward (negative) coefficient for movement (i.e., fuel burned while loitering might be penalized above, but no movement cost)
     NUM_TARGET          = 1   # Number of targets; SURVEIL_REWARD is multiplied by the number of targets successfully observed
     NUM_UAV             = None # Number of UAVs present in the mission [3 in tutorial
-    NOM_FUEL_BURN       = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
-
+    NOM_FUEL_BURN       = 1 # Nominal rate of fuel depletion (at present, there is no other rate)
+    
     # Domain variables
     motionNoise         = 0    # Noise in action (with some probability, loiter rather than move)
     numCrashed          = 0    # Number of crashed UAVs [n_c]
     numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
     fuelUnitsBurned     = 0
-    LIMITS              = []   # Limits on action indices
+    LIMITS = []    
     isCommStatesCovered = False # All comms states are covered on a given timestep, enabling surveillance rewards
     
     # Plotting constants
@@ -143,15 +131,12 @@ class PST(Domain):
     ###
     def __init__(self, NUM_UAV = 3, motionNoise = 0, logger = None):
         self.NUM_UAV                = NUM_UAV
-        self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (LOC, FUEL...) * NUM_UAV
+        self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (UAV_LOC, UAV_FUEL...) * NUM_UAV
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
-        locations_lim = array(tile([0,UAVLocation.SIZE-1],(NUM_UAV,1)))
-        fuel_lim =      array(tile([0,self.FULL_FUEL],(NUM_UAV,1)))     
-        actuator_lim =  array(tile([0,ActuatorState.SIZE-1],(NUM_UAV,1)))
-        sensor_lim =    array(tile([0,SensorState.SIZE-1],(NUM_UAV,1)))
-        self.statespace_limits      = vstack([locations_lim, fuel_lim, actuator_lim, sensor_lim])# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+        _statespace_limits = array(vstack([[0,UAVLocation.SIZE-1],[0,self.FULL_FUEL],[0,ActuatorState.SIZE-1],[0,SensorState.SIZE-1]])) # 3 Location states, 2 status states
+        self.statespace_limits      = array(tile(_statespace_limits,(NUM_UAV,1)))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.motionNoise            = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
-        self.LIMITS                 = UAVAction.SIZE * ones(NUM_UAV, dtype='int') # eg [3,3,3,3], number of possible actions
+        self.LIMITS                 = tile(UAVAction.SIZE, (1,NUM_UAV))[0] # eg [3,3,3,3]
         self.isCommStatesCovered    = False # Don't have communications available yet, so no surveillance reward allowed.
         self.location_rect_vis      = None # 
         self.location_coord         = None
@@ -226,18 +211,16 @@ class PST(Domain):
         # Draw a circle, with text inside = amt fuel remaining
         # Triangle on top of UAV for comms, black = good, red = bad
         # Triangle in front of UAV for surveillance
-        
-        sStruct = self.state2Struct(s)
-        
         for uav_id in range(0,self.NUM_UAV):
             # Assign all the variables corresponding to this UAV for this iteration;
             # this could alternately be done with a UAV class whose objects keep track
             # of these variables.  Elect to use lists here since ultimately the state
             # must be a vector anyway.
-            uav_location = sStruct.locations[uav_id] # State index corresponding to the location of this uav
-            uav_fuel = sStruct.fuel[uav_id]
-            uav_sensor = sStruct.sensor[uav_id]
-            uav_actuator = sStruct.actuator[uav_id]
+            uav_ind = uav_id * UAVIndex.SIZE
+            uav_location = s[uav_ind + UAVIndex.UAV_LOC] # State index corresponding to the location of this uav
+            uav_fuel = s[uav_ind + UAVIndex.UAV_FUEL]
+            uav_sensor = s[uav_ind + UAVIndex.UAV_SENS_STATUS]
+            uav_actuator = s[uav_ind + UAVIndex.UAV_ACT_STATUS]
             
             # Assign coordinates on figure where UAV should be drawn
             uav_x = self.location_coord[uav_location]
@@ -271,118 +254,138 @@ class PST(Domain):
                 self.subplot_axes.add_line(lines.Line2D([self.location_coord[i] + self.LOCATION_WIDTH, self.location_coord[i] + self.LOCATION_WIDTH],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
-        sleep(0.5)
-        
+        sleep(2)
 #===============================================================================
     def showLearning(self,representation):
         pass
     def step(self,s,a):
-        # Note below that we pass the structure by reference to save time; ie, components of sStruct refer directly to s
-        ns = s.copy()
-        sStruct = self.state2Struct(s)
-        nsStruct = self.state2Struct(ns)
-        # Subtract 1 below to give -1,0,1, easily sum actions
-        actionVector = array(id2vec(a,self.LIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
-        nsStruct.locations += (actionVector-1)
+        ns = s.copy() # no concerns about affecting state mid-step here
+        actionVector = id2vec(a,self.LIMITS) # returns list of form [0,1,0,2] corresponding to action of each uav
+#DEBUG        print 'action vector selected:',actionVector
         
-        #TODO - incorporate cost graph as in matlab.
-        fuelBurnedBool = [(actionVector[i] == UAVAction.LOITER and (nsStruct.locations[i] == UAVLocation.REFUEL or nsStruct.locations[i] == UAVLocation.MAINTENANCE)) for i in arange(self.NUM_UAV)]
-        fuelBurnedBool = array(fuelBurnedBool) == False
-        nsStruct.fuel = array([sStruct.fuel[i] - self.NOM_FUEL_BURN * fuelBurnedBool[i] for i in arange(self.NUM_UAV)]) # if fuel
-        self.fuelUnitsBurned = sum(fuelBurnedBool)
-        distanceTraveled = sum(logical_and(nsStruct.locations, sStruct.locations))
+        # Create array with value 0 in all states corresponding to comms locations
+        # Update this while iterate over each UAV; used to determine if comms link is functioning
+        # i.e., all communications states are occupied by UAVs with functioning actuators and sensors
+        self.isCommStatesCovered = False
         
-        # Actuator failure transition
-        randomFails = array([random.random() for dummy in arange(self.NUM_UAV)])
-        randomFails = randomFails > self.P_ACT_FAIL
-        nsStruct.actuator = logical_and(sStruct.actuator, randomFails)
-        
-        # Sensor failure transition
-        randomFails = array([random.random() for dummy in arange(self.NUM_UAV)])
-        randomFails = randomFails > self.P_SENSOR_FAIL
-        nsStruct.sensor = logical_and(sStruct.sensor, randomFails)
-        
-        #Refuel those in base
-        refuelIndices = nonzero(logical_and(sStruct.locations == UAVLocation.REFUEL, nsStruct.locations == UAVLocation.REFUEL))
-        nsStruct.fuel[refuelIndices] = self.FULL_FUEL
-        
-        # Fix sensors and motors in maintenance state
-        maintenanceIndices = nonzero(logical_and(sStruct.locations == UAVLocation.MAINTENANCE, nsStruct.locations == UAVLocation.MAINTENANCE))
-        nsStruct.actuator[maintenanceIndices] = ActuatorState.RUNNING
-        nsStruct.sensor[maintenanceIndices] = SensorState.RUNNING
-        
-        # Test if have communication
-        self.isCommStatesCovered = any(nonzero(sStruct.locations == UAVLocation.COMMS))
-        
-        surveillanceBool = (sStruct.locations == UAVLocation.SURVEIL)
-        self.numHealthySurveil = sum(logical_and(surveillanceBool, sStruct.sensor))
+        self.numHealthySurveil = 0
+        self.fuelUnitsBurned = self.NUM_UAV
+        distanceTraveled = 0
         
         totalStepReward = 0
         
-        ns = self.struct2State(nsStruct)
-        
+        for uav_id in arange(0,self.NUM_UAV):            
+            uav_ind = uav_id * UAVIndex.SIZE
+            uav_location_ind = uav_ind + UAVIndex.UAV_LOC # State index corresponding to the location of this uav
+            # First check for crashing uavs; short-circuit the loop
+            # NOTE: Kemal said penalty only occurred once, but that doesn't match tutorial description + results.
+#            if(s[uav_location_ind] == UAVLocation.CRASHED):
+#                continue
+            
+            uav_fuel_ind = uav_ind + UAVIndex.UAV_FUEL
+            uav_sensor_ind = uav_ind + UAVIndex.UAV_SENS_STATUS
+            uav_actuator_ind = uav_ind + UAVIndex.UAV_ACT_STATUS
+            
+            uav_action = actionVector[uav_id]
+            ##### STATE TRANSITIONS #####
+            
+            # Sensor failure transition
+            if(random.random() < self.P_SENSOR_FAIL):
+                ns[uav_sensor_ind] = SensorState.FAILED
+#DEBUG                    print 'UAV',uav_id,'Failed sensor!'
+
+            # Actuator failure transition
+            if(random.random() < self.P_ACT_FAIL):
+                ns[uav_actuator_ind] = ActuatorState.FAILED
+                
+            # Position state transition
+            if(uav_action == UAVAction.ADVANCE):
+                if(random.random() >= self.motionNoise): # With some noise, don't transition to new state
+                    ns[uav_location_ind] += 1
+                    distanceTraveled += 1
+            elif(uav_action == UAVAction.RETREAT):
+                if(random.random() >= self.motionNoise): # With some noise, don't transition to new state
+                    ns[uav_location_ind] -= 1
+                    distanceTraveled += 1
+            
+            # Fuel burn transition
+            ns[uav_fuel_ind] -= self.NOM_FUEL_BURN
+            
+            # Take refuel/repair actions as necessary
+            if(uav_action == UAVAction.LOITER):
+                if(ns[uav_location_ind] == UAVLocation.REFUEL): # Refuel those which remain at base, immediately
+                    ns[uav_fuel_ind] = self.FULL_FUEL
+                    self.fuelUnitsBurned -= 1
+                elif(ns[uav_location_ind] == UAVLocation.MAINTENANCE): # Repair those which remain in maint
+                    ns[uav_sensor_ind] = SensorState.RUNNING
+                    ns[uav_actuator_ind] = ActuatorState.RUNNING
+                    ns[uav_fuel_ind] += self.NOM_FUEL_BURN # No fuel used when at base, remove fuel burned above
+                    self.fuelUnitsBurned -= 1
+            if (ns[uav_fuel_ind] < 1): # We just crashed a UAV! Failed to get back to base after action a
+                self.numCrashed += 1
+                ns[uav_fuel_ind] = 0 # Prevent negative numbers
+#                break
+            # Note above that we do not 'break', since the matlab version has reward for crashed UAVs also.  Makes sense if using s and not ns, as below.
+            
+            # Update status of comms availability / surveillance
+            # TODO - matlab code uses previous location to determine if surveillance and comms are available; is this desired?
+            if(s[uav_location_ind] == UAVLocation.COMMS):
+                self.isCommStatesCovered = True
+                # If actuator and sensor works, surveillance available in this state
+                # If this uav is also in the surveillance region, then increment the number of uavs available for surveilance
+            elif((s[uav_location_ind] == UAVLocation.SURVEIL) and (s[uav_sensor_ind] == SensorState.RUNNING)):
+                  self.numHealthySurveil += 1
+                      
         ##### Compute reward #####
         if(self.isCommStatesCovered == True):
             totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
         if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
+#        print 's, ns, surveilreward, crashreward, fuelburned', s, ns, self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil), self.isTerminal(ns), self.fuelUnitsBurned
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
 #debug        print totalStepReward,ns,self.isTerminal(ns)
         return totalStepReward,ns,self.isTerminal(ns)
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
         self.resetLocalVariables()
-        locations   = ones(self.NUM_UAV, dtype='int') * UAVLocation.MAINTENANCE
-        fuel        = ones(self.NUM_UAV, dtype='int') * self.FULL_FUEL
-        actuator    = ones(self.NUM_UAV, dtype='int') * ActuatorState.RUNNING
-        sensor      = ones(self.NUM_UAV, dtype='int') * SensorState.RUNNING
-        
-        return self.properties2StateVec(locations, fuel, actuator, sensor)
-    
-    ## @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
-    def state2Struct(self,s):
-        # Only perform multiplication once to save time
-        fuelEndInd      = 2*self.NUM_UAV
-        actuatorEndInd  = 3*self.NUM_UAV
-        sensorEndInd    = 4*self.NUM_UAV
-        locations = s[0         :self.NUM_UAV]
-        fuel =      s[self.NUM_UAV   :fuelEndInd]
-        actuator =  s[fuelEndInd :actuatorEndInd]
-        sensor =    s[actuatorEndInd   :sensorEndInd]
-        
-        return StateStruct(locations, fuel, actuator, sensor)
-    ## @return: the state vector s
-    def properties2StateVec(self,locations, fuel, actuator, sensor):
-        return hstack([locations, fuel, actuator, sensor])
-    
-    def struct2State(self,sState):
-        return hstack([sState.locations, sState.fuel, sState.actuator, sState.sensor])
-    
+        returnList = zeros(self.NUM_UAV * UAVIndex.SIZE, dtype='int')
+        for uav_ind in arange(0,self.NUM_UAV):
+            returnList[uav_ind*UAVIndex.SIZE:(uav_ind+1)*UAVIndex.SIZE] = array([UAVLocation.MAINTENANCE, self.FULL_FUEL, ActuatorState.RUNNING, SensorState.RUNNING])
+        return array(returnList) # Omits final index
     def possibleActions(self,s):
         # return the id of possible actions
         # find empty blocks (nothing on top)
         validActions = [] # Contains a list of uav_actions lists, e.g. [[0,1,2],[0,1],[1,2]] with the index corresponding to a uav.
         # First, enumerate the possible actions for each uav
-        sStruct = self.state2Struct(s)
         for uav_id in range(0,self.NUM_UAV):
             uav_actions = []
-            if(sStruct.actuator[uav_id] == ActuatorState.RUNNING or \
-            sStruct.locations[uav_id] == UAVLocation.REFUEL or \
-            sStruct.locations[uav_id] == UAVLocation.MAINTENANCE):
+            uav_ind = uav_id * UAVIndex.SIZE
+            uav_location = s[uav_ind + UAVIndex.UAV_LOC] # State index corresponding to the location of this uav
+            uav_fuel = s[uav_ind + UAVIndex.UAV_FUEL]
+#            uav_sensor = s[uav_ind + UAVIndex.UAV_SENS_STATUS]
+            uav_actuator = s[uav_ind + UAVIndex.UAV_ACT_STATUS]
+            
+            if(uav_actuator == ActuatorState.RUNNING or \
+            uav_location == UAVLocation.REFUEL or \
+            uav_location == UAVLocation.MAINTENANCE):
                 uav_actions.append(UAVAction.LOITER)
                 
-            if(sStruct.fuel[uav_id] > 0): # This UAV is not crashed
-                if(sStruct.locations[uav_id] != UAVLocation.SURVEIL and \
-                sStruct.actuator[uav_id] == ActuatorState.RUNNING):
+            if(uav_fuel > 0): # This UAV is not crashed
+                if(uav_location != UAVLocation.SURVEIL and \
+                uav_actuator == ActuatorState.RUNNING):
                     uav_actions.append(UAVAction.ADVANCE)
                     
-                if(sStruct.locations[uav_id] != UAVLocation.MAINTENANCE):
+                if(uav_location != UAVLocation.MAINTENANCE):
                     uav_actions.append(UAVAction.RETREAT)
-            else: # This UAV is crashed; give it a dummy action for now
-                if(len(uav_actions) < 1): uav_actions.append(UAVAction.LOITER)
+                    
+            # This UAV has no actions available to itgive it a dummy action for now
+            if(len(uav_actions) < 1): uav_actions.append(UAVAction.LOITER)
+                
             if(isinstance(uav_actions,int)):
                 validActions.append([uav_actions])
             else:
                 validActions.append(uav_actions)
+#        print 's,a',s,validActions
+#        print array(self.vecList2id(validActions, UAVAction.SIZE))
         return array(self.vecList2id(validActions, UAVAction.SIZE)) # TODO place this in tools
     
             # Given a list of lists 'validActions' of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
@@ -418,8 +421,8 @@ class PST(Domain):
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
     def isTerminal(self,s):
-        sStruct = self.state2Struct(s)
-        return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
+        if self.numCrashed > 0: return True
+        else: return False
 if __name__ == '__main__':
         random.seed(0)
         p = PST(NUM_UAV = 3, motionNoise = 0);
