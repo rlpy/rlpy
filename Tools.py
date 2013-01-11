@@ -610,12 +610,16 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            plt = pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
-            if self.bars:
-                pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
+            if len(X) == 1 and self.bars:
+                pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
                 max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
             else:
-                max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
+                pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                if self.bars:
+                    pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
+                    max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
+                else:
+                    max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
