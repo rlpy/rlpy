@@ -80,8 +80,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    representation  = iFDD(domain,logger,iFDDOnlineThreshold,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation   = BEBF(domain,logger, batchThreshold=BEBFNormThreshold['BlocksWorld'], svm_epsilon=BEBF_svm_epsilon['BlocksWorld'])

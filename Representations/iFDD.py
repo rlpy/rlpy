@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domains import MountainCar
 from Representation import *
+from IndependentDiscretization import *
 
 class iFDD_feature(object):
     index   = None        #Unique index Corresponding to its location in a vector (0 based!)
@@ -60,7 +61,8 @@ class iFDD(Representation):
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
     iFDDplus                = 1     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
-    def __init__(self,domain,logger,discovery_threshold, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
+    initial_Representation  = None  # A Representation that provides the initial set of features for iFDD 
+    def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
@@ -70,18 +72,22 @@ class iFDD(Representation):
         self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold         = batchThreshold
         self.sortediFDDFeatures     = PriorityQueueWithNovelty()
+        self.initial_Representation = initial_Representation
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
-        self.logger.log("Plus:\t\t\t%d" % self.iFDDplus)
-        self.logger.log("Sparsify:\t\t%d"% self.sparsify)
-        self.logger.log("Cached:\t\t\t%d"% self.useCache)
-        self.logger.log("Online Threshold:\t%0.3f" % self.discovery_threshold)
-        self.logger.log("Batch Threshold:\t\t%0.3f"% self.batchThreshold)
-        self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
+        if self.logger:
+            self.logger.log("Initial Representation:\t%s"% className(self.initial_Representation))
+            self.logger.log("Plus:\t\t\t%d" % self.iFDDplus)
+            self.logger.log("Sparsify:\t\t%d"% self.sparsify)
+            self.logger.log("Cached:\t\t\t%d"% self.useCache)
+            self.logger.log("Online Threshold:\t%0.3f" % self.discovery_threshold)
+            self.logger.log("Batch Threshold:\t\t%0.3f"% self.batchThreshold)
+            self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
-        activeIndices          = set(self.activeInitialFeatures(s))
+        F_s_0                   = self.initial_Representation.phi_nonTerminal(s)
+        activeIndices           = where(F_S_0 != 0)[0]
         if self.useCache:
             finalActiveIndices     = self.cache.get(frozenset(activeIndices))
             if finalActiveIndices is None:        
@@ -161,8 +167,6 @@ class iFDD(Representation):
         self.showFeatures()
         self.showPotentials()
         self.showCache()
-    def saveRepStat(self):
-        pass
     def updateWeight(self,p1_index,p2_index):
         # Add a new weight corresponding to the new added feature for all actions.
         # The new weight is set to zero if sparsify = False, and equal to the sum of weights corresponding to the parents if sparsify = True
@@ -175,7 +179,7 @@ class iFDD(Representation):
         self.theta      = addNewElementForAllActions(self.theta,a,newElem)
         self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def addInitialFeatures(self):
-        for i in arange(self.features_num):
+        for i in arange(self.initial_Representation.features_num):
             feature = iFDD_feature(i)
             #shout(self,self.iFDD_features[frozenset([i])].index)
             self.iFDD_features[frozenset([i])] = feature
@@ -299,7 +303,8 @@ if __name__ == '__main__':
     logger              = Logger()
     discovery_threshold = 1
     domain      = MountainCar()
-    rep         = iFDD(domain,logger,discovery_threshold,debug=0,useCache=1)
+    initialRep  = IndependentDiscretization(domain,logger)
+    rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     print 'Initial [0,1,20] => ',
     print rep.findFinalActiveFeatures([0,1,20])

@@ -9,10 +9,10 @@ class IndependentDiscretizationCompactBinary(Representation):
     # Based on preliminary mathematical formulation both this representation and the non-compact representation will have the same representational power in the limit.
     def __init__(self,domain,logger,discretization = 20):
         # Identify binary dimensions
+        self.setBinsPerDimension(domain,discretization)
         nontwobuckets_dims  = where(self.bins_per_dim != 2)[0]
         self.nonbinary_dims = union1d(nontwobuckets_dims,domain.continuous_dims)
         self.binary_dims    = setdiff1d(arange(domain.state_space_dims),self.nonbinary_dims)
-        self.setBinsPerDimension(domain,discretization)
         self.features_num = int(sum(self.bins_per_dim)) - len(self.binary_dims) + 1
         super(IndependentDiscretizationCompactBinary,self).__init__(domain,logger,discretization)
         if self.logger:
@@ -34,8 +34,8 @@ class IndependentDiscretizationCompactBinary(Representation):
         # Create a new bin vector where the number of bins are 1 for binary
         temp_bin_number = copy(self.bins_per_dim)
         temp_bin_number[self.binary_dims] -= 1
-        #print self.bins_per_dim
         bs[self.binary_dims] -= 1 # Because activation now is mapped to the first bin which is 0
+        #print self.bins_per_dim
         #print "MIN:", hstack((0, cumsum(temp_bin_number)[:-1]))
         #print "MAX:", hstack((0, cumsum(temp_bin_number)[:-1]))+temp_bin_number-1
         #print bs
