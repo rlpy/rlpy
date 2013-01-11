@@ -11,7 +11,7 @@ StartID         = 1
 FinishId        = 5
 RUNS            = arange(StartID,FinishId+1)
 #PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
-PROJECT_PATH    = 'Results/13ICML-BEBF/Pendulum/'
+PROJECT_PATH    = 'Results/13ICML-BatchiFDD/SystemAdmin'
 max_cpu         = multiprocessing.cpu_count()
 if(platform.system() == 'Windows'):
     for i in RUNS: # .py files executable by default
