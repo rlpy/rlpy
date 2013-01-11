@@ -17,7 +17,7 @@ Min_DiscoveryThreshold:
 iFDD 			= .3 (.2, .3, .4, .5, .6)
 BEBF 			= .2 (.15, .2, .25, .3)
 
-* BEBF svm_epsilon	 	  	= .1
+* BEBF svm_epsilon	 	  	= .1 (.1)
 
 BlocksWorld (4)
 =======
