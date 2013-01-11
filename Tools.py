@@ -540,7 +540,7 @@ class Merger(object):
         self.legend                 = legend
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
-        if os.path.exists(paths[0]+'/1-out.txt'):
+        if self.hasResults(paths[0]):
             self.exp_paths = []
             for path in paths:
                 #Fix the local accessing
@@ -552,7 +552,7 @@ class Merger(object):
             path                        = paths[0]
             self.path                   = path
             self.exp_paths              = os.listdir(path)
-            self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and os.path.exists(self.path+'/'+p+'/1-out.txt')]
+            self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and self.hasResults(self.path+'/'+p+'/')]
         
         #Setup the output path:
         if output_path == None:
@@ -649,6 +649,8 @@ class Merger(object):
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
+    def hasResults(self,path):
+        return len(glob.glob(os.path.join(path, '*-results.txt'))) != 0
 class PriorityQueueWithNovelty():
     # This is a priority queue where it is sorted based on priority and then then novelty of elements
     # First Order: The Lower the priority the better
