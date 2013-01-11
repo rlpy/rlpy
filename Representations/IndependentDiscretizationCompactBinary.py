@@ -13,7 +13,7 @@ class IndependentDiscretizationCompactBinary(Representation):
         nontwobuckets_dims  = where(self.bins_per_dim != 2)[0]
         self.nonbinary_dims = union1d(nontwobuckets_dims,domain.continuous_dims)
         self.binary_dims    = setdiff1d(arange(domain.state_space_dims),self.nonbinary_dims)
-        self.features_num = int(sum(self.bins_per_dim)) - len(self.binary_dims) + 1
+        self.features_num   = int(sum(self.bins_per_dim)) - len(self.binary_dims) + 1
         super(IndependentDiscretizationCompactBinary,self).__init__(domain,logger,discretization)
         if self.logger:
             self.logger.log("Binary Dimensions:\t%s"% str(self.binary_dims))

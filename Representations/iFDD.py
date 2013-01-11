@@ -63,6 +63,7 @@ class iFDD(Representation):
     iFDDplus                = 1     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_Representation  = None  # A Representation that provides the initial set of features for iFDD 
+    maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
     def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
@@ -88,7 +89,7 @@ class iFDD(Representation):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
         F_s_0                   = self.initial_Representation.phi_nonTerminal(s)
-        activeIndices           = where(F_S_0 != 0)[0]
+        activeIndices           = where(F_s_0 != 0)[0]
         if self.useCache:
             finalActiveIndices     = self.cache.get(frozenset(activeIndices))
             if finalActiveIndices is None:        
@@ -164,6 +165,10 @@ class iFDD(Representation):
             relevance = potential.relevance if not self.iFDDplus else abs(potential.relevance/sqrt(potential.count)) 
             if relevance > self.discovery_threshold:
                 self.addFeature(potential)
+                self.maxRelevance = -inf
+            else:
+                self.updateMaxRelevance(relevance)
+
     def show(self):
         self.showFeatures()
         self.showPotentials()
@@ -296,7 +301,12 @@ class iFDD(Representation):
             print join(["-"]*30)
             for initial,active in self.cache.iteritems():
                 print " %s\t| %s" % (str(list(initial)), active)
-
+    def updateMaxRelevance(self, newRelevance):
+        # Update a global max relevance and outputs it if it is updated
+        if self.maxRelevance < newRelevance:
+            self.maxRelevance = newRelevance
+            self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
+            
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1

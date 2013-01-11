@@ -25,6 +25,7 @@ class Representation(object):
         self.logger = logger
         self.logger.line()
         self.logger.log("Representation:\t\t%s" % className(self))
+        self.logger.log("Features per action:\t%d" % self.features_num)
         if len(self.domain.continuous_dims): 
             self.logger.log("Discretization:\t\t%d"% self.discretization)
             self.logger.log("Starting Features:\t%d"% self.features_num)
