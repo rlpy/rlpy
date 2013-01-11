@@ -8,9 +8,10 @@ from Queue import PriorityQueue
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
-from Domains import MountainCar
+from Domains import *
 from Representation import *
 from IndependentDiscretization import *
+from IndependentDiscretizationCompactBinary import *
 
 class iFDD_feature(object):
     index   = None        #Unique index Corresponding to its location in a vector (0 based!)
@@ -66,7 +67,7 @@ class iFDD(Representation):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
-        self.features_num           = int(sum(self.bins_per_dim))
+        self.features_num           = initial_Representation.features_num
         self.debug                  = debug
         self.useCache               = useCache
         self.maxBatchDicovery       = maxBatchDicovery
@@ -278,7 +279,8 @@ class iFDD(Representation):
         print join(["-"]*30)
         for feature in self.sortediFDDFeatures.toList():
         #for feature in self.iFDD_features.itervalues():
-            print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
+            #print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
+            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2)
     def showPotentials(self):
         print "Potentials:"
         print join(["-"]*30)
@@ -302,8 +304,9 @@ if __name__ == '__main__':
 #    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     logger              = Logger()
     discovery_threshold = 1
-    domain      = MountainCar()
-    initialRep  = IndependentDiscretization(domain,logger)
+    #domain      = MountainCar()
+    domain      = SystemAdministrator('/../Domains/SystemAdministratorMaps/20MachTutorial.txt')
+    initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
     rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     print 'Initial [0,1,20] => ',
@@ -328,7 +331,7 @@ if __name__ == '__main__':
     print 'Initial [0,20] => ',
     print rep.findFinalActiveFeatures([0,20])
     print 'discover 0,1,20'
-    rep.inspectPair(1,40, discovery_threshold+1)
+    rep.inspectPair(1,rep.features_num-1, discovery_threshold+1)
     rep.showFeatures()
     rep.showCache()
     print 'Initial [0,1,20] => ',
