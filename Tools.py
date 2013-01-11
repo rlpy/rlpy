@@ -60,12 +60,12 @@ def closestDiscretization(x, bins, limits):
     return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
 def binNumber(s,bins,limits):
     # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
-    # each element of the returned valued is the zero-indexed bin number corresponding to s
     # note that s can be continuous.  
-    # 1D examples: 
+    # examples: 
     # s = 0, limits = [-1,5], bins = 6 => 1
     # s = .001, limits = [-1,5], bins = 6 => 1
     # s = .4, limits = [-.5,.5], bins = 3 => 2
+    # each element of the returned valued is the zero-indexed bin number corresponding to s
     if s == limits[1]: 
         return bins-1
     width = limits[1]-limits[0]

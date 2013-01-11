@@ -25,9 +25,10 @@ class Representation(object):
         self.logger = logger
         self.logger.line()
         self.logger.log("Representation:\t\t%s" % className(self))
-        if len(self.domain.continuous_dims): self.logger.log("Discretization:\t\t%d"% self.discretization)
-        self.logger.log("Starting Features:\t%d"% self.features_num)
-        self.logger.log("Aggregated States:\t%d"% self.agg_states_num)
+        if len(self.domain.continuous_dims): 
+            self.logger.log("Discretization:\t\t%d"% self.discretization)
+            self.logger.log("Starting Features:\t%d"% self.features_num)
+            self.logger.log("Aggregated States:\t%d"% self.agg_states_num)
     def V(self,s, phi_s = None):
         #Returns the value of a state
         if phi_s is None: phi_s = self.phi(s)
@@ -91,14 +92,12 @@ class Representation(object):
     def binState(self,s):
         # Given a state it returns a vector with the same dimensionality of s
         # each element of the returned valued is the zero-indexed bin number corresponding to s
-        # note that s can be continuous.  
-        # 1D examples: 
-        # s = 0, limits = [-1,5], bins = 6 => 1
-        # s = .001, limits = [-1,5], bins = 6 => 1
-        # s = .4, limits = [-.5,.5], bins = 3 => 2
-        if isinstance(s,int): return s 
+        # This function accepts scalar inputs when the domain has 1 dimension 
+        # CompactBinary version exclude feature activation for the negative case of binary features.
+        # For example if the light is off, no feature corresponds to this case and hence nothing is activated.
+        if isinstance(s,int): s = [s]
+        assert(len(s) == len(self.domain.statespace_limits[:,0]))
         bs  = empty(len(s),'uint16')
-        
         for d in arange(self.domain.state_space_dims):
             bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
         return bs
