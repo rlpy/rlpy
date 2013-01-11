@@ -25,6 +25,9 @@ Samples 			= 5K
 Gamma 			= 1
 Min_threshold
 iFDD 			= .007 	(.007,.05,.1,.2,.5)
+BEBF 			= .005  (.005,.008,.01)
+
+* BEBF svm_epsilon	 	  	= .0005 (.005,.0008)
 
 SystemAdmin
 =======
