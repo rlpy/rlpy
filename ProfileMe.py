@@ -5,7 +5,7 @@ import cProfile
 import pstats
 
 
-Output = 'SysAdmin.pdf'
+Output = 'PST.pdf'
 print 'Profiling'
 cProfile.run('main(1,SHOW_FINAL_PLOT=0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

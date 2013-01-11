@@ -422,9 +422,26 @@ class PST(Domain):
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 if __name__ == '__main__':
         random.seed(0)
-        p = PST(NUM_UAV = 3, motionNoise = 0);
-        p.test(1000)
+        p = PST(NUM_UAV = 3, motionNoise = 0)
         
+#        x = array([[1,2,0],[1,2],[0,1],[0]])
+#        q = p.vecList2id(x, 3)
+#        print x, q
+#        
+#        x = array([[1,2,0],[1],[0,1],[0]])
+#        q = p.vecList2id(x, 3)
+#        print x, q
+#        
+#        x = array([[1,2,0],[2],[0,1],[0]])
+#        q = p.vecList2id(x, 3)
+#        print x, q
+#        
+#        x = array([[1,2,0],[2,1],[0,1],[0]])
+#        q = p.vecList2id(x, 3)
+#        print x, q
+#        
+        
+        p.test(1000)
         
         
     
