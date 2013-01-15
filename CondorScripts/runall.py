@@ -122,7 +122,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
         	
         # Submit extra jobs as needed
         # Here there is no more jobs to respawn so we have to create new ones
-        extraNeed       = exp_num-completed-respawnd-running
+        extraNeed       = exp_num-completed-respawned-running
         newSubmission   = 0
         jobid           = 1
         while newSubmission < extraNeed:
