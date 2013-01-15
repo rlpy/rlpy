@@ -15,6 +15,7 @@ from Tools import *
 
 TEST = False # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='rhklein'
+FINALFILE='result'
 
 
 def submit(n,jobdir):
