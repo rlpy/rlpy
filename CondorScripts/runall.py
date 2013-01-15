@@ -19,14 +19,14 @@ sys.path.insert(0, os.path.abspath(path))
 RL_PYTHON_ROOT = path 
 from Script_Tools import * 
 
-TEST = False # This value is used to avoid actually doing anything, so we can check the program
+TEST = True # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='agf'
 FINALFILE='result'
 
 
 def submit(id):
     #Submit one task to condor using id
-    if n > 0:
+    if id > 0:
         condrun='mkdir -p CondorOutput;' + \
                 'cd CondorOutput;' + \
                 'mkdir -p log;' +\
@@ -111,18 +111,19 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
         newSubmission   = 0
         jobid           = 1
         while newSubmission < extraNeed:
-            if os.path.exists('%d-out.txt',jobid):
+            if os.path.exists('%d-out.txt'%jobid):
                 jobid = jobid + 1
                 continue
             
             newSubmission = newSubmission + 1
             submit(jobid)
             print YELLOW+">>> Submitted Job #"+str(jobid)+NOCOLOR 
+            jobid += 1
                 
         print "---------------------"
         print "Completed:\t%d" % completed
         print "Running:\t%d" % (running)
-        print "Resuming:\t%d" % (respawnd)
+        print "Resuming:\t%d" % (respawned)
         print "New Submission:\t%d" % (newSubmission)
 
         #Return to the directory we started at
@@ -133,7 +134,7 @@ def sysCall(cmd):
     if TEST:
         print cmd
     else:
-        sys.os(cmd)
+        os.popen(cmd)
 
 def rerun(idir,exp_num):
         
@@ -172,7 +173,6 @@ def rerun(idir,exp_num):
                     gotanswer1 = True;
         else:
             respawnjobs  = True #If no task is running try to respawn jobs
-            print 'hi'
             print ">>> No job found for user " + USERNAME + "."
         
         #Start Searching and Purging
