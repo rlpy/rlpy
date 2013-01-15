@@ -14,37 +14,23 @@ RUNNING_COLOR   = RED
 TOTAL_COLOR     = BLUE
 RESUMING_COLOR  = PURPLE
 
-PARALLEL_SUBDIR     = 'Results/Parallel/' # Where each jobs are supposed to be stored
+PARALLEL_SUBDIR     = 'Results/' # Where each jobs are supposed to be stored
 USERNAME            = 'agf'
-FINALFILE           = 'Results.mat'
+FINALFILE           = 'results.txt'
 GRAPH_DIR           = ' ~/Graphs/FeatureDiscovery/'
-MERGE_PATH          = GRAPH_DIR + 'merge.m'
-MERGE_LEARNING_PATH = GRAPH_DIR + 'mergeLearning.m'
-MERGE_VERTICAL_PATH = GRAPH_DIR + 'mergeVertical.m'
-JAVA_OPT_PATH       = GRAPH_DIR + 'java.opts'
-MATLAB_EXE          = ' /afs/csail.mit.edu/system/common/matlab/2010a/bin/matlab -nodisplay -nosplash'
+PYTHON_PATH          = ' /usr/bin/python'
 FINISHED_RUNS_NUM   = 5   # Number of runs which is counted as a finished run for testing a learning rate
-LEARNING_DIRS       = ['a.01N100',
-                       'a.01N1000',
-                       'a.01N1000000',
-                       'a.1N100',
-                       'a.1N1000',
-                       'a.1N1000000',
-                       'a1N100',
-                       'a1N1000',
-                       'a1N1000000'
-                       ]
 
 import os
 
 def logKey(log):
-    timeRE     = re.compile('[0-9]*:[0-9]*:[0-9]*')
+    timeRE     = re.compile('R\[[0-9]*:[0-9]*:[0-9]*')
     temp1       = timeRE.search(log)
     if not temp1:
         return sys.maxint
     else:
-        temp1 = temp1.group(0) 
-
+        temp1 = temp1.group(0)[2:] 
+        
     [h1,m1,s1] = re.split(':+',temp1)
 #    print h1, m1, s1
     h1 = eval(h1)    
@@ -58,15 +44,19 @@ def sortLog(logs):
 
 if __name__ == '__main__':
     print('************** Sort Log Test **********************');    
-    logs = ['>>> [70.8%] [0:3:32] <<0:00:30>> Steps:[7076/10000]Return: +0.00 Steps:320',
-            '>>> [74.2%] [0:0:21] <<0:00:31>> Steps:[7418/10000]Return: +0.00 Steps:342',
-            '>>> [76.1%] [0:1:2] <<0:00:31>> Steps:[7606/10000]Return: +0.00 Steps:188']
+    logs = ['633: E[0:00:01]-R[0:00:07]: Return=-1.01, Steps=12, Features = 10',
+            '1283: E[0:00:02]-R[0:00:06]: Return=-1.01, Steps=16, Features = 10',
+            '2582: E[0:00:04]-R[0:00:04]: Return=-0.04, Steps=40, Features = 10',
+            '1932: E[0:00:03]-R[0:00:05]: Return=-0.04, Steps=40, Features = 10',
+            '3892: E[0:00:06]-R[0:00:02]: Return=-0.04, Steps=40, Features = 10',
+            '3227: E[0:00:05]-R[0:00:03]: Return=-0.04, Steps=40, Features = 10',
+            '4548: E[0:00:07]-R[0:00:01]: Return=-0.04, Steps=40, Features = 10']
     
     for log in logs:
         print "%s" % log
         
     logs = sortLog(logs);
-
+    print "after sort:"
     for log in logs:
         print "%s" % log
 
