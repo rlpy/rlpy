@@ -61,7 +61,7 @@ class SystemAdministrator(Domain):
     ## Note that you must pass a network map name as well as its format type.
     # @see SystemAdministrator(Domain)
     def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
-        path                    = os.getcwd() + networkmapname
+        path                    = networkmapname
         self.loadNetwork(path)   
         # TODO Need a check here for degenerate
         self.actions_num            = self.computers_num + 1     # Number of Actions, including no-op

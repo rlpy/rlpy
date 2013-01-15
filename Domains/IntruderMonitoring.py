@@ -47,9 +47,8 @@ class IntruderMonitoring(Domain):
     
       
        
-    def __init__(self, mapname, logger = None):
+    def __init__(self, path, logger = None):
                  
-        path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         

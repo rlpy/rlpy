@@ -38,8 +38,7 @@ class PitMaze(Domain):
                [0,+1] #Right
                ])
     def __init__(self,mapname='/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
-        path                    = os.getcwd() + mapname
-        self.map                = loadtxt(path, dtype = uint8)
+        self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         self.start              = argwhere(self.map==self.START)[0]
         self.ROWS,self.COLS     = shape(self.map)
