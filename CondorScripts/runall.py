@@ -58,6 +58,7 @@ def submit(id):
         	print condrun
      
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
+        print idir
         #See if this directory is a potential experiment 
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
             #print ' (!) ' + idir + '  not an experiment.'
