@@ -172,10 +172,10 @@ def rerun(idir,exp_num):
                     gotanswer1 = True;
         else:
             respawnjobs  = True #If no task is running try to respawn jobs
+            print 'hi'
             print ">>> No job found for user " + USERNAME + "."
         
         #Start Searching and Purging
-        print 'hi'
         searchNSubmit(idir,exp_num,False,False)
     
 if __name__ == '__main__':
