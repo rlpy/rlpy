@@ -99,7 +99,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
                         for line in sysCommandHandle:
                             print "Job #" + id + ": " + line,
                         submit(eval(id))
-                        print RESUMING_COLOR+">>> Resumed Job #"+id+NOCOLOR
+                        print RESUMING_COLOR+">>> Respawned Job #"+id+NOCOLOR
                         respawned = respawned + 1
                 else:
                     running = running + 1
@@ -123,7 +123,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print "---------------------"
         print "Completed:\t%d" % completed
         print "Running:\t%d" % (running)
-        print "Resuming:\t%d" % (respawned)
+        print "Respawning:\t%d" % (respawned)
         print "New Submission:\t%d" % (newSubmission)
 
         #Return to the directory we started at
