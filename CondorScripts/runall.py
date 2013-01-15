@@ -85,9 +85,9 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
 
         
         allouts             = glob.glob('*-out.txt')
-        ran_num             = len(jobs)
+        ran_num             = len(allouts)
         completed_results   = glob.glob('*-results.txt')
-        completed           = len(jobs)
+        completed           = len(completed_results)
         for out in allouts: 
             
             #Break if we have enough runs
