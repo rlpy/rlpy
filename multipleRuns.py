@@ -7,12 +7,12 @@ from main import *
 from os import *
 import platform
 
-StartID         = 3
-FinishId        = 5
+StartID         = 16
+FinishId        = 30
 RUNS            = arange(StartID,FinishId+1)
-#PROJECT_PATH    = 'Results/13ICML-BatchiFDD'
-PROJECT_PATH    = 'Results/13ICML-BatchiFDD/PST-2UAV'
+PROJECT_PATH    = 'Results/13ICML-BatchiFDD/SystemAdmin'
 max_cpu         = multiprocessing.cpu_count()
+
 if(platform.system() == 'Windows'):
     for i in RUNS: # .py files executable by default
         print "Started job %d" % i

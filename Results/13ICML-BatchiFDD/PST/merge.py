@@ -25,8 +25,8 @@ Legend      = True
 merger = Merger(paths,colors = colors, styles= styles, markersize = MarkerSize, legend = Legend)
 pl.ioff()
 #print mergedData.means[0].shape
-merger.plot('Return')
-#merger.plot('Return','Time(s)')
+#merger.plot('Return')
+merger.plot('Return','Time(s)')
 #merger.plot('Steps')
 #merger.plot('Steps','Learning Steps')
 #merger.plot('Steps','Episodes')

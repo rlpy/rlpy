@@ -1,20 +1,31 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
+def module_exists(module_name):
+    try:
+        __import__(module_name)
+    except ImportError:
+        return False
+    else:
+        return True
 
 from operator import *
 from numpy  import *
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
-from matplotlib import pylab as pl
-pl.ion()
-from matplotlib import mpl,rc,colors
+if module_exists('matplotlib'):
+    from matplotlib import pylab as pl
+    from matplotlib import mpl,rc,colors
+    import matplotlib.patches as mpatches
+    import matplotlib.path as mpath
+    import matplotlib.cm as cm
+    from matplotlib.mlab import rk4
+    from matplotlib import lines
+    pl.ion()
+else:
+    'matplotlib is not available => No Graphics'
+	
 import glob
-import matplotlib.patches as mpatches
-import matplotlib.path as mpath
-import matplotlib.cm as cm
 from mpl_toolkits.mplot3d import axes3d
-from matplotlib.mlab import rk4
-from matplotlib import lines
 from scipy import stats
 from scipy import misc
 from scipy import linalg
@@ -685,7 +696,9 @@ class PriorityQueueWithNovelty():
         for i in range(len(temp)):
             p,c,x = heappop(temp)
             print "Priotiry = %d, Novelty = %d, Obj = %s" % (p,c,str(x))
-createColorMaps()
+
+if module_exists('matplotlib'):
+    createColorMaps()
 FONTSIZE = 15
 SEP_LINE = "="*60
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

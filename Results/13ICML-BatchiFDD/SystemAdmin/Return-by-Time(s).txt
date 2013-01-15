@@ -6,7 +6,7 @@ Standard-Error: 60.429
 ======================
 Algorithm: 400
 ======================
-Time(s): 1779.490	
-Return: 658.906	
-Standard-Error: 81.221	
+Time(s): 3607.899	
+Return: 698.383	
+Standard-Error: 42.555	
 ======================
