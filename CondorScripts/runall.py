@@ -80,8 +80,8 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
             	   # We have extra jobs than exp_num => Remove those without results
 		       continue
             
-            id,_,_ = job.rsplit('-')
-            if not os.path.exists('%d-results.txt'%id):                        
+            id,_,_ = out.rpartition('-')
+            if not os.path.exists(str(id)+'-results.txt'):                        
                 while not answered:
                     answer=raw_input('(!) Respawn Jobs ? => (Y/N)')
                     if answer.lower() == 'y':
@@ -94,7 +94,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
                             
                 if respawnjobs:
                     #Show content
-                        command           = "tail -n 1 " + job
+                        command           = "tail -n 1 " + out
                         sysCommandHandle  = os.popen(command)
                         for line in sysCommandHandle:
                             print "Job #" + id + ": " + line,
@@ -132,7 +132,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
     
 def sysCall(cmd):
     if TEST:
-        print cmd
+        pass #print cmd
     else:
         os.popen(cmd)
 
