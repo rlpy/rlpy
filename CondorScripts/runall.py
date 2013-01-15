@@ -39,23 +39,7 @@ def submit(id):
                  ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
                  ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
                  RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
-                # 128.30.65.35 Error: The input character is not valid in MATLAB statements or expressions. Referring to (') 
-                # ' -a \'arguments= -nodisplay -nosplash -r \\\"main('+str(n)+')\\\" -logfile '+jobdir+'/log.txt \''+\
-                # 128.30.29.36  Error: syntax error near unexpected token `(' 
-                #'-a \"arguments = -nodisplay -nosplash -r main('+str(n)+') -logfile '+jobdir+'/log.txt' +'\" ~/myscripts/MIT/runpy-new.sh' +\
-                # Condor Server: Found illegal unescaped double-quote: "main(1)" -logfile Results/Parallel/1/log.txt
-                #'-a \'arguments= -nodisplay -nosplash -r "main('+str(n)+')" -logfile '+jobdir+'/log.txt \''+\
-                # 128.30.112.26 Error simply outputs: main(1) as a string!
-                #'-a \"arguments= -nodisplay -nosplash -r \'main('+str(n)+')\' -logfile '+jobdir+'/log.txt\" '+\
-                # Error: Found illegal unescaped double-quote: "main(1)" -logfile Results/Parallel/1/log.txt
-                #'-a \'arguments= -nodisplay -nosplash -r \"main('+str(n)+')\" -logfile '+jobdir+'/log.txt\' '+\
-
-#                condor_submit -a \"queue '+str(n)+'\" ~/myscripts/MIT/runpy.sh' 
-        # 
-        if not TEST:
-            os.popen(condrun)
-        else:
-        	print condrun
+        sysCall(condrun)
      
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
