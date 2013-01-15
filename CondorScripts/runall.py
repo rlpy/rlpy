@@ -17,9 +17,9 @@ while not os.path.exists(path+'/Tools.py'):
 sys.path.insert(0, os.path.abspath(path))
 
 RL_PYTHON_ROOT = path 
-from Tools import * 
+from Script_Tools import * 
 
-TEST = True # This value is used to avoid actually doing anything, so we can check the program
+TEST = False # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='agf'
 FINALFILE='result'
 
@@ -171,10 +171,7 @@ def rerun(idir,exp_num):
         
         # Check queue by running condor_q and extracting jobs
         command     = 'condor_q ' + USERNAME
-        if not TEST:    result = os.popen(command)
-        else:
-            print 'os.popen('+command+')'
-            result = arange(100)
+        result      = os.popen(command)
         P           = re.compile('[0-9]+ jobs')
 
         runningJobs = 100
