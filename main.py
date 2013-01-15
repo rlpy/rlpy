@@ -17,8 +17,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 5000
+    PERFORMANCE_CHECKS  = 5
+    LEARNING_STEPS      = 50000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     RUN_IN_BATCH        = jobID != -1
@@ -48,8 +48,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
-    iFDDOnlineThreshold         = 65
-    BatchDiscoveryThreshold     = 100   # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDDOnlineThreshold         = 30
+    BatchDiscoveryThreshold     = 30   # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
@@ -71,7 +71,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=NETWORKNMAP,logger = logger)
-    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
@@ -82,10 +82,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = initial_rep
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    representation  = IncrementalTabular(domain,logger)
+    #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold)
+    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold)
     #representation  = RBF(domain,logger, rbfs = RBFS['PitMaze'])
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation   = BEBF(domain,logger, batchThreshold=BEBFNormThreshold['BlocksWorld'], svm_epsilon=BEBF_svm_epsilon['BlocksWorld'])
@@ -109,6 +109,6 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = True)
+         main(jobID = 1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = True)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2])

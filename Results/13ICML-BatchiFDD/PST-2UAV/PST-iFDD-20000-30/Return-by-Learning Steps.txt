@@ -1,0 +1,6 @@
+Algorithm: 30
+======================
+Learning Steps: 20000.000	
+Return: -50.600	
+Standard-Error: 22.964	
+======================
