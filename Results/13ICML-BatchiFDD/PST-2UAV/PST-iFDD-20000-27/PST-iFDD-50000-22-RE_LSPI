@@ -1,0 +1,184 @@
+============================================================
+Domain:		PST
+Dimensions:	8
+|S|:		30976
+|A|:		9
+|S|x|A|:		278784
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		2
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	35
+Binary Dimensions:	[4 5 6 7]
+============================================================
+Representation:		iFDD
+Features per action:	35
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	22.000
+Batch Threshold:		22.000
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		50000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/Temp/PST-iFDD-50000-22/1-results.txt
+Learning Steps:		50000
+Performance Checks:	1
+Log Intervals:		1(s)
+984: E[0:00:01]-R[0:00:50]: Return=-50.00, Steps=11, Features = 35
+1972: E[0:00:02]-R[0:00:49]: Return=-80.00, Steps=30, Features = 35
+2978: E[0:00:03]-R[0:00:48]: Return=-92.00, Steps=34, Features = 35
+3988: E[0:00:04]-R[0:00:47]: Return=-88.00, Steps=28, Features = 35
+5011: E[0:00:05]-R[0:00:45]: Return=-48.00, Steps=10, Features = 35
+6017: E[0:00:06]-R[0:00:44]: Return=-69.00, Steps=13, Features = 35
+7035: E[0:00:07]-R[0:00:43]: Return=-81.00, Steps=20, Features = 35
+8049: E[0:00:08]-R[0:00:42]: Return=-76.00, Steps=23, Features = 35
+9061: E[0:00:09]-R[0:00:41]: Return=-142.00, Steps=69, Features = 35
+10070: E[0:00:10]-R[0:00:40]: Return=-64.00, Steps=10, Features = 35
+11078: E[0:00:11]-R[0:00:39]: Return=-75.00, Steps=17, Features = 35
+12089: E[0:00:12]-R[0:00:38]: Return=-47.00, Steps=13, Features = 35
+13102: E[0:00:13]-R[0:00:37]: Return=-42.00, Steps=21, Features = 35
+14141: E[0:00:14]-R[0:00:36]: Return=-96.00, Steps=35, Features = 35
+15191: E[0:00:15]-R[0:00:35]: Return=-114.00, Steps=45, Features = 35
+16228: E[0:00:16]-R[0:00:34]: Return=-48.00, Steps=15, Features = 35
+17253: E[0:00:17]-R[0:00:33]: Return=-94.00, Steps=32, Features = 35
+18300: E[0:00:18]-R[0:00:32]: Return=-124.00, Steps=55, Features = 35
+19343: E[0:00:19]-R[0:00:31]: Return=-98.00, Steps=46, Features = 35
+20352: E[0:00:20]-R[0:00:30]: Return=-78.00, Steps=26, Features = 35
+21375: E[0:00:21]-R[0:00:29]: Return=-111.00, Steps=51, Features = 35
+22408: E[0:00:22]-R[0:00:27]: Return=-73.00, Steps=15, Features = 35
+23409: E[0:00:23]-R[0:00:26]: Return=-89.00, Steps=29, Features = 35
+24432: E[0:00:24]-R[0:00:25]: Return=-71.00, Steps=24, Features = 35
+25438: E[0:00:25]-R[0:00:24]: Return=-71.00, Steps=16, Features = 35
+26419: E[0:00:26]-R[0:00:24]: Return=-66.00, Steps=10, Features = 35
+27421: E[0:00:27]-R[0:00:23]: Return=-86.00, Steps=34, Features = 35
+28442: E[0:00:28]-R[0:00:22]: Return=-102.00, Steps=40, Features = 35
+29463: E[0:00:29]-R[0:00:21]: Return=-70.00, Steps=27, Features = 35
+30455: E[0:00:30]-R[0:00:20]: Return=-81.00, Steps=29, Features = 35
+31471: E[0:00:31]-R[0:00:19]: Return=-113.00, Steps=51, Features = 35
+32471: E[0:00:32]-R[0:00:18]: Return=-52.00, Steps=12, Features = 35
+33457: E[0:00:33]-R[0:00:17]: Return=-104.00, Steps=45, Features = 35
+34417: E[0:00:34]-R[0:00:16]: Return=-29.00, Steps=29, Features = 35
+35421: E[0:00:35]-R[0:00:15]: Return=-72.00, Steps=30, Features = 35
+36397: E[0:00:37]-R[0:00:14]: Return=-83.00, Steps=24, Features = 35
+37422: E[0:00:38]-R[0:00:13]: Return=-123.00, Steps=61, Features = 35
+38443: E[0:00:39]-R[0:00:12]: Return=-80.00, Steps=46, Features = 35
+39465: E[0:00:40]-R[0:00:11]: Return=-70.00, Steps=14, Features = 35
+40475: E[0:00:41]-R[0:00:10]: Return=-71.00, Steps=15, Features = 35
+41496: E[0:00:42]-R[0:00:09]: Return=-79.00, Steps=19, Features = 35
+42464: E[0:00:43]-R[0:00:08]: Return=-73.00, Steps=19, Features = 35
+43484: E[0:00:44]-R[0:00:07]: Return=-77.00, Steps=22, Features = 35
+44498: E[0:00:45]-R[0:00:06]: Return=-80.00, Steps=24, Features = 35
+45493: E[0:00:46]-R[0:00:05]: Return=-78.00, Steps=24, Features = 35
+46498: E[0:00:47]-R[0:00:04]: Return=-95.00, Steps=29, Features = 35
+47533: E[0:00:48]-R[0:00:02]: Return=-93.00, Steps=34, Features = 35
+48569: E[0:00:49]-R[0:00:01]: Return=-152.00, Steps=95, Features = 35
+49571: E[0:00:50]-R[0:00:00]: Return=-81.00, Steps=21, Features = 35
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 101.790, Density of A: 28.49%
+2: L2_norm of weight difference = 37.354, Density of A: 35.37%
+3: L2_norm of weight difference = 29.166, Density of A: 33.15%
+4: L2_norm of weight difference = 26.376, Density of A: 32.67%
+5: L2_norm of weight difference = 24.177, Density of A: 32.73%
+6: L2_norm of weight difference = 19.514, Density of A: 32.71%
+7: L2_norm of weight difference = 0.000, Density of A: 32.71%
+Performance Check >>> -2.000 Return, 1000 Steps, 35 Features
+iFDD Batch: Max Relevance = 346.946
+New Feature 1: [0, 9], Relevance = 346.946
+New Feature 2: [3, 9], Relevance = 338.233
+New Feature 3: [4, 20], Relevance = 329.410
+New Feature 4: [7, 20], Relevance = 310.946
+New Feature 5: [3, 6], Relevance = 287.519
+New Feature 6: [9, 20], Relevance = 192.908
+New Feature 7: [5, 21], Relevance = 139.883
+New Feature 8: [9, 21], Relevance = 138.116
+New Feature 9: [10, 20], Relevance = 136.120
+New Feature 10: [7, 27], Relevance = 130.719
+New Feature 11: [1, 10], Relevance = 121.729
+New Feature 12: [3, 5], Relevance = 119.238
+New Feature 13: [3, 16], Relevance = 109.038
+New Feature 14: [3, 4], Relevance = 105.740
+New Feature 15: [3, 15], Relevance = 103.180
+New Feature 16: [3, 20], Relevance = 100.323
+New Feature 17: [3, 29], Relevance = 97.289
+New Feature 18: [7, 26], Relevance = 95.250
+New Feature 19: [6, 21], Relevance = 94.045
+New Feature 20: [9, 29], Relevance = 90.912
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 171.600, Density of A: 15.82%
+2: L2_norm of weight difference = 76.341, Density of A: 18.92%
+3: L2_norm of weight difference = 57.607, Density of A: 18.23%
+4: L2_norm of weight difference = 37.676, Density of A: 17.98%
+5: L2_norm of weight difference = 15.123, Density of A: 17.87%
+6: L2_norm of weight difference = 19.670, Density of A: 17.84%
+7: L2_norm of weight difference = 23.821, Density of A: 17.84%
+8: L2_norm of weight difference = 0.000, Density of A: 17.84%
+Performance Check >>> -10.000 Return, 1000 Steps, 55 Features
+iFDD Batch: Max Relevance = 209.643
+New Feature 1: [0, 9, 29], Relevance = 209.643
+New Feature 2: [3, 4, 9], Relevance = 184.411
+New Feature 3: [3, 5, 9, 29], Relevance = 167.423
+New Feature 4: [3, 6, 9], Relevance = 150.917
+New Feature 5: [2, 9], Relevance = 146.770
+New Feature 6: [3, 5, 9], Relevance = 140.559
+New Feature 7: [0, 11], Relevance = 140.214
+New Feature 8: [3, 6, 32], Relevance = 132.495
+New Feature 9: [3, 5, 21], Relevance = 121.133
+New Feature 10: [3, 4, 16], Relevance = 115.607
+New Feature 11: [3, 6, 15], Relevance = 113.849
+New Feature 12: [10, 21], Relevance = 112.422
+New Feature 13: [6, 9, 21], Relevance = 98.362
+New Feature 14: [5, 9, 29], Relevance = 97.578
+New Feature 15: [4, 22], Relevance = 96.596
+New Feature 16: [3, 7, 20], Relevance = 95.065
+New Feature 17: [6, 9], Relevance = 92.815
+New Feature 18: [7, 21], Relevance = 90.435
+New Feature 19: [6, 10, 21], Relevance = 88.200
+New Feature 20: [3, 5, 14], Relevance = 86.333
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 220.127, Density of A: 9.80%
+2: L2_norm of weight difference = 89.900, Density of A: 11.75%
+3: L2_norm of weight difference = 42.812, Density of A: 11.54%
+4: L2_norm of weight difference = 8.976, Density of A: 11.41%
+5: L2_norm of weight difference = 26.907, Density of A: 11.41%
+6: L2_norm of weight difference = 42.473, Density of A: 11.41%
+7: L2_norm of weight difference = 0.000, Density of A: 11.41%
+Performance Check >>> -11.000 Return, 1000 Steps, 75 Features
+iFDD Batch: Max Relevance = 185.748
+New Feature 1: [0, 10], Relevance = 185.748
+New Feature 2: [0, 6, 9], Relevance = 181.158
+New Feature 3: [0, 5, 9, 29], Relevance = 167.377
+New Feature 4: [3, 6, 9, 32], Relevance = 149.772
+New Feature 5: [2, 6, 9], Relevance = 102.974
+New Feature 6: [7, 22], Relevance = 93.016
+New Feature 7: [3, 5, 10], Relevance = 91.712
+New Feature 8: [2, 7, 9, 20], Relevance = 90.250
+New Feature 9: [3, 6, 20], Relevance = 84.599
+New Feature 10: [4, 10, 20], Relevance = 81.225
+New Feature 11: [3, 4, 10], Relevance = 79.136
+New Feature 12: [3, 5, 9, 20], Relevance = 77.689
+New Feature 13: [2, 7, 9, 21], Relevance = 73.797
+New Feature 14: [2, 5, 9, 29], Relevance = 71.006
+New Feature 15: [6, 9, 20], Relevance = 70.231
+New Feature 16: [5, 23], Relevance = 69.883
+New Feature 17: [1, 6, 9], Relevance = 68.023
+New Feature 18: [1, 5, 9, 29], Relevance = 67.073
+New Feature 19: [3, 4, 16, 20], Relevance = 65.836
+New Feature 20: [3, 10, 29], Relevance = 65.028
+Representation Expansion iteration #4
+-----------------
