@@ -24,8 +24,8 @@ USERNAME='agf'
 FINALFILE='result'
 
 
-def submit(n,jobdir):
-    #Submit one task to condor
+def submit(id):
+    #Submit one task to condor using id
     if n > 0:
         condrun='mkdir -p CondorOutput;' + \
                 'cd CondorOutput;' + \
@@ -34,10 +34,10 @@ def submit(n,jobdir):
                 'mkdir -p out;' +\
                 'cd ..;' +\
                 'condor_submit'+\
-                 ' -a arguments = main('+str(n)+')' + RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh' +\
-                 ' -a \'Error = CondorOutput/err/'+str(n)+'.err\''+\
-                 ' -a \'Log = CondorOutput/log/'+str(n)+'.log\''+\
-                 ' -a \'Output = CondorOutput/out/'+str(n)+'.out\''+\
+                 ' -a arguments = main('+str(id)+')' + RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh' +\
+                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
+                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
+                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
                  RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
                 # 128.30.65.35 Error: The input character is not valid in MATLAB statements or expressions. Referring to (') 
                 # ' -a \'arguments= -nodisplay -nosplash -r \\\"main('+str(n)+')\\\" -logfile '+jobdir+'/log.txt \''+\
@@ -57,15 +57,15 @@ def submit(n,jobdir):
         else:
         	print condrun
      
-def searchNSubmit(idir,exp_num,answered,resumejobs):
+def searchNSubmit(idir,exp_num,answered,respawnjobs):
         #See if this directory is a potential experiment 
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
             #print ' (!) ' + idir + '  not an experiment.'
             for folder in os.listdir(idir):
                 newdir = idir+'/'+folder
                 if os.path.isdir(newdir):
-                    [answered,resumejobs] = searchNSubmit(newdir,exp_num,answered,resumejobs)
-            return [answered,resumejobs]
+                    [answered,respawnjobs] = searchNSubmit(newdir,exp_num,answered,respawnjobs)
+            return [answered,respawnjobs]
         
 #        if PURGEJOBS:
 #        	sysCall("rm -rf " +idir+'/CondorOutput')
@@ -77,87 +77,72 @@ def searchNSubmit(idir,exp_num,answered,resumejobs):
         total           = 0
         completed       = 0
         running         = 0
-        resumed         = 0
+        respawned       = 0
         
         #Going inside directory
         currentdir = os.getcwd()
         os.chdir(idir) 
 
-        if os.path.exists(PARALLEL_SUBDIR):
+        
+        allouts             = glob.glob('*-out.txt')
+        ran_num             = len(jobs)
+        completed_results   = glob.glob('*-results.txt')
+        completed           = len(jobs)
+        for out in allouts: 
             
-            jobs    = os.listdir(PARALLEL_SUBDIR)
-            total   = len(jobs)
-            for job in jobs: 
-                
-                jobdir = PARALLEL_SUBDIR+job
+            #Break if we have enough runs
+            if completed+respawned+running >= exp_num:
+            	   # We have extra jobs than exp_num => Remove those without results
+		       continue
+            
+            id,_,_ = job.rsplit('-')
+            if not os.path.exists('%d-results.txt'%id):                        
+                while not answered:
+                    answer=raw_input('(!) Respawn Jobs ? => (Y/N)')
+                    if answer.lower() == 'y':
+                        respawnjobs  = True
+                        answered    = True
 
-                #Break if we have enough runs
-                if completed+resumed+running >= exp_num:
-                	# We have extra jobs than exp_num => Remove those without results
-		            if not os.path.exists(jobdir +'/' + FINALFILE) and not os.path.exists(jobdir +'/Backup/Backup.mat'):                        
-            			sysCall("rm -r " + jobdir)
-            			print RED+">>> Removed unfinished extra Job #"+job+NOCOLOR
-        			continue
-                
-                existing = os.listdir(jobdir)
-                if os.path.exists(jobdir +'/' + FINALFILE):                        
-                    completed = completed + 1;
-                    if os.path.exists(jobdir+'/Backup'):
-                        print RED+">>> Purged Backup for Job # "+job+NOCOLOR
-                        sysCall("rm -r " + jobdir+'/Backup')
+                    if answer.lower() == 'n':
+                        respawnjobs  = False
+                        answered    = True
+                            
+                if respawnjobs:
+                    #Show content
+                        command           = "tail -n 1 " + job
+                        sysCommandHandle  = os.popen(command)
+                        for line in sysCommandHandle:
+                            print "Job #" + id + ": " + line,
+                        submit(eval(id))
+                        print RESUMING_COLOR+">>> Resumed Job #"+id+NOCOLOR
+                        respawned = respawned + 1
                 else:
-                    while not answered:
-                        answer=raw_input('(!) Resume Directories ? => (Y/N)')
-                        if answer.lower() == 'y':
-                            resumejobs  = True
-                            answered    = True
-
-                        if answer.lower() == 'n':
-                            resumejobs  = False
-                            answered    = True
-                                
-                    if resumejobs:
-                        #Show content
-                        if os.path.exists(jobdir+'/log.txt'):
-                            command           = "tail -n 1 " + jobdir + "/log.txt"
-                            sysCommandHandle  = os.popen(command)
-                            for line in sysCommandHandle:
-                                print "Job #" + job + ": " + line,
-                        submit(eval(job),jobdir)
-                        print RESUMING_COLOR+">>> Resumed Job #"+job+NOCOLOR
-                        resumed = resumed + 1
-                    else:
-                        running = running + 1
+                    running = running + 1
                         
-        else:
-        	os.makedirs(PARALLEL_SUBDIR)
         	
         # Submit extra jobs as needed
-        # Here there is no more jobs to resume so we have to create new ones
-        extraNeed       = exp_num-completed-resumed-running
+        # Here there is no more jobs to respawn so we have to create new ones
+        extraNeed       = exp_num-completed-respawnd-running
         newSubmission   = 0
-        job             = 1
+        jobid           = 1
         while newSubmission < extraNeed:
-            jobdir = PARALLEL_SUBDIR + str(job)
-            if os.path.exists(jobdir):
-                job = job + 1
+            if os.path.exists('%d-out.txt',jobid):
+                jobid = jobid + 1
                 continue
             
             newSubmission = newSubmission + 1
-            if not TEST:
-                os.mkdir(jobdir)
-            submit(job,jobdir)
-            print YELLOW+">>> Submitted Job #"+str(job)+NOCOLOR 
+            submit(jobid)
+            print YELLOW+">>> Submitted Job #"+str(jobid)+NOCOLOR 
                 
         print "---------------------"
         print "Completed:\t%d" % completed
         print "Running:\t%d" % (running)
-        print "Resuming:\t%d" % (resumed)
+        print "Resuming:\t%d" % (respawnd)
         print "New Submission:\t%d" % (newSubmission)
 
         #Return to the directory we started at
         os.chdir(currentdir)
-        return [answered, resumejobs]
+        return [answered, respawnjobs]
     
 def sysCall(cmd):
     if TEST:
@@ -201,7 +186,7 @@ def rerun(idir,exp_num):
                     print "Ignoring all running jobs..."
                     gotanswer1 = True;
         else:
-            resumejobs  = True #If no task is running try to resume jobs
+            respawnjobs  = True #If no task is running try to respawn jobs
             print ">>> No job found for user " + USERNAME + "."
         
         #Start Searching and Purging
