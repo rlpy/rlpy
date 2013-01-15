@@ -1,0 +1,215 @@
+============================================================
+Domain:		PST
+Dimensions:	8
+|S|:		30976
+|A|:		9
+|S|x|A|:		278784
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		2
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	35
+Binary Dimensions:	[4 5 6 7]
+============================================================
+Representation:		iFDD
+Features per action:	35
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	25.000
+Batch Threshold:		25.000
+Max Batch Discovery:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/PST-2UAV/PST-iFDD-50000-25/6-results.txt
+Learning Steps:		50000
+Performance Checks:	5
+Log Intervals:		1(s)
+263: E[0:00:01]-R[0:03:57]: Return=-128.00, Steps=147, Features = 54
+481: E[0:00:02]-R[0:03:56]: Return=-78.00, Steps=41, Features = 85
+714: E[0:00:03]-R[0:03:56]: Return=-92.00, Steps=29, Features = 130
+928: E[0:00:04]-R[0:03:55]: Return=-67.00, Steps=41, Features = 145
+1149: E[0:00:06]-R[0:03:54]: Return=-83.00, Steps=21, Features = 163
+1379: E[0:00:07]-R[0:03:53]: Return=-92.00, Steps=36, Features = 167
+1596: E[0:00:08]-R[0:03:51]: Return=-63.00, Steps=31, Features = 171
+1967: E[0:00:09]-R[0:03:51]: Return=-247.00, Steps=193, Features = 186
+2194: E[0:00:11]-R[0:03:55]: Return=-203.00, Steps=135, Features = 193
+2417: E[0:00:12]-R[0:03:54]: Return=-96.00, Steps=84, Features = 205
+2654: E[0:00:13]-R[0:03:53]: Return=-107.00, Steps=44, Features = 217
+2857: E[0:00:14]-R[0:03:52]: Return=-81.00, Steps=123, Features = 225
+3095: E[0:00:15]-R[0:03:52]: Return=-74.00, Steps=72, Features = 247
+3302: E[0:00:16]-R[0:03:50]: Return=-96.00, Steps=63, Features = 261
+3567: E[0:00:18]-R[0:03:49]: Return=-80.00, Steps=81, Features = 264
+3798: E[0:00:19]-R[0:03:47]: Return=-68.00, Steps=37, Features = 283
+4081: E[0:00:20]-R[0:03:46]: Return=-166.00, Steps=81, Features = 293
+4307: E[0:00:21]-R[0:03:44]: Return=-86.00, Steps=21, Features = 306
+4519: E[0:00:22]-R[0:03:43]: Return=-8.00, Steps=10, Features = 325
+4749: E[0:00:23]-R[0:03:42]: Return=-51.00, Steps=25, Features = 334
+4960: E[0:00:24]-R[0:03:41]: Return=-7.00, Steps=10, Features = 353
+5175: E[0:00:25]-R[0:03:40]: Return=-41.00, Steps=47, Features = 358
+5388: E[0:00:26]-R[0:03:39]: Return=-33.00, Steps=31, Features = 372
+5597: E[0:00:28]-R[0:03:39]: Return=-22.00, Steps=37, Features = 382
+5971: E[0:00:29]-R[0:03:37]: Return=-103.00, Steps=219, Features = 391
+6218: E[0:00:31]-R[0:03:36]: Return=-25.00, Steps=92, Features = 394
+6529: E[0:00:32]-R[0:03:34]: Return=-159.00, Steps=168, Features = 402
+6763: E[0:00:33]-R[0:03:33]: Return=-109.00, Steps=115, Features = 409
+7145: E[0:00:35]-R[0:03:31]: Return=-85.00, Steps=382, Features = 409
+7345: E[0:00:36]-R[0:03:31]: Return=-73.00, Steps=89, Features = 415
+7547: E[0:00:37]-R[0:03:31]: Return=-104.00, Steps=32, Features = 420
+7939: E[0:00:40]-R[0:03:29]: Return=-260.00, Steps=295, Features = 424
+8122: E[0:00:41]-R[0:03:29]: Return=-27.00, Steps=24, Features = 435
+8325: E[0:00:42]-R[0:03:28]: Return=-61.00, Steps=23, Features = 439
+8542: E[0:00:43]-R[0:03:28]: Return=0.00, Steps=80, Features = 444
+8744: E[0:00:44]-R[0:03:27]: Return=43.00, Steps=48, Features = 449
+8935: E[0:00:45]-R[0:03:27]: Return=-9.00, Steps=10, Features = 450
+9281: E[0:00:47]-R[0:03:25]: Return=35.00, Steps=200, Features = 455
+9537: E[0:00:48]-R[0:03:24]: Return=-58.00, Steps=113, Features = 460
+9758: E[0:00:49]-R[0:03:23]: Return=-51.00, Steps=50, Features = 465
+9962: E[0:00:50]-R[0:03:22]: Return=-39.00, Steps=18, Features = 473
+10000 >>> E[0:00:51]-R[0:03:22]: Return=-42.00, Steps=24, Features = 474
+10206: E[0:00:52]-R[0:03:21]: Return=-11.00, Steps=12, Features = 477
+10519: E[0:00:53]-R[0:03:19]: Return=-68.00, Steps=147, Features = 482
+10730: E[0:00:54]-R[0:03:18]: Return=-84.00, Steps=20, Features = 491
+11068: E[0:00:56]-R[0:03:16]: Return=-82.00, Steps=155, Features = 494
+11312: E[0:00:57]-R[0:03:15]: Return=42.00, Steps=117, Features = 495
+11599: E[0:00:58]-R[0:03:13]: Return=-163.00, Steps=287, Features = 495
+11858: E[0:01:00]-R[0:03:11]: Return=-22.00, Steps=59, Features = 498
+12087: E[0:01:01]-R[0:03:10]: Return=-69.00, Steps=75, Features = 503
+12308: E[0:01:02]-R[0:03:09]: Return=-65.00, Steps=13, Features = 505
+12521: E[0:01:03]-R[0:03:08]: Return=-28.00, Steps=10, Features = 510
+12842: E[0:01:04]-R[0:03:06]: Return=-24.00, Steps=113, Features = 516
+13094: E[0:01:05]-R[0:03:04]: Return=-25.00, Steps=164, Features = 521
+13355: E[0:01:07]-R[0:03:03]: Return=-22.00, Steps=102, Features = 530
+13590: E[0:01:08]-R[0:03:02]: Return=-60.00, Steps=48, Features = 537
+13863: E[0:01:09]-R[0:03:00]: Return=-184.00, Steps=173, Features = 539
+14093: E[0:01:10]-R[0:02:59]: Return=7.00, Steps=88, Features = 546
+14384: E[0:01:12]-R[0:02:58]: Return=-58.00, Steps=85, Features = 549
+14601: E[0:01:13]-R[0:02:56]: Return=-137.00, Steps=204, Features = 551
+14858: E[0:01:14]-R[0:02:55]: Return=-42.00, Steps=65, Features = 553
+15097: E[0:01:15]-R[0:02:54]: Return=-15.00, Steps=70, Features = 559
+15315: E[0:01:16]-R[0:02:53]: Return=-50.00, Steps=27, Features = 567
+15550: E[0:01:17]-R[0:02:51]: Return=-25.00, Steps=105, Features = 568
+15849: E[0:01:19]-R[0:02:50]: Return=-101.00, Steps=107, Features = 572
+16130: E[0:01:20]-R[0:02:48]: Return=-75.00, Steps=116, Features = 578
+16407: E[0:01:21]-R[0:02:47]: Return=-133.00, Steps=142, Features = 583
+16606: E[0:01:22]-R[0:02:46]: Return=-82.00, Steps=34, Features = 592
+16853: E[0:01:24]-R[0:02:45]: Return=-35.00, Steps=143, Features = 595
+17061: E[0:01:25]-R[0:02:44]: Return=-95.00, Steps=32, Features = 602
+17295: E[0:01:26]-R[0:02:42]: Return=-74.00, Steps=45, Features = 609
+17541: E[0:01:27]-R[0:02:41]: Return=-87.00, Steps=53, Features = 609
+17777: E[0:01:28]-R[0:02:40]: Return=-42.00, Steps=33, Features = 613
+17994: E[0:01:29]-R[0:02:39]: Return=-35.00, Steps=63, Features = 620
+18461: E[0:01:32]-R[0:02:36]: Return=-98.00, Steps=266, Features = 623
+18932: E[0:01:34]-R[0:02:34]: Return=-176.00, Steps=277, Features = 624
+19148: E[0:01:35]-R[0:02:33]: Return=-132.00, Steps=216, Features = 625
+19480: E[0:01:36]-R[0:02:31]: Return=99.00, Steps=249, Features = 629
+19786: E[0:01:38]-R[0:02:30]: Return=6.00, Steps=306, Features = 630
+20000 >>> E[0:01:41]-R[0:02:31]: Return=39.00, Steps=1000, Features = 631
+20265: E[0:01:42]-R[0:02:30]: Return=11.00, Steps=131, Features = 632
+20539: E[0:01:44]-R[0:02:29]: Return=-99.00, Steps=204, Features = 632
+20770: E[0:01:45]-R[0:02:27]: Return=33.00, Steps=21, Features = 635
+20996: E[0:01:46]-R[0:02:26]: Return=-32.00, Steps=129, Features = 637
+21229: E[0:01:47]-R[0:02:25]: Return=-64.00, Steps=44, Features = 643
+21452: E[0:01:48]-R[0:02:24]: Return=113.00, Steps=134, Features = 647
+21701: E[0:01:49]-R[0:02:22]: Return=37.00, Steps=42, Features = 651
+21965: E[0:01:50]-R[0:02:21]: Return=-152.00, Steps=196, Features = 653
+22175: E[0:01:51]-R[0:02:20]: Return=-70.00, Steps=19, Features = 656
+22639: E[0:01:54]-R[0:02:17]: Return=-54.00, Steps=291, Features = 660
+22910: E[0:01:55]-R[0:02:16]: Return=-32.00, Steps=101, Features = 662
+23120: E[0:01:56]-R[0:02:15]: Return=-30.00, Steps=10, Features = 664
+23412: E[0:01:57]-R[0:02:13]: Return=-4.00, Steps=213, Features = 669
+23639: E[0:01:59]-R[0:02:12]: Return=17.00, Steps=55, Features = 673
+23866: E[0:02:00]-R[0:02:11]: Return=76.00, Steps=227, Features = 674
+24102: E[0:02:01]-R[0:02:10]: Return=20.00, Steps=60, Features = 677
+24366: E[0:02:02]-R[0:02:08]: Return=-20.00, Steps=70, Features = 686
+24672: E[0:02:04]-R[0:02:07]: Return=-182.00, Steps=306, Features = 686
+24954: E[0:02:05]-R[0:02:05]: Return=-104.00, Steps=282, Features = 686
+25325: E[0:02:07]-R[0:02:04]: Return=59.00, Steps=275, Features = 687
+25545: E[0:02:08]-R[0:02:02]: Return=64.00, Steps=220, Features = 688
+26164: E[0:02:11]-R[0:01:59]: Return=232.00, Steps=440, Features = 689
+26411: E[0:02:12]-R[0:01:58]: Return=129.00, Steps=214, Features = 691
+26722: E[0:02:14]-R[0:01:56]: Return=31.00, Steps=149, Features = 695
+27176: E[0:02:16]-R[0:01:54]: Return=127.00, Steps=253, Features = 698
+27581: E[0:02:18]-R[0:01:52]: Return=-47.00, Steps=252, Features = 699
+27861: E[0:02:19]-R[0:01:51]: Return=-8.00, Steps=79, Features = 705
+28566: E[0:02:23]-R[0:01:47]: Return=221.00, Steps=525, Features = 707
+28929: E[0:02:24]-R[0:01:45]: Return=-104.00, Steps=203, Features = 707
+29231: E[0:02:26]-R[0:01:44]: Return=300.00, Steps=229, Features = 710
+29820: E[0:02:29]-R[0:01:41]: Return=398.00, Steps=514, Features = 713
+30000 >>> E[0:02:32]-R[0:01:41]: Return=-47.00, Steps=1000, Features = 714
+30243: E[0:02:33]-R[0:01:40]: Return=-60.00, Steps=59, Features = 714
+30525: E[0:02:34]-R[0:01:38]: Return=-24.00, Steps=225, Features = 715
+30811: E[0:02:36]-R[0:01:37]: Return=-87.00, Steps=251, Features = 715
+31199: E[0:02:38]-R[0:01:35]: Return=83.00, Steps=259, Features = 717
+31507: E[0:02:39]-R[0:01:33]: Return=-39.00, Steps=174, Features = 717
+31764: E[0:02:40]-R[0:01:32]: Return=76.00, Steps=87, Features = 718
+32029: E[0:02:42]-R[0:01:31]: Return=17.00, Steps=78, Features = 721
+32306: E[0:02:43]-R[0:01:29]: Return=-62.00, Steps=135, Features = 725
+32648: E[0:02:45]-R[0:01:27]: Return=-20.00, Steps=161, Features = 728
+32914: E[0:02:46]-R[0:01:26]: Return=53.00, Steps=63, Features = 728
+33212: E[0:02:47]-R[0:01:25]: Return=91.00, Steps=191, Features = 731
+33448: E[0:02:49]-R[0:01:23]: Return=-7.00, Steps=108, Features = 732
+33727: E[0:02:50]-R[0:01:22]: Return=47.00, Steps=103, Features = 736
+33946: E[0:02:51]-R[0:01:21]: Return=-6.00, Steps=219, Features = 737
+34355: E[0:02:53]-R[0:01:19]: Return=87.00, Steps=409, Features = 738
+34574: E[0:02:54]-R[0:01:18]: Return=-59.00, Steps=133, Features = 738
+34933: E[0:02:56]-R[0:01:16]: Return=-116.00, Steps=196, Features = 741
+35149: E[0:02:57]-R[0:01:15]: Return=110.00, Steps=120, Features = 741
+35360: E[0:02:58]-R[0:01:14]: Return=92.00, Steps=49, Features = 743
+35752: E[0:03:00]-R[0:01:12]: Return=54.00, Steps=392, Features = 745
+36065: E[0:03:01]-R[0:01:10]: Return=79.00, Steps=117, Features = 747
+36348: E[0:03:03]-R[0:01:09]: Return=240.00, Steps=210, Features = 749
+36761: E[0:03:05]-R[0:01:06]: Return=96.00, Steps=254, Features = 751
+37187: E[0:03:07]-R[0:01:04]: Return=212.00, Steps=426, Features = 751
+37500: E[0:03:08]-R[0:01:03]: Return=343.00, Steps=156, Features = 752
+37713: E[0:03:09]-R[0:01:02]: Return=111.00, Steps=90, Features = 753
+37923: E[0:03:10]-R[0:01:01]: Return=-114.00, Steps=70, Features = 755
+38257: E[0:03:12]-R[0:00:59]: Return=105.00, Steps=130, Features = 756
+38514: E[0:03:13]-R[0:00:58]: Return=-46.00, Steps=129, Features = 757
+38899: E[0:03:15]-R[0:00:56]: Return=-3.00, Steps=188, Features = 760
+39154: E[0:03:16]-R[0:00:54]: Return=19.00, Steps=68, Features = 762
+39431: E[0:03:18]-R[0:00:53]: Return=-6.00, Steps=72, Features = 763
+39672: E[0:03:19]-R[0:00:52]: Return=74.00, Steps=241, Features = 764
+39888: E[0:03:20]-R[0:00:51]: Return=62.00, Steps=137, Features = 767
+40000 >>> E[0:03:20]-R[0:00:50]: Return=-57.00, Steps=17, Features = 767
+40289: E[0:03:22]-R[0:00:49]: Return=109.00, Steps=163, Features = 768
+40568: E[0:03:23]-R[0:00:47]: Return=-48.00, Steps=138, Features = 771
+40841: E[0:03:24]-R[0:00:46]: Return=334.00, Steps=273, Features = 774
+41139: E[0:03:26]-R[0:00:44]: Return=187.00, Steps=171, Features = 776
+41340: E[0:03:27]-R[0:00:43]: Return=20.00, Steps=106, Features = 778
+41588: E[0:03:28]-R[0:00:42]: Return=91.00, Steps=87, Features = 781
+41906: E[0:03:30]-R[0:00:41]: Return=171.00, Steps=148, Features = 784
+42276: E[0:03:32]-R[0:00:39]: Return=76.00, Steps=239, Features = 788
+42525: E[0:03:33]-R[0:00:37]: Return=23.00, Steps=140, Features = 790
+42791: E[0:03:34]-R[0:00:36]: Return=69.00, Steps=217, Features = 792
+43408: E[0:03:37]-R[0:00:33]: Return=422.00, Steps=575, Features = 795
+43881: E[0:03:40]-R[0:00:31]: Return=380.00, Steps=473, Features = 796
+44098: E[0:03:41]-R[0:00:30]: Return=34.00, Steps=20, Features = 796
+44378: E[0:03:42]-R[0:00:28]: Return=91.00, Steps=180, Features = 801
+44668: E[0:03:44]-R[0:00:27]: Return=43.00, Steps=145, Features = 802
+44947: E[0:03:45]-R[0:00:25]: Return=-1.00, Steps=112, Features = 805
+45282: E[0:03:47]-R[0:00:24]: Return=255.00, Steps=202, Features = 812
+45758: E[0:03:49]-R[0:00:21]: Return=350.00, Steps=465, Features = 812
+45999: E[0:03:50]-R[0:00:20]: Return=58.00, Steps=61, Features = 813
+46223: E[0:03:52]-R[0:00:19]: Return=341.00, Steps=224, Features = 813
+46438: E[0:03:53]-R[0:00:18]: Return=164.00, Steps=122, Features = 814
+46702: E[0:03:54]-R[0:00:17]: Return=154.00, Steps=116, Features = 816
+46899: E[0:03:55]-R[0:00:16]: Return=117.00, Steps=142, Features = 819
+47210: E[0:03:57]-R[0:00:14]: Return=36.00, Steps=131, Features = 820
+47493: E[0:03:58]-R[0:00:13]: Return=134.00, Steps=237, Features = 820
+47772: E[0:04:00]-R[0:00:11]: Return=-56.00, Steps=127, Features = 822
+48378: E[0:04:03]-R[0:00:08]: Return=319.00, Steps=403, Features = 826
+48591: E[0:04:04]-R[0:00:07]: Return=31.00, Steps=52, Features = 830
+48799: E[0:04:05]-R[0:00:06]: Return=10.00, Steps=40, Features = 832
+49178: E[0:04:06]-R[0:00:04]: Return=-32.00, Steps=86, Features = 836
+50000 >>> E[0:04:09]-R[0:00:00]: Return=-7.00, Steps=1000, Features = 836
+============================================================
+Took 0:04:09
+Results	=> Results/13ICML-BatchiFDD/PST-2UAV/PST-iFDD-50000-25/6-results.txt
+Log	=> Results/13ICML-BatchiFDD/PST-2UAV/PST-iFDD-50000-25/6-out.txt
