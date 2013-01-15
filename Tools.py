@@ -20,12 +20,12 @@ if module_exists('matplotlib'):
     import matplotlib.cm as cm
     from matplotlib.mlab import rk4
     from matplotlib import lines
+    from mpl_toolkits.mplot3d import axes3d
     pl.ion()
 else:
     'matplotlib is not available => No Graphics'
 	
 import glob
-from mpl_toolkits.mplot3d import axes3d
 from scipy import stats
 from scipy import misc
 from scipy import linalg
