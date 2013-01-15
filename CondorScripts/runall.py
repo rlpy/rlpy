@@ -10,11 +10,17 @@
 #+force: Just run the god damn thing! => Ignore all warnings. (default = false)
 
 import os, sys, time, re, string
+#Add all paths
+path = '.'
+while not os.path.exists(path+'/Tools.py'):
+    path = path + '/..'
+sys.path.insert(0, os.path.abspath(path))
 
+RL_PYTHON_ROOT = path 
 from Tools import * 
 
-TEST = False # This value is used to avoid actually doing anything, so we can check the program
-USERNAME='rhklein'
+TEST = True # This value is used to avoid actually doing anything, so we can check the program
+USERNAME='agf'
 FINALFILE='result'
 
 
@@ -28,11 +34,11 @@ def submit(n,jobdir):
                 'mkdir -p out;' +\
                 'cd ..;' +\
                 'condor_submit'+\
-                 ' -a \"arguments = -nodisplay -nosplash -r main('+str(n)+') -logfile '+jobdir+'/log.txt' +'\" ~/myscripts/MIT/runpy-new.sh' +\
+                 ' -a arguments = main('+str(n)+')' + RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh' +\
                  ' -a \'Error = CondorOutput/err/'+str(n)+'.err\''+\
                  ' -a \'Log = CondorOutput/log/'+str(n)+'.log\''+\
                  ' -a \'Output = CondorOutput/out/'+str(n)+'.out\''+\
-                 ' ~/myscripts/MIT/runpy-new.sh'
+                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
                 # 128.30.65.35 Error: The input character is not valid in MATLAB statements or expressions. Referring to (') 
                 # ' -a \'arguments= -nodisplay -nosplash -r \\\"main('+str(n)+')\\\" -logfile '+jobdir+'/log.txt \''+\
                 # 128.30.29.36  Error: syntax error near unexpected token `(' 
