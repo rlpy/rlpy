@@ -17,7 +17,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
             #Not a task directory
             for folder in os.listdir(idir):
                 count += 1
-                if os.path.isdir(idir+'/'+folder):
+                if os.path.isdir(idir+'/'+folder) and folder[0] != '.':
                     pollOne(idir+'/'+folder,count,detailed,fulldetailed)
         else:                
             jobs        = glob.glob('*-out.txt')
