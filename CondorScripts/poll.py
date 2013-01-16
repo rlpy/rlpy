@@ -19,18 +19,29 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                 if os.path.isdir(idir+'/'+folder) and folder[0] != '.':
                     pollOne(idir+'/'+folder,count,detailed,fulldetailed)
         else:                
-            jobs        = glob.glob(idir+'/*-out.txt')
-            total       = len(jobs)
-            completed   = 0;
-        
-            logs = []
+            jobids      = set()
+            #Add jobs based on CondorOutput/out/x.out
+            jobs = glob.glob(idir+'/CondorOutput/log/*.log')
+            for job in jobs:
+                _,_,jobname = job.rpartition('/')
+                jobid,_,_ = jobname.rpartition('.')
+                jobids.add(eval(jobid))
+            #Add jobs based on x-out.txt
+            jobs = glob.glob(idir+'/*-out.txt')
             for job in jobs:
                 _,_,jobname = job.rpartition('/')
                 jobid,_,_ = jobname.rpartition('-')
-                if os.path.exists(idir+'/%s-results.txt' % jobid):                        
+                jobids.add(eval(jobid))
+
+            total       = len(jobids)
+            completed   = 0;
+            print jobids
+            logs = []
+            for jobid in jobids:
+                if os.path.exists(idir+'/%d-results.txt' % jobid):                        
                     completed = completed + 1;
                 else:
-                    logpath = "%s/Log/%s.txt" % (idir,jobid) 
+                    logpath = "%s/CondorOutput/out/%d.out" % (idir,jobid) 
                     if detailed and os.path.exists(logpath):
                         if fulldetailed:
                             command = "tail -n 30 " + logpath
@@ -48,19 +59,19 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                             
                         if gotSomething:
                             for line in lines:
-                                log = "#%02d: %s"  % (eval(jobid), line)
+                                log = "#%02d: %s"  % (jobid, line)
                                 if fulldetailed:
                                     log = RED + log
                                 logs.append(log)
                         else:
-                            log = "#%02d: No output yet\n"  % (eval(job))
+                            log = "#%02d: No output yet\n"  % (jobid)
                             logs.append(log)
 
             nc      = NOCOLOR
             running = total - completed
             #print detailed, completed, total
             if running:
-                print"%s:\t(%s%d%s/%s%d%s)"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,TOTAL_COLOR,total,nc)
+                print"%s: %s%d%s/%s%d%s"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,TOTAL_COLOR,total,nc)
 
                 if not fulldetailed: logs = sortLog(logs)
                 for log in logs:
@@ -69,7 +80,8 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                     sys.stdout.write(log)
                 sys.stdout.write(nc)
             else:
-                print "%s:\t%s(%d/%d) Done! %s"  % (idir.replace('./',''), COMPLETED_COLOR,completed,total, nc)
+                if completed:
+                    print "%s: %s%d/%d Done! %s"  % (idir.replace('./',''), COMPLETED_COLOR,completed,total, nc)
 
 if __name__ == '__main__':
     os.system('clear');
