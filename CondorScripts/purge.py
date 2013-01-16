@@ -35,7 +35,7 @@ def searchNPurge(idir):
                             
             print "Completed Jobs:\t%d" % completed
             print "Purged Jobs:\t%d" % (total-completed)
-            print "============"
+            print "====================="
         else:
             for folder in os.listdir('.'):
                 if os.path.isdir(folder) and not folder.startswith('.'):
