@@ -31,19 +31,19 @@ MAKE_EXP_NAME = 1      # This flag should be set if the job is submitted through
 def submit(id):
     #Submit one task to condor using id
     if id > 0:
-#        condrun='mkdir -p CondorOutput;' + \
-#                'cd CondorOutput;' + \
-#                'mkdir -p log;' +\
-#                'mkdir -p err;' +\
-#                'mkdir -p out;' +\
-#                'cd ..;' +\
-        condrun='condor_submit'+\
+        condrun='mkdir -p CondorOutput;' + \
+                'cd CondorOutput;' + \
+                'mkdir -p log;' +\
+                'mkdir -p err;' +\
+                'mkdir -p out;' +\
+                'cd ..;' +\
+		'condor_submit'+\
                  ' -a \"arguments = main.py '+str(id)+' '+\
-                 RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
-#                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
-#                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
-#                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
-#                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
+                 RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+RL_PYTHON_ROOT+\
+                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
+                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
+                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
+                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
 #        condrun='mkdir -p CondorOutput;' + \
 #                'cd CondorOutput;' + \
