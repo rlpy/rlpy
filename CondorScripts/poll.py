@@ -12,8 +12,8 @@ import os, sys, time, re
 from Script_Tools import *
 
 def pollOne(idir, count, detailed = False, fulldetailed = False):
-        print "Inspecting:A "+idir
-        if not os.path.exists('main.py'):
+        print "Inspecting: "+idir
+        if not os.path.exists(idir+'/main.py'):
             #Not a task directory
             for folder in os.listdir(idir):
                 count += 1
