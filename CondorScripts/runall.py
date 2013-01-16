@@ -42,7 +42,7 @@ def submit(id):
                  RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'+\
                  ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
                  ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
-                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
+                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
 #                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
 #        condrun='mkdir -p CondorOutput;' + \
