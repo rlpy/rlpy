@@ -16,25 +16,25 @@ def searchNPurge(idir):
         currentdir      = os.getcwd()
         os.chdir(idir) 
 
-        if os.path.exists('/main.py'):
+        if os.path.exists('main.py'):
             
             if idir != '.':
                 print 'Experiment: '+ idir
             
-            os.system("rm -rf CondorOutput")
-            completed       = 0
+            #os.system("rm -rf CondorOutput")
             
-            jobs        = glob.glob('*-out.txt')
-            total       = len(jobs)
-            jobs        = glob.glob(idir+'*-results.txt')
-            completed   = len(jobs)
-            for job in jobs: 
-                jobid,_,_ = job.rpartition('-')
-                os.system("rm -r " + jobid+'-out.txt')
-                print RED+">>> Purged Job # "+job+NOCOLOR
+            outjobs     = glob.glob('*-out.txt')
+            total       = len(outjobs)
+            resjobs     = glob.glob('*-results.txt')
+            completed   = len(resjobs)
+            for outjob in outjobs: 
+                jobid,_,_ = outjob.rpartition('-')
+                if not os.exist(jobid+'-results.txt'):
+                    os.system("rm -r " + outjob)
+                    print RED+">>> Purged Job # "+jobid+NOCOLOR
                             
-            print "Completed:\t%d" % completed
-            print "Purged:\t\t%d" % (total-completed)
+            print "Completed Jobs:\t%d" % completed
+            print "Purged Jobs:\t\t%d" % (total-completed)
         else:
             for folder in os.listdir('.'):
                 if os.path.isdir(folder) and not folder.startswith('.'):
