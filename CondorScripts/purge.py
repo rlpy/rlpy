@@ -29,7 +29,7 @@ def searchNPurge(idir):
             completed   = len(resjobs)
             for outjob in outjobs: 
                 jobid,_,_ = outjob.rpartition('-')
-                if not os.exists(jobid+'-results.txt'):
+                if not os.path.exists(jobid+'-results.txt'):
                     os.system("rm -r " + outjob)
                     print RED+">>> Purged Job # "+jobid+NOCOLOR
                             
