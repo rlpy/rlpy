@@ -119,7 +119,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     experiment.save()
     
     #domain.showLearning(representation)
-    if SHOW_FINAL_PLOT: pl.ioff(); pl.show()
+    if SHOW_FINAL_PLOT:
+        if module_exists('matplotlib'):
+            pl.ioff(); pl.show()
+        else:
+            logger.log('could not show final plot; no matplotlib')
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
