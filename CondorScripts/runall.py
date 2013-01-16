@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(path))
 RL_PYTHON_ROOT = path 
 from Script_Tools import * 
 
-TEST = True # This value is used to avoid actually doing anything, so we can check the program
+TEST = False # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='rhklein'
 FINALFILE='result'
 RESULTS_PATH='/13ICML-BatchiFDD'
@@ -35,7 +35,7 @@ def submit(id):
 #                'mkdir -p out;' +\
 #                'cd ..;' +\
         condrun='condor_submit'+\
-                 ' -a \"arguments = main.py '+str(id)+' '+RL_PYTHON_ROOT+RESULTS_PATH +'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh' +\
+                 ' -a \"arguments = main.py '+str(id)+' '+RL_PYTHON_ROOT+RESULTS_PATH +'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 #                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
 #                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
 #                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
