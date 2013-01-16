@@ -127,6 +127,6 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = True, MAKE_EXP_NAME = False)
+         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
