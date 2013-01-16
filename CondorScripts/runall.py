@@ -19,10 +19,10 @@ sys.path.insert(0, os.path.abspath(path))
 RL_PYTHON_ROOT = path 
 from Script_Tools import * 
 
-TEST = True # This value is used to avoid actually doing anything, so we can check the program
+TEST = False # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='rhklein'
 FINALFILE='result'
-RESULTS_PATH='.' # Currently want results path to be in directory of the main file
+RESULTS_PATH='/CondorOutput' # Currently want results path to be in directory of the main file
 #RESULTS_PATH = RL_PYTHON_ROOT+'/13iCML/
 SHOW_FINAL_PLOT = 0   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
 MAKE_EXP_NAME = 1      # This flag should be set if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
@@ -38,12 +38,12 @@ def submit(id):
                 'mkdir -p out;' +\
                 'cd ..;' +\
 		'condor_submit'+\
-                 ' -a \"arguments = main.py '+str(id)+' '+\
-                 RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+RL_PYTHON_ROOT+\
-                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
-                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
-                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
-                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
+                ' -a \"arguments = main.py '+str(id)+' '+\
+                RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+ RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
+                ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
+                ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
+                ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
+#                RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
 #        condrun='mkdir -p CondorOutput;' + \
 #                'cd CondorOutput;' + \
@@ -64,10 +64,6 @@ def submit(id):
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
         #See if this directory is a potential experiment 
-        if idir[0] == '.' and len(idir) > 1:
-            #Skip special directories that starts with .
-            #This will ignore snv directories for faster submission
-            return [answered,respawnjobs]
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
             #print ' (!) ' + idir + '  not an experiment.'
             for folder in os.listdir(idir):
