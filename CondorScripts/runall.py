@@ -28,17 +28,19 @@ RESULTS_PATH='/13ICML-BatchiFDD'
 def submit(id):
     #Submit one task to condor using id
     if id > 0:
-#        condrun='mkdir -p CondorOutput;' + \
-#                'cd CondorOutput;' + \
-#                'mkdir -p log;' +\
-#                'mkdir -p err;' +\
-#                'mkdir -p out;' +\
-#                'cd ..;' +\
-        condrun='condor_submit'+\
-                 ' -a \"arguments = main.py '+str(id)+' '+RL_PYTHON_ROOT+RESULTS_PATH +'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
-#                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
-#                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
-#                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
+        condrun='mkdir -p CondorOutput;' + \
+                'cd CondorOutput;' + \
+                'mkdir -p log;' +\
+                'mkdir -p err;' +\
+                'mkdir -p out;' +\
+                'cd ..;' +\
+                'condor_submit'+\
+                 ' -a \"arguments = main.py '+str(id)+' '+\
+                 RL_PYTHON_ROOT+RESULTS_PATH +'\" '+\
+                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
+                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
+                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
+                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 #                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
 #        condrun='mkdir -p CondorOutput;' + \
