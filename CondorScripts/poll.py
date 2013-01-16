@@ -69,7 +69,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                     sys.stdout.write(log)
                 sys.stdout.write(nc)
             else:
-                print "%s Done: (%d/%d) %s"  % (GREEN_COLOR,completed,total,nc)
+                print "%s Done: (%d/%d) %s"  % (COMPLETED_COLOR,completed,total,nc)
 
 if __name__ == '__main__':
     os.system('clear');
