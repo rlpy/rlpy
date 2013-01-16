@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(path))
 RL_PYTHON_ROOT = path 
 from Script_Tools import * 
 
-TEST = True # This value is used to avoid actually doing anything, so we can check the program
+TEST = False # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='rhklein'
 FINALFILE='result'
 RESULTS_PATH='.' # Currently want results path to be in directory of the main file
@@ -39,11 +39,10 @@ def submit(id):
                 'cd ..;' +\
                 'condor_submit'+\
                  ' -a \"arguments = main.py '+str(id)+' '+\
-                 RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+\
+                 RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'+\
                  ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
                  ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
                  ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
-                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 #                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
 #        condrun='mkdir -p CondorOutput;' + \
@@ -153,7 +152,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
     
 def sysCall(cmd):
     if TEST:
-        pass #print cmd
+        print cmd
     else:
         os.popen(cmd)
 
