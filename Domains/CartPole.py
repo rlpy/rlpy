@@ -1,5 +1,4 @@
 import sys, os
-from matplotlib.patches import ConnectionStyle
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *

@@ -1,7 +1,6 @@
 import sys, os
 
 import csv
-import networkx as nx
 #
 
 
@@ -10,8 +9,6 @@ import networkx as nx
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
-
-from matplotlib import lines
 
 ########################################################
 # Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT #

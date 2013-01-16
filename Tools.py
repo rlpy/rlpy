@@ -21,6 +21,9 @@ if module_exists('matplotlib'):
     from matplotlib.mlab import rk4
     from matplotlib import lines
     from mpl_toolkits.mplot3d import axes3d
+    from matplotlib import lines # for plotting lines in pendulum and PST
+    from matplotlib.mlab import rk4 # for integration in pendulum
+    from matplotlib.patches import ConnectionStyle # for cartpole
     pl.ion()
 else:
     'matplotlib is not available => No Graphics'

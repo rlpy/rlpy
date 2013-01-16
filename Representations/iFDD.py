@@ -305,7 +305,7 @@ class iFDD(Representation):
         # Update a global max relevance and outputs it if it is updated
         if self.maxRelevance < newRelevance:
             self.maxRelevance = newRelevance
-            self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
+#            self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
             
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'

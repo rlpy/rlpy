@@ -4,9 +4,8 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 
+# REQURES matplotlib for rk4 integration
 from scipy import integrate # For integrate.odeint (accurate, slow)
-from matplotlib.mlab import rk4
-from matplotlib import lines
 
 ##########################################################
 # Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012#
