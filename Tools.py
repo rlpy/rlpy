@@ -715,11 +715,12 @@ if module_exists('matplotlib'):
     mpl.rcParams['axes.labelsize'] = 15.
     mpl.rcParams['xtick.labelsize'] = 15.
     mpl.rcParams['ytick.labelsize'] = 15.
+    
+        # Add tex directories if they exist
+    if os.path.exists('/usr/texbin'): 
+        os.environ['PATH'] += ':/usr/texbin'
+    if os.path.exists('/usr/share/texmf'):
+        os.environ['PATH'] += ':/usr/share/texmf'
+        
 FONTSIZE = 15
 SEP_LINE = "="*60
-
-# Add tex directories if they exist
-if os.path.exists('/usr/texbin'): 
-    os.environ['PATH'] += ':/usr/texbin'
-if os.path.exists('/usr/share/texmf'):
-    os.environ['PATH'] += ':/usr/share/texmf'
