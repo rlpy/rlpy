@@ -26,6 +26,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
         
             logs = []
             for job in jobs:
+                print job
                 jobid,_,_ = job.rpartition('-')
                 if os.path.exists('%s-results.txt',jobid):                        
                     completed = completed + 1;
