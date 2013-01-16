@@ -23,7 +23,7 @@ from Experiments import *
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
          PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
          SHOW_FINAL_PLOT = 0,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
-         MAKE_EXP_NAME = 1      # This flag should be set if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
+         MAKE_EXP_NAME = 1      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
          ):
 
     # Etc
