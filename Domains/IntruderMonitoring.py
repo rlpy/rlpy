@@ -47,9 +47,9 @@ class IntruderMonitoring(Domain):
     
       
        
-    def __init__(self, path, logger = None):
+    def __init__(self, mapname, logger = None):
                  
-        self.map                = loadtxt(path, dtype = uint8)
+        self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         
         self.ROWS,self.COLS     = shape(self.map)
@@ -242,8 +242,8 @@ class IntruderMonitoring(Domain):
        sleep(0)
 if __name__ == '__main__':
    
-    #p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/2x3_2A_1I.txt')
-    p = IntruderMonitoring(mapname = '/IntruderMonitoringMaps/4x4_1A_2I.txt')
+    #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/2x3_2A_1I.txt')
+    p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/4x4_1A_2I.txt')
     p.test(1000)
     
     

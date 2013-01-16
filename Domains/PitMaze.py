@@ -189,7 +189,7 @@ class PitMaze(Domain):
                 return self.CRITICAL_TERMINATION
         return self.NOT_TERMINATED
 if __name__ == '__main__':
-    p = PitMaze(mapname='/PitmazeMaps/4x5.txt');
+    p = PitMaze(mapname='PitmazeMaps/4x5.txt');
     p.test(1000)
     
     

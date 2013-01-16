@@ -197,10 +197,10 @@ class SystemAdministrator(Domain):
             self.NEIGHBORS[i] = array(self.NEIGHBORS[i])
 if __name__ == '__main__':
         random.seed(0)
-        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/8Ring.txt');
-        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/5Machines.txt');
-        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/10Machines.txt');
-        p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/16-5Branches.txt');
-        #p = SystemAdministrator(networkmapname='/SystemAdministratorMaps/20MachTutorial.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/8Ring.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5Machines.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Machines.txt');
+        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20MachTutorial.txt');
         p.test(1000)
      
