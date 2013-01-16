@@ -21,15 +21,13 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                     pollOne(idir+'/'+folder,count,detailed,fulldetailed)
         else:                
             jobs        = glob.glob(idir+'/*-out.txt')
-            print jobs
             total       = len(jobs)
             completed   = 0;
         
             logs = []
             for job in jobs:
-                print job
                 jobid,_,_ = job.rpartition('-')
-                if os.path.exists('%s-results.txt',jobid):                        
+                if os.path.exists('%s-results.txt' % jobid):                        
                     completed = completed + 1;
                 else:
                     logpath = "%s/Log/%s.txt" % (idir,jobid) 
