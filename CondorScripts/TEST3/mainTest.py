@@ -23,13 +23,13 @@ from Experiments import *
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
          PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
          SHOW_FINAL_PLOT = 0,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
-         MAKE_EXP_NAME = 1      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
+         MAKE_EXP_NAME = 0      # This flag should be set if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
          ):
 
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 5000
+    LEARNING_STEPS      = 1000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -37,7 +37,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
-    LOG_INTERVAL        = 1 if MAKE_EXP_NAME else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size 
+    LOG_INTERVAL        = 1 
     JOB_ID              = 1 if jobID == -1 else jobID
     PROJECT_PATH        = '.' if PROJECT_PATH == None else PROJECT_PATH
     DEBUG               = 0
@@ -127,6 +127,6 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = True, MAKE_EXP_NAME = False)
+         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
