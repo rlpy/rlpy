@@ -59,7 +59,7 @@ def submit(id):
 #                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
  
 
-        sysCall(condrun)
+         sysCall(condrun)
      
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
