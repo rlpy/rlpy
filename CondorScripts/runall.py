@@ -37,7 +37,7 @@ def submit(id):
 #                'mkdir -p err;' +\
 #                'mkdir -p out;' +\
 #                'cd ..;' +\
-                'condor_submit'+\
+        condrun='condor_submit'+\
                  ' -a \"arguments = main.py '+str(id)+' '+\
                  RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 #                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
@@ -59,7 +59,7 @@ def submit(id):
 #                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
  
 
-         sysCall(condrun)
+        sysCall(condrun)
      
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
