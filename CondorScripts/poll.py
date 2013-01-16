@@ -21,7 +21,6 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                     pollOne(idir+'/'+folder,count,detailed,fulldetailed)
         else:                
             jobs        = glob.glob('*-out.txt')
-            print job
             total       = len(jobs)
             completed   = 0;
         
