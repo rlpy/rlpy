@@ -20,7 +20,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                 if os.path.isdir(idir+'/'+folder) and folder[0] != '.':
                     pollOne(idir+'/'+folder,count,detailed,fulldetailed)
         else:                
-            jobs        = glob.glob('*-out.txt')
+            jobs        = glob.glob(idir+'/*-out.txt')
             print jobs
             total       = len(jobs)
             completed   = 0;
