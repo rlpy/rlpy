@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(path))
 RL_PYTHON_ROOT = path 
 from Script_Tools import * 
 
-TEST = False # This value is used to avoid actually doing anything, so we can check the program
+TEST = True # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='rhklein'
 FINALFILE='result'
 RESULTS_PATH='.' # Currently want results path to be in directory of the main file
