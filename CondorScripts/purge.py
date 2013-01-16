@@ -24,17 +24,17 @@ def searchNPurge(idir):
             #os.system("rm -rf CondorOutput")
             
             outjobs     = glob.glob('*-out.txt')
-            total       = len(outjobs)
             resjobs     = glob.glob('*-results.txt')
             completed   = len(resjobs)
+            purged      = 0
             for outjob in outjobs: 
                 jobid,_,_ = outjob.rpartition('-')
                 if not os.path.exists(jobid+'-results.txt'):
                     os.system("rm -r " + outjob)
                     print RED+">>> Purged Job # "+jobid+NOCOLOR
-                            
+                    purged += 1        
             print "Completed Jobs:\t%d" % completed
-            print "Purged Jobs:\t%d" % (total-completed)
+            print "Purged Jobs:\t%d" % (purged)
             print "====================="
         else:
             for folder in os.listdir('.'):
