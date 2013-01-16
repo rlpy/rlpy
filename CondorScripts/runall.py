@@ -22,7 +22,7 @@ from Script_Tools import *
 TEST = True # This value is used to avoid actually doing anything, so we can check the program
 USERNAME='rhklein'
 FINALFILE='result'
-RESULTS_PATH='13ICML-BatchiFDD'
+RESULTS_PATH='/13ICML-BatchiFDD'
 
 
 def submit(id):
@@ -36,10 +36,10 @@ def submit(id):
 #                'cd ..;' +\
         condrun='condor_submit'+\
                  ' -a \"arguments = main.py '+str(id)+' '+RL_PYTHON_ROOT+RESULTS_PATH +'\" '+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh' +\
-                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
-                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
-                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
-                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
+#                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
+#                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
+#                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
+#                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
 #        condrun='mkdir -p CondorOutput;' + \
 #                'cd CondorOutput;' + \
