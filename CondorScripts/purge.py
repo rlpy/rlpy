@@ -37,7 +37,7 @@ def searchNPurge(idir):
             print "Purged:\t\t%d" % (total-completed)
         else:
             for folder in os.listdir('.'):
-                if os.path.isdir(folder) and not folder.starswith('.'):
+                if os.path.isdir(folder) and not folder.startswith('.'):
                     searchNPurge(folder)
                     
         #Return to the directory we started at
