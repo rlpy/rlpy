@@ -64,6 +64,10 @@ def submit(id):
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
         #See if this directory is a potential experiment 
+        if idir[0] == '.' and len(idir) > 1:
+            #Skip special directories that starts with .
+            #This will ignore snv directories for faster submission
+            return [answered,respawnjobs]
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
             #print ' (!) ' + idir + '  not an experiment.'
             for folder in os.listdir(idir):
