@@ -35,7 +35,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
 
             total       = len(jobids)
             completed   = 0;
-            print jobids
+            #print jobids
             logs = []
             for jobid in jobids:
                 if os.path.exists(idir+'/%d-results.txt' % jobid):                        
@@ -82,6 +82,8 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
             else:
                 if completed:
                     print "%s: %s%d/%d Done! %s"  % (idir.replace('./',''), COMPLETED_COLOR,completed,total, nc)
+                else:
+                    print "%s: %sEmpty.%s"  % (idir.replace('./',''), RED, nc)
 
 if __name__ == '__main__':
     os.system('clear');
