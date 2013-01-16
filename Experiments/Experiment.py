@@ -84,6 +84,10 @@ class Experiment(object):
         # Example: X = ['domain','agent','representation','LEARNING_STEPS']
         # Output: 'PitMaze-SARSA-Tabular-10000'
         exp_name = ''
+        
+        if len(variables) == 0:
+            return '.'
+
         for v in variables:
             #Append required prefixes to make variables reachable:
             if lower(v).startswith('representation') or lower(v).startswith('policy'):

@@ -3,6 +3,15 @@
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
 
+import sys, os
+#Add all paths
+path = '.'
+while not os.path.exists(path+'/Tools.py'):
+    path = path + '/..'
+sys.path.insert(0, os.path.abspath(path))
+
+RL_PYTHON_ROOT = path 
+
 from Tools import *
 from Domains import *
 from Agents import *
@@ -12,22 +21,25 @@ from Experiments import *
 #from pandas.tests.test_series import CheckNameIntegration
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
-         PROJECT_PATH ='',      # Path to store the results. Notice that a directory is automatically generated within this directory based on the selection of domain,agent,representation, 
-         SHOW_FINAL_PLOT=0):    # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
+         PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
+         SHOW_FINAL_PLOT = 0,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
+         MAKE_EXP_NAME = 1      # This flag should be set if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
+         ):
 
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
     LEARNING_STEPS      = 5000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
-    EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
+    EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
+    EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 
     JOB_ID              = 1 if jobID == -1 else jobID
-    PROJECT_PATH        = 'Results/Temp' if PROJECT_PATH == '' else PROJECT_PATH
+    PROJECT_PATH        = '.' if PROJECT_PATH == None else PROJECT_PATH
     DEBUG               = 0
     logger              = Logger()
     MAX_ITERATIONS      = 10
@@ -67,12 +79,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RE_LSPI_iterations      = 20
     
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = SystemAdministrator(networkmapname=NETWORKNMAP,logger = logger)
+    #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    #domain          = IntruderMonitoring(INTRUDERMAP,logger)
+    #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
@@ -93,11 +105,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
+    print '=================='
+    print PROJECT_PATH 
     
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     

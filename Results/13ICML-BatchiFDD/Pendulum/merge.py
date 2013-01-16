@@ -11,20 +11,21 @@ while not os.path.exists(path+'/Tools.py'):
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-#paths = 'Results/Example_Project' 
-paths = [
-         'Pendulum_InvertedBalance-IndependentDiscretization-20000',
-         'Pendulum_InvertedBalance-BEBF-20000-0.2',
-         'Pendulum_InvertedBalance-iFDD-20000-0.3'
-        ] 
+paths = ['.'] 
+#paths = [
+#         'Pendulum_InvertedBalance-IndependentDiscretization-20000',
+#         'Pendulum_InvertedBalance-BEBF-20000-0.2',
+#         'Pendulum_InvertedBalance-iFDD-20000-0.3'
+#        ] 
 
 #paths = [
 #         'Pendulum_InvertedBalance-BEBF-20000-0.25',
 #         'Pendulum_InvertedBalance-BEBF-20000-0.3'
 #         ]
-labels      = ['Initial','BEBF','iFDD']
-colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
-styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
+#labels      = ['Initial','BEBF','iFDD']
+labels      = []
+colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple','b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
+styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd','o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
 MarkerSize  = 15
 Legend      = True
 
@@ -32,7 +33,7 @@ merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize
 pl.ioff()
 #print mergedData.means[0].shape
 #merger.plot('Return')
-merger.plot('Steps','Time(s)')
+#merger.plot('Steps','Time(s)')
 merger.plot('Steps','Features')
 #merger.plot('Steps')
 #merger.plot('Steps','Learning Steps')

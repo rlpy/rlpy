@@ -21,15 +21,18 @@ from Experiments import *
 #from pandas.tests.test_series import CheckNameIntegration
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
-         PROJECT_PATH = '.',      # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
-         SHOW_FINAL_PLOT=0):    # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
+         PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
+         SHOW_FINAL_PLOT = 0,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
+         MAKE_EXP_NAME = 1      # This flag should be set if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
+         ):
 
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
     LEARNING_STEPS      = 5000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
-    EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
+    EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
+    EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
