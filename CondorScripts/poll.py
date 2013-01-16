@@ -60,7 +60,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
             running = total - completed
             #print detailed, completed, total
             if running:
-                print"(%s:%s%d%s/%s%d%s)"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,TOTAL_COLOR,total,nc)
+                print"%s:\t(%s%d%s/%s%d%s)"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,TOTAL_COLOR,total,nc)
 
                 if not fulldetailed: logs = sortLog(logs)
                 for log in logs:
@@ -69,7 +69,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                     sys.stdout.write(log)
                 sys.stdout.write(nc)
             else:
-                print "%s: %s (%d/%d) Done! %s"  % (idir.replace('./',''), COMPLETED_COLOR,completed,total, nc)
+                print "%s:\t%s(%d/%d) Done! %s"  % (idir.replace('./',''), COMPLETED_COLOR,completed,total, nc)
 
 if __name__ == '__main__':
     os.system('clear');
