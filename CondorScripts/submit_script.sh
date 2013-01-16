@@ -20,8 +20,8 @@ Notification = Never
 #should_transfer_files = IF_NEEDED
 #WhenToTransferOutput = ON_EXIT
 
-#Error = CondorOutput/err/$(PROCESS).err
-#Log = CondorOutput/log/$(PROCESS).log
-#Output = CondorOutput/out/$(PROCESS).out
+Error = CondorOutput/err/$(PROCESS).err
+Log = CondorOutput/log/$(PROCESS).log
+Output = CondorOutput/out/$(PROCESS).out
 
 queue 1

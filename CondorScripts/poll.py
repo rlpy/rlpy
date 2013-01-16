@@ -12,7 +12,6 @@ import os, sys, time, re
 from Script_Tools import *
 
 def pollOne(idir, count, detailed = False, fulldetailed = False):
-        #print "Inspecting: "+idir
         if not os.path.exists(idir+'/main.py'):
             #Not a task directory
             for folder in os.listdir(idir):
@@ -27,6 +26,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
             logs = []
             for job in jobs:
                 jobid,_,_ = job.rpartition('-')
+                print jobid
                 if os.path.exists('%s-results.txt' % jobid):                        
                     completed = completed + 1;
                 else:
