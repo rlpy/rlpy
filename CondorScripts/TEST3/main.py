@@ -32,9 +32,6 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LEARNING_STEPS      = 1000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
-    EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
-    print MAKE_EXP_NAME
-    print EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
@@ -131,4 +128,4 @@ if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
          main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
-         main(int(sys.argv[1]),sys.argv[2], sys.argv[3], sys.argv[4])
+         main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
