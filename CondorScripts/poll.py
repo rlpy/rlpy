@@ -9,7 +9,7 @@
 
 import os, sys, time, re 
 
-from Tools import * 
+from Condor_Tools import * 
 
 def pollOne(idir, count, detailed = False, fulldetailed = False):
         print "Inspecting: "+idir
