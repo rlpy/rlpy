@@ -23,8 +23,6 @@ import sys, os
 sys.path.insert(0, os.path.abspath('..'))
 
 #from scipy.interpolate import Rbf
-from sklearn import svm
-from sklearn.gaussian_process import GaussianProcess
 from Tools import *
 from Domains import PitMaze
 from Representation import *

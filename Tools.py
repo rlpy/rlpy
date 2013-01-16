@@ -24,7 +24,17 @@ if module_exists('matplotlib'):
     pl.ion()
 else:
     'matplotlib is not available => No Graphics'
-	
+
+if module_exists('networkx'):
+    import networkx as nx
+else:
+    'networkx is not available => No Graphics on SystemAdmin domain'
+
+if module_exists('sklearn'):
+    from sklearn import svm
+    from sklearn.gaussian_process import GaussianProcess
+else:
+    'sklearn is not available => No BEBF representation available'
 import glob
 from scipy import stats
 from scipy import misc
@@ -39,7 +49,6 @@ from string import *
 from itertools  import *
 from heapq import *
 from copy import deepcopy
-import networkx as nx
 import os, sys, multiprocessing
 from os import path
 # Tips:
