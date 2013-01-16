@@ -7,9 +7,9 @@ universe = vanilla
 priority = 0
 Notification = Never
 
-#Requirements = isPublic && \
-#               Memory >= 6144 && \ 
-#               Cpus >= 1 && \
+Requirements = isPublic && \
+               Memory >= 6144 && \ 
+               Cpus >= 1 && \
 
 #Requirements = Arch == "X86_64"
 #Requirements = OpSys =="LINUX"

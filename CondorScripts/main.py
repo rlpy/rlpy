@@ -7,10 +7,10 @@ import sys
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
          PROJECT_PATH ='',      # Path to store the results. Notice that a directory is automatically generated within this directory based on the selection of domain,agent,representation, 
          SHOW_FINAL_PLOT=0):    # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
-	res = open('1-result'+'.txt','w')
+	res = open('%d-result.txt'%jobID,'w')
 	res.write('test')
 	res.close()
-	out = open('1-out'+'.txt','w')
+	out = open('%d-out.txt'%jobID,'w')
 	out.write('test')
 	out.close()
 
