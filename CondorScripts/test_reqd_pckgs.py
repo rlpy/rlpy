@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # See http://threebean.wordpress.com/2011/06/06/installing-from-pip-inside-python-or-a-simple-pip-api/
 
 import sys, socket
