@@ -81,12 +81,12 @@ if __name__ == '__main__':
 	myIP = getIPAddress()
 	isBadIP = False
 	for critPkg in crit_packages:
-		if isPackageInstalled(critPkg):
+		if not isPackageInstalled(critPkg):
 			missingPkgFile.log(myIP+':\t\t MISSING CRITICAL PACKAGE:\t'+critPkg)
 			isBadIP = True
 	
 	for optPkg in opt_packages:
-		if isPackageInstalled(optPkg):
+		if not isPackageInstalled(optPkg):
 			missingPkgFile.log(myIP+':\t\t missing optional package:\t'+optPkg)
     
 	if isBadIP: # This computer sucks.
