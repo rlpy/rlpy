@@ -7,9 +7,9 @@ from sets import Set
 crit_packages 		= ['numpy','scipy','sklearn']
 opt_packages 		= ['matplotlib']
 
-BAD_IP_FILE 		= 'bad_IPs.txt' # contains list of bad ip's, without duplicates
-GOOD_IP_FILE		= 'good_IPs.txt'
-MISSING_PKG_FILE	= 'missing_pkg_log.txt' # contains log of bad ip's with their associated missing packages
+BAD_HOST_FILE 		= 'bad_hosts.txt' # contains list of bad HOST's, without duplicates
+GOOD_HOST_FILE		= 'good_hosts.txt'
+MISSING_PKG_FILE	= 'missing_pkg_log.txt' # contains log of bad HOST's with their associated missing packages
 
 class FileHelper(object):
 	file	= None
@@ -74,30 +74,34 @@ def getIPAddress():
 	myIP = s.getsockname()[0]
 	s.close()
 	return myIP
+	
+def getHostName():
+	return socket.gethostname()
     
 if __name__ == '__main__':
 	missingPkgFile = FileHelper(MISSING_PKG_FILE)
 	missingPkgFile.open('a')
-	myIP = getIPAddress()
-	isBadIP = False
+#	myIP = getIPAddress()
+	myHostName = getHostName()
+	isBadMachine = False
 	for critPkg in crit_packages:
 		if not isPackageInstalled(critPkg):
-			missingPkgFile.log(myIP+':\t\t MISSING CRITICAL PACKAGE:\t'+critPkg)
-			isBadIP = True
+			missingPkgFile.log(myHostName+':\t\t MISSING CRITICAL PACKAGE:\t'+critPkg)
+			isBadMachine = True
 	
 	for optPkg in opt_packages:
 		if not isPackageInstalled(optPkg):
-			missingPkgFile.log(myIP+':\t\t missing optional package:\t'+optPkg)
+			missingPkgFile.log(myHostName+':\t\t missing optional package:\t'+optPkg)
     
-	if isBadIP: # This computer sucks.
-		bad_IPs = getUniqueLines(BAD_IP_FILE)
-		if not myIP in bad_IPs: # This is the first time we've encountered this bad computer.
-			addText(BAD_IP_FILE,myIP)
-			missingPkgFile.log('Computer '+myIP+' NEWLY added as FAULTY.\n')
+	if isBadMachine: # This computer sucks.
+		bad_machines = getUniqueLines(BAD_HOST_FILE)
+		if not myHostName in bad_machines: # This is the first time we've encountered this bad computer.
+			addText(BAD_HOST_FILE,myHostName)
+			missingPkgFile.log('Computer '+myHostName+' NEWLY added as FAULTY.\n')
 		else:
-			missingPkgFile.log('Computer '+myIP+' Faulty, but already discovered.\n')
+			missingPkgFile.log('Computer '+myHostName+' Faulty, but already discovered.\n')
 	else:
-		addText(GOOD_IP_FILE,myIP)
+		addText(GOOD_HOST_FILE,myHostName)
 	missingPkgFile.close()
 	sys.exit(0)
 	
