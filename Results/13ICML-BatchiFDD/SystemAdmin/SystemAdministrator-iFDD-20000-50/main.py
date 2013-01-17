@@ -50,8 +50,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/9Star.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Machines.txt'
-    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
-    #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
+    #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
+    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
