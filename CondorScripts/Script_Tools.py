@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import os, sys, time, re, string, pprint, re, glob
+import os, sys, time, re, string, pprint, re, glob, socket
+from sets import Set
 
 #Colors 
 PURPLE  = '\033[95m'
@@ -60,4 +61,73 @@ if __name__ == '__main__':
     for log in logs:
         print "%s" % log
 
-# This value is used to avoid actually doing anything, so we can check the program
+# BELOW is used for checking bad machines
+
+
+class FileHelper(object):
+	file	= None
+	fileName= ''
+    
+	def __init__(self, fileName = None):
+		self.fileName = fileName
+	
+	def open(self,readType):
+		if not self.file:
+			self.file = open(self.fileName,readType)
+	
+	def close(self):
+		if self.file:
+			self.file.close()
+	
+	# Returns a line without \n at end, or None if line is None.
+	def myReadLine(self):
+		if not self.file:
+			print 'You need to open the file first! No action taken.'
+		
+		line = self.file.readline()
+		if not line:
+			return None
+		if line.endswith("\n"):
+			line = line[:-1] # Omit the \n
+		return line
+	   	
+	def log(self,str):
+    # Print something both in output and in a file
+	   	print str
+	   	self.file.write(str +'\n')
+		
+	def line(self):
+		self.log(SEP_LINE)
+
+def getUniqueLines(fileName):
+	myFile = FileHelper(fileName)
+	myFile.open('r')
+	allLines = [myFile.myReadLine() ]
+	myFile.close()
+	return Set(allLines)	
+
+def addText(fileName,text, fileOpFlag = 'a'): # default append text
+	myFile = FileHelper(fileName)
+	myFile.open(fileOpFlag)
+	myFile.log(text)
+	myFile.close()
+		
+def isPackageInstalled(packageName):
+    try:
+        __import__(packageName) # __import__('X') is identical to import X
+        return True
+    except ImportError as err:
+        return False
+
+# Returns ip address associated with machine script is running on
+def getIPAddress():
+	myIP = None
+	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.connect(("mit.edu",80)) # Arbitrary connection on port 80
+	myIP = s.getsockname()[0]
+	s.close()
+	return myIP
+
+def getHostName():
+	return socket.gethostname()
+    
