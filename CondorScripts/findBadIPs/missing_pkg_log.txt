@@ -1,0 +1,107 @@
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+mad5:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad8:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+mad4:		 MISSING CRITICAL PACKAGE:	sklearn
+mad4:		 MISSING CRITICAL PACKAGE:	sklearn
+mad8:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad8:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad8:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad4:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+mad2:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+ib
+Computer qkt1 NEWLY added as FAULTY.
+
+qkt6:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt6:		 missing optional package:	matplotlib
+Computer qkt6 NEWLY added as FAULTY.
+
+overed.
+
+mad2:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+mad4:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt6:		 missing optional package:	matplotlib
+Computer qkt6 NEWLY added as FAULTY.
+
+overed.
+
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad5:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt6:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt6:		 missing optional package:	matplotlib
+Computer qkt6 NEWLY added as FAULTY.
+
+qkt1:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt1:		 missing optional package:	matplotlib
+Computer qkt1 Faulty, but already discovered.
+
+mad8:		 MISSING CRITICAL PACKAGE:	sklearn
+mad3:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt1:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt1:		 missing optional package:	matplotlib
+Computer qkt1 Faulty, but already discovered.
+
+qkt4:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt4:		 missing optional package:	matplotlib
+Computer qkt4 NEWLY added as FAULTY.
+
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad8:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt4:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt4:		 missing optional package:	matplotlib
+Computer qkt4 NEWLY added as FAULTY.
+
+overed.
+
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad5:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt10:		 MISSING CRITICAL PACKAGE:	sklearnmad9:		 MISSING CRITICAL PACKAGE:	sklearn
+tlib
+Computer qkt10 NEWLY added as FAULTY.
+
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt1:		 missing optional package:	matplotlib
+Computer qkt1 Faulty, but already discovered.
+
+mad5:		 MISSING CRITICAL PACKAGE:	sklearn
+mad4:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt1:		 MISSING CRITICAL PACKAGE:	sklearn
+qkt1:		 missing optional package:	matplotlib
+Computer qkt1 Faulty, but already discovered.
+
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad4:		 MISSING CRITICAL PACKAGE:	sklearn
+mad9:		 MISSING CRITICAL PACKAGE:	sklearn
+tlib
+Computer qkt10 NEWLY added as FAULTY.
+
+mad6:		 MISSING CRITICAL PACKAGE:	sklearn
+mad5:		 MISSING CRITICAL PACKAGE:	sklearn
