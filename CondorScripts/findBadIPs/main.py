@@ -10,8 +10,9 @@ sys.path.insert(0, os.path.abspath('..'))
 
 from Script_Tools import *
 
-crit_packages 		= ['numpy','scipy','sklearn']
-opt_packages 		= ['matplotlib']
+crit_packages 		= ['numpy','scipy']#,'sklearn']
+opt_packages 		= []
+#opt_packages 		= ['matplotlib']
 
 BAD_HOST_FILE 		= 'bad_hosts.txt' # contains list of bad HOST's, without duplicates
 GOOD_HOST_FILE		= 'good_hosts.txt'
