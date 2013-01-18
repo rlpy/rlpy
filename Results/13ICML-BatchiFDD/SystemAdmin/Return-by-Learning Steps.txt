@@ -1,8 +1,26 @@
+Algorithm: 250
+======================
+Learning Steps: 5000.000	
+Return: 598.000	
+Standard-Error: 75.141	
+======================
+Algorithm: 300
+======================
+Learning Steps: 5000.000	
+Return: 554.100	
+Standard-Error: 71.801	
+======================
 Algorithm: 400
 ======================
 Learning Steps: 5000.000	
-Return: 757.200	
-Standard-Error: 82.876	
+Return: 642.183	
+Standard-Error: 55.966	
+======================
+Algorithm: 450
+======================
+Learning Steps: 5000.000	
+Return: 626.200	
+Standard-Error: 57.665	
 ======================
 Algorithm: 500
 ======================

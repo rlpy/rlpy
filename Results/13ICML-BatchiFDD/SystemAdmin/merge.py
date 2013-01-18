@@ -11,12 +11,12 @@ while not os.path.exists(path+'/Tools.py'):
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-#paths = ['.'] 
+paths = ['SystemAdministrator-iFDD-2000'] 
 
-paths = [
-        'SystemAdministrator-IndependentDiscretizationCompactBinary-5000',
-        'SystemAdministrator-iFDD-5000-400'
-        ] 
+#paths = [
+#        'SystemAdministrator-IndependentDiscretizationCompactBinary-5000',
+#        'SystemAdministrator-iFDD-5000-400'
+#        ] 
 
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
 styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
@@ -28,6 +28,7 @@ pl.ioff()
 #print mergedData.means[0].shape
 #merger.plot('Return')
 merger.plot('Return','Time(s)')
+merger.plot('Return','Learning Steps')
 #merger.plot('Steps')
 #merger.plot('Steps','Learning Steps')
 #merger.plot('Steps','Episodes')
