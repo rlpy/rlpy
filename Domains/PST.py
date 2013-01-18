@@ -419,7 +419,29 @@ class PST(Domain):
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 if __name__ == '__main__':
         random.seed(0)
-        p = PST(NUM_UAV = 2, motionNoise = 0)
+        p = PST(NUM_UAV = 3, motionNoise = 0)
+        p.test(1000)
+        
+        # Code below was used to test output of this domain for various actions,
+        # confirmed alignment with MATLAB version (see bobtest there)
+        
+        allA = arange(27)
+        
+        s = p.s0()
+        for i in arange(20): # Number of steps desired for test
+            a = 17 - i
+            print 'pythontest: original action ',a
+#            print 'pythontest: vector action ', array(id2vec(a,p.LIMITS))
+            (r, s, isT) = p.step(s,a)
+            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions(s)
+        
+#        actionVectors = [array(id2vec(a,p.LIMITS)) for a in allA]
+#        
+#        a_aVect_tups = zip(allA, actionVectors)
+#        for a_aVect_tup in a_aVect_tups:
+#            print a_aVect_tup
+
+
         
 #        x = array([[1,2,0],[1,2],[0,1],[0]])
 #        q = p.vecList2id(x, 3)
@@ -438,7 +460,7 @@ if __name__ == '__main__':
 #        print x, q
 #        
         
-        p.test(1000)
+        
         
         
     
