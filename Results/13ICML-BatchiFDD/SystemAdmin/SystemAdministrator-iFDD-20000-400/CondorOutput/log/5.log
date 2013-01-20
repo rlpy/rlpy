@@ -1,0 +1,50 @@
+000 (13260.000.000) 01/18 14:59:05 Job submitted from host: <128.30.112.18:46685>
+...
+001 (13260.000.000) 01/18 14:59:16 Job executing on host: <128.30.66.169:43926>
+...
+006 (13260.000.000) 01/18 14:59:16 Image size of job updated: 91276
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (13260.000.000) 01/18 14:59:16 Job terminated.
+	(1) Normal termination (return value 1)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...
+000 (13395.000.000) 01/18 15:25:52 Job submitted from host: <128.30.112.18:46685>
+...
+001 (13395.000.000) 01/18 15:26:11 Job executing on host: <128.30.108.60:38441>
+...
+006 (13395.000.000) 01/18 15:26:19 Image size of job updated: 104676
+	14  -  MemoryUsage of job (MB)
+	13620  -  ResidentSetSize of job (KB)
+...
+006 (13395.000.000) 01/18 15:30:43 Image size of job updated: 290748
+	14  -  MemoryUsage of job (MB)
+	13620  -  ResidentSetSize of job (KB)
+...
+005 (13395.000.000) 01/18 15:30:43 Job terminated.
+	(1) Normal termination (return value 1)
+		Usr 0 00:04:16, Sys 0 00:00:15  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:04:16, Sys 0 00:00:15  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :       14       14          
+...

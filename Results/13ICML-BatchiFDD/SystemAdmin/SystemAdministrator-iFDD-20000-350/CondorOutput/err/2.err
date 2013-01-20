@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "main.py", line 130, in <module>
+    main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+  File "main.py", line 116, in main
+    experiment.run()
+  File "/data/scratch/rhklein/RL-Python/Experiments/OnlineExperiment.py", line 71, in run
+    self.agent.learn(s,a,r,ns,na,terminal)            
+  File "/data/scratch/rhklein/RL-Python/Agents/RE_LSPI.py", line 19, in learn
+    self.representationExpansionLSPI()
+  File "/data/scratch/rhklein/RL-Python/Agents/RE_LSPI.py", line 28, in representationExpansionLSPI
+    td_errors = self.policyIteration(b,all_phi_s_a,all_phi_ns)
+  File "/data/scratch/rhklein/RL-Python/Agents/LSPI.py", line 76, in policyIteration
+    self.logger.log("%d: L2_norm of weight difference = %0.3f, Density of A: %0.2f%%" % (lspi_iteration+1,weight_diff, count_nonzero(A)/(prod(A.shape)*1.)*100))
+NameError: global name 'count_nonzero' is not defined

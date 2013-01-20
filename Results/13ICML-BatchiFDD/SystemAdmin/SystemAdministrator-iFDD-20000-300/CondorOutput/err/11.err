@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "main.py", line 15, in <module>
+    from Tools import *
+  File "/data/scratch/rhklein/RL-Python/Tools.py", line 19, in <module>
+    from matplotlib import pylab as pl
+  File "/usr/lib/pymodules/python2.7/matplotlib/pylab.py", line 221, in <module>
+    from matplotlib import mpl  # pulls in most modules
+  File "/usr/lib/pymodules/python2.7/matplotlib/mpl.py", line 3, in <module>
+    from matplotlib import axes
+  File "/usr/lib/pymodules/python2.7/matplotlib/axes.py", line 18, in <module>
+    import matplotlib.contour as mcontour
+  File "/usr/lib/pymodules/python2.7/matplotlib/contour.py", line 21, in <module>
+    import matplotlib.texmanager as texmanager
+  File "/usr/lib/pymodules/python2.7/matplotlib/texmanager.py", line 72, in <module>
+    class TexManager:
+  File "/usr/lib/pymodules/python2.7/matplotlib/texmanager.py", line 92, in TexManager
+    os.mkdir(texcache)
+OSError: [Errno 17] File exists: '/tmp/.matplotlib/tex.cache'
