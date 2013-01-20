@@ -25,7 +25,7 @@ FINALFILE='result'
 RESULTS_PATH='.' # Currently want results path to be in directory of the main file
 #RESULTS_PATH = RL_PYTHON_ROOT+'/13iCML/
 SHOW_FINAL_PLOT = 0   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
-MAKE_EXP_NAME = 1      # This flag should be set if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
+MAKE_EXP_NAME = 0      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
 
 
 def submit(id):
