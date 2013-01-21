@@ -309,10 +309,10 @@ class PST(Domain):
         nsStruct.sensor[maintenanceIndices] = SensorState.RUNNING
         
         # Test if have communication
-        self.isCommStatesCovered = any(nonzero(nsStruct.locations == UAVLocation.COMMS))
+        self.isCommStatesCovered = any(nonzero(sStruct.locations == UAVLocation.COMMS))
         
-        surveillanceBool = (nsStruct.locations == UAVLocation.SURVEIL)
-        self.numHealthySurveil = sum(logical_and(surveillanceBool, nsStruct.sensor))
+        surveillanceBool = (sStruct.locations == UAVLocation.SURVEIL)
+        self.numHealthySurveil = sum(logical_and(surveillanceBool, sStruct.sensor))
         
         totalStepReward = 0
         
