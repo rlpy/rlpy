@@ -59,3 +59,15 @@ Log Intervals:		60(s)
 Representation Expansion iteration #1
 -----------------
 Running LSPI:
+1: L2_norm of weight difference = 361.099, Density of A: 63.47%
+2: L2_norm of weight difference = 49.080, Density of A: 59.62%
+3: L2_norm of weight difference = 1.007, Density of A: 59.55%
+4: L2_norm of weight difference = 0.001, Density of A: 59.56%
+Performance Check >>> 665.250 Return, 200 Steps, 21 Features
+iFDD Batch: Max Relevance = 411.951
+20000: E[0:03:51]-R[0:00:00]: Return=544.75, Steps=200, Features = 21
+20000 >>> E[0:03:52]-R[0:00:00]: Return=656.75, Steps=200, Features = 21
+============================================================
+Took 0:03:52
+Results	=> ././14-results.txt
+Log	=> ././14-out.txt
