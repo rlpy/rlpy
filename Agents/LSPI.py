@@ -110,8 +110,8 @@ class LSPI(Agent):
             all_phi_s_a[i,:]    = phi_s_a
             all_phi_ns[i,:]     = phi_ns
             d                   = phi_s_a-gamma*phi_ns_na
-            A                   = A + outer(phi_s_a,d) 
-            b                   = b + r*phi_s_a
+            A                   += outer(phi_s_a,d) 
+            b                   += r*phi_s_a
 
         #Calculate theta
         self.representation.theta = solveLinear(sp.csc_matrix(A),b)

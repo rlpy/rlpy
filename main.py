@@ -28,15 +28,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 50000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 5000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
-    PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 if MAKE_EXP_NAME else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size 
     JOB_ID              = 1 if jobID == -1 else jobID
     PROJECT_PATH        = '.' if PROJECT_PATH == None else PROJECT_PATH
@@ -83,8 +83,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
-    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
+    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
@@ -106,9 +106,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
