@@ -32,14 +32,15 @@ class SARSA(Agent):
 
         #Automatic learning rate: [Dabney W. 2012]
         candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-        candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf 
+        candid_alpha    = 1/(candid_alpha*1.) if candid_alpha != 0 else inf
         self.alpha      = min(self.alpha,candid_alpha)
         #shout(self,self.alpha)
-        theta               += self.alpha * td_error * self.eligibility_trace
+#        theta               += self.alpha * td_error * self.eligibility_trace
+        #print candid_alpha
         
         #use this if you want to divide by the number of active features 
-        #nnz                 = count_nonzero(phi)    #Number of non-zero elements
-        #theta               += alpha * td_error * phi / (1.*nnz)  
+        nnz                 = count_nonzero(phi)    #Number of non-zero elements
+        theta               += self.alpha * td_error * phi / (1.*nnz)  
         
         #Discover features using online iFDD
         if isinstance(self.representation,iFDD):
