@@ -1,0 +1,37 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			././16-results.txt
+Learning Steps:		50000
+Performance Checks:	10
+Log Intervals:		60(s)
+5000 >>> E[0:00:16]-R[0:02:24]: Return=-32.00, Steps=10, Features = 52
+10000 >>> E[0:00:32]-R[0:02:07]: Return=-37.00, Steps=10, Features = 52
+15000 >>> E[0:00:48]-R[0:01:51]: Return=-151.00, Steps=61, Features = 52
+20000 >>> E[0:01:04]-R[0:01:35]: Return=-51.00, Steps=10, Features = 52
+25000 >>> E[0:01:19]-R[0:01:19]: Return=-55.00, Steps=10, Features = 52
+30000 >>> E[0:01:35]-R[0:01:03]: Return=-60.00, Steps=22, Features = 52
+35000 >>> E[0:01:51]-R[0:00:47]: Return=-113.00, Steps=35, Features = 52
+40000 >>> E[0:02:06]-R[0:00:32]: Return=-49.00, Steps=12, Features = 52
+45000 >>> E[0:02:22]-R[0:00:16]: Return=-37.00, Steps=23, Features = 52
+50000 >>> E[0:02:38]-R[0:00:00]: Return=-79.00, Steps=24, Features = 52
+============================================================
+Took 0:02:38
+Results	=> ././16-results.txt
+Log	=> ././16-out.txt
