@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	25.000
+Batch Threshold:		25.000
+Max Batch Discovery:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././12-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+3979: E[0:01:00]-R[0:04:02]: Return=4.00, Steps=11, Features = 1962
+6896: E[0:02:00]-R[0:03:48]: Return=23.00, Steps=11, Features = 2822
+9274: E[0:03:00]-R[0:03:29]: Return=6.00, Steps=10, Features = 3436
+11939: E[0:04:01]-R[0:02:42]: Return=43.00, Steps=11, Features = 3965
+14220: E[0:05:01]-R[0:02:02]: Return=61.00, Steps=11, Features = 4464
+16016: E[0:06:01]-R[0:01:30]: Return=-16.00, Steps=10, Features = 4771
+17391: E[0:07:01]-R[0:01:03]: Return=3.00, Steps=10, Features = 5053
+19045: E[0:08:02]-R[0:00:24]: Return=3.00, Steps=10, Features = 5343
+Representation Expansion iteration #1
+-----------------

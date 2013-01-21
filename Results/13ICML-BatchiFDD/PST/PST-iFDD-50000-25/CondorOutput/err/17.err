@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "main.py", line 130, in <module>
+    main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+  File "main.py", line 116, in main
+    experiment.run()
+  File "/data/scratch/rhklein/RL-Python/Experiments/OnlineExperiment.py", line 71, in run
+    self.agent.learn(s,a,r,ns,na,terminal)            
+  File "/data/scratch/rhklein/RL-Python/Agents/RE_LSPI_SARSA.py", line 16, in learn
+    self.RE_LSPI.representationExpansionLSPI()
+  File "/data/scratch/rhklein/RL-Python/Agents/RE_LSPI.py", line 26, in representationExpansionLSPI
+    A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+  File "/data/scratch/rhklein/RL-Python/Agents/LSPI.py", line 93, in LSTD
+    all_phi_s       = zeros((self.sample_window,self.representation.features_num)) #phi_s will be saved for batch iFDD
+MemoryError
