@@ -1,0 +1,52 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	22.000
+Batch Threshold:		22.000
+Max Batch Discovery:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			././19-results.txt
+Learning Steps:		50000
+Performance Checks:	10
+Log Intervals:		60(s)
+5000 >>> E[0:00:30]-R[0:04:30]: Return=-15.00, Steps=11, Features = 1997
+10000 >>> E[0:01:13]-R[0:04:52]: Return=-17.00, Steps=30, Features = 3142
+15000 >>> E[0:02:03]-R[0:04:48]: Return=-69.00, Steps=10, Features = 4160
+20000 >>> E[0:02:52]-R[0:04:18]: Return=-68.00, Steps=25, Features = 5090
+25000 >>> E[0:03:46]-R[0:03:46]: Return=39.00, Steps=13, Features = 5894
+29688: E[0:04:46]-R[0:03:16]: Return=-25.00, Steps=20, Features = 6598
+30000 >>> E[0:04:51]-R[0:03:14]: Return=-106.00, Steps=45, Features = 6644
+34317: E[0:05:51]-R[0:02:40]: Return=-72.00, Steps=30, Features = 7231
+35000 >>> E[0:06:01]-R[0:02:35]: Return=100.00, Steps=36, Features = 7317
+39308: E[0:07:01]-R[0:01:55]: Return=-57.00, Steps=44, Features = 7849
+40000 >>> E[0:07:12]-R[0:01:48]: Return=-30.00, Steps=11, Features = 7942
+43951: E[0:08:12]-R[0:01:08]: Return=-95.00, Steps=24, Features = 8428
+45000 >>> E[0:08:28]-R[0:00:56]: Return=-15.00, Steps=21, Features = 8593
+48860: E[0:09:28]-R[0:00:13]: Return=-63.00, Steps=41, Features = 9140
+50000 >>> E[0:09:47]-R[0:00:00]: Return=-64.00, Steps=17, Features = 9307
+============================================================
+Took 0:09:47
+Results	=> ././19-results.txt
+Log	=> ././19-out.txt
