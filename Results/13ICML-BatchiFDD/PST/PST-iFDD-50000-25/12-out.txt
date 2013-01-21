@@ -1,0 +1,52 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	25.000
+Batch Threshold:		25.000
+Max Batch Discovery:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			././12-results.txt
+Learning Steps:		50000
+Performance Checks:	10
+Log Intervals:		60(s)
+5000 >>> E[0:00:32]-R[0:04:46]: Return=-18.00, Steps=13, Features = 1929
+10000 >>> E[0:01:16]-R[0:05:03]: Return=-38.00, Steps=23, Features = 3116
+15000 >>> E[0:02:12]-R[0:05:08]: Return=-29.00, Steps=20, Features = 4208
+20000 >>> E[0:03:04]-R[0:04:37]: Return=-39.00, Steps=13, Features = 5026
+25000 >>> E[0:04:01]-R[0:04:01]: Return=-88.00, Steps=19, Features = 5898
+29535: E[0:05:01]-R[0:03:29]: Return=-30.00, Steps=39, Features = 6621
+30000 >>> E[0:05:08]-R[0:03:25]: Return=-15.00, Steps=12, Features = 6706
+33830: E[0:06:08]-R[0:02:56]: Return=23.00, Steps=11, Features = 7214
+35000 >>> E[0:06:26]-R[0:02:45]: Return=22.00, Steps=10, Features = 7384
+38983: E[0:07:26]-R[0:02:06]: Return=-79.00, Steps=16, Features = 7945
+40000 >>> E[0:07:42]-R[0:01:55]: Return=-75.00, Steps=10, Features = 8079
+43615: E[0:08:42]-R[0:01:16]: Return=-57.00, Steps=11, Features = 8537
+45000 >>> E[0:09:05]-R[0:01:01]: Return=-78.00, Steps=15, Features = 8724
+48499: E[0:10:05]-R[0:00:19]: Return=-77.00, Steps=25, Features = 9096
+50000 >>> E[0:10:31]-R[0:00:00]: Return=25.00, Steps=11, Features = 9292
+============================================================
+Took 0:10:31
+Results	=> ././12-results.txt
+Log	=> ././12-out.txt

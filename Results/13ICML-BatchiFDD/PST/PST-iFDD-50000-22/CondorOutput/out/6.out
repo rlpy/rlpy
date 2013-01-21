@@ -1,0 +1,52 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	22.000
+Batch Threshold:		22.000
+Max Batch Discovery:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			././6-results.txt
+Learning Steps:		50000
+Performance Checks:	10
+Log Intervals:		60(s)
+5000 >>> E[0:00:30]-R[0:04:30]: Return=-137.00, Steps=51, Features = 1873
+10000 >>> E[0:01:18]-R[0:05:11]: Return=-35.00, Steps=1000, Features = 3161
+15000 >>> E[0:02:11]-R[0:05:06]: Return=-106.00, Steps=49, Features = 4184
+20000 >>> E[0:03:01]-R[0:04:32]: Return=-73.00, Steps=11, Features = 5055
+25000 >>> E[0:03:56]-R[0:03:56]: Return=-78.00, Steps=11, Features = 5760
+29736: E[0:04:56]-R[0:03:22]: Return=-81.00, Steps=23, Features = 6432
+30000 >>> E[0:05:00]-R[0:03:20]: Return=-90.00, Steps=56, Features = 6463
+34223: E[0:06:01]-R[0:02:46]: Return=-19.00, Steps=32, Features = 7074
+35000 >>> E[0:06:13]-R[0:02:40]: Return=-59.00, Steps=26, Features = 7184
+39194: E[0:07:13]-R[0:01:59]: Return=-73.00, Steps=11, Features = 7691
+40000 >>> E[0:07:25]-R[0:01:51]: Return=4.00, Steps=10, Features = 7801
+43973: E[0:08:25]-R[0:01:09]: Return=-70.00, Steps=20, Features = 8268
+45000 >>> E[0:08:42]-R[0:00:58]: Return=-36.00, Steps=11, Features = 8405
+48645: E[0:09:42]-R[0:00:16]: Return=-16.00, Steps=21, Features = 8880
+50000 >>> E[0:10:06]-R[0:00:00]: Return=-116.00, Steps=40, Features = 9074
+============================================================
+Took 0:10:06
+Results	=> ././6-results.txt
+Log	=> ././6-out.txt
