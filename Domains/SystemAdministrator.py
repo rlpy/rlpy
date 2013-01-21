@@ -39,20 +39,23 @@ from Domain import *
 ## @author: Robert H Klein and Alborz Geramifard
 class SystemAdministrator(Domain):
 
-    NEIGHBORS = []          # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
-    UNIQUE_EDGES = []       # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
+    NEIGHBORS       = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
+    UNIQUE_EDGES    = [] # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     
-    P_SELF_REPAIR = 0.04
+    P_SELF_REPAIR   = 0.04
     P_REBOOT_REPAIR = 1.0
     
-    REBOOT_REWARD = -1.75
+    IS_RING         = False # For ring structures, Parr enforces assymetry by having one machine get extra reward for being up.
+    
+    REBOOT_REWARD   = -1.75
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
-    episodeCap = 200        # 200 used in tutorial
-    gamma      = .95        # Based on IJCAI01 Paper
+    episodeCap      = 200        # 200 used in tutorial
+    gamma           = .95        # Based on IJCAI01 Paper
+    
     # Plotting Variables
-    networkGraph = None     # Graph of network used for visualization
-    networkPos = None       # Position of network graph
+    networkGraph    = None     # Graph of network used for visualization
+    networkPos  = None       # Position of network graph
     
     # Possible values for each computer
     BROKEN, RUNNING = 0,1
@@ -62,6 +65,7 @@ class SystemAdministrator(Domain):
     # @see SystemAdministrator(Domain)
     def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
         path                    = networkmapname
+        self.IS_RING            = "ring.txt" in networkmapname.lower()
         self.loadNetwork(path)   
         # TODO Need a check here for degenerate
         self.actions_num            = self.computers_num + 1     # Number of Actions, including no-op
@@ -163,6 +167,7 @@ class SystemAdministrator(Domain):
                     if(random.random() < self.P_SELF_REPAIR):
                         ns[computer_id] = self.RUNNING
  # Optional                     else ns[computer_id] = self.BROKEN
+        if (self.IS_RING and ns[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
         return sum(ns)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
@@ -198,9 +203,11 @@ class SystemAdministrator(Domain):
 if __name__ == '__main__':
         random.seed(0)
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/8Ring.txt');
+        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/9Star.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5Machines.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Machines.txt');
-        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20MachTutorial.txt');
         p.test(1000)
      

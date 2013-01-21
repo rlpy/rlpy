@@ -31,9 +31,9 @@ class SARSA(Agent):
         td_error            = r + dot(gamma*phi_prime - phi, theta)
 
         #Automatic learning rate: [Dabney W. 2012]
-        candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-        candid_alpha    = 1/(candid_alpha*1.) if candid_alpha != 0 else inf
-        self.alpha      = min(self.alpha,candid_alpha)
+        self.candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
+        self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
+        self.alpha      = min(self.alpha,self.candid_alpha)
         #shout(self,self.alpha)
 #        theta               += self.alpha * td_error * self.eligibility_trace
         #print candid_alpha
