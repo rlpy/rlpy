@@ -1,0 +1,28 @@
+000 (14010.000.000) 01/21 05:16:22 Job submitted from host: <128.30.112.18:46685>
+...
+001 (14010.000.000) 01/21 05:16:26 Job executing on host: <128.30.66.167:50426>
+...
+006 (14010.000.000) 01/21 05:16:36 Image size of job updated: 2750
+	3  -  MemoryUsage of job (MB)
+	2240  -  ResidentSetSize of job (KB)
+...
+006 (14010.000.000) 01/21 05:16:36 Image size of job updated: 290288
+	3  -  MemoryUsage of job (MB)
+	2240  -  ResidentSetSize of job (KB)
+...
+005 (14010.000.000) 01/21 05:16:36 Job terminated.
+	(0) Abnormal termination (signal 9)
+	(0) No core file
+		Usr 0 00:00:08, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:08, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        3        3          
+...
