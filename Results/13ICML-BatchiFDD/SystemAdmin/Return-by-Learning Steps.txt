@@ -1,3 +1,9 @@
+Algorithm: 350
+======================
+Learning Steps: 1000.000	
+Return: 479.036	
+Standard-Error: 14.355	
+======================
 Algorithm: 5000
 ======================
 Learning Steps: 5000.000	
