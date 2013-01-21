@@ -1,0 +1,149 @@
+============================================================
+Domain:		SystemAdministrator
+Dimensions:	20
+|S|:		1048576
+|A|:		21
+|S|x|A|:		22020096
+Episode Cap:	200
+Gamma:		0.95
+Computers:	20
+Edges:		[(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10), (10, 11), (11, 12), (12, 13), (13, 14), (14, 15), (15, 16), (16, 17), (17, 18), (18, 19), (0, 19)]
+Neighbors:
+0 : [1, 19]
+1 : [0, 2]
+2 : [1, 3]
+3 : [2, 4]
+4 : [3, 5]
+5 : [4, 6]
+6 : [5, 7]
+7 : [6, 8]
+8 : [7, 9]
+9 : [8, 10]
+10 : [9, 11]
+11 : [10, 12]
+12 : [11, 13]
+13 : [12, 14]
+14 : [13, 15]
+15 : [14, 16]
+16 : [15, 17]
+17 : [16, 18]
+18 : [17, 19]
+19 : [18, 0]
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	21
+Binary Dimensions:	[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19]
+============================================================
+Representation:		iFDD
+Features per action:	21
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	325.000
+Batch Threshold:		325.000
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			././20-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 872.316, Density of A: 44.16%
+2: L2_norm of weight difference = 770.650, Density of A: 34.38%
+3: L2_norm of weight difference = 19764.556, Density of A: 41.65%
+4: L2_norm of weight difference = 20344.810, Density of A: 38.65%
+5: L2_norm of weight difference = 585.680, Density of A: 34.36%
+6: L2_norm of weight difference = 4798.011, Density of A: 41.13%
+7: L2_norm of weight difference = 5379.536, Density of A: 37.94%
+8: L2_norm of weight difference = 585.969, Density of A: 34.13%
+9: L2_norm of weight difference = 11156.190, Density of A: 41.49%
+10: L2_norm of weight difference = 11728.477, Density of A: 37.92%
+Performance Check >>> 325.250 Return, 200 Steps, 21 Features
+iFDD Batch: Max Relevance = 3955.591
+New Feature 1: [1, 2], Relevance = 3955.591
+New Feature 2: [17, 18], Relevance = 3489.730
+New Feature 3: [0, 1], Relevance = 3477.770
+New Feature 4: [18, 19], Relevance = 3461.843
+New Feature 5: [12, 13], Relevance = 3361.913
+New Feature 6: [15, 16], Relevance = 3194.175
+New Feature 7: [16, 17], Relevance = 2998.906
+New Feature 8: [10, 11], Relevance = 2917.430
+New Feature 9: [7, 8], Relevance = 2689.336
+New Feature 10: [5, 6], Relevance = 2617.600
+New Feature 11: [0, 19], Relevance = 2560.382
+New Feature 12: [13, 14], Relevance = 2502.613
+New Feature 13: [11, 12], Relevance = 2396.232
+New Feature 14: [11, 19], Relevance = 2386.113
+New Feature 15: [2, 3], Relevance = 2358.983
+New Feature 16: [14, 15], Relevance = 2341.644
+New Feature 17: [0, 2], Relevance = 2285.012
+New Feature 18: [8, 17], Relevance = 2265.174
+New Feature 19: [4, 5], Relevance = 2259.593
+New Feature 20: [15, 17], Relevance = 2178.662
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1076.700, Density of A: 12.89%
+2: L2_norm of weight difference = 873.879, Density of A: 12.10%
+3: L2_norm of weight difference = 2541.899, Density of A: 12.07%
+4: L2_norm of weight difference = 3238.257, Density of A: 12.15%
+5: L2_norm of weight difference = 698.982, Density of A: 11.93%
+6: L2_norm of weight difference = 1500.504, Density of A: 11.31%
+7: L2_norm of weight difference = 2248.384, Density of A: 12.36%
+8: L2_norm of weight difference = 770.732, Density of A: 11.73%
+9: L2_norm of weight difference = 4105.548, Density of A: 11.54%
+10: L2_norm of weight difference = 4695.714, Density of A: 12.17%
+Performance Check >>> 635.250 Return, 200 Steps, 41 Features
+iFDD Batch: Max Relevance = 1959.518
+New Feature 1: [9, 10], Relevance = 1959.518
+New Feature 2: [1, 9], Relevance = 1736.178
+New Feature 3: [0, 1, 2], Relevance = 1681.326
+New Feature 4: [10, 18], Relevance = 1654.167
+New Feature 5: [1, 10], Relevance = 1610.227
+New Feature 6: [9, 18], Relevance = 1582.252
+New Feature 7: [0, 2, 3], Relevance = 1568.574
+New Feature 8: [10, 11, 19], Relevance = 1538.137
+New Feature 9: [1, 18], Relevance = 1514.603
+New Feature 10: [7, 8, 9], Relevance = 1509.492
+New Feature 11: [1, 6], Relevance = 1505.256
+New Feature 12: [1, 3], Relevance = 1499.455
+New Feature 13: [11, 18, 19], Relevance = 1489.150
+New Feature 14: [6, 9], Relevance = 1471.120
+New Feature 15: [6, 7, 8], Relevance = 1455.014
+New Feature 16: [9, 11, 19], Relevance = 1447.750
+New Feature 17: [4, 5, 6], Relevance = 1425.717
+New Feature 18: [9, 12], Relevance = 1422.597
+New Feature 19: [16, 18], Relevance = 1420.896
+New Feature 20: [6, 10], Relevance = 1386.657
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1081.683, Density of A: 5.67%
+2: L2_norm of weight difference = 794.436, Density of A: 5.46%
+3: L2_norm of weight difference = 895.431, Density of A: 5.60%
+4: L2_norm of weight difference = 1026.354, Density of A: 5.39%
+5: L2_norm of weight difference = 938.477, Density of A: 5.52%
+6: L2_norm of weight difference = 972.490, Density of A: 5.30%
+7: L2_norm of weight difference = 3444.020, Density of A: 5.44%
+8: L2_norm of weight difference = 3557.064, Density of A: 5.41%
+9: L2_norm of weight difference = 918.659, Density of A: 5.46%
+10: L2_norm of weight difference = 2120.222, Density of A: 5.48%
+Performance Check >>> 619.500 Return, 200 Steps, 61 Features
+iFDD Batch: Max Relevance = 274.273
+5000: E[0:19:35]-R[0:00:00]: Return=814.75, Steps=200, Features = 61
+5000 >>> E[0:19:35]-R[0:00:00]: Return=862.25, Steps=200, Features = 61
+============================================================
+Took 0:19:35
+Results	=> ././20-results.txt
+Log	=> ././20-out.txt
