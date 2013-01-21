@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././23-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+17137: E[0:01:00]-R[0:00:10]: Return=-20.00, Steps=13, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 307.406, Density of A: 14.03%
+2: L2_norm of weight difference = 1191.293, Density of A: 13.42%
+3: L2_norm of weight difference = 2076.322, Density of A: 12.39%
+4: L2_norm of weight difference = 724.183, Density of A: 14.19%
+5: L2_norm of weight difference = 310.981, Density of A: 13.83%
+6: L2_norm of weight difference = 528.528, Density of A: 13.68%
+7: L2_norm of weight difference = 1973.133, Density of A: 12.54%
+8: L2_norm of weight difference = 1335.474, Density of A: 13.86%
+9: L2_norm of weight difference = 327.600, Density of A: 14.14%
+10: L2_norm of weight difference = 477.676, Density of A: 13.66%
+Performance Check >>> -6.000 Return, 1000 Steps, 52 Features
+20000 >>> E[1:41:29]-R[0:00:00]: Return=-6.00, Steps=1000, Features = 52
+============================================================
+Took 1:41:29
+Results	=> ././23-results.txt
+Log	=> ././23-out.txt

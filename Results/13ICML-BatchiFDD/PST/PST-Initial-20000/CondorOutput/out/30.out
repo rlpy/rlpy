@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././30-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+16300: E[0:01:00]-R[0:00:14]: Return=-53.00, Steps=65, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 527.246, Density of A: 13.20%
+2: L2_norm of weight difference = 1543.198, Density of A: 12.34%
+3: L2_norm of weight difference = 1022.267, Density of A: 13.18%
+4: L2_norm of weight difference = 305.059, Density of A: 13.68%
+5: L2_norm of weight difference = 488.170, Density of A: 13.17%
+6: L2_norm of weight difference = 655.317, Density of A: 13.27%
+7: L2_norm of weight difference = 757.368, Density of A: 12.26%
+8: L2_norm of weight difference = 772.562, Density of A: 13.11%
+9: L2_norm of weight difference = 833.717, Density of A: 12.95%
+10: L2_norm of weight difference = 441.038, Density of A: 13.51%
+Performance Check >>> -91.000 Return, 1000 Steps, 52 Features
+20000 >>> E[1:23:01]-R[0:00:00]: Return=-75.00, Steps=10, Features = 52
+============================================================
+Took 1:23:01
+Results	=> ././30-results.txt
+Log	=> ././30-out.txt

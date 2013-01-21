@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././1-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+18155: E[0:01:00]-R[0:00:06]: Return=-8.00, Steps=22, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 411.386, Density of A: 14.44%
+2: L2_norm of weight difference = 735.076, Density of A: 13.85%
+3: L2_norm of weight difference = 618.021, Density of A: 14.54%
+4: L2_norm of weight difference = 586.302, Density of A: 14.73%
+5: L2_norm of weight difference = 534.992, Density of A: 14.98%
+6: L2_norm of weight difference = 354.100, Density of A: 14.75%
+7: L2_norm of weight difference = 525.963, Density of A: 14.00%
+8: L2_norm of weight difference = 429.904, Density of A: 14.96%
+9: L2_norm of weight difference = 621.826, Density of A: 14.60%
+10: L2_norm of weight difference = 1196.306, Density of A: 13.97%
+Performance Check >>> -58.000 Return, 12 Steps, 52 Features
+20000 >>> E[0:44:58]-R[0:00:00]: Return=-57.00, Steps=11, Features = 52
+============================================================
+Took 0:44:58
+Results	=> ././1-results.txt
+Log	=> ././1-out.txt

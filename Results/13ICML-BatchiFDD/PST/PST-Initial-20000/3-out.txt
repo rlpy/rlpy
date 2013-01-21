@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././3-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+18378: E[0:01:00]-R[0:00:05]: Return=24.00, Steps=10, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 694.737, Density of A: 14.89%
+2: L2_norm of weight difference = 1308.883, Density of A: 13.59%
+3: L2_norm of weight difference = 715.733, Density of A: 14.40%
+4: L2_norm of weight difference = 679.752, Density of A: 14.83%
+5: L2_norm of weight difference = 652.975, Density of A: 14.92%
+6: L2_norm of weight difference = 835.078, Density of A: 14.25%
+7: L2_norm of weight difference = 1220.926, Density of A: 13.84%
+8: L2_norm of weight difference = 635.169, Density of A: 14.83%
+9: L2_norm of weight difference = 507.611, Density of A: 14.55%
+10: L2_norm of weight difference = 1844.458, Density of A: 14.29%
+Performance Check >>> 22.000 Return, 11 Steps, 52 Features
+20000 >>> E[0:33:49]-R[0:00:00]: Return=-52.00, Steps=11, Features = 52
+============================================================
+Took 0:33:49
+Results	=> ././3-results.txt
+Log	=> ././3-out.txt

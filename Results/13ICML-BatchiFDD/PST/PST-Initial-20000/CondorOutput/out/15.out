@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././15-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+13297: E[0:01:00]-R[0:00:30]: Return=63.00, Steps=10, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 270.545, Density of A: 14.83%
+2: L2_norm of weight difference = 421.462, Density of A: 14.29%
+3: L2_norm of weight difference = 1124.542, Density of A: 14.57%
+4: L2_norm of weight difference = 762.392, Density of A: 14.87%
+5: L2_norm of weight difference = 305.172, Density of A: 15.20%
+6: L2_norm of weight difference = 288.468, Density of A: 14.62%
+7: L2_norm of weight difference = 477.122, Density of A: 14.48%
+8: L2_norm of weight difference = 358.127, Density of A: 15.08%
+9: L2_norm of weight difference = 253.736, Density of A: 15.08%
+10: L2_norm of weight difference = 432.171, Density of A: 14.58%
+Performance Check >>> -82.000 Return, 16 Steps, 52 Features
+20000 >>> E[0:48:39]-R[0:00:00]: Return=-108.00, Steps=52, Features = 52
+============================================================
+Took 0:48:39
+Results	=> ././15-results.txt
+Log	=> ././15-out.txt

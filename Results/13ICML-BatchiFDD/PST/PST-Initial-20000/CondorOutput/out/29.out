@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././29-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+15376: E[0:01:00]-R[0:00:18]: Return=-31.00, Steps=10, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 314.816, Density of A: 13.65%
+2: L2_norm of weight difference = 1895.763, Density of A: 13.36%
+3: L2_norm of weight difference = 1962.277, Density of A: 13.03%
+4: L2_norm of weight difference = 355.507, Density of A: 14.15%
+5: L2_norm of weight difference = 963.788, Density of A: 13.39%
+6: L2_norm of weight difference = 965.121, Density of A: 13.12%
+7: L2_norm of weight difference = 323.499, Density of A: 14.01%
+8: L2_norm of weight difference = 939.504, Density of A: 13.46%
+9: L2_norm of weight difference = 955.416, Density of A: 13.21%
+10: L2_norm of weight difference = 4358.731, Density of A: 12.89%
+Performance Check >>> 0.000 Return, 1000 Steps, 52 Features
+20000 >>> E[1:33:25]-R[0:00:00]: Return=0.00, Steps=1000, Features = 52
+============================================================
+Took 1:33:25
+Results	=> ././29-results.txt
+Log	=> ././29-out.txt

@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Agent:		RE_LSPI_SARSA
+Policy:		eGreedy
+============================================================
+Experiment:		OnlineExperiment
+Output:			././19-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+16770: E[0:01:00]-R[0:00:12]: Return=41.00, Steps=10, Features = 52
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 341.388, Density of A: 14.67%
+2: L2_norm of weight difference = 600.184, Density of A: 14.12%
+3: L2_norm of weight difference = 526.211, Density of A: 14.60%
+4: L2_norm of weight difference = 283.513, Density of A: 14.47%
+5: L2_norm of weight difference = 775.794, Density of A: 14.38%
+6: L2_norm of weight difference = 776.710, Density of A: 14.38%
+7: L2_norm of weight difference = 488.804, Density of A: 14.23%
+8: L2_norm of weight difference = 871.817, Density of A: 13.98%
+9: L2_norm of weight difference = 567.165, Density of A: 14.25%
+10: L2_norm of weight difference = 283.351, Density of A: 14.54%
+Performance Check >>> -72.000 Return, 11 Steps, 52 Features
+20000 >>> E[1:36:52]-R[0:00:00]: Return=5.00, Steps=11, Features = 52
+============================================================
+Took 1:36:52
+Results	=> ././19-results.txt
+Log	=> ././19-out.txt
