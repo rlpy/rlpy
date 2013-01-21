@@ -1,48 +1,30 @@
 Algorithm: 350
 ======================
 Learning Steps: 1000.000	
-Return: 477.938	
-Standard-Error: 12.582	
+Return: 472.000	
+Standard-Error: 13.169	
 ======================
 Algorithm: 325
 ======================
 Learning Steps: 2000.000	
-Return: 437.062	
-Standard-Error: 28.204	
+Return: 461.125	
+Standard-Error: 14.754	
 ======================
 Algorithm: 350
 ======================
 Learning Steps: 2000.000	
-Return: 437.062	
-Standard-Error: 28.204	
+Return: 464.462	
+Standard-Error: 14.016	
 ======================
 Algorithm: 375
 ======================
 Learning Steps: 2000.000	
-Return: 435.000	
-Standard-Error: 27.746	
-======================
-Algorithm: 5000
-======================
-Learning Steps: 5000.000	
-Return: 686.767	
-Standard-Error: 60.429	
-======================
-Algorithm: 1000
-======================
-Learning Steps: 1000.000	
-Return: 450.438	
-Standard-Error: 17.211	
+Return: 459.594	
+Standard-Error: 15.062	
 ======================
 Algorithm: 2000
 ======================
 Learning Steps: 2000.000	
-Return: 468.984	
-Standard-Error: 18.134	
-======================
-Algorithm: 5000
-======================
-Learning Steps: 20000.000	
-Return: 651.955	
-Standard-Error: 13.417	
+Return: 466.441	
+Standard-Error: 17.245	
 ======================
