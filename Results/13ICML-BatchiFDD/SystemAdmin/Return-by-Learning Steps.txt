@@ -76,3 +76,9 @@ Learning Steps: 5000.000
 Return: 686.767	
 Standard-Error: 60.429	
 ======================
+Algorithm: Initial
+======================
+Learning Steps: 20000.000	
+Return: 651.955	
+Standard-Error: 13.417	
+======================
