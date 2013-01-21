@@ -40,8 +40,8 @@ Initial Representation:	IndependentDiscretizationCompactBinary
 Plus:			1
 Sparsify:		1
 Cached:			1
-Online Threshold:	325.000
-Batch Threshold:		325.000
+Online Threshold:	350.000
+Batch Threshold:		350.000
 Max Batch Discovery:	20
 ============================================================
 Agent:		RE_LSPI
@@ -211,9 +211,9 @@ Running LSPI:
 10: L2_norm of weight difference = 957.388, Density of A: 0.63%
 Performance Check >>> 523.000 Return, 200 Steps, 101 Features
 iFDD Batch: Max Relevance = 314.787
-2000: E[0:35:38]-R[0:00:00]: Return=471.00, Steps=200, Features = 101
-2000 >>> E[0:35:39]-R[0:00:00]: Return=488.25, Steps=200, Features = 101
+2000: E[0:37:37]-R[0:00:00]: Return=471.00, Steps=200, Features = 101
+2000 >>> E[0:37:38]-R[0:00:00]: Return=488.25, Steps=200, Features = 101
 ============================================================
-Took 0:35:39
+Took 0:37:38
 Results	=> ././18-results.txt
 Log	=> ././18-out.txt
