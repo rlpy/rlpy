@@ -26,9 +26,11 @@ merger = Merger(paths,colors = colors, styles= styles, markersize = MarkerSize, 
 pl.ioff()
 #print mergedData.means[0].shape
 #merger.plot('Return')
-merger.plot('Return','Time(s)')
+#merger.plot('Return','Time(s)')
+merger.plot('Return','Learning Steps')
 #merger.plot('Steps')
-#merger.plot('Steps','Learning Steps')
+merger.plot('Steps','Learning Steps')
+#merger.plot('Features','Learning Steps')
 #merger.plot('Steps','Episodes')
 #merger.plot('Steps','Time(s)')
 #merger.plot('Steps','Time(s)')
