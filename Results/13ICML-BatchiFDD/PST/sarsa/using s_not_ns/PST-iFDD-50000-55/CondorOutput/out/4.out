@@ -1,0 +1,47 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	55.000
+Batch Threshold:		55.000
+Max Batch Discovery:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			././4-results.txt
+Learning Steps:		50000
+Performance Checks:	10
+Log Intervals:		60(s)
+5000 >>> E[0:00:23]-R[0:03:31]: Return=0.00, Steps=1000, Features = 185
+10000 >>> E[0:00:48]-R[0:03:14]: Return=0.00, Steps=1000, Features = 245
+15000 >>> E[0:01:12]-R[0:02:49]: Return=0.00, Steps=1000, Features = 300
+20000 >>> E[0:01:36]-R[0:02:24]: Return=0.00, Steps=1000, Features = 324
+25000 >>> E[0:02:00]-R[0:02:00]: Return=0.00, Steps=1000, Features = 342
+30000 >>> E[0:02:25]-R[0:01:37]: Return=0.00, Steps=1000, Features = 351
+35000 >>> E[0:02:51]-R[0:01:13]: Return=0.00, Steps=1000, Features = 353
+40000 >>> E[0:03:16]-R[0:00:49]: Return=0.00, Steps=1000, Features = 355
+45000 >>> E[0:03:42]-R[0:00:25]: Return=0.00, Steps=1000, Features = 359
+50000 >>> E[0:04:07]-R[0:00:00]: Return=0.00, Steps=1000, Features = 360
+============================================================
+Took 0:04:07
+Results	=> ././4-results.txt
+Log	=> ././4-out.txt
