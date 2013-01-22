@@ -1,0 +1,53 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	350.000
+Batch Threshold:		350.000
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		20000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	20
+============================================================
+Experiment:		OnlineExperiment
+Output:			././11-results.txt
+Learning Steps:		20000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 191.359, Density of A: 20.17%
+2: L2_norm of weight difference = 143.565, Density of A: 23.14%
+3: L2_norm of weight difference = 91.874, Density of A: 21.87%
+4: L2_norm of weight difference = 66.588, Density of A: 21.96%
+5: L2_norm of weight difference = 55.474, Density of A: 21.91%
+6: L2_norm of weight difference = 61.897, Density of A: 21.90%
+7: L2_norm of weight difference = 0.000, Density of A: 21.90%
+Performance Check >>> -27.000 Return, 1000 Steps, 52 Features
+iFDD Batch: Max Relevance = 314.437
+20000 >>> E[1:06:26]-R[0:00:00]: Return=-15.00, Steps=1000, Features = 52
+============================================================
+Took 1:06:26
+Results	=> ././11-results.txt
+Log	=> ././11-out.txt
