@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "main.py", line 132, in <module>
+    main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+  File "main.py", line 118, in main
+    experiment.run()
+  File "/data/scratch/rhklein/RL-Python/Experiments/OnlineExperiment.py", line 71, in run
+    self.agent.learn(s,a,r,ns,na,terminal)            
+  File "/data/scratch/rhklein/RL-Python/Agents/SARSA.py", line 42, in learn
+    nnz                 = count_nonzero(phi)    #Number of non-zero elements
+NameError: global name 'count_nonzero' is not defined
