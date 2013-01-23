@@ -1,0 +1,68 @@
+000 (14790.000.000) 01/22 19:09:55 Job submitted from host: <128.30.112.18:46685>
+...
+001 (14790.000.000) 01/22 19:10:07 Job executing on host: <128.30.66.167:50426>
+...
+006 (14790.000.000) 01/22 19:10:16 Image size of job updated: 286132
+	45  -  MemoryUsage of job (MB)
+	46072  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 19:15:17 Image size of job updated: 504452
+	259  -  MemoryUsage of job (MB)
+	265204  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 19:20:18 Image size of job updated: 553244
+	259  -  MemoryUsage of job (MB)
+	265204  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 19:25:18 Image size of job updated: 553244
+	268  -  MemoryUsage of job (MB)
+	274428  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 19:30:18 Image size of job updated: 553244
+	307  -  MemoryUsage of job (MB)
+	313772  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 20:50:26 Image size of job updated: 554612
+	307  -  MemoryUsage of job (MB)
+	313772  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 20:55:26 Image size of job updated: 554612
+	308  -  MemoryUsage of job (MB)
+	315288  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 21:25:30 Image size of job updated: 556024
+	308  -  MemoryUsage of job (MB)
+	315288  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 21:30:30 Image size of job updated: 556024
+	310  -  MemoryUsage of job (MB)
+	316624  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 22:05:34 Image size of job updated: 558384
+	310  -  MemoryUsage of job (MB)
+	316624  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 22:10:35 Image size of job updated: 558384
+	312  -  MemoryUsage of job (MB)
+	318984  -  ResidentSetSize of job (KB)
+...
+006 (14790.000.000) 01/22 22:35:36 Image size of job updated: 558384
+	312  -  MemoryUsage of job (MB)
+	318988  -  ResidentSetSize of job (KB)
+...
+005 (14790.000.000) 01/22 23:17:49 Job terminated.
+	(0) Abnormal termination (signal 9)
+	(0) No core file
+		Usr 0 02:51:05, Sys 0 01:15:43  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 02:51:05, Sys 0 01:15:43  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :      312      312          
+...
