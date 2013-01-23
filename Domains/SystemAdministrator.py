@@ -47,7 +47,7 @@ class SystemAdministrator(Domain):
     
     IS_RING         = False # For ring structures, Parr enforces assymetry by having one machine get extra reward for being up.
     
-    REBOOT_REWARD   = -1.75
+    REBOOT_REWARD   = -0.75
     # Computer "up" reward implicitly 1; tune other rewards relative to this.   
      
     episodeCap      = 200        # 200 used in tutorial
@@ -167,12 +167,17 @@ class SystemAdministrator(Domain):
                     if(random.random() < self.P_SELF_REPAIR):
                         ns[computer_id] = self.RUNNING
  # Optional                     else ns[computer_id] = self.BROKEN
-        if (self.IS_RING and ns[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
-        return sum(ns)+totalRebootReward,ns,self.NOT_TERMINATED
+        if (self.IS_RING and s[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
+        return sum(s)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
         #return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
         return array([self.RUNNING]* self.state_space_dims)
+    def possibleActions(self,s):
+        possibleActs = [computer_id for computer_id,compstatus in enumerate(s) if compstatus == self.RUNNING]
+        possibleActs.append(self.computers_num) # append the no-op action
+        return array(possibleActs)
+        
     ## @param neighborsList: each element at index <i> is a list of nodes connected to the node at <i>.
     # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def setUniqueEdges(self, neighborsList):
@@ -203,8 +208,8 @@ class SystemAdministrator(Domain):
 if __name__ == '__main__':
         random.seed(0)
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/8Ring.txt');
-        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
-        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/9Star.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
+        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/9Star.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5Machines.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Machines.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
