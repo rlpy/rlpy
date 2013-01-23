@@ -1,30 +1,48 @@
-Algorithm: 350
+Algorithm: 250
 ======================
-Learning Steps: 1000.000	
-Return: 472.000	
-Standard-Error: 13.169	
+Learning Steps: 5000.000	
+Return: 598.000	
+Standard-Error: 75.141	
 ======================
-Algorithm: 325
+Algorithm: 300
 ======================
-Learning Steps: 2000.000	
-Return: 461.125	
-Standard-Error: 14.754	
+Learning Steps: 5000.000	
+Return: 554.100	
+Standard-Error: 71.801	
 ======================
-Algorithm: 350
+Algorithm: 400
 ======================
-Learning Steps: 2000.000	
-Return: 464.462	
-Standard-Error: 14.016	
+Learning Steps: 5000.000	
+Return: 642.183	
+Standard-Error: 55.966	
 ======================
-Algorithm: 375
+Algorithm: 450
 ======================
-Learning Steps: 2000.000	
-Return: 459.594	
-Standard-Error: 15.062	
+Learning Steps: 5000.000	
+Return: 626.200	
+Standard-Error: 57.665	
 ======================
-Algorithm: 2000
+Algorithm: 500
 ======================
-Learning Steps: 2000.000	
-Return: 466.441	
-Standard-Error: 17.245	
+Learning Steps: 5000.000	
+Return: 632.200	
+Standard-Error: 68.483	
+======================
+Algorithm: 600
+======================
+Learning Steps: 5000.000	
+Return: 549.950	
+Standard-Error: 115.229	
+======================
+Algorithm: 700
+======================
+Learning Steps: 5000.000	
+Return: 502.450	
+Standard-Error: 101.831	
+======================
+Algorithm: 5000
+======================
+Learning Steps: 5000.000	
+Return: 686.767	
+Standard-Error: 60.429	
 ======================

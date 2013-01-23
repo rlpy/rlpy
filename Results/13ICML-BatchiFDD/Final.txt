@@ -1,7 +1,7 @@
 
 Domain			InvertedPendulum		BlocksWorld 		SystemAmin		PST			
 Representation	
-Initial			389.700+105.115		-0.734+0.124
+Initial			389.700+105.115		-0.734+0.124					-42.615+7.136
 OMP-TD			
 BEBF				2564.233+185.231		0.997+0.000
 iFDD				2497.667+185.985		0.863+0.091
