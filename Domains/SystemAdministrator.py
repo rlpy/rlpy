@@ -144,7 +144,7 @@ class SystemAdministrator(Domain):
     def step(self,s,a):
         #ns = s[:] # make copy of state so as not to affect original mid-step
         ns = s.copy()
-#        print 'action selected',a
+       # print 'action selected',a,s
         totalRebootReward = 0
         for computer_id, compstatus in enumerate(s):
             if(a == computer_id): #Reboot action on this computer
@@ -174,8 +174,11 @@ class SystemAdministrator(Domain):
         return sum(s)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
-        #return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
-        return array([self.BROKEN]* self.state_space_dims)
+        return array([self.RUNNING for dummy in arange(0,self.state_space_dims)]) # Omits final index
+#        return array([self.BROKEN]* self.state_space_dims)
+        #arrTmp = array([self.BROKEN]* self.state_space_dims)
+        #arrTmp[arange(10)] = self.RUNNING
+        #return arrTmp
     def possibleActions(self,s):
         possibleActs = [computer_id for computer_id,compstatus in enumerate(s) if compstatus == self.BROKEN]
         possibleActs.append(self.computers_num) # append the no-op action
@@ -210,10 +213,11 @@ class SystemAdministrator(Domain):
             self.NEIGHBORS[i] = array(self.NEIGHBORS[i])
 if __name__ == '__main__':
         random.seed(0)
-        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/8Ring.txt');
-        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
-        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/9Star.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Ring.txt');
+        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/9Star.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5Machines.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5MachinesEdges.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Machines.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20MachTutorial.txt');
