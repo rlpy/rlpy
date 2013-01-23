@@ -144,12 +144,14 @@ class SystemAdministrator(Domain):
     def step(self,s,a):
         #ns = s[:] # make copy of state so as not to affect original mid-step
         ns = s.copy()
+#        print 'action selected',a
         totalRebootReward = 0
         for computer_id, compstatus in enumerate(s):
             if(a == computer_id): #Reboot action on this computer
                 totalRebootReward += self.REBOOT_REWARD
                 # NOTE can break up if-statement below to separate cases
                 if (random.random() <= self.P_REBOOT_REPAIR):
+#                    print 'repaired comp',computer_id
                     ns[computer_id] = self.RUNNING
                 else:
                     ns[computer_id] = self.BROKEN
@@ -168,13 +170,14 @@ class SystemAdministrator(Domain):
                         ns[computer_id] = self.RUNNING
  # Optional                     else ns[computer_id] = self.BROKEN
         if (self.IS_RING and s[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
+#        print s,ns,sum(s)+totalRebootReward
         return sum(s)+totalRebootReward,ns,self.NOT_TERMINATED
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
         #return [self.RUNNING for dummy in arange(0,self.state_space_dims)] # Omits final index
-        return array([self.RUNNING]* self.state_space_dims)
+        return array([self.BROKEN]* self.state_space_dims)
     def possibleActions(self,s):
-        possibleActs = [computer_id for computer_id,compstatus in enumerate(s) if compstatus == self.RUNNING]
+        possibleActs = [computer_id for computer_id,compstatus in enumerate(s) if compstatus == self.BROKEN]
         possibleActs.append(self.computers_num) # append the no-op action
         return array(possibleActs)
         
