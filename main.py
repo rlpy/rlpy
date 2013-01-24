@@ -28,8 +28,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 20000
+    PERFORMANCE_CHECKS  = 30
+    LEARNING_STEPS      = 60000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -50,8 +50,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/9Star.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Machines.txt'
-    #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
-    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
+    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
+    #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
@@ -62,8 +62,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
-    iFDDOnlineThreshold         = 50
-    BatchDiscoveryThreshold     = 400 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDDOnlineThreshold         = 46
+    BatchDiscoveryThreshold     = 46 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 100    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).

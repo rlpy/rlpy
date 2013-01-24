@@ -3,4 +3,8 @@ from Tools import *
 from Domains import *
 from Representations import *
 
-print glob.glob(os.path.join('.', '*-results.txr'))
+print os.getpid()
+sleep(5)
+print os.getpid()
+sleep(5)
+print os.getpid()

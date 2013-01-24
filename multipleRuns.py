@@ -7,18 +7,18 @@ from main import *
 from os import *
 import platform
 
-StartID         = 16
-FinishId        = 30
+StartID         = 1
+FinishId        = 4
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/13ICML-BatchiFDD/SystemAdmin'
+PROJECT_PATH    = 'Results/13ICML-BatchiFDD/SystemAdmin/sarsa'
 max_cpu         = multiprocessing.cpu_count()
 
 if(platform.system() == 'Windows'):
     for i in RUNS: # .py files executable by default
         print "Started job %d" % i
-        os.system('main.py %d %s &' % (i, PROJECT_PATH))
+        os.system('main.py %d %s %d %d &' % (i, PROJECT_PATH, 0, 1))
 else:
     for i in RUNS:
         os.system('chmod +x main.py')
-        os.system('./main.py %d %s &' % (i, PROJECT_PATH))
+        os.system('./main.py %d %s %d %d &' % (i, PROJECT_PATH, 0, 1))
         print "Started job %d" % i

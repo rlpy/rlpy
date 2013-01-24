@@ -6,7 +6,7 @@
 from Tools import *
 
 #path = 'Results/Example_Project' 
-paths = ['Results/13ICML-BatchiFDD/PST-2UAV/PST-iFDD-20000-27'] 
+paths = ['Results/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
 
 
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
