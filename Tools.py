@@ -57,6 +57,19 @@ from heapq import *
 from copy import deepcopy
 import os, sys, multiprocessing
 from os import path
+
+# If running on an older version of numpy, check to make sure we have defined all required functions.
+def checkNumpyFunctions():
+    import numpy # We need to be able to reference numpy by name
+    if numpy.version.version < '1.6.0': # Missing count_nonzero
+        def count_nonzero(arr):
+            nnz = 0
+            for el in arr:
+                if el != 0: nnz+=1
+            return nnz
+
+checkNumpyFunctions()
+
 # Tips:
 # array.astype(float) => convert elements
 # matlibplot initializes the maping from the values to 
@@ -75,6 +88,7 @@ from os import path
 # Replace vstack and hstack with the trick mentioned here:
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
 # if undo redo does not work in eclipse, you may have an uninfinished process. Kill all
+
 def randSet(x):
     #Returns a random element of a list uniformly.
     i = random.random_integers(0,size(x)-1)

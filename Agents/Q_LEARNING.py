@@ -14,6 +14,7 @@ class Q_LEARNING(Agent):
         self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):
+        super(Q_LEARNING, self).learn(s,a,r,ns,na,terminal) # increment episode count
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)

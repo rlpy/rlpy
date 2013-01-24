@@ -34,7 +34,7 @@ merger.plot('Steps','Learning Steps')
 #merger.plot('Steps','Episodes')
 #merger.plot('Steps','Time(s)')
 #merger.plot('Steps','Time(s)')
-#merger.plot('Features','Episodes')
+merger.plot('Features','Episodes')
 #merger.plot('Terminal')
 pl.show()
 
