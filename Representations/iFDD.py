@@ -60,7 +60,7 @@ class iFDD(Representation):
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
-    iFDDplus                = 1     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
+    iFDDplus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_Representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
@@ -315,20 +315,24 @@ if __name__ == '__main__':
     logger              = Logger()
     discovery_threshold = 1
     #domain      = MountainCar()
-    domain      = SystemAdministrator('/../Domains/SystemAdministratorMaps/20MachTutorial.txt')
+    domain      = SystemAdministrator('../Domains/SystemAdministratorMaps/20MachTutorial.txt')
     initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
     rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
-    print 'Initial [0,1,20] => ',
-    print rep.findFinalActiveFeatures([0,1,20])
-    print 'Initial [0,20] => ',
-    print rep.findFinalActiveFeatures([0,20])
+    print 'Initial [0,1] => ',
+    print rep.findFinalActiveFeatures([0,1])
+    print rep.inspectPair(0,1, discovery_threshold+1)
+    print 'Initial [1,2] => ',
+    print rep.findFinalActiveFeatures([1,2])
+    print 'Initial [2,3] => ',
+    print rep.findFinalActiveFeatures([2,3])
     rep.showCache()
-    print 'discover 0,20'
-    phi_s = zeros(rep.features_num)
-    phi_s[0] = 1
-    phi_s[20] = 1
-    rep.discover(phi_s, discovery_threshold+1)
+#    print 'discover 0,20'
+#    phi_s = zeros(rep.features_num)
+#    phi_s[0] = 1
+#    phi_s[3] = 1
+#    phi_s[20] = 1
+#    rep.discover(phi_s, discovery_threshold+1)
     rep.showFeatures()
     rep.showCache()
     print 'Initial [0,20] => ',
