@@ -95,8 +95,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_SwingUp(logger = logger);
     #domain          = FiftyChain(logger = logger)
     
-    #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = initial_rep
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
