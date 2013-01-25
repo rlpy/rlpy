@@ -1,0 +1,48 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	36
+============================================================
+Representation:		iFDD
+Features per action:	36
+Initial Representation:	IndependentDiscretization
+Plus:			0
+Sparsify:		1
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		1.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././93-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:27]-R[0:04:05]: Return=-1.00, Steps=1000, Features = 51
+20000 >>> E[0:00:48]-R[0:03:13]: Return=-1.00, Steps=1000, Features = 51
+30000 >>> E[0:01:04]-R[0:02:29]: Return=-1.00, Steps=1000, Features = 51
+40000 >>> E[0:01:21]-R[0:02:01]: Return=-1.00, Steps=1000, Features = 57
+50000 >>> E[0:01:38]-R[0:01:38]: Return=-1.00, Steps=1000, Features = 65
+60000 >>> E[0:01:55]-R[0:01:16]: Return=-1.00, Steps=1000, Features = 66
+70000 >>> E[0:02:11]-R[0:00:56]: Return=-1.00, Steps=1000, Features = 72
+80000 >>> E[0:02:28]-R[0:00:37]: Return=-1.00, Steps=1000, Features = 72
+90000 >>> E[0:02:45]-R[0:00:18]: Return=-1.00, Steps=1000, Features = 73
+100000 >>> E[0:03:01]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 81
+============================================================
+Took 0:03:01
+Results	=> ././93-results.txt
+Log	=> ././93-out.txt

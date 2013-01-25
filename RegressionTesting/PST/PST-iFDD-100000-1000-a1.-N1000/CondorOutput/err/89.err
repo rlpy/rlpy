@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "main.py", line 15, in <module>
+    from Tools import *
+  File "/data/scratch/rhklein/RL-Python/Tools.py", line 743, in <module>
+    os.environ['PATH'] += ':/usr/share/texmf'
+  File "/usr/lib/python2.6/UserDict.py", line 22, in __getitem__
+    raise KeyError(key)
+KeyError: 'PATH'
