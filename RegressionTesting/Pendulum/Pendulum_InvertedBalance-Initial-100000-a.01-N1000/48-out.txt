@@ -1,0 +1,39 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.01
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././48-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:05]-R[0:00:41]: Return=-1.00, Steps=180, Features = 40
+20000 >>> E[0:00:09]-R[0:00:36]: Return=-1.00, Steps=31, Features = 40
+30000 >>> E[0:00:14]-R[0:00:32]: Return=-1.00, Steps=38, Features = 40
+40000 >>> E[0:00:18]-R[0:00:27]: Return=-1.00, Steps=52, Features = 40
+50000 >>> E[0:00:23]-R[0:00:23]: Return=-1.00, Steps=845, Features = 40
+60000 >>> E[0:00:27]-R[0:00:18]: Return=-1.00, Steps=106, Features = 40
+70000 >>> E[0:00:32]-R[0:00:14]: Return=-1.00, Steps=572, Features = 40
+80000 >>> E[0:00:36]-R[0:00:09]: Return=-1.00, Steps=13, Features = 40
+90000 >>> E[0:00:40]-R[0:00:04]: Return=-1.00, Steps=18, Features = 40
+100000 >>> E[0:00:45]-R[0:00:00]: Return=-1.00, Steps=17, Features = 40
+============================================================
+Took 0:00:45
+Results	=> ././48-results.txt
+Log	=> ././48-out.txt
