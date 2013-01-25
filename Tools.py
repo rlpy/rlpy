@@ -59,16 +59,13 @@ import os, sys, multiprocessing
 from os import path
 
 # If running on an older version of numpy, check to make sure we have defined all required functions.
-def checkNumpyFunctions():
-    import numpy # We need to be able to reference numpy by name
-    if numpy.version.version < '1.6.0': # Missing count_nonzero
-        def count_nonzero(arr):
-            nnz = 0
-            for el in arr:
-                if el != 0: nnz+=1
-            return nnz
-
-checkNumpyFunctions()
+import numpy # We need to be able to reference numpy by name
+if numpy.version.version < '1.6.0': # Missing count_nonzero
+	def count_nonzero(arr):
+		nnz = 0
+		for el in arr:
+			if el != 0: nnz+=1
+		return nnz
 
 # Tips:
 # array.astype(float) => convert elements
