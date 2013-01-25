@@ -1,0 +1,47 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	57
+============================================================
+Representation:		iFDD
+Features per action:	57
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	1000.000
+Batch Threshold:		1000.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		1.00
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././76-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:23]-R[0:03:28]: Return=-9.00, Steps=10, Features = 57
+20000 >>> E[0:00:46]-R[0:03:03]: Return=-29.00, Steps=10, Features = 57
+30000 >>> E[0:01:08]-R[0:02:39]: Return=49.00, Steps=20, Features = 57
+40000 >>> E[0:01:31]-R[0:02:16]: Return=-47.00, Steps=10, Features = 57
+50000 >>> E[0:01:53]-R[0:01:53]: Return=134.00, Steps=31, Features = 57
+60000 >>> E[0:02:16]-R[0:01:30]: Return=-71.00, Steps=10, Features = 57
+70000 >>> E[0:02:38]-R[0:01:08]: Return=8.00, Steps=10, Features = 57
+80000 >>> E[0:03:01]-R[0:00:45]: Return=-113.00, Steps=64, Features = 57
+90000 >>> E[0:03:23]-R[0:00:23]: Return=327.00, Steps=62, Features = 57
+100000 >>> E[0:03:46]-R[0:00:00]: Return=-30.00, Steps=10, Features = 57
+============================================================
+Took 0:03:46
+Results	=> ././76-results.txt
+Log	=> ././76-out.txt

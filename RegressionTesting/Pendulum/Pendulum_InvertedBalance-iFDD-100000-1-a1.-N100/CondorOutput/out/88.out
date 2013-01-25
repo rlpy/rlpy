@@ -1,0 +1,52 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+============================================================
+Representation:		iFDD
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		1.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		1.00
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././88-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:05]-R[0:00:49]: Return=-1.00, Steps=22, Features = 44
+20000 >>> E[0:00:11]-R[0:00:43]: Return=-1.00, Steps=39, Features = 45
+30000 >>> E[0:00:20]-R[0:00:46]: Return=-1.00, Steps=330, Features = 45
+40000 >>> E[0:00:29]-R[0:00:43]: Return=-1.00, Steps=52, Features = 48
+50000 >>> E[0:00:38]-R[0:00:38]: Return=-1.00, Steps=44, Features = 49
+60000 >>> E[0:00:47]-R[0:00:31]: Return=-1.00, Steps=49, Features = 50
+70000 >>> E[0:00:57]-R[0:00:24]: Return=-1.00, Steps=1251, Features = 52
+80000 >>> E[0:01:06]-R[0:00:16]: Return=-1.00, Steps=71, Features = 52
+90000 >>> E[0:01:17]-R[0:00:09]: Return=0.00, Steps=3000, Features = 52
+100000 >>> E[0:01:25]-R[0:00:00]: Return=-1.00, Steps=1275, Features = 53
+============================================================
+Took 0:01:25
+Results	=> ././88-results.txt
+Log	=> ././88-out.txt
