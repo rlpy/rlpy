@@ -40,6 +40,9 @@ class Agent(object):
                 self.logger.log(errMsg)
             else: shout(errMsg)
             sys.exit(1)
+		# Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
+		# initial_alpha will act as a permanent upper-bound on alpha.
+		# if self.alpha_decay_mode == 'dabney': self.initial_alpha = 1.0
             
     # Defined by the domain            
     def learn(self,s,a,r,ns,na,terminal):
