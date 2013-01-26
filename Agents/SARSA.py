@@ -21,7 +21,7 @@ class SARSA(Agent):
         phi                 = self.representation.phi_sa(s,a,phi_s)
         phi_prime           = self.representation.phi_sa(ns,na)
 		
-		nnz                 = count_nonzero(phi)    #Number of non-zero elements
+        nnz                 = count_nonzero(phi)    #Number of non-zero elements
         if nnz > 0: # Phi has some nonzero elements, proceed with update
 			#Set eligibility traces:
 			if self.lambda_:
