@@ -33,6 +33,7 @@ class Agent(object):
             self.logger.line()
             self.logger.log("Agent:\t\t"+str(className(self)))
             self.logger.log("Policy:\t\t"+str(className(self.policy)))
+			if self.alpha_decay_mode == 'boyan': self.logger.log("boyan_N0: %.1f"%self.boyan_N0)
         # Check to make sure selected alpha_decay mode is valid
         if not self.alpha_decay_mode in self.valid_decay_modes:
             errMsg = "Invalid decay mode selected:"+self.alpha_decay_mode+".\nValid choices are: "+str(self.valid_decay_modes)
@@ -42,7 +43,7 @@ class Agent(object):
             sys.exit(1)
 		# Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
 		# initial_alpha will act as a permanent upper-bound on alpha.
-		# if self.alpha_decay_mode == 'dabney': self.initial_alpha = 1.0
+		if self.alpha_decay_mode == 'dabney': self.initial_alpha = 1.0
             
     # Defined by the domain            
     def learn(self,s,a,r,ns,na,terminal):
