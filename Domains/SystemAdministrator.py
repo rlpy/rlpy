@@ -214,12 +214,12 @@ class SystemAdministrator(Domain):
 if __name__ == '__main__':
         random.seed(0)
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Ring.txt');
-        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
+        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20Ring.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/9Star.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5Machines.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/5MachinesEdges.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/10Machines.txt');
-        #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
+        p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20MachTutorial.txt');
         p.test(1000)
      
