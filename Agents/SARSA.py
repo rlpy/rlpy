@@ -20,29 +20,31 @@ class SARSA(Agent):
         phi_s               = self.representation.phi(s)
         phi                 = self.representation.phi_sa(s,a,phi_s)
         phi_prime           = self.representation.phi_sa(ns,na)
-        
-        #Set eligibility traces:
-        if self.lambda_:
-            self.eligibility_trace   *= gamma*self.lambda_
-            self.eligibility_trace   += phi
-            #Set max to 1
-            self.eligibility_trace[self.eligibility_trace>1] = 1
-        else:
-            self.eligibility_trace    = phi
-        
-        td_error            = r + dot(gamma*phi_prime - phi, theta)
+		
+		nnz                 = count_nonzero(phi)    #Number of non-zero elements
+        if nnz > 0: # Phi has some nonzero elements, proceed with update
+			#Set eligibility traces:
+			if self.lambda_:
+				self.eligibility_trace   *= gamma*self.lambda_
+				self.eligibility_trace   += phi
+				#Set max to 1
+				self.eligibility_trace[self.eligibility_trace>1] = 1
+			else:
+				self.eligibility_trace    = phi
+			
+			td_error            = r + dot(gamma*phi_prime - phi, theta)
 
-        self.updateAlpha(phi,phi_prime,gamma)
-        #theta               += self.alpha * td_error * self.eligibility_trace
-        #print candid_alpha
-        
-        #use this if you want to divide by the number of active features  [[do this for PST]]
-        nnz                 = count_nonzero(phi)    #Number of non-zero elements
-        theta               += self.alpha * td_error * phi / (1.*nnz)  
-        
-        #Discover features using online iFDD
-        if isinstance(self.representation,iFDD):
-            self.representation.discover(phi_s,td_error)
-        
-        # Set eligibility Traces to zero if it is end of the episode
-        if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
+			self.updateAlpha(phi,phi_prime,gamma)
+			#theta               += self.alpha * td_error * self.eligibility_trace
+			#print candid_alpha
+			
+			#use this if you want to divide by the number of active features  [[do this for PST]]
+			theta               += self.alpha * td_error * phi / (1.*nnz)  
+			
+			#Discover features using online iFDD
+			if isinstance(self.representation,iFDD):
+				self.representation.discover(phi_s,td_error)
+			
+			# Set eligibility Traces to zero if it is end of the episode
+			if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
+		# Else there are no nonzero elements, halt update.
