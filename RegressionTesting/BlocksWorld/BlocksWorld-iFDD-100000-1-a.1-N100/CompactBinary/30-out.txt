@@ -1,0 +1,66 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			0
+Sparsify:		1
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		1.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././30-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:01:02]-R[0:09:14]: Return=-1.00, Steps=1000, Features = 52
+19976: E[0:02:07]-R[0:08:30]: Return=-1.00, Steps=1000, Features = 67
+20000 >>> E[0:02:09]-R[0:08:38]: Return=-1.00, Steps=1000, Features = 67
+26945: E[0:03:10]-R[0:08:34]: Return=0.97, Steps=31, Features = 129
+30000 >>> E[0:03:47]-R[0:08:49]: Return=0.99, Steps=7, Features = 160
+34384: E[0:04:47]-R[0:09:07]: Return=0.99, Steps=7, Features = 187
+38396: E[0:05:47]-R[0:09:16]: Return=0.99, Steps=8, Features = 198
+40000 >>> E[0:06:11]-R[0:09:17]: Return=0.99, Steps=8, Features = 199
+44287: E[0:07:17]-R[0:09:10]: Return=0.38, Steps=620, Features = 211
+48058: E[0:08:17]-R[0:08:57]: Return=0.99, Steps=8, Features = 213
+50000 >>> E[0:08:48]-R[0:08:48]: Return=0.99, Steps=8, Features = 213
+53833: E[0:09:49]-R[0:08:25]: Return=0.60, Steps=404, Features = 221
+57670: E[0:10:52]-R[0:07:59]: Return=0.82, Steps=181, Features = 227
+60000 >>> E[0:11:31]-R[0:07:41]: Return=0.99, Steps=6, Features = 231
+63902: E[0:12:37]-R[0:07:08]: Return=0.65, Steps=354, Features = 233
+67415: E[0:13:37]-R[0:06:35]: Return=0.99, Steps=7, Features = 235
+70000 >>> E[0:14:21]-R[0:06:09]: Return=0.99, Steps=10, Features = 236
+73518: E[0:15:21]-R[0:05:32]: Return=0.99, Steps=8, Features = 237
+77295: E[0:16:27]-R[0:04:50]: Return=0.53, Steps=469, Features = 244
+80000 >>> E[0:17:15]-R[0:04:19]: Return=0.99, Steps=9, Features = 248
+83294: E[0:18:15]-R[0:03:40]: Return=0.99, Steps=10, Features = 251
+86553: E[0:19:15]-R[0:02:59]: Return=0.99, Steps=7, Features = 252
+89801: E[0:20:15]-R[0:02:18]: Return=0.99, Steps=7, Features = 253
+90000 >>> E[0:20:18]-R[0:02:15]: Return=0.99, Steps=7, Features = 253
+93235: E[0:21:19]-R[0:01:33]: Return=0.98, Steps=17, Features = 259
+96461: E[0:22:19]-R[0:00:49]: Return=0.99, Steps=8, Features = 259
+100000 >>> E[0:23:24]-R[0:00:00]: Return=0.99, Steps=11, Features = 261
+============================================================
+Took 0:23:24
+Results	=> ././30-results.txt
+Log	=> ././30-out.txt

@@ -1,0 +1,65 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			0
+Sparsify:		1
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		1.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././5-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:01:00]-R[0:08:59]: Return=-1.00, Steps=1000, Features = 52
+19600: E[0:02:07]-R[0:08:41]: Return=-1.00, Steps=1000, Features = 86
+20000 >>> E[0:02:12]-R[0:08:50]: Return=-1.00, Steps=1000, Features = 86
+27472: E[0:03:14]-R[0:08:33]: Return=0.13, Steps=872, Features = 93
+30000 >>> E[0:03:38]-R[0:08:29]: Return=-1.00, Steps=1000, Features = 95
+36416: E[0:04:38]-R[0:08:06]: Return=0.99, Steps=11, Features = 135
+40000 >>> E[0:05:20]-R[0:07:59]: Return=0.99, Steps=9, Features = 166
+44639: E[0:06:20]-R[0:07:51]: Return=0.99, Steps=8, Features = 185
+49095: E[0:07:20]-R[0:07:37]: Return=0.84, Steps=156, Features = 201
+50000 >>> E[0:07:33]-R[0:07:33]: Return=0.99, Steps=11, Features = 207
+54090: E[0:08:33]-R[0:07:16]: Return=0.99, Steps=13, Features = 219
+58421: E[0:09:40]-R[0:06:53]: Return=0.29, Steps=709, Features = 234
+60000 >>> E[0:10:06]-R[0:06:44]: Return=0.99, Steps=7, Features = 239
+63793: E[0:11:08]-R[0:06:19]: Return=0.81, Steps=191, Features = 252
+67282: E[0:12:08]-R[0:05:54]: Return=0.99, Steps=8, Features = 259
+70000 >>> E[0:12:56]-R[0:05:32]: Return=0.99, Steps=9, Features = 262
+73402: E[0:13:56]-R[0:05:03]: Return=0.99, Steps=6, Features = 266
+76796: E[0:14:56]-R[0:04:31]: Return=0.98, Steps=20, Features = 269
+80000 >>> E[0:15:53]-R[0:03:58]: Return=0.99, Steps=10, Features = 273
+83531: E[0:16:57]-R[0:03:20]: Return=0.78, Steps=217, Features = 279
+86797: E[0:17:57]-R[0:02:44]: Return=0.99, Steps=11, Features = 281
+90000 >>> E[0:18:56]-R[0:02:06]: Return=0.99, Steps=7, Features = 282
+93210: E[0:19:56]-R[0:01:27]: Return=0.99, Steps=8, Features = 286
+96407: E[0:20:56]-R[0:00:47]: Return=0.99, Steps=13, Features = 288
+99575: E[0:21:56]-R[0:00:06]: Return=0.99, Steps=11, Features = 294
+100000 >>> E[0:22:04]-R[0:00:00]: Return=0.99, Steps=7, Features = 294
+============================================================
+Took 0:22:04
+Results	=> ././5-results.txt
+Log	=> ././5-out.txt
