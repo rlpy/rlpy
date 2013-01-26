@@ -1,0 +1,16 @@
+000 (16482.000.000) 01/26 01:02:47 Job submitted from host: <128.30.112.18:46685>
+...
+001 (16482.000.000) 01/26 01:03:07 Job executing on host: <128.30.108.61:46809>
+...
+006 (16482.000.000) 01/26 01:03:15 Image size of job updated: 33564
+	5  -  MemoryUsage of job (MB)
+	4488  -  ResidentSetSize of job (KB)
+...
+006 (16482.000.000) 01/26 01:08:15 Image size of job updated: 192632
+	28  -  MemoryUsage of job (MB)
+	28008  -  ResidentSetSize of job (KB)
+...
+006 (16482.000.000) 01/26 01:13:15 Image size of job updated: 192928
+	28  -  MemoryUsage of job (MB)
+	28376  -  ResidentSetSize of job (KB)
+...

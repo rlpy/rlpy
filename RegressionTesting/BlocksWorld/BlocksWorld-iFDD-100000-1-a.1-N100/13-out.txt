@@ -1,0 +1,59 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			0
+Sparsify:		1
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		1.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+boyan_N0: 100.0
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././13-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:01:00]-R[0:08:57]: Return=-1.00, Steps=1000, Features = 52
+20000: E[0:02:02]-R[0:08:08]: Return=-1.00, Steps=1000, Features = 52
+20000 >>> E[0:02:04]-R[0:08:16]: Return=-1.00, Steps=1000, Features = 52
+30000: E[0:03:07]-R[0:07:16]: Return=-1.00, Steps=1000, Features = 52
+30000 >>> E[0:03:09]-R[0:07:21]: Return=-1.00, Steps=1000, Features = 52
+40000: E[0:04:15]-R[0:06:23]: Return=-1.00, Steps=1000, Features = 59
+40000 >>> E[0:04:17]-R[0:06:26]: Return=-1.00, Steps=1000, Features = 59
+49000: E[0:05:21]-R[0:05:34]: Return=-1.00, Steps=1000, Features = 67
+50000 >>> E[0:05:30]-R[0:05:30]: Return=-1.00, Steps=1000, Features = 67
+59000: E[0:06:37]-R[0:04:36]: Return=-1.00, Steps=1000, Features = 69
+60000 >>> E[0:06:46]-R[0:04:31]: Return=-1.00, Steps=1000, Features = 69
+69000: E[0:07:53]-R[0:03:33]: Return=-1.00, Steps=1000, Features = 73
+70000 >>> E[0:08:03]-R[0:03:27]: Return=-1.00, Steps=1000, Features = 73
+78000: E[0:09:04]-R[0:02:34]: Return=-1.00, Steps=1000, Features = 78
+80000 >>> E[0:09:22]-R[0:02:21]: Return=-1.00, Steps=1000, Features = 79
+88000: E[0:10:26]-R[0:01:25]: Return=-1.00, Steps=1000, Features = 80
+90000 >>> E[0:10:44]-R[0:01:12]: Return=-1.00, Steps=1000, Features = 80
+98000: E[0:11:48]-R[0:00:14]: Return=-1.00, Steps=1000, Features = 84
+100000 >>> E[0:12:07]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 86
+============================================================
+Took 0:12:07
+Results	=> ././13-results.txt
+Log	=> ././13-out.txt
