@@ -64,6 +64,7 @@ class OnlineExperiment (Experiment):
             if self.show_all: self.domain.show(s,a, self.agent.representation)
             #Act,Learn,Step
             r,ns,terminal   = self.domain.step(s, a)
+            print s,a,r,ns
             na              = self.agent.policy.pi(ns)
             #self.logger.log(str(total_steps)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             # Hash new state for the tabular case
@@ -74,7 +75,8 @@ class OnlineExperiment (Experiment):
             eps_steps   += 1
             eps_return  += r
             s,a          = ns,na
-
+            
+            
             #Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
                 start_log_time  = time()

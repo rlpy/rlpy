@@ -3,8 +3,6 @@ from Tools import *
 from Domains import *
 from Representations import *
 
-print os.getpid()
-sleep(5)
-print os.getpid()
-sleep(5)
-print os.getpid()
+random.seed(5489)
+for i in range(10):
+    print random.rand()

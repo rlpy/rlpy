@@ -51,7 +51,10 @@ class Pendulum_InvertedBalance(Pendulum):
         super(Pendulum_InvertedBalance,self).__init__(logger)
     def s0(self):    
         # Returns the initial state, pendulum vertical
-        return array([0,0])
+        # Initial state is uniformly randomed between [-.2,.2] for both dimensions
+        s0 = (random.rand(2)*2-1)*0.2
+        return s0 
+            
     def _getReward(self, s, a):
         # Return the reward earned for this state-action pair
         # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2

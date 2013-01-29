@@ -10,6 +10,7 @@ class eGreedy(Policy):
         super(eGreedy,self).__init__(representation,logger)
     def pi(self,s):
         coin = random.rand()
+        print "coin=",coin
         if coin < self.epsilon:
             A = self.representation.domain.possibleActions(s)
             return randSet(A)

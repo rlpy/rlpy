@@ -33,10 +33,10 @@ class Agent(object):
             self.logger.line()
             self.logger.log("Agent:\t\t"+str(className(self)))
             self.logger.log("Policy:\t\t"+str(className(self.policy)))
-            if self.alpha_decay_mode == 'boyan': self.logger.log("boyan_N0: %.1f"%self.boyan_N0)
+            if self.alpha_decay_mode == 'boyan': self.logger.log("boyan_N0:\t%.1f"%self.boyan_N0)
         # Check to make sure selected alpha_decay mode is valid
         if not self.alpha_decay_mode in self.valid_decay_modes:
-            errMsg = "Invalid decay mode selected:"+self.alpha_decay_mode+".\nValid choices are: "+str(self.valid_decay_modes)
+            errMsg = "Invalid decay mode selected:"+self.alpha_decay -_mode+".\nValid choices are: "+str(self.valid_decay_modes)
             if self.logger:
                 self.logger.log(errMsg)
             else: shout(errMsg)
@@ -57,7 +57,7 @@ class Agent(object):
             #Automatic learning rate: [Dabney W. 2012]
             self.candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
             self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
-            self.alpha      = min(self.alpha,self.candid_alpha)
+            self.alpha          = min(self.alpha,self.candid_alpha)
         elif self.alpha_decay_mode == 'boyan':
             self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + self.episode_count ** 1.1)
         else:

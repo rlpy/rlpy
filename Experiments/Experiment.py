@@ -10,8 +10,8 @@ class Experiment(object):
     showDomain = False      # Show the domain during execution?
     mainSeed = 999999999    # Main Random Seed used to generate other random seeds
     randomSeeds = None      # Array of random seeds. This is used to make sure all jobs start with the same random seed 
-    maxRuns = 100           # Maximum number of runs used for averaging. This is specified so that enough random seeds are generated
-    id = 0                  # ID of the experiment running
+    maxRuns = 100          # Maximum number of runs used for averaging. This is specified so that enough random seeds are generated
+    id = 1                  # ID of the experiment running
     domain = None           # link to the domain object
     agent = None            # link to the agent object
     show_all = 0            # Show the domain and the value function during the experiment
@@ -23,9 +23,12 @@ class Experiment(object):
     def __init__(self,id, agent, domain,logger, exp_naming, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
         self.id = id
         # Find the corresponding random seed for the experiment id
+        assert id > 0
         random.seed(self.mainSeed)
-        self.randomSeeds = random.randint(self.mainSeed,size=self.maxRuns)
-        random.seed(self.randomSeeds[self.id])
+        self.randomSeeds = alborzrandint(1,self.mainSeed,self.maxRuns,1)
+        #for x in self.randomSeeds:
+        #    print('%d'%x) 
+        random.seed(self.randomSeeds[self.id-1,0])
         self.agent              = agent
         self.domain             = domain
         self.output_filename    = '%d-results.txt' % (id)

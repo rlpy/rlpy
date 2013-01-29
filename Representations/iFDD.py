@@ -64,7 +64,7 @@ class iFDD(Representation):
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_Representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
-    def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0):
+    def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDplus = 1):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
@@ -75,6 +75,7 @@ class iFDD(Representation):
         self.batchThreshold         = batchThreshold
         self.sortediFDDFeatures     = PriorityQueueWithNovelty()
         self.initial_Representation = initial_Representation
+        self.iFDDplus               = iFDDplus
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
         if self.logger:
@@ -148,6 +149,7 @@ class iFDD(Representation):
         h  = self.featureIndex2feature[h_index].f_set
         f           = g.union(h)
         feature     = self.iFDD_features.get(f)
+        if not self.iFDDplus: td_error = abs(td_error)
         if feature is None:
             #Look it up in potentials
             potential = self.iFDD_potentials.get(f)
@@ -156,10 +158,7 @@ class iFDD(Representation):
                 potential = iFDD_potential(f,td_error,g_index,h_index)
                 self.iFDD_potentials[f] = potential
             else:
-                if self.iFDDplus:
-                    potential.relevance += td_error
-                else:
-                    potential.relevance += abs(td_error)
+                potential.relevance += td_error
                 potential.count     += 1
             # Check for discovery
             relevance = potential.relevance if not self.iFDDplus else abs(potential.relevance/sqrt(potential.count)) 
@@ -168,7 +167,6 @@ class iFDD(Representation):
                 self.maxRelevance = -inf
             else:
                 self.updateMaxRelevance(relevance)
-
     def show(self):
         self.showFeatures()
         self.showPotentials()
@@ -282,17 +280,17 @@ class iFDD(Representation):
         print join(["-"]*30)
         print " index\t| f_set\t| p1\t| p2\t | Weights (per action)"
         print join(["-"]*30)
-        for feature in self.sortediFDDFeatures.toList():
+        for feature in reversed(self.sortediFDDFeatures.toList()):
         #for feature in self.iFDD_features.itervalues():
             #print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
-            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2)
+            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,str(sort(list(feature.f_set))),feature.p1,feature.p2)
     def showPotentials(self):
         print "Potentials:"
         print join(["-"]*30)
         print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
         print join(["-"]*30)
         for _,potential in self.iFDD_potentials.iteritems():
-            print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index,str(list(potential.f_set)),potential.relevance,potential.count,potential.p1,potential.p2)
+            print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index,str(sort(list(potential.f_set))),potential.relevance,potential.count,potential.p1,potential.p2)
     def showCache(self):
         if self.useCache: 
             print "Cache:"
@@ -310,51 +308,72 @@ class iFDD(Representation):
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1
+    RANDOM_TEST         = 1
     OUT_PATH            = 'Results/Temp'
 #    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     logger              = Logger()
     discovery_threshold = 1
     #domain      = MountainCar()
-    domain      = SystemAdministrator('../Domains/SystemAdministratorMaps/20MachTutorial.txt')
-    initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
-    rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
-    rep.theta   = arange(rep.features_num*domain.actions_num)*10
-    print 'Initial [0,1] => ',
-    print rep.findFinalActiveFeatures([0,1])
-    print rep.inspectPair(0,1, discovery_threshold+1)
-    print 'Initial [1,2] => ',
-    print rep.findFinalActiveFeatures([1,2])
-    print 'Initial [2,3] => ',
-    print rep.findFinalActiveFeatures([2,3])
-    rep.showCache()
-#    print 'discover 0,20'
-#    phi_s = zeros(rep.features_num)
-#    phi_s[0] = 1
-#    phi_s[3] = 1
-#    phi_s[20] = 1
-#    rep.discover(phi_s, discovery_threshold+1)
-    rep.showFeatures()
-    rep.showCache()
-    print 'Initial [0,20] => ',
-    print rep.findFinalActiveFeatures([0,20])
-    print 'Initial [0,1,20] => ',
-    print rep.findFinalActiveFeatures([0,1,20])
-    rep.showCache()
-    # Change the weight for new feature 40
-    rep.theta[40] = -100
-    print 'Initial [0,20] => ',
-    print rep.findFinalActiveFeatures([0,20])
-    print 'discover 0,1,20'
-    rep.inspectPair(1,rep.features_num-1, discovery_threshold+1)
-    rep.showFeatures()
-    rep.showCache()
-    print 'Initial [0,1,20] => ',
-    print rep.findFinalActiveFeatures([0,1,20])
-    rep.showCache()
-    print 'Initial [0,1,2,3,4,5,6,7,8,20] => ',
-    print rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
-    rep.showCache()
     
+    if not RANDOM_TEST:
+        domain      = SystemAdministrator('../Domains/SystemAdministratorMaps/20MachTutorial.txt')
+        initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
+        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
+        rep.theta   = arange(rep.features_num*domain.actions_num)*10
+        print 'Initial [0,1] => ',
+        print rep.findFinalActiveFeatures([0,1])
+        print rep.inspectPair(0,1, discovery_threshold+1)
+        print 'Initial [1,2] => ',
+        print rep.findFinalActiveFeatures([1,2])
+        print 'Initial [2,3] => ',
+        print rep.findFinalActiveFeatures([2,3])
+        rep.showCache()
+    #    print 'discover 0,20'
+    #    phi_s = zeros(rep.features_num)
+    #    phi_s[0] = 1
+    #    phi_s[3] = 1
+    #    phi_s[20] = 1
+    #    rep.discover(phi_s, discovery_threshold+1)
+        rep.showFeatures()
+        rep.showCache()
+        print 'Initial [0,20] => ',
+        print rep.findFinalActiveFeatures([0,20])
+        print 'Initial [0,1,20] => ',
+        print rep.findFinalActiveFeatures([0,1,20])
+        rep.showCache()
+        # Change the weight for new feature 40
+        rep.theta[40] = -100
+        print 'Initial [0,20] => ',
+        print rep.findFinalActiveFeatures([0,20])
+        print 'discover 0,1,20'
+        rep.inspectPair(1,rep.features_num-1, discovery_threshold+1)
+        rep.showFeatures()
+        rep.showCache()
+        print 'Initial [0,1,20] => ',
+        print rep.findFinalActiveFeatures([0,1,20])
+        rep.showCache()
+        print 'Initial [0,1,2,3,4,5,6,7,8,20] => ',
+        print rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
+        rep.showCache()
+    else:
+        #Random Test
+        TRIALS      = 200
+        K           = 5 # number of randomly activated features
+        domain      = PST(logger=logger)
+        random.seed(999999999)
+        initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
+        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,iFDDplus=1)
+        rep.theta   = arange(rep.features_num*domain.actions_num)*10
+        n           = rep.features_num
+        for i in arange(TRIALS):
+            phi         = zeros(n,'bool')
+            for j in arange(K):
+                ind = alborzrandint(0,n-1)
+                phi[ind] = 1
+                threshold = random.rand()*2-1
+            print '%d: %0.2f >> %s' % (i+1, threshold, str(phi.nonzero()[0]))
+            rep.discover(phi,threshold)
+        rep.show()
     
     
     
