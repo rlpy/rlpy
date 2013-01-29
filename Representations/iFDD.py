@@ -60,11 +60,11 @@ class iFDD(Representation):
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
-    iFDDplus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
+    iFDDPlus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_Representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
-    def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDplus = 1):
+    def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
@@ -75,12 +75,12 @@ class iFDD(Representation):
         self.batchThreshold         = batchThreshold
         self.sortediFDDFeatures     = PriorityQueueWithNovelty()
         self.initial_Representation = initial_Representation
-        self.iFDDplus               = iFDDplus
+        self.iFDDPlus               = iFDDPlus
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
         if self.logger:
             self.logger.log("Initial Representation:\t%s"% className(self.initial_Representation))
-            self.logger.log("Plus:\t\t\t%d" % self.iFDDplus)
+            self.logger.log("Plus:\t\t\t%d" % self.iFDDPlus)
             self.logger.log("Sparsify:\t\t%d"% self.sparsify)
             self.logger.log("Cached:\t\t\t%d"% self.useCache)
             self.logger.log("Online Threshold:\t%0.3f" % self.discovery_threshold)
@@ -149,7 +149,7 @@ class iFDD(Representation):
         h  = self.featureIndex2feature[h_index].f_set
         f           = g.union(h)
         feature     = self.iFDD_features.get(f)
-        if not self.iFDDplus: td_error = abs(td_error)
+        if not self.iFDDPlus: td_error = abs(td_error)
         if feature is None:
             #Look it up in potentials
             potential = self.iFDD_potentials.get(f)
@@ -161,7 +161,7 @@ class iFDD(Representation):
                 potential.relevance += td_error
                 potential.count     += 1
             # Check for discovery
-            relevance = potential.relevance if not self.iFDDplus else abs(potential.relevance/sqrt(potential.count)) 
+            relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count)) 
             if relevance > self.discovery_threshold:
                 self.addFeature(potential)
                 self.maxRelevance = -inf
@@ -362,7 +362,7 @@ if __name__ == '__main__':
         domain      = PST(logger=logger)
         random.seed(999999999)
         initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
-        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,iFDDplus=1)
+        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,iFDDplus=0)
         rep.theta   = arange(rep.features_num*domain.actions_num)*10
         n           = rep.features_num
         for i in arange(TRIALS):
