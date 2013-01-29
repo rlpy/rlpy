@@ -6,6 +6,7 @@ executable = /usr/bin/python
 universe = vanilla
 priority = 0
 Notification = Never
+requirements = OpSys == "LINUX"
 
 #Requirements = isPublic && \
 #               Memory >= 6144 && \
