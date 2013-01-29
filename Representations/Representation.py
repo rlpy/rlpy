@@ -4,7 +4,7 @@
 # Assuming Linear Function approximator Family
 from Tools import *
 class Representation(object):
-    DEBUG           = 1
+    DEBUG           = 0
     theta           = None  #Linear Weights
     domain          = None  #Link to the domain object 
     features_num    = None  #Number of features
