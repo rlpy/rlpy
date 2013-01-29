@@ -5,6 +5,7 @@ from Experiment import *
 
 class OnlineExperiment (Experiment):
     # Statistics are saved as : 
+    DEBUG           = 0         # Show s,a,r,s'
     STEP            = 0         # Learning Steps
     RETURN          = 1         # Sum of Rewards
     CLOCK_TIME      = 2         # Time in seconds so far
@@ -64,7 +65,7 @@ class OnlineExperiment (Experiment):
             if self.show_all: self.domain.show(s,a, self.agent.representation)
             #Act,Learn,Step
             r,ns,terminal   = self.domain.step(s, a)
-            print s,a,r,ns
+            if self.DEBUG: print s,a,r,ns
             na              = self.agent.policy.pi(ns)
             #self.logger.log(str(total_steps)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             # Hash new state for the tabular case

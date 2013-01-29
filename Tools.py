@@ -100,7 +100,7 @@ def randSet(x):
     #Returns a random element of a list uniformly.
     #i = random.random_integers(0,size(x)-1)
     i = alborzrandint(0,size(x)-1)[0,0]
-    print('in randSet: %d' % i)
+    #print('in randSet: %d' % i)
     return x[i]
 def closestDiscretization(x, bins, limits):
     #Return the closest point to x based on the discretization defined by the number of bins and limits
