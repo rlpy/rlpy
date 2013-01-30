@@ -38,7 +38,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 if MAKE_EXP_NAME else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size 
-    JOB_ID              = -1 if jobID == -1 else jobID
+    JOB_ID              = 1 if jobID == -1 else jobID
     PROJECT_PATH        = '.' if PROJECT_PATH == None else PROJECT_PATH
     DEBUG               = 0
     logger              = Logger()
@@ -86,10 +86,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
-    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
