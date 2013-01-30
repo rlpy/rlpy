@@ -1,0 +1,42 @@
+yodel2:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel2 NEWLY added as FAULTY.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel2 Faulty, but already discovered.
+
+yodel4:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel4 NEWLY added as FAULTY.
+
+overed.
+
+yodel4:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel4 NEWLY added as FAULTY.
+
+yodel4:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel4 NEWLY added as FAULTY.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel10 NEWLY added as FAULTY.
+
+ered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel2 Faulty, but already discovered.
+
+yodel4:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel4 NEWLY added as FAULTY.
+
+overed.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel10 NEWLY added as FAULTY.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel10 NEWLY added as FAULTY.
+
+yodel7:		 MISSING CRITICAL PACKAGE:	scipy
+Computer yodel7 NEWLY added as FAULTY.
+
