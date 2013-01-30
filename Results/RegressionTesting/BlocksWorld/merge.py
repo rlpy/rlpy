@@ -37,6 +37,5 @@ merger.plot('Steps','Learning Steps')
 #merger.plot('Steps','Time(s)')
 #merger.plot('Features','Episodes')
 #merger.plot('Terminal')
-pl.show()
-
+#bbox_extra_artists=(self.legend,), bbox_inches='tight'
 

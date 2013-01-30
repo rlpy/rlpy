@@ -612,7 +612,7 @@ class Merger(object):
         else:
              self.output_path = output_path
         
-        self.labels                 = labels if labels != [] else [p.rpartition('-')[-1] for p in self.exp_paths]
+        self.labels                 = labels if labels != [] else [self.extractLabel(p) for p in self.exp_paths]
         print "Experiment Labels: ", self.labels
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
@@ -623,6 +623,13 @@ class Merger(object):
             means, std_errs = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)
+    def extractLabel(self,p):
+        # Given an experiment directoryname it extracts a reasonable label
+        tokens = p.split('-')
+        if len(tokens) > 1:
+            return tokens[-2]+'-'+tokens[-1]
+        else:
+            return tokens[-1]
     def parseExperiment(self,exp):
         # Parses all the files in form of <number>-results.txt and return 
         # two matrices corresponding to mean and std_err
@@ -644,6 +651,8 @@ class Merger(object):
         self.fig.clear()
         min_ = +inf
         max_ = -inf    
+        
+        #See if requested axes are reasonable
         if Y_axis in self.AXES:
             y_ind = self.AXES.index(Y_axis)
         else:
@@ -652,9 +661,11 @@ class Merger(object):
             x_ind = self.AXES.index(X_axis)
         else:
             print 'unknown X_axis = %s', X_axis
+            
         Xs      = zeros((self.exp_num,self.datapoints_per_graph))
         Ys      = zeros((self.exp_num,self.datapoints_per_graph))
         Errs    = zeros((self.exp_num,self.datapoints_per_graph))
+        
         for i in arange(self.exp_num):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
@@ -672,20 +683,23 @@ class Merger(object):
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
+        
         if self.legend:
             #pl.legend(loc='lower right',bbox_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
-            pl.legend(fancybox=True,shadow=True, ncol=1, loc=2, frameon=True)
-            
+            self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+            #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
         pl.xlim(0,max(Xs[:,-1])*1.02)
-        if min_ != max_: 
-            pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
+        if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
         pl.xlabel(X_axis,fontsize=16)
         pl.ylabel(Y_axis,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
-        self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1)
+        if self.legend:
+            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
+        else:
+            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
         # Store the numbers in a txt file
         f = open(fullfilename+'.txt','w')
         for i in range(self.exp_num):
