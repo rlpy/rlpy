@@ -4,12 +4,6 @@
 from Tools import *
 from Representations import *
 
-normGamPhiMinusPhi      = []
-normElegTimesDiff       = []
-finalCandAlpha          = []
-normPhi                 = []
-normElig                = []
-
 class Agent(object):
     representation      = None # Link to the representation object 
     domain              = None         # Link to the domain object
@@ -76,12 +70,6 @@ class Agent(object):
         else:
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")
-
-    	normGamPhiMinusPhi.append(linalg.norm(gamma*phi_prime_s-phi_s,ord=2))
-        normElegTimesDiff.append(dot(gamma*phi_prime_s-phi_s,self.eligibility_trace_s))
-        finalCandAlpha.append(self.candid_alpha)
-        normPhi.append(linalg.norm(phi_s))
-        normElig.append(linalg.norm(self.eligibility_trace_s))
     
         
     def printAll(self):
