@@ -28,21 +28,21 @@ Alpha_0:		1.00
 Decay mode:		dabney
 ============================================================
 Experiment:		OnlineExperiment
-Output:			././13-results.txt
+Output:			././14-results.txt
 Learning Steps:		100000
 Performance Checks:	10
 Log Intervals:		60(s)
-10000 >>> E[0:00:42]-R[0:06:22]: Return=0.00, Steps=1000, Features = 66
-20000 >>> E[0:01:24]-R[0:05:37]: Return=0.00, Steps=1000, Features = 73
-30000 >>> E[0:02:06]-R[0:04:55]: Return=0.00, Steps=1000, Features = 77
-40000 >>> E[0:02:46]-R[0:04:10]: Return=0.00, Steps=1000, Features = 84
-50000 >>> E[0:03:27]-R[0:03:27]: Return=-1.00, Steps=1000, Features = 84
-60000 >>> E[0:04:07]-R[0:02:45]: Return=0.00, Steps=1000, Features = 85
-70000 >>> E[0:04:48]-R[0:02:03]: Return=0.00, Steps=1000, Features = 88
-80000 >>> E[0:05:27]-R[0:01:22]: Return=0.00, Steps=1000, Features = 89
-90000 >>> E[0:06:07]-R[0:00:41]: Return=-1.00, Steps=1000, Features = 89
-100000 >>> E[0:06:46]-R[0:00:00]: Return=0.00, Steps=1000, Features = 90
+10000 >>> E[0:00:42]-R[0:06:16]: Return=0.00, Steps=1000, Features = 67
+20000 >>> E[0:01:23]-R[0:05:31]: Return=0.00, Steps=1000, Features = 71
+30000 >>> E[0:02:04]-R[0:04:49]: Return=0.00, Steps=1000, Features = 72
+40000 >>> E[0:02:43]-R[0:04:04]: Return=0.00, Steps=1000, Features = 78
+50000 >>> E[0:03:23]-R[0:03:23]: Return=0.00, Steps=1000, Features = 78
+60000 >>> E[0:04:01]-R[0:02:41]: Return=0.00, Steps=1000, Features = 78
+70000 >>> E[0:04:41]-R[0:02:00]: Return=0.00, Steps=1000, Features = 78
+80000 >>> E[0:05:19]-R[0:01:20]: Return=0.00, Steps=1000, Features = 78
+90000 >>> E[0:05:57]-R[0:00:40]: Return=0.00, Steps=1000, Features = 79
+100000 >>> E[0:06:35]-R[0:00:00]: Return=0.00, Steps=1000, Features = 79
 ============================================================
-Took 0:06:46
-Results	=> ././13-results.txt
-Log	=> ././13-out.txt
+Took 0:06:35
+Results	=> ././14-results.txt
+Log	=> ././14-out.txt
