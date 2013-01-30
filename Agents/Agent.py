@@ -3,6 +3,13 @@
 ######################################################
 from Tools import *
 from Representations import *
+
+normGamPhiMinusPhi      = []
+normElegTimesDiff       = []
+finalCandAlpha          = []
+normPhi                 = []
+normElig                = []
+
 class Agent(object):
     representation      = None # Link to the representation object 
     domain              = None         # Link to the domain object
@@ -51,18 +58,31 @@ class Agent(object):
         # ABSTRACT
         
     ## Computes a new alpha for this agent based on @var self.alpha_decay_mode.
-    # Note that we divide by number of active features in SARSA
-    def updateAlpha(self,phi,phi_prime,gamma):
+    # Note that we divide by number of active features in SARShe A
+    # We pass the phi corresponding to the STATE, *NOT* the copy/pasted
+    # phi_s_a.
+    def updateAlpha(self,phi_s,phi_prime_s,gamma, terminal):
         if self.alpha_decay_mode == 'dabney':
-            #Automatic learning rate: [Dabney W. 2012]
-            self.candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-            self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
-            self.alpha          = min(self.alpha,self.candid_alpha)
+        # We only update alpha if this step is non-terminal; else phi_prime becomes
+        # zero and the dot product below becomes very large, creating a very small alpha
+            if not terminal:
+                #Automatic learning rate: [Dabney W. 2012]
+                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,self.eligibility_trace_s)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
+                self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
+                self.alpha          = min(self.alpha,self.candid_alpha)
+            # else we take no action
         elif self.alpha_decay_mode == 'boyan':
             self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + self.episode_count ** 1.1)
         else:
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")
+
+    	normGamPhiMinusPhi.append(linalg.norm(gamma*phi_prime_s-phi_s,ord=2))
+        normElegTimesDiff.append(dot(gamma*phi_prime_s-phi_s,self.eligibility_trace_s))
+        finalCandAlpha.append(self.candid_alpha)
+        normPhi.append(linalg.norm(phi_s))
+        normElig.append(linalg.norm(self.eligibility_trace_s))
+    
         
     def printAll(self):
         printClass(self)
