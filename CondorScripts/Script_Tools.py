@@ -101,8 +101,12 @@ class FileHelper(object):
 
 def getUniqueLines(fileName):
 	myFile = FileHelper(fileName)
-	myFile.open('r')
-	allLines = [myFile.myReadLine() ]
+	myFile.open('r') 
+	allLines = []
+	while True:
+            line = myFile.myReadLine()
+            if not line: break
+            else: allLines.append(line)
 	myFile.close()
 	return Set(allLines)	
 

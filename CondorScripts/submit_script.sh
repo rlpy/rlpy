@@ -6,7 +6,13 @@ executable = /usr/bin/python
 universe = vanilla
 priority = 0
 Notification = Never
-requirements = OpSys == "LINUX"
+# yodel machines have no scipy
+
+requirements = OpSys == "LINUX" && \
+               Machine != "yodel7.csail.mit.edu" && \
+               Machine != "yodel4.csail.mit.edu" && \
+               Machine != "yodel2.csail.mit.edu" && \
+               Machine != "yodel10.csail.mit.edu" &&
 
 #Requirements = isPublic && \
 #               Memory >= 6144 && \
