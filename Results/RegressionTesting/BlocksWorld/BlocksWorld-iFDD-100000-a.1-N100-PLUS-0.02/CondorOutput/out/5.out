@@ -1,0 +1,54 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	0.020
+Batch Threshold:		0.020
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+boyan_N0:	100.0
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././5-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:49]-R[0:07:23]: Return=-1.00, Steps=1000, Features = 79
+20000 >>> E[0:01:42]-R[0:06:46]: Return=-1.00, Steps=1000, Features = 284
+30000 >>> E[0:02:41]-R[0:06:15]: Return=-1.00, Steps=1000, Features = 317
+40000 >>> E[0:03:39]-R[0:05:28]: Return=0.98, Steps=16, Features = 431
+49823: E[0:04:39]-R[0:04:41]: Return=0.86, Steps=141, Features = 560
+50000 >>> E[0:04:40]-R[0:04:40]: Return=0.99, Steps=14, Features = 563
+59550: E[0:05:41]-R[0:03:51]: Return=0.96, Steps=40, Features = 620
+60000 >>> E[0:05:44]-R[0:03:49]: Return=0.99, Steps=14, Features = 621
+69359: E[0:06:44]-R[0:02:58]: Return=0.98, Steps=18, Features = 674
+70000 >>> E[0:06:48]-R[0:02:55]: Return=0.98, Steps=22, Features = 674
+80000 >>> E[0:07:46]-R[0:01:56]: Return=0.99, Steps=13, Features = 702
+89693: E[0:08:46]-R[0:01:00]: Return=0.98, Steps=25, Features = 737
+90000 >>> E[0:08:48]-R[0:00:59]: Return=0.98, Steps=23, Features = 737
+100000 >>> E[0:09:43]-R[0:00:00]: Return=0.98, Steps=23, Features = 748
+============================================================
+Took 0:09:43
+Results	=> ././5-results.txt
+Log	=> ././5-out.txt

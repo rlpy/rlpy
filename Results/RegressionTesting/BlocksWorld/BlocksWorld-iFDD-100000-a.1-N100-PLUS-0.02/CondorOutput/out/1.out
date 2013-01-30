@@ -1,0 +1,54 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	0.020
+Batch Threshold:		0.020
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+boyan_N0:	100.0
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././1-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:53]-R[0:07:56]: Return=-1.00, Steps=1000, Features = 52
+19000: E[0:01:55]-R[0:08:09]: Return=-1.00, Steps=1000, Features = 61
+20000 >>> E[0:02:06]-R[0:08:24]: Return=-1.00, Steps=1000, Features = 64
+29000: E[0:03:08]-R[0:07:41]: Return=-1.00, Steps=1000, Features = 71
+30000 >>> E[0:03:19]-R[0:07:44]: Return=-1.00, Steps=1000, Features = 72
+40000 >>> E[0:04:21]-R[0:06:32]: Return=-1.00, Steps=1000, Features = 85
+50000 >>> E[0:05:14]-R[0:05:14]: Return=-1.00, Steps=1000, Features = 114
+59000: E[0:06:19]-R[0:04:24]: Return=-1.00, Steps=1000, Features = 128
+60000 >>> E[0:06:30]-R[0:04:20]: Return=-1.00, Steps=1000, Features = 129
+69000: E[0:07:36]-R[0:03:25]: Return=-1.00, Steps=1000, Features = 138
+70000 >>> E[0:07:47]-R[0:03:20]: Return=-1.00, Steps=1000, Features = 142
+80000 >>> E[0:08:49]-R[0:02:12]: Return=-1.00, Steps=1000, Features = 150
+90000 >>> E[0:09:43]-R[0:01:05]: Return=-1.00, Steps=1000, Features = 160
+100000 >>> E[0:10:34]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 173
+============================================================
+Took 0:10:34
+Results	=> ././1-results.txt
+Log	=> ././1-out.txt
