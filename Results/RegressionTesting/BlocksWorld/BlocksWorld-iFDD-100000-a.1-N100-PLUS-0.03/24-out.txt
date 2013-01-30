@@ -1,0 +1,53 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	0.030
+Batch Threshold:		0.030
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+boyan_N0:	100.0
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././24-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:00:46]-R[0:06:56]: Return=-1.00, Steps=1000, Features = 138
+20000 >>> E[0:01:32]-R[0:06:08]: Return=-1.00, Steps=1000, Features = 175
+30000 >>> E[0:02:16]-R[0:05:18]: Return=0.98, Steps=18, Features = 267
+40000 >>> E[0:03:04]-R[0:04:36]: Return=0.99, Steps=14, Features = 407
+50000 >>> E[0:03:53]-R[0:03:53]: Return=0.99, Steps=12, Features = 501
+60000 >>> E[0:04:45]-R[0:03:10]: Return=0.98, Steps=22, Features = 573
+70000 >>> E[0:05:41]-R[0:02:26]: Return=0.98, Steps=16, Features = 676
+76330: E[0:06:47]-R[0:02:06]: Return=0.13, Steps=873, Features = 732
+80000 >>> E[0:07:27]-R[0:01:52]: Return=0.99, Steps=15, Features = 762
+86085: E[0:08:27]-R[0:01:22]: Return=0.71, Steps=291, Features = 781
+90000 >>> E[0:08:50]-R[0:00:59]: Return=0.99, Steps=14, Features = 802
+99615: E[0:09:51]-R[0:00:02]: Return=0.90, Steps=99, Features = 834
+100000 >>> E[0:09:53]-R[0:00:00]: Return=0.99, Steps=12, Features = 836
+============================================================
+Took 0:09:53
+Results	=> ././24-results.txt
+Log	=> ././24-out.txt

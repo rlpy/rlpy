@@ -1,0 +1,53 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	6
+|S|:		46656
+|A|:		36
+|S|x|A|:		1679616
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		6
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	37
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	37
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	0.040
+Batch Threshold:		0.040
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+boyan_N0:	100.0
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			././18-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+10000 >>> E[0:01:01]-R[0:09:08]: Return=-1.00, Steps=1000, Features = 59
+20000 >>> E[0:01:46]-R[0:07:03]: Return=-1.00, Steps=1000, Features = 63
+30000 >>> E[0:02:31]-R[0:05:52]: Return=-1.00, Steps=1000, Features = 86
+40000 >>> E[0:03:15]-R[0:04:52]: Return=0.99, Steps=8, Features = 169
+50000 >>> E[0:04:03]-R[0:04:03]: Return=0.99, Steps=9, Features = 266
+60000 >>> E[0:04:53]-R[0:03:15]: Return=0.99, Steps=11, Features = 289
+69296: E[0:05:53]-R[0:02:36]: Return=0.99, Steps=12, Features = 312
+70000 >>> E[0:06:00]-R[0:02:34]: Return=0.99, Steps=9, Features = 313
+77365: E[0:07:00]-R[0:02:03]: Return=0.94, Steps=61, Features = 320
+80000 >>> E[0:07:16]-R[0:01:49]: Return=0.99, Steps=9, Features = 323
+89980: E[0:08:16]-R[0:00:55]: Return=0.99, Steps=6, Features = 328
+90000 >>> E[0:08:16]-R[0:00:55]: Return=0.99, Steps=10, Features = 328
+100000 >>> E[0:09:14]-R[0:00:00]: Return=0.99, Steps=7, Features = 350
+============================================================
+Took 0:09:14
+Results	=> ././18-results.txt
+Log	=> ././18-out.txt
