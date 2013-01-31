@@ -8,7 +8,18 @@ priority = 0
 Notification = Never
 # yodel machines have no scipy
 
-requirements = OpSys == "LINUX"
+requirements = OpSys == "LINUX" && \
+               Machine != "yodel7.csail.mit.edu" && \
+               Machine != "yodel4.csail.mit.edu" && \
+               Machine != "yodel2.csail.mit.edu" && \
+               Machine != "yodel10.csail.mit.edu" &&
+               Machine != "yodel7.csail.mit.edu" && \
+               Machine != "yodel6.csail.mit.edu" && \
+               Machine != "yodel8.csail.mit.edu" && \
+               Machine != "yodel17.csail.mit.edu" && \
+               Machine != "yodel13.csail.mit.edu" && \
+               Machine != "yodel12.csail.mit.edu" && \
+               Machine != "yodel11.csail.mit.edu"
 
 #Requirements = isPublic && \
 #               Memory >= 6144 && \
