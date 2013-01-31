@@ -90,3 +90,38 @@
 	   Disk (KB)            :     2750     2750          
 	   Memory (MB)          :        0        0          
 ...
+000 (439378.000.000) 01/31 05:32:27 Job submitted from host: <128.30.112.26:58460>
+...
+001 (439378.000.000) 01/31 05:32:28 Job executing on host: <128.30.112.151:52509>
+...
+006 (439378.000.000) 01/31 05:32:37 Image size of job updated: 199764
+	28  -  MemoryUsage of job (MB)
+	28392  -  ResidentSetSize of job (KB)
+...
+006 (439378.000.000) 01/31 05:37:38 Image size of job updated: 236552
+	64  -  MemoryUsage of job (MB)
+	65284  -  ResidentSetSize of job (KB)
+...
+006 (439378.000.000) 01/31 05:42:39 Image size of job updated: 259044
+	86  -  MemoryUsage of job (MB)
+	87724  -  ResidentSetSize of job (KB)
+...
+006 (439378.000.000) 01/31 05:44:24 Image size of job updated: 266420
+	86  -  MemoryUsage of job (MB)
+	87724  -  ResidentSetSize of job (KB)
+...
+005 (439378.000.000) 01/31 05:44:24 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:11:50, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:11:50, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :       86       86          
+...
