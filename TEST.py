@@ -3,6 +3,8 @@ from Tools import *
 from Domains import *
 from Representations import *
 
-random.seed(5489)
-for i in range(10):
-    print random.rand()
+A = array([
+           [1, 2, 3, 0],
+           [1, 2, 3, 0]])  # All x's, then all y's
+norms = apply_along_axis(linalg.norm, 0, A)
+print A/norms.reshape(1,-1)

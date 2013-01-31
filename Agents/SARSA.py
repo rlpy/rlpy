@@ -25,32 +25,34 @@ class SARSA(Agent):
         phi_prime           = self.representation.phi_sa(ns,na,phi_prime_s)
         
         nnz                 = count_nonzero(phi_s)    #Number of non-zero elements
-        if nnz > 0: # Phi has some nonzero elements, proceed with update
-            #Set eligibility traces:
-            if self.lambda_:
-                self.eligibility_trace   *= gamma*self.lambda_
-                self.eligibility_trace   += phi
-                
-                self.eligibility_trace_s  *= gamma*self.lambda_
-                self.eligibility_trace_s += phi_s
-                
-                #Set max to 1
-                self.eligibility_trace[self.eligibility_trace>1] = 1
-                self.eligibility_trace_s[self.eligibility_trace_s>1] = 1
-            else:
-                self.eligibility_trace    = phi
-                self.eligibility_trace_s  = phi_s
+        if nnz == 0: # Phi has some nonzero elements, proceed with update
+            return
+        
+        #Set eligibility traces:
+        if self.lambda_:
+            self.eligibility_trace   *= gamma*self.lambda_
+            self.eligibility_trace   += phi
             
-            td_error            = r + dot(gamma*phi_prime - phi, theta)
+            self.eligibility_trace_s  *= gamma*self.lambda_
+            self.eligibility_trace_s += phi_s
             
-            self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
-            #
-            theta               += self.alpha * td_error * self.eligibility_trace
-			
-            #Discover features using online iFDD
-            if isinstance(self.representation,iFDD):
-                self.representation.discover(phi_s,td_error)
-			
-            # Set eligibility Traces to zero if it is end of the episode
-            if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
-            # Else there are no nonzero elements, halt update.
+            #Set max to 1
+            self.eligibility_trace[self.eligibility_trace>1] = 1
+            self.eligibility_trace_s[self.eligibility_trace_s>1] = 1
+        else:
+            self.eligibility_trace    = phi
+            self.eligibility_trace_s  = phi_s
+        
+        td_error            = r + dot(gamma*phi_prime - phi, theta)
+        
+        self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
+        #
+        theta               += self.alpha * td_error * self.eligibility_trace
+		
+        #Discover features using online iFDD
+        if isinstance(self.representation,iFDD):
+            self.representation.discover(phi_s,td_error)
+		
+        # Set eligibility Traces to zero if it is end of the episode
+        if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
+        # Else there are no nonzero elements, halt update.

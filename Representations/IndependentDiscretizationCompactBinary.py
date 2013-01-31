@@ -14,6 +14,11 @@ class IndependentDiscretizationCompactBinary(Representation):
         self.nonbinary_dims = union1d(nontwobuckets_dims,domain.continuous_dims)
         self.binary_dims    = setdiff1d(arange(domain.state_space_dims),self.nonbinary_dims)
         self.features_num   = int(sum(self.bins_per_dim)) - len(self.binary_dims) + 1
+        #Calculate the maximum id number 
+        temp_bin_number = copy(self.bins_per_dim)
+        temp_bin_number[self.binary_dims] -= 1
+        self.maxFeatureIDperDimension = cumsum(temp_bin_number)-1
+
         super(IndependentDiscretizationCompactBinary,self).__init__(domain,logger,discretization)
         if self.logger:
             self.logger.log("Binary Dimensions:\t%s"% str(self.binary_dims))
@@ -42,4 +47,8 @@ class IndependentDiscretizationCompactBinary(Representation):
         shifts          = hstack((0, cumsum(temp_bin_number)[:-1]))
         index           = bs+shifts
         # Remove the corresponding features highlighted by remove_index
-        return      index[remain_index].astype('uint32')
+        return      index[remain_index].astype('uint32')    
+    def getDimNumber(self,f):
+        # Returns the dimension number corresponding to this feature
+        dim     = searchsorted(self.maxFeatureIDperDimension,f) 
+        return dim

@@ -82,7 +82,7 @@ class OnlineExperiment (Experiment):
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
                 start_log_time  = time()
                 elapsedTime     = deltaT(self.start_time) 
-                self.logger.log('%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num))
+                self.logger.log('%d: E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num))
 
 
             #Check Performance
@@ -96,7 +96,7 @@ class OnlineExperiment (Experiment):
                                                    performance_steps,# index = 4
                                                    performance_term, # index = 5
                                                    episode_number] # index = 6
-                self.logger.log('%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
+                self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
                 start_log_time      = time()
                 performance_tick    += 1
 

@@ -62,24 +62,24 @@ class iFDD(Representation):
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
     iFDDPlus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
-    initial_Representation  = None  # A Representation that provides the initial set of features for iFDD 
+    initial_representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
-    def __init__(self,domain,logger,discovery_threshold, initial_Representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
+    def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)
-        self.features_num           = initial_Representation.features_num
+        self.features_num           = initial_representation.features_num
         self.debug                  = debug
         self.useCache               = useCache
         self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold         = batchThreshold
         self.sortediFDDFeatures     = PriorityQueueWithNovelty()
-        self.initial_Representation = initial_Representation
+        self.initial_representation = initial_representation
         self.iFDDPlus               = iFDDPlus
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
         if self.logger:
-            self.logger.log("Initial Representation:\t%s"% className(self.initial_Representation))
+            self.logger.log("Initial Representation:\t%s"% className(self.initial_representation))
             self.logger.log("Plus:\t\t\t%d" % self.iFDDPlus)
             self.logger.log("Sparsify:\t\t%d"% self.sparsify)
             self.logger.log("Cached:\t\t\t%d"% self.useCache)
@@ -89,7 +89,7 @@ class iFDD(Representation):
     def phi_nonTerminal(self,s):
         # Based on Tuna's Master Thesis 2012
         F_s                     = zeros(self.features_num,'bool')
-        F_s_0                   = self.initial_Representation.phi_nonTerminal(s)
+        F_s_0                   = self.initial_representation.phi_nonTerminal(s)
         activeIndices           = where(F_s_0 != 0)[0]
         if self.useCache:
             finalActiveIndices     = self.cache.get(frozenset(activeIndices))
@@ -145,28 +145,36 @@ class iFDD(Representation):
     def inspectPair(self,g_index,h_index,td_error):
         # Inspect feature f = g union h where g_index and h_index are the indices of features g and h        
         # If the relevance is > Threshold add it to the list of features
+        # Returns True if a new feature is added
         g  = self.featureIndex2feature[g_index].f_set 
         h  = self.featureIndex2feature[h_index].f_set
         f           = g.union(h)
         feature     = self.iFDD_features.get(f)
         if not self.iFDDPlus: td_error = abs(td_error)
-        if feature is None:
-            #Look it up in potentials
-            potential = self.iFDD_potentials.get(f)
-            if potential is None:
-                # Generate a new potential and put it in the dictionary
-                potential = iFDD_potential(f,td_error,g_index,h_index)
-                self.iFDD_potentials[f] = potential
-            else:
-                potential.relevance += td_error
-                potential.count     += 1
-            # Check for discovery
-            relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count)) 
-            if relevance > self.discovery_threshold:
-                self.addFeature(potential)
-                self.maxRelevance = -inf
-            else:
-                self.updateMaxRelevance(relevance)
+        
+        if feature is not None:
+            #Already exists
+            return False
+
+        #Look it up in potentials
+        potential = self.iFDD_potentials.get(f)
+        if potential is None:
+            # Generate a new potential and put it in the dictionary
+            potential = iFDD_potential(f,td_error,g_index,h_index)
+            self.iFDD_potentials[f] = potential
+        else:
+            potential.relevance += td_error
+            potential.count     += 1
+        # Check for discovery
+        relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count)) 
+        if relevance > self.discovery_threshold:
+            self.maxRelevance = -inf
+            self.addFeature(potential)
+            return True
+        else:
+            self.updateMaxRelevance(relevance)
+            return False
+            
     def show(self):
         self.showFeatures()
         self.showPotentials()
@@ -183,7 +191,7 @@ class iFDD(Representation):
         self.theta      = addNewElementForAllActions(self.theta,a,newElem)
         self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def addInitialFeatures(self):
-        for i in arange(self.initial_Representation.features_num):
+        for i in arange(self.initial_representation.features_num):
             feature = iFDD_feature(i)
             #shout(self,self.iFDD_features[frozenset([i])].index)
             self.iFDD_features[frozenset([i])] = feature
@@ -200,6 +208,7 @@ class iFDD(Representation):
         self.updateWeight(feature.p1,feature.p2)
         # Update the index to feature dictionary
         self.featureIndex2feature[feature.index] = feature
+        #print "IN IFDD, New Feature = %d" % feature.index
         # Update the sorted list of features
         priority = 1/(len(potential.f_set)*1.) # priority is 1/number of initial features corresponding to the feature
         self.sortediFDDFeatures.push(priority,feature)
@@ -223,7 +232,6 @@ class iFDD(Representation):
         p               = len(td_errors)     #Number of samples
         counts          = zeros((n,n))
         relevances      = zeros((n,n))
-        added_feature   = True
         for i in arange(p):
             phiphiT     = outer(phi[i,:],phi[i,:])
             if self.iFDDplus:

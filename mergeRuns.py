@@ -13,7 +13,7 @@ paths = ['Results/Temp/BlocksWorld-iFDD-100000-0.1']
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
 styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
 MarkerSize  = 15
-Legend      = True
+Legend      = False
 
 merger = Merger(paths,colors = colors, styles= styles, markersize = MarkerSize, legend = Legend)
 pl.ioff()
@@ -28,5 +28,3 @@ merger.plot('Steps','Time(s)')
 #merger.plot('Features','Episodes')
 #merger.plot('Terminal')
 pl.show()
-
-
