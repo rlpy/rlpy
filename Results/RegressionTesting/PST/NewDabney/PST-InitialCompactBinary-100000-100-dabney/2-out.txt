@@ -1,0 +1,58 @@
+============================================================
+Domain:		PST
+Dimensions:	12
+|S|:		5451776
+|A|:		27
+|S|x|A|:		147197952
+Episode Cap:	1000
+Gamma:		0.9
+NUM_UAV:		3
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	52
+Binary Dimensions:	[ 6  7  8  9 10 11]
+============================================================
+Representation:		iFDD
+Features per action:	52
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	100.000
+Batch Threshold:		100.000
+Max Batch Discovery:	100
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		1.00
+Decay mode:		dabney
+============================================================
+Experiment:		OnlineExperiment
+Output:			././2-results.txt
+Learning Steps:		100000
+Performance Checks:	10
+Log Intervals:		60(s)
+5717: E[0:01:00]-R[0:16:32]: Return=-104.00, Steps=25, Features = 80
+10000 >>> E[0:01:46]-R[0:15:51]: Return=-49.00, Steps=10, Features = 84
+16606: E[0:02:46]-R[0:13:53]: Return=-4.00, Steps=14, Features = 90
+20000 >>> E[0:03:23]-R[0:13:33]: Return=-93.00, Steps=38, Features = 95
+26009: E[0:04:23]-R[0:12:30]: Return=-88.00, Steps=29, Features = 97
+30000 >>> E[0:04:53]-R[0:11:23]: Return=6.00, Steps=13, Features = 102
+38024: E[0:05:53]-R[0:09:35]: Return=-78.00, Steps=12, Features = 108
+40000 >>> E[0:06:08]-R[0:09:12]: Return=-38.00, Steps=14, Features = 108
+48089: E[0:07:08]-R[0:07:42]: Return=-34.00, Steps=10, Features = 113
+50000 >>> E[0:07:22]-R[0:07:22]: Return=2.00, Steps=10, Features = 115
+58018: E[0:08:23]-R[0:06:04]: Return=-7.00, Steps=84, Features = 124
+60000 >>> E[0:08:38]-R[0:05:45]: Return=58.00, Steps=23, Features = 125
+67914: E[0:09:38]-R[0:04:33]: Return=-128.00, Steps=50, Features = 132
+70000 >>> E[0:09:54]-R[0:04:15]: Return=32.00, Steps=19, Features = 134
+77962: E[0:10:54]-R[0:03:05]: Return=-13.00, Steps=10, Features = 139
+80000 >>> E[0:11:09]-R[0:02:47]: Return=115.00, Steps=22, Features = 139
+88407: E[0:12:09]-R[0:01:36]: Return=30.00, Steps=74, Features = 149
+90000 >>> E[0:12:21]-R[0:01:22]: Return=-69.00, Steps=10, Features = 149
+98195: E[0:13:21]-R[0:00:15]: Return=145.00, Steps=36, Features = 156
+100000 >>> E[0:13:34]-R[0:00:00]: Return=392.00, Steps=73, Features = 156
+============================================================
+Took 0:13:34
+Results	=> ././2-results.txt
+Log	=> ././2-out.txt

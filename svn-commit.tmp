@@ -1,0 +1,43 @@
+
+--This line, and those below, will be ignored--
+
+AM   Agents/.nfs00000000caa06c7800000005
+AM   Representations/.nfs00000000f98e071100000027
+AM   Representations/.nfs000000000873c9f800000004
+AM   Representations/.nfs00000000085201fc00000004
+AM   Representations/.nfs0000000030458c8b00000036
+AM   Domains/.nfs00000000f36f9c2b0000000a
+A    CondorScripts/TEST2/1-out.txt
+A    CondorScripts/TEST2/2-out.txt
+A    CondorScripts/TEST2/CondorOutput
+A    CondorScripts/TEST2/CondorOutput/log
+A    CondorScripts/TEST2/CondorOutput/log/1.log
+A    CondorScripts/TEST2/CondorOutput/log/2.log
+A    CondorScripts/TEST2/CondorOutput/log/3.log
+A    CondorScripts/TEST2/CondorOutput/log/4.log
+A    CondorScripts/TEST2/CondorOutput/log/5.log
+A    CondorScripts/TEST2/CondorOutput/out
+A    CondorScripts/TEST2/CondorOutput/out/1.out
+A    CondorScripts/TEST2/CondorOutput/out/2.out
+A    CondorScripts/TEST2/CondorOutput/out/3.out
+A    CondorScripts/TEST2/CondorOutput/out/4.out
+A    CondorScripts/TEST2/CondorOutput/out/5.out
+A    CondorScripts/TEST2/CondorOutput/err
+A    CondorScripts/TEST2/CondorOutput/err/1.err
+A    CondorScripts/TEST2/CondorOutput/err/2.err
+A    CondorScripts/TEST2/CondorOutput/err/3.err
+A    CondorScripts/TEST2/CondorOutput/err/4.err
+A    CondorScripts/TEST2/CondorOutput/err/5.err
+A    CondorScripts/TEST2/3-out.txt
+A    CondorScripts/TEST2/4-out.txt
+A    CondorScripts/TEST2/5-out.txt
+A    CondorScripts/TEST2/1-result.txt
+A    CondorScripts/TEST2/2-result.txt
+A    CondorScripts/TEST2/3-result.txt
+A    CondorScripts/TEST2/4-result.txt
+A    CondorScripts/TEST2/5-result.txt
+AM   CondorScripts/runall.py.save
+A    CondorScripts/1-out.txt
+A    CondorScripts/1-result.txt
+AM   Experiments/.nfs00000000dcccd68900000004
+AM   Experiments/.nfs00000000acd40a3f00000039

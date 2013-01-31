@@ -1,6 +1,10 @@
 Traceback (most recent call last):
-  File "main.py", line 15, in <module>
-    from Tools import *
-  File "/data/scratch/rhklein/RL-Python/Tools.py", line 45, in <module>
-    from scipy import stats
-ImportError: No module named scipy
+  File "main.py", line 139, in <module>
+    main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+  File "main.py", line 125, in main
+    experiment.run()    
+  File "/data/scratch/rhklein/RL-Python/Experiments/OnlineExperiment.py", line 67, in run
+    r,ns,terminal   = self.domain.step(s, a)
+  File "/data/scratch/rhklein/RL-Python/Domains/Pendulum.py", line 279, in step
+    ns = rk4(self._dsdt, s_augmented, [0, self.dt])
+NameError: global name 'rk4' is not defined
