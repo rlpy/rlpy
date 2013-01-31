@@ -276,7 +276,7 @@ class iFDD(Representation):
                 g  = self.featureIndex2feature[f1].f_set 
                 h  = self.featureIndex2feature[f2].f_set
                 self.inspectPair(f1, f2, inf)
-                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, str(sorted(self.getFeature(self.features_num-1).f_set)),relevances[max_index]))
+                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, str(sort(list(self.getFeature(self.features_num-1).f_set))),relevances[max_index]))
                 added_feature = True
             else:
                 #Because the list is sorted, there is no use to look at the others

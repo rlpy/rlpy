@@ -110,9 +110,10 @@ class OMPTD(Representation):
             f           = self.remainingFeatures[max_index]
             relevance   = relevances[max_index]
             if relevance > self.batchThreshold:
-                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (f, str(sort(list(self.iFDD.getFeature(f).f_set))),relevances[max_index]))
+                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num, str(sort(list(self.iFDD.getFeature(f).f_set))),relevances[max_index]))
                 to_be_deleted.append(f)
                 self.selectedFeatures.append(f)
+                self.features_num += 1
                 added_feature = True
             else:
                 #Because the list is sorted, there is no use to look at the others
