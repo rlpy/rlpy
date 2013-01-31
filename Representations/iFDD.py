@@ -267,7 +267,10 @@ class iFDD(Representation):
         #Add top <maxDiscovery> features
         self.logger.log("iFDD Batch: Max Relevance = %0.3f" % max_relevance)
         added_feature = False
-        for j in arange(min(maxDiscovery,len(relevances))):
+        new_features = 0
+        for j in arange(len(relevances)):
+            if new_features >= maxDiscovery:
+                break
             max_index   = sortedIndices[j]
             f1          = F1[max_index]
             f2          = F2[max_index]
@@ -275,9 +278,12 @@ class iFDD(Representation):
             if relevance > self.batchThreshold:
                 g  = self.featureIndex2feature[f1].f_set 
                 h  = self.featureIndex2feature[f2].f_set
-                self.inspectPair(f1, f2, inf)
-                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, str(sort(list(self.getFeature(self.features_num-1).f_set))),relevances[max_index]))
-                added_feature = True
+                print "Inspecting %s" % str(list(g.union(h)))
+                self.showFeatures
+                if self.inspectPair(f1, f2, inf):
+                    self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, str(sort(list(self.getFeature(self.features_num-1).f_set))),relevances[max_index]))
+                    new_features += 1
+                    added_feature = True
             else:
                 #Because the list is sorted, there is no use to look at the others
                 break

@@ -43,6 +43,10 @@ class OMPTD(Representation):
         if self.logger:
             self.logger.log('Features:\t\t%d' % self.features_num)
             self.logger.log('Remaining Bag Size:\t%d' % len(self.remainingFeatures))
+    def showBag(self):
+        print "Remaining Items in the feature bag:"
+        for f in self.remainingFeatures:
+            print "%d: %s" % (f,str(sorted(list(self.iFDD.getFeature(f).f_set))))
     def calculateFullPhiNormalized(self,states):
         # In general for OMPTD it is faster to cashe the normalized phi matrix for all states for all features in one shot.
         # If states are changed this function should be called once to recalculate the phi matrix
@@ -109,9 +113,10 @@ class OMPTD(Representation):
             max_index   = sortedIndices[j]
             f           = self.remainingFeatures[max_index]
             relevance   = relevances[max_index]
+            print "Inspecting %s" % str(list(self.iFDD.getFeature(f).f_set))
             if relevance > self.batchThreshold:
                 self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num, str(sort(list(self.iFDD.getFeature(f).f_set))),relevances[max_index]))
-                to_be_deleted.append(f)
+                to_be_deleted.append(max_index)
                 self.selectedFeatures.append(f)
                 self.features_num += 1
                 added_feature = True
