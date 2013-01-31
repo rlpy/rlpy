@@ -174,7 +174,6 @@ class iFDD(Representation):
         else:
             self.updateMaxRelevance(relevance)
             return False
-            
     def show(self):
         self.showFeatures()
         self.showPotentials()
@@ -234,7 +233,7 @@ class iFDD(Representation):
         relevances      = zeros((n,n))
         for i in arange(p):
             phiphiT     = outer(phi[i,:],phi[i,:])
-            if self.iFDDplus:
+            if self.iFDDPlus:
                 relevances  += phiphiT*td_errors[i]
             else:
                 relevances  += phiphiT*abs(td_errors[i])
@@ -243,7 +242,7 @@ class iFDD(Representation):
         #Remove Diagonal and upper part of the relevances as they are useless
         relevances      = triu(relevances,1)
         non_zero_index  = nonzero(relevances)
-        if self.iFDDplus:
+        if self.iFDDPlus:
             relevances[non_zero_index] = divide(abs(relevances[non_zero_index]), sqrt(counts[non_zero_index])) #Calculate relevances based on theoretical results of ICML 2013 potential submission
         else:
             relevances[non_zero_index] = relevances[non_zero_index] #Based on Geramifard11_ICML Paper
@@ -276,8 +275,8 @@ class iFDD(Representation):
             if relevance > self.batchThreshold:
                 g  = self.featureIndex2feature[f1].f_set 
                 h  = self.featureIndex2feature[f2].f_set
-                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (j+1, str(sorted([s for s in g.union(h)])),relevances[max_index]))
                 self.inspectPair(f1, f2, inf)
+                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, str(sorted(self.getFeature(self.features_num-1).f_set)),relevances[max_index]))
                 added_feature = True
             else:
                 #Because the list is sorted, there is no use to look at the others
@@ -312,7 +311,13 @@ class iFDD(Representation):
         if self.maxRelevance < newRelevance:
             self.maxRelevance = newRelevance
 #            self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
-            
+    def getFeature(self,f_id):
+        #returns a feature given a feature id
+        if f_id in self.featureIndex2feature.keys():
+            return self.featureIndex2feature[f_id]
+        else:
+            print "F_id %d is not valid" % f_id 
+            return None
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1
@@ -370,7 +375,7 @@ if __name__ == '__main__':
         domain      = PST(logger=logger)
         random.seed(999999999)
         initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
-        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,iFDDplus=0)
+        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,iFDDPlus=0)
         rep.theta   = arange(rep.features_num*domain.actions_num)*10
         n           = rep.features_num
         for i in arange(TRIALS):

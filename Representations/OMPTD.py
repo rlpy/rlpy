@@ -14,7 +14,7 @@ class OMPTD(Representation):
     maxBatchDicovery = 0     # Maximum number of features to be expanded on each iteration
     batchThreshold  = 0      # Minimum threshold to add features
     selectedFeatures = []    # List of selected features. In this implementation initial features are selected initially by default
-    remainingFeatures = []   # List of remaining features
+    remainingFeatures = None # Array of remaining features
     def __init__(self,domain,logger, initial_representation, discretization = 20,maxBatchDicovery = 1, batchThreshold = 0, bagSize = 100000, sparsify = False):
         self.iFDD_ONLINETHRESHOLD   = 1 # This is dummy since omptd will not use ifdd in the online fashion
         self.maxBatchDicovery       = maxBatchDicovery
@@ -29,7 +29,7 @@ class OMPTD(Representation):
         self.fillBag()
         self.totalFeatureSize       = self.bagSize
         self.selectedFeatures       = range(self.initial_representation.features_num) #Add initial features to the selected list
-        self.remainingFeatures      = range(self.features_num,self.bagSize+self.features_num) # Set of indexes of features that have not been selected
+        self.remainingFeatures      = arange(self.features_num,self.bagSize) # Array of indicies of features that have not been selected
         self.show()            
         if self.logger:
             self.logger.log("Initial Representation:\t%s"% className(self.initial_representation))
@@ -77,24 +77,25 @@ class OMPTD(Representation):
             # No More features to Expand
             return False
 
-        SHOW_HISTOGRAM  = 1      #Shows the histogram of relevances 
+        SHOW_RELEVANCES = 0      # Plot the relevances 
         max_excitement  = -inf
         n               = self.features_num  #number of features
         p               = len(td_errors)     #Number of samples
         self.calculateFullPhiNormalized(states)
         
-        futureRemainingFeatures = list(self.remainingFeatures) #Make a copy so indexes remain consistent within one while some elements are removed from the other one 
         relevances = zeros(len(self.remainingFeatures))
         for i,f in enumerate(self.remainingFeatures):
             phi_f           = self.fullphi[:,f]
             relevances[i]   = abs(dot(phi_f,td_errors))
         
-        if SHOW_HISTOGRAM:
+        if SHOW_RELEVANCES:
             e_vec  = relevances.flatten()
             e_vec  = e_vec[e_vec != 0]
             e_vec  = sort(e_vec)
-            drawHist(e_vec)
+            pl.plot(e_vec,linewidth=3)
+            pl.ioff()
             pl.show()
+            pl.ion()
 
         #Sort based on relevances
         sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
@@ -102,18 +103,21 @@ class OMPTD(Representation):
         
         #Add top <maxDiscovery> features
         self.logger.log("OMPTD Batch: Max Relevance = %0.3f" % max_relevance)
-        added_feature = False
+        added_feature           = False
+        to_be_deleted = [] # Record the indices of items to be removed 
         for j in arange(min(self.maxBatchDicovery,len(relevances))):
             max_index   = sortedIndices[j]
-            f           = remainingFeaturesArray[max_index]
+            f           = self.remainingFeatures[max_index]
             relevance   = relevances[max_index]
             if relevance > self.batchThreshold:
-                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (j+1, str(sorted([s for s in g.union(h)])),relevances[max_index]))
-                self.selectedFeatures -= set(f)
+                self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (f, str(sort(list(self.iFDD.getFeature(f).f_set))),relevances[max_index]))
+                to_be_deleted.append(f)
+                self.selectedFeatures.append(f)
                 added_feature = True
             else:
                 #Because the list is sorted, there is no use to look at the others
                 break
+        self.remainingFeatures = delete(self.remainingFeatures,to_be_deleted)
         return added_feature # A signal to see if the representation has been expanded or not
     def fillBag(self):
         # This function generates lists of potential features to be put in the bag each indicated by a list of initial features. The resulting feature is the conjunction of the features in the list
@@ -139,7 +143,7 @@ class OMPTD(Representation):
                 for g in level_n_features:
                     g_dims = level_n_features_dim[g]
                     if not f_dim in g_dims:
-                        added_new_feature = self.iFDD.inspectPair(f,g,self.iFDD_ONLINETHRESHOLD+1) # We pass iFDD_ONLINETHRESHOLD to make sure iFDD will add these two
+                        added_new_feature = self.iFDD.inspectPair(f,g,inf) # We pass inf to make sure iFDD will add the combination of these two features
                         if added_new_feature:
                             #print '%d: [%s,%s]' % (new_id, str(f),str(g))
                             next_features.append(new_id)
