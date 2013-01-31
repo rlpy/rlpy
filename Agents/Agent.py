@@ -44,7 +44,9 @@ class Agent(object):
             sys.exit(1)
 		# Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
 		# initial_alpha will act as a permanent upper-bound on alpha.
-        if self.alpha_decay_mode == 'dabney': self.initial_alpha = 1.0
+        if self.alpha_decay_mode == 'dabney':
+            self.initial_alpha = 1.0
+            self.alpha = 1.0
             
     # Defined by the domain            
     def learn(self,s,a,r,ns,na,terminal):
@@ -55,22 +57,22 @@ class Agent(object):
     # Note that we divide by number of active features in SARShe A
     # We pass the phi corresponding to the STATE, *NOT* the copy/pasted
     # phi_s_a.
-    def updateAlpha(self,phi_s,phi_prime_s,gamma, terminal):
+    def updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):
         if self.alpha_decay_mode == 'dabney':
         # We only update alpha if this step is non-terminal; else phi_prime becomes
         # zero and the dot product below becomes very large, creating a very small alpha
             if not terminal:
                 #Automatic learning rate: [Dabney W. 2012]
-                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,self.eligibility_trace_s)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
+                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,eligibility_trace_s)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
                 self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
                 self.alpha          = min(self.alpha,self.candid_alpha)
             # else we take no action
         elif self.alpha_decay_mode == 'boyan':
             self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + self.episode_count ** 1.1)
+            self.alpha /= nnz # divide by number of nonzero features; note that this method is only called if nnz > 0
         else:
             shout("Unrecognized decay mode")
-            self.logger.log("Unrecognized decay mode ")
-    
+            self.logger.log("Unrecognized decay mode ")    
         
     def printAll(self):
         printClass(self)

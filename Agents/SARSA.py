@@ -43,19 +43,14 @@ class SARSA(Agent):
             
             td_error            = r + dot(gamma*phi_prime - phi, theta)
             
-            self.updateAlpha(phi_s,phi_prime_s,gamma,terminal)
-            #theta               += self.alpha * td_error * self.eligibility_trace
-            #print candid_alpha
-			
-            #use this if you want to divide by the number of active features  [[do this for PST]]
-            theta               += self.alpha * td_error * phi / (1.*nnz) 
+            self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
+            #
+            theta               += self.alpha * td_error * self.eligibility_trace
 			
             #Discover features using online iFDD
             if isinstance(self.representation,iFDD):
                 self.representation.discover(phi_s,td_error)
 			
             # Set eligibility Traces to zero if it is end of the episode
-            if self.lambda_:
-                self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num)
-                self.eligibility_trace_s = zeros(self.representation.features_num)
+            if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
             # Else there are no nonzero elements, halt update.
