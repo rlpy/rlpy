@@ -1,0 +1,64 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	17
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.007
+Batch Threshold:		0.007
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././26-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.640, Density of A: 5.28%
+2: L2_norm of weight difference = 0.656, Density of A: 5.46%
+3: L2_norm of weight difference = 0.392, Density of A: 5.35%
+4: L2_norm of weight difference = 0.533, Density of A: 5.31%
+5: L2_norm of weight difference = 0.950, Density of A: 5.28%
+6: L2_norm of weight difference = 0.000, Density of A: 5.28%
+Performance Check >>> 0.995 Return, 6 Steps, 17 Features
+iFDD Batch: Max Relevance = 0.007
+New Feature 17: [4, 9], Relevance = 0.007
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.770, Density of A: 4.82%
+2: L2_norm of weight difference = 0.984, Density of A: 4.99%
+3: L2_norm of weight difference = 0.895, Density of A: 4.80%
+4: L2_norm of weight difference = 0.553, Density of A: 4.71%
+5: L2_norm of weight difference = 0.000, Density of A: 4.71%
+Performance Check >>> 0.994 Return, 7 Steps, 18 Features
+iFDD Batch: Max Relevance = 0.002
+5000 >>> E[0:01:06]-R[0:00:00]: Return=+0.99, Steps=9, Features = 18
+============================================================
+Took 0:01:06
+Results	=> ././26-results.txt
+Log	=> ././26-out.txt

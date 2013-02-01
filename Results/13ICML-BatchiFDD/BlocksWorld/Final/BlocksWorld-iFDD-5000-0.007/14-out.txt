@@ -1,0 +1,86 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	17
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.007
+Batch Threshold:		0.007
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././14-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.114, Density of A: 5.31%
+2: L2_norm of weight difference = 0.856, Density of A: 5.52%
+3: L2_norm of weight difference = 6.053, Density of A: 5.64%
+4: L2_norm of weight difference = 17.492, Density of A: 5.83%
+5: L2_norm of weight difference = 12.715, Density of A: 5.55%
+6: L2_norm of weight difference = 0.583, Density of A: 5.38%
+7: L2_norm of weight difference = 0.964, Density of A: 5.17%
+8: L2_norm of weight difference = 4.545, Density of A: 5.52%
+9: L2_norm of weight difference = 4.888, Density of A: 5.67%
+10: L2_norm of weight difference = 32484690680.673, Density of A: 5.64%
+Performance Check >>> -1.000 Return, 1000 Steps, 17 Features
+iFDD Batch: Max Relevance = 0.186
+New Feature 17: [5, 15], Relevance = 0.186
+New Feature 18: [3, 15], Relevance = 0.182
+New Feature 19: [10, 15], Relevance = 0.166
+New Feature 20: [3, 10], Relevance = 0.155
+New Feature 21: [3, 5], Relevance = 0.147
+New Feature 22: [0, 15], Relevance = 0.127
+New Feature 23: [5, 10], Relevance = 0.120
+New Feature 24: [3, 4], Relevance = 0.109
+New Feature 25: [3, 8], Relevance = 0.094
+New Feature 26: [0, 5], Relevance = 0.092
+New Feature 27: [11, 15], Relevance = 0.089
+New Feature 28: [4, 15], Relevance = 0.081
+New Feature 29: [4, 10], Relevance = 0.079
+New Feature 30: [6, 15], Relevance = 0.078
+New Feature 31: [0, 11], Relevance = 0.077
+New Feature 32: [0, 10], Relevance = 0.075
+New Feature 33: [5, 11], Relevance = 0.074
+New Feature 34: [9, 15], Relevance = 0.073
+New Feature 35: [5, 9], Relevance = 0.071
+New Feature 36: [1, 15], Relevance = 0.067
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.890, Density of A: 4.50%
+2: L2_norm of weight difference = 0.494, Density of A: 4.32%
+3: L2_norm of weight difference = 0.848, Density of A: 4.32%
+4: L2_norm of weight difference = 0.000, Density of A: 4.32%
+Performance Check >>> 0.996 Return, 5 Steps, 37 Features
+iFDD Batch: Max Relevance = 0.000
+5000 >>> E[0:02:00]-R[0:00:00]: Return=+1.00, Steps=3, Features = 37
+============================================================
+Took 0:02:00
+Results	=> ././14-results.txt
+Log	=> ././14-out.txt

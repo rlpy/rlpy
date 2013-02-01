@@ -1,0 +1,57 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	17
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.007
+Batch Threshold:		0.007
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././16-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.276, Density of A: 5.38%
+2: L2_norm of weight difference = 0.622, Density of A: 5.54%
+3: L2_norm of weight difference = 12428358186.381, Density of A: 5.54%
+4: L2_norm of weight difference = 12428358186.103, Density of A: 5.40%
+5: L2_norm of weight difference = 0.653, Density of A: 5.56%
+6: L2_norm of weight difference = 0.693, Density of A: 5.37%
+7: L2_norm of weight difference = 0.356, Density of A: 5.28%
+8: L2_norm of weight difference = 0.419, Density of A: 5.38%
+9: L2_norm of weight difference = 0.533, Density of A: 5.33%
+10: L2_norm of weight difference = 0.911, Density of A: 5.27%
+Performance Check >>> 0.998 Return, 3 Steps, 17 Features
+iFDD Batch: Max Relevance = 0.006
+5000 >>> E[0:00:59]-R[0:00:00]: Return=+0.99, Steps=6, Features = 17
+============================================================
+Took 0:00:59
+Results	=> ././16-results.txt
+Log	=> ././16-out.txt

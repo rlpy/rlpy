@@ -1,0 +1,57 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	17
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.007
+Batch Threshold:		0.007
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././27-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.162, Density of A: 5.40%
+2: L2_norm of weight difference = 0.640, Density of A: 5.56%
+3: L2_norm of weight difference = 23.370, Density of A: 5.54%
+4: L2_norm of weight difference = 8508626884.603, Density of A: 5.54%
+5: L2_norm of weight difference = 8508626883.322, Density of A: 5.53%
+6: L2_norm of weight difference = 0.757, Density of A: 5.36%
+7: L2_norm of weight difference = 0.516, Density of A: 5.10%
+8: L2_norm of weight difference = 0.457, Density of A: 5.33%
+9: L2_norm of weight difference = 0.614, Density of A: 5.29%
+10: L2_norm of weight difference = 0.730, Density of A: 5.30%
+Performance Check >>> -1.000 Return, 1000 Steps, 17 Features
+iFDD Batch: Max Relevance = 0.005
+5000 >>> E[0:00:59]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 17
+============================================================
+Took 0:00:59
+Results	=> ././27-results.txt
+Log	=> ././27-out.txt

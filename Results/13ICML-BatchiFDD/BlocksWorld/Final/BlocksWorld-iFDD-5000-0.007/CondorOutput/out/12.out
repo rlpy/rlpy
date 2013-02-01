@@ -1,0 +1,68 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	17
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	17
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.007
+Batch Threshold:		0.007
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././12-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.068, Density of A: 5.50%
+2: L2_norm of weight difference = 0.382, Density of A: 5.35%
+3: L2_norm of weight difference = 0.720, Density of A: 5.20%
+4: L2_norm of weight difference = 0.856, Density of A: 5.27%
+5: L2_norm of weight difference = 0.600, Density of A: 5.60%
+6: L2_norm of weight difference = 0.655, Density of A: 5.41%
+7: L2_norm of weight difference = 0.641, Density of A: 5.30%
+8: L2_norm of weight difference = 0.660, Density of A: 5.34%
+9: L2_norm of weight difference = 0.577, Density of A: 5.32%
+10: L2_norm of weight difference = 0.000, Density of A: 5.32%
+Performance Check >>> 0.998 Return, 3 Steps, 17 Features
+iFDD Batch: Max Relevance = 0.008
+New Feature 17: [4, 9], Relevance = 0.008
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.056, Density of A: 4.80%
+2: L2_norm of weight difference = 0.580, Density of A: 4.86%
+3: L2_norm of weight difference = 0.630, Density of A: 4.65%
+4: L2_norm of weight difference = 0.453, Density of A: 4.65%
+5: L2_norm of weight difference = 0.000, Density of A: 4.65%
+Performance Check >>> 0.998 Return, 3 Steps, 18 Features
+iFDD Batch: Max Relevance = 0.002
+5000 >>> E[0:01:20]-R[0:00:00]: Return=+1.00, Steps=5, Features = 18
+============================================================
+Took 0:01:20
+Results	=> ././12-results.txt
+Log	=> ././12-out.txt
