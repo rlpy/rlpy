@@ -224,7 +224,7 @@ class iFDD(Representation):
         # TD_Error: p-by-1 (How much error observed for each sample)
         # phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
         # self.batchThreshold is the minimum relevance value for the feature to be expanded
-        SHOW_HISTOGRAM  = 0      #Shows the histogram of relevances 
+        SHOW_PLOT       = 0      #Shows the histogram of relevances 
         max_excitement  = 0
         maxDiscovery    = self.maxBatchDicovery
         n               = self.features_num #number of features
@@ -247,13 +247,6 @@ class iFDD(Representation):
         else:
             relevances[non_zero_index] = relevances[non_zero_index] #Based on Geramifard11_ICML Paper
 
-        if SHOW_HISTOGRAM:
-            e_vec  = relevances.flatten()
-            e_vec  = e_vec[e_vec != 0]
-            e_vec  = sort(e_vec)
-            drawHist(e_vec)
-            pl.show()
-
         #Find indexes to non-zero excited pairs
         (F1, F2)            = relevances.nonzero() # F1 and F2 are the parents of the potentials
         relevances          = relevances[F1,F2]
@@ -261,6 +254,15 @@ class iFDD(Representation):
             # No feature to add
             self.logger.log("iFDD Batch: Max Relevance = 0") 
             return False
+
+        if SHOW_PLOT:
+            e_vec  = relevances.flatten()
+            e_vec  = e_vec[e_vec != 0]
+            e_vec  = sort(e_vec)
+            pl.ioff()
+            pl.plot(e_vec,linewidth=3)
+            pl.show()
+
         #Sort based on relevances
         sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
         max_relevance   = relevances[sortedIndices[0]];
@@ -276,12 +278,10 @@ class iFDD(Representation):
             f2          = F2[max_index]
             relevance   = relevances[max_index]
             if relevance > self.batchThreshold:
-                g  = self.featureIndex2feature[f1].f_set 
-                h  = self.featureIndex2feature[f2].f_set
-                print "Inspecting %s" % str(list(g.union(h)))
+                #print "Inspecting", f1,f2,'=>',self.getStrFeatureSet(f1),self.getStrFeatureSet(f2)
                 self.showFeatures
                 if self.inspectPair(f1, f2, inf):
-                    self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, str(sort(list(self.getFeature(self.features_num-1).f_set))),relevances[max_index]))
+                    self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, self.getStrFeatureSet(self.features_num-1),relevances[max_index]))
                     new_features += 1
                     added_feature = True
             else:
@@ -296,7 +296,7 @@ class iFDD(Representation):
         for feature in reversed(self.sortediFDDFeatures.toList()):
         #for feature in self.iFDD_features.itervalues():
             #print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
-            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,str(sort(list(feature.f_set))),feature.p1,feature.p2)
+            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,self.getStrFeatureSet(feature.id),feature.p1,feature.p2)
     def showPotentials(self):
         print "Potentials:"
         print join(["-"]*30)
@@ -321,6 +321,13 @@ class iFDD(Representation):
         #returns a feature given a feature id
         if f_id in self.featureIndex2feature.keys():
             return self.featureIndex2feature[f_id]
+        else:
+            print "F_id %d is not valid" % f_id 
+            return None
+    def getStrFeatureSet(self,f_id):
+        #returns a string that corresponds to the set of features specified by the given feature_id
+        if f_id in self.featureIndex2feature.keys():
+            return str(sorted(list(self.featureIndex2feature[f_id].f_set)))
         else:
             print "F_id %d is not valid" % f_id 
             return None

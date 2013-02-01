@@ -49,8 +49,9 @@ class SARSA(Agent):
         #
         theta               += self.alpha * td_error * self.eligibility_trace
 		
-        #Discover features using online iFDD
-        if isinstance(self.representation,iFDD):
+        #Discover features if the representation has the discover method
+        discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
+        if discover_func and callable(discover_func):
             self.representation.discover(phi_s,td_error)
 		
         # Set eligibility Traces to zero if it is end of the episode
