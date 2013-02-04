@@ -13,7 +13,8 @@ def module_exists(module_name):
 from operator import *
 from numpy  import *
 import os
-os.environ['HOME'] = "/tmp"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+os.environ['HOME'] = "/data/scratch/tmp"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 # http://matplotlib.1069221.n5.nabble.com/Set-MPLCONFIGDIR-to-something-different-td12922.html#a19033822
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 if module_exists('matplotlib'):
