@@ -60,7 +60,7 @@ from os import path
 
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
-if numpy.version.version < '1.6.0': # Missing count_nonzero
+if numpy.version.version < '2.6.0': # Missing count_nonzero
     
     # NOTE that the count_nonzero function below moves recursively through any sublists,
     # such that only individual elements are examined.
@@ -68,15 +68,23 @@ if numpy.version.version < '1.6.0': # Missing count_nonzero
     # e.g. numpy.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) might return 2, while
     # Tools.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) returns 9.
     # The latter is the desired functionality, irrelevant when single arrays/lists are passed.
-	def count_nonzero(arr):
-		nnz = 0
-		for el in arr:
+    def count_nonzero(arr):
+        nnz = 0
+        
+        # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
+        # NOT TESTED with high-dimensional matrices (only 2-dimensional matrices)
+        if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
+            nonzero_indices = arr.nonzero() # Tuple of length = # dimensions (usu. 2) containing indices of nonzero elements
+            nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
+            return nnz
+        
+        for el in arr:
 			# Is this a list of lists? Must call count_nonzero on sublists recursively if so.
 			if isinstance(el, numpy.ndarray) or isinstance(el, list):
 				nnz += count_nonzero(el)
 			# Else we have a single element, increment count only if nonzero.
 			elif el != 0: nnz+=1
-		return nnz
+        return nnz
 
 # Tips:
 # array.astype(float) => convert elements
