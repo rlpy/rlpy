@@ -20,7 +20,7 @@ RL_PYTHON_ROOT = path
 from Script_Tools import * 
 
 TEST = False # This value is used to avoid actually doing anything, so we can check the program
-USERNAME='rhklein'
+USERNAME='agf'
 FINALFILE='result'
 RESULTS_PATH='.' # Currently want results path to be in directory of the main file
 #RESULTS_PATH = RL_PYTHON_ROOT+'/13iCML/
