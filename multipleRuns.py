@@ -7,10 +7,10 @@ from main import *
 from os import *
 import platform
 
-StartID         = 1
-FinishId        = 4
+StartID         = 18
+FinishId        = 30
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/13ICML-BatchiFDD/SystemAdmin/sarsa'
+PROJECT_PATH    = 'Results/13ICML-BatchiFDD/Pendulum/Final'
 max_cpu         = multiprocessing.cpu_count()
 
 if(platform.system() == 'Windows'):

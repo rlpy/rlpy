@@ -61,6 +61,13 @@ from os import path
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
 if numpy.version.version < '1.6.0': # Missing count_nonzero
+    
+    # NOTE that the count_nonzero function below moves recursively through any sublists,
+    # such that only individual elements are examined.
+    # Some versions of numpy's count_nonzero only strictly compare each element;
+    # e.g. numpy.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) might return 2, while
+    # Tools.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) returns 9.
+    # The latter is the desired functionality, irrelevant when single arrays/lists are passed.
 	def count_nonzero(arr):
 		nnz = 0
 		for el in arr:
@@ -690,7 +697,7 @@ class Merger(object):
             Errs[i,:]   = Err
         
         if self.legend:
-            #pl.legend(loc='lower right',bbox_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
+            #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
             self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
             #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
         pl.xlim(0,max(Xs[:,-1])*1.02)
