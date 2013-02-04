@@ -1,0 +1,143 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+============================================================
+Representation:		iFDD
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.400
+Batch Threshold:		0.400
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		10000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/Pendulum/Final/Pendulum_InvertedBalance-iFDD-10000-0.4/5-results.txt
+Learning Steps:		10000
+Performance Checks:	1
+Log Intervals:		1(s)
+944: E[0:00:01]-R[0:00:10]: Return=-1.00, Steps=15, Features = 40
+1953: E[0:00:02]-R[0:00:08]: Return=-1.00, Steps=10, Features = 40
+3052: E[0:00:03]-R[0:00:07]: Return=-1.00, Steps=12, Features = 40
+4196: E[0:00:04]-R[0:00:06]: Return=-1.00, Steps=9, Features = 40
+5434: E[0:00:05]-R[0:00:04]: Return=-1.00, Steps=8, Features = 40
+6634: E[0:00:06]-R[0:00:03]: Return=-1.00, Steps=8, Features = 40
+7453: E[0:00:07]-R[0:00:02]: Return=-1.00, Steps=10, Features = 40
+8350: E[0:00:08]-R[0:00:02]: Return=-1.00, Steps=8, Features = 40
+9302: E[0:00:09]-R[0:00:01]: Return=-1.00, Steps=9, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 5.673, Density of A: 11.81%
+2: L2_norm of weight difference = 5.470, Density of A: 12.22%
+3: L2_norm of weight difference = 0.000, Density of A: 12.26%
+Performance Check >>> -1.000 Return, 274 Steps, 40 Features
+iFDD Batch: Max Relevance = 0.969
+New Feature 40: [9, 36], Relevance = 0.969
+New Feature 41: [10, 25], Relevance = 0.768
+New Feature 42: [9, 34], Relevance = 0.732
+New Feature 43: [10, 26], Relevance = 0.689
+New Feature 44: [9, 37], Relevance = 0.663
+New Feature 45: [8, 32], Relevance = 0.635
+New Feature 46: [10, 24], Relevance = 0.631
+New Feature 47: [9, 33], Relevance = 0.611
+New Feature 48: [11, 29], Relevance = 0.608
+New Feature 49: [10, 32], Relevance = 0.579
+New Feature 50: [8, 30], Relevance = 0.534
+New Feature 51: [11, 28], Relevance = 0.528
+New Feature 52: [8, 31], Relevance = 0.498
+New Feature 53: [12, 34], Relevance = 0.487
+New Feature 54: [10, 21], Relevance = 0.479
+New Feature 55: [11, 26], Relevance = 0.478
+New Feature 56: [11, 27], Relevance = 0.471
+New Feature 57: [9, 32], Relevance = 0.461
+New Feature 58: [10, 22], Relevance = 0.450
+New Feature 59: [9, 28], Relevance = 0.437
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.748, Density of A: 7.54%
+2: L2_norm of weight difference = 0.248, Density of A: 7.64%
+3: L2_norm of weight difference = 0.017, Density of A: 7.66%
+4: L2_norm of weight difference = 0.000, Density of A: 7.64%
+Performance Check >>> 0.000 Return, 3000 Steps, 60 Features
+iFDD Batch: Max Relevance = 0.922
+New Feature 60: [11, 30], Relevance = 0.922
+New Feature 61: [8, 29], Relevance = 0.902
+New Feature 62: [8, 33], Relevance = 0.712
+New Feature 63: [9, 35], Relevance = 0.624
+New Feature 64: [10, 35], Relevance = 0.599
+New Feature 65: [12, 35], Relevance = 0.537
+New Feature 66: [11, 31], Relevance = 0.533
+New Feature 67: [8, 20], Relevance = 0.513
+New Feature 68: [11, 39], Relevance = 0.489
+New Feature 69: [10, 31], Relevance = 0.488
+New Feature 70: [6, 24], Relevance = 0.444
+New Feature 71: [9, 29], Relevance = 0.436
+New Feature 72: [9, 24], Relevance = 0.421
+New Feature 73: [9, 20], Relevance = 0.418
+New Feature 74: [10, 27], Relevance = 0.418
+New Feature 75: [8, 34], Relevance = 0.401
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.206, Density of A: 5.96%
+2: L2_norm of weight difference = 0.217, Density of A: 6.08%
+3: L2_norm of weight difference = 0.000, Density of A: 6.07%
+Performance Check >>> 0.000 Return, 3000 Steps, 76 Features
+iFDD Batch: Max Relevance = 0.590
+New Feature 76: [10, 39], Relevance = 0.590
+New Feature 77: [10, 38], Relevance = 0.510
+New Feature 78: [12, 31], Relevance = 0.483
+New Feature 79: [7, 28], Relevance = 0.456
+Representation Expansion iteration #4
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.311, Density of A: 5.56%
+2: L2_norm of weight difference = 0.377, Density of A: 5.70%
+3: L2_norm of weight difference = 0.000, Density of A: 5.70%
+Performance Check >>> 0.000 Return, 3000 Steps, 80 Features
+iFDD Batch: Max Relevance = 0.406
+New Feature 80: [9, 23], Relevance = 0.406
+Representation Expansion iteration #5
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.269, Density of A: 5.49%
+2: L2_norm of weight difference = 0.373, Density of A: 5.66%
+3: L2_norm of weight difference = 0.124, Density of A: 5.65%
+4: L2_norm of weight difference = 0.124, Density of A: 5.63%
+5: L2_norm of weight difference = 0.124, Density of A: 5.65%
+6: L2_norm of weight difference = 0.124, Density of A: 5.63%
+7: L2_norm of weight difference = 0.124, Density of A: 5.65%
+8: L2_norm of weight difference = 0.124, Density of A: 5.63%
+9: L2_norm of weight difference = 0.124, Density of A: 5.65%
+10: L2_norm of weight difference = 0.124, Density of A: 5.63%
+Performance Check >>> 0.000 Return, 3000 Steps, 81 Features
+iFDD Batch: Max Relevance = 0.365
+10000 >>> E[0:04:13]-R[0:00:00]: Return=+0.00, Steps=3000, Features = 81
+============================================================
+Took 0:04:13
+Results	=> Results/13ICML-BatchiFDD/Pendulum/Final/Pendulum_InvertedBalance-iFDD-10000-0.4/5-results.txt
+Log	=> Results/13ICML-BatchiFDD/Pendulum/Final/Pendulum_InvertedBalance-iFDD-10000-0.4/5-out.txt
