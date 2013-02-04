@@ -4,7 +4,7 @@ Representation
 Initial			389.700+105.115		-0.734+0.124					-42.615+7.136
 OMP-TD			
 BEBF				3000.000+0.000		0.997+0.000
-iFDD				2822.633+118.132	 	0.997+0.000
+iFDD				2822.633+118.132	 	0.930+0.065
 iFDD should not use sparsification.
 
 * iFDD means the one in the theory (iFDD Plus) not ICML11 Version
