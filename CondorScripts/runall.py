@@ -28,7 +28,7 @@ SHOW_FINAL_PLOT = 0   # Draw the final plot when the run is finished? Automatica
 MAKE_EXP_NAME = 0      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
 
 if os.path.exists('setting.py'):
-    import setting.py
+    from setting.py import *
 
 
 def submit(id):
