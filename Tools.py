@@ -1,6 +1,7 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
+
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -787,3 +788,6 @@ if module_exists('matplotlib'):
         
 FONTSIZE = 15
 SEP_LINE = "="*60
+# The following is necessary for mac machines to give the right latex compiler for python
+if os.name == 'posix': os.environ['PATH'] = os.environ['PATH'] + ':/usr/texbin'
+

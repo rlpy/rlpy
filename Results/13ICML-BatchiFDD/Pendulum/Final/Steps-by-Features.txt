@@ -1,42 +1,18 @@
+Algorithm: IndependentDiscretization-10000
+======================
+Features: 40.000	
+Steps: 80.800	
+Standard-Error: 27.372	
+======================
 Algorithm: 10000-0.2
 ======================
 Features: 42.000	
 Steps: 3000.000	
 Standard-Error: 0.000	
 ======================
-Algorithm: 10000-0.2
-======================
-Features: 97.600	
-Steps: 1186.400	
-Standard-Error: 437.093	
-======================
-Algorithm: 10000-0.3
-======================
-Features: 86.867	
-Steps: 2437.500	
-Standard-Error: 175.550	
-======================
-Algorithm: 10000-0.4
-======================
-Features: 81.200	
-Steps: 2470.800	
-Standard-Error: 304.339	
-======================
 Algorithm: 10000-0.6
 ======================
 Features: 49.500	
 Steps: 2822.633	
 Standard-Error: 118.132	
-======================
-Algorithm: 10000-0.7
-======================
-Features: 43.211	
-Steps: 2113.263	
-Standard-Error: 253.120	
-======================
-Algorithm: IndependentDiscretization-10000
-======================
-Features: 40.000	
-Steps: 80.800	
-Standard-Error: 27.372	
 ======================

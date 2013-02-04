@@ -12,12 +12,12 @@ while not os.path.exists(path+'/Tools.py'):
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-paths = ['.'] 
-#paths = [
-#         'Pendulum_InvertedBalance-IndependentDiscretization-20000',
-#         'Pendulum_InvertedBalance-BEBF-20000-0.2',
-#         'Pendulum_InvertedBalance-iFDD-20000-0.3'
-#        ] 
+#paths = ['.'] 
+paths = [
+         'Pendulum_InvertedBalance-IndependentDiscretization-10000',
+         'Pendulum_InvertedBalance-BEBF-10000-0.2',
+         'Pendulum_InvertedBalance-iFDD-10000-0.6'
+        ] 
 
 #paths = [
 #         'Pendulum_InvertedBalance-BEBF-20000-0.25',

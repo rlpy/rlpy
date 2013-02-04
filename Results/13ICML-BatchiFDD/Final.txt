@@ -4,24 +4,14 @@ Representation
 Initial			389.700+105.115		-0.734+0.124					-42.615+7.136
 OMP-TD			
 BEBF				3000.000+0.000		0.997+0.000
-iFDD				2822.633+118.132	 		0.997+0.000
+iFDD				2822.633+118.132	 	0.997+0.000
 iFDD should not use sparsification.
 
-* iFDD means the one in the theory not ICML11 Version
-
-Inverted Pendulum OLD RESULTS
-=======
-Samples 			= 20K
-Gamma 			= .95
-Min_DiscoveryThreshold:
-iFDD 			= .3 (.2, .3, .4, .5, .6)
-BEBF 			= .2 (.15, .2, .25, .3)
-
-* BEBF svm_epsilon	 	  	= .1 (.1)
-[[2497.667+185.985 old results for iFDD]]
+* iFDD means the one in the theory (iFDD Plus) not ICML11 Version
+** iFDD is not using sparsification
 
 
-Inverted Pendulum NEW RESULTS
+Inverted Pendulum
 ======
 Samples				= 10K
 Gamma			= .95
@@ -52,3 +42,15 @@ Samples 			= 20K
 PST
 =======
 Samples 			= 20K
+
+Inverted Pendulum OLD RESULTS
+=======
+Samples 			= 20K
+Gamma 			= .95
+Min_DiscoveryThreshold:
+iFDD 			= .3 (.2, .3, .4, .5, .6)
+BEBF 			= .2 (.15, .2, .25, .3)
+
+* BEBF svm_epsilon	 	  	= .1 (.1)
+[[2497.667+185.985 old results for iFDD]]
+
