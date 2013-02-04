@@ -1,0 +1,150 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+============================================================
+Representation:		iFDD
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	0.300
+Batch Threshold:		0.300
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		10000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/Pendulum/Final/Pendulum_InvertedBalance-iFDD-10000-0.3/4-results.txt
+Learning Steps:		10000
+Performance Checks:	1
+Log Intervals:		1(s)
+1554: E[0:00:01]-R[0:00:06]: Return=-1.00, Steps=8, Features = 40
+3168: E[0:00:02]-R[0:00:04]: Return=-1.00, Steps=11, Features = 40
+4732: E[0:00:03]-R[0:00:03]: Return=-1.00, Steps=13, Features = 40
+6282: E[0:00:04]-R[0:00:02]: Return=-1.00, Steps=12, Features = 40
+7849: E[0:00:05]-R[0:00:01]: Return=-1.00, Steps=11, Features = 40
+9556: E[0:00:06]-R[0:00:00]: Return=-1.00, Steps=9, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.568, Density of A: 11.85%
+2: L2_norm of weight difference = 0.143, Density of A: 12.19%
+3: L2_norm of weight difference = 0.000, Density of A: 12.22%
+Performance Check >>> -1.000 Return, 393 Steps, 40 Features
+iFDD Batch: Max Relevance = 0.760
+New Feature 40: [9, 34], Relevance = 0.760
+New Feature 41: [9, 33], Relevance = 0.722
+New Feature 42: [10, 25], Relevance = 0.664
+New Feature 43: [9, 35], Relevance = 0.609
+New Feature 44: [11, 27], Relevance = 0.597
+New Feature 45: [10, 24], Relevance = 0.579
+New Feature 46: [11, 26], Relevance = 0.575
+New Feature 47: [9, 36], Relevance = 0.569
+New Feature 48: [10, 26], Relevance = 0.562
+New Feature 49: [11, 29], Relevance = 0.542
+New Feature 50: [10, 39], Relevance = 0.495
+New Feature 51: [9, 37], Relevance = 0.486
+New Feature 52: [8, 30], Relevance = 0.465
+New Feature 53: [10, 22], Relevance = 0.460
+New Feature 54: [9, 20], Relevance = 0.450
+New Feature 55: [9, 32], Relevance = 0.437
+New Feature 56: [10, 23], Relevance = 0.435
+New Feature 57: [8, 33], Relevance = 0.434
+New Feature 58: [11, 28], Relevance = 0.421
+New Feature 59: [8, 32], Relevance = 0.412
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 6.799, Density of A: 7.42%
+2: L2_norm of weight difference = 6.174, Density of A: 7.60%
+3: L2_norm of weight difference = 0.000, Density of A: 7.60%
+Performance Check >>> 0.000 Return, 3000 Steps, 60 Features
+iFDD Batch: Max Relevance = 0.677
+New Feature 60: [8, 29], Relevance = 0.677
+New Feature 61: [11, 30], Relevance = 0.605
+New Feature 62: [8, 31], Relevance = 0.582
+New Feature 63: [8, 20], Relevance = 0.569
+New Feature 64: [10, 27], Relevance = 0.553
+New Feature 65: [10, 35], Relevance = 0.528
+New Feature 66: [6, 25], Relevance = 0.518
+New Feature 67: [11, 39], Relevance = 0.501
+New Feature 68: [10, 31], Relevance = 0.496
+New Feature 69: [9, 27], Relevance = 0.490
+New Feature 70: [11, 25], Relevance = 0.482
+New Feature 71: [13, 34], Relevance = 0.462
+New Feature 72: [10, 30], Relevance = 0.437
+New Feature 73: [12, 35], Relevance = 0.413
+New Feature 74: [13, 33], Relevance = 0.405
+New Feature 75: [7, 25], Relevance = 0.380
+New Feature 76: [7, 24], Relevance = 0.359
+New Feature 77: [6, 26], Relevance = 0.353
+New Feature 78: [9, 31], Relevance = 0.347
+New Feature 79: [10, 38], Relevance = 0.343
+Representation Expansion iteration #3
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.934, Density of A: 5.54%
+2: L2_norm of weight difference = 0.354, Density of A: 5.65%
+3: L2_norm of weight difference = 0.042, Density of A: 5.66%
+4: L2_norm of weight difference = 0.000, Density of A: 5.65%
+Performance Check >>> -1.000 Return, 2789 Steps, 80 Features
+iFDD Batch: Max Relevance = 0.449
+New Feature 80: [8, 28], Relevance = 0.449
+New Feature 81: [12, 31], Relevance = 0.416
+New Feature 82: [9, 21], Relevance = 0.415
+New Feature 83: [9, 28], Relevance = 0.360
+New Feature 84: [9, 23], Relevance = 0.346
+New Feature 85: [12, 33], Relevance = 0.337
+New Feature 86: [11, 24], Relevance = 0.327
+New Feature 87: [12, 34], Relevance = 0.318
+New Feature 88: [11, 32], Relevance = 0.311
+Representation Expansion iteration #4
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.918, Density of A: 4.99%
+2: L2_norm of weight difference = 0.352, Density of A: 5.10%
+3: L2_norm of weight difference = 0.168, Density of A: 5.10%
+4: L2_norm of weight difference = 0.154, Density of A: 5.10%
+5: L2_norm of weight difference = 0.154, Density of A: 5.10%
+6: L2_norm of weight difference = 0.154, Density of A: 5.09%
+7: L2_norm of weight difference = 0.154, Density of A: 5.10%
+8: L2_norm of weight difference = 0.154, Density of A: 5.09%
+9: L2_norm of weight difference = 0.154, Density of A: 5.10%
+10: L2_norm of weight difference = 0.154, Density of A: 5.09%
+Performance Check >>> -1.000 Return, 2113 Steps, 89 Features
+iFDD Batch: Max Relevance = 0.307
+New Feature 89: [13, 35], Relevance = 0.307
+Representation Expansion iteration #5
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.003, Density of A: 4.92%
+2: L2_norm of weight difference = 0.308, Density of A: 5.05%
+3: L2_norm of weight difference = 0.148, Density of A: 5.03%
+4: L2_norm of weight difference = 0.000, Density of A: 5.04%
+Performance Check >>> 0.000 Return, 3000 Steps, 90 Features
+iFDD Batch: Max Relevance = 0.172
+10000 >>> E[0:04:31]-R[0:00:00]: Return=+0.00, Steps=3000, Features = 90
+============================================================
+Took 0:04:31
+Results	=> Results/13ICML-BatchiFDD/Pendulum/Final/Pendulum_InvertedBalance-iFDD-10000-0.3/4-results.txt
+Log	=> Results/13ICML-BatchiFDD/Pendulum/Final/Pendulum_InvertedBalance-iFDD-10000-0.3/4-out.txt
