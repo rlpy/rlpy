@@ -3,8 +3,8 @@ Domain			InvertedPendulum		BlocksWorld 		SystemAdmin		PST
 Representation	
 Initial			389.700+105.115		-0.734+0.124					-42.615+7.136
 OMP-TD			
-BEBF				2564.233+185.231		0.997+0.000
-iFDD				2497.667+185.985(rerun)		0.997+0.000
+BEBF				3000.000+0.000		0.997+0.000
+iFDD				2822.633+118.132	 		0.997+0.000
 iFDD should not use sparsification.
 
 * iFDD means the one in the theory not ICML11 Version
@@ -18,6 +18,7 @@ iFDD 			= .3 (.2, .3, .4, .5, .6)
 BEBF 			= .2 (.15, .2, .25, .3)
 
 * BEBF svm_epsilon	 	  	= .1 (.1)
+[[2497.667+185.985 old results for iFDD]]
 
 
 Inverted Pendulum NEW RESULTS
@@ -25,10 +26,10 @@ Inverted Pendulum NEW RESULTS
 Samples				= 10K
 Gamma			= .95
 Min_DiscoveryThreshold:
-iFDD			= .3 (.2, .3, .4) [same trend as old data above , .5 and .6]
-BEBF			=
+iFDD			= .6 (.2, .3, .4, .5, .6, .7)
+BEBF			= .2 [optimal]
 
-* BEBF svm_epsilon			= .1
+* BEBF svm_epsilon			= .1 [optimal]
 
 # of performance checks = 1
 Max # Representation expansions		= 5 [per performance check]
