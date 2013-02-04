@@ -29,7 +29,7 @@ MAKE_EXP_NAME = 0      # This flag should be set 0 if the job is submitted throu
 
 if os.path.exists(path+'/CondorScripts/setting.py'):
     print 'Incorporating setting.py'
-    from setting.py import *
+    from setting import *
 
 
 def submit(id):
