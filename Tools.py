@@ -64,7 +64,11 @@ if numpy.version.version < '1.6.0': # Missing count_nonzero
 	def count_nonzero(arr):
 		nnz = 0
 		for el in arr:
-			if el != 0: nnz+=1
+			# Is this a list of lists? Must call count_nonzero on sublists recursively if so.
+			if isinstance(el, numpy.ndarray) or isinstance(el, list):
+				nnz += count_nonzero(el)
+			# Else we have a single element, increment count only if nonzero.
+			elif el != 0: nnz+=1
 		return nnz
 
 # Tips:
@@ -761,10 +765,10 @@ if module_exists('matplotlib'):
     mpl.rcParams['ytick.labelsize'] = 15.
     
         # Add tex directories if they exist
-    if os.path.exists('/usr/texbin'): 
-        os.environ['PATH'] += ':/usr/texbin'
-    if os.path.exists('/usr/share/texmf'):
-        os.environ['PATH'] += ':/usr/share/texmf'
+#    if os.path.exists('/usr/texbin'): 
+#        os.environ['PATH'] += ':/usr/texbin'
+#    if os.path.exists('/usr/share/texmf'):
+#        os.environ['PATH'] += ':/usr/share/texmf'
         
 FONTSIZE = 15
 SEP_LINE = "="*60
