@@ -157,6 +157,7 @@ class OMPTD(Representation):
                             new_id += 1
                             added += 1
                             if new_id == self.bagSize:
+                                if self.logger: self.logger.log("Added %d size %d features to the feature bag." % (added, f_size))
                                 return
             level_n_features        = next_features
             level_n_features_dim    = next_features_dim

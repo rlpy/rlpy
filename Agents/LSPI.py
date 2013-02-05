@@ -43,9 +43,9 @@ class LSPI(Agent):
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
-            #Update the policy by recalculating A based on new na
-            #Returns the TD error for each sample based on the latest weights and na
-            # b is passed because it remains unchanged.
+            # Update the policy by recalculating A based on new na
+            # Returns the TD error for each sample based on the latest weights and next actions
+            # b is passed as an input because it remains unchanged during policy iteration.
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
             gamma           = self.domain.gamma
             td_errors       = empty((self.sample_window)) # holds the TD_errors for all samples
@@ -55,22 +55,22 @@ class LSPI(Agent):
             lspi_iteration  = 0
             self.logger.log('Running LSPI:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
-                if phi_sa_size != 0: A = sp.coo_matrix((phi_sa_size,phi_sa_size))
+                if phi_sa_size != 0: A = sp.csr_matrix((phi_sa_size,phi_sa_size))
                 for i in arange(self.sample_window):
                     ns              = self.data_ns[i,:]
                     if phi_sa_size != 0:
-                        phi_s_a         = all_phi_s_a[i,:]
+                        phi_s_a         = sp.csr_matrix(all_phi_s_a[i,:])
                         phi_ns          = all_phi_ns[i,:]
                         new_na          = self.representation.bestAction(ns,phi_ns)
-                        phi_ns_new_na   = self.representation.phi_sa(ns,new_na,phi_ns)
+                        phi_ns_new_na   = sp.csr_matrix(self.representation.phi_sa(ns,new_na,phi_ns))
                         d               = phi_s_a-gamma*phi_ns_new_na
-                        A               = A + outer(phi_s_a,d)
-                        td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)
+                        A               = A + phi_s_a.T*d
+                        td_errors[i]    = self.data_r[i]+sp_dot_array(-d,self.representation.theta)
                     else:
                         td_errors[i]    = self.data_r[i]
                 #Calculate theta
                 if phi_sa_size != 0:
-                    new_theta                   = solveLinear(sp.csc_matrix(A),b)
+                    new_theta                   = solveLinear(A,b)
                     weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                     if weight_diff > self.epsilon: self.representation.theta   = new_theta
                     self.logger.log("%d: L2_norm of weight difference = %0.3f, Density of A: %0.2f%%" % (lspi_iteration+1,weight_diff, count_nonzero(A)/(prod(A.shape)*1.)*100))

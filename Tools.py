@@ -460,8 +460,8 @@ def addNewElementForAllActions(x,a,newElem = None):
             return x
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
-    if sp.issparse(A) and False:
-        result = slinalg.lsmr(A,b)
+    if sp.issparse(A):
+        result = slinalg.lsmr(A.tocsc(),b)
         # Timing in seconds, for solving 100x100 with 100 elements in A for Ax=b problems
         #def foo():
         #    L = 100
@@ -522,19 +522,19 @@ def nonZeroIndex(A):
 def sp_matrix(m,n = 1, dtype = 'float'):
     # returns a sparse matrix with m rows and n columns, with the dtype
     # We use dok_matrix for sparse matrixies
-    return sp.lil_matrix((m,n),dtype=dtype)
+    return sp.csr_matrix((m,n),dtype=dtype)
 def sp_dot_array(sp_m, A):
-    #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
-    assert sp_m.shape[0] == len(A)
-    ind = sp_m.nonzero()[0]
+    #Efficient dot product of matrix sp_m in shape of 1-by-p and array A with p elements
+    assert sp_m.shape[1] == len(A)
+    ind = sp_m.nonzero()[1]
     if len(ind) == 0:
         return 0
-    if sp_m.dtype == bool:
+    if sp_m.dtype == 'bool':
         #Just sum the corresponding indexes of theta
         return sum(A[ind])
     else:
         # Multiply by feature values since they are not binary
-        return sum([A[i]*sp_m[i,0] for i in ind])
+        return sum([A[i]*sp_m[0,i] for i in ind])
 def sp_dot_sp(sp_1, sp_2):
     #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
     assert sp_1.shape[0] == sp_2.shape[0] and sp_1.shape[1] == 1 and sp_2.shape[1] == 1 

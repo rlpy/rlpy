@@ -9,7 +9,8 @@ class Representation(object):
     domain          = None  #Link to the domain object 
     features_num    = None  #Number of features
     discretization  = 0     #Number of bins used for discretization for each continuous dimension  
-    bins_per_dim = None     #Number of possible states per dimension [1-by-dim]
+    bins_per_dim    = None  #Number of possible states per dimension [1-by-dim]
+    binWidth_per_dim= None  #Width of bins in each dimension 
     agg_states_num  = None  #Number of aggregated states based on the discretization. If the represenation is adaptive set it to the best resolution possible  
     logger = None           # Object for capturing output text in a file
     def __init__(self,domain,logger,discretization = 20):
@@ -84,12 +85,14 @@ class Representation(object):
         return vec2id(ds,self.bins_per_dim)
     def setBinsPerDimension(self,domain,discretization):
         # Set the number of bins for each dimension of the domain (continuous spaces will be slices using the discritization parameter)
-        self.bins_per_dim = zeros(domain.state_space_dims,uint16)
+        self.bins_per_dim       = zeros(domain.state_space_dims,uint16)
+        self.binWidth_per_dim   = zeros(domain.state_space_dims)
         for d in arange(domain.state_space_dims):
              if d in domain.continuous_dims:
                  self.bins_per_dim[d] = discretization
              else:
                  self.bins_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]
+             self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d,0])/(self.bins_per_dim[d]*1.)
     def binState(self,s):
         # Given a state it returns a vector with the same dimensionality of s
         # each element of the returned valued is the zero-indexed bin number corresponding to s
