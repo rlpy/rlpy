@@ -1,0 +1,88 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	16
+============================================================
+Representation:		iFDD
+Features per action:	16
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		0.000
+Max Batch Discovery:	1
+============================================================
+Representation:		OMPTD
+Features per action:	16
+Added 16 size 1 features to the feature bag.
+Added 96 size 2 features to the feature bag.
+Added 472 size 3 features to the feature bag.
+Added 1660 size 4 features to the feature bag.
+Features:		16
+Remaining Bag Size:	2228
+Initial Representation:	IndependentDiscretization
+Bag Size:		2244
+Batch Threshold:		0.005
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/BlocksWorld/Final//BlocksWorld-OMPTD-5000-0.005/13-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		1(s)
+1000: E[0:00:11]-R[0:00:45]: Return=-1.00, Steps=1000, Features = 16
+1334: E[0:00:15]-R[0:00:41]: Return=+0.67, Steps=334, Features = 16
+1690: E[0:00:19]-R[0:00:37]: Return=+0.69, Steps=309, Features = 16
+2050: E[0:00:23]-R[0:00:33]: Return=+0.64, Steps=360, Features = 16
+2225: E[0:00:24]-R[0:00:30]: Return=+0.83, Steps=175, Features = 16
+3049: E[0:00:34]-R[0:00:22]: Return=+0.18, Steps=824, Features = 16
+3330: E[0:00:36]-R[0:00:18]: Return=+0.72, Steps=281, Features = 16
+3722: E[0:00:40]-R[0:00:14]: Return=+0.61, Steps=392, Features = 16
+4297: E[0:00:45]-R[0:00:07]: Return=+0.43, Steps=575, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.761, Density of A: 6.11%
+2: L2_norm of weight difference = 0.821, Density of A: 6.20%
+3: L2_norm of weight difference = 0.613, Density of A: 6.28%
+4: L2_norm of weight difference = 0.804, Density of A: 6.03%
+5: L2_norm of weight difference = 0.646, Density of A: 6.03%
+6: L2_norm of weight difference = 0.477, Density of A: 6.01%
+7: L2_norm of weight difference = 0.549, Density of A: 5.98%
+8: L2_norm of weight difference = 0.000, Density of A: 5.98%
+Performance Check >>> 0.998 Return, 3 Steps, 16 Features
+OMPTD Batch: Max Relevance = 0.006
+New Feature 16: [0 4 9], Relevance = 0.006
+New Feature 17: [ 0  4  9 15], Relevance = 0.006
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.852, Density of A: 4.80%
+2: L2_norm of weight difference = 0.473, Density of A: 4.73%
+3: L2_norm of weight difference = 0.996, Density of A: 4.68%
+4: L2_norm of weight difference = 1.057, Density of A: 4.84%
+5: L2_norm of weight difference = 0.000, Density of A: 4.84%
+Performance Check >>> 0.997 Return, 4 Steps, 18 Features
+OMPTD Batch: Max Relevance = 0.003
+5000 >>> E[0:15:53]-R[0:00:00]: Return=+1.00, Steps=3, Features = 18
+============================================================
+Took 0:15:53
+Results	=> Results/13ICML-BatchiFDD/BlocksWorld/Final//BlocksWorld-OMPTD-5000-0.005/13-results.txt
+Log	=> Results/13ICML-BatchiFDD/BlocksWorld/Final//BlocksWorld-OMPTD-5000-0.005/13-out.txt

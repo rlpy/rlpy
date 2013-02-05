@@ -1,0 +1,112 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	16
+============================================================
+Representation:		iFDD
+Features per action:	16
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		0.000
+Max Batch Discovery:	1
+============================================================
+Representation:		OMPTD
+Features per action:	16
+Added 16 size 1 features to the feature bag.
+Added 96 size 2 features to the feature bag.
+Added 472 size 3 features to the feature bag.
+Added 1660 size 4 features to the feature bag.
+Features:		16
+Remaining Bag Size:	2228
+Initial Representation:	IndependentDiscretization
+Bag Size:		2244
+Batch Threshold:		0.005
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/BlocksWorld/Final//BlocksWorld-OMPTD-5000-0.005/3-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		1(s)
+414: E[0:00:05]-R[0:00:50]: Return=+0.59, Steps=414, Features = 16
+1414: E[0:00:15]-R[0:00:37]: Return=-1.00, Steps=1000, Features = 16
+1820: E[0:00:19]-R[0:00:33]: Return=+0.62, Steps=383, Features = 16
+2820: E[0:00:29]-R[0:00:23]: Return=-1.00, Steps=1000, Features = 16
+3564: E[0:00:37]-R[0:00:15]: Return=+0.29, Steps=711, Features = 16
+4322: E[0:00:46]-R[0:00:07]: Return=+0.24, Steps=758, Features = 16
+4514: E[0:00:48]-R[0:00:05]: Return=+0.81, Steps=192, Features = 16
+4733: E[0:00:50]-R[0:00:03]: Return=+0.78, Steps=219, Features = 16
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 2.116, Density of A: 6.15%
+2: L2_norm of weight difference = 0.708, Density of A: 6.29%
+3: L2_norm of weight difference = 1.500, Density of A: 6.21%
+4: L2_norm of weight difference = 1.706, Density of A: 5.97%
+5: L2_norm of weight difference = 0.377, Density of A: 6.16%
+6: L2_norm of weight difference = 0.911, Density of A: 6.56%
+7: L2_norm of weight difference = 15094820417.935, Density of A: 6.13%
+8: L2_norm of weight difference = 15094820417.805, Density of A: 6.20%
+9: L2_norm of weight difference = 1.639, Density of A: 6.30%
+10: L2_norm of weight difference = 10.253, Density of A: 6.44%
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+OMPTD Batch: Max Relevance = 4.259
+New Feature 16: [0 5], Relevance = 4.259
+New Feature 17: [ 5 10], Relevance = 3.609
+New Feature 18: [ 0 10], Relevance = 3.554
+New Feature 19: [ 5 15], Relevance = 3.144
+New Feature 20: [ 0  5 10], Relevance = 3.092
+New Feature 21: [ 0 15], Relevance = 2.922
+New Feature 22: [ 5 13], Relevance = 2.864
+New Feature 23: [ 0 12], Relevance = 2.774
+New Feature 24: [ 0  5 15], Relevance = 2.730
+New Feature 25: [10 13], Relevance = 2.548
+New Feature 26: [ 5 10 13], Relevance = 2.504
+New Feature 27: [10 12], Relevance = 2.477
+New Feature 28: [ 0 13], Relevance = 2.466
+New Feature 29: [10 15], Relevance = 2.446
+New Feature 30: [ 0  5 13], Relevance = 2.366
+New Feature 31: [ 0 10 12], Relevance = 2.362
+New Feature 32: [ 5 12], Relevance = 2.254
+New Feature 33: [ 5 10 15], Relevance = 2.237
+New Feature 34: [5 9], Relevance = 2.154
+New Feature 35: [ 0 10 15], Relevance = 2.154
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.970, Density of A: 5.66%
+2: L2_norm of weight difference = 0.650, Density of A: 5.40%
+3: L2_norm of weight difference = 0.581, Density of A: 5.43%
+4: L2_norm of weight difference = 0.342, Density of A: 5.41%
+5: L2_norm of weight difference = 0.342, Density of A: 5.43%
+6: L2_norm of weight difference = 0.342, Density of A: 5.41%
+7: L2_norm of weight difference = 0.342, Density of A: 5.43%
+8: L2_norm of weight difference = 0.342, Density of A: 5.41%
+9: L2_norm of weight difference = 0.342, Density of A: 5.43%
+10: L2_norm of weight difference = 0.342, Density of A: 5.41%
+Performance Check >>> 0.998 Return, 3 Steps, 36 Features
+OMPTD Batch: Max Relevance = 0.002
+5000 >>> E[0:26:56]-R[0:00:00]: Return=+1.00, Steps=4, Features = 36
+============================================================
+Took 0:26:56
+Results	=> Results/13ICML-BatchiFDD/BlocksWorld/Final//BlocksWorld-OMPTD-5000-0.005/3-results.txt
+Log	=> Results/13ICML-BatchiFDD/BlocksWorld/Final//BlocksWorld-OMPTD-5000-0.005/3-out.txt
