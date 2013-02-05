@@ -9,13 +9,12 @@ Gamma:		1
 noise		0.3
 blocks		4
 ============================================================
-Representation:		IndependentDiscretizationCompactBinary
-Features per action:	17
-Binary Dimensions:	[]
+Representation:		IndependentDiscretization
+Features per action:	16
 ============================================================
 Representation:		iFDD
-Features per action:	17
-Initial Representation:	IndependentDiscretizationCompactBinary
+Features per action:	16
+Initial Representation:	IndependentDiscretization
 Plus:			1
 Sparsify:		0
 Cached:			1
@@ -38,19 +37,19 @@ Log Intervals:		60(s)
 Representation Expansion iteration #1
 -----------------
 Running LSPI:
-1: L2_norm of weight difference = 2.233, Density of A: 5.34%
-2: L2_norm of weight difference = 1.136, Density of A: 5.47%
-3: L2_norm of weight difference = 0.648, Density of A: 5.38%
-4: L2_norm of weight difference = 0.627, Density of A: 5.36%
-5: L2_norm of weight difference = 0.512, Density of A: 5.47%
-6: L2_norm of weight difference = 0.328, Density of A: 5.43%
-7: L2_norm of weight difference = 0.681, Density of A: 5.26%
-8: L2_norm of weight difference = 1.136, Density of A: 5.33%
-9: L2_norm of weight difference = 0.000, Density of A: 5.33%
-Performance Check >>> -1.000 Return, 1000 Steps, 17 Features
+1: L2_norm of weight difference = 2.054, Density of A: 6.02%
+2: L2_norm of weight difference = 0.903, Density of A: 6.18%
+3: L2_norm of weight difference = 1.083, Density of A: 6.07%
+4: L2_norm of weight difference = 0.768, Density of A: 6.05%
+5: L2_norm of weight difference = 0.757, Density of A: 6.17%
+6: L2_norm of weight difference = 0.662, Density of A: 6.13%
+7: L2_norm of weight difference = 0.890, Density of A: 5.94%
+8: L2_norm of weight difference = 1.139, Density of A: 6.01%
+9: L2_norm of weight difference = 0.000, Density of A: 6.01%
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
 iFDD Batch: Max Relevance = 0.004
-5000 >>> E[0:00:48]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 17
+5000 >>> E[0:01:56]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 16
 ============================================================
-Took 0:00:48
+Took 0:01:56
 Results	=> ././24-results.txt
 Log	=> ././24-out.txt

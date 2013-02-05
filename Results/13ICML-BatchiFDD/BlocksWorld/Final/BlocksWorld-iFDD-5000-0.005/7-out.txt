@@ -9,13 +9,12 @@ Gamma:		1
 noise		0.3
 blocks		4
 ============================================================
-Representation:		IndependentDiscretizationCompactBinary
-Features per action:	17
-Binary Dimensions:	[]
+Representation:		IndependentDiscretization
+Features per action:	16
 ============================================================
 Representation:		iFDD
-Features per action:	17
-Initial Representation:	IndependentDiscretizationCompactBinary
+Features per action:	16
+Initial Representation:	IndependentDiscretization
 Plus:			1
 Sparsify:		0
 Cached:			1
@@ -38,51 +37,51 @@ Log Intervals:		60(s)
 Representation Expansion iteration #1
 -----------------
 Running LSPI:
-1: L2_norm of weight difference = 4.318, Density of A: 5.45%
-2: L2_norm of weight difference = 2.838, Density of A: 5.48%
-3: L2_norm of weight difference = 0.712, Density of A: 5.57%
-4: L2_norm of weight difference = 0.774, Density of A: 5.30%
-5: L2_norm of weight difference = 1.135, Density of A: 5.24%
-6: L2_norm of weight difference = 1.131, Density of A: 5.52%
-7: L2_norm of weight difference = 0.380, Density of A: 5.74%
-8: L2_norm of weight difference = 0.651, Density of A: 5.35%
-9: L2_norm of weight difference = 0.417, Density of A: 5.41%
-10: L2_norm of weight difference = 0.855, Density of A: 5.74%
-Performance Check >>> -1.000 Return, 1000 Steps, 17 Features
+1: L2_norm of weight difference = 4.257, Density of A: 6.15%
+2: L2_norm of weight difference = 2.848, Density of A: 6.19%
+3: L2_norm of weight difference = 0.476, Density of A: 6.29%
+4: L2_norm of weight difference = 0.306, Density of A: 5.98%
+5: L2_norm of weight difference = 1.117, Density of A: 5.91%
+6: L2_norm of weight difference = 1.101, Density of A: 6.23%
+7: L2_norm of weight difference = 0.449, Density of A: 6.48%
+8: L2_norm of weight difference = 0.652, Density of A: 6.04%
+9: L2_norm of weight difference = 0.785, Density of A: 6.11%
+10: L2_norm of weight difference = 0.979, Density of A: 6.47%
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
 iFDD Batch: Max Relevance = 0.430
-New Feature 17: [0, 5], Relevance = 0.430
-New Feature 18: [5, 15], Relevance = 0.417
-New Feature 19: [0, 15], Relevance = 0.407
-New Feature 20: [5, 9], Relevance = 0.407
-New Feature 21: [0, 9], Relevance = 0.372
-New Feature 22: [9, 15], Relevance = 0.341
-New Feature 23: [11, 15], Relevance = 0.285
-New Feature 24: [0, 11], Relevance = 0.284
-New Feature 25: [5, 11], Relevance = 0.240
-New Feature 26: [5, 10], Relevance = 0.204
-New Feature 27: [5, 8], Relevance = 0.203
-New Feature 28: [8, 15], Relevance = 0.201
-New Feature 29: [0, 8], Relevance = 0.199
-New Feature 30: [0, 12], Relevance = 0.199
-New Feature 31: [10, 15], Relevance = 0.191
-New Feature 32: [0, 10], Relevance = 0.191
-New Feature 33: [5, 12], Relevance = 0.188
-New Feature 34: [6, 11], Relevance = 0.167
-New Feature 35: [9, 12], Relevance = 0.163
-New Feature 36: [2, 9], Relevance = 0.156
+New Feature 16: [0, 5], Relevance = 0.430
+New Feature 17: [5, 15], Relevance = 0.417
+New Feature 18: [0, 15], Relevance = 0.407
+New Feature 19: [5, 9], Relevance = 0.407
+New Feature 20: [0, 9], Relevance = 0.372
+New Feature 21: [9, 15], Relevance = 0.341
+New Feature 22: [11, 15], Relevance = 0.285
+New Feature 23: [0, 11], Relevance = 0.284
+New Feature 24: [5, 11], Relevance = 0.240
+New Feature 25: [5, 10], Relevance = 0.204
+New Feature 26: [5, 8], Relevance = 0.203
+New Feature 27: [8, 15], Relevance = 0.201
+New Feature 28: [0, 8], Relevance = 0.199
+New Feature 29: [0, 12], Relevance = 0.199
+New Feature 30: [10, 15], Relevance = 0.191
+New Feature 31: [0, 10], Relevance = 0.191
+New Feature 32: [5, 12], Relevance = 0.188
+New Feature 33: [6, 11], Relevance = 0.167
+New Feature 34: [9, 12], Relevance = 0.163
+New Feature 35: [2, 9], Relevance = 0.156
 Representation Expansion iteration #2
 -----------------
 Running LSPI:
-1: L2_norm of weight difference = 2.053, Density of A: 4.43%
-2: L2_norm of weight difference = 0.588, Density of A: 4.50%
-3: L2_norm of weight difference = 0.525, Density of A: 4.39%
-4: L2_norm of weight difference = 0.495, Density of A: 4.38%
-5: L2_norm of weight difference = 0.843, Density of A: 4.34%
-6: L2_norm of weight difference = 0.000, Density of A: 4.34%
-Performance Check >>> 0.996 Return, 5 Steps, 37 Features
+1: L2_norm of weight difference = 1.987, Density of A: 4.68%
+2: L2_norm of weight difference = 0.416, Density of A: 4.75%
+3: L2_norm of weight difference = 0.382, Density of A: 4.64%
+4: L2_norm of weight difference = 0.516, Density of A: 4.63%
+5: L2_norm of weight difference = 0.640, Density of A: 4.58%
+6: L2_norm of weight difference = 0.000, Density of A: 4.58%
+Performance Check >>> 0.996 Return, 5 Steps, 36 Features
 iFDD Batch: Max Relevance = 0.001
-5000 >>> E[0:02:24]-R[0:00:00]: Return=+0.99, Steps=6, Features = 37
+5000 >>> E[0:06:18]-R[0:00:00]: Return=+0.99, Steps=6, Features = 36
 ============================================================
-Took 0:02:24
+Took 0:06:18
 Results	=> ././7-results.txt
 Log	=> ././7-out.txt
