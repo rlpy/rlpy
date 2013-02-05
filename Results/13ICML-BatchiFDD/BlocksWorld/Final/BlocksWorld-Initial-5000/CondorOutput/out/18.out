@@ -1,0 +1,45 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	16
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././18-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 9.142, Density of A: 5.85%
+2: L2_norm of weight difference = 9.824, Density of A: 6.54%
+3: L2_norm of weight difference = 1.678, Density of A: 6.47%
+4: L2_norm of weight difference = 1.926, Density of A: 6.17%
+5: L2_norm of weight difference = 0.959, Density of A: 6.41%
+6: L2_norm of weight difference = 3426971829.561, Density of A: 6.12%
+7: L2_norm of weight difference = 3426971829.528, Density of A: 6.32%
+8: L2_norm of weight difference = 1.286, Density of A: 6.37%
+9: L2_norm of weight difference = 40.860, Density of A: 6.29%
+10: L2_norm of weight difference = 912753970.455, Density of A: 6.11%
+Performance Check >>> -1.000 Return, 1000 Steps, 16 Features
+5000 >>> E[0:02:06]-R[0:00:00]: Return=-1.00, Steps=1000, Features = 16
+============================================================
+Took 0:02:06
+Results	=> ././18-results.txt
+Log	=> ././18-out.txt

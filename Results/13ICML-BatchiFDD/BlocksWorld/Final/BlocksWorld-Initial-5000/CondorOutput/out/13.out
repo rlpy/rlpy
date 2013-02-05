@@ -1,0 +1,43 @@
+============================================================
+Domain:		BlocksWorld
+Dimensions:	4
+|S|:		256
+|A|:		16
+|S|x|A|:		4096
+Episode Cap:	1000
+Gamma:		1
+noise		0.3
+blocks		4
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	16
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	10
+Data Size:		5000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	100
+============================================================
+Experiment:		OnlineExperiment
+Output:			././13-results.txt
+Learning Steps:		5000
+Performance Checks:	1
+Log Intervals:		60(s)
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.761, Density of A: 6.11%
+2: L2_norm of weight difference = 0.821, Density of A: 6.20%
+3: L2_norm of weight difference = 0.613, Density of A: 6.28%
+4: L2_norm of weight difference = 0.804, Density of A: 6.03%
+5: L2_norm of weight difference = 0.646, Density of A: 6.03%
+6: L2_norm of weight difference = 0.477, Density of A: 6.01%
+7: L2_norm of weight difference = 0.549, Density of A: 5.98%
+8: L2_norm of weight difference = 0.000, Density of A: 5.98%
+Performance Check >>> 0.998 Return, 3 Steps, 16 Features
+5000 >>> E[0:01:42]-R[0:00:00]: Return=+1.00, Steps=4, Features = 16
+============================================================
+Took 0:01:42
+Results	=> ././13-results.txt
+Log	=> ././13-out.txt
