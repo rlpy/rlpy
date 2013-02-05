@@ -6,7 +6,7 @@ import pstats
 import platform
 
 
-Output = 'PST-RELSPISARSA-Sparse2.pdf'
+Output = 'PST-RELSPISARSA-Sparse3.pdf'
 print 'Profiling'
 cProfile.run('main(1,SHOW_FINAL_PLOT=0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

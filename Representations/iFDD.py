@@ -167,7 +167,7 @@ class iFDD(Representation):
             potential.count     += 1
         # Check for discovery
         relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count)) 
-        if relevance > self.discovery_threshold:
+        if relevance >= self.discovery_threshold:
             self.maxRelevance = -inf
             self.addFeature(potential)
             return True
@@ -238,7 +238,6 @@ class iFDD(Representation):
             else:
                 relevances  += phiphiT*abs(td_errors[i])
             counts      += phiphiT
-        
         #Remove Diagonal and upper part of the relevances as they are useless
         relevances      = triu(relevances,1)
         non_zero_index  = nonzero(relevances)
@@ -279,7 +278,6 @@ class iFDD(Representation):
             relevance   = relevances[max_index]
             if relevance > self.batchThreshold:
                 #print "Inspecting", f1,f2,'=>',self.getStrFeatureSet(f1),self.getStrFeatureSet(f2)
-                self.showFeatures
                 if self.inspectPair(f1, f2, inf):
                     self.logger.log('New Feature %d: %s, Relevance = %0.3f' % (self.features_num-1, self.getStrFeatureSet(self.features_num-1),relevances[max_index]))
                     new_features += 1
