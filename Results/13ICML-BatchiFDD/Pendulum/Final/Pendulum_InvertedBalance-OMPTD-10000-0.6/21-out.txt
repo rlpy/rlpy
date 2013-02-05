@@ -1,0 +1,133 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretization
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+============================================================
+Representation:		iFDD
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Initial Representation:	IndependentDiscretization
+Plus:			1
+Sparsify:		0
+Cached:			1
+Online Threshold:	1.000
+Batch Threshold:		0.000
+Max Batch Discovery:	1
+============================================================
+Representation:		OMPTD
+Features per action:	40
+Discretization:		20
+Starting Features:	40
+Aggregated States:	400
+Added 40 size 1 features to the feature bag.
+Added 400 size 2 features to the feature bag.
+Features:		40
+Remaining Bag Size:	400
+Initial Representation:	IndependentDiscretization
+Bag Size:		440
+Batch Threshold:		0.600
+Max Batch Discovery:	20
+============================================================
+Agent:		RE_LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	2
+Data Size:		10000
+Weight Difference tol.:	0.001
+Max Representation Expansion Iterations:	2
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/13ICML-BatchiFDD/Pendulum/Final//Pendulum_InvertedBalance-OMPTD-10000-0.6/21-results.txt
+Learning Steps:		10000
+Performance Checks:	1
+Log Intervals:		1(s)
+239: E[0:00:01]-R[0:00:43]: Return=-1.00, Steps=13, Features = 40
+449: E[0:00:02]-R[0:00:44]: Return=-1.00, Steps=11, Features = 40
+649: E[0:00:03]-R[0:00:44]: Return=-1.00, Steps=10, Features = 40
+887: E[0:00:04]-R[0:00:42]: Return=-1.00, Steps=13, Features = 40
+1124: E[0:00:05]-R[0:00:40]: Return=-1.00, Steps=9, Features = 40
+1365: E[0:00:06]-R[0:00:39]: Return=-1.00, Steps=8, Features = 40
+1578: E[0:00:07]-R[0:00:38]: Return=-1.00, Steps=10, Features = 40
+1787: E[0:00:08]-R[0:00:38]: Return=-1.00, Steps=13, Features = 40
+2002: E[0:00:09]-R[0:00:37]: Return=-1.00, Steps=9, Features = 40
+2215: E[0:00:10]-R[0:00:36]: Return=-1.00, Steps=9, Features = 40
+2435: E[0:00:11]-R[0:00:35]: Return=-1.00, Steps=11, Features = 40
+2635: E[0:00:12]-R[0:00:34]: Return=-1.00, Steps=7, Features = 40
+2847: E[0:00:13]-R[0:00:34]: Return=-1.00, Steps=8, Features = 40
+3068: E[0:00:14]-R[0:00:33]: Return=-1.00, Steps=13, Features = 40
+3271: E[0:00:15]-R[0:00:32]: Return=-1.00, Steps=8, Features = 40
+3489: E[0:00:16]-R[0:00:31]: Return=-1.00, Steps=9, Features = 40
+3707: E[0:00:17]-R[0:00:30]: Return=-1.00, Steps=7, Features = 40
+3918: E[0:00:19]-R[0:00:29]: Return=-1.00, Steps=10, Features = 40
+4128: E[0:00:20]-R[0:00:28]: Return=-1.00, Steps=8, Features = 40
+4346: E[0:00:21]-R[0:00:27]: Return=-1.00, Steps=10, Features = 40
+4553: E[0:00:22]-R[0:00:26]: Return=-1.00, Steps=9, Features = 40
+4781: E[0:00:23]-R[0:00:25]: Return=-1.00, Steps=12, Features = 40
+5014: E[0:00:24]-R[0:00:24]: Return=-1.00, Steps=9, Features = 40
+5238: E[0:00:25]-R[0:00:22]: Return=-1.00, Steps=24, Features = 40
+5460: E[0:00:26]-R[0:00:21]: Return=-1.00, Steps=10, Features = 40
+5681: E[0:00:27]-R[0:00:20]: Return=-1.00, Steps=8, Features = 40
+5919: E[0:00:28]-R[0:00:19]: Return=-1.00, Steps=8, Features = 40
+6139: E[0:00:29]-R[0:00:18]: Return=-1.00, Steps=17, Features = 40
+6363: E[0:00:30]-R[0:00:17]: Return=-1.00, Steps=13, Features = 40
+6571: E[0:00:31]-R[0:00:16]: Return=-1.00, Steps=13, Features = 40
+6803: E[0:00:32]-R[0:00:15]: Return=-1.00, Steps=15, Features = 40
+7036: E[0:00:33]-R[0:00:14]: Return=-1.00, Steps=10, Features = 40
+7270: E[0:00:34]-R[0:00:13]: Return=-1.00, Steps=13, Features = 40
+7511: E[0:00:35]-R[0:00:12]: Return=-1.00, Steps=14, Features = 40
+7740: E[0:00:36]-R[0:00:11]: Return=-1.00, Steps=10, Features = 40
+7955: E[0:00:37]-R[0:00:10]: Return=-1.00, Steps=8, Features = 40
+8193: E[0:00:38]-R[0:00:08]: Return=-1.00, Steps=11, Features = 40
+8418: E[0:00:39]-R[0:00:07]: Return=-1.00, Steps=19, Features = 40
+8653: E[0:00:40]-R[0:00:06]: Return=-1.00, Steps=8, Features = 40
+8887: E[0:00:41]-R[0:00:05]: Return=-1.00, Steps=11, Features = 40
+9132: E[0:00:42]-R[0:00:04]: Return=-1.00, Steps=10, Features = 40
+9366: E[0:00:43]-R[0:00:03]: Return=-1.00, Steps=12, Features = 40
+9610: E[0:00:44]-R[0:00:02]: Return=-1.00, Steps=13, Features = 40
+9849: E[0:00:45]-R[0:00:01]: Return=-1.00, Steps=8, Features = 40
+Representation Expansion iteration #1
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 1.582, Density of A: 12.10%
+2: L2_norm of weight difference = 3.635, Density of A: 12.03%
+Performance Check >>> -1.000 Return, 2757 Steps, 40 Features
+OMPTD Batch: Max Relevance = 0.880
+New Feature 40: [ 9 35], Relevance = 0.880
+New Feature 41: [10 25], Relevance = 0.834
+New Feature 42: [ 8 32], Relevance = 0.730
+New Feature 43: [10 26], Relevance = 0.696
+New Feature 44: [ 9 36], Relevance = 0.660
+New Feature 45: [10 23], Relevance = 0.654
+New Feature 46: [11 26], Relevance = 0.638
+New Feature 47: [ 9 33], Relevance = 0.637
+Representation Expansion iteration #2
+-----------------
+Running LSPI:
+1: L2_norm of weight difference = 3.430, Density of A: 9.76%
+2: L2_norm of weight difference = 0.608, Density of A: 9.71%
+Performance Check >>> 0.000 Return, 3000 Steps, 48 Features
+OMPTD Batch: Max Relevance = 0.721
+New Feature 48: [ 9 32], Relevance = 0.721
+New Feature 49: [11 28], Relevance = 0.692
+New Feature 50: [ 8 33], Relevance = 0.672
+New Feature 51: [ 8 30], Relevance = 0.616
+New Feature 52: [11 29], Relevance = 0.611
+Running LSPI:
+1: L2_norm of weight difference = 2.348, Density of A: 8.71%
+2: L2_norm of weight difference = 0.115, Density of A: 8.71%
+10000 >>> E[0:06:07]-R[0:00:00]: Return=-1.00, Steps=535, Features = 53
+============================================================
+Took 0:06:07
+Results	=> Results/13ICML-BatchiFDD/Pendulum/Final//Pendulum_InvertedBalance-OMPTD-10000-0.6/21-results.txt
+Log	=> Results/13ICML-BatchiFDD/Pendulum/Final//Pendulum_InvertedBalance-OMPTD-10000-0.6/21-out.txt
