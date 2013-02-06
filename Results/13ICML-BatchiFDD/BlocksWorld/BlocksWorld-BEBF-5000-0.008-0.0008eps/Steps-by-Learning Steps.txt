@@ -1,6 +1,0 @@
-Algorithm: 0.008
-======================
-Learning Steps: 5000.000	
-Steps: 4.000	
-Standard-Error: 0.490	
-======================
