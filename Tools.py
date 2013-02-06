@@ -461,7 +461,7 @@ def addNewElementForAllActions(x,a,newElem = None):
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
     if sp.issparse(A):
-        result = slinalg.lsmr(A.tocsc(),b)
+        result = slinalg.lsmr(A,b)
         # Timing in seconds, for solving 100x100 with 100 elements in A for Ax=b problems
         #def foo():
         #    L = 100
@@ -481,7 +481,8 @@ def solveLinear(A,b):
         # bicg  = 6.8 (s)
         # qmr   = 9.5 (s)
     else:
-        result = linalg.lstsq(A.todense(),b)
+        print 'NOT USING SPARSE SOLVER!'
+        result = linalg.lstsq(A,b)
     return result[0]
 def rows(A):
     # return the rows of matrix A

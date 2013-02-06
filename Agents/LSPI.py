@@ -49,20 +49,20 @@ class LSPI(Agent):
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
             gamma           = self.domain.gamma
             td_errors       = empty((self.sample_window)) # holds the TD_errors for all samples
-
+            
             #Begin updating the policy in LSPI loop
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
             self.logger.log('Running LSPI:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
-                if phi_sa_size != 0: A = sp.csr_matrix((phi_sa_size,phi_sa_size))
+                if phi_sa_size != 0: A = sp.csr_matrix((phi_sa_size,phi_sa_size)) # Reset the A matrix
                 for i in arange(self.sample_window):
                     ns              = self.data_ns[i,:]
                     if phi_sa_size != 0:
-                        phi_s_a         = sp.csr_matrix(all_phi_s_a[i,:])
+                        phi_s_a         = sp.csr_matrix(all_phi_s_a[i,:],dtype=all_phi_s_a.dtype)
                         phi_ns          = all_phi_ns[i,:]
                         new_na          = self.representation.bestAction(ns,phi_ns)
-                        phi_ns_new_na   = sp.csr_matrix(self.representation.phi_sa(ns,new_na,phi_ns))
+                        phi_ns_new_na   = sp.csr_matrix(self.representation.phi_sa(ns,new_na,phi_ns),dtype=all_phi_s_a.dtype)
                         d               = phi_s_a-gamma*phi_ns_new_na
                         A               = A + phi_s_a.T*d
                         td_errors[i]    = self.data_r[i]+sp_dot_array(-d,self.representation.theta)
@@ -80,19 +80,26 @@ class LSPI(Agent):
                 lspi_iteration +=1
             return td_errors
     def LSTD(self): 
-        
+        if self.sample_window == 0:
+            print 'Window Size for LSPI should not be 0!'
+            return 
+            
         #No features means empty matrices
         if self.representation.features_num == 0:
             return array([]), array([]), array([]), array([]), array([])
          
         self.samples_count  = 0
+       
+        # Make one sample phi to decide about the type of A matrix:
+        phi_s               = self.representation.phi(self.data_s[0])
+
         # Calculate the A and b matrixes in LSTD
         phi_sa_size     = self.domain.actions_num*self.representation.features_num
-        A               = sp.coo_matrix((phi_sa_size,phi_sa_size))
+        A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
         b               = zeros(phi_sa_size)
-        all_phi_s       = zeros((self.sample_window,self.representation.features_num)) #phi_s will be saved for batch iFDD
-        all_phi_s_a     = zeros((self.sample_window,phi_sa_size)) #phi_sa will be fixed during iterations
-        all_phi_ns      = zeros((self.sample_window,self.representation.features_num)) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
+        all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
+        all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
+        all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
         
         #print "Making A,b"
         gamma               = self.representation.domain.gamma
@@ -109,12 +116,13 @@ class LSPI(Agent):
             all_phi_s[i,:]      = phi_s
             all_phi_s_a[i,:]    = phi_s_a
             all_phi_ns[i,:]     = phi_ns
-            d                   = phi_s_a-gamma*phi_ns_na
-            A                   = A + outer(phi_s_a,d) 
             b                   = b + r*phi_s_a
-
+            phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
+            phi_ns_na           = sp.csr_matrix(phi_s_a,dtype=phi_ns_na.dtype)
+            d                   = phi_s_a-gamma*phi_ns_na
+            A                   = A + phi_s_a.T*d 
         #Calculate theta
-        self.representation.theta = solveLinear(sp.csc_matrix(A),b)
+        self.representation.theta = solveLinear(A,b)
         #Calculate TD-Error
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
     def storeData(self,s,a,r,ns,na):

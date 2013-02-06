@@ -16,14 +16,15 @@ from Tools import *
 paths = [
          'Pendulum_InvertedBalance-IndependentDiscretization-10000',
          'Pendulum_InvertedBalance-BEBF-10000-0.2',
-         'Pendulum_InvertedBalance-iFDD-10000-0.6'
+         'Pendulum_InvertedBalance-iFDD-10000-0.6',
+         'Pendulum_InvertedBalance-OMPTD-10000-0.6'
         ] 
 
 #paths = [
 #         'Pendulum_InvertedBalance-BEBF-20000-0.25',
 #         'Pendulum_InvertedBalance-BEBF-20000-0.3'
 #         ]
-#labels      = ['Initial','BEBF','iFDD']
+labels      = ['Initial','BEBF','iFDD','OMPTD']
 labels      = []
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple','b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
 styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd','o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']

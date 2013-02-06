@@ -60,8 +60,8 @@ class Representation(object):
     def phi_sa(self,s,a, phi_s = None):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
         #If phi_s is passed it is used to avoid phi_s calculation
-        phi_sa = zeros(self.features_num*self.domain.actions_num)
         if phi_s is None: phi_s = self.phi(s)
+        phi_sa = zeros(self.features_num*self.domain.actions_num, dtype=phi_s.dtype)
         ind_a = arange(a*self.features_num,(a+1)*self.features_num)
         phi_sa[ind_a] = phi_s
         ##Slower alternatives
