@@ -62,7 +62,7 @@ from os import path
 
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
-if numpy.version.version < '2.6.0': # Missing count_nonzero
+if numpy.version.version < '1.6.0': # Missing count_nonzero
     
     # NOTE that the count_nonzero function below moves recursively through any sublists,
     # such that only individual elements are examined.
@@ -461,7 +461,10 @@ def addNewElementForAllActions(x,a,newElem = None):
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
     if sp.issparse(A):
-        result = slinalg.lsmr(A,b)
+        result = slinalg.lsmr(A,b,atol = 0, btol = 0, conlim = 0, maxiter = 10000)
+        #print 'sparse slinalg soln',result
+        #print 'dense slinalg soln',slinalg.lsmr(A.todense(),b)
+        #print 'dense linalg lstsq',linalg.lstsq(A.todense(),b)
         # Timing in seconds, for solving 100x100 with 100 elements in A for Ax=b problems
         #def foo():
         #    L = 100
@@ -481,6 +484,7 @@ def solveLinear(A,b):
         # bicg  = 6.8 (s)
         # qmr   = 9.5 (s)
     else:
+        if sp.issparse(A): A = A.todense()
         print 'NOT USING SPARSE SOLVER!'
         result = linalg.lstsq(A,b)
     return result[0]
@@ -535,6 +539,7 @@ def sp_dot_array(sp_m, A):
         return sum(A[ind])
     else:
         # Multiply by feature values since they are not binary
+        
         return sum([A[i]*sp_m[0,i] for i in ind])
 def sp_dot_sp(sp_1, sp_2):
     #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
