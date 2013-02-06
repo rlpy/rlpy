@@ -118,7 +118,7 @@ class LSPI(Agent):
             all_phi_ns[i,:]     = phi_ns
             b                   = b + r*phi_s_a
             phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
-            phi_ns_na           = sp.csr_matrix(phi_s_a,dtype=phi_ns_na.dtype)
+            phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
             d                   = phi_s_a-gamma*phi_ns_na
             A                   = A + phi_s_a.T*d 
         #Calculate theta
