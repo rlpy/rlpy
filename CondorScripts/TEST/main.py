@@ -1,3 +1,2 @@
-import numpy
-print numpy.show_config()
-
+import scipy
+print scipy.version.version
