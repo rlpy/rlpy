@@ -18,6 +18,7 @@ from Agents import *
 from Representations import *
 from Policies import *
 from Experiments import *
+from MyFile import *
 #from pandas.tests.test_series import CheckNameIntegration
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
@@ -28,8 +29,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 5
-    LEARNING_STEPS      = 5000
+    PERFORMANCE_CHECKS  = 1
+    LEARNING_STEPS      = 10000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -63,10 +64,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
-    iFDDOnlineThreshold         = inf
-    BatchDiscoveryThreshold     = inf if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDDOnlineThreshold         = .6
+    BatchDiscoveryThreshold     = .6  # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
-    Max_Batch_Feature_Discovery = 10    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
+    Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     BEBF_svm_epsilon            = {'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 
@@ -80,10 +81,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     initial_alpha           = .1
     boyan_N0                = 100
     LAMBDA                  = 0
-    LSPI_iterations         = 5
+    LSPI_iterations         = 2
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
-    RE_LSPI_iterations      = 5
+    RE_LSPI_iterations      = 2
     
     # DOMAIN
     #================
@@ -92,9 +93,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
-    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -124,8 +125,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
-    agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
@@ -144,6 +145,6 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
+         main(jobID = 1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
