@@ -151,6 +151,14 @@ If you are having trouble installing on OSX, see the following:
 http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/#numpy
 
 ===============================================================
+E: Generic messages about missing functions or 'module does not contain function xxx'
+S: Ensure you have the latest version of scipy (0.11 as of this writing):
+import scipy
+scipy.version.version
+S-U: if you don't have the correct version, run the following commands
+sudo apt-get install libatlas-base-dev gfortran python-pip
+sudo pip install scipy --upgrade
+===============================================================
 E: ImportError: numpy.core.multiarray failed to import
 S1: Dont import pylab directly. Use Matplotlib.pylab
 S2: sudo easy_install -U numpy

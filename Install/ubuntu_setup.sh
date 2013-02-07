@@ -37,7 +37,7 @@ echo -e "\nDo you want to install the package scikit-learn as well?"
 select yes_no in "Yes" "No";
 do
     case $yes_no in
-        Yes ) sudo apt-get install libatlas-dev python-pip; sudo pip install -U scikit-learn; echo -e "\nInstallation of scikit-learn complete.\n"; break;;
+        Yes ) sudo apt-get install libatlas-dev gfortran python-pip; sudo pip install -U scikit-learn; echo -e "\nInstallation of scikit-learn complete.\n"; break;;
         No ) echo -e "\nUser opted to ignore scikit-learn.\n"; break;;
     esac
 done
