@@ -463,34 +463,25 @@ def addNewElementForAllActions(x,a,newElem = None):
             return x
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
+    
+    #Add regularization to A
+    x,y = A.shape
+    assert x==y # Square matrix
+    for i in arange(x):
+        A[i,i] += REGULARIZATION
+        
     if sp.issparse(A):
-        result = slinalg.lsmr(A,b,atol = 0, btol = 0, conlim = 0, maxiter = 10000)
+        result  = slinalg.spsolve(A,b)
         #print 'sparse slinalg soln',result
         #print 'dense slinalg soln',slinalg.lsmr(A.todense(),b)
         #print 'dense linalg lstsq',linalg.lstsq(A.todense(),b)
-        # Timing in seconds, for solving 100x100 with 100 elements in A for Ax=b problems
-        #def foo():
-        #    L = 100
-        #    o = ones(L)
-        #    rows = random.random_integers(0,L-1,L)
-        #    cols = random.random_integers(0,L-1,L)
-        #    M = sp.csc_matrix((o,(rows,cols)),shape=(L,L))
-        #    b = arange(L)
-        #    x = slinalg.lsmr(M,b)
-        #
-        #random.seed(999)
-        #t = timeit.Timer(stmt="foo()",setup="from __main__ import *")
-        #print t.timeit(number=100)          
-        # lsmr  = .54 (s)
-        # lsqr  = .58 (s)
-        # cg    = 3.5 (s)
-        # bicg  = 6.8 (s)
-        # qmr   = 9.5 (s)
+        #For extensive comparision of methods refer to InversionComparison.txt 
     else:
         if sp.issparse(A):
             A = A.todense()
-        #print 'NOT USING SPARSE SOLVER!'
-        result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
+        # Regularize A
+        #result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
+        result = linalg.solve(A,b);
     error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
     if error > RESEDUAL_THRESHOLD:
         print RED,"||Ax-b|| = %0.20f" % error, NOCOLOR
@@ -585,6 +576,11 @@ def checkNCreateDirectory(fullfilename):
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.system('mkdir -p %s' % path)
+def hasProperty(object,propertyName):
+    if getattr(object, propertyName, None):
+        return True
+    else:
+        return False
 def hasFunction(object,methodname):
     method = getattr(object, methodname, None)
     return callable(method)
@@ -808,6 +804,7 @@ YELLOW  = '\033[93m'
 RED     = '\033[91m'
 NOCOLOR = '\033[0m'
 RESEDUAL_THRESHOLD = 1e-7
+REGULARIZATION = 1e-2
 FONTSIZE = 15
 SEP_LINE = "="*60
 # The following is necessary for mac machines to give the right latex compiler for python

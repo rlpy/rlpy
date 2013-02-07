@@ -97,7 +97,8 @@ class CartPole(Domain):
         
         self.MOMENT_ARM         = self.LENGTH / 2.0
         self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
-        
+        self.DimNames           = ['Theta','Thetadot','X','Xdot']
+
 #        if self.RECT_HEIGHT == 0: # No rectangle height specified
 #            self.RECT_HEIGHT = self.MASS_CART / 20 # Arbitrary number, reasonable visualization
 #        if self.PEND_WIDTH == 0: # No rectangle height specified

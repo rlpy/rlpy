@@ -44,6 +44,7 @@ class PitMaze(Domain):
         self.ROWS,self.COLS     = shape(self.map)
         self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])
         self.NOISE              = noise
+        self.DimNames           = ['Row','Col']
         if episodeCap is None:
             self.episodeCap         = 2*self.ROWS*self.COLS
         else:

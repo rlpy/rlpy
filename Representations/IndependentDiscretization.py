@@ -17,3 +17,12 @@ class IndependentDiscretization(Representation):
         # Returns the dimension number corresponding to this feature
         dim     = searchsorted(self.maxFeatureIDperDimension,f) 
         return dim
+    def getFeatureName(self,id):
+        if hasProperty(self.domain, 'DimNames'):
+            dim     = searchsorted(self.maxFeatureIDperDimension,id)
+            #Find the index of the feature in the corresponding dimension
+            index_in_dim = id
+            if dim != 0:
+                index_in_dim = id - self.maxFeatureIDperDimension[dim-1]
+            print self.domain.DimNames[dim]
+            f_name = self.domain.DimNames[dim] + '=' + str(index_in_dim)

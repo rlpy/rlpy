@@ -6,7 +6,7 @@ import pstats
 import platform
 
 
-Output = 'Pendulum-10K-iFDD-RELSPI.pdf'
+Output = 'Pendulum-10K-iFDD-RELSPI-spsolve+reg.pdf'
 print 'Profiling'
 cProfile.run('main(-1,SHOW_FINAL_PLOT=0)', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

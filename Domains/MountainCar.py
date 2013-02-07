@@ -51,7 +51,7 @@ class MountainCar(Domain):
         self.yTicksLabels   = linspace(self.XDOTMIN,self.XDOTMAX,5)
         self.MIN_RETURN     = self.STEP_REWARD*(1-self.gamma**self.episodeCap)/(1-self.gamma) if self.gamma != 1 else self.STEP_REWARD*self.episodeCap  
         self.MAX_RETURN     = 0
-
+        self.DimNames       = ['X','Xdot']
         super(MountainCar,self).__init__(logger)
     def step(self, s, a):
         position, velocity = s

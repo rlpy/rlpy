@@ -7,7 +7,7 @@ from Tools import *
 
 #path = 'Results/Example_Project' 
 #paths = ['Results/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
-paths = ['Results/Temp/BlocksWorld-iFDD-100000-0.1'] 
+paths = ['Results/Temp/BlocksWorld-iFDD-100000-0.1-NoSparse'] 
 
 
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']

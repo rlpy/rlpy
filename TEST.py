@@ -3,23 +3,7 @@ from Tools import *
 from Domains import *
 from Representations import *
 
-A  = sp.csr_matrix((3,3),dtype='bool')
-b  = array([0,1,0])
-A[0,0] = 1
-A[1,1] = 1
-A[2,2] = 1
-#c  = array([1,2,3])
-#b_sp = sp.csr_matrix(b,dtype='bool')
-#o  = b_sp.T*b_sp
-#print o.todense(),type(o), size(o)
-#A = A + o
-#print A
-#print type(A)
-#inner = b_sp*c.T
-#print inner,type(inner), size(inner)
-#print inner.item()
-#
-#print sp_dot_array(b_sp,c)
-
-from scipy.sparse.linalg.dsolve import spsolve, use_solver
-print spsolve(A,b) 
+l = Logger()
+d = BlocksWorld(logger = l)
+r = IndependentDiscretization(domain = d,logger = l)
+print r.getFeatureName(1)

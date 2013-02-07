@@ -110,7 +110,7 @@ class Pendulum(Domain):
         self.xTicksLabels   = ["$-\\pi$","$-\\frac{\\pi}{2}$","$0$","$\\frac{\\pi}{2}$","$\\pi$"]
         self.yTicks         = [0,self.Theta_discretization/4.0,self.ThetaDot_discretization/2.0,self.ThetaDot_discretization*3/4.0,self.ThetaDot_discretization-1]
         self.yTicksLabels   = ["$-8\\pi$","$-4\\pi$","$0$","$4\\pi$","$8\\pi$"]
-        
+        self.DimNames       = ['Theta','Thetadot']
         if self.logger: 
             self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)

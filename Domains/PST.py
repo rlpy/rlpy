@@ -162,7 +162,12 @@ class PST(Domain):
 #        self.ACTUATOR_REL_Y = self.UAV_RADIUS - self.ACTUATOR_HEIGHT
 #        state_space_dims = None # Number of dimensions of the state space
 #        episodeCap = None       # The cap used to bound each episode (return to s0 after)
-
+        # Set the Dimension Names:
+        self.DimNames = []
+        [self.DimNames.append('UAV%d-loc' % i) for i in arange(NUM_UAV)]
+        [self.DimNames.append('UAV%d-fuel' % i) for i in arange(NUM_UAV)]
+        [self.DimNames.append('UAV%d-act' % i) for i in arange(NUM_UAV)]
+        [self.DimNames.append('UAV%d-sen' % i) for i in arange(NUM_UAV)]
         super(PST,self).__init__(logger)
         if self.logger: self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
         

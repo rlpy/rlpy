@@ -54,7 +54,6 @@ class IntruderMonitoring(Domain):
         
         self.ROWS,self.COLS     = shape(self.map)
         self.GetAgentAndIntruderNumbers()
-        
         self.state_space_dims = 2*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
         
         _statespace_limits = vstack([[0,self.ROWS-1],[0,self.COLS-1]])
@@ -65,7 +64,8 @@ class IntruderMonitoring(Domain):
                      
         self.actions_num        = 5*self.NUMBER_OF_AGENTS
         self.ACTION_LIMITS      = [5]*self.NUMBER_OF_AGENTS
-        
+        self.DimNames           = []
+
         '''
         print 'Initialization Finished'    
         print 'Number of Agents', self.NUMBER_OF_AGENTS
