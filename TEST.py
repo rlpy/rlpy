@@ -5,6 +5,9 @@ from Representations import *
 
 A  = sp.csr_matrix((3,3),dtype='bool')
 b  = array([0,1,0])
+A[0,0] = 1
+A[1,1] = 1
+A[2,2] = 1
 #c  = array([1,2,3])
 #b_sp = sp.csr_matrix(b,dtype='bool')
 #o  = b_sp.T*b_sp
@@ -18,6 +21,5 @@ b  = array([0,1,0])
 #
 #print sp_dot_array(b_sp,c)
 
-print issubclass(b.dtype.type,integer) or issubclass(b.dtype.type,bool_)
-print b.dtype.type
-print A.dtype.type
+from scipy.sparse.linalg.dsolve import spsolve, use_solver
+print spsolve(A,b) 

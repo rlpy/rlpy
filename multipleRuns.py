@@ -1,4 +1,4 @@
-s######################################################
+######################################################
 # Developed by Alborz Geramiard Nov 30th 2012 at MIT #
 ######################################################
 
@@ -7,10 +7,10 @@ from main import *
 from os import *
 import platform
 
-StartID         = 18
-FinishId        = 30
+StartID         = 1
+FinishId        = 10
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/13ICML-BatchiFDD/Pendulum/Final'
+PROJECT_PATH    = 'Results/13ICML-BatchiFDD/Pendulum/AlborzSparsityTest-sparse2'
 max_cpu         = multiprocessing.cpu_count()
 
 if(platform.system() == 'Windows'):

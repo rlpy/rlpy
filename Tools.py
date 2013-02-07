@@ -487,10 +487,14 @@ def solveLinear(A,b):
         # bicg  = 6.8 (s)
         # qmr   = 9.5 (s)
     else:
-        if sp.issparse(A): A = A.todense()
-        print 'NOT USING SPARSE SOLVER!'
-        result = linalg.lstsq(A,b)
-    return result[0]
+        if sp.issparse(A):
+            A = A.todense()
+        #print 'NOT USING SPARSE SOLVER!'
+        result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
+    error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
+    if error > RESEDUAL_THRESHOLD:
+        print RED,"||Ax-b|| = %0.20f" % error, NOCOLOR
+    return result
 def rows(A):
     # return the rows of matrix A
     r, c = A.shape
@@ -796,6 +800,14 @@ if module_exists('matplotlib'):
 #    if os.path.exists('/usr/share/texmf'):
 #        os.environ['PATH'] += ':/usr/share/texmf'
         
+#Colors 
+PURPLE  = '\033[95m'
+BLUE    = '\033[94m'
+GREEN   = '\033[92m'
+YELLOW  = '\033[93m'
+RED     = '\033[91m'
+NOCOLOR = '\033[0m'
+RESEDUAL_THRESHOLD = 1e-7
 FONTSIZE = 15
 SEP_LINE = "="*60
 # The following is necessary for mac machines to give the right latex compiler for python

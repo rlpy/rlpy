@@ -3,6 +3,7 @@ from main import *
 from Representations import *
 from Domains import *
 import timeit
+from scipy.sparse.linalg.dsolve import spsolve, use_solver
 
 def f1():
     x = random.random_integers(0,L-1,L)
@@ -20,10 +21,10 @@ def foo(L,solver):
     b = arange(L)
     x = solver(M,b)
 random.seed(999)
-L = 1000000
+L = 100000
 t = timeit.Timer(stmt="foo(L,slinalg.lsmr)",setup="from __main__ import *")
 print t.timeit(number=1) 
 random.seed(999)
-t = timeit.Timer(stmt="foo(L,slinalg.lsqr)",setup="from __main__ import *")
+t = timeit.Timer(stmt="foo(L,slinalg.spsolve)",setup="from __main__ import *")
 print t.timeit(number=1)  
 

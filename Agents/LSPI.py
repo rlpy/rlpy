@@ -3,12 +3,21 @@
 ######################################################
 # Least-Squares Policy Iteration [Lagoudakis and Parr 2003]
 # This version recalculates the policy every <sample_window>. Samples are obtained using the recent version of the policy  
+import sys, os
+sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
+from Domains import *
 class LSPI(Agent):
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count
     epsilon         = 0         # Minimum l_2 change required to continue iterations in LSPI
+    
+    return_best_policy  = 0        # If this flag is activated, on each iteration of LSPI, the policy is checked with one simulation and in the end the theta w.r.t the best policy is returned. Note that this will require more samples than the intial set of samples provided to LSPI
+    best_performance    = -inf     # In the "return_best_policy", The best perofrmance check is stored here through LSPI iterations
+    best_theta          = None     # In the "return_best_policy", The best theta is stored here through LSPI iterations
+    best_TD_errors       = None     # In the "return_best_policy", The TD_Error corresponding to the best theta is stored here through LSPI iterations 
+    extra_samples       = 0        # The number of extra samples used due to extra simulations 
     #Store Data in separate matrixes
     data_s          = []        # 
     data_a          = []        # 
@@ -53,7 +62,8 @@ class LSPI(Agent):
             #Begin updating the policy in LSPI loop
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
-            self.logger.log('Running LSPI:')
+            self.best_performance = -inf
+            self.logger.log('Running Policy Iteration:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
                 if phi_sa_size != 0: A = sp.csr_matrix((phi_sa_size,phi_sa_size)) # Reset the A matrix
                 for i in arange(self.sample_window):
@@ -72,18 +82,39 @@ class LSPI(Agent):
                 if phi_sa_size != 0:
                     new_theta                   = solveLinear(A,b)
                     weight_diff                 = linalg.norm(self.representation.theta - new_theta)
-                    if weight_diff > self.epsilon: self.representation.theta   = new_theta
+                    if self.return_best_policy:
+                        # Check Performance with new theta
+                        old_theta                   = array(self.representation.theta)
+                        self.representation.theta   = new_theta
+                        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+                        self.extra_samples          += eps_length
+                        performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
+                        if self.best_performance < performance:
+                            self.best_performance   = performance
+                            self.best_TD_errors     = td_errors
+                            self.best_theta         = array(new_theta)
+                            self.logger.log('[Saved]')
+                        self.representation.theta = old_theta #Return to previous theta
+                    if weight_diff > self.epsilon: 
+                        self.representation.theta   = new_theta
+                        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
                     self.logger.log("%d: L2_norm of weight difference = %0.3f, Density of A: %0.2f%%" % (lspi_iteration+1,weight_diff, count_nonzero(A)/(prod(A.shape)*1.)*100))
                 else:
                     print "No features, hence no more iterations is necessary!"
                     weight_diff = 0
                 lspi_iteration +=1
-            return td_errors
+            if self.return_best_policy: 
+                print "%d Extra Samples So Far." % self.extra_samples
+                self.representation.theta = self.best_theta
+                return self.best_TD_errors
+            else:
+                return td_errors
     def LSTD(self): 
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
             return 
-            
+
+        self.logger.log('Running LSTD:')
         #No features means empty matrices
         if self.representation.features_num == 0:
             return array([]), array([]), array([]), array([]), array([])
@@ -100,7 +131,6 @@ class LSPI(Agent):
         all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
         all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
         all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
-        
         #print "Making A,b"
         gamma               = self.representation.domain.gamma
         for i in arange(self.sample_window):
@@ -120,10 +150,9 @@ class LSPI(Agent):
             phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
             phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
             d                   = phi_s_a-gamma*phi_ns_na
-            A                   = A + phi_s_a.T*d 
+            A                   = A + phi_s_a.T*d
         #Calculate theta
-        self.representation.theta = solveLinear(A,b)
-        #Calculate TD-Error
+        self.representation.theta   = solveLinear(A,b)
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s

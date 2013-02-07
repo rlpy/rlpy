@@ -27,7 +27,7 @@ class RE_LSPI(LSPI):
             # Run Policy Iteration to change a_prime and recalculate theta
             td_errors = self.policyIteration(b,all_phi_s_a,all_phi_ns)
             # Check Performance (We dont record it as result)
-            eps_return, eps_length, _ = self.checkPerformance(); self.logger.log("Performance Check >>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+            eps_return, eps_length, _ = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
             # Add new Features
             if hasFunction(self.representation,'batchDiscover'):
                 added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
