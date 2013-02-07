@@ -13,8 +13,8 @@ def module_exists(module_name):
 from operator import *
 from numpy  import *
 import os
-os.environ['HOME'] = "/data/scratch/tmp"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-os.environ['MPLCONFIGDIR'] = os.environ['HOME']
+#os.environ['HOME'] = "/data/scratch/tmp"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+#os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 # http://matplotlib.1069221.n5.nabble.com/Set-MPLCONFIGDIR-to-something-different-td12922.html#a19033822
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 if module_exists('matplotlib'):
@@ -62,8 +62,11 @@ from os import path
 
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
-if numpy.version.version < '1.6.0': # Missing count_nonzero
-    
+
+# BELOW we have opted to always use the custom count_nonzero function; see comments
+# 
+#if numpy.version.version < '2.6.0': # Missing count_nonzero
+if True:    
     # NOTE that the count_nonzero function below moves recursively through any sublists,
     # such that only individual elements are examined.
     # Some versions of numpy's count_nonzero only strictly compare each element;
