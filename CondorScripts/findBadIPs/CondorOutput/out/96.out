@@ -1,4 +1,3 @@
-yodel17:		 MISSING CRITICAL PACKAGE:	scipy
-yodel17
-Computer yodel17 NEWLY added as FAULTY.
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
 

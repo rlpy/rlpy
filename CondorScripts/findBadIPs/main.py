@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 from Script_Tools import *
 
-crit_packages 		= ['numpy','scipy']#,'sklearn']
+crit_packages 		= ['numpy','scipy','sklearn']
 opt_packages 		= []
 #opt_packages 		= ['matplotlib']
 

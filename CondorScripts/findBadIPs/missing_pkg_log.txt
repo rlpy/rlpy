@@ -497,3 +497,264 @@ Computer yodel12 Faulty, but already discovered.
 yodel4:		 MISSING CRITICAL PACKAGE:	scipy
 Computer yodel4 Faulty, but already discovered.
 
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+yodel13:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel13 Faulty, but already discovered.yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+
+
+
+
+yodel17:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel17 Faulty, but already discovered.
+
+yodel17:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel17 Faulty, but already discovered.
+
+yodel13:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel13 Faulty, but already discovered.
+
+del10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel13:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel13 Faulty, but already discovered.
+
+yodel2:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel2 Faulty, but already discovered.
+
+
+
+yodel10:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel10 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel13:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel13 Faulty, but already discovered.
+
+yodel13:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel13 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
+yodel12:		 MISSING CRITICAL PACKAGE:	sklearn
+Computer yodel12 Faulty, but already discovered.
+
