@@ -80,7 +80,9 @@ class LSPI(Agent):
                         td_errors[i]    = self.data_r[i]
                 #Calculate theta
                 if phi_sa_size != 0:
-                    new_theta                   = solveLinear(A,b)
+                    #Regularaize A
+                    A                           = regularize(A)
+                    new_theta, solve_time       = solveLinear(A,b)
                     weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                     if self.return_best_policy:
                         # Check Performance with new theta
@@ -98,7 +100,7 @@ class LSPI(Agent):
                     if weight_diff > self.epsilon: 
                         self.representation.theta   = new_theta
                         eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
-                    self.logger.log("%d: L2_norm of weight difference = %0.3f, Density of A: %0.2f%%" % (lspi_iteration+1,weight_diff, count_nonzero(A)/(prod(A.shape)*1.)*100))
+                    self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),solve_time))
                 else:
                     print "No features, hence no more iterations is necessary!"
                     weight_diff = 0
@@ -151,8 +153,13 @@ class LSPI(Agent):
             phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
             d                   = phi_s_a-gamma*phi_ns_na
             A                   = A + phi_s_a.T*d
+        
+        #Regularaize A
+        A = regularize(A)
+        
         #Calculate theta
-        self.representation.theta   = solveLinear(A,b)
+        self.representation.theta, solve_time  = solveLinear(A,b)
+        print 'Solve Time = %0.1e(s)' % solve_time
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s

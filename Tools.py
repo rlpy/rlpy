@@ -317,8 +317,6 @@ def linearMap(x,a,b,A=0,B=1):
     if res < A: res = A
     if res > B: res = B
     return res
-def isSparse(x):
-    return isinstance(x,sparse.lil_matrix) or isinstance(x,sparse.csr_matrix)        
 def generalDot(x,y):
     if isSparse(x):
         #active_indices = x.nonzero()[0].flatten()
@@ -463,29 +461,24 @@ def addNewElementForAllActions(x,a,newElem = None):
             return x
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
-    
-    #Add regularization to A
-    x,y = A.shape
-    assert x==y # Square matrix
-    for i in arange(x):
-        A[i,i] += REGULARIZATION
-        
-    if sp.issparse(A):
+    # return x and the time for solve
+    if sp.issparse(A) and False:
+        start_log_time = time()
         result  = slinalg.spsolve(A,b)
-        #print 'sparse slinalg soln',result
-        #print 'dense slinalg soln',slinalg.lsmr(A.todense(),b)
-        #print 'dense linalg lstsq',linalg.lstsq(A.todense(),b)
+        solve_time = deltaT(start_log_time)
         #For extensive comparision of methods refer to InversionComparison.txt 
     else:
         if sp.issparse(A):
             A = A.todense()
         # Regularize A
         #result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
+        start_log_time = time()
         result = linalg.solve(A,b);
+        solve_time = deltaT(start_log_time)
     error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
     if error > RESEDUAL_THRESHOLD:
         print RED,"||Ax-b|| = %0.20f" % error, NOCOLOR
-    return result
+    return result, solve_time
 def rows(A):
     # return the rows of matrix A
     r, c = A.shape
@@ -589,6 +582,20 @@ def pretty(X,format='%0.3f'):
     # [1,2,3], %0.3f => 1.000    2.000    3.000
     format = format + '\t'
     return ''.join(format% x for x in X)
+def regularize(A):
+    # Adds REGULARIZATION*I To A. This is often done before calling the linearSolver
+    # A has to be square matrix
+    x,y = A.shape
+    assert x==y # Square matrix
+    if sp.issparse(A):
+        A = A + REGULARIZATION*sp.eye(x,x)
+    else:
+        for i in arange(x):
+            A[i,i] += REGULARIZATION
+    return A
+def sparsity(A):
+    # Returns the percent [0-100] of elements of A that are 0
+    return (1-count_nonzero(A)/(prod(A.shape)*1.))*100
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     def save(self,filename):
@@ -779,7 +786,6 @@ class PriorityQueueWithNovelty():
         for i in range(len(temp)):
             p,c,x = heappop(temp)
             print "Priotiry = %d, Novelty = %d, Obj = %s" % (p,c,str(x))
-
 if module_exists('matplotlib'):
     createColorMaps()
     rc('font',**{'family':'serif','sans-serif':['Helvetica']})

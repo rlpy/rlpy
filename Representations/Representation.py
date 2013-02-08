@@ -153,4 +153,60 @@ class Representation(object):
         # all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
         # data_s is the states p-by-|dim(s)|
         return False
-            
+    def batchBestAction(self, all_s, all_phi_s):
+        # Returns the best-action and phi_s_a corresponding to the states
+        # inputs:
+        # 1: all-s: p-by-dim(s)
+        # 2: all_phi_s: p-by-|phi(s))|
+        # outputs:
+        # best_action: p-by-1
+        # phi_s_a: p-by-|phi(s,a)|
+        
+        # Algorithm:
+        # 1. Calculate the phi_s_a for all actions and given s for each row
+        # 2. Multiply theta to the corresponding phi_s_a
+        # 3. Rearrange the matrix to have in each row all values corresponding to possible actions
+        # 4. Maskout irrelevant actions
+        # 5. find the max index in each row
+        # 6. return the action and corresponding_phi_s_a
+        
+        # make a mask for the invalid_actions
+        # build a matrix p-by-a where in each row the missing action is 1
+        # Example: 2 actions, 3 states
+        # possibleActions(s1) = 0
+        # possibleActions(s2) = 1
+        # possibleActions(s3) = 0,1
+        # output =>  0 1
+        #            1 0
+        #            0 0         
+
+        p,n = all_phi_s.shape
+        max_a = self.domain.actions_num
+        action_mask = ones((p,max_a))
+        for i,s in enumerate(all_s):
+            action_mask[i,self.domain.possibleActions(s)] = 0
+        
+        all_phi_s_a = kron(eye(max_a,max_a),all_phi_s) #all_phi_s_a will be ap-by-an
+        all_q_s_a   = dot(all_phi_s_a,self.theta.reshape(-1,1))  #ap-by-1
+        all_q_s_a   = all_q_s_a.reshape((-1,max_a))    #a-by-p
+        all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
+        best_action = argmax(all_q_s_a,axis=0)
+        all_phi_s_a = all_phi_s_a.reshape((max_a,-1))
+        
+        # Build the slices in each row
+        # best_action = [0 1 0] with 2 actions and 3 samples
+        # build: 
+        # 1 0
+        # 0 1
+        # 1 0 
+        action_slice = zeros((p,max_a))
+        action_slice[xrange(p),best_action] = 1
+        #now expand each 1 into size of the features (i.e. n)
+        action_slice = kron(action_slice,ones((1,n)))
+        # with n = 2 we will have:
+        # 1 1 0 0
+        # 0 0 1 1
+        # 1 1 0 0  
+        # now we can select the feature values
+        phi_s_a = all_phi_s_a[action_slice] 
+        return best_action, phi_s_a
