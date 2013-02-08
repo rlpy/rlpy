@@ -9,6 +9,11 @@
 # exp_num: Number of experiment runs that are required to be finished
 #+force: Just run the god damn thing! => Ignore all warnings. (default = false)
 
+
+# NOTE - Below assumes that the directory from which runall.py is called is located somewhere
+# under the RL-Results directory, and that RL-Python is in the same parent folder as RL-Results.
+# Modify below as necessary if this is not the case.
+
 import os, sys, time, re, string
 #Add all paths
 path = '.'
