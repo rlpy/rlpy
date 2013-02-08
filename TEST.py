@@ -47,18 +47,19 @@ action_slice[best_action,xrange(p)] = 1
 print action_slice
 #now expand each 1 into size of the features (i.e. n)
 action_slice = kron(action_slice,ones((1,n*max_a)))
-print "action_slice", action_slice
+print "action_slice"
+print action_slice
 print "phi_s_a"
 print all_phi_s_a
 all_phi_s_a = all_phi_s_a.reshape((max_a,-1))
-print "phi_s_a"
+print "all_phi_s_a"
 print all_phi_s_a
 # with n = 2, and a = 2 we will have:
 # 0 0 0 0 1 1 1 1 0 0 0 0
 # 1 1 1 1 0 0 0 0 1 1 1 1
 # now we can select the feature values
-R, C = where(action_slice!=0)
-print R, C
-phi_s_a = all_phi_s_a[R,C]
+phi_s_a = all_phi_s_a.T[action_slice.T==1]
+phi_s_a = phi_s_a.reshape((p,-1))
+print 'final'
 print phi_s_a
  
