@@ -1,2 +1,4 @@
 import scipy
-print scipy.version.version
+import platform
+print 'scipy ',scipy.version.version
+print 'system',platform.version() 
