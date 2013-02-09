@@ -228,8 +228,12 @@ class LSPI(Agent):
             if self.use_sparse:
                 phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
                 phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
-            d                   = phi_s_a-gamma*phi_ns_na
-            A                   = A + phi_s_a.T*d
+                d                   = phi_s_a-gamma*phi_ns_na
+                A                   = A + phi_s_a.T*d
+            else:
+                d                   = phi_s_a-gamma*phi_ns_na
+                A                   = A + outer(phi_s_a,d)
+                
         
         #Regularaize A
         A = regularize(A)
