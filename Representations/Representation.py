@@ -153,6 +153,8 @@ class Representation(object):
         # all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
         # data_s is the states p-by-|dim(s)|
         return False
+    def batchPhi_s_a(self,all_phi_s):
+        pass
     def batchBestAction(self, all_s, all_phi_s, action_mask = None):
         # Returns the best-action and phi_s_a corresponding to the states
         # inputs:
