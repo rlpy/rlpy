@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
+    use_sparse      = 0         # Use sparse representation for A?
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count
@@ -38,20 +39,81 @@ class LSPI(Agent):
         self.data_r             = zeros(sample_window)
         super(LSPI, self).__init__(representation, policy, domain,logger)
         if logger:
-                logger.log('Max LSPI Iterations:\t%d' % lspi_iterations)
-                logger.log('Data Size:\t\t%d' % sample_window)
-                logger.log('Weight Difference tol.:\t%0.3f' % epsilon)
+                self.logger.log('Max LSPI Iterations:\t%d' % lspi_iterations)
+                self.logger.log('Data Size:\t\t%d' % sample_window)
+                self.logger.log('Weight Difference tol.:\t%0.3f' % epsilon)
     def learn(self,s,a,r,ns,na,terminal):
         
         self.storeData(s,a,r,ns,na)        
         
         if self.samples_count == self.sample_window: #zero based hence the -1
-
             # Run LSTD for first solution
             A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
+            # Update the policy by recalculating A based on new na
+            # Returns the TD error for each sample based on the latest weights and next actions
+            # b is passed as an input because it remains unchanged during policy iteration.
+            if all_phi_ns.shape[0] == 0:
+                print "No features, hence no more iterations is necessary!"
+                weight_diff = 0
+                return []
+            
+            phi_sa_size     = self.domain.actions_num*self.representation.features_num
+            gamma           = self.domain.gamma
+            
+            #Begin updating the policy in LSPI loop
+            weight_diff     = self.epsilon + 1 # So that the loop starts
+            lspi_iteration  = 0
+            self.best_performance = -inf
+            self.logger.log('Running Policy Iteration:')
+            action_mask = None # We save action_mask used for batchBestAction to boost the speed
+            F1      = all_phi_s_a
+            R       = self.data_r
+            W       = self.representation.theta
+            gamma   = self.domain.gamma
+            while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
+                
+                #Find the best action for each state given the current value function
+                #Notice if actions have the same value the first action is selected in the batch mode
+                bestAction, all_phi_ns_na,action_mask = self.representation.batchBestAction(self.data_ns,all_phi_ns,action_mask)
+                F2                          = all_phi_ns_na
+                A                           = dot(F1.T, F1 - gamma*F2)
+                A                           = regularize(A)
+                new_theta, solve_time       = solveLinear(A,b)
+                weight_diff                 = linalg.norm(self.representation.theta - new_theta)
+                td_errors                   = R+dot(gamma*F2-F1,new_theta)
+                if self.return_best_policy:
+                    self.updateBestPolicy(new_theta,td_error)
+                else:
+                    eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+                if weight_diff > self.epsilon: 
+                    self.representation.theta   = new_theta
+                    self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),solve_time))
+                lspi_iteration +=1
+            
+            if self.return_best_policy: 
+                self.logger.log("%d Extra Samples So Far." % self.extra_samples)
+                self.representation.theta = self.best_theta
+                return self.best_TD_errors
+            else:
+                return td_errors
+    def updateBestPolicy(self,new_theta,new_td_error):
+        # Check the performance of the policy corresponding to the new_theta
+        # Logs the best found theta, performance, and td_error based on a single run of the  new theta
+        old_theta                   = array(self.representation.theta)
+        self.representation.theta   = new_theta
+        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+        self.extra_samples          += eps_length
+        performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
+        if self.best_performance < performance:
+            self.best_performance   = performance
+            self.best_TD_errors     = new_td_error
+            self.best_theta         = array(new_theta)
+            self.logger.log('[Saved]')
+            self.representation.theta = old_theta #Return to previous theta
+    def policyIteration_explicit_loop(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
@@ -65,17 +127,28 @@ class LSPI(Agent):
             self.best_performance = -inf
             self.logger.log('Running Policy Iteration:')
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
-                if phi_sa_size != 0: A = sp.csr_matrix((phi_sa_size,phi_sa_size)) # Reset the A matrix
+                if phi_sa_size != 0: 
+                    if self.use_sparse:
+                        A = sp.csr_matrix((phi_sa_size,phi_sa_size)) # Reset the A matrix
+                    else:
+                        A = zeros((phi_sa_size,phi_sa_size))
                 for i in arange(self.sample_window):
                     ns              = self.data_ns[i,:]
                     if phi_sa_size != 0:
-                        phi_s_a         = sp.csr_matrix(all_phi_s_a[i,:],dtype=all_phi_s_a.dtype)
                         phi_ns          = all_phi_ns[i,:]
                         new_na          = self.representation.bestAction(ns,phi_ns)
-                        phi_ns_new_na   = sp.csr_matrix(self.representation.phi_sa(ns,new_na,phi_ns),dtype=all_phi_s_a.dtype)
-                        d               = phi_s_a-gamma*phi_ns_new_na
-                        A               = A + phi_s_a.T*d
-                        td_errors[i]    = self.data_r[i]+sp_dot_array(-d,self.representation.theta)
+                        phi_s_a         = all_phi_s_a[i,:]
+                        phi_ns_new_na   = self.representation.phi_sa(ns,new_na,phi_ns)
+                        if self.use_sparse:
+                            phi_s_a         = sp.csr_matrix(phi_s_a,dtype=all_phi_s_a.dtype)
+                            phi_ns_new_na   = sp.csr_matrix(phi_ns_new_na,dtype=all_phi_s_a.dtype)
+                            d               = phi_s_a-gamma*phi_ns_new_na
+                            A               = A + phi_s_a.T*d
+                            td_errors[i]    = self.data_r[i]+sp_dot_array(-d,self.representation.theta)
+                        else:
+                            d               = phi_s_a-gamma*phi_ns_new_na
+                            A               = A + outer(phi_s_a,d)
+                            td_errors[i]    = self.data_r[i]+dot(-d,self.representation.theta)
                     else:
                         td_errors[i]    = self.data_r[i]
                 #Calculate theta
@@ -102,11 +175,11 @@ class LSPI(Agent):
                         eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
                     self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),solve_time))
                 else:
-                    print "No features, hence no more iterations is necessary!"
+                    self.logger.log("No features, hence no more iterations is necessary!")
                     weight_diff = 0
                 lspi_iteration +=1
             if self.return_best_policy: 
-                print "%d Extra Samples So Far." % self.extra_samples
+                self.logger.log("%d Extra Samples So Far." % self.extra_samples)
                 self.representation.theta = self.best_theta
                 return self.best_TD_errors
             else:
@@ -128,7 +201,10 @@ class LSPI(Agent):
 
         # Calculate the A and b matrixes in LSTD
         phi_sa_size     = self.domain.actions_num*self.representation.features_num
-        A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
+        if self.use_sparse:
+            A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
+        else:
+            A               = zeros((phi_sa_size,phi_sa_size)) # A matrix is in general float
         b               = zeros(phi_sa_size)
         all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
         all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
@@ -149,8 +225,9 @@ class LSPI(Agent):
             all_phi_s_a[i,:]    = phi_s_a
             all_phi_ns[i,:]     = phi_ns
             b                   = b + r*phi_s_a
-            phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
-            phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
+            if self.use_sparse:
+                phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
+                phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
             d                   = phi_s_a-gamma*phi_ns_na
             A                   = A + phi_s_a.T*d
         

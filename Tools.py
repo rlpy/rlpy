@@ -477,7 +477,7 @@ def solveLinear(A,b):
         solve_time = deltaT(start_log_time)
     error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
     if error > RESEDUAL_THRESHOLD:
-        print RED,"||Ax-b|| = %0.20f" % error, NOCOLOR
+        print "||Ax-b|| = %0.1f" % error
     return result, solve_time
 def rows(A):
     # return the rows of matrix A

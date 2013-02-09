@@ -153,14 +153,16 @@ class Representation(object):
         # all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
         # data_s is the states p-by-|dim(s)|
         return False
-    def batchBestAction(self, all_s, all_phi_s):
+    def batchBestAction(self, all_s, all_phi_s, action_mask = None):
         # Returns the best-action and phi_s_a corresponding to the states
         # inputs:
         # 1: all-s: p-by-dim(s)
         # 2: all_phi_s: p-by-|phi(s))|
+        # 3: Optional) If action mask is available it can be passed to boost the calculation
         # outputs:
         # best_action: p-by-1
         # phi_s_a: p-by-|phi(s,a)|
+        # action_mask
         
         # Algorithm:
         # 1. Calculate the phi_s_a for all actions and given s for each row
@@ -179,17 +181,25 @@ class Representation(object):
         # output =>  0 1
         #            1 0
         #            0 0 
+        p,n     = all_phi_s.shape
+        max_a   = self.domain.actions_num
         
+        if action_mask == None:
+            action_mask = ones((p,max_a))
+            for i,s in enumerate(all_s):
+                action_mask[i,self.domain.possibleActions(s)] = 0 
+        
+        max_a       = self.domain.actions_num
         all_phi_s_a = kron(eye(max_a,max_a),all_phi_s) #all_phi_s_a will be ap-by-an
-        print all_phi_s_a
-        print all_phi_s_a.shape, theta.shape
-        all_q_s_a   = dot(all_phi_s_a,theta.T)           #ap-by-1
-        print all_q_s_a
+        #print all_phi_s_a
+        #print all_phi_s_a.shape, self.theta.shape
+        all_q_s_a   = dot(all_phi_s_a,self.theta.T)           #ap-by-1
+        #print all_q_s_a
         all_q_s_a   = all_q_s_a.reshape((-1,max_a))    #a-by-p
-        print all_q_s_a
+        #print all_q_s_a
+        
         all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
         best_action = argmax(all_q_s_a,axis=1)
-        print best_action
         action_slice = zeros((max_a,p))
         action_slice[best_action,xrange(p)] = 1
         # Build the slices in each row
@@ -197,22 +207,13 @@ class Representation(object):
         # build: 
         # 0 1 0
         # 1 0 1
-        print action_slice
         #now expand each 1 into size of the features (i.e. n)
         action_slice = kron(action_slice,ones((1,n*max_a)))
-        print "action_slice"
-        print action_slice
-        print "phi_s_a"
-        print all_phi_s_a
         all_phi_s_a = all_phi_s_a.reshape((max_a,-1))
-        print "all_phi_s_a"
-        print all_phi_s_a
         # with n = 2, and a = 2 we will have:
         # 0 0 0 0 1 1 1 1 0 0 0 0
         # 1 1 1 1 0 0 0 0 1 1 1 1
         # now we can select the feature values
         phi_s_a = all_phi_s_a.T[action_slice.T==1]
         phi_s_a = phi_s_a.reshape((p,-1))
-        print 'final'
-        print phi_s_a 
-        return best_action, phi_s_a
+        return best_action, phi_s_a, action_mask
