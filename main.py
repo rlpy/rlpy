@@ -28,8 +28,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 1000
+    PERFORMANCE_CHECKS  = 10
+    LEARNING_STEPS      = 10000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -56,7 +56,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
-    BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
+    BLOCKS              = 5     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
@@ -119,9 +119,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # LEARNING AGENT
     #================
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize)
-    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     

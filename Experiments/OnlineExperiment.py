@@ -65,26 +65,23 @@ class OnlineExperiment (Experiment):
             if self.show_all: self.domain.show(s,a, self.agent.representation)
             #Act,Learn,Step
             r,ns,terminal   = self.domain.step(s, a)
-            if self.DEBUG: print s,a,r,ns
             na              = self.agent.policy.pi(ns)
-            #self.logger.log(str(total_steps)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
-            # Hash new state for the tabular case
-            if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(ns)
-            self.agent.learn(s,a,r,ns,na,terminal)            
-                        
+
             total_steps += 1
             eps_steps   += 1
             eps_return  += r
-            s,a          = ns,na
-            
-            
+
             #Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
                 start_log_time  = time()
                 elapsedTime     = deltaT(self.start_time) 
                 self.logger.log('%d: E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num))
 
-
+            # Hash new state for the tabular case
+            if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(ns)
+            self.agent.learn(s,a,r,ns,na,terminal)            
+            s,a          = ns,na
+            
             #Check Performance
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
                 performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
@@ -101,10 +98,6 @@ class OnlineExperiment (Experiment):
                 performance_tick    += 1
 
             
-#shout(self)
-            #print total_steps,":",s,a,ns
-            #raw_input()
-
         #Visual
         if self.show_all: self.domain.show(s,a, self.agent.representation)
         if self.show_all or self.show_performance:
