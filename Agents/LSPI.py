@@ -207,35 +207,24 @@ class LSPI(Agent):
             A               = zeros((phi_sa_size,phi_sa_size)) # A matrix is in general float
         b               = zeros(phi_sa_size)
         all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
-        all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
         all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
         #print "Making A,b"
         gamma               = self.representation.domain.gamma
+
+        #build phi_s and phi_ns
         for i in arange(self.sample_window):
-            s                   = self.data_s[i]
-            ns                  = self.data_ns[i]
-            a                   = self.data_a[i]
-            na                  = self.data_na[i]
-            r                   = self.data_r[i]
-            phi_s               = self.representation.phi(s)
-            phi_s_a             = self.representation.phi_sa(s,a,phi_s)
-            phi_ns              = self.representation.phi(ns)
-            phi_ns_na           = self.representation.phi_sa(ns,na,phi_ns)
-            all_phi_s[i,:]      = phi_s
-            all_phi_s_a[i,:]    = phi_s_a
-            all_phi_ns[i,:]     = phi_ns
-            b                   = b + r*phi_s_a
-            if self.use_sparse:
-                phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
-                phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
-                d                   = phi_s_a-gamma*phi_ns_na
-                A                   = A + phi_s_a.T*d
-            else:
-                d                   = phi_s_a-gamma*phi_ns_na
-                A                   = A + outer(phi_s_a,d)
+            all_phi_s[i,:]      = self.representation.phi(self.data_s[i])
+            all_phi_ns[i,:]     = self.representation.phi(self.data_ns[i])
                 
+        all_phi_s_a     = self.representation.batchPhi_s_a(all_phi_s, self.data_a)
+        all_phi_ns_na   = self.representation.batchPhi_s_a(all_phi_ns, self.data_na)
+        F1              = all_phi_s_a
+        F2              = all_phi_ns_na
+        R               = self.data_r
+        gamma           = self.domain.gamma
         
-        #Regularaize A
+        b = dot(F1.T,R)
+        A = dot(F1.T, F1 - gamma*F2)
         A = regularize(A)
         
         #Calculate theta
