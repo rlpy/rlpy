@@ -25,7 +25,6 @@ class LSPI(Agent):
     data_r          = []        #
     data_ns         = []        # 
     data_na         = []        # 
-        
     def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3):
         self.samples_count      = 0
         self.sample_window      = sample_window
@@ -45,10 +44,10 @@ class LSPI(Agent):
     def learn(self,s,a,r,ns,na,terminal):
         
         self.storeData(s,a,r,ns,na)        
-        
         if self.samples_count == self.sample_window: #zero based hence the -1
+            self.samples_count  = 0
             # Run LSTD for first solution
-            A,b, all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+            A,b = self.LSTD()
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
@@ -185,39 +184,31 @@ class LSPI(Agent):
             else:
                 return td_errors
     def LSTD(self): 
+        # If sameSamples = True then LSTD will use existing all_phi_s, all_phi_s_a, and all_phi_ns 
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
-            return 
+            return None
 
         self.logger.log('Running LSTD:')
         #No features means empty matrices
         if self.representation.features_num == 0:
-            return array([]), array([]), array([]), array([]), array([])
+            return array([]), array([])
          
-        self.samples_count  = 0
-       
-        # Make one sample phi to decide about the type of A matrix:
-        phi_s               = self.representation.phi(self.data_s[0])
-
-        # Calculate the A and b matrixes in LSTD
-        phi_sa_size     = self.domain.actions_num*self.representation.features_num
-        if self.use_sparse:
-            A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
-        else:
-            A               = zeros((phi_sa_size,phi_sa_size)) # A matrix is in general float
-        b               = zeros(phi_sa_size)
-        all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
-        all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
-        #print "Making A,b"
-        gamma               = self.representation.domain.gamma
-
-        #build phi_s and phi_ns
+        
+        #build phi_s and phi_ns for all samples
+        p           = self.data_s.shape[0]
+        n           = self.representation.features_num
+        all_phi_s   = empty((p,n))
+        all_phi_ns  = empty((p,n))
         for i in arange(self.sample_window):
-            all_phi_s[i,:]      = self.representation.phi(self.data_s[i])
-            all_phi_ns[i,:]     = self.representation.phi(self.data_ns[i])
-                
+            all_phi_s[i,:]  = self.representation.phi(self.data_s[i])
+            all_phi_ns[i,:] = self.representation.phi(self.data_ns[i])
+            
+        #build phi_s_a and phi_ns_na for all samples given phi_s and phi_ns
         all_phi_s_a     = self.representation.batchPhi_s_a(all_phi_s, self.data_a)
         all_phi_ns_na   = self.representation.batchPhi_s_a(all_phi_ns, self.data_na)
+        
+        #calculate A and b for LSTD
         F1              = all_phi_s_a
         F2              = all_phi_ns_na
         R               = self.data_r
@@ -233,8 +224,8 @@ class LSPI(Agent):
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s
-        self.data_a[self.samples_count]   = a
-        self.data_r[self.samples_count]   = r
+        self.data_a[self.samples_count]     = a
+        self.data_r[self.samples_count]     = r
         self.data_ns[self.samples_count,:]  = ns
-        self.data_na[self.samples_count]  = na
+        self.data_na[self.samples_count]    = na
         self.samples_count                  += 1

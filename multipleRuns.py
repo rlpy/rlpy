@@ -10,7 +10,7 @@ import platform
 StartID         = 1
 FinishId        = 10
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/13ICML-BatchiFDD/Pendulum/AlborzSparsityTest-sparse2'
+PROJECT_PATH    = 'Results/13ICML/'
 max_cpu         = multiprocessing.cpu_count()
 
 if(platform.system() == 'Windows'):
