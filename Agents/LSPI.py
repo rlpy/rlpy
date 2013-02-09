@@ -59,36 +59,42 @@ class LSPI(Agent):
                 weight_diff = 0
                 return []
             
-            phi_sa_size     = self.domain.actions_num*self.representation.features_num
-            gamma           = self.domain.gamma
-            
             #Begin updating the policy in LSPI loop
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
             self.best_performance = -inf
             self.logger.log('Running Policy Iteration:')
-            action_mask = None # We save action_mask used for batchBestAction to boost the speed
-            F1      = all_phi_s_a
-            R       = self.data_r
-            W       = self.representation.theta
-            gamma   = self.domain.gamma
+            
+            # We save action_mask on the first iteration (used for batchBestAction) to reuse it and boost the speed
+            # action mask is a matrix that shows which actions are available for each state
+            action_mask = None 
+            F1          = all_phi_s_a
+            R           = self.data_r
+            W           = self.representation.theta
+            gamma       = self.domain.gamma
             while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
                 
                 #Find the best action for each state given the current value function
                 #Notice if actions have the same value the first action is selected in the batch mode
                 bestAction, all_phi_ns_na,action_mask = self.representation.batchBestAction(self.data_ns,all_phi_ns,action_mask)
+                
+                #Recalculate A matrix (b remains the same)
                 F2                          = all_phi_ns_na
                 A                           = dot(F1.T, F1 - gamma*F2)
                 A                           = regularize(A)
+                
+                #Solve for the new weight
                 new_theta, solve_time       = solveLinear(A,b)
-                weight_diff                 = linalg.norm(self.representation.theta - new_theta)
                 td_errors                   = R+dot(gamma*F2-F1,new_theta)
+                
                 if self.return_best_policy:
-                    self.updateBestPolicy(new_theta,td_error)
+                    self.updateBestPolicy(new_theta,td_errors)
                 else:
                     eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+
+                weight_diff = linalg.norm(self.representation.theta - new_theta)
                 if weight_diff > self.epsilon: 
-                    self.representation.theta   = new_theta
+                    self.representation.theta = new_theta
                     self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),solve_time))
                 lspi_iteration +=1
             
@@ -112,7 +118,7 @@ class LSPI(Agent):
             self.best_theta         = array(new_theta)
             self.logger.log('[Saved]')
             self.representation.theta = old_theta #Return to previous theta
-    def policyIteration_explicit_loop(self,b,all_phi_s_a,all_phi_ns):
+    def policyIteration_non_matrix_version(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
