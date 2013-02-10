@@ -189,7 +189,7 @@ class LSPI(Agent):
                 return self.best_TD_errors
             else:
                 return td_errors
-    def LSTD(self): 
+    def LSTD2(self): 
         # If sameSamples = True then LSTD will use existing all_phi_s, all_phi_s_a, and all_phi_ns 
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
@@ -222,6 +222,56 @@ class LSPI(Agent):
         
         b = dot(F1.T,R)
         A = dot(F1.T, F1 - gamma*F2)
+        A = regularize(A)
+        
+        #Calculate theta
+        self.representation.theta, solve_time  = solveLinear(A,b)
+        print 'Solve Time = %0.1e(s)' % solve_time
+        return A,b, all_phi_s, all_phi_s_a, all_phi_ns
+    def LSTD(self): 
+        if self.sample_window == 0:
+            print 'Window Size for LSPI should not be 0!'
+            return 
+
+        self.logger.log('Running LSTD:')
+        #No features means empty matrices
+        if self.representation.features_num == 0:
+            return array([]), array([]), array([]), array([]), array([])
+         
+        self.samples_count  = 0
+       
+        # Make one sample phi to decide about the type of A matrix:
+        phi_s               = self.representation.phi(self.data_s[0])
+
+        # Calculate the A and b matrixes in LSTD
+        phi_sa_size     = self.domain.actions_num*self.representation.features_num
+        A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
+        b               = zeros(phi_sa_size)
+        all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
+        all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
+        all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
+        #print "Making A,b"
+        gamma               = self.representation.domain.gamma
+        for i in arange(self.sample_window):
+            s                   = self.data_s[i]
+            ns                  = self.data_ns[i]
+            a                   = self.data_a[i]
+            na                  = self.data_na[i]
+            r                   = self.data_r[i]
+            phi_s               = self.representation.phi(s)
+            phi_s_a             = self.representation.phi_sa(s,a,phi_s)
+            phi_ns              = self.representation.phi(ns)
+            phi_ns_na           = self.representation.phi_sa(ns,na,phi_ns)
+            all_phi_s[i,:]      = phi_s
+            all_phi_s_a[i,:]    = phi_s_a
+            all_phi_ns[i,:]     = phi_ns
+            b                   = b + r*phi_s_a
+            phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
+            phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
+            d                   = phi_s_a-gamma*phi_ns_na
+            A                   = A + phi_s_a.T*d
+        
+        #Regularaize A
         A = regularize(A)
         
         #Calculate theta
