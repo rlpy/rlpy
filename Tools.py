@@ -462,12 +462,14 @@ def addNewElementForAllActions(x,a,newElem = None):
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
     # return x and the time for solve
-    if sp.issparse(A) and False:
+    if sp.issparse(A):
+        print 'sparse', type(A)
         start_log_time = time()
         result  = slinalg.spsolve(A,b)
         solve_time = deltaT(start_log_time)
         #For extensive comparision of methods refer to InversionComparison.txt 
     else:
+        print 'not sparse, type',type(A)
         if sp.issparse(A):
             A = A.todense()
         # Regularize A
@@ -475,7 +477,15 @@ def solveLinear(A,b):
         start_log_time = time()
         result = linalg.solve(A,b);
         solve_time = deltaT(start_log_time)
-    error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
+    error = inf # just to be safe, initialize error variable here
+    if isinstance(A, numpy.matrixlib.defmatrix.matrix): # use numpy matrix multiplication
+        error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
+    elif isinstance(A, numpy.ndarray): # use array multiplication
+        error = linalg.norm((dot(A, result.reshape(-1,1)) - b.reshape(-1,1))[0])
+    else:
+        print 'Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.'
+        sys.exit(1)
+
     if error > RESEDUAL_THRESHOLD:
         print "||Ax-b|| = %0.1f" % error
     return result, solve_time
@@ -589,7 +599,9 @@ def regularize(A):
     assert x==y # Square matrix
     if sp.issparse(A):
         A = A + REGULARIZATION*sp.eye(x,x)
+        print 'REGULARIZE', type(A)
     else:
+        print 'REGULARIZE', type(A)
         for i in arange(x):
             A[i,i] += REGULARIZATION
     return A
