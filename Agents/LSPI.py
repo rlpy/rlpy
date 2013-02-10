@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
-    use_sparse      = 0         # Use sparse representation for A?
+    use_sparse      = 1         # Use sparse representation for A?
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count
@@ -54,6 +54,7 @@ class LSPI(Agent):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
+            start_time = time()
             if all_phi_ns.shape[0] == 0:
                 print "No features, hence no more iterations is necessary!"
                 weight_diff = 0
@@ -98,6 +99,7 @@ class LSPI(Agent):
                     self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),solve_time))
                 lspi_iteration +=1
             
+            self.logger.log('Total Policy Iteration Time = %0.0f(s)' % deltaT(start_time))
             if self.return_best_policy: 
                 self.logger.log("%d Extra Samples So Far." % self.extra_samples)
                 self.representation.theta = self.best_theta
@@ -189,8 +191,9 @@ class LSPI(Agent):
                 return self.best_TD_errors
             else:
                 return td_errors
-    def LSTD2(self): 
+    def LSTD(self): 
         # If sameSamples = True then LSTD will use existing all_phi_s, all_phi_s_a, and all_phi_ns 
+        start_time = time()
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
             return None
@@ -227,8 +230,10 @@ class LSPI(Agent):
         #Calculate theta
         self.representation.theta, solve_time  = solveLinear(A,b)
         print 'Solve Time = %0.1e(s)' % solve_time
+        self.logger.log('Total LSTD Time = %0.0f(s)' % deltaT(start_time))
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
-    def LSTD(self): 
+    def LSTD2(self): 
+        start_time = time()
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
             return 
@@ -245,7 +250,10 @@ class LSPI(Agent):
 
         # Calculate the A and b matrixes in LSTD
         phi_sa_size     = self.domain.actions_num*self.representation.features_num
-        A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
+        if self.use_sparse:
+            A               = sp.csr_matrix((phi_sa_size,phi_sa_size)) # A matrix is in general float
+        else:
+            A               = zeros((phi_sa_size,phi_sa_size)) # A matrix is in general float
         b               = zeros(phi_sa_size)
         all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
         all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
@@ -266,10 +274,14 @@ class LSPI(Agent):
             all_phi_s_a[i,:]    = phi_s_a
             all_phi_ns[i,:]     = phi_ns
             b                   = b + r*phi_s_a
-            phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
-            phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
-            d                   = phi_s_a-gamma*phi_ns_na
-            A                   = A + phi_s_a.T*d
+            if self.use_sparse:
+                phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
+                phi_ns_na           = sp.csr_matrix(phi_ns_na,dtype=phi_ns_na.dtype)
+                d                   = phi_s_a-gamma*phi_ns_na
+                A                   = A + phi_s_a.T*d
+            else:
+                d                   = phi_s_a-gamma*phi_ns_na
+                A                   = A + outer(phi_s_a,d)
         
         #Regularaize A
         A = regularize(A)
@@ -277,6 +289,7 @@ class LSPI(Agent):
         #Calculate theta
         self.representation.theta, solve_time  = solveLinear(A,b)
         print 'Solve Time = %0.1e(s)' % solve_time
+        self.logger.log('Total LSTD Time = %0.0f(s)' % deltaT(start_time))
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s
