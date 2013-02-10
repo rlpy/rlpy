@@ -6,7 +6,7 @@ import pstats
 import platform
 
 
-Output = 'PST-1x10K-10Iterations-LSPI-CompactBinary-sparse-lstsq.pdf'
+Output = 'PST-1x10K-10Iterations-LSPI-CompactBinary-nonsparsesolver-nonsparseA.pdf'
 print 'Profiling'
 cProfile.run('main(-1,SHOW_FINAL_PLOT=0,PROJECT_PATH = "Results/Temp")', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')

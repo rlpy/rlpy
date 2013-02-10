@@ -47,7 +47,7 @@ class LSPI(Agent):
         if self.samples_count == self.sample_window: #zero based hence the -1
             self.samples_count  = 0
             # Run LSTD for first solution
-            A,b = self.LSTD()
+            A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
