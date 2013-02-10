@@ -72,7 +72,6 @@ class OnlineExperiment (Experiment):
             eps_return  += r
 
             #Print Current performance
-            print eps_steps
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
                 start_log_time  = time()
                 elapsedTime     = deltaT(self.start_time) 
