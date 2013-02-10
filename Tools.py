@@ -462,11 +462,13 @@ def addNewElementForAllActions(x,a,newElem = None):
 def solveLinear(A,b):
     # Solve the linear equation Ax=b.
     # return x and the time for solve
+    error = inf # just to be safe, initialize error variable here
     if sp.issparse(A):
         print 'sparse', type(A)
         start_log_time = time()
         result  = slinalg.spsolve(A,b)
         solve_time = deltaT(start_log_time)
+        error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0]) 
         #For extensive comparision of methods refer to InversionComparison.txt 
     else:
         print 'not sparse, type',type(A)
@@ -477,14 +479,14 @@ def solveLinear(A,b):
         start_log_time = time()
         result = linalg.solve(A,b);
         solve_time = deltaT(start_log_time)
-    error = inf # just to be safe, initialize error variable here
-    if isinstance(A, numpy.matrixlib.defmatrix.matrix): # use numpy matrix multiplication
-        error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
-    elif isinstance(A, numpy.ndarray): # use array multiplication
-        error = linalg.norm((dot(A, result.reshape(-1,1)) - b.reshape(-1,1))[0])
-    else:
-        print 'Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.'
-        sys.exit(1)
+        
+        if isinstance(A, numpy.matrixlib.defmatrix.matrix): # use numpy matrix multiplication
+            error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
+        elif isinstance(A, numpy.ndarray): # use array multiplication
+            error = linalg.norm((dot(A, result.reshape(-1,1)) - b.reshape(-1,1))[0])
+        else:
+            print 'Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.'
+            sys.exit(1)
 
     if error > RESEDUAL_THRESHOLD:
         print "||Ax-b|| = %0.1f" % error
