@@ -48,11 +48,11 @@ class LSPI(Agent):
             self.samples_count  = 0
             
             # Run LSTD for first solution
-            A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
-            #A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD_non_matrix_version()
-            print self.representation.theta
+            #A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+            A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD_non_matrix_version()
+            #print self.representation.theta
             # Run Policy Iteration to change a_prime and recalculate theta
-            #self.policyIteration(b,all_phi_s_a, all_phi_ns)
+            self.policyIteration(b,all_phi_s_a, all_phi_ns)
             self.policyIteration_non_matrix_version(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
