@@ -199,7 +199,7 @@ class LSPI(Agent):
                 return self.best_TD_errors
             else:
                 return td_errors
-    def LSTD2(self): 
+    def LSTD(self): 
         # If sameSamples = True then LSTD will use existing all_phi_s, all_phi_s_a, and all_phi_ns 
         start_time = time()
         if self.sample_window == 0:
@@ -243,7 +243,7 @@ class LSPI(Agent):
         else:   
             self.logger.log('Total LSTD Time = %0.0f(s)' % (deltaT(start_time)))
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
-    def LSTD(self): 
+    def LSTD2(self): 
         start_time = time()
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
