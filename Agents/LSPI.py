@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
-    use_sparse      = 0         # Use sparse representation for A?
+    use_sparse      = 1         # Use sparse representation for A?
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count
@@ -46,10 +46,14 @@ class LSPI(Agent):
         self.storeData(s,a,r,ns,na)        
         if self.samples_count == self.sample_window: #zero based hence the -1
             self.samples_count  = 0
+            
             # Run LSTD for first solution
             A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+            #A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD_non_matrix_version()
+            print self.representation.theta
             # Run Policy Iteration to change a_prime and recalculate theta
-            self.policyIteration(b,all_phi_s_a, all_phi_ns)
+            #self.policyIteration(b,all_phi_s_a, all_phi_ns)
+            self.policyIteration_non_matrix_version(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
@@ -69,7 +73,7 @@ class LSPI(Agent):
             # We save action_mask on the first iteration (used for batchBestAction) to reuse it and boost the speed
             # action mask is a matrix that shows which actions are available for each state
             action_mask = None 
-            F1          = all_phi_s_a
+            F1          = sp.csr_matrix(all_phi_s_a) if self.use_sparse else all_phi_s_a
             R           = self.data_r
             W           = self.representation.theta
             gamma       = self.domain.gamma
@@ -81,13 +85,18 @@ class LSPI(Agent):
                 bestAction, all_phi_ns_na,action_mask = self.representation.batchBestAction(self.data_ns,all_phi_ns,action_mask)
 
                 #Recalculate A matrix (b remains the same)
-                F2                          = all_phi_ns_na
-                A                           = dot(F1.T, F1 - gamma*F2)
-                A                           = regularize(A)
+                if self.use_sparse:
+                    F2  = sp.csr_matrix(all_phi_ns_na)
+                    A   = F1.T*(F1 - gamma*F2)
+                else:
+                    F2  = all_phi_ns_na
+                    A   = dot(F1.T, F1 - gamma*F2)
                 
+                A                           = regularize(A)
                 #Solve for the new weight
                 new_theta, solve_time       = solveLinear(A,b)
-                td_errors                   = R+dot(gamma*F2-F1,new_theta)
+                td_errors                   = R+(gamma*F2-F1)*new_theta if self.use_sparse else R+dot(gamma*F2-F1,new_theta)
+ 
                 
                 if self.return_best_policy:
                     self.updateBestPolicy(new_theta,td_errors)
@@ -98,7 +107,7 @@ class LSPI(Agent):
                 if weight_diff > self.epsilon: 
                     self.representation.theta = new_theta
                     if solve_time > 1: #log solve time only if takes more than 1 second
-                        self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s), Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time),solve_time))
+                        self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s), Solved in %0.0f(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time),solve_time))
                     else:
                         self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time)))
                 lspi_iteration +=1
@@ -186,7 +195,7 @@ class LSPI(Agent):
                         self.representation.theta   = new_theta
                         eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
                     if solve_time > 1: #log solve time only if takes more than 1 second
-                        self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s), Solved in %0.1e(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time),solve_time))
+                        self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s), Solved in %0.0f(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time),solve_time))
                     else:
                         self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time)))
                 else:
@@ -239,11 +248,11 @@ class LSPI(Agent):
         self.representation.theta, solve_time  = solveLinear(A,b)
 
         if solve_time > 1: #log solve time only if takes more than 1 second
-            self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0(s)' % (deltaT(start_time), solve_time))
+            self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' % (deltaT(start_time), solve_time))
         else:   
             self.logger.log('Total LSTD Time = %0.0f(s)' % (deltaT(start_time)))
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns
-    def LSTD2(self): 
+    def LSTD_non_matrix_version(self): 
         start_time = time()
         if self.sample_window == 0:
             print 'Window Size for LSPI should not be 0!'
@@ -300,7 +309,7 @@ class LSPI(Agent):
         #Calculate theta
         self.representation.theta, solve_time  = solveLinear(A,b)
         if solve_time > 1: #log solve time only if takes more than 1 second
-            self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0(s)' % (deltaT(start_time), solve_time))
+            self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' % (deltaT(start_time), solve_time))
         else:   
             self.logger.log('Total LSTD Time = %0.0f(s)' % (deltaT(start_time)))
         return A,b, all_phi_s, all_phi_s_a, all_phi_ns

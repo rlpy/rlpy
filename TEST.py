@@ -62,4 +62,8 @@ phi_s_a = all_phi_s_a.T[action_slice.T==1]
 phi_s_a = phi_s_a.reshape((p,-1))
 print 'final'
 print phi_s_a
- 
+W = ones((phi_s_a.shape[1],1))
+M = sp.csr_matrix(phi_s_a)
+print M
+a = M*W
+print a
