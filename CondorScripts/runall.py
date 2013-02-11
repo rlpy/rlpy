@@ -27,7 +27,7 @@ if not os.path.exists(path+'/RL-Python'):
 path = path + '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 
-RL_PYTHON_ROOT = path 
+RL_PYTHON_ROOT = os.path.abspath(path)
 from Script_Tools import * 
 
 TEST = False # This value is used to avoid actually doing anything, so we can check the program
@@ -46,7 +46,6 @@ if os.path.exists(path+'/CondorScripts/setting.py'):
 def submit(id):
     #Submit one task to condor using id
     if id > 0:
-        print 'attempting to run main.py from dir ',os.getcwd()
         condrun='mkdir -p CondorOutput;' + \
                 'cd CondorOutput;' + \
                 'mkdir -p log;' +\
