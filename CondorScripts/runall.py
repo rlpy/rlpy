@@ -46,6 +46,7 @@ if os.path.exists(path+'/CondorScripts/setting.py'):
 def submit(id):
     #Submit one task to condor using id
     if id > 0:
+	    print 'attempting to run main.py from dir ',os.cwd()
         condrun='mkdir -p CondorOutput;' + \
                 'cd CondorOutput;' + \
                 'mkdir -p log;' +\
