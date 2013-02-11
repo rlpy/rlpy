@@ -46,7 +46,7 @@ if os.path.exists(path+'/CondorScripts/setting.py'):
 def submit(id, relPath): # relPath is the path to the main file relative to where we started; needed to maintain RL_PYTHON_ROOT, since it's relative. [../../.. etc]
     #Submit one task to condor using id
     if id > 0:
-        print 'attempting to run main.py from dir ',os.getcwd()
+        print 'attempting to run main.py from dir ',os.getcwd(), 'then', relPath+'/'+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh\n, which is really just', os.path.abspath(RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh')
         condrun='mkdir -p CondorOutput;' + \
                 'cd CondorOutput;' + \
                 'mkdir -p log;' +\
