@@ -103,7 +103,6 @@ def searchNSubmit(idir,relPath,exp_num,answered,respawnjobs):
         
         #Going inside directory
         currentdir = os.getcwd()
-        if currentdir != idir # we are changing directories, assume only 1 level at a time.
         os.chdir(idir) 
 
         
