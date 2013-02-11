@@ -26,3 +26,5 @@ class IndependentDiscretization(Representation):
                 index_in_dim = id - self.maxFeatureIDperDimension[dim-1]
             print self.domain.DimNames[dim]
             f_name = self.domain.DimNames[dim] + '=' + str(index_in_dim)
+    def featureType(self):
+        return bool

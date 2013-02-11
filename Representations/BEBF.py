@@ -111,7 +111,8 @@ class BEBF(Representation):
             else: 
                 break
         return addedFeature
-    
+    def featureType(self):
+        return float
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1

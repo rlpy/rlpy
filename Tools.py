@@ -464,14 +464,14 @@ def solveLinear(A,b):
     # return x and the time for solve
     error = inf # just to be safe, initialize error variable here
     if sp.issparse(A):
-        print 'sparse', type(A)
+        #print 'sparse', type(A)
         start_log_time = time()
         result  = slinalg.spsolve(A,b)
         solve_time = deltaT(start_log_time)
         error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0]) 
         #For extensive comparision of methods refer to InversionComparison.txt 
     else:
-        print 'not sparse, type',type(A)
+        #print 'not sparse, type',type(A)
         if sp.issparse(A):
             A = A.todense()
         # Regularize A
@@ -601,15 +601,18 @@ def regularize(A):
     assert x==y # Square matrix
     if sp.issparse(A):
         A = A + REGULARIZATION*sp.eye(x,x)
-        print 'REGULARIZE', type(A)
+        #print 'REGULARIZE', type(A)
     else:
-        print 'REGULARIZE', type(A)
+        #print 'REGULARIZE', type(A)
         for i in arange(x):
             A[i,i] += REGULARIZATION
     return A
 def sparsity(A):
     # Returns the percent [0-100] of elements of A that are 0
     return (1-count_nonzero(A)/(prod(A.shape)*1.))*100
+def printMatrix(A,type='int'):
+    #print a matrix in a desired format
+    print array(A,dtype=type)
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     def save(self,filename):

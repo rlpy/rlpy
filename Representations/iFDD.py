@@ -329,6 +329,9 @@ class iFDD(Representation):
         else:
             print "F_id %d is not valid" % f_id 
             return None
+    def featureType(self):
+        return bool
+        
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1

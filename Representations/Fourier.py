@@ -15,3 +15,5 @@ class Fourier(Representation):
         s_min,s_max = self.domain.statespace_limits.T
         norm_state = (s - s_min) / (s_max - s_min)
         return cos(pi * dot(self.coeffs, norm_state))
+    def featureType(self):
+        return float

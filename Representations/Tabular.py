@@ -9,7 +9,9 @@ class Tabular(Representation):
         super(Tabular,self).__init__(domain,logger,discretization)
     def phi_nonTerminal(self,s):
         id      = self.hashState(s)
-        F_s     = zeros(self.agg_states_num,'bool')
+        F_s     = zeros(self.agg_states_num,bool)
         F_s[id] = 1
         return F_s
+def featureType(self):
+        return bool
 

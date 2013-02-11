@@ -52,3 +52,5 @@ class IndependentDiscretizationCompactBinary(Representation):
         # Returns the dimension number corresponding to this feature
         dim     = searchsorted(self.maxFeatureIDperDimension,f) 
         return dim
+    def featureType(self):
+        return bool

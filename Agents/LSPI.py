@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
-    use_sparse      = 1         # Use sparse representation for A?
+    use_sparse      = 0         # Use sparse representation for A?
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count
@@ -48,12 +48,13 @@ class LSPI(Agent):
             self.samples_count  = 0
             
             # Run LSTD for first solution
-            #A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
-            A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD_non_matrix_version()
-            #print self.representation.theta
+            A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
+            #A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD_non_matrix_version()
+            #set_printoptions(threshold=nan)
+            #print printMatrix(A)
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
-            self.policyIteration_non_matrix_version(b,all_phi_s_a, all_phi_ns)
+            #self.policyIteration_non_matrix_version(b,all_phi_s_a, all_phi_ns)
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
@@ -224,8 +225,8 @@ class LSPI(Agent):
         #build phi_s and phi_ns for all samples
         p           = self.data_s.shape[0]
         n           = self.representation.features_num
-        all_phi_s   = empty((p,n))
-        all_phi_ns  = empty((p,n))
+        all_phi_s   = empty((p,n),dtype=self.representation.featureType())
+        all_phi_ns  = empty((p,n),dtype=self.representation.featureType())
         for i in arange(self.sample_window):
             all_phi_s[i,:]  = self.representation.phi(self.data_s[i])
             all_phi_ns[i,:] = self.representation.phi(self.data_ns[i])

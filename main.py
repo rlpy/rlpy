@@ -44,8 +44,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    MAZE                = '/Domains/PitmazeMaps/1x3.txt'
+    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitmazeMaps/3x3.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'

@@ -24,4 +24,6 @@ class RBF(Representation):
         for i in arange(0,self.features_num-1):
             F_s[i] = prod(normpdf(s,self.rbfs_mu[i,:], self.rbfs_sigma[i,:]))
         return normalize(F_s)
+def featureType(self):
+        return float
         

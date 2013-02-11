@@ -10,7 +10,7 @@ class IncrementalTabular(Representation):
     def phi_nonTerminal(self,s):
         hash_id = self.hashState(s)
         id  = self.hash.get(hash_id)
-        F_s = zeros(self.features_num,'bool')
+        F_s = zeros(self.features_num,bool)
         if id is not None:
             F_s[id] = 1
         return F_s
@@ -25,6 +25,8 @@ class IncrementalTabular(Representation):
             self.hash[hash_id] = id
             #Add a new element to weight theta
             self.addNewWeight()
+    def featureType(self):
+        return bool
 
          
         

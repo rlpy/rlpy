@@ -160,11 +160,14 @@ class Representation(object):
         # Optional) If phi_s_a has been built for all actions pass it for speed boost
         # output:
         # returns all_phi_s_a p-by-na
+        
+        use_sparse = 0
+        
         p,n             = all_phi_s.shape
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
-            all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
-        action_slice    = zeros((a_num,p),dtype='bool')
+            all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
+        action_slice    = zeros((a_num,p),dtype= bool)
         action_slice[all_actions,xrange(p)] = 1
         # Build a matrix where 1 appears in each column corresponding to the action number
         # all_actions = [1 0 1] with 2 actions and 3 samples
@@ -173,16 +176,20 @@ class Representation(object):
         # 1 0 1
         #now expand each 1 into size of the features (i.e. n)
         all_phi_s_a = all_phi_s_a.reshape((a_num,-1))
-        #action_slice = kron(action_slice,ones((1,n*a_num)))
-        action_slice = sp.kron(sp.csr_matrix(action_slice),ones((1,n*a_num)),'coo')
+        
+        if use_sparse:
+            action_slice = sp.kron(sp.csr_matrix(action_slice),ones((1,n*a_num)),'coo')
+            nnz_rows = action_slice.row
+            nnz_cols = action_slice.col
+            phi_s_a = all_phi_s_a[nnz_rows, nnz_cols] # THIS LINE IS NOT CORRECT! It does not output what you expect it to do
+        else:
+            action_slice = kron(action_slice,ones((1,n*a_num)))
+            phi_s_a = all_phi_s_a.T[action_slice.T==1]
         
         # with n = 2, and a = 2 we will have:
         # 0 0 0 0 1 1 1 1 0 0 0 0
         # 1 1 1 1 0 0 0 0 1 1 1 1
         # now we can select the feature values
-        nnz_rows = action_slice.row
-        nnz_cols = action_slice.col
-        phi_s_a = all_phi_s_a[nnz_rows, nnz_cols]
         #phi_s_a = all_phi_s_a.T[action_slice.todense().T==1]
         phi_s_a = phi_s_a.reshape((p,-1))
         return phi_s_a
@@ -235,4 +242,7 @@ class Representation(object):
         best_action = argmax(all_q_s_a,axis=1)
         # Calculate the corresponding phi_s_a
         phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a)
-        return best_action, phi_s_a, action_mask
+        return best_action, phi_s_a, action_mask    
+    def featureType(self):
+        # Return the data type for features
+        abstract
