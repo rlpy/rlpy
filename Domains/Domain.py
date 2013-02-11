@@ -28,7 +28,7 @@ class Domain(object):
             if getattr(self,v) == None:
                 raise Exception('Missed domain initialization of '+ v)
         self.state_space_dims = len(self.statespace_limits)
-        
+        self.gamma = self.gamma * 1.0 # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
         self.extendDiscreteDimensions()
         if self.continuous_dims == []:

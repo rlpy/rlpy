@@ -87,14 +87,13 @@ class LSPI(Agent):
 
                 #Recalculate A matrix (b remains the same)
                 if self.use_sparse:
-                    F2  = sp.csr_matrix(all_phi_ns_na,dtype='float')
+                    F2  = sp.csr_matrix(all_phi_ns_na)
                     A   = F1.T*(F1 - gamma*F2)
                 else:
-                    F2  = array(all_phi_ns_na,dtype='float')
+                    F2  = all_phi_ns_na
                     A   = dot(F1.T, F1 - gamma*F2)
                 
                 A                           = regularize(A)
-                print A
                 #Solve for the new weight
                 new_theta, solve_time       = solveLinear(A,b)
                 td_errors                   = R+(gamma*F2-F1)*new_theta if self.use_sparse else R+dot(gamma*F2-F1,new_theta)
@@ -238,7 +237,7 @@ class LSPI(Agent):
         
         #calculate A and b for LSTD
         F1              = all_phi_s_a
-        F2              = array(all_phi_ns_na,dtype='float')
+        F2              = all_phi_ns_na
         R               = self.data_r
         gamma           = self.domain.gamma
         
