@@ -16,6 +16,7 @@ class RE_LSPI(LSPI):
     def learn(self,s,a,r,ns,na,terminal):
         self.storeData(s,a,r,ns,na)        
         if self.samples_count == self.sample_window: #zero based hence the -1
+            self.samples_count  = 0
             self.representationExpansionLSPI()
     def representationExpansionLSPI(self):
         re_iteration = 1
