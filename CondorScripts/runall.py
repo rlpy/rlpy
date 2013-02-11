@@ -28,6 +28,7 @@ path = path + '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 
 RL_PYTHON_ROOT = os.path.abspath(path)
+print RL_PYTHON_ROOT
 from Script_Tools import * 
 
 TEST = False # This value is used to avoid actually doing anything, so we can check the program
