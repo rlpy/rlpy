@@ -78,6 +78,9 @@ if True:
         
         # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
         # NOT TESTED with high-dimensional matrices (only 2-dimensional matrices)
+        if sp.issparse(arr):
+            return arr.getnnz()
+        
         if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
             nonzero_indices = arr.nonzero() # Tuple of length = # dimensions (usu. 2) containing indices of nonzero elements
             nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
