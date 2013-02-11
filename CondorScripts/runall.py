@@ -27,9 +27,7 @@ if not os.path.exists(path+'/RL-Python'):
 path = path + '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 
-#RL_PYTHON_ROOT = os.path.abspath(path)
-RL_PYTHON_ROOT = path
-print RL_PYTHON_ROOT
+RL_PYTHON_ROOT = path 
 from Script_Tools import * 
 
 TEST = False # This value is used to avoid actually doing anything, so we can check the program
@@ -45,9 +43,10 @@ if os.path.exists(path+'/CondorScripts/setting.py'):
     from setting import *
 
 
-def submit(id):
+def submit(id, relPath): # relPath is the path to the main file relative to where we started; needed to maintain RL_PYTHON_ROOT, since it's relative. [../../.. etc]
     #Submit one task to condor using id
     if id > 0:
+        print 'attempting to run main.py from dir ',os.getcwd()
         condrun='mkdir -p CondorOutput;' + \
                 'cd CondorOutput;' + \
                 'mkdir -p log;' +\
@@ -56,7 +55,7 @@ def submit(id):
                 'cd ..;' +\
 		'condor_submit'+\
                 ' -a \"arguments = main.py '+str(id)+' '+\
-                RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+ RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
+                RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+ relPath+'/'+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
@@ -78,15 +77,16 @@ def submit(id):
 
         sysCall(condrun)
      
-def searchNSubmit(idir,exp_num,answered,respawnjobs):
+def searchNSubmit(idir,relPath,exp_num,answered,respawnjobs):
         print idir
         #See if this directory is a potential experiment 
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
+            relPath+='/..'
             #print ' (!) ' + idir + '  not an experiment.'
             for folder in os.listdir(idir):
                 newdir = idir+'/'+folder
                 if os.path.isdir(newdir):
-                    [answered,respawnjobs] = searchNSubmit(newdir,exp_num,answered,respawnjobs)
+                    [answered,respawnjobs] = searchNSubmit(newdir,relPath,exp_num,answered,respawnjobs)
             return [answered,respawnjobs]
         
 #        if PURGEJOBS:
@@ -103,6 +103,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
         
         #Going inside directory
         currentdir = os.getcwd()
+        if currentdir != idir # we are changing directories, assume only 1 level at a time.
         os.chdir(idir) 
 
         
@@ -135,7 +136,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
                         sysCommandHandle  = os.popen(command)
                         for line in sysCommandHandle:
                             print "Job #" + id + ": " + line,
-                        submit(eval(id))
+                        submit(eval(id), relPath)
                         print RESUMING_COLOR+">>> Respawned Job #"+id+NOCOLOR
                         respawned = respawned + 1
                 else:
@@ -153,7 +154,7 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
                 continue
             
             newSubmission = newSubmission + 1
-            submit(jobid)
+            submit(jobid, relPath)
             print YELLOW+">>> Submitted Job #"+str(jobid)+NOCOLOR 
             jobid += 1
                 
@@ -213,7 +214,7 @@ def rerun(idir,exp_num):
             print ">>> No job found for user " + USERNAME + "."
         
         #Start Searching and Purging
-        searchNSubmit(idir,exp_num,False,False)
+        searchNSubmit(idir,'.',exp_num,False,False)
     
 if __name__ == '__main__':
     
