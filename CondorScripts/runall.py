@@ -27,7 +27,8 @@ if not os.path.exists(path+'/RL-Python'):
 path = path + '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 
-RL_PYTHON_ROOT = os.path.abspath(path)
+#RL_PYTHON_ROOT = os.path.abspath(path)
+RL_PYTHON_ROOT = path
 print RL_PYTHON_ROOT
 from Script_Tools import * 
 
