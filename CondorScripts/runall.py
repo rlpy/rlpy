@@ -23,7 +23,7 @@ while not os.path.exists(path+'/RL-Results'):
 # Enter RL-Python project directory
 if not os.path.exists(path+'/RL-Python'):
     print 'Could not find RL-Python project path! You must be working from a subdirectory of \'RL-Results\', and the \'RL-Results\' directory must lie in the same folder as \'RL-Python\'.'
-	sys.exit(1)
+    sys.exit(1)
 path = path + '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 
