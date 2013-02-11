@@ -161,7 +161,7 @@ class Representation(object):
         # output:
         # returns all_phi_s_a p-by-na
         
-        use_sparse = 0
+        use_sparse = 1
         
         p,n             = all_phi_s.shape
         a_num           = self.domain.actions_num
@@ -179,9 +179,11 @@ class Representation(object):
         
         if use_sparse:
             action_slice = sp.kron(sp.csr_matrix(action_slice),ones((1,n*a_num)),'coo')
-            nnz_rows = action_slice.row
-            nnz_cols = action_slice.col
-            phi_s_a = all_phi_s_a[nnz_rows, nnz_cols] # THIS LINE IS NOT CORRECT! It does not output what you expect it to do
+#            nnz_rows = action_slice.row
+#            nnz_cols = action_slice.col
+#            phi_s_a = all_phi_s_a[nnz_rows, nnz_cols] # THIS LINE IS NOT CORRECT! It does not output what you expect it to do
+            action_slice = action_slice.todense()
+            phi_s_a = all_phi_s_a.T[action_slice.T==1]
         else:
             action_slice = kron(action_slice,ones((1,n*a_num)))
             phi_s_a = all_phi_s_a.T[action_slice.T==1]

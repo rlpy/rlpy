@@ -477,7 +477,7 @@ def solveLinear(A,b):
         # Regularize A
         #result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
         start_log_time = time()
-        result = linalg.solve(A,b);
+        result = linalg.solve(A,b)
         solve_time = deltaT(start_log_time)
         
         if isinstance(A, numpy.matrixlib.defmatrix.matrix): # use numpy matrix multiplication

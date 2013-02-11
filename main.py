@@ -29,7 +29,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 100
+    LEARNING_STEPS      = 1000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -44,8 +44,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
+    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitmazeMaps/3x3.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'
@@ -56,7 +56,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
-    BLOCKS              = 5     # Number of blocks for the BlocksWorld domain
+    BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
@@ -85,9 +85,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # DOMAIN
     #================
-    domain          = ChainMDP(10, logger = logger)
+    #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
@@ -100,11 +100,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # REPRESENTATION
     #================
-    initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    #representation  = initial_rep
+    #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    representation  = initial_rep
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    representation  = IncrementalTabular(domain,logger)
+    #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
     #representation  = Fourier(domain,logger,order=FourierOrder)
