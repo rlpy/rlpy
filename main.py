@@ -84,7 +84,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RE_LSPI_iterations      = 2
     
     # DOMAIN
-    #================
+    #=================
     #domain          = ChainMDP(10, logger = logger)
     domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
