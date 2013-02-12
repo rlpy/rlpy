@@ -170,7 +170,7 @@ class Representation(object):
             all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
         
         # Based on Josh's Idea
-        #set_printoptions(threshold=sys.maxint, precision=2, suppress=True, linewidth=inf)
+        # set_printoptions(threshold=sys.maxint, precision=2, suppress=True, linewidth=inf)
         M = all_phi_s_a
         M = M.reshape((a_num,-1))
         A = all_actions
