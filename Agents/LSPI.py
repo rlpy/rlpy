@@ -47,13 +47,9 @@ class LSPI(Agent):
         if self.samples_count == self.sample_window: #zero based hence the -1
             # Run LSTD for first solution
             A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
-            #A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD_non_matrix_version()
-            #set_printoptions(threshold=nan)
-            #print printMatrix(A)
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
-            #self.policyIteration_non_matrix_version(b,all_phi_s_a, all_phi_ns)
-    def policyIteration(self,b,all_phi_s_a,all_phi_ns):
+    def policyIteration2(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
@@ -132,7 +128,7 @@ class LSPI(Agent):
             self.best_theta         = array(new_theta)
             self.logger.log('[Saved]')
             self.representation.theta = old_theta #Return to previous theta
-    def policyIteration_non_matrix_version(self,b,all_phi_s_a,all_phi_ns):
+    def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.

@@ -12,6 +12,6 @@ class Tabular(Representation):
         F_s     = zeros(self.agg_states_num,bool)
         F_s[id] = 1
         return F_s
-def featureType(self):
+    def featureType(self):
         return bool
 
