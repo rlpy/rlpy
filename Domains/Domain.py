@@ -94,9 +94,9 @@ class Domain(object):
         while steps < T:
             if terminal:
                 if steps != 0: self.showDomain(s,a)
-                s = self.s0()
+                s = self.s0uniform()
             elif steps % self.episodeCap == 0:
-                s = self.s0()
+                s = self.s0uniform()
             a = randSet(self.possibleActions(s))
             self.showDomain(s,a)
             r,s,terminal = self.step(s, a)
@@ -123,5 +123,21 @@ class Domain(object):
             next_states.append(ns)
             rewards.append(r)
                 
-        return array(next_states),array(rewards) 
+        return array(next_states),array(rewards)
+    def s0uniform(self):
+        # Returns a state sampled uniformely from the state space
+        if className(self) == 'BlocksWorld':
+            print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)
+        if self.continuous_dims == []:
+            s = empty(self.state_space_dims, dtype = integer)
+        else:
+            s = empty(self.state_space_dims)
+            
+        for d in arange(self.state_space_dims):
+            a,b = self.statespace_limits[d]
+            s[d] = random.rand()*(b-a)+a
+            if not d in self.continuous_dims: 
+                s[d] = int(s[d])
+        if len(s) == 1: s = s[0]
+        return s
     

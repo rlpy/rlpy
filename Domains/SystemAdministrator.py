@@ -70,7 +70,6 @@ class SystemAdministrator(Domain):
         # TODO Need a check here for degenerate
         self.actions_num            = self.computers_num + 1     # Number of Actions, including no-op
         self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.computers_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        super(PST,self).__init__(logger)
         super(SystemAdministrator,self).__init__(logger)
         if self.logger: 
             self.logger.log('Computers:\t%d' % self.computers_num)
