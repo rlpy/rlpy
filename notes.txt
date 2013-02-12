@@ -1,4 +1,4 @@
-UROP Tasks:
+Tasks:
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
 - Doxygen
 - Config File For Experiments
@@ -6,3 +6,4 @@ UROP Tasks:
 - Optimization
 - Feature Names
 - bestAction in matrix form (how about breaking ties randomly)
+- Update Visual for PST
