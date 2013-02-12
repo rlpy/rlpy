@@ -86,13 +86,18 @@ if True:
             nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
             return nnz
         
-        for el in arr:
-			# Is this a list of lists? Must call count_nonzero on sublists recursively if so.
-			if isinstance(el, numpy.ndarray) or isinstance(el, list):
-				nnz += count_nonzero(el)
-			# Else we have a single element, increment count only if nonzero.
-			elif el != 0: nnz+=1
-        return nnz
+        if isinstance(arr,ndarray):
+            return sum([1 for x in arr.ravel() if x != 0])
+        
+        if isinstance(arr,list):
+            for el in arr:
+                if isinstance(el, list):
+                    nnz += count_nonzero(el)
+                elif el != 0: nnz+=1
+            return nnz
+        
+        print "In tools.py attempted count_nonzero with unsupported type of", type(arr)
+        return None
 
 # Tips:
 # array.astype(float) => convert elements
