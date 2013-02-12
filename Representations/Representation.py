@@ -168,34 +168,43 @@ class Representation(object):
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
             all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
-        action_slice    = zeros((a_num,p),dtype= bool)
-        action_slice[all_actions,xrange(p)] = 1
+        
+        # Based on Josh's Idea
+        M = all_phi_s_a
+        M = M.reshape((a_num,-1))
+        A = all_actions
+        A = kron(A,ones((1,n*a_num,),dtype=integer))[0]
+        set_printoptions(threshold=sys.maxint, precision=2, suppress=True, linewidth=inf)
+        M = M[A,arange(len(A)),:].reshape(-1)
+        return M.reshape((p,-1))
+        
+        # Below is the first matrix attemp which is slightly slower than the above method based on 1 run of PST performance    
+#        action_slice    = zeros((a_num,p),dtype= bool)
+#        action_slice[all_actions,xrange(p)] = 1
         # Build a matrix where 1 appears in each column corresponding to the action number
         # all_actions = [1 0 1] with 2 actions and 3 samples
         # build: 
         # 0 1 0
         # 1 0 1
         #now expand each 1 into size of the features (i.e. n)
-        all_phi_s_a = all_phi_s_a.reshape((a_num,-1))
-        
-        if use_sparse:
-            action_slice = sp.kron(sp.csr_matrix(action_slice),ones((1,n*a_num)),'coo')
-#            nnz_rows = action_slice.row
-#            nnz_cols = action_slice.col
-#            phi_s_a = all_phi_s_a[nnz_rows, nnz_cols] # THIS LINE IS NOT CORRECT! It does not output what you expect it to do
-            action_slice = action_slice.todense()
-            phi_s_a = all_phi_s_a.T[action_slice.T==1]
-        else:
-            action_slice = kron(action_slice,ones((1,n*a_num)))
-            phi_s_a = all_phi_s_a.T[action_slice.T==1]
-        
-        # with n = 2, and a = 2 we will have:
-        # 0 0 0 0 1 1 1 1 0 0 0 0
-        # 1 1 1 1 0 0 0 0 1 1 1 1
-        # now we can select the feature values
-        #phi_s_a = all_phi_s_a.T[action_slice.todense().T==1]
-        phi_s_a = phi_s_a.reshape((p,-1))
-        return phi_s_a
+#        all_phi_s_a = all_phi_s_a.reshape((a_num,-1))
+#        
+#        if use_sparse:
+#            action_slice = sp.kron(sp.csr_matrix(action_slice),ones((1,n*a_num)),'coo')
+#            action_slice = action_slice.todense()
+#            phi_s_a = all_phi_s_a.T[action_slice.T==1]
+#        else:
+#            action_slice = kron(action_slice,ones((1,n*a_num)))
+#            phi_s_a = all_phi_s_a.T[action_slice.T==1]
+#        
+#        # with n = 2, and a = 2 we will have:
+#        # 0 0 0 0 1 1 1 1 0 0 0 0
+#        # 1 1 1 1 0 0 0 0 1 1 1 1
+#        # now we can select the feature values
+#        #phi_s_a = all_phi_s_a.T[action_slice.todense().T==1]
+#        phi_s_a = phi_s_a.reshape((p,-1))
+#        return phi_s_a
+    
     def batchBestAction(self, all_s, all_phi_s, action_mask = None):
         # Returns the best-action and phi_s_a corresponding to the states
         # inputs:
