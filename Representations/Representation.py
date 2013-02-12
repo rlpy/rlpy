@@ -133,6 +133,7 @@ class Representation(object):
         bestA = self.bestActions(s,phi_s)
         if len(bestA) > 1:
             return randSet(bestA)
+            #return bestA[0]
         else:
             return bestA[0]
     def phi_nonTerminal(self,s):
@@ -233,12 +234,8 @@ class Representation(object):
         
         a_num       = self.domain.actions_num
         all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
-        #print all_phi_s_a
-        #print all_phi_s_a.shape, self.theta.shape
-        all_q_s_a   = dot(all_phi_s_a,self.theta.T)           #ap-by-1
-        #print all_q_s_a
-        all_q_s_a   = all_q_s_a.reshape((-1,a_num))    #a-by-p
-        #print all_q_s_a
+        all_q_s_a   = dot(all_phi_s_a,self.theta.T)    #ap-by-1
+        all_q_s_a   = all_q_s_a.reshape((a_num,-1)).T  #a-by-p
         
         all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
         best_action = argmax(all_q_s_a,axis=1)

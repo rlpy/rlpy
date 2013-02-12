@@ -49,7 +49,7 @@ class LSPI(Agent):
             A,b,all_phi_s, all_phi_s_a, all_phi_ns = self.LSTD()
             # Run Policy Iteration to change a_prime and recalculate theta
             self.policyIteration(b,all_phi_s_a, all_phi_ns)
-    def policyIteration2(self,b,all_phi_s_a,all_phi_ns):
+    def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
@@ -78,7 +78,6 @@ class LSPI(Agent):
                 #Notice if actions have the same value the first action is selected in the batch mode
                 iteration_start_time = time()
                 bestAction, all_phi_ns_na,action_mask = self.representation.batchBestAction(self.data_ns,all_phi_ns,action_mask)
-
                 #Recalculate A matrix (b remains the same)
                 if self.use_sparse:
                     F2  = sp.csr_matrix(all_phi_ns_na)
@@ -89,10 +88,8 @@ class LSPI(Agent):
                 
                 A                           = regularize(A)
                 #Solve for the new weight
+                td_errors                   = R+(gamma*F2-F1)*self.representation.theta if self.use_sparse else R+dot(gamma*F2-F1,self.representation.theta)
                 new_theta, solve_time       = solveLinear(A,b)
-                td_errors                   = R+(gamma*F2-F1)*new_theta if self.use_sparse else R+dot(gamma*F2-F1,new_theta)
- 
-                
                 if self.return_best_policy:
                     self.updateBestPolicy(new_theta,td_errors)
                 else:
@@ -114,28 +111,13 @@ class LSPI(Agent):
                 return self.best_TD_errors
             else:
                 return td_errors
-    def updateBestPolicy(self,new_theta,new_td_error):
-        # Check the performance of the policy corresponding to the new_theta
-        # Logs the best found theta, performance, and td_error based on a single run of the  new theta
-        old_theta                   = array(self.representation.theta)
-        self.representation.theta   = new_theta
-        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
-        self.extra_samples          += eps_length
-        performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
-        if self.best_performance < performance:
-            self.best_performance   = performance
-            self.best_TD_errors     = new_td_error
-            self.best_theta         = array(new_theta)
-            self.logger.log('[Saved]')
-            self.representation.theta = old_theta #Return to previous theta
-    def policyIteration(self,b,all_phi_s_a,all_phi_ns):
+    def policyIteration2(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
             phi_sa_size     = self.domain.actions_num*self.representation.features_num
             gamma           = self.domain.gamma
             td_errors       = empty((self.sample_window)) # holds the TD_errors for all samples
-            
             #Begin updating the policy in LSPI loop
             weight_diff     = self.epsilon + 1 # So that the loop starts
             lspi_iteration  = 0
@@ -203,6 +185,20 @@ class LSPI(Agent):
                 return self.best_TD_errors
             else:
                 return td_errors
+    def updateBestPolicy(self,new_theta,new_td_error):
+        # Check the performance of the policy corresponding to the new_theta
+        # Logs the best found theta, performance, and td_error based on a single run of the  new theta
+        old_theta                   = array(self.representation.theta)
+        self.representation.theta   = new_theta
+        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+        self.extra_samples          += eps_length
+        performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
+        if self.best_performance < performance:
+            self.best_performance   = performance
+            self.best_TD_errors     = new_td_error
+            self.best_theta         = array(new_theta)
+            self.logger.log('[Saved]')
+            self.representation.theta = old_theta #Return to previous theta
     def LSTD(self): 
         # If sameSamples = True then LSTD will use existing all_phi_s, all_phi_s_a, and all_phi_ns 
         start_time = time()
