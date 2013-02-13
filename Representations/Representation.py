@@ -162,8 +162,6 @@ class Representation(object):
         # output:
         # returns all_phi_s_a p-by-na
         
-        use_sparse = 1
-        
         p,n             = all_phi_s.shape
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
@@ -179,6 +177,7 @@ class Representation(object):
         return M.reshape((p,-1))
         
         # Below is the first matrix attemp which is slightly slower than the above method based on 1 run of PST performance    
+#       use_sparse = 1
 #        action_slice    = zeros((a_num,p),dtype= bool)
 #        action_slice[all_actions,xrange(p)] = 1
         # Build a matrix where 1 appears in each column corresponding to the action number

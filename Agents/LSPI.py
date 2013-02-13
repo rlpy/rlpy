@@ -8,13 +8,13 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
-    use_sparse      = 0         # Use sparse representation for A?
+    use_sparse      = 1         # Use sparse representation for A?
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count
     epsilon         = 0         # Minimum l_2 change required to continue iterations in LSPI
     
-    return_best_policy  = 0        # If this flag is activated, on each iteration of LSPI, the policy is checked with one simulation and in the end the theta w.r.t the best policy is returned. Note that this will require more samples than the intial set of samples provided to LSPI
+    return_best_policy  = 1        # If this flag is activated, on each iteration of LSPI, the policy is checked with one simulation and in the end the theta w.r.t the best policy is returned. Note that this will require more samples than the intial set of samples provided to LSPI
     best_performance    = -inf     # In the "return_best_policy", The best perofrmance check is stored here through LSPI iterations
     best_theta          = None     # In the "return_best_policy", The best theta is stored here through LSPI iterations
     best_TD_errors       = None     # In the "return_best_policy", The TD_Error corresponding to the best theta is stored here through LSPI iterations 
@@ -93,7 +93,7 @@ class LSPI(Agent):
                 if self.return_best_policy:
                     self.updateBestPolicy(new_theta,td_errors)
                 else:
-                    eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+                    eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %+0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
 
                 weight_diff = linalg.norm(self.representation.theta - new_theta)
                 if weight_diff > self.epsilon: 
@@ -159,7 +159,7 @@ class LSPI(Agent):
                         # Check Performance with new theta
                         old_theta                   = array(self.representation.theta)
                         self.representation.theta   = new_theta
-                        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+                        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %+0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
                         self.extra_samples          += eps_length
                         performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
                         if self.best_performance < performance:
@@ -170,7 +170,7 @@ class LSPI(Agent):
                         self.representation.theta = old_theta #Return to previous theta
                     if weight_diff > self.epsilon: 
                         self.representation.theta   = new_theta
-                        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+                        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %+0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
                     if solve_time > 1: #log solve time only if takes more than 1 second
                         self.logger.log("%d: ||w1-w2|| = %0.3f, Sparsity: %0.1f%%, Iteration in %0.0f(s), Solved in %0.0f(s)" % (lspi_iteration+1,weight_diff, sparsity(A),deltaT(iteration_start_time),solve_time))
                     else:
@@ -190,7 +190,7 @@ class LSPI(Agent):
         # Logs the best found theta, performance, and td_error based on a single run of the  new theta
         old_theta                   = array(self.representation.theta)
         self.representation.theta   = new_theta
-        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
+        eps_return, eps_length, _   = self.checkPerformance(); self.logger.log(">>> %+0.3f Return, %d Steps, %d Features" % (eps_return, eps_length, self.representation.features_num))
         self.extra_samples          += eps_length
         performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
         if self.best_performance < performance:

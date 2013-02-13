@@ -29,7 +29,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 20000
+    LEARNING_STEPS      = 10000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -44,14 +44,14 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
+    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
     #MAZE                = '/Domains/PitmazeMaps/3x3.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/9Star.txt'
-    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Machines.txt'
-    #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
+    #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Machines.txt'
+    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
@@ -62,7 +62,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
     iFDDOnlineThreshold         = inf #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
-    BatchDiscoveryThreshold     = 75 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    BatchDiscoveryThreshold     = .6 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
@@ -72,27 +72,27 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     iFDD_Plus                   = 1     # True: relevance = abs(TD_Error)/norm(feature), False: relevance = sum(abs(TD_error)) [ICML 11]  
     OMPTD_BAG_SIZE              = 10000
     # Policy ----------------------
-    EPSILON                 = .2 # EGreedy Often is .1 CHANGE ME <<<
+    EPSILON                 = .1 # EGreedy
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = .1
     boyan_N0                = 100
     LAMBDA                  = 0
-    LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
+    LSPI_iterations         = 2 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
-    RE_LSPI_iterations      = 5
+    RE_LSPI_iterations      = 2
     
     # DOMAIN
-    #=================
+    #================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
-    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    #domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -100,8 +100,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # REPRESENTATION
     #================
-    initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = initial_rep
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)

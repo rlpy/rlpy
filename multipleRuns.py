@@ -8,9 +8,9 @@ from os import *
 import platform
 
 StartID         = 1
-FinishId        = 10
+FinishId        = 5
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/13ICML/'
+PROJECT_PATH    = 'Results/13ICML/SystemAdmin/'
 max_cpu         = multiprocessing.cpu_count()
 
 if(platform.system() == 'Windows'):
