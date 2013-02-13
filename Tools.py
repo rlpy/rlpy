@@ -17,6 +17,9 @@ import os
 #os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 # http://matplotlib.1069221.n5.nabble.com/Set-MPLCONFIGDIR-to-something-different-td12922.html#a19033822
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
+
+CONDOR_CLUSTER_PREFIX = '/data/scratch/' # not used anywhere as part of path, only as unique identifier distinguishing cluster from normal local machine. See isOnCluster()
+
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
     from matplotlib import mpl,rc,colors
@@ -638,6 +641,11 @@ class Logger(object):
         self.buffer += str +'\n'
     def line(self):
         self.log(SEP_LINE)
+def isOnCluster():
+    # detect if running on condor cluster
+    if os.path.abspath('.')[0:13] == CONDOR_CLUSTER_PREFIX[0:13]: # arbitrary number of digits
+        return True
+    return False
 class Merger(object):
     AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
