@@ -1,6 +1,7 @@
 Tasks:
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
 - Doxygen
+- Fix the issue with legend not being shown during the run
 - Config File For Experiments
 - Tools.py Arrangement
 - Optimization

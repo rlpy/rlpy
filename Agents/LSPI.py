@@ -14,7 +14,7 @@ class LSPI(Agent):
     samples_count   = 0         # Counter for the sample count
     epsilon         = 0         # Minimum l_2 change required to continue iterations in LSPI
     
-    return_best_policy  = 1        # If this flag is activated, on each iteration of LSPI, the policy is checked with one simulation and in the end the theta w.r.t the best policy is returned. Note that this will require more samples than the intial set of samples provided to LSPI
+    return_best_policy  = 0        # If this flag is activated, on each iteration of LSPI, the policy is checked with one simulation and in the end the theta w.r.t the best policy is returned. Note that this will require more samples than the intial set of samples provided to LSPI
     best_performance    = -inf     # In the "return_best_policy", The best perofrmance check is stored here through LSPI iterations
     best_theta          = None     # In the "return_best_policy", The best theta is stored here through LSPI iterations
     best_TD_errors       = None     # In the "return_best_policy", The TD_Error corresponding to the best theta is stored here through LSPI iterations 
@@ -25,11 +25,12 @@ class LSPI(Agent):
     data_r          = []        #
     data_ns         = []        # 
     data_na         = []        # 
-    def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3):
+    def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3,return_best_policy = 0):
         self.samples_count      = 0
         self.sample_window      = sample_window
         self.epsilon            = epsilon
         self.lspi_iterations    = lspi_iterations
+        self.return_best_policy = return_best_policy # Default is False. If set True it will track the best policy during iterations
         self.phi_sa_size        = domain.actions_num * representation.features_num
         self.data_s             = zeros((sample_window, domain.state_space_dims))
         self.data_ns            = zeros((sample_window, domain.state_space_dims))
@@ -41,6 +42,7 @@ class LSPI(Agent):
                 self.logger.log('Max LSPI Iterations:\t%d' % lspi_iterations)
                 self.logger.log('Data Size:\t\t%d' % sample_window)
                 self.logger.log('Weight Difference tol.:\t%0.3f' % epsilon)
+                self.logger.log('Track the best policy:\t%d' % self.return_best_policy)
     def learn(self,s,a,r,ns,na,terminal):
         
         self.storeData(s,a,r,ns,na)        
