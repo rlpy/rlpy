@@ -689,6 +689,9 @@ class Merger(object):
         self.std_errs               = [] 
         self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
+        if len(self.exp_paths) == 0:
+            print "No directory including result was found at %s" % paths
+            return False 
         for exp in self.exp_paths:
             means, std_errs = self.parseExperiment(exp)
             self.means.append(means)
