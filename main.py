@@ -10,7 +10,9 @@ while not os.path.exists(path+'/RL-Python'):
     path = path + '/..'
 sys.path.insert(0, os.path.abspath(path+'/RL-Python'))
 
-RL_PYTHON_ROOT,_ = path.rsplit('/')  
+print path
+RL_PYTHON_ROOT = path + '/RL-Python'
+  
 
 from Tools import *
 from Domains import *
