@@ -66,7 +66,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     iFDDOnlineThreshold         = inf #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
     BatchDiscoveryThreshold     = 50 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
-    Max_Batch_Feature_Discovery = .3    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
+    Max_Batch_Feature_Discovery = 20    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     BEBF_svm_epsilon            = {'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 
@@ -91,8 +91,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
-    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
+    domain          = PST(NUM_UAV = 2, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
@@ -102,8 +102,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # REPRESENTATION
     #================
-    #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = initial_rep
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
