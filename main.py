@@ -6,11 +6,11 @@
 import sys, os
 #Add all paths
 path = '.'
-while not os.path.exists(path+'/Tools.py'):
+while not os.path.exists(path+'/RL-Python'):
     path = path + '/..'
-sys.path.insert(0, os.path.abspath(path))
+sys.path.insert(0, os.path.abspath(path+'/RL-Python'))
 
-RL_PYTHON_ROOT = path 
+RL_PYTHON_ROOT,_ = path.rsplit('/')  
 
 from Tools import *
 from Domains import *
