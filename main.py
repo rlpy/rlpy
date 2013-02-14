@@ -6,12 +6,13 @@
 import sys, os
 #Add all paths
 path = '.'
-while not os.path.exists(path+'/RL-Python'):
+while not os.path.exists(path+'/RL-Python/Tools.py'):
+    print path
     path = path + '/..'
-sys.path.insert(0, os.path.abspath(path+'/RL-Python'))
 
-print path
-RL_PYTHON_ROOT = path + '/RL-Python'
+path = path + '/RL-Python'
+sys.path.insert(0, os.path.abspath(path))
+RL_PYTHON_ROOT = path
   
 
 from Tools import *
