@@ -41,7 +41,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                 if os.path.exists(idir+'/%d-results.txt' % jobid):                        
                     completed = completed + 1;
                 else:
-                    logpath = "%s/CondorOutput/out/%d.out" % (idir,jobid) 
+                    logpath = "%s/%d-out.txt" % (idir,jobid) 
                     if detailed and os.path.exists(logpath):
                         if fulldetailed:
                             command = "tail -n 30 " + logpath
