@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # Functions used to remove all unfinished jobs
-# Becareful if jobs are running on the server you should not run this command on the corresponding directory
+# Be careful if jobs are running on the server you should not run this command on the corresponding directory
 # Alborz Geramifard 2009 MIT
 # Assumes linux machine just for clear screen! Why do you want to run it on something else anyway?
-
+# It also remove CondorOutput
 #Inputs:
 # idir : Initial Directory
 
@@ -21,7 +21,7 @@ def searchNPurge(idir):
             if idir != '.':
                 print 'Experiment: '+ idir
             
-            #os.system("rm -rf CondorOutput")
+            os.system("rm -rf CondorOutput")
             
             outjobs     = glob.glob('*-out.txt')
             resjobs     = glob.glob('*-results.txt')
