@@ -18,7 +18,7 @@ def fetchErrs(idir,detailed):
             errids = set()
             jobs = glob.glob(idir+'/CondorOutput/err/*.err')
             for job in jobs:
-                if os.path.getsize(idir+'/CondorOutput/err/*.err'):
+                if os.path.getsize(job):
                     _,_,jobname = job.rpartition('/')
                     errid,_,_ = jobname.rpartition('.')
                     errids.add(eval(errid))
