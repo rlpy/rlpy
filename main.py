@@ -8,7 +8,6 @@ import sys, os
 path = '.'
 while not os.path.exists(path+'/RL-Python/Tools.py'):
     print path
-    path = path + '/..'
 
 path = path + '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
