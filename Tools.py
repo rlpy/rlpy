@@ -69,38 +69,37 @@ import numpy # We need to be able to reference numpy by name
 # BELOW we have opted to always use the custom count_nonzero function; see comments
 # 
 #if numpy.version.version < '2.6.0': # Missing count_nonzero
-if True:    
+def count_nonzero(arr):
     # NOTE that the count_nonzero function below moves recursively through any sublists,
     # such that only individual elements are examined.
     # Some versions of numpy's count_nonzero only strictly compare each element;
     # e.g. numpy.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) might return 2, while
     # Tools.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) returns 9.
     # The latter is the desired functionality, irrelevant when single arrays/lists are passed.
-    def count_nonzero(arr):
-        nnz = 0
-        
-        # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
-        # NOT TESTED with high-dimensional matrices (only 2-dimensional matrices)
-        if sp.issparse(arr):
-            return arr.getnnz()
-        
-        if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
-            nonzero_indices = arr.nonzero() # Tuple of length = # dimensions (usu. 2) containing indices of nonzero elements
-            nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
-            return nnz
-        
-        if isinstance(arr,ndarray):
-            return sum([1 for x in arr.ravel() if x != 0])
-        
-        if isinstance(arr,list):
-            for el in arr:
-                if isinstance(el, list):
-                    nnz += count_nonzero(el)
-                elif el != 0: nnz+=1
-            return nnz
-        
-        print "In tools.py attempted count_nonzero with unsupported type of", type(arr)
-        return None
+    nnz = 0
+    
+    # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
+    # NOT TESTED with high-dimensional matrices (only 2-dimensional matrices)
+    if sp.issparse(arr):
+        return arr.getnnz()
+    
+    if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
+        nonzero_indices = arr.nonzero() # Tuple of length = # dimensions (usu. 2) containing indices of nonzero elements
+        nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
+        return nnz
+    
+    if isinstance(arr,ndarray):
+        return sum([1 for x in arr.ravel() if x != 0])
+    
+    if isinstance(arr,list):
+        for el in arr:
+            if isinstance(el, list):
+                nnz += count_nonzero(el)
+            elif el != 0: nnz+=1
+        return nnz
+    
+    print "In tools.py attempted count_nonzero with unsupported type of", type(arr)
+    return None
 
 # Tips:
 # array.astype(float) => convert elements

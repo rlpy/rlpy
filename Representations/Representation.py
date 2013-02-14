@@ -203,7 +203,6 @@ class Representation(object):
 #        #phi_s_a = all_phi_s_a.T[action_slice.todense().T==1]
 #        phi_s_a = phi_s_a.reshape((p,-1))
 #        return phi_s_a
-    
     def batchBestAction(self, all_s, all_phi_s, action_mask = None):
         # Returns the best-action and phi_s_a corresponding to the states
         # inputs:
