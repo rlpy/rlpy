@@ -625,19 +625,21 @@ def printMatrix(A,type='int'):
     print array(A,dtype=type)
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
-    def save(self,filename):
-            checkNCreateDirectory(filename)
-            self.file = open(filename,'w')
-            lastprint = 'Log\t=> %s' % filename
-            print lastprint
-            self.buffer += lastprint
-            self.file.write(self.buffer)
-            buffer = ''
-            self.file.close()
+    filename = ''
+    def setOutput(self,filename):
+        self.filename = filename
+        checkNCreateDirectory(filename)
+        f = open(self.filename,'w')
+        f.close()
     def log(self,str):
     # Print something both in output and in a file
         print str
         self.buffer += str +'\n'
+        if self.filename != '':
+            f = open(self.filename,'a')
+            f.write(self.buffer)
+            f.close()
+            self.buffer = ''
     def line(self):
         self.log(SEP_LINE)
 def isOnCluster():

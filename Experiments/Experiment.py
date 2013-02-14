@@ -46,6 +46,7 @@ class Experiment(object):
         self.logger.line()
         self.logger.log("Experiment:\t\t%s" % className(self))
         self.logger.log("Output:\t\t\t%s/%s" % (self.full_path, self.output_filename))
+        self.logger.setOutput("%s/%d-out.txt" % (self.full_path, self.id))
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -81,7 +82,6 @@ class Experiment(object):
         self.logger.log("Took %s\nResults\t=> %s/%s" % (hhmmss(deltaT(self.start_time)), self.full_path, self.output_filename))
         # Set the output path for the logger
         # This is done here because it is dependent on the combination of agent, representation, and domain
-        self.logger.save("%s/%d-out.txt" % (self.full_path, self.id))
     def makeExperimentName(self,variables):
         # Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X  
         # Example: X = ['domain','agent','representation','LEARNING_STEPS']
