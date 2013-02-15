@@ -768,6 +768,9 @@ class Merger(object):
         pl.xlabel(X_axis,fontsize=16)
         pl.ylabel(Y_axis,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
+        if self.legend:
+            # This is a hack so we can see it correctly during the runtime
+            pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
