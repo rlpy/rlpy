@@ -774,25 +774,34 @@ class Merger(object):
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
-        if self.legend:
-            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
-        else:
-            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
         # Store the numbers in a txt file
         f = open(fullfilename+'.txt','w')
         for i in range(self.exp_num):
+            # Print in the standard error:
+            print "======================"
+            print "Algorithm: ", self.exp_paths[i] 
+            print "======================"
+            print X_axis +': ' + pretty(Xs[i,:])
+            print Y_axis +': ' + pretty(Ys[i,:])
+            print 'Standard-Error: ' + pretty(Errs[i,:])
             if self.prettyText:
+                f.write("======================\n")
                 f.write("Algorithm: " + self.labels[i] +"\n")
                 f.write("======================\n")
                 f.write(X_axis +': ' + pretty(Xs[i,:])+'\n')
                 f.write(Y_axis +': ' + pretty(Ys[i,:])+'\n')
                 f.write('Standard-Error: ' + pretty(Errs[i,:])+'\n')
-                f.write("======================\n")
             else:
                 savetxt(f,Xs[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Ys[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
+        # Save the figure as pdf
+        if self.legend:
+            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
+        else:
+            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
+
         print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
     def hasResults(self,path):
         return len(glob.glob(os.path.join(path, '*-results.txt'))) != 0
@@ -854,5 +863,6 @@ REGULARIZATION = 1e-2
 FONTSIZE = 15
 SEP_LINE = "="*60
 # The following is necessary for mac machines to give the right latex compiler for python
-if sys.platform == 'darwin': os.environ['PATH'] = os.environ['PATH'] + ':/usr/texbin'
-
+if sys.platform == 'darwin': os.environ['PATH'] += ':/usr/texbin'
+if sys.platform == 'win32': 
+    os.environ['PATH'] += 'G:\Program Files\MiKTeX 2.9\miktex\bin'

@@ -14,9 +14,23 @@
 # OR set the path to the correct location
 # If you want to select a set of runs you can pass a list of paths that you would like to be considered.
 
+#!/usr/bin/python
+######################################################
+# Developed by Alborz Geramiard Dec 2nd 2012 at MIT #
+######################################################
+# Merge multiple results of several algorithms and show them on one plot
+
+import sys, os
+#Add all paths
+path = '.'
+while not os.path.exists(path+'/RL-Python/Tools.py'):
+    path = path + '/..'
+    print path
+path += '/RL-Python'
+sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-paths = ['Results/13ICML/SystemAdmin']
+paths = ['Results/Example_Project']
 #paths = ['Results/Example_Project'] 
 #paths = ['Results/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
 

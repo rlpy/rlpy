@@ -5,3 +5,4 @@ from Representations import *
 X = os.path.getsize('TEST.py')
 print X
 
+print sys.platform
