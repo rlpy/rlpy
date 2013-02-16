@@ -43,7 +43,8 @@ Legend      = True
 merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend)
 pl.ioff()
 #print mergedData.means[0].shape
-merger.plot('Return')
+#merger.plot('Return')
+merger.plot('Return','Features')
 #merger.plot('Steps','Time(s)')
 #merger.plot('Steps','Features')
 #merger.plot('Steps')
@@ -54,3 +55,5 @@ merger.plot('Return')
 #merger.plot('Features','Time(s)')
 #merger.plot('Terminal')
 pl.show()
+
+

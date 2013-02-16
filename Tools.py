@@ -782,7 +782,7 @@ class Merger(object):
             print "======================"
             print "Algorithm: ", self.exp_paths[i] 
             print "======================"
-            print X_axis +': ' + pretty(Xs[i,:])
+            print X_axis +': ' + pretty(Xs[i,:],'%0.0f')
             print Y_axis +': ' + pretty(Ys[i,:])
             print 'Standard-Error: ' + pretty(Errs[i,:])
             if self.prettyText:
@@ -798,12 +798,12 @@ class Merger(object):
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
         # Save the figure as pdf
-        if not isOnCluster() and self.legend:
-            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
-        else:
-            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
-
-        print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
+        if not isOnCluster(): 
+            if self.legend:
+                self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
+            else:
+                self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
+            print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
     def hasResults(self,path):
         return len(glob.glob(os.path.join(path, '*-results.txt'))) != 0
 class PriorityQueueWithNovelty():
