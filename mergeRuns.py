@@ -56,6 +56,7 @@ merger.plot('Return','Features')
 #merger.plot('Steps','Time(s)')
 #merger.plot('Features','Time(s)')
 #merger.plot('Terminal')
-pl.show()
+if not isOnCluster():
+    pl.show()
 
 
