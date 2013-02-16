@@ -644,7 +644,7 @@ class Logger(object):
         self.log(SEP_LINE)
 def isOnCluster():
     # detect if running on condor cluster
-    if os.path.abspath('.')[0:13] == CONDOR_CLUSTER_PREFIX[0:13]: # arbitrary number of digits
+    if True or os.path.abspath('.')[0:6] == CONDOR_CLUSTER_PREFIX[0:6]: # arbitrary number of digits
         return True
     return False
 class Merger(object):
@@ -689,7 +689,8 @@ class Merger(object):
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 
-        self.fig                    = pl.figure(1)
+        if not isOnCluster():
+            self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
             print "No directory including result was found at %s" % paths
@@ -723,7 +724,7 @@ class Merger(object):
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis,X_axis = 'Learning Steps'):
-        self.fig.clear()
+        if not isOnCluster(): self.fig.clear()
         min_ = +inf
         max_ = -inf    
         
@@ -797,7 +798,7 @@ class Merger(object):
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
         # Save the figure as pdf
-        if self.legend:
+        if not isOnCluster() and self.legend:
             self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
         else:
             self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
