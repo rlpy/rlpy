@@ -23,6 +23,7 @@
 import sys, os
 #Add all paths
 path = '.'
+print 'looking for Tools.py'
 while not os.path.exists(path+'/RL-Python/Tools.py'):
     path = path + '/..'
     print path
@@ -30,7 +31,8 @@ path += '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-paths = ['Results/Example_Project']
+paths = ['.']
+#paths = ['Results/Example_Project']
 #paths = ['Results/Example_Project'] 
 #paths = ['Results/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
 
