@@ -770,8 +770,8 @@ class Merger(object):
             if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
             pl.xlabel(X_axis,fontsize=16)
             pl.ylabel(Y_axis,fontsize=16)
-            self.save(Y_axis,X_axis,Xs,Ys,Errs)
-            if self.legend:
+        self.save(Y_axis,X_axis,Xs,Ys,Errs)
+        if not isOnCluster and self.legend:
                 # This is a hack so we can see it correctly during the runtime
                 pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
