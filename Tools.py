@@ -761,18 +761,19 @@ class Merger(object):
             Ys[i,:]     = Y
             Errs[i,:]   = Err
         
-        if not isOnCluster() and self.legend:
-            #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
-            self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
-            #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
-        pl.xlim(0,max(Xs[:,-1])*1.02)
-        if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-        pl.xlabel(X_axis,fontsize=16)
-        pl.ylabel(Y_axis,fontsize=16)
-        self.save(Y_axis,X_axis,Xs,Ys,Errs)
-        if self.legend:
-            # This is a hack so we can see it correctly during the runtime
-            pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
+        if not isOnCluster():
+            if self.legend:
+                #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
+                self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+                #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
+            pl.xlim(0,max(Xs[:,-1])*1.02)
+            if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
+            pl.xlabel(X_axis,fontsize=16)
+            pl.ylabel(Y_axis,fontsize=16)
+            self.save(Y_axis,X_axis,Xs,Ys,Errs)
+            if self.legend:
+                # This is a hack so we can see it correctly during the runtime
+                pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
