@@ -8,12 +8,12 @@
 import os, sys, time, re 
 from Script_Tools import *
 
-def fetchErrs(idir,detailed):
+def fetchErrs(idir,detailed,fulldetailed):
         if not os.path.exists(idir+'/main.py'):
             #Not a task directory
             for folder in os.listdir(idir):
                 if os.path.isdir(idir+'/'+folder) and folder[0] != '.':
-                    fetchErrs(idir+'/'+folder,detailed)
+                    fetchErrs(idir+'/'+folder,detailed,fulldetailed)
         else:                
             errids = set()
             jobs = glob.glob(idir+'/CondorOutput/err/*.err')
@@ -30,8 +30,9 @@ def fetchErrs(idir,detailed):
                 print"%s: %s%d%s/%s%d%s"  % (idir.replace('./',''),RED,errs,NOCOLOR,TOTAL_COLOR,total,NOCOLOR)
             if detailed:
                 logs = ''
+                lines = 30 if fulldetailed else 1
                 for errid in errids:
-                    command = "tail -n 30 " + idir+'/CondorOutput/err/%d.err' % errid
+                    command = "tail -n " + str(lines) + " "+ idir+'/CondorOutput/err/%d.err' % errid
                     sysCommandHandle = os.popen(command)
                     empty = True
                     for line in sysCommandHandle:
@@ -45,5 +46,6 @@ if __name__ == '__main__':
     print('************** Reporting For Duty! **********************');    
     print('*********************************************************');    
     detailed = len(sys.argv) > 1
-    fetchErrs('.',detailed)   
+    fulldetailed = detailed and sys.argv[1].find('+') != -1
+    fetchErrs('.',detailed,fulldetailed)   
     
