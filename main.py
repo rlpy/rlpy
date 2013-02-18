@@ -72,7 +72,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     FourierOrder                = 3     # 
     iFDD_Sparsify               = 0     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
     iFDD_Plus                   = 1     # True: relevance = abs(TD_Error)/norm(feature), False: relevance = sum(abs(TD_error)) [ICML 11]  
-    OMPTD_BAG_SIZE              = 1000
+    OMPTD_BAG_SIZE              = 10000
     # Policy ----------------------
     EPSILON                 = .2 # EGreedy Often is .1 CHANGE ME <<<
     #Agent ----------------------
