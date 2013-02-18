@@ -590,7 +590,7 @@ def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
-        os.system('mkdir -p %s' % path)
+        os.makedirs(path)
 def hasProperty(object,propertyName):
     if getattr(object, propertyName, None):
         return True
@@ -627,9 +627,10 @@ class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     filename = ''
     def setOutput(self,filename):
+        print filename
         self.filename = filename
         checkNCreateDirectory(filename)
-        f = open(self.filename,'w')
+        f = open(filename,'w')
         f.close()
     def log(self,str):
     # Print something both in output and in a file
