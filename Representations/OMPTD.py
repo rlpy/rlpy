@@ -164,7 +164,7 @@ class OMPTD(Representation):
             if self.logger: self.logger.log("Added %d size %d features to the feature bag." % (added, f_size))
         self.bagSize = new_id
 
-def featureType(self):
+    def featureType(self):
         return self.initial_representation.featureType()
 
 if __name__ == '__main__':
