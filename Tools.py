@@ -644,7 +644,7 @@ class Logger(object):
         self.log(SEP_LINE)
 def isOnCluster():
     # detect if running on condor cluster
-    if True or os.path.abspath('.')[0:6] == CONDOR_CLUSTER_PREFIX[0:6]: # arbitrary number of digits
+    if os.path.abspath('.')[0:6] == CONDOR_CLUSTER_PREFIX[0:6]: # arbitrary number of digits
         return True
     return False
 class Merger(object):
