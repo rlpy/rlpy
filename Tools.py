@@ -867,5 +867,7 @@ FONTSIZE = 15
 SEP_LINE = "="*60
 # The following is necessary for mac machines to give the right latex compiler for python
 if sys.platform == 'darwin': os.environ['PATH'] += ':/usr/texbin'
-if sys.platform == 'win32': 
-    os.environ['PATH'] += 'G:\Program Files\MiKTeX 2.9\miktex\bin'
+#if sys.platform == 'win32': 
+#    print os.environ['PATH']
+#    os.environ['PATH'] += 'G:\Program Files\MiKTeX 2.9\miktex\bin'
+#    print os.environ['PATH']
