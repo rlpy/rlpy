@@ -859,5 +859,5 @@ from Config import *
 if sys.platform == 'darwin': 
     os.environ['PATH'] += ':' + TEXPATH
 if sys.platform == 'win32':
-    os.environ['PATH'] += ':' + TEXPATH
+    os.environ['PATH'] += ';' + TEXPATH
 
