@@ -590,7 +590,7 @@ def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
-        os.makedirs(path)
+        os.system('mkdir -p %s' % path)
 def hasProperty(object,propertyName):
     if getattr(object, propertyName, None):
         return True
@@ -627,10 +627,9 @@ class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     filename = ''
     def setOutput(self,filename):
-        print filename
         self.filename = filename
         checkNCreateDirectory(filename)
-        f = open(filename,'w')
+        f = open(self.filename,'w')
         f.close()
     def log(self,str):
     # Print something both in output and in a file
@@ -645,7 +644,7 @@ class Logger(object):
         self.log(SEP_LINE)
 def isOnCluster():
     # detect if running on condor cluster
-    if os.path.abspath('.')[0:6] == CONDOR_CLUSTER_PREFIX[0:6]: # arbitrary number of digits
+    if os.path.abspath('.')[0:13] == CONDOR_CLUSTER_PREFIX[0:13]: # arbitrary number of digits
         return True
     return False
 class Merger(object):
@@ -690,8 +689,7 @@ class Merger(object):
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 
-        if not isOnCluster():
-            self.fig                    = pl.figure(1)
+        self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
             print "No directory including result was found at %s" % paths
@@ -725,7 +723,7 @@ class Merger(object):
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis,X_axis = 'Learning Steps'):
-        if not isOnCluster(): self.fig.clear()
+        self.fig.clear()
         min_ = +inf
         max_ = -inf    
         
@@ -747,66 +745,55 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            if not isOnCluster():
-                if len(X) == 1 and self.bars:
-                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+            if len(X) == 1 and self.bars:
+                pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
+            else:
+                pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                if self.bars:
+                    pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
                     max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                 else:
-                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
-                    if self.bars:
-                        pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
-                        max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
-                    else:
-                        max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
+                    max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
         
-        if not isOnCluster():
-            if self.legend:
-                #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
-                self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
-                #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
-            pl.xlim(0,max(Xs[:,-1])*1.02)
-            if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-            pl.xlabel(X_axis,fontsize=16)
-            pl.ylabel(Y_axis,fontsize=16)
+        if self.legend:
+            #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
+            self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+            #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
+        pl.xlim(0,max(Xs[:,-1])*1.02)
+        if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
+        pl.xlabel(X_axis,fontsize=16)
+        pl.ylabel(Y_axis,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
-        if not isOnCluster and self.legend:
-                # This is a hack so we can see it correctly during the runtime
-                pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
+        if self.legend:
+            # This is a hack so we can see it correctly during the runtime
+            pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
+        if self.legend:
+            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
+        else:
+            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
         # Store the numbers in a txt file
         f = open(fullfilename+'.txt','w')
         for i in range(self.exp_num):
-            # Print in the standard error:
-            print "======================"
-            print "Algorithm: ", self.exp_paths[i] 
-            print "======================"
-            print X_axis +': ' + pretty(Xs[i,:],'%0.0f')
-            print Y_axis +': ' + pretty(Ys[i,:])
-            print 'Standard-Error: ' + pretty(Errs[i,:])
             if self.prettyText:
-                f.write("======================\n")
                 f.write("Algorithm: " + self.labels[i] +"\n")
                 f.write("======================\n")
                 f.write(X_axis +': ' + pretty(Xs[i,:])+'\n')
                 f.write(Y_axis +': ' + pretty(Ys[i,:])+'\n')
                 f.write('Standard-Error: ' + pretty(Errs[i,:])+'\n')
+                f.write("======================\n")
             else:
                 savetxt(f,Xs[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Ys[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
-        # Save the figure as pdf
-        if not isOnCluster(): 
-            if self.legend:
-                self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
-            else:
-                self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
-            print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
+        print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
     def hasResults(self,path):
         return len(glob.glob(os.path.join(path, '*-results.txt'))) != 0
 class PriorityQueueWithNovelty():
@@ -867,8 +854,10 @@ REGULARIZATION = 1e-2
 FONTSIZE = 15
 SEP_LINE = "="*60
 # The following is necessary for mac machines to give the right latex compiler for python
-if sys.platform == 'darwin': os.environ['PATH'] += ':/usr/texbin'
-#if sys.platform == 'win32': 
-#    print os.environ['PATH']
-#    os.environ['PATH'] += 'G:\Program Files\MiKTeX 2.9\miktex\bin'
-#    print os.environ['PATH']
+print 'Importing Configurations from config.py'
+from Config import *
+if sys.platform == 'darwin': 
+    os.environ['PATH'] += ':' + TEXPATH
+if sys.platform == 'win32':
+    os.environ['PATH'] += ':' + TEXPATH
+
