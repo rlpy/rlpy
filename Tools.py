@@ -12,13 +12,13 @@ def module_exists(module_name):
 
 from operator import *
 from numpy  import *
+from Config import *
 import os
+
 os.environ['HOME'] = "/data/scratch/agf-tmp"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
 os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 # http://matplotlib.1069221.n5.nabble.com/Set-MPLCONFIGDIR-to-something-different-td12922.html#a19033822
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
-
-CONDOR_CLUSTER_PREFIX = '/data/scratch/' # not used anywhere as part of path, only as unique identifier distinguishing cluster from normal local machine. See isOnCluster()
 
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
@@ -644,7 +644,7 @@ class Logger(object):
         self.log(SEP_LINE)
 def isOnCluster():
     # detect if running on condor cluster
-    if os.path.abspath('.')[0:13] == CONDOR_CLUSTER_PREFIX[0:13]: # arbitrary number of digits
+    if os.path.abspath('.')[0:len(CONDOR_CLUSTER_PREFIX)] == CONDOR_CLUSTER_PREFIX: # arbitrary number of digits
         return True
     return False
 class Merger(object):
@@ -689,7 +689,8 @@ class Merger(object):
         self.exp_num                = len(self.exp_paths) 
         self.means                  = []
         self.std_errs               = [] 
-        self.fig                    = pl.figure(1)
+        if not isOnCluster():
+            self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
             print "No directory including result was found at %s" % paths
@@ -723,7 +724,7 @@ class Merger(object):
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis,X_axis = 'Learning Steps'):
-        self.fig.clear()
+        if not isOnCluster(): self.fig.clear()
         min_ = +inf
         max_ = -inf    
         
@@ -745,55 +746,66 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            if len(X) == 1 and self.bars:
-                pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
-                max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
-            else:
-                pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
-                if self.bars:
-                    pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
+            if not isOnCluster():
+                if len(X) == 1 and self.bars:
+                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
                     max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                 else:
-                    max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
+                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    if self.bars:
+                        pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
+                        max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
+                    else:
+                        max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
         
-        if self.legend:
-            #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
-            self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
-            #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
-        pl.xlim(0,max(Xs[:,-1])*1.02)
-        if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-        pl.xlabel(X_axis,fontsize=16)
-        pl.ylabel(Y_axis,fontsize=16)
+        if not isOnCluster():
+            if self.legend:
+                #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
+                self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+                #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
+            pl.xlim(0,max(Xs[:,-1])*1.02)
+            if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
+            pl.xlabel(X_axis,fontsize=16)
+            pl.ylabel(Y_axis,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
-        if self.legend:
-            # This is a hack so we can see it correctly during the runtime
-            pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
+        if not isOnCluster and self.legend:
+                # This is a hack so we can see it correctly during the runtime
+                pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
-        if self.legend:
-            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
-        else:
-            self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
         # Store the numbers in a txt file
         f = open(fullfilename+'.txt','w')
         for i in range(self.exp_num):
+            # Print in the standard error:
+            print "======================"
+            print "Algorithm: ", self.exp_paths[i] 
+            print "======================"
+            print X_axis +': ' + pretty(Xs[i,:],'%0.0f')
+            print Y_axis +': ' + pretty(Ys[i,:])
+            print 'Standard-Error: ' + pretty(Errs[i,:])
             if self.prettyText:
+                f.write("======================\n")
                 f.write("Algorithm: " + self.labels[i] +"\n")
                 f.write("======================\n")
                 f.write(X_axis +': ' + pretty(Xs[i,:])+'\n')
                 f.write(Y_axis +': ' + pretty(Ys[i,:])+'\n')
                 f.write('Standard-Error: ' + pretty(Errs[i,:])+'\n')
-                f.write("======================\n")
             else:
                 savetxt(f,Xs[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Ys[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
-        print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
+        # Save the figure as pdf
+        if not isOnCluster(): 
+            if self.legend:
+                self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
+            else:
+                self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
+            print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
     def hasResults(self,path):
         return len(glob.glob(os.path.join(path, '*-results.txt'))) != 0
 class PriorityQueueWithNovelty():
@@ -853,9 +865,8 @@ RESEDUAL_THRESHOLD = 1e-7
 REGULARIZATION = 1e-2
 FONTSIZE = 15
 SEP_LINE = "="*60
-# The following is necessary for mac machines to give the right latex compiler for python
-print 'Importing Configurations from config.py'
-from Config import *
+
+# Setup the latdex path
 if sys.platform == 'darwin': 
     os.environ['PATH'] += ':' + TEXPATH
 if sys.platform == 'win32':
