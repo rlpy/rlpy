@@ -748,12 +748,12 @@ class Merger(object):
             Err = self.std_errs[i][y_ind,:]
             if not isOnCluster():
                 if len(X) == 1 and self.bars:
-                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i/len(self.colors)],markersize = self.markersize, label = self.labels[i])
                     max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                 else:
-                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i/len(self.colors)],markersize = self.markersize, label = self.labels[i])
                     if self.bars:
-                        pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
+                        pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i/len(self.colors)])
                         max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                     else:
                         max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)

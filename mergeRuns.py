@@ -31,8 +31,8 @@ path += '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-paths = ['.']
-#paths = ['Results/Example_Project']
+#paths = ['.']
+paths = ['Results/Example_Project']
 #paths = ['Results/Example_Project'] 
 #paths = ['Results/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
 
