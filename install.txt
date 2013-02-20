@@ -52,7 +52,7 @@ c) Ubuntu Linux - automated in script
 ===============================================================
 3. Latex (with extra fonts)
 a) Windows 32/64-bit
-We recommend installing Miktex (  )
+We recommend installing Miktex ( http://miktex.org/download )
 which includes dvipng and all required font packages.
 
 b) Mac OSX - 

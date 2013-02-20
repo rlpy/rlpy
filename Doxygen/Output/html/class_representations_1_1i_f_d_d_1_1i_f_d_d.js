@@ -1,0 +1,28 @@
+var class_representations_1_1i_f_d_d_1_1i_f_d_d =
+[
+    [ "__init__", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a159a782c815d7d84728c8e43d18c7023", null ],
+    [ "addFeature", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a37d04b8e089c8bf1545a6c1e45eb874c", null ],
+    [ "addInitialFeatures", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a5ccaaabf81a2000b3862dbe2fc045361", null ],
+    [ "batchDiscover", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#afee0667961e2b5d05d59658d730b283c", null ],
+    [ "discover", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a9d6594e3bbe250984da1ed0a7357383d", null ],
+    [ "featureType", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a43a06ec50d9b4b641a679cca71313e80", null ],
+    [ "findFinalActiveFeatures", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a6998be182af3caef71f2720b7ed5e382", null ],
+    [ "getFeature", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a8679b2da7136355dda4632957a1812e8", null ],
+    [ "getStrFeatureSet", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#ade73350dd21101bb945ad39b7ecc158d", null ],
+    [ "inspectPair", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a145287661b9fd62e8ff788e85126bf9f", null ],
+    [ "phi_nonTerminal", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a7525c22e186c3526a38df45db6d41272", null ],
+    [ "show", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a21f1508d3456371fc52546d446ec6c7b", null ],
+    [ "showCache", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a498dad5c5ac673e68e350a779a9debcd", null ],
+    [ "showFeatures", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a419059baaf2136420c8e6b76b6590f2e", null ],
+    [ "showPotentials", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a8b406837370d2c0fed65eeb8dafbe7d3", null ],
+    [ "updateMaxRelevance", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#afe2167d19d5c23535c38093b2f969f53", null ],
+    [ "updateWeight", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#ab68807152de94a842c4c462a29f9979e", null ],
+    [ "batchThreshold", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a7b73347f3c406acca42c97cb48bcdb15", null ],
+    [ "debug", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#aaec488b91e1624775e6be3863ba4205d", null ],
+    [ "features_num", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#ae14f7a31a34995a2545468bd7efc0802", null ],
+    [ "hashed_s", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#acdaf6bdd55de871587857761aea6d60c", null ],
+    [ "iFDDPlus", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a679e55c793f6c89812e7d2f9b3edb4e3", null ],
+    [ "maxBatchDicovery", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a5772debdc84aca48457be9ddf860e959", null ],
+    [ "theta", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a398983901ac33920c3dda0f7315a0976", null ],
+    [ "useCache", "class_representations_1_1i_f_d_d_1_1i_f_d_d.html#af1f31782d40e90053d77a964eb9ca924", null ]
+];
