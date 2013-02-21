@@ -34,7 +34,7 @@ from Tools import *
 #paths = ['.']
 paths = ['Results/Example_Project']
 #paths = ['Results/Example_Project'] 
-#paths = ['Results/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
+#paths = ['R    esults/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
 
 labels      = []
 colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple','b', 'g', 'r', 'c', 'm', 'y', 'k','purple']

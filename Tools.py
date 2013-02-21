@@ -423,8 +423,28 @@ def id2vec(_id,limits):
         s[d], _id = divmod(_id, prods[d-1])
     s[0] = _id
     return s
-def bound(x,m,M):
+def bound_vec(X,limits):
+    #Input: 
+    # given X as 1-by-n array
+    # limits as 2-by-n array
+    # Output:
+    # array where each element is bounded between the corresponding bounds in the limits
+    # i.e limits[i,0] <= output[i] <= limits[i,1]
+    MIN = limits[:,0]
+    MAX = limits[:,1]
+    X   = vstack((X,MIN))
+    X   = amax(X,axis=0)
+    X   = vstack((X,MAX))
+    X   = amin(X,axis=0)
+    return X
+def bound(x,m,M = None):
+    #x should all be scalar
+    #m can be scalar or a [min,max] format
+    if M == None:
+        M = m[1]
+        m = m[0]
     # bound x between min (m) and Max (M)
+    print m,M
     return min(max(x,m),M)
 def wrap(x,m,M):
     # wrap m between min (m) and Max (M)

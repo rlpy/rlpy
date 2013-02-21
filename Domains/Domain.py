@@ -9,14 +9,15 @@
 from Tools import *
 from pydoc import classname
 class Domain(object):
-    gamma = .80             # Discount factor default = .9
-    states_num = None       # Number of states
-    actions_num = None      # Number of Actions
-    statespace_limits = None# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-    state_space_dims = None # Number of dimensions of the state space
-    continuous_dims = []     # List of continuous dimensions of the domain, default = empty []
-    episodeCap = None       # The cap used to bound each episode (return to s0 after)
-    logger = None           # Used to capture the text in a file
+    gamma = .80                         # Discount factor default = .9
+    states_num = None                   # Number of states
+    actions_num = None                  # Number of Actions
+    statespace_limits = None            # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+    discrete_statespace_limits = None   # same as above, except for discrete dimensions this array does not have the -.5,+.5 added to discrete dimensions
+    state_space_dims = None             # Number of dimensions of the state space
+    continuous_dims = []                # List of continuous dimensions of the domain, default = empty []
+    episodeCap = None                   # The cap used to bound each episode (return to s0 after)
+    logger = None                       # Used to capture the text in a file
     #Termination Signals of Episodes
     NOT_TERMINATED          = 0
     NOMINAL_TERMINATION     = 1
@@ -30,6 +31,7 @@ class Domain(object):
         self.state_space_dims = len(self.statespace_limits)
         self.gamma = self.gamma * 1.0 # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
+        # The original limits will be saved in self.discrete_statespace_limits
         self.extendDiscreteDimensions()
         if self.continuous_dims == []:
             self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
@@ -80,13 +82,6 @@ class Domain(object):
     ## Returns True if the state s is a terminal state, False otherwise."""
     def isTerminal(self,s):
         return False # By default the domain does not terminate unless it specifies the otherwise
-    def saturateState(self,s):
-        # Kemal put more info on this. Why do you need this?
-        dim = len(s)
-               
-        for i in arange(0,dim):
-            if s[i] < self.statespace_limits[i,0]+0.5: s[i] = int(self.statespace_limits[i,0]+0.5)
-            if s[i] > self.statespace_limits[i,1]-0.5: s[i] = int(self.statespace_limits[i,1]-0.5)
     def test(self,T):
         # Run the environment with a random Agent for T steps
         terminal    = True
@@ -104,6 +99,8 @@ class Domain(object):
     def printAll(self):
         printClass(self)
     def extendDiscreteDimensions(self):
+        # Store the original limits for other types of calculations
+        self.discrete_statespace_limits = self.statespace_limits
         self.statespace_limits = self.statespace_limits.astype('float')
         for d in arange(self.state_space_dims):
              if not d in self.continuous_dims:
@@ -125,6 +122,7 @@ class Domain(object):
                 
         return array(next_states),array(rewards)
     def s0uniform(self):
+        return self.s0() # <<< DELETE ME
         # Returns a state sampled uniformely from the state space
         if className(self) == 'BlocksWorld':
             print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)
@@ -140,4 +138,7 @@ class Domain(object):
                 s[d] = int(s[d])
         if len(s) == 1: s = s[0]
         return s
-    
+    def saturateState(self,s):
+        # This function is used for cases when state vector has elements outside of its limits. This function simply caps each element of the state space to lie in the allowed state limits
+        return bound_vec(s,self.discrete_statespace_limits)
+        
