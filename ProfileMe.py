@@ -6,7 +6,7 @@ import pstats
 import platform
 
 
-Output = 'test'
+Output = 'test.pdf'
 print 'Profiling'
 cProfile.run('main(-1,SHOW_FINAL_PLOT=0,PROJECT_PATH = "Results/Temp")', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')
