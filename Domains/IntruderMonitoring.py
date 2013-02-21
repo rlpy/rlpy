@@ -92,13 +92,13 @@ class IntruderMonitoring(Domain):
         #Calculate the reward: Number of danger zones being violated by intruders while no agents being present
         
         #Move all agents based on the taken action
-        agents      = s[:self.NUMBER_OF_AGENTS*2].reshape(-1,2)
+        agents      = array(s[:self.NUMBER_OF_AGENTS*2].reshape(-1,2))
         actions     = id2vec(a,self.ACTION_LIMITS)
         actions     = self.ACTIONS_PER_AGENT[actions]
         agents      += actions
         
         # Generate uniform random actions for intruders and move them
-        intruders       = s[self.NUMBER_OF_AGENTS*2:].reshape(-1,2)
+        intruders       = array(s[self.NUMBER_OF_AGENTS*2:].reshape(-1,2))
         actions         = random.randint(len(self.ACTIONS_PER_AGENT), size=self.NUMBER_OF_INTRUDERS)
         actions         = self.ACTIONS_PER_AGENT[actions]
         intruders       += actions
@@ -118,8 +118,8 @@ class IntruderMonitoring(Domain):
         intrusion_counter = count_nonzero(map[self.danger_zone_locations[:,0],self.danger_zone_locations[:,1]])
         r = intrusion_counter*self.INTRUSION_PENALTY
         self.saturateState(ns)
-                
-        return r,array(ns),False
+        #print s, id2vec(a,self.ACTION_LIMITS), ns
+        return r,ns,False
     def s0(self):
         return hstack([self.agents_initial_locations.ravel(), self.intruders_initial_locations.ravel()])
 #    def possibleActions(self,s):
