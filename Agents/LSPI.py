@@ -114,7 +114,7 @@ class LSPI(Agent):
                 return self.best_TD_errors
             else:
                 return td_errors
-    def policyIteration2(self,b,all_phi_s_a,all_phi_ns):
+    def policyIteration_non_matrix_version(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
             # b is passed as an input because it remains unchanged during policy iteration.
