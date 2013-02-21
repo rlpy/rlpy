@@ -28,7 +28,7 @@ class IntruderMonitoring(Domain):
     NUMBER_OF_AGENTS = 0            # Number of Cooperating agents
     NUMBER_OF_INTRUDERS = 0         # Number of Intruders
     NUMBER_OF_DANGER_ZONES = 0
-    
+    gamma = .95
     #Rewards
     INTRUSION_PENALTY = -1.0
     episodeCap  = 1000              # Episode Cap
