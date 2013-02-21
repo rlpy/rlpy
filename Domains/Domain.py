@@ -122,7 +122,6 @@ class Domain(object):
                 
         return array(next_states),array(rewards)
     def s0uniform(self):
-        return self.s0() # <<< DELETE ME
         # Returns a state sampled uniformely from the state space
         if className(self) == 'BlocksWorld':
             print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)

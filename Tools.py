@@ -444,7 +444,6 @@ def bound(x,m,M = None):
         M = m[1]
         m = m[0]
     # bound x between min (m) and Max (M)
-    print m,M
     return min(max(x,m),M)
 def wrap(x,m,M):
     # wrap m between min (m) and Max (M)
