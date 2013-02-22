@@ -5,7 +5,7 @@ var class_agents_1_1_l_s_p_i_1_1_l_s_p_i =
     [ "LSTD", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a5ec038b56aa1a1739533f3e5aaf995a5", null ],
     [ "LSTD_non_matrix_version", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a2fff23eb26074560374fe1b3adbac086", null ],
     [ "policyIteration", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a69f483cec45f8a7c04579bbc8d2df2d9", null ],
-    [ "policyIteration2", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#aeb3262ede5b3717519eea4f88ab41118", null ],
+    [ "policyIteration_non_matrix_version", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a90ac39d0759307540ce2fc804bd225ff", null ],
     [ "storeData", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a8830723b0461f27afa714965d60373a8", null ],
     [ "updateBestPolicy", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a4210ff52562c5d114070102b8a041387", null ],
     [ "data_a", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a0cd5a00bcf22a07293d34c84597c7cf9", null ],

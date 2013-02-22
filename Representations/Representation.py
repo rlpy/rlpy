@@ -1,8 +1,13 @@
+##\file
 ######################################################
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
 # Assuming Linear Function approximator Family
 from Tools import *
+
+## The Representation class controls the blah bhal
+# 
+# blah balh aldfg Agent
 class Representation(object):
     DEBUG           = 0
     theta           = None  #Linear Weights

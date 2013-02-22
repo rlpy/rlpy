@@ -169,9 +169,6 @@ def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memitem:af85b00d4d038d5f8e7bfba593cf392e1 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#af85b00d4d038d5f8e7bfba593cf392e1">isTerminal</a></td></tr>
 <tr class="memdesc:af85b00d4d038d5f8e7bfba593cf392e1 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns True if the state s is a terminal state, False otherwise.  <a href="#af85b00d4d038d5f8e7bfba593cf392e1">More...</a><br/></td></tr>
 <tr class="separator:af85b00d4d038d5f8e7bfba593cf392e1 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02202964100e6e8ac7e86e95d3a24ee0 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02202964100e6e8ac7e86e95d3a24ee0"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>saturateState</b></td></tr>
-<tr class="separator:a02202964100e6e8ac7e86e95d3a24ee0 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88f02037344e0c51f7f26a8a683e19bb inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88f02037344e0c51f7f26a8a683e19bb"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>test</b></td></tr>
 <tr class="separator:a88f02037344e0c51f7f26a8a683e19bb inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -187,6 +184,9 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>MCExpectedStep</b></td
 <tr class="memitem:a1fcc8505a3184d339430987d9be23d4e inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1fcc8505a3184d339430987d9be23d4e"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>s0uniform</b></td></tr>
 <tr class="separator:a1fcc8505a3184d339430987d9be23d4e inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02202964100e6e8ac7e86e95d3a24ee0 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02202964100e6e8ac7e86e95d3a24ee0"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>saturateState</b></td></tr>
+<tr class="separator:a02202964100e6e8ac7e86e95d3a24ee0 inherit pub_methods_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -227,6 +227,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>gamma</b> = .80</td></
 <tr class="memitem:a68c1849dc5aea74b59e26afbdd12ab75 inherit pub_static_attribs_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68c1849dc5aea74b59e26afbdd12ab75"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>statespace_limits</b> = None</td></tr>
 <tr class="separator:a68c1849dc5aea74b59e26afbdd12ab75 inherit pub_static_attribs_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30f00c571a559a16e0aececd175cf346 inherit pub_static_attribs_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a30f00c571a559a16e0aececd175cf346"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>discrete_statespace_limits</b> = None</td></tr>
+<tr class="separator:a30f00c571a559a16e0aececd175cf346 inherit pub_static_attribs_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabc077eb4d4e2c3a4359f5dc22f57680 inherit pub_static_attribs_class_domains_1_1_domain_1_1_domain"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aabc077eb4d4e2c3a4359f5dc22f57680"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>state_space_dims</b> = None</td></tr>
 <tr class="separator:aabc077eb4d4e2c3a4359f5dc22f57680 inherit pub_static_attribs_class_domains_1_1_domain_1_1_domain"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,7 +271,7 @@ Additional Inherited Members</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>Domains</b></li><li class="navelem"><b>FlipBoard</b></li><li class="navelem"><a class="el" href="class_domains_1_1_flip_board_1_1_flip_board.html">FlipBoard</a></li>
-    <li class="footer">Generated on Wed Feb 20 2013 17:48:05 for RL-Python by
+    <li class="footer">Generated on Fri Feb 22 2013 18:12:54 for RL-Python by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

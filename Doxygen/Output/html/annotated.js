@@ -7,6 +7,9 @@ var annotated =
       [ "LSPI", null, [
         [ "LSPI", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i" ]
       ] ],
+      [ "LSTD", null, [
+        [ "LSTD", "class_agents_1_1_l_s_t_d_1_1_l_s_t_d.html", "class_agents_1_1_l_s_t_d_1_1_l_s_t_d" ]
+      ] ],
       [ "Q_LEARNING", null, [
         [ "Q_LEARNING", "class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html", "class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g" ]
       ] ],
@@ -100,6 +103,9 @@ var annotated =
     [ "Policies", null, [
       [ "eGreedy", null, [
         [ "eGreedy", "class_policies_1_1e_greedy_1_1e_greedy.html", "class_policies_1_1e_greedy_1_1e_greedy" ]
+      ] ],
+      [ "FixedPolicy", null, [
+        [ "FixedPolicy", "class_policies_1_1_fixed_policy_1_1_fixed_policy.html", "class_policies_1_1_fixed_policy_1_1_fixed_policy" ]
       ] ],
       [ "Policy", null, [
         [ "Policy", "class_policies_1_1_policy_1_1_policy.html", "class_policies_1_1_policy_1_1_policy" ]

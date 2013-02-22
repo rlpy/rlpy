@@ -5,6 +5,7 @@ var hierarchy =
     [ "object", null, [
       [ "Agents.Agent.Agent", "class_agents_1_1_agent_1_1_agent.html", [
         [ "Agents.LSPI.LSPI", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html", [
+          [ "Agents.LSTD.LSTD", "class_agents_1_1_l_s_t_d_1_1_l_s_t_d.html", null ],
           [ "Agents.RE_LSPI.RE_LSPI", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html", null ]
         ] ],
         [ "Agents.Q_LEARNING.Q_LEARNING", "class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html", null ],
@@ -37,6 +38,7 @@ var hierarchy =
       ] ],
       [ "Policies.Policy.Policy", "class_policies_1_1_policy_1_1_policy.html", [
         [ "Policies.eGreedy.eGreedy", "class_policies_1_1e_greedy_1_1e_greedy.html", null ],
+        [ "Policies.FixedPolicy.FixedPolicy", "class_policies_1_1_fixed_policy_1_1_fixed_policy.html", null ],
         [ "Policies.UniformRandom.UniformRandom", "class_policies_1_1_uniform_random_1_1_uniform_random.html", null ]
       ] ],
       [ "Representations.iFDD.iFDD_feature", "class_representations_1_1i_f_d_d_1_1i_f_d_d__feature.html", null ],
@@ -52,17 +54,17 @@ var hierarchy =
         [ "Representations.Tabular.Tabular", "class_representations_1_1_tabular_1_1_tabular.html", null ]
       ] ]
     ] ],
-    [ "Domains.PSTOrig.SensorState", "class_domains_1_1_p_s_t_orig_1_1_sensor_state.html", null ],
     [ "Domains.PST.SensorState", "class_domains_1_1_p_s_t_1_1_sensor_state.html", null ],
-    [ "Domains.CartPole.StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
+    [ "Domains.PSTOrig.SensorState", "class_domains_1_1_p_s_t_orig_1_1_sensor_state.html", null ],
     [ "Domains.Pendulum.StateIndex", "class_domains_1_1_pendulum_1_1_state_index.html", null ],
+    [ "Domains.CartPole.StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
     [ "Domains.PST.StateStruct", "class_domains_1_1_p_s_t_1_1_state_struct.html", null ],
-    [ "Domains.PSTOrig.UAVAction", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_action.html", null ],
     [ "Domains.PST.UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
+    [ "Domains.PSTOrig.UAVAction", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_action.html", null ],
     [ "Domains.PST.UAVIndex", "class_domains_1_1_p_s_t_1_1_u_a_v_index.html", null ],
     [ "Domains.PSTOrig.UAVIndex", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_index.html", null ],
-    [ "Domains.PST.UAVLocation", "class_domains_1_1_p_s_t_1_1_u_a_v_location.html", null ],
     [ "Domains.PSTOrig.UAVLocation", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_location.html", null ],
+    [ "Domains.PST.UAVLocation", "class_domains_1_1_p_s_t_1_1_u_a_v_location.html", null ],
     [ "Representation", null, [
       [ "Representations.Fourier.Fourier", "class_representations_1_1_fourier_1_1_fourier.html", null ]
     ] ]
