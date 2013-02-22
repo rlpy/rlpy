@@ -34,9 +34,9 @@ class LSPI(Agent):
         self.phi_sa_size        = domain.actions_num * representation.features_num
         self.data_s             = zeros((sample_window, domain.state_space_dims))
         self.data_ns            = zeros((sample_window, domain.state_space_dims))
-        self.data_a             = zeros(sample_window,dtype=uint16)
-        self.data_na            = zeros(sample_window,dtype=uint16)
-        self.data_r             = zeros(sample_window)
+        self.data_a             = zeros((sample_window,1),dtype=uint16)
+        self.data_na            = zeros((sample_window,1),dtype=uint16)
+        self.data_r             = zeros((sample_window,1))
         super(LSPI, self).__init__(representation, policy, domain,logger)
         if logger:
                 self.logger.log('Max LSPI Iterations:\t%d' % lspi_iterations)
@@ -80,7 +80,7 @@ class LSPI(Agent):
                 #Find the best action for each state given the current value function
                 #Notice if actions have the same value the first action is selected in the batch mode
                 iteration_start_time = time()
-                bestAction, all_phi_ns_na,action_mask = self.representation.batchBestAction(self.data_ns,all_phi_ns,action_mask)
+                bestAction, all_phi_ns_na,action_mask = self.representation.batchBestAction(self.data_ns,all_phi_ns,action_mask,self.use_sparse)
                 #Recalculate A matrix (b remains the same)
                 if self.use_sparse:
                     F2  = sp.csr_matrix(all_phi_ns_na)
@@ -91,7 +91,7 @@ class LSPI(Agent):
                 
                 A                           = regularize(A)
                 #Solve for the new weight
-                td_errors                   = R+(gamma*F2-F1)*self.representation.theta if self.use_sparse else R+dot(gamma*F2-F1,self.representation.theta)
+                td_errors                   = (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1)).ravel() if self.use_sparse else R+dot(gamma*F2-F1,self.representation.theta)
                 new_theta, solve_time       = solveLinear(A,b)
                 if self.return_best_policy:
                     self.updateBestPolicy(new_theta,td_errors)
@@ -225,8 +225,8 @@ class LSPI(Agent):
             all_phi_ns[i,:] = self.representation.phi(self.data_ns[i])
             
         #build phi_s_a and phi_ns_na for all samples given phi_s and phi_ns
-        all_phi_s_a     = self.representation.batchPhi_s_a(all_phi_s, self.data_a)
-        all_phi_ns_na   = self.representation.batchPhi_s_a(all_phi_ns, self.data_na)
+        all_phi_s_a     = self.representation.batchPhi_s_a(all_phi_s, self.data_a,use_sparse=self.use_sparse)
+        all_phi_ns_na   = self.representation.batchPhi_s_a(all_phi_ns, self.data_na,use_sparse=self.use_sparse)
         
         #calculate A and b for LSTD
         F1              = all_phi_s_a
@@ -234,12 +234,11 @@ class LSPI(Agent):
         R               = self.data_r
         gamma           = self.domain.gamma
         
-        b = dot(F1.T,R)
+        b = dot(F1.T,R).reshape(-1,1)
         A = dot(F1.T, F1 - gamma*F2)
         A = regularize(A)
         #Calculate theta
         self.representation.theta, solve_time  = solveLinear(A,b)
-
         if solve_time > 1: #log solve time only if takes more than 1 second
             self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' % (deltaT(start_time), solve_time))
         else:   

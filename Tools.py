@@ -68,6 +68,21 @@ import numpy # We need to be able to reference numpy by name
 
 # BELOW we have opted to always use the custom count_nonzero function; see comments
 # 
+
+def matrix_mult(A,B):
+    # TO BE COMPLETED!
+    # This function is defined due to many frustration with the dot, * operators that behave differently based on the input values: sparse.matrix, matrix, ndarray and array
+    if len(A.shape) == 1:
+        A = A.reshape(1,-1)
+    if len(B.shape) == 1:
+        B = B.reshape(1,-1)
+    n1,m1 = A.shape
+    n2,m2 = B.shape
+    if m1 != n2:
+        print "Incompatible dimensions: %dx%d and %dx%d" % (n1,m2,n2,m2)
+        return None
+    else:
+        return A.dot(B)
 #if numpy.version.version < '2.6.0': # Missing count_nonzero
 def count_nonzero(arr):
     # NOTE that the count_nonzero function below moves recursively through any sublists,
@@ -519,7 +534,7 @@ def solveLinear(A,b):
 
     if error > RESEDUAL_THRESHOLD:
         print "||Ax-b|| = %0.1f" % error
-    return result, solve_time
+    return result.ravel(), solve_time
 def rows(A):
     # return the rows of matrix A
     r, c = A.shape

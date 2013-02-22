@@ -21,7 +21,7 @@ class Representation(object):
         self.setBinsPerDimension(domain,discretization)
         self.domain = domain
         self.discretization = discretization
-        self.theta  = zeros(self.features_num*self.domain.actions_num) 
+        self.theta  = zeros((self.features_num*self.domain.actions_num,1)) 
         self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
         self.logger = logger
         self.logger.line()
@@ -154,7 +154,7 @@ class Representation(object):
         # all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
         # data_s is the states p-by-|dim(s)|
         return False
-    def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None):
+    def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):
         # Input: 
         # all_phi_s p-by-n [feature vectors]
         # all_actions p-by-1 [set of actions corresponding to each feature
@@ -165,14 +165,18 @@ class Representation(object):
         p,n             = all_phi_s.shape
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
-            all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
+            if use_sparse:
+                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = integer),all_phi_s) #all_phi_s_a will be ap-by-an
+                all_phi_s_a = all_phi_s_a.todense()
+            else:
+                all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
         
         # Based on Josh's Idea
         # set_printoptions(threshold=sys.maxint, precision=2, suppress=True, linewidth=inf)
         M = all_phi_s_a
         M = M.reshape((a_num,-1))
-        A = all_actions
-        A = kron(A,ones((1,n*a_num,),dtype=integer))[0]
+        A = all_actions.T
+        A = kron(A,ones((1,n*a_num,),dtype=integer))[0] # <<< SPARSIFY if you have time
         M = M[A,arange(len(A)),:].reshape(-1)
         return M.reshape((p,-1))
         
@@ -203,7 +207,7 @@ class Representation(object):
 #        #phi_s_a = all_phi_s_a.T[action_slice.todense().T==1]
 #        phi_s_a = phi_s_a.reshape((p,-1))
 #        return phi_s_a
-    def batchBestAction(self, all_s, all_phi_s, action_mask = None):
+    def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
         # Returns the best-action and phi_s_a corresponding to the states
         # inputs:
         # 1: all-s: p-by-dim(s)
@@ -240,10 +244,14 @@ class Representation(object):
                 action_mask[i,self.domain.possibleActions(s)] = 0 
         
         a_num       = self.domain.actions_num
-        all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
-        all_q_s_a   = dot(all_phi_s_a,self.theta.T)    #ap-by-1
+        if useSparse:
+                all_phi_s_a = sp.kron(eye(a_num,a_num),all_phi_s)     #all_phi_s_a will be ap-by-an
+                all_q_s_a   = all_phi_s_a*self.theta.reshape(-1,1) #ap-by-1
+                all_phi_s_a = all_phi_s_a.todense()
+        else:
+                all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
+                all_q_s_a   = dot(all_phi_s_a,self.theta.T) #ap-by-1
         all_q_s_a   = all_q_s_a.reshape((a_num,-1)).T  #a-by-p
-        
         all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
         best_action = argmax(all_q_s_a,axis=1)
         # Calculate the corresponding phi_s_a
