@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
-    use_sparse      = 1         # Use sparse representation for A?
+    use_sparse      = 0         # Use sparse representation for A?
     lspi_iterations = 0         # Number of LSPI iterations
     sample_window   = 0         # Number of samples to be used to calculate the LSTD solution
     samples_count   = 0         # Counter for the sample count

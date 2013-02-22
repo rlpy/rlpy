@@ -77,21 +77,65 @@ class Agent(object):
     def printAll(self):
         printClass(self)
     def checkPerformance(self):
-        # This function should not be here. This is just for debugging and getting insight into the performance evolution
-        # Set Exploration to zero and sample one episode from the domain
-        eps_length  = 0
-        eps_return  = 0
-        eps_term    = 0
+        # Run one episode of the policy starting from s0() with no exploration and return the corresponding:
+        # eps_return
+        # eps_length
+        # eps_terminal
         self.policy.turnOffExploration()
-        s           = self.domain.s0()
-        terminal    = False
-
-        while not eps_term and eps_length < self.domain.episodeCap:
-            a               = self.policy.pi(s)
-            r,ns,eps_term   = self.domain.step(s, a)
-            s               = ns
-            eps_return     += r
-            eps_length     += 1
+        eps_return, eps_length, eps_term, _ = self.MC_episode()
         self.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
-    
+    def MC_episode(self,s=None,a=None):
+        # Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent and return:
+        # eps_return, eps_length, eps_term, eps_discounted_return
+        eps_length              = 0
+        eps_return              = 0
+        eps_discounted_return   = 0
+        eps_term                = 0
+        if s is None: s = self.domain.s0()
+        if a is None: a = self.policy.pi(s)
+        terminal    = False
+        while not eps_term and eps_length < self.domain.episodeCap:
+            r,ns,eps_term       = self.domain.step(s, a)
+            s                   = ns
+            eps_return          += r
+            eps_discounted_return += self.representation.domain.gamma**eps_length * r
+            eps_length          += 1
+            a                   = self.policy.pi(s)
+        return eps_return, eps_length, eps_term, eps_discounted_return
+        
+    def Q_MC(self,s,a,MC_samples = 1000):
+        # Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a)
+        Q_avg = 0
+        for i in arange(MC_samples):
+            #print "MC Sample:", i
+            _,_,_,Q = self.MC_episode(s,a)
+            Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)
+        return Q_avg
+    def evaulate(self,samples, MC_samples, output_file):
+        # Evaluate the current policy for fixed number of samples and store them in samples-by-|S|+2 (2 corresponds to action and Q(s,a))
+        # inputs: 
+        # samples: number of samples (s,a)
+        # MC_samples: Number of MC simulations used to estimate Q(s,a)
+        # output_file: The DATA is stored in this file
+        
+        if self.logger:
+            self.logger.log("Sampling %d s,a following the %s and estimating Q(s,a) each using %d Monte-Carlo sample(s)." % (samples, className(self.policy), MC_samples))
+        cols            = self.domain.state_space_dims + 2
+        DATA            = empty((samples,cols))
+        terminal        = 1
+        steps           = 0
+        while steps < samples:
+            if terminal or steps % self.domain.episodeCap == 0:
+                s = self.domain.s0()
+            a = self.policy.pi(s)
+
+            #Store the corresponding Q
+            print "Sample",steps+1,":", s,a,
+            Q = self.Q_MC(s,a,MC_samples)
+            print Q
+            DATA[steps,:] = hstack((s,[a, Q]))
+            r,s,terminal = self.domain.step(s, a)
+            steps += 1
+        savetxt(output_file,DATA, delimiter='\t')
+        return DATA
