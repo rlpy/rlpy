@@ -657,6 +657,8 @@ def sparsity(A):
 def printMatrix(A,type='int'):
     #print a matrix in a desired format
     print array(A,dtype=type)
+def incrementalAverageUpdate(avg,sample,sample_number):
+    return avg+(sample-avg)/(sample_number*1.)
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     filename = ''

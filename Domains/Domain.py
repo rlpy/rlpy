@@ -140,4 +140,3 @@ class Domain(object):
     def saturateState(self,s):
         # This function is used for cases when state vector has elements outside of its limits. This function simply caps each element of the state space to lie in the allowed state limits
         return bound_vec(s,self.discrete_statespace_limits)
-        
