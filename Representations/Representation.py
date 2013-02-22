@@ -21,7 +21,7 @@ class Representation(object):
         self.setBinsPerDimension(domain,discretization)
         self.domain = domain
         self.discretization = discretization
-        self.theta  = zeros((self.features_num*self.domain.actions_num,1)) 
+        self.theta  = zeros(self.features_num*self.domain.actions_num) 
         self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
         self.logger = logger
         self.logger.line()

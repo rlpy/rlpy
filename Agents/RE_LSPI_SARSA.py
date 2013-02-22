@@ -13,6 +13,7 @@ class RE_LSPI_SARSA(Agent):
     def learn(self,s,a,r,ns,na,terminal):
         self.RE_LSPI.storeData(s,a,r,ns,na)        
         if self.RE_LSPI.samples_count == self.RE_LSPI.sample_window:
+            self.RE_LSPI.samples_count  = 0
             self.RE_LSPI.representationExpansionLSPI()
         else:
             self.SARSA.learn(s,a,r,ns,na,terminal)
