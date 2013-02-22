@@ -30,7 +30,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10
+    PERFORMANCE_CHECKS  = 1
     LEARNING_STEPS      = 100000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
@@ -55,7 +55,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x3_2A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/3x3_2A_2I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
-    INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/5x5_2A_2I.txt'
+    #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/5x5_2A_2I.txt'
+    INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/5x5_2A_1I_easy.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/5x5_4A_3I.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/9Star.txt'
@@ -70,14 +71,14 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
-    iFDDOnlineThreshold         = 5 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
-    BatchDiscoveryThreshold     = 1 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
-    iFDD_CACHED                 = 1     # Results will remain IDENTICAL, but often faster
-    Max_Batch_Feature_Discovery = 5    # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
+    iFDDOnlineThreshold         = inf #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
+    BatchDiscoveryThreshold     = 2 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
+    Max_Batch_Feature_Discovery = 5 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     BEBF_svm_epsilon            = {'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 
-    iFDD_Sparsify               = 1     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
+    iFDD_Sparsify               = 0     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
     iFDD_Plus                   = 1     # True: relevance = abs(TD_Error)/norm(feature), False: relevance = sum(abs(TD_error)) [ICML 11]  
     OMPTD_BAG_SIZE              = 5000
     # Policy ----------------------
@@ -92,6 +93,14 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 100
     LSPI_return_best_policy = False # Track the best policy through LSPI iterations using Monte-Carlo simulation. It uses extra samples to evaluate the policy
+    
+    
+    #Load Main Setting and override any parameter
+    #    if os.path.exists('mainSetting.py'):
+    #        print 'Incorporating mainSetting.py'
+    #        from mainSetting import *
+    # Python does not allow import * in functions... so this can not work this way
+
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
@@ -100,8 +109,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -110,30 +119,31 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # REPRESENTATION
     #================
     #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = initial_rep
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BEBFNormThreshold[className(domain)], svm_epsilon=BEBF_svm_epsilon[className(domain)])
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
     
     # POLICY
     #================
-    policy          = eGreedy(representation,logger, epsilon = EPSILON)
+    #policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
+    policy          = FixedPolicy(representation,logger)
     
     # LEARNING AGENT
     #================
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize, LSPI_return_best_policy)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
-    
+    agent           = LSTD(representation,policy,domain,logger,LSPI_windowSize)
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     
 #    for x in range(10):
