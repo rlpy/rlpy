@@ -123,19 +123,18 @@ class Agent(object):
             self.logger.log("Sampling %d s,a following the %s and estimating Q(s,a) each using %d Monte-Carlo sample(s)." % (samples, className(self.policy), MC_samples))
         cols            = self.domain.state_space_dims + 2
         DATA            = empty((samples,cols))
-        terminal        = 1
+        terminal        = True
         steps           = 0
         while steps < samples:
-            if terminal or steps % self.domain.episodeCap == 0:
-                s = self.domain.s0()
+            s = self.domain.s0() if terminal or steps % self.domain.episodeCap == 0 else s 
             a = self.policy.pi(s)
 
             #Store the corresponding Q
-            print "Sample",steps+1,":", s,a,
             Q = self.Q_MC(s,a,MC_samples)
-            print Q
             DATA[steps,:] = hstack((s,[a, Q]))
             r,s,terminal = self.domain.step(s, a)
             steps += 1
+            print "Sample",steps+1,":", s,a,Q 
+
         savetxt(output_file,DATA, delimiter='\t')
         return DATA

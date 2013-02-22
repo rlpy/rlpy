@@ -12,11 +12,14 @@
 # MC_samples: Number of samples used to estimate Q_MC(s,a)
 from LSPI import *
 class PolicyEvaluation(LSPI):
-    def __init__(self,representation,policy,domain,logger, sample_window = 100, target_path = '.', accuracy_test_samples = 10, MC_samples = 100):
+    def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.'):
         self.compare_with_me = '%s/%s-FixedPolicy.txt' %(target_path,className(domain))
         super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, sample_window = sample_window)
         # Load the fixedPolicy Estimation if it does not exist create it
         if not os.path.exists(self.compare_with_me):
+            self.logger.log('Generating Fixed Policy Evaluation')
+            self.logger.log('Samples for Accuracy Test = %d' % accuracy_test_samples)
+            self.logger.log('Samples for Monte-Carlo estimation of each Q(s,a) = %d' % MC_samples)
             DATA = self.evaulate(accuracy_test_samples, MC_samples, self.compare_with_me)
         else:
             self.logger.log('Loading Fixed Policy Evaluation from %s:' % self.compare_with_me)

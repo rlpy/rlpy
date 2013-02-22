@@ -94,6 +94,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RE_LSPI_iterations      = 100
     LSPI_return_best_policy = False # Track the best policy through LSPI iterations using Monte-Carlo simulation. It uses extra samples to evaluate the policy
     
+    #Policy Evaluation Parameters:
+    PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
+    PolicyEvaluation_MC_samples     = 100   # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
     
     #Load Main Setting and override any parameter
     #    if os.path.exists('mainSetting.py'):
@@ -143,7 +146,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
-    agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize)
+    agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples)
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     
 #    for x in range(10):
