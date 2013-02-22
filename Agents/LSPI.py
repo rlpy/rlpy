@@ -220,6 +220,7 @@ class LSPI(Agent):
         n           = self.representation.features_num
         all_phi_s   = empty((p,n),dtype=self.representation.featureType())
         all_phi_ns  = empty((p,n),dtype=self.representation.featureType())
+        
         for i in arange(self.sample_window):
             all_phi_s[i,:]  = self.representation.phi(self.data_s[i])
             all_phi_ns[i,:] = self.representation.phi(self.data_ns[i])
