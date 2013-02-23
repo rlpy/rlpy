@@ -12,8 +12,9 @@ class OnlineExperiment (Experiment):
     FEATURE_SIZE    = 3         # Number of features used for value function representation
     EPISODE_LENGTH  = 4
     TERMINAL        = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
-    EPISODE_NUMBER  = 6        
-    STATS_NUM       = 7         # Number of statistics to be saved
+    EPISODE_NUMBER  = 6             
+    PE_ERROR        = 7         # This stat is used for calculating the error of the policy evaluation
+    STATS_NUM       = 8         # Number of statistics to be saved
     
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
@@ -92,7 +93,12 @@ class OnlineExperiment (Experiment):
                                                    self.agent.representation.features_num, # index = 3
                                                    performance_steps,# index = 4
                                                    performance_term, # index = 5
-                                                   episode_number] # index = 6
+                                                   episode_number, # index = 6
+                                                   0] # accuracy = index = 7
+                if className(agent) == 'PolicyEvaluation':
+                    # Check the accuracy of the evaluation
+                    evaluation_accuaracy = agent.accuracy()
+                    
                 self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
                 start_log_time      = time()
                 performance_tick    += 1
