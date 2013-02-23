@@ -181,7 +181,7 @@ class Agent(object):
             steps += 1
             print "Sample",steps,":", s,a,Q 
 
-        savetxt(output_file,DATA, delimiter='\t')
+        save(output_file, DATA)
         return DATA
     
 	## @endcond

@@ -624,7 +624,7 @@ def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
-        os.system('mkdir -p %s' % path)
+        os.mkdir(path)
 def hasProperty(object,propertyName):
     if getattr(object, propertyName, None):
         return True
@@ -906,5 +906,6 @@ SEP_LINE = "="*60
 if sys.platform == 'darwin': 
     os.environ['PATH'] += ':' + TEXPATH
 if sys.platform == 'win32':
+    print os.environ['PATH']
     os.environ['PATH'] += ';' + TEXPATH
 

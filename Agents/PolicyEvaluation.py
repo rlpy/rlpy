@@ -13,7 +13,7 @@
 from LSPI import *
 class PolicyEvaluation(LSPI):
     def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, re_iterations = 100, target_path = '.'):
-        self.compare_with_me = '%s/%s-FixedPolicy.txt' %(target_path,className(domain))
+        self.compare_with_me = '%s/%s-FixedPolicy.npy' %(target_path,className(domain))
         self.re_iterations  = re_iterations # Number of iterations over LSPI and iFDD
         super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, sample_window = sample_window)
         # Load the fixedPolicy Estimation if it does not exist create it
@@ -24,7 +24,7 @@ class PolicyEvaluation(LSPI):
             DATA = self.evaulate(accuracy_test_samples, MC_samples, self.compare_with_me)
         else:
             self.logger.log('Loading Fixed Policy Evaluation from %s:' % self.compare_with_me)
-            DATA = loadtxt(self.compare_with_me)
+            DATA = load(self.compare_with_me)
         self.S      = DATA[:,arange(self.domain.state_space_dims)]
         self.A      = DATA[:,self.domain.state_space_dims].astype(uint16)
         self.Q_MC   = DATA[:,self.domain.state_space_dims+1]
