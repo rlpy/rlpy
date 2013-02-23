@@ -91,7 +91,7 @@ class LSPI(Agent):
                 
                 A                           = regularize(A)
                 #Solve for the new weight
-                td_errors                   = (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1)).ravel() if self.use_sparse else R+dot(gamma*F2-F1,self.representation.theta)
+                td_errors                   = self.calculateTDErrors(R,F1,F2)
                 new_theta, solve_time       = solveLinear(A,b)
                 if self.return_best_policy:
                     self.updateBestPolicy(new_theta,td_errors)
@@ -234,17 +234,18 @@ class LSPI(Agent):
         F2              = all_phi_ns_na
         R               = self.data_r
         gamma           = self.domain.gamma
-        
+
         b = dot(F1.T,R).reshape(-1,1)
         A = dot(F1.T, F1 - gamma*F2)
         A = regularize(A)
         #Calculate theta
         self.representation.theta, solve_time  = solveLinear(A,b)
+        
         if solve_time > 1: #log solve time only if takes more than 1 second
             self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' % (deltaT(start_time), solve_time))
         else:   
             self.logger.log('Total LSTD Time = %0.0f(s)' % (deltaT(start_time)))
-        return A,b, all_phi_s, all_phi_s_a, all_phi_ns
+        return A,b, all_phi_s, all_phi_s_a, all_phi_ns, all_phi_ns_na
     def LSTD_non_matrix_version(self): 
         start_time = time()
         if self.sample_window == 0:
@@ -270,7 +271,9 @@ class LSPI(Agent):
         b               = zeros(phi_sa_size)
         all_phi_s       = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_s will be saved for batch iFDD
         all_phi_s_a     = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype) #phi_sa will be fixed during iterations
-        all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) #phi_ns_na will change according to na so we only cache the phi_na which remains the same
+        all_phi_ns      = zeros((self.sample_window,self.representation.features_num),dtype=phi_s.dtype) 
+        all_phi_ns_na   = zeros((self.sample_window,phi_sa_size),dtype=phi_s.dtype)
+        
         #print "Making A,b"
         gamma               = self.representation.domain.gamma
         for i in arange(self.sample_window):
@@ -286,6 +289,7 @@ class LSPI(Agent):
             all_phi_s[i,:]      = phi_s
             all_phi_s_a[i,:]    = phi_s_a
             all_phi_ns[i,:]     = phi_ns
+            all_phi_ns_na[i,:]  = phi_ns_na
             b                   = b + r*phi_s_a
             if self.use_sparse:
                 phi_s_a             = sp.csr_matrix(phi_s_a,dtype=phi_s_a.dtype)
@@ -305,7 +309,7 @@ class LSPI(Agent):
             self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' % (deltaT(start_time), solve_time))
         else:   
             self.logger.log('Total LSTD Time = %0.0f(s)' % (deltaT(start_time)))
-        return A,b, all_phi_s, all_phi_s_a, all_phi_ns
+        return A,b, all_phi_s, all_phi_s_a, all_phi_ns, all_phi_ns_na
     def storeData(self,s,a,r,ns,na):
         self.data_s[self.samples_count,:]   = s
         self.data_a[self.samples_count]     = a
@@ -313,3 +317,10 @@ class LSPI(Agent):
         self.data_ns[self.samples_count,:]  = ns
         self.data_na[self.samples_count]    = na
         self.samples_count                  += 1
+    def calculateTDErrors(self,R,F1,F2):
+        # Calculates the TD-Errors in a matrix format for a set of samples = R + (gamma*F2 - F1) * Theta
+        gamma = self.representation.domain.gamma
+        if self.use_sparse:
+            return (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1)).ravel()
+        else:
+            return R.ravel()+dot(gamma*F2-F1,self.representation.theta)
