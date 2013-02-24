@@ -624,7 +624,7 @@ def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
-        os.mkdirs(path)
+        os.makedirs(path)
 def hasProperty(object,propertyName):
     if getattr(object, propertyName, None):
         return True
