@@ -177,7 +177,6 @@ class IntruderMonitoring(Domain):
        self.ally_fig        = pl.plot(s_ally[:,1],s_ally[:,0],'b>',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
        self.intruder_fig    = pl.plot(s_intruder[:,1],s_intruder[:,0],'go',color='gray',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
        pl.draw()   
-       sleep(0)
 if __name__ == '__main__':
    
     #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/1x3_1A_1I.txt')

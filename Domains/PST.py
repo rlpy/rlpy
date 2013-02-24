@@ -29,7 +29,7 @@ from Domain import *
 #
 #   State vector consists of blocks of 4 states,
 # corresponding to each UAV:
-# [location, fuel qty, actuator status, sensor status]
+# [location, fuel quantity, actuator status, sensor status]
 #   so for example, state [1,9,1,1,2,3,0,1] -->
 # [1,9,1,1 || 2,3,0,1] --> 2 UAV's;
 #   UAV1 in location 1, with 9 fuel units remaining, and
