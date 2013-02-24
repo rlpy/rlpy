@@ -66,7 +66,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
-    BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
+    BLOCKS              = 6     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
@@ -95,8 +95,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_return_best_policy = False # Track the best policy through LSPI iterations using Monte-Carlo simulation. It uses extra samples to evaluate the policy
     
     #Policy Evaluation Parameters:
-    PolicyEvaluation_test_samples   = 100 # Number of samples used for calculating the accuracy of a value function
-    PolicyEvaluation_MC_samples     = 10   # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
+    PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
+    PolicyEvaluation_MC_samples     = 100   # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
     
     #Load Main Setting and override any parameter
     #    if os.path.exists('mainSetting.py'):
@@ -108,12 +108,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
