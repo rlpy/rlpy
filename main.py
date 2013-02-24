@@ -31,7 +31,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 1000
+    LEARNING_STEPS      = 10000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -72,9 +72,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
     iFDDOnlineThreshold         = inf #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
-    BatchDiscoveryThreshold     = 2 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    BatchDiscoveryThreshold     = 1e-4 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
-    Max_Batch_Feature_Discovery = 5 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
+    Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
     BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     BEBF_svm_epsilon            = {'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 

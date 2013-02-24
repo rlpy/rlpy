@@ -78,7 +78,7 @@ class Experiment(object):
     def save(self):
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
-        savetxt(self.full_path+'/'+self.output_filename,self.result, fmt='%0.4f', delimiter='\t')
+        savetxt(self.full_path+'/'+self.output_filename,self.result, fmt='%.18e', delimiter='\t')
         self.logger.line()
         self.logger.log("Took %s\nResults\t=> %s/%s" % (hhmmss(deltaT(self.start_time)), self.full_path, self.output_filename))
         # Set the output path for the logger

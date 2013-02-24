@@ -33,17 +33,27 @@ class PolicyEvaluation(LSPI):
     def learn(self,s,a,r,ns,na,terminal):
         self.storeData(s,a,r,ns,na)
         if self.samples_count == self.sample_window:
+            STATS               = [] 
+            start_time          = time()
             self.samples_count  = 0
             re_iteration        = 1 # Representation expansion iteration. Only used if the representation can be expanded 
             added_feature       = True
             while added_feature and re_iteration <= self.re_iterations:
-                all_phi_s, td_errors = self.evaluatePolicy()
+                # Evaluate the policy and the corresponding PE-Error (Policy Evaluation) and TD-Error
+                all_phi_s, PE_error, td_errors  = self.evaluatePolicy()
+                # Save stats
+                STATS.append([re_iteration,                     # iteration number
+                              self.representation.features_num, # Number of features
+                              PE_error,                         # Policy Evaluation Error
+                              deltaT(start_time)                # Time since start
+                              ])
+                
                 if not hasFunction(self.representation,'batchDiscover'):
                     break
                 self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
-                #Calculate TDError
                 added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
                 re_iteration += 1
+            self.STATS = array(STATS).T # Experiment will save this later
     def evaluatePolicy(self):
             #Calculate the Q for all samples using the new theta from LSTD
             #1. newTheta = LSTD
@@ -57,8 +67,9 @@ class PolicyEvaluation(LSPI):
             n           = self.representation.features_num
             test_phi_s   = empty((p,n),dtype=self.representation.featureType())
             for i in arange(p):
-                test_phi_s[i,:]  = self.representation.phi(self.data_s[i])
+                test_phi_s[i,:]  = self.representation.phi(self.S[i])
             all_test_phi_s_a  = self.representation.batchPhi_s_a(test_phi_s, self.A,use_sparse=self.use_sparse)
             Q           = all_test_phi_s_a * self.representation.theta.reshape(-1,1) if self.use_sparse else dot(all_test_phi_s_a,self.representation.theta)
-            print "Accuracy = %0.5f" % linalg.norm(Q.ravel()-self.Q_MC)
-            return all_phi_s,self.calculateTDErrors(self.data_r,all_phi_s_a,all_phi_ns_na) 
+            PE_error    = linalg.norm(Q.ravel()-self.Q_MC)
+            self.logger.log("||Delta V|| = %f" % PE_error)
+            return all_phi_s, PE_error, self.calculateTDErrors(self.data_r,all_phi_s_a,all_phi_ns_na) 

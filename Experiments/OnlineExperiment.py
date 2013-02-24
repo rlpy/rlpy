@@ -13,8 +13,7 @@ class OnlineExperiment (Experiment):
     EPISODE_LENGTH  = 4
     TERMINAL        = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
     EPISODE_NUMBER  = 6             
-    PE_ERROR        = 7         # This stat is used for calculating the error of the policy evaluation
-    STATS_NUM       = 8         # Number of statistics to be saved
+    STATS_NUM       = 7         # Number of statistics to be saved
     
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
@@ -85,25 +84,25 @@ class OnlineExperiment (Experiment):
             
             #Check Performance
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
-                performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
-                elapsedTime                     = deltaT(self.start_time) 
-                self.result[:,performance_tick] = [total_steps, # index = 0 
-                                                   performance_return, # index = 1 
-                                                   elapsedTime, # index = 2
-                                                   self.agent.representation.features_num, # index = 3
-                                                   performance_steps,# index = 4
-                                                   performance_term, # index = 5
-                                                   episode_number, # index = 6
-                                                   0] # accuracy = index = 7
-                if className(agent) == 'PolicyEvaluation':
-                    # Check the accuracy of the evaluation
-                    evaluation_accuaracy = agent.accuracy()
-                    
-                self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
-                start_log_time      = time()
-                performance_tick    += 1
+                if className(self.agent) == 'PolicyEvaluation':
+                    #Policy Evaluation Case
+                    self.result = self.agent.STATS
+                else: 
+                    #Control Case
+                    performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
+                    elapsedTime                     = deltaT(self.start_time) 
+                    self.result[:,performance_tick] = [total_steps, # index = 0 
+                                                       performance_return, # index = 1 
+                                                       elapsedTime, # index = 2
+                                                       self.agent.representation.features_num, # index = 3
+                                                       performance_steps,# index = 4
+                                                       performance_term, # index = 5
+                                                       episode_number] # index = 6
+                        
+                    self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
+                    start_log_time      = time()
+                    performance_tick    += 1
 
-            
         #Visual
         if self.show_all: self.domain.show(s,a, self.agent.representation)
         if self.show_all or self.show_performance:
