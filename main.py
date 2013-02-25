@@ -5,14 +5,12 @@
 
 import sys, os
 #Add all paths
-path = '.'
-while not os.path.exists(path+'/RL-Python/Tools.py'):
-    path = path + '/..'
+RL_PYTHON_ROOT = '.'
+while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools.py'):
+    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 
-path = path + '/RL-Python'
-sys.path.insert(0, os.path.abspath(path))
-RL_PYTHON_ROOT = path
-  
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RL-Python')
+sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
 from Domains import *
@@ -97,7 +95,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #Policy Evaluation Parameters:
     PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
     PolicyEvaluation_MC_samples     = 100   # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
-    
+    PolicyEvaluation_LOAD_PATH      = RL_PYTHON_ROOT + '/Policies/FixedPolicyEvaluations' # Directory path to load the base of policy evaluations (True Q(s,a)) 
     #Load Main Setting and override any parameter
     #    if os.path.exists('mainSetting.py'):
     #        print 'Incorporating mainSetting.py'
@@ -108,12 +106,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -146,7 +144,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
-    #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples)
+    #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH)
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     
 #    for x in range(10):

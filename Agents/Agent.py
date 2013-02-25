@@ -164,8 +164,6 @@ class Agent(object):
         # MC_samples: Number of MC simulations used to estimate Q(s,a)
         # output_file: The DATA is stored in this file
         
-        if self.logger:
-            self.logger.log("Sampling %d s,a following the %s and estimating Q(s,a) each using %d Monte-Carlo sample(s)." % (samples, className(self.policy), MC_samples))
         cols            = self.domain.state_space_dims + 2
         DATA            = empty((samples,cols))
         terminal        = True

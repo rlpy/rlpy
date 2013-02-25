@@ -12,7 +12,7 @@
 # MC_samples: Number of samples used to estimate Q_MC(s,a)
 from LSPI import *
 class PolicyEvaluation(LSPI):
-    def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, re_iterations = 100, target_path = '.'):
+    def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.',re_iterations = 100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' %(target_path,className(domain))
         self.re_iterations  = re_iterations # Number of iterations over LSPI and iFDD
         super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, sample_window = sample_window)

@@ -23,36 +23,53 @@ class FixedPolicy(Policy):
             # move the next piece on the tower with 95% chance 5% take a random action
             domain = self.representation.domain
             
-            #Random Action with 5 percent chance
-            if random.rand() < .05 or domain.isTerminal(s):
+            #Random Action with some probability
+            if random.rand() < .3 or domain.isTerminal(s):
                 return randSet(domain.possibleActions(s))
 
             #non-Random Policy
             #next_block is the block that should be stacked on the top of the tower
             #wrong_block is the highest block stacked on the top of the next_block    
+            #Wrong_tower_block is the highest stacked on the top of the tower
             blocks = domain.blocks
-            next_block = 1
-            for b in arange(1,blocks):
-                if s[b] != b-1:
-                    break
-                else:
-                    next_block = b+1
-            # See if the next_block is empty
-            onTop = domain.top(next_block,s)
-            if not len(onTop):
-                #next_block is clear
-                action = [next_block, next_block-1]
-            else:
-                # next_block is not clear. Find the one on the top and put it on the table
-                wrong_block = onTop[0]
-                while True:
-                    onTop = domain.top(wrong_block,s)
-                    if len(onTop) == 0:
-                        break
-                action = [wrong_block, wrong_block] # Meaning put it on the table
-            print 'STATE=', s
-            print 'ACTION=', action
-            return vec2id(action,[blocks, blocks])
+            correct_tower_size = 0 # Length of the tower assumed to be built correctly.
+            while True:
+                # Check the next block
+                block = correct_tower_size
+                if (block == 0 and domain.on_table(block,s)) or domain.on(block,block-1,s):
+                    #This block is on the right position, check the next block
+                    correct_tower_size += 1
+                else: 
+                    #print s
+                    #print "Incorrect block:", block
+                    # The block is on the wrong place.
+                    # 1. Check if the tower is empty => If not take one block from the tower and put it on the table
+                    # 2. check to see if this wrong block is empty => If not put one block from its stack and put on the table
+                    # 3. Otherwise move this block on the tower
+                    
+                    ###################
+                    #1
+                    ###################
+                    if block != 0: # If the first block is in the wrong place, then the tower top which is table is empty by definition  
+                        ideal_tower_top     = block - 1
+                        tower_top = domain.towerTop(ideal_tower_top,s)
+                        if tower_top != ideal_tower_top:
+                            # There is a wrong block there hence we should put it on the table first
+                            return domain.getActionPutAonTable(tower_top) #put the top of the tower on the table since it is not correct
+                    ###################
+                    #2
+                    ###################
+                    block_top = domain.towerTop(block,s)
+                    if block_top != block:
+                        # The target block to be stacked is not empty
+                        return domain.getActionPutAonTable(block_top)
+                    ###################
+                    #3
+                    ###################
+                    if block == 0:
+                        return domain.getActionPutAonTable(block)
+                    else:
+                        return domain.getActionPutAonB(block,block-1)
         if className(self.representation.domain) == 'IntruderMonitoring':
             # Each UAV assign themselves to a target
             # Each UAV finds the closest danger zone to its target and go towards there. 

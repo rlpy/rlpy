@@ -129,6 +129,25 @@ class BlocksWorld(Domain):
     def on_table(self,A,s):
         #returns true of A is on the table
         return s[A] == A
+    def towerTop(self,A,s):
+        # inspect block A and return the highest block which is stacked over A.
+        # Hence if B is on A, and C is on B, this function returns C
+        # If A is clear => returns A itself
+        block = A
+        while True:
+            highestTop = self.top(block,s)
+            if len(highestTop) == 0:
+                break
+            else:
+                block = highestTop[0]
+        return block
+    def on(self,A,B,s):
+        #returns true if block A is on block B
+        return s[A] == B
+    def getActionPutAonTable(self,A):
+        return vec2id(array([A,A]),[self.blocks, self.blocks])
+    def getActionPutAonB(self,A,B):
+        return vec2id(array([A,B]),[self.blocks, self.blocks])
 if __name__ == '__main__':
     random.seed(0)
     p = BlocksWorld(blocks=6,noise=0);
