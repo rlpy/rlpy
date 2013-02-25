@@ -71,9 +71,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
     iFDDOnlineThreshold         = 5 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
     BatchDiscoveryThreshold     = 1e-4 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
-    BEBFNormThreshold           = {'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     BEBF_svm_epsilon            = {'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     # 
     iFDD_Sparsify               = 0     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
@@ -127,7 +127,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
     #representation  = Fourier(domain,logger,order=FourierOrder)
-    representation  = BEBF(domain,logger, batchThreshold=BEBFNormThreshold[className(domain)], svm_epsilon=BEBF_svm_epsilon[className(domain)])
+    representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon[className(domain)])
     #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
     
