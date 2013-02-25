@@ -1,4 +1,5 @@
-##\file
+## \file Agent.py
+# \class Agent
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT
 ######################################################
@@ -12,7 +13,7 @@ from Representations import *
 # Representation, Policy, and Domain classes. All new agent implimentations should inherit
 # from \c %Agent.
 #
-# Describe what role agents do exactly here.
+# TODO Describe what role agents do exactly here.
 
 class Agent(object):
 	## Link to the representation object 
@@ -78,7 +79,7 @@ class Agent(object):
             self.initial_alpha = 1.0
             self.alpha = 1.0
             
-    ## \b ABSTRACT \b METHOD: Defined by the domain            
+    ## \b ABSTRACT \b METHOD: Defined by child class            
     def learn(self,s,a,r,ns,na,terminal):
         if terminal: self.episode_count += 1
         # ABSTRACT

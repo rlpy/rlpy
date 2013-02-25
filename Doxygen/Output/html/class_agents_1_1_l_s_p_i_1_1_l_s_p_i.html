@@ -119,9 +119,9 @@ Inheritance diagram for Agents.LSPI.LSPI:</div>
  <div class="center">
   <img src="class_agents_1_1_l_s_p_i_1_1_l_s_p_i.png" usemap="#Agents.LSPI.LSPI_map" alt=""/>
   <map id="Agents.LSPI.LSPI_map" name="Agents.LSPI.LSPI_map">
-<area href="class_agents_1_1_agent_1_1_agent.html" title="The Agent class controls the actions of an RL agent." alt="Agents.Agent.Agent" shape="rect" coords="83,56,240,80"/>
-<area href="class_agents_1_1_l_s_t_d_1_1_l_s_t_d.html" alt="Agents.LSTD.LSTD" shape="rect" coords="0,168,157,192"/>
-<area href="class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html" alt="Agents.RE_LSPI.RE_LSPI" shape="rect" coords="167,168,324,192"/>
+<area href="class_agents_1_1_agent_1_1_agent.html" title="The Agent class controls the actions of an RL agent." alt="Agents.Agent.Agent" shape="rect" coords="128,56,375,80"/>
+<area href="class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html" alt="Agents.PolicyEvaluation.PolicyEvaluation" shape="rect" coords="0,168,247,192"/>
+<area href="class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html" alt="Agents.RE_LSPI.RE_LSPI" shape="rect" coords="257,168,504,192"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -151,13 +151,16 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>LSTD_non_matrix_versio
 <tr class="memitem:a8830723b0461f27afa714965d60373a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8830723b0461f27afa714965d60373a8"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>storeData</b></td></tr>
 <tr class="separator:a8830723b0461f27afa714965d60373a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b8ffcacf9170ab8138f11da0f07488f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b8ffcacf9170ab8138f11da0f07488f"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>calculateTDErrors</b></td></tr>
+<tr class="separator:a8b8ffcacf9170ab8138f11da0f07488f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_agents_1_1_agent_1_1_agent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_agents_1_1_agent_1_1_agent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agents.Agent.Agent</a></td></tr>
 <tr class="memitem:a1543cf5111c1e70accd50672827f7a1f inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#a1543cf5111c1e70accd50672827f7a1f">__init__</a></td></tr>
 <tr class="memdesc:a1543cf5111c1e70accd50672827f7a1f inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the \ agent object.  <a href="#a1543cf5111c1e70accd50672827f7a1f">More...</a><br/></td></tr>
 <tr class="separator:a1543cf5111c1e70accd50672827f7a1f inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af25b3847235948ff2d3f0bbfc59442f4 inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af25b3847235948ff2d3f0bbfc59442f4"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#af25b3847235948ff2d3f0bbfc59442f4">learn</a></td></tr>
-<tr class="memdesc:af25b3847235948ff2d3f0bbfc59442f4 inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> Defined by the domain <br/></td></tr>
+<tr class="memdesc:af25b3847235948ff2d3f0bbfc59442f4 inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> Defined by child class <br/></td></tr>
 <tr class="separator:af25b3847235948ff2d3f0bbfc59442f4 inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebf306528187c8830772cdaaba38575e inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#aebf306528187c8830772cdaaba38575e">updateAlpha</a></td></tr>
 <tr class="memdesc:aebf306528187c8830772cdaaba38575e inherit pub_methods_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes a new alpha for this agent based on self.alpha_decay_mode.  <a href="#aebf306528187c8830772cdaaba38575e">More...</a><br/></td></tr>
@@ -218,7 +221,7 @@ Public Attributes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a6540ac8796c82a73b98bc25750fae189"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6540ac8796c82a73b98bc25750fae189"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>use_sparse</b> = 1</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>use_sparse</b> = 0</td></tr>
 <tr class="separator:a6540ac8796c82a73b98bc25750fae189"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad27a4211b28696fcf1916a002ccf9209"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad27a4211b28696fcf1916a002ccf9209"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>lspi_iterations</b> = 0</td></tr>
@@ -315,7 +318,7 @@ list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>Agents</b></li><li class="navelem"><b>LSPI</b></li><li class="navelem"><a class="el" href="class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html">LSPI</a></li>
-    <li class="footer">Generated on Fri Feb 22 2013 18:12:53 for RL-Python by
+    <li class="footer">Generated on Mon Feb 25 2013 17:29:27 for RL-Python by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

@@ -1,26 +1,48 @@
-##\file
+## \file Experiment.py
+# \class Experiment
 ######################################################
-# Developed by Alborz Geramiard Oct 25th 2012 at MIT #
+# \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
 ######################################################
 from Tools import *
 from Agents import *
 from Domains import *
 from Representations import *
 
+## The \c %Experiment class controls the  
+# 
+# \c %Experiment defines the... TODO: think of a good descritption.. 
+# All new domains should inherit from \c Experiment. Agent
+#
+# TODO Describe what role experiments do exactly here.
+
 class Experiment(object):
-    showDomain = False      # Show the domain during execution?
-    mainSeed = 999999999    # Main Random Seed used to generate other random seeds
-    randomSeeds = None      # Array of random seeds. This is used to make sure all jobs start with the same random seed 
-    maxRuns = 100          # Maximum number of runs used for averaging. This is specified so that enough random seeds are generated
-    id = 1                  # ID of the experiment running
-    domain = None           # link to the domain object
-    agent = None            # link to the agent object
-    show_all = 0            # Show the domain and the value function during the experiment
-    show_performance = 0    # Show the domain and the value function during the performance runs
-    result_fig = None       # Figure window generated to show the results
-    result  = None          # All data is saved in the result array: stats_num-by-performanceChecks
-    output_filename = ''    # The name of the file used to store the data
-    logger = None           # An object to record the print outs in a file
+	## Show the domain during execution?
+    showDomain = False      
+	## Main Random Seed used to generate other random seeds
+    mainSeed = 999999999    
+	## Array of random seeds. This is used to make sure all jobs start with the same random seed
+    randomSeeds = None      
+	## Maximum number of runs used for averaging. This is specified so that enough random seeds are generated	
+    maxRuns = 100          
+	## ID of the experiment running
+    id = 1                
+	## The Domain to be tested on	
+    domain = None           
+	## The Agent to be tested
+    agent = None            
+	## Show the domain and the value function during the experiment
+    show_all = 0            
+	## Show the domain and the value function during the performance runs
+    show_performance = 0    
+	## Figure window generated to show the results?
+    result_fig = None       
+	## All data is saved in the result array: stats_num-by-performanceChecks
+    result  = None          
+	## The name of the file used to store the data
+    output_filename = ''    
+	## An object to record the print outs in a file
+    logger = None  
+	
     def __init__(self,id, agent, domain,logger, exp_naming, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
         self.id = id
         # Find the corresponding random seed for the experiment id
@@ -48,6 +70,8 @@ class Experiment(object):
         self.logger.log("Experiment:\t\t%s" % className(self))
         self.logger.log("Output:\t\t\t%s/%s" % (self.full_path, self.output_filename))
         self.logger.setOutput("%s/%d-out.txt" % (self.full_path, self.id))
+	
+	## Performs a run 
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -73,8 +97,12 @@ class Experiment(object):
         if self.show_performance: self.domain.showDomain(s,a)
         self.agent.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
+	
+	## Prints class info
     def printAll(self):
         printClass(self)
+		
+	## Saves experimental data
     def save(self):
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
@@ -83,10 +111,11 @@ class Experiment(object):
         self.logger.log("Took %s\nResults\t=> %s/%s" % (hhmmss(deltaT(self.start_time)), self.full_path, self.output_filename))
         # Set the output path for the logger
         # This is done here because it is dependent on the combination of agent, representation, and domain
+		
+	## Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X  
+    # Example: X = ['domain','agent','representation','LEARNING_STEPS']
+    # Output: 'PitMaze-SARSA-Tabular-10000'
     def makeExperimentName(self,variables):
-        # Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X  
-        # Example: X = ['domain','agent','representation','LEARNING_STEPS']
-        # Output: 'PitMaze-SARSA-Tabular-10000'
         exp_name = ''
         
         if len(variables) == 0:

@@ -1,6 +1,7 @@
 var class_agents_1_1_l_s_p_i_1_1_l_s_p_i =
 [
     [ "__init__", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a5f1f1db8c0df1ef533099653d3503480", null ],
+    [ "calculateTDErrors", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a8b8ffcacf9170ab8138f11da0f07488f", null ],
     [ "learn", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a4656568176f9e5f61f315c3553bf6a21", null ],
     [ "LSTD", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a5ec038b56aa1a1739533f3e5aaf995a5", null ],
     [ "LSTD_non_matrix_version", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#a2fff23eb26074560374fe1b3adbac086", null ],

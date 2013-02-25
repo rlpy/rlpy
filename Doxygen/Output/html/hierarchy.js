@@ -5,7 +5,7 @@ var hierarchy =
     [ "object", null, [
       [ "Agents.Agent.Agent", "class_agents_1_1_agent_1_1_agent.html", [
         [ "Agents.LSPI.LSPI", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html", [
-          [ "Agents.LSTD.LSTD", "class_agents_1_1_l_s_t_d_1_1_l_s_t_d.html", null ],
+          [ "Agents.PolicyEvaluation.PolicyEvaluation", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html", null ],
           [ "Agents.RE_LSPI.RE_LSPI", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html", null ]
         ] ],
         [ "Agents.Q_LEARNING.Q_LEARNING", "class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html", null ],
@@ -59,10 +59,10 @@ var hierarchy =
     [ "Domains.Pendulum.StateIndex", "class_domains_1_1_pendulum_1_1_state_index.html", null ],
     [ "Domains.CartPole.StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
     [ "Domains.PST.StateStruct", "class_domains_1_1_p_s_t_1_1_state_struct.html", null ],
-    [ "Domains.PST.UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
     [ "Domains.PSTOrig.UAVAction", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_action.html", null ],
-    [ "Domains.PST.UAVIndex", "class_domains_1_1_p_s_t_1_1_u_a_v_index.html", null ],
+    [ "Domains.PST.UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
     [ "Domains.PSTOrig.UAVIndex", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_index.html", null ],
+    [ "Domains.PST.UAVIndex", "class_domains_1_1_p_s_t_1_1_u_a_v_index.html", null ],
     [ "Domains.PSTOrig.UAVLocation", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_location.html", null ],
     [ "Domains.PST.UAVLocation", "class_domains_1_1_p_s_t_1_1_u_a_v_location.html", null ],
     [ "Representation", null, [

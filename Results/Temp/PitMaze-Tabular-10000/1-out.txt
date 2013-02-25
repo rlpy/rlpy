@@ -1,0 +1,25 @@
+============================================================
+Domain:		PitMaze
+Dimensions:	2
+|S|:		20
+|A|:		4
+|S|x|A|:		80
+Episode Cap:	40
+Gamma:		0.8
+Dims:		4x5
+Movement Noise:	30%
+============================================================
+Representation:		Tabular
+Features per action:	20
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+boyan_N0:	100.0
+Alpha_0:		0.10
+Decay mode:		boyan
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/Temp/PitMaze-Tabular-10000/1-results.txt
+Learning Steps:		10000
+Performance Checks:	10
+Log Intervals:		1(s)
