@@ -70,7 +70,10 @@ class IntruderMonitoring(Domain):
         '''
             
         super(IntruderMonitoring,self).__init__(logger)
-        if self.logger: self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
+        if self.logger: 
+            _,_,shortmapname = mapname.rpartition('/')
+            self.logger.log("Map Name:\t%s" % shortmapname) 
+
     def setupMap(self,mapname):
         #Load the map as an array
         self.map = loadtxt(mapname, dtype = uint8)
