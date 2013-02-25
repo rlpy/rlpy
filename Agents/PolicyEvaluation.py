@@ -23,8 +23,9 @@ class PolicyEvaluation(LSPI):
             self.logger.log('Samples for Monte-Carlo estimation of each Q(s,a) = %d' % MC_samples)
             DATA = self.evaulate(accuracy_test_samples, MC_samples, self.compare_with_me)
         else:
-            self.logger.log('Loading Fixed Policy Evaluation from %s:' % self.compare_with_me)
+            _,_,shortPolicyFile =  self.compare_with_me.rpartition('/')
             DATA = load(self.compare_with_me)
+            self.logger.log('PE File:\t\t\t%s' % shortPolicyFile)
         self.S      = DATA[:,arange(self.domain.state_space_dims)]
         self.A      = DATA[:,self.domain.state_space_dims].astype(uint16)
         self.Q_MC   = DATA[:,self.domain.state_space_dims+1]
