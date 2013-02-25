@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import os, sys, time, re, string, pprint, re, glob, socket
-from sets import Set
 
 #Colors 
 PURPLE  = '\033[95m'
