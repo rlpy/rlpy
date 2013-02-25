@@ -684,10 +684,12 @@ def isOnCluster():
         return True
     return False
 class Merger(object):
-    AXES = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
+    CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
+    PE_AXES         = ['Iterations','Features','$\|V-\hat V\|$','Time(s)'] 
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False):
+    def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False, isPolicyEvaluation = False, maxSamples = inf):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
+        self.AXES = self.PE_AXES if isPolicyEvaluation else self.CONTROL_AXES
         self.means                  = []
         self.std_errs               = [] 
         self.bars                   = bars  #Draw bars?
@@ -695,6 +697,7 @@ class Merger(object):
         self.styles                 = styles
         self.markersize             = markersize
         self.legend                 = legend
+        self.maxSamples             = maxSamples # In case we want to use less than available number of samples
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
         if self.hasResults(paths[0]):
@@ -750,13 +753,18 @@ class Merger(object):
         samples_num = len(files)
         if samples_num == 0:
             print 'Error: %s is empty!' % path
-        print "%s => %d Samples" % (exp,samples_num)
+        if self.maxSamples < samples_num:
+            print "%s => %d Samples. Using % samples" % (exp,samples_num, self.maxSamples)
+            samples_num = self.maxSamples
+        else:
+            print "%s => %d Samples." % (exp,samples_num)
         #read the first file to initialize the matricies
-        matrix = readMatrixFromFile(files[0])
+        matrix      = readMatrixFromFile(files[0])
         rows, cols  = matrix.shape
         samples     = zeros((rows,cols,samples_num)) 
         for i,f in enumerate(files):
-            samples[:,:,i] = matrix = readMatrixFromFile(files[i])
+            if i == samples_num: break                
+            samples[:,:,i] = readMatrixFromFile(files[i])
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis,X_axis = 'Learning Steps'):
@@ -769,10 +777,14 @@ class Merger(object):
             y_ind = self.AXES.index(Y_axis)
         else:
             print 'unknown Y_axis = %s', Y_axis
+            print 'Allowed values:'
+            print self.AXES
         if X_axis in self.AXES:
             x_ind = self.AXES.index(X_axis)
         else:
             print 'unknown X_axis = %s', X_axis
+            print 'Allowed values:'
+            print self.AXES
             
         Xs      = zeros((self.exp_num,self.datapoints_per_graph))
         Ys      = zeros((self.exp_num,self.datapoints_per_graph))
