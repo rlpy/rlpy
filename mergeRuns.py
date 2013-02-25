@@ -36,13 +36,15 @@ paths = ['Results/Example_Project']
 #paths = ['Results/Example_Project'] 
 #paths = ['R    esults/13ICML-BatchiFDD/PST/PST-iFDD-50000-65'] 
 
-labels      = []
-colors      = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple','b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
-styles      = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd','o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
-MarkerSize  = 15
-Legend      = True
-
-merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend)
+labels              = []
+colors              = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
+styles              = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
+MarkerSize          = 15    
+Legend              = True  # Draw legends?
+isPolicyEvaluation  = False # If data corresponds to policy evaluation set this flag to True
+maxSamples          = inf   # Maximum number of samples to be loaded from the directory. If set inf it will use all of them
+ 
+merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, isPolicyEvaluation = isPolicyEvaluation, maxSamples = maxSamples)
 pl.ioff()
 #print mergedData.means[0].shape
 #merger.plot('Return')
@@ -57,6 +59,12 @@ merger.plot('Return','Time(s)')
 #merger.plot('Steps','Time(s)')
 #merger.plot('Features','Time(s)')
 #merger.plot('Terminal')
+# FOR POLICY EVALUTION
+#######################
+#merger.plot("$\|V-\hat V\|$",'Iterations')
+#merger.plot("$\|V-\hat V\|$",'Features')
+#merger.plot("$\|V-\hat V\|$",'Time(s)')
+
 if not isOnCluster():
     pl.show()
 
