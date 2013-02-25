@@ -20,13 +20,16 @@ class FixedPolicy(Policy):
         if className(self.representation.domain) == 'BlocksWorld':
             # Fixed policy rotate the blocksworld = Optimal Policy (Always pick the next piece of the tower and move it to the tower
             # Policy: Identify the top of the tower.
-            # move the next peiece on the tower
-            # notice that since failure does not drop a block on another one, we dont have to check that the next blcok to be picked is empty
-            # [0 0 1 2 3 .. blocks-2]
+            # move the next piece on the tower with 95% chance 5% take a random action
             domain = self.representation.domain
-            if domain.isTerminal(s):
-                return randSet(domain.possibleActions(s))
             
+            #Random Action with 5 percent chance
+            if random.rand() < .05 or domain.isTerminal(s):
+                return randSet(domain.possibleActions(s))
+
+            #non-Random Policy
+            #next_block is the block that should be stacked on the top of the tower
+            #wrong_block is the highest block stacked on the top of the next_block    
             blocks = domain.blocks
             next_block = 1
             for b in arange(1,blocks):
@@ -34,7 +37,22 @@ class FixedPolicy(Policy):
                     break
                 else:
                     next_block = b+1
-            return vec2id([b, b-1],[blocks,blocks])
+            # See if the next_block is empty
+            onTop = domain.top(next_block,s)
+            if not len(onTop):
+                #next_block is clear
+                action = [next_block, next_block-1]
+            else:
+                # next_block is not clear. Find the one on the top and put it on the table
+                wrong_block = onTop[0]
+                while True:
+                    onTop = domain.top(wrong_block,s)
+                    if len(onTop) == 0:
+                        break
+                action = [wrong_block, wrong_block] # Meaning put it on the table
+            print 'STATE=', s
+            print 'ACTION=', action
+            return vec2id(action,[blocks, blocks])
         if className(self.representation.domain) == 'IntruderMonitoring':
             # Each UAV assign themselves to a target
             # Each UAV finds the closest danger zone to its target and go towards there. 
