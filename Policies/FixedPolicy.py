@@ -79,7 +79,7 @@ class FixedPolicy(Policy):
             agents  = array(s[:domain.NUMBER_OF_AGENTS*2].reshape(-1,2))
             targets = array(s[domain.NUMBER_OF_AGENTS*2:].reshape(-1,2))
             zones   = domain.danger_zone_locations
-            actions = ones(len(agents))*4 # Default action is hold
+            actions = ones(len(agents),dtype=integer)*4 # Default action is hold
             planned_agents_num = min(len(agents),len(targets))
             for i in arange(planned_agents_num): 
                 #Find cloasest zone (manhattan) to the corresponding target
@@ -98,4 +98,9 @@ class FixedPolicy(Policy):
                 if a_col < z_col:
                     a = 3 # right
                 actions[i] = a
-            return vec2id(actions,ones(len(agents))*5)
+#                print "Agent=", agents[i,:]
+#                print "Target", target
+#                print "Zone", zones[argmin(distances),:]
+#                print "Action", a
+#                print '============'
+            return vec2id(actions,ones(len(agents),dtype=integer)*5)

@@ -177,7 +177,8 @@ class Agent(object):
             DATA[steps,:] = hstack((s,[a, Q]))
             r,s,terminal = self.domain.step(s, a)
             steps += 1
-            print "Sample",steps,":", s,a,Q 
+            
+            self.logger.log("Sample "+ str(steps)+":"+ str(s)+" "+str(a)+" "+str(Q)) 
 
         save(output_file, DATA)
         return DATA

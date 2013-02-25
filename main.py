@@ -69,7 +69,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
-    iFDDOnlineThreshold         = inf #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
+    iFDDOnlineThreshold         = 5 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
     BatchDiscoveryThreshold     = 1e-4 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
@@ -107,11 +107,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
+    domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
@@ -145,11 +145,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH)
+    
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
-    
-#    for x in range(10):
-#        print('%0.10f'%random.rand()) 
-    
     experiment.run()
     experiment.save()
     

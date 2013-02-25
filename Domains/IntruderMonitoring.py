@@ -174,8 +174,8 @@ class IntruderMonitoring(Domain):
 
        s_ally               = s[0:self.NUMBER_OF_AGENTS*2].reshape((-1,2))
        s_intruder           = s[self.NUMBER_OF_AGENTS*2:].reshape((-1,2)) 
-       self.ally_fig        = pl.plot(s_ally[:,1],s_ally[:,0],'b>',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
-       self.intruder_fig    = pl.plot(s_intruder[:,1],s_intruder[:,0],'go',color='gray',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
+       self.ally_fig        = pl.plot(s_ally[:,1],s_ally[:,0],'bo',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
+       self.intruder_fig    = pl.plot(s_intruder[:,1],s_intruder[:,0],'g>',color='gray',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
        pl.draw()   
 if __name__ == '__main__':
    
