@@ -130,7 +130,7 @@ class Agent(object):
             eps_length     += 1
         self.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
-    def MC_episode(self,s=None,a=None):
+    def MC_episode(self,s=None,a=None, tolerance = 0):
         # Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent and return:
         # eps_return, eps_length, eps_term, eps_discounted_return
         eps_length              = 0
@@ -147,14 +147,16 @@ class Agent(object):
             eps_discounted_return += self.representation.domain.gamma**eps_length * r
             eps_length          += 1
             a                   = self.policy.pi(s)
+            if self.representation.domain.gamma**eps_length < tolerance:
+                break
         return eps_return, eps_length, eps_term, eps_discounted_return
         
-    def Q_MC(self,s,a,MC_samples = 1000):
+    def Q_MC(self,s,a,MC_samples = 1000, tolerance = 0):
         # Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a)
         Q_avg = 0
         for i in arange(MC_samples):
             #print "MC Sample:", i
-            _,_,_,Q = self.MC_episode(s,a)
+            _,_,_,Q = self.MC_episode(s,a,tolerance)
             Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)
         return Q_avg
     def evaulate(self,samples, MC_samples, output_file):
@@ -163,7 +165,7 @@ class Agent(object):
         # samples: number of samples (s,a)
         # MC_samples: Number of MC simulations used to estimate Q(s,a)
         # output_file: The DATA is stored in this file
-        
+        tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q
         cols            = self.domain.state_space_dims + 2
         DATA            = empty((samples,cols))
         terminal        = True
@@ -173,7 +175,7 @@ class Agent(object):
             a = self.policy.pi(s)
 
             #Store the corresponding Q
-            Q = self.Q_MC(s,a,MC_samples)
+            Q = self.Q_MC(s,a,MC_samples, tolerance)
             DATA[steps,:] = hstack((s,[a, Q]))
             r,s,terminal = self.domain.step(s, a)
             steps += 1
