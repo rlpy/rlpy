@@ -689,9 +689,8 @@ class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
     PE_AXES         = ['Iterations','Features','Error','Time(s)'] 
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False, isPolicyEvaluation = False, maxSamples = inf):
+    def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
-        self.AXES = self.PE_AXES if isPolicyEvaluation else self.CONTROL_AXES
         self.means                  = []
         self.std_errs               = [] 
         self.bars                   = bars  #Draw bars?
@@ -763,13 +762,23 @@ class Merger(object):
         #read the first file to initialize the matricies
         matrix      = readMatrixFromFile(files[0])
         rows, cols  = matrix.shape
+        if rows == len(self.PE_AXES):
+            self.isPolicyEvaluation = True
+            self.AXES = self.PE_AXES
+        else:
+            self.isPolicyEvaluation = False
+            self.AXES = self.CONTROL_AXES
         samples     = zeros((rows,cols,samples_num)) 
         for i,f in enumerate(files):
             if i == samples_num: break                
             samples[:,:,i] = readMatrixFromFile(files[i])
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
-    def plot(self,Y_axis,X_axis = 'Learning Steps'):
+    def plot(self,Y_axis = None, X_axis = None):
+        #Setting default values based on the Policy Evaluation or control
+        if Y_axis == None: Y_axis = 'Error' if self.isPolicyEvaluation else 'Return'
+        if X_axis == None: X_axis = 'Iterations' if self.isPolicyEvaluation else 'Learning Steps'        
+
         if not isOnCluster(): self.fig.clear()
         min_ = +inf
         max_ = -inf    
