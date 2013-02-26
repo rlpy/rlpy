@@ -320,7 +320,7 @@ class LSPI(Agent):
     def calculateTDErrors(self,R,F1,F2):
         # Calculates the TD-Errors in a matrix format for a set of samples = R + (gamma*F2 - F1) * Theta
         gamma = self.representation.domain.gamma
-        if sp.issparse(F1):
+        if self.use_sparse:
             answer = (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1))
             return squeeze(asarray(answer))
         else:

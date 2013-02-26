@@ -64,9 +64,11 @@ class PolicyEvaluation(LSPI):
             # returns all_phi_s (for samples used for LSTD) and td_erros (on samples used for LSTD)
             
             A,b, all_phi_s, all_phi_s_a, all_phi_ns, all_phi_ns_na = self.LSTD()
-            p           = self.S.shape[0]
-            n           = self.representation.features_num
-            test_phi_s   = empty((p,n),dtype=self.representation.featureType())
+            # Start Calculating the Policy Evaluation Error
+            PE_error_time_start = time()
+            p                   = self.S.shape[0]
+            n                   = self.representation.features_num
+            test_phi_s          = empty((p,n),dtype=self.representation.featureType())
             for i in arange(p):
                 test_phi_s[i,:]  = self.representation.phi(self.S[i])
             
@@ -74,4 +76,5 @@ class PolicyEvaluation(LSPI):
             Q                   = all_test_phi_s_a * self.representation.theta.reshape(-1,1) if sp.issparse(all_test_phi_s_a) else dot(all_test_phi_s_a,self.representation.theta)
             PE_error            = linalg.norm(Q.ravel()-self.Q_MC)
             self.logger.log("||Delta V|| = %f" % PE_error)
+            self.logger.log("Delta V Calculation Time = %0.1f (s)" % deltaT(PE_error_time_start))
             return all_phi_s, PE_error, self.calculateTDErrors(self.data_r,all_phi_s_a,all_phi_ns_na) 
