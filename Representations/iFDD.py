@@ -219,6 +219,7 @@ class iFDD(Representation):
                     if self.sparsify:
                         self.cache.pop(initialActiveFeatures)
                     else:
+                        # If sparsification is not used, simply add the new feature id to all cached values that have feature set which is a super set of the features corresponding to the new discovered feature
                         self.cache[initialActiveFeatures].append(feature.index) 
         if self.debug: self.show()
     def batchDiscover(self,td_errors, phi, states):
