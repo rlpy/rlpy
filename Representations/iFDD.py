@@ -216,8 +216,10 @@ class iFDD(Representation):
         if self.useCache:
             for initialActiveFeatures in self.cache.keys():
                 if initialActiveFeatures.issuperset(feature.f_set):
-                    self.cache.pop(initialActiveFeatures)
-        
+                    if self.sparsify:
+                        self.cache.pop(initialActiveFeatures)
+                    else:
+                        self.cache[initialActiveFeatures].append(feature.index) 
         if self.debug: self.show()
     def batchDiscover(self,td_errors, phi, states):
         # Discovers features using iFDD in batch setting.
@@ -294,7 +296,7 @@ class iFDD(Representation):
         for feature in reversed(self.sortediFDDFeatures.toList()):
         #for feature in self.iFDD_features.itervalues():
             #print " %d\t| %s\t| %s\t| %s\t| %s" % (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
-            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,self.getStrFeatureSet(feature.id),feature.p1,feature.p2)
+            print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index,self.getStrFeatureSet(feature.index),feature.p1,feature.p2)
     def showPotentials(self):
         print "Potentials:"
         print join(["-"]*30)
@@ -305,6 +307,9 @@ class iFDD(Representation):
     def showCache(self):
         if self.useCache: 
             print "Cache:"
+            if len(self.cache) == 0: 
+                print 'EMPTY!'
+                return
             print join(["-"]*30)
             print " initial\t| Final"
             print join(["-"]*30)
@@ -335,23 +340,26 @@ class iFDD(Representation):
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1
-    RANDOM_TEST         = 1
+    RANDOM_TEST         = 0
     OUT_PATH            = 'Results/Temp'
 #    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     logger              = Logger()
+    sparsify            = True
     discovery_threshold = 1
     #domain      = MountainCar()
     
     if not RANDOM_TEST:
         domain      = SystemAdministrator('../Domains/SystemAdministratorMaps/20MachTutorial.txt')
         initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
-        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
+        rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,sparsify = sparsify)
         rep.theta   = arange(rep.features_num*domain.actions_num)*10
         print 'Initial [0,1] => ',
         print rep.findFinalActiveFeatures([0,1])
+        rep.show()
         print rep.inspectPair(0,1, discovery_threshold+1)
-        print 'Initial [1,2] => ',
-        print rep.findFinalActiveFeatures([1,2])
+        rep.show()
+        print 'Initial [0,1] => ',
+        print rep.findFinalActiveFeatures([0,1])
         print 'Initial [2,3] => ',
         print rep.findFinalActiveFeatures([2,3])
         rep.showCache()
