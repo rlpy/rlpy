@@ -183,8 +183,8 @@ program or batch file."
 S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )
 ===============================================================
 E: In Windows, Latex fonts do not appear to be installed
-S-W: Set the latex environment variable per:
-For example, C:\Program Files\MiKTeX 2.9\miktex\bin\x64
+S-W: Set the latex environment variable per http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH:
+For example, add ' ;C:\Program Files\MiKTeX 2.9\miktex\bin\x64 ' to the end of your PATH variable, editing as required for your specific binaries installation directory.
 ===============================================================
 E: ! LaTeX Error: File `type1cm.sty' not found.
 S-U: sudo apt-get install texlive-latex-extra
