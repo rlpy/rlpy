@@ -683,9 +683,11 @@ def isOnCluster():
     if os.path.abspath('.')[0:len(CONDOR_CLUSTER_PREFIX)] == CONDOR_CLUSTER_PREFIX: # arbitrary number of digits
         return True
     return False
+def rootMeanSquareError(X):
+    return sqrt(mean(X**2))
 class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
-    PE_AXES         = ['Iterations','Features','$\|V-\hat V\|$','Time(s)'] 
+    PE_AXES         = ['Iterations','Features','Error','Time(s)'] 
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False, isPolicyEvaluation = False, maxSamples = inf):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
@@ -816,8 +818,10 @@ class Merger(object):
                 #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
             pl.xlim(0,max(Xs[:,-1])*1.02)
             if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-            pl.xlabel(X_axis,fontsize=16)
-            pl.ylabel(Y_axis,fontsize=16)
+            X_axis_label = '$\| V - \hat V\|$' if X_axis == 'Error' else X_axis 
+            Y_axis_label = '$\| V - \hat V\|$' if Y_axis == 'Error' else Y_axis 
+            pl.xlabel(X_axis_label,fontsize=16)
+            pl.ylabel(Y_axis_label,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
         if not isOnCluster and self.legend:
                 # This is a hack so we can see it correctly during the runtime
