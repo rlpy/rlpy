@@ -94,7 +94,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     #Policy Evaluation Parameters:
     PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
-    PolicyEvaluation_MC_samples     = 100   # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
+    PolicyEvaluation_MC_samples     = 100  # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
     PolicyEvaluation_LOAD_PATH      = RL_PYTHON_ROOT + '/Policies/FixedPolicyEvaluations' # Directory path to load the base of policy evaluations (True Q(s,a)) 
     #Load Main Setting and override any parameter
     #    if os.path.exists('mainSetting.py'):
@@ -106,12 +106,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
+    domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
