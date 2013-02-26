@@ -10,7 +10,7 @@
 import os, sys, time, re, string
 from Script_Tools import *
 
-def searchNC(idir):
+def searchNClear(idir):
                     
         #print idir                    
         currentdir      = os.getcwd()
