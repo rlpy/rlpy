@@ -12,23 +12,25 @@
 # MC_samples: Number of samples used to estimate Q_MC(s,a)
 from LSPI import *
 class PolicyEvaluation(LSPI):
+    LOAD_POLICY_FILE = False     # If Q,S,A are read from the file
     def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.',re_iterations = 100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' %(target_path,className(domain))
         self.re_iterations  = re_iterations # Number of iterations over LSPI and iFDD
         super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, sample_window = sample_window)
         # Load the fixedPolicy Estimation if it does not exist create it
-        if not os.path.exists(self.compare_with_me):
-            self.logger.log('Generating Fixed Policy Evaluation')
-            self.logger.log('Samples for Accuracy Test = %d' % accuracy_test_samples)
-            self.logger.log('Samples for Monte-Carlo estimation of each Q(s,a) = %d' % MC_samples)
-            DATA = self.evaulate(accuracy_test_samples, MC_samples, self.compare_with_me)
-        else:
-            _,_,shortPolicyFile =  self.compare_with_me.rpartition('/')
-            DATA = load(self.compare_with_me)
-            self.logger.log('PE File:\t\t\t%s' % shortPolicyFile)
-        self.S      = DATA[:,arange(self.domain.state_space_dims)]
-        self.A      = DATA[:,self.domain.state_space_dims].astype(uint16)
-        self.Q_MC   = DATA[:,self.domain.state_space_dims+1]
+        if self.LOAD_POLICY_FILE:
+            if not os.path.exists(self.compare_with_me):
+                self.logger.log('Generating Fixed Policy Evaluation')
+                self.logger.log('Samples for Accuracy Test = %d' % accuracy_test_samples)
+                self.logger.log('Samples for Monte-Carlo estimation of each Q(s,a) = %d' % MC_samples)
+                DATA = self.evaulate(accuracy_test_samples, MC_samples, self.compare_with_me)
+            else:
+                _,_,shortPolicyFile =  self.compare_with_me.rpartition('/')
+                DATA = load(self.compare_with_me)
+                self.logger.log('PE File:\t\t\t%s' % shortPolicyFile)
+            self.S      = DATA[:,arange(self.domain.state_space_dims)]
+            self.A      = DATA[:,self.domain.state_space_dims].astype(uint16)
+            self.Q_MC   = DATA[:,self.domain.state_space_dims+1]
         if logger and hasFunction(self.representation,'batchDiscover'):
             logger.log('Max Representation Expansion Iterations:\t%d' % re_iterations)
     def learn(self,s,a,r,ns,na,terminal):
