@@ -64,6 +64,7 @@ class iFDD(Representation):
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
+    PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity. 
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
@@ -320,7 +321,7 @@ class iFDD(Representation):
         # Update a global max relevance and outputs it if it is updated
         if self.maxRelevance < newRelevance:
             self.maxRelevance = newRelevance
-#            self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
+            if self.PRINT_MAX_RELEVANCE: self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
     def getFeature(self,f_id):
         #returns a feature given a feature id
         if f_id in self.featureIndex2feature.keys():

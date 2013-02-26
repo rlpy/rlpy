@@ -125,6 +125,8 @@ class OnlineExperiment (Experiment):
             delta = M-m
             if delta > 0:
                 pl.ylim(m-.1*delta-.1,M+.1*delta+.1)
-                pl.xlabel('steps', fontsize=16)
-                pl.ylabel(ylabel, fontsize=16)
-                performance_fig.savefig(self.full_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)
+            pl.xlabel('steps', fontsize=16)
+            pl.ylabel(ylabel, fontsize=16)
+            performance_fig.savefig(self.full_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)
+            pl.ioff()
+            pl.show()
