@@ -321,6 +321,7 @@ class LSPI(Agent):
         # Calculates the TD-Errors in a matrix format for a set of samples = R + (gamma*F2 - F1) * Theta
         gamma = self.representation.domain.gamma
         if self.use_sparse:
-            return (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1)).ravel()
+            answer = (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1))
+            return squeeze(asarray(answer))
         else:
             return R.ravel()+dot(gamma*F2-F1,self.representation.theta)

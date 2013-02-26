@@ -26,24 +26,20 @@ Online Threshold:	5.000
 Batch Threshold:		0.000
 Max Batch Discovery:	1
 ============================================================
-Agent:		SARSA
-Policy:		eGreedy
-boyan_N0:	100.0
-Alpha_0:		0.10
-Decay mode:		boyan
+Agent:		PolicyEvaluation
+Policy:		FixedPolicy
+Max LSPI Iterations:	5
+Data Size:		10000
+Weight Difference tol.:	0.001
+Track the best policy:	0
+PE File:			Pendulum_InvertedBalance-FixedPolicy.npy
+Max Representation Expansion Iterations:	100
 ============================================================
 Experiment:		OnlineExperiment
 Output:			Results/Temp/Pendulum_InvertedBalance-iFDD-10000-0.0001/1-results.txt
 Learning Steps:		10000
 Performance Checks:	1
 Log Intervals:		1(s)
-1571: E[0:00:01]-R[0:00:05]: Return=-1.00, Steps=12, Features = 40
-3175: E[0:00:02]-R[0:00:04]: Return=-1.00, Steps=26, Features = 40
-4838: E[0:00:03]-R[0:00:03]: Return=-1.00, Steps=65, Features = 40
-6528: E[0:00:04]-R[0:00:02]: Return=-1.00, Steps=124, Features = 40
-8168: E[0:00:05]-R[0:00:01]: Return=-1.00, Steps=43, Features = 40
-9813: E[0:00:06]-R[0:00:00]: Return=-1.00, Steps=46, Features = 40
-10000 >>> E[0:00:07]-R[0:00:00]: Return=-1.00, Steps=1645, Features = 40
-============================================================
-Took 0:00:07
-Results	=> Results/Temp/Pendulum_InvertedBalance-iFDD-10000-0.0001/1-results.txt
+4659: E[0:00:01]-R[0:00:01]: Return=-1.00, Steps=19, Features = 40
+9336: E[0:00:02]-R[0:00:00]: Return=-1.00, Steps=27, Features = 40
+Running LSTD:
