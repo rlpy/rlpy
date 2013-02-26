@@ -26,7 +26,7 @@ def searchNClear(idir):
         else:
             for folder in os.listdir('.'):
                 if os.path.isdir(folder) and not folder.startswith('.'):
-                    searchNPurge(folder)
+                    searchNClear(folder)
                     
         #Return to the directory we started at
         os.chdir(currentdir) 
