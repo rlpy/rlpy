@@ -37,9 +37,9 @@ class PolicyEvaluation(LSPI):
             STATS               = [] 
             start_time          = time()
             self.samples_count  = 0
-            re_iteration        = 1 # Representation expansion iteration. Only used if the representation can be expanded 
+            re_iteration        = 0 # Representation expansion iteration. Only used if the representation can be expanded 
             added_feature       = True
-            while added_feature and re_iteration <= self.re_iterations:
+            while added_feature and re_iteration < self.re_iterations:
                 # Evaluate the policy and the corresponding PE-Error (Policy Evaluation) and TD-Error
                 all_phi_s, PE_error, td_errors  = self.evaluatePolicy()
                 # Save stats
@@ -51,9 +51,9 @@ class PolicyEvaluation(LSPI):
                 
                 if not hasFunction(self.representation,'batchDiscover'):
                     break
+                re_iteration += 1
                 self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
                 added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
-                re_iteration += 1
             self.STATS = array(STATS).T # Experiment will save this later
     def evaluatePolicy(self):
             #Calculate the Q for all samples using the new theta from LSTD
@@ -69,8 +69,9 @@ class PolicyEvaluation(LSPI):
             test_phi_s   = empty((p,n),dtype=self.representation.featureType())
             for i in arange(p):
                 test_phi_s[i,:]  = self.representation.phi(self.S[i])
-            all_test_phi_s_a  = self.representation.batchPhi_s_a(test_phi_s, self.A,use_sparse=self.use_sparse)
-            Q           = all_test_phi_s_a * self.representation.theta.reshape(-1,1) if self.use_sparse else dot(all_test_phi_s_a,self.representation.theta)
-            PE_error    = linalg.norm(Q.ravel()-self.Q_MC)
+            
+            all_test_phi_s_a    = self.representation.batchPhi_s_a(test_phi_s, self.A,use_sparse=self.use_sparse)
+            Q                   = all_test_phi_s_a * self.representation.theta.reshape(-1,1) if sp.issparse(all_test_phi_s_a) else dot(all_test_phi_s_a,self.representation.theta)
+            PE_error            = linalg.norm(Q.ravel()-self.Q_MC)
             self.logger.log("||Delta V|| = %f" % PE_error)
             return all_phi_s, PE_error, self.calculateTDErrors(self.data_r,all_phi_s_a,all_phi_ns_na) 

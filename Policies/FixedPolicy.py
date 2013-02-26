@@ -24,7 +24,7 @@ class FixedPolicy(Policy):
             domain = self.representation.domain
             
             #Random Action with some probability
-            if random.rand() < .3 or domain.isTerminal(s):
+            if random.rand() < .05 or domain.isTerminal(s):
                 return randSet(domain.possibleActions(s))
 
             #non-Random Policy

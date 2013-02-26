@@ -200,7 +200,7 @@ class Representation(object):
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
             if use_sparse:
-                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = integer),all_phi_s) #all_phi_s_a will be ap-by-an
+                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = all_phi_s.dtype),all_phi_s) #all_phi_s_a will be ap-by-an
             else:
                 all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
         
@@ -213,7 +213,7 @@ class Representation(object):
         if use_sparse: M = M.tocsr()
         A = all_actions.T
         A = kron(A,ones((1,n*a_num,),dtype=integer))[0] # <<< SPARSIFY if you have time
-        M = M[A,arange(len(A)),:]
+        M = M[A,arange(len(A)),:].tocsr()
         M = M.reshape(-1)
         return M.reshape((p,-1))
         
@@ -286,13 +286,13 @@ class Representation(object):
         if useSparse:
                 all_phi_s_a = sp.kron(eye(a_num,a_num),all_phi_s)     #all_phi_s_a will be ap-by-an
                 all_q_s_a   = all_phi_s_a*self.theta.reshape(-1,1) #ap-by-1
-                #all_phi_s_a = all_phi_s_a.todense()
         else:
                 all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
                 all_q_s_a   = dot(all_phi_s_a,self.theta.T) #ap-by-1
         all_q_s_a   = all_q_s_a.reshape((a_num,-1)).T  #a-by-p
         all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
         best_action = argmax(all_q_s_a,axis=1)
+        
         # Calculate the corresponding phi_s_a
         phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a, useSparse)
         return best_action, phi_s_a, action_mask 
