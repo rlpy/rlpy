@@ -9,3 +9,4 @@ Tasks:
 - bestAction in matrix form (how about breaking ties randomly)
 - Update Visual for PST
 - Improve installation process; automate setting of platform-dependent environment variables, either during installation or at runtime from Tools.py
+- Remove SHOW_FINAL_PLOT from the main and all places that it will affect (scripts, multipleRuns, etc.)
