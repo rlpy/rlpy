@@ -200,16 +200,15 @@ class Representation(object):
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
             if use_sparse:
-                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = uint8),all_phi_s) #all_phi_s_a will be ap-by-an
-                all_phi_s_a = all_phi_s_a.todense()
+                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = integer),all_phi_s) #all_phi_s_a will be ap-by-an
             else:
-                all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
-        
+                all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) 		#all_phi_s_a will be ap-by-an
+        if sp.issparse(all_phi_s_a):
+        		all_phi_s_a = all_phi_s_a.todense()
 		# Based on Josh's Idea
         # set_printoptions(threshold=sys.maxint, precision=2, suppress=True, linewidth=inf)
         M = all_phi_s_a
-        x,y = M.shape
-        M = M.reshape((a_num,x*y/a_num))
+        M = M.reshape((a_num,-1))
         A = all_actions.T
         A = kron(A,ones((1,n*a_num,),dtype=integer))[0] # <<< SPARSIFY if you have time
         M = M[A,arange(len(A)),:]
