@@ -34,7 +34,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
-    SHOW_ALL            = 0 and not RUN_IN_BATCH
+    SHOW_ALL            = 1 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 if not RUN_IN_BATCH else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size 
@@ -106,12 +106,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
-    #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
+    domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger);
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
