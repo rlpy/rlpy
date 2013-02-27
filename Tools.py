@@ -771,7 +771,10 @@ class Merger(object):
         samples     = zeros((rows,cols,samples_num)) 
         for i,f in enumerate(files):
             if i == samples_num: break                
-            samples[:,:,i] = readMatrixFromFile(files[i])
+            M = readMatrixFromFile(files[i])
+            _,cols = M.shape
+            print cols
+            samples[:,:cols,i] = M 
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis = None, X_axis = None):

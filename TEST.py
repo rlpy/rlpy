@@ -11,6 +11,7 @@ rows    = arange(p)
 A_ind   = zeros((p,a))
 A_ind[rows,A] = 1
 
-output = zeros((p,n*a))
-output(rows,)
-print F*A_ind
+
+A = empty((2,1))
+A[0,0] = 1
+print mean(A)
