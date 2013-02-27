@@ -43,6 +43,7 @@ class LSPI(Agent):
                 self.logger.log('Data Size:\t\t%d' % sample_window)
                 self.logger.log('Weight Difference tol.:\t%0.3f' % epsilon)
                 self.logger.log('Track the best policy:\t%d' % self.return_best_policy)
+                self.logger.log('Use Sparse:\t\t%d' % self.use_sparse)
     def learn(self,s,a,r,ns,na,terminal):
         
         self.storeData(s,a,r,ns,na)        

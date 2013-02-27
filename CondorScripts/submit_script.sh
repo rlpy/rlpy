@@ -16,6 +16,8 @@ requirements = OpSys == "LINUX"
 #               Cpus >= 1 && \
 
 #Requirements = Arch == "X86_64"
+# 2GB MEMORY REQUIREMENT
+Requirements = Memory >= 2048
 Error = CondorOutput/err/$(PROCESS).err
 Log = CondorOutput/log/$(PROCESS).log
 Output = CondorOutput/out/$(PROCESS).out
