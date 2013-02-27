@@ -771,7 +771,9 @@ class Merger(object):
         samples     = zeros((rows,cols,samples_num)) 
         for i,f in enumerate(files):
             if i == samples_num: break                
-            samples[:,:cols,i] = readMatrixFromFile(files[i]) 
+            M = readMatrixFromFile(files[i])
+            print M.shape
+            samples[:,:cols,i] = M  
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis = None, X_axis = None):
@@ -827,8 +829,8 @@ class Merger(object):
                 #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
             pl.xlim(0,max(Xs[:,-1])*1.02)
             if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-            X_axis_label = '$\| V - \hat V\|$' if X_axis == 'Error' else X_axis 
-            Y_axis_label = '$\| V - \hat V\|$' if Y_axis == 'Error' else Y_axis 
+            X_axis_label = r'$\|A\theta - b\|$' if X_axis == 'Error' else X_axis 
+            Y_axis_label = r'$\|A\theta - b\|$' if Y_axis == 'Error' else Y_axis 
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
