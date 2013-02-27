@@ -9,8 +9,8 @@ Notification = Never
 # yodel machines have no scipy
 
 # 4GB MEMORY REQUIREMENT
-requirements = OpSys == "LINUX" && Memory >= 4096
-#requirements = OpSys == "LINUX"
+#requirements = OpSys == "LINUX" && Memory >= 4096
+requirements = OpSys == "LINUX"
 
 #Requirements = Machine != "yodel7.csail.mit.edu" && Machine != "yodel4.csail.mit.edu" && Machine != "yodel2.csail.mit.edu" && Machine !=
 #Requirements = isPublic && \
