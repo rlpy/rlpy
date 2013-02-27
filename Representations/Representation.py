@@ -200,7 +200,7 @@ class Representation(object):
         a_num           = self.domain.actions_num
         if all_phi_s_a == None: 
             if use_sparse:
-                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = integer),all_phi_s) #all_phi_s_a will be ap-by-an
+                all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = uint8),all_phi_s) #all_phi_s_a will be ap-by-an
                 all_phi_s_a = all_phi_s_a.todense()
             else:
                 all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s) #all_phi_s_a will be ap-by-an
