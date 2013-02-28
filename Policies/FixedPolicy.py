@@ -5,7 +5,7 @@
 # 1. InvertedPendulum
 from Policy import *
 class FixedPolicy(Policy):
-    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring','SystemAdministrator']
+    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring','SystemAdministrator','MountainCar']
     def pi(self,s):
         if not className(self.representation.domain) in self.supportedDomains:
             print "ERROR: There is no fixed policy defined for %s" % className(self.representation.domain)
@@ -111,3 +111,10 @@ class FixedPolicy(Policy):
                 return randSet(brokenComputers)
             else:
                 return self.representation.domain.computers_num
+        if className(self.representation.domain) == 'MountainCar':
+            # Accelerate in the direction of the valley
+            x,xdot = s
+            if xdot > 0:
+                return 2
+            else:
+                return 0

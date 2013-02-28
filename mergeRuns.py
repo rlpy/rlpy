@@ -38,8 +38,8 @@ paths = ['.']
 
 labels              = []
 colors              = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple']
-styles              = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd']
-MarkerSize          = 10    
+styles              = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd']
+MarkerSize          = 7    
 Legend              = True  # Draw legends?
 maxSamples          = inf   # Maximum number of samples to be loaded from the directory. If set inf it will use all of them
  

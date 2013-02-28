@@ -689,7 +689,7 @@ class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
     PE_AXES         = ['Iterations','Features','Error','Time(s)'] 
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = [], output_path = None, colors = ['r','b','g','k'], styles = ['o', 'v', '^', '<', '>', '8', 's', 'p', '*', 'h', 'H', 'D', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf):
+    def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = [] 
@@ -809,10 +809,10 @@ class Merger(object):
             Err = self.std_errs[i][y_ind,:]
             if not isOnCluster():
                 if len(X) == 1 and self.bars:
-                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i/len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
                     max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                 else:
-                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i/len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
                     if self.bars:
                         pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
                         max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
