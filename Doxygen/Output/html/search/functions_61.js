@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['activeinitialfeatures',['activeInitialFeatures',['../class_representations_1_1_representation_1_1_representation.html#afb7f9aca66a34afbff096460626ce031',1,'Representations::Representation::Representation']]],
-  ['addnewweight',['addNewWeight',['../class_representations_1_1_representation_1_1_representation.html#a8c3ae13c32a478408de350575ac89035',1,'Representations::Representation::Representation']]]
+  ['activeinitialfeatures',['activeInitialFeatures',['../class_representations_1_1_representation_1_1_representation.html#a7df2faa619121dfe7486b03447c2cb82',1,'Representations::Representation::Representation']]],
+  ['addnewweight',['addNewWeight',['../class_representations_1_1_representation_1_1_representation.html#a52416f401b425ffe57e952026f599f7f',1,'Representations::Representation::Representation']]]
 ];

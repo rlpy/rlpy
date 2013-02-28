@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['mainseed',['mainSeed',['../class_experiments_1_1_experiment_1_1_experiment.html#a5d05512c2eec9b42f6600c835b99358d',1,'Experiments::Experiment::Experiment']]],
-  ['makeexperimentname',['makeExperimentName',['../class_experiments_1_1_experiment_1_1_experiment.html#a29f300571737c7e69543c31ddf533c1d',1,'Experiments::Experiment::Experiment']]],
-  ['maxruns',['maxRuns',['../class_experiments_1_1_experiment_1_1_experiment.html#a790f11e9c0249ebdfd7ad157f7d92e84',1,'Experiments::Experiment::Experiment']]],
-  ['mcexpectedstep',['MCExpectedStep',['../class_domains_1_1_domain_1_1_domain.html#ac4e336f40277b2b8d9c90cda48085e7a',1,'Domains::Domain::Domain']]],
-  ['mountaincar',['MountainCar',['../class_domains_1_1_mountain_car_1_1_mountain_car.html',1,'Domains::MountainCar']]]
+  ['my_20test_20page',['My test page',['../index.html',1,'']]],
+  ['mainseed',['mainSeed',['../class_experiments_1_1_experiment_1_1_experiment.html#ab1c23be37dbe9c964900f69f7559137f',1,'Experiments::Experiment::Experiment']]],
+  ['makeexperimentname',['makeExperimentName',['../class_experiments_1_1_experiment_1_1_experiment.html#a5a09a75719edd93c51932842268ec62a',1,'Experiments::Experiment::Experiment']]],
+  ['maxruns',['maxRuns',['../class_experiments_1_1_experiment_1_1_experiment.html#a0da1e3872aa054765de049f49dd542ca',1,'Experiments::Experiment::Experiment']]],
+  ['mcexpectedstep',['MCExpectedStep',['../class_domains_1_1_domain_1_1_domain.html#a26ebefda7296a4f674826d958f5945b9',1,'Domains::Domain::Domain']]]
 ];

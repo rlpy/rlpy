@@ -45,7 +45,7 @@ PROJECT_BRIEF          = "This is the project synopsis"
 # exceed 55 pixels and the maximum width should not exceed 200 pixels. 
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = "C:/Users/Elliott/Documents/UROP Stuff/Code/RL-Python/Doxygen/testLogo.png"
+PROJECT_LOGO           = "C:/Users/Elliott/Documents/UROP Stuff/Doxygen/testLogo.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -461,7 +461,7 @@ CASE_SENSE_NAMES       = NO
 # will show members with their full class and namespace scopes in the 
 # documentation. If set to YES the scope will be hidden.
 
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 
 # If the SHOW_INCLUDE_FILES tag is set to YES (the default) then Doxygen 
 # will put a list of the files that are included by a file in the documentation 
@@ -636,7 +636,7 @@ WARNINGS               = YES
 # for undocumented members. If EXTRACT_ALL is set to YES then this flag will 
 # automatically be disabled.
 
-WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_UNDOCUMENTED   = NO
 
 # If WARN_IF_DOC_ERROR is set to YES, doxygen will generate warnings for 
 # potential errors in the documentation, such as not documenting some 
@@ -677,12 +677,13 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = ../Experiments \
-                         ../Policies \
-                         ../Representations \
-                         ../Agents \
-                         ../Domains \
-                         Files
+INPUT                  = . \
+                         ../Agents/Agent.py \
+                         ../Domains/Domain.py \
+                         ../Experiments/Experiment.py \
+                         ../Policies/Policy.py \
+                         ../Representations/Representation.py \
+                         ../Domains/BlocksWorld.py
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
@@ -748,31 +749,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is 
 # run.
 
-EXCLUDE                = ../CondorScripts \
-                         ../.svn \
-                         . \
-                         ../Install \
-                         ../MDPSolvers \
-                         ../Profiling \
-                         ../Results \
-                         ../Tools.py \
-                         ../Tools.pyc \
-                         ../main.py \
-                         ../install.txt \
-                         ../mainDP.py \
-                         ../InversionComparison.txt \
-                         ../install_dep.py \
-                         ../ReadMe.txt \
-                         ../timeTEST.py \
-                         ../svn-commit.tmp \
-                         ../IshouldRun.py \
-                         ../ProfileMe.py \
-                         ../mergeRuns.py \
-                         ../multipleRuns.py \
-                         ../.project \
-                         ../.pydevproject \
-                         ../notes.txt \
-                         ../TEST.py
+EXCLUDE                = 
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or 
 # directories that are symbolic links (a Unix file system feature) are excluded 
@@ -800,7 +777,7 @@ EXCLUDE_SYMBOLS        =
 # directories that contain example code fragments that are included (see 
 # the \include command).
 
-EXAMPLE_PATH           = 
+EXAMPLE_PATH           = ../
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -814,7 +791,7 @@ EXAMPLE_PATTERNS       = *
 # commands irrespective of the value of the RECURSIVE tag. 
 # Possible values are YES and NO. If left blank NO is used.
 
-EXAMPLE_RECURSIVE      = NO
+EXAMPLE_RECURSIVE      = YES
 
 # The IMAGE_PATH tag can be used to specify one or more files or 
 # directories that contain image that are included in the documentation (see 

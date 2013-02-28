@@ -1,6 +1,7 @@
 var NAVTREE =
 [
   [ "RL-Python", "index.html", [
+    [ "My test page", "index.html", null ],
     [ "Classes", null, [
       [ "Class List", "annotated.html", "annotated" ],
       [ "Class Index", "classes.html", null ],
@@ -16,9 +17,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"class_domains_1_1_mountain_car_1_1_mountain_car.html#af714cbe4fd11bbe9f1b3e2e0c456dba2",
-"class_representations_1_1i_f_d_d_1_1i_f_d_d.html#a145287661b9fd62e8ff788e85126bf9f"
+".html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,5 +1,4 @@
 ## \file Domain.py
-# \class Domain
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
 ######################################################
@@ -7,12 +6,12 @@
 from Tools import *
 from pydoc import classname
 
-## The \c %Domain class controls the enviroment that the agent is acting upon. 
+## The \c Domain class controls the enviroment that the agent is acting upon. 
 # 
 # \c %Domain provides the basic framework for domains to be acted upon by the Agent class.
 # All new domains should inherit from \c Domain.
 #
-# TODO Describe what role domains do exactly here.
+# TODO Describe what role domains do exactly here. Agents.Agent.Agent
 #
 # \note Though the state s can take on almost any
 # value, if a dimension is not marked as 'continuous'

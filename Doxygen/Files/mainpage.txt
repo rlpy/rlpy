@@ -1,13 +1,7 @@
 // \file mainpage.txt
-// @mainpage AGENT
-/ @section intro_sec Introduction
-/ HI I am an introduction
-/ @section Agent 
-/ HI I am an Agent
-
 /*!
   \mainpage My test page
-  contents
+  Agent
   ...
   more contents
 */

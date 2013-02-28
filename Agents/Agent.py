@@ -1,5 +1,4 @@
 ## \file Agent.py
-# \class Agent
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT
 ######################################################
@@ -9,8 +8,8 @@ from Representations import *
 
 ## The \c %Agent class controls the actions of an RL agent 
 # 
-# \c %Agent provides the basic framework for RL agents to interact with the Domain,
-# Representation, Policy, and Domain classes. All new agent implimentations should inherit
+# \c Agent provides the basic framework for RL agents to interact with the Domain,
+# Representation, Policy, and Domains.Domain.Domain classes. All new agent implimentations should inherit
 # from \c %Agent.
 #
 # TODO Describe what role agents do exactly here.
@@ -108,11 +107,22 @@ class Agent(object):
         else:
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")    
-        
+    
+	## Prints all of the class information.
+	# \snippet Agent.py printAll code
+	
+	# [printAll code]
     def printAll(self):
         printClass(self)
 		
-	## @cond DEV
+	def useless(self):
+		while False:
+			print "HAI"
+			variable = 1
+			# Please look nice?
+	# [printAll code]
+		
+	## \cond DEV
     def checkPerformance(self):
         # This function should not be here. This is just for debugging and getting insight into the performance evolution
         # Set Exploration to zero and sample one episode from the domain

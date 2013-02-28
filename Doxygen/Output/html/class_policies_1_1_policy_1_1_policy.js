@@ -1,9 +1,9 @@
 var class_policies_1_1_policy_1_1_policy =
 [
-    [ "__init__", "class_policies_1_1_policy_1_1_policy.html#a8aa8769e00887c6a1a59691d44640ad4", null ],
-    [ "pi", "class_policies_1_1_policy_1_1_policy.html#afc6a5e71f8bac04b8bbd2c48392b53da", null ],
-    [ "printAll", "class_policies_1_1_policy_1_1_policy.html#adadfd2188ebca6d53646830f87dde757", null ],
-    [ "turnOffExploration", "class_policies_1_1_policy_1_1_policy.html#a904155c22023cc4b1a4a14710735f3fe", null ],
-    [ "turnOnExploration", "class_policies_1_1_policy_1_1_policy.html#a138c55652f813bfb326726d645a9361d", null ],
-    [ "logger", "class_policies_1_1_policy_1_1_policy.html#aef74f03d9b95f2585457c74c1758495d", null ]
+    [ "__init__", "class_policies_1_1_policy_1_1_policy.html#ac775ee34451fdfa742b318538164070e", null ],
+    [ "pi", "class_policies_1_1_policy_1_1_policy.html#a2203d3d6059aa9162eb0be250d7cc38a", null ],
+    [ "printAll", "class_policies_1_1_policy_1_1_policy.html#a64fe699622519d8edc3a69716ce076c8", null ],
+    [ "turnOffExploration", "class_policies_1_1_policy_1_1_policy.html#afe9e56fe163053f213118463eba8dcdd", null ],
+    [ "turnOnExploration", "class_policies_1_1_policy_1_1_policy.html#a6cbea10aa2cbc0d0147df1dd66eb3db3", null ],
+    [ "logger", "class_policies_1_1_policy_1_1_policy.html#a0b14e488ae28d98d262453f3e9cd6e4d", null ]
 ];
