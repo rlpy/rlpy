@@ -5,7 +5,7 @@
 # 1. InvertedPendulum
 from Policy import *
 class FixedPolicy(Policy):
-    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring']
+    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring','SystemAdministrator']
     def pi(self,s):
         if not className(self.representation.domain) in self.supportedDomains:
             print "ERROR: There is no fixed policy defined for %s" % className(self.representation.domain)
@@ -104,3 +104,10 @@ class FixedPolicy(Policy):
 #                print "Action", a
 #                print '============'
             return vec2id(actions,ones(len(agents),dtype=integer)*5)
+        if className(self.representation.domain) == 'SystemAdministrator':
+            # Select a broken computer and reset it
+            brokenComputers = where(s==0)[0]
+            if len(brokenComputers):
+                return randSet(brokenComputers)
+            else:
+                return self.representation.domain.computers_num
