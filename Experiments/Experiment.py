@@ -1,5 +1,4 @@
 ## \file Experiment.py
-# \class Experiment
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
 ######################################################

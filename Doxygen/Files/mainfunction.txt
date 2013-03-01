@@ -1,0 +1,12 @@
+// \file mainfunction.txt
+/*! 
+  \page main.py Main Function
+  \section Overview
+  
+	The main function resides in main.py in top level of the the RL-Python directory.  \n
+  This file is the heart of the RL_Python library; like in any program, it controls the entire program. \n
+  Thus it is important to understand main.py in order to use RL-Python. \n
+  Agents.Agent.Agent is an agent.
+  
+  \image html gridWorld.png "Grid World Image"
+*/

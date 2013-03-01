@@ -28,12 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="testLogo.png"/></td>
+  <td id="projectlogo"><img alt="Logo" src="ACL_logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RL-Python
-   &#160;<span id="projectnumber">42</span>
+   &#160;<span id="projectnumber">Version 1.0</span>
    </div>
-   <div id="projectbrief">This is the project synopsis</div>
+   <div id="projectbrief">The Reinforced Learning Library for Education and Research</div>
   </td>
  </tr>
  </tbody>
@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -122,7 +123,18 @@ Inheritance diagram for Domain:</div>
  <div class="center">
   <img src="class_domains_1_1_domain_1_1_domain.png" usemap="#Domain_map" alt=""/>
   <map id="Domain_map" name="Domain_map">
-<area href="class_domains_1_1_blocks_world_1_1_blocks_world.html" title="Developed by Alborz Geramiard Nov 12th 2012 at MIT #." alt="BlocksWorld" shape="rect" coords="0,112,82,136"/>
+<area href="class_domains_1_1_blocks_world_1_1_blocks_world.html" title="Developed by Alborz Geramiard Nov 12th 2012 at MIT #." alt="BlocksWorld" shape="rect" coords="136,112,262,136"/>
+<area href="class_domains_1_1_cart_pole_1_1_cart_pole.html" title="Robert H Klein, Alborz Geramifard at MIT, Dec." alt="CartPole" shape="rect" coords="136,168,262,192"/>
+<area href="class_domains_1_1_chain_m_d_p_1_1_chain_m_d_p.html" title="Developed by Alborz Geramiard Nov 20th 2012 at MIT #." alt="ChainMDP" shape="rect" coords="136,224,262,248"/>
+<area href="class_domains_1_1_fifty_chain_1_1_fifty_chain.html" title="Alborz Geramifard, Robert H." alt="FiftyChain" shape="rect" coords="136,280,262,304"/>
+<area href="class_domains_1_1_flip_board_1_1_flip_board.html" title="Developed by Alborz Geramiard Dec 28th 2012 at MIT #." alt="FlipBoard" shape="rect" coords="136,336,262,360"/>
+<area href="class_domains_1_1_intruder_monitoring_1_1_intruder_monitoring.html" title="Developed by N." alt="IntruderMonitoring" shape="rect" coords="136,392,262,416"/>
+<area href="class_domains_1_1_mountain_car_1_1_mountain_car.html" title="Developed by Josh Joseph and Alborz Geramifard Nov 15th 2012 at MIT #." alt="MountainCar" shape="rect" coords="136,448,262,472"/>
+<area href="class_domains_1_1_pendulum_1_1_pendulum.html" title="Robert H." alt="Pendulum" shape="rect" coords="136,504,262,528"/>
+<area href="class_domains_1_1_pit_maze_1_1_pit_maze.html" title="Developed by Alborz Geramiard Oct 25th 2012 at MIT #." alt="PitMaze" shape="rect" coords="136,560,262,584"/>
+<area href="class_domains_1_1_p_s_t_1_1_p_s_t.html" alt="PST" shape="rect" coords="136,616,262,640"/>
+<area href="class_domains_1_1_p_s_t_orig_1_1_p_s_t.html" alt="PST" shape="rect" coords="136,672,262,696"/>
+<area href="class_domains_1_1_system_administrator_1_1_system_administrator.html" title="Robert H Klein, Alborz Geramifard Nov 21st 2012 at MIT #." alt="SystemAdministrator" shape="rect" coords="136,728,262,752"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -272,7 +284,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> Returns r, ns, p. </p>
 <p>Each row of each output corresponds to one possibility. e.g. s,a -&gt; r[i], ns[i] with probability p[i] </p>
-
+<div class="fragment"><div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">def </span>expectedStep(self,s,a):</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">pass</span> </div>
+    </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a0c9595ac1e62a30b42574f8e1b335817"></a>
@@ -300,7 +316,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 </div><div class="memdoc">
 
 <p>Returns True if the state s is a terminal state, False otherwise. </p>
-
+<div class="fragment"><div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">def </span>isTerminal(self,s):</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span> <span class="comment"># By default the domain does not terminate unless it specifies the otherwise</span></div>
+       </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a397b5376f221417d22f8c40a1a7070eb"></a>
@@ -329,7 +349,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p>The vanilla (default) version returns all actions [0, 1, 2...] You may want to change this in your domain if all actions are not available at all times. </p>
 <dl class="section return"><dt>Returns</dt><dd>numpy array: possible actions in each state. </dd></dl>
-
+<div class="fragment"><div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keyword">def </span>possibleActions(self,s):</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> arange(self.actions_num)</div>
+    </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ae8937534fa7cdd64071324f29058f930"></a>
@@ -346,7 +370,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
       </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>numpy array: the initial state. </dd></dl>
-
+<div class="fragment"><div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">def </span>s0(self):       </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        abstract</div>
+        </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a7586097063b6f1631f9bd32227a8a256"></a>
@@ -375,7 +403,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p>This function is used for cases when state vector has elements outside of its limits. </p>
 <p>This function simply caps each element of the state space to lie in the allowed state limits </p>
-
+<div class="fragment"><div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keyword">def </span>saturateState(self,s):</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">return</span> bound_vec(s,self.discrete_statespace_limits)</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a883f55ec47a569b08fa2518309e6ee32"></a>
@@ -403,7 +434,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 </div><div class="memdoc">
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> Show a visualization of the current learning, usually in the form of a value gridded value function and policy (really only possible for 1 or 2-state domains). </p>
-
+<div class="fragment"><div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">def </span>showLearning(self,representation):</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">pass</span></div>
+    </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a95621a488f4bd554b9031ae0416b098d"></a>
@@ -438,7 +473,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> Perform action a while in state s: </p>
 <dl class="section return"><dt>Returns</dt><dd>[r,ns,t] =&gt; Reward, next state, isTerminal (boolean) </dd></dl>
-
+<div class="fragment"><div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">def </span>step(self,s,a):</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        abstract</div>
+        </div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -517,7 +556,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>Domains</b></li><li class="navelem"><b>Domain</b></li><li class="navelem"><a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a></li>
-    <li class="footer">Generated on Tue Feb 26 2013 16:02:08 for RL-Python by
+    <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

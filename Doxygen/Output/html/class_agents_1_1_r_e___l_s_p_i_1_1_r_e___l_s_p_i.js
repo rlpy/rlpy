@@ -1,8 +1,8 @@
 var class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i =
 [
-    [ "__init__", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#a85386569b5df88683bf2312a513da1f2", null ],
-    [ "learn", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#ad737450055a44eac67fcf705abaed17e", null ],
-    [ "representationExpansionLSPI", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#afd44b011d30b8a391483e09a1ba15594", null ],
-    [ "re_iterations", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#a5f9c18b2d5e070dd8d4c758c26071383", null ],
-    [ "samples_count", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#ac715347929af8559a3921d408dcee315", null ]
+    [ "__init__", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#ac775ee34451fdfa742b318538164070e", null ],
+    [ "learn", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#aeb9339921d4a63f47fd93e7d7822f0e1", null ],
+    [ "representationExpansionLSPI", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#a3da01be7f66913339a0ff319df109971", null ],
+    [ "re_iterations", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#ab0f21f3937b6f24a20cfff88900685d4", null ],
+    [ "samples_count", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html#a9a06fc202d1070e79bc838d46b69c7d1", null ]
 ];

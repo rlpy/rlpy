@@ -28,12 +28,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="testLogo.png"/></td>
+  <td id="projectlogo"><img alt="Logo" src="ACL_logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RL-Python
-   &#160;<span id="projectnumber">42</span>
+   &#160;<span id="projectnumber">Version 1.0</span>
    </div>
-   <div id="projectbrief">This is the project synopsis</div>
+   <div id="projectbrief">The Reinforced Learning Library for Education and Research</div>
   </td>
  </tr>
  </tbody>
@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -122,6 +123,14 @@ Inheritance diagram for Representation:</div>
  <div class="center">
   <img src="class_representations_1_1_representation_1_1_representation.png" usemap="#Representation_map" alt=""/>
   <map id="Representation_map" name="Representation_map">
+<area href="class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html" alt="BEBF" shape="rect" coords="253,112,496,136"/>
+<area href="class_representations_1_1i_f_d_d_1_1i_f_d_d.html" alt="iFDD" shape="rect" coords="253,168,496,192"/>
+<area href="class_representations_1_1_incremental_tabular_1_1_incremental_tabular.html" alt="IncrementalTabular" shape="rect" coords="253,224,496,248"/>
+<area href="class_representations_1_1_independent_discretization_1_1_independent_discretization.html" alt="IndependentDiscretization" shape="rect" coords="253,280,496,304"/>
+<area href="class_representations_1_1_independent_discretization_compact_binary_1_1_independent_discretization_compact_binary.html" alt="IndependentDiscretizationCompactBinary" shape="rect" coords="253,336,496,360"/>
+<area href="class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html" alt="OMPTD" shape="rect" coords="253,392,496,416"/>
+<area href="class_representations_1_1_r_b_f_1_1_r_b_f.html" alt="RBF" shape="rect" coords="253,448,496,472"/>
+<area href="class_representations_1_1_tabular_1_1_tabular.html" alt="Tabular" shape="rect" coords="253,504,496,528"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -246,8 +255,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <code>Representation</code> class describes the information the Agent gathered about the Domain. </p>
 <p><code>Representation</code> provides the basic framework for Representations to interact with the Agent and Policy Classes. All new <a class="el" href="class_representations_1_1_representation_1_1_representation.html" title="The Representation class describes the information the Agent gathered about the Domain.">Representation</a> implimentations should inherit from <code>Representation</code>. </p>
-<dl class="section note"><dt>Note</dt><dd>It is assumed that the Linear Function approximator Family is being used.</dd></dl>
-<dl class="section author"><dt>Author</dt><dd>Developed by Alborz Geramiard Oct 25th 2012 at MIT </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>It is assumed that the Linear Function approximator Family is being used. </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a52416f401b425ffe57e952026f599f7f"></a>
 <div class="memitem">
@@ -264,7 +272,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Add a new 0 weight corresponding to the new added feature for all actions. </p>
-
+<div class="fragment"><div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">def </span>addNewWeight(self):</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        self.theta    = addNewElementForAllActions(self.theta,self.domain.actions_num)</div>
+      </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a8d2d2ea82dfc9df7df63a2bb8eeaa8d0"></a>
@@ -293,7 +305,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p>Given a state it returns a vector with the same dimensionality of s each element of the returned valued is the zero-indexed bin number corresponding to s This function accepts scalar inputs when the domain has 1 dimension CompactBinary version exclude feature activation for the negative case of binary features. </p>
 <p>For example if the light is off, no feature corresponds to this case and hence nothing is activated. </p>
-
+<div class="fragment"><div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">def </span>binState(self,s):</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keywordflow">if</span> isinstance(s,int): s = [s]</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        assert(len(s) == len(self.domain.statespace_limits[:,0]))</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        bs  = empty(len(s),<span class="stringliteral">&#39;uint16&#39;</span>)</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(self.domain.state_space_dims):</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">return</span> bs</div>
+   </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ae5724debd14045befb050644876c3a59"></a>
@@ -322,7 +343,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> This is the actual function that each representation should fill </p>
 <dl class="section note"><dt>Note</dt><dd>if state is terminal the feature vector is always zero! </dd></dl>
-
+<div class="fragment"><div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">def </span>phi_nonTerminal(self,s):</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            abstract</div>
+            </div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a64fe699622519d8edc3a69716ce076c8"></a>
@@ -340,7 +365,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Prints the class information. </p>
-
+<div class="fragment"><div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        printClass(self)</div>
+        </div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -373,7 +402,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>Representations</b></li><li class="navelem"><b>Representation</b></li><li class="navelem"><a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a></li>
-    <li class="footer">Generated on Tue Feb 26 2013 16:02:09 for RL-Python by
+    <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

@@ -19,5 +19,14 @@ var class_representations_1_1_representation_1_1_representation =
     [ "Qs", "class_representations_1_1_representation_1_1_representation.html#a7dea6fd83fa950ed82f5261da7ef6aa6", null ],
     [ "setBinsPerDimension", "class_representations_1_1_representation_1_1_representation.html#aeb2656b40bf3fdd2c6939d9d114bf77e", null ],
     [ "V", "class_representations_1_1_representation_1_1_representation.html#a31a8ceeacc46e52ae215b0b593e12f5b", null ],
-    [ "discretization", "class_representations_1_1_representation_1_1_representation.html#a5e7b5241bd552a2f1c4adad86d643be1", null ]
+    [ "agg_states_num", "class_representations_1_1_representation_1_1_representation.html#adcde241f5f76870669c7888188b02414", null ],
+    [ "bins_per_dim", "class_representations_1_1_representation_1_1_representation.html#ac0487462042ca3f919ab99c0e0fd981a", null ],
+    [ "binWidth_per_dim", "class_representations_1_1_representation_1_1_representation.html#a7e77c6bed4ac93ecc52ce9f7039a7d3d", null ],
+    [ "DEBUG", "class_representations_1_1_representation_1_1_representation.html#a48f76a8c0dc23567f303ed6aa221e078", null ],
+    [ "discretization", "class_representations_1_1_representation_1_1_representation.html#a3f1a672e7dba7669a727333fdd658e9f", null ],
+    [ "discretization", "class_representations_1_1_representation_1_1_representation.html#a5e7b5241bd552a2f1c4adad86d643be1", null ],
+    [ "domain", "class_representations_1_1_representation_1_1_representation.html#a8a6287602630db6aeffcb6cf5787a216", null ],
+    [ "features_num", "class_representations_1_1_representation_1_1_representation.html#acb5162e6c9ed7495937f6d771add3bbb", null ],
+    [ "logger", "class_representations_1_1_representation_1_1_representation.html#a0b14e488ae28d98d262453f3e9cd6e4d", null ],
+    [ "theta", "class_representations_1_1_representation_1_1_representation.html#aebf487f5d315cb61f0bd86455edff1fd", null ]
 ];

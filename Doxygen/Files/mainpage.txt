@@ -1,7 +1,7 @@
 // \file mainpage.txt
 /*!
-  \mainpage My test page
-  Agent
+  \mainpage Overview
   ...
   more contents
+  \image html ACL_logo.png "Image"
 */
