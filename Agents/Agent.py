@@ -9,7 +9,7 @@ from Representations import *
 ## The \c %Agent class controls the actions of an RL agent 
 # 
 # \c Agent provides the basic framework for RL agents to interact with the Domain,
-# Representation, Policy, and Domains.Domain.Domain classes. All new agent implimentations should inherit
+# Representation, Policy, and \ref Domains.Domain.Domain "Domain" classes. All new agent implimentations should inherit
 # from \c %Agent.
 #
 # TODO Describe what role agents do exactly here.
@@ -108,8 +108,8 @@ class Agent(object):
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")    
     
-	## Prints all of the class information.
-	# \snippet Agent.py printAll code
+	## Prints all of the class information. See code
+	# \ref Agent_printAll "Here".
 	
 	# [printAll code]
     def printAll(self):

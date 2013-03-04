@@ -216,7 +216,7 @@ list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <code>Agent</code> class controls the actions of an RL agent. </p>
-<p><code><a class="el" href="class_agents_1_1_agent_1_1_agent.html" title="The Agent class controls the actions of an RL agent.">Agent</a></code> provides the basic framework for RL agents to interact with the Domain, Representation, Policy, and <a class="el" href="class_domains_1_1_domain_1_1_domain.html" title="The Domain class controls the enviroment that the agent is acting upon.">Domains.Domain.Domain</a> classes. All new agent implimentations should inherit from <code>Agent</code>.</p>
+<p><code><a class="el" href="class_agents_1_1_agent_1_1_agent.html" title="The Agent class controls the actions of an RL agent.">Agent</a></code> provides the basic framework for RL agents to interact with the Domain, Representation, Policy, and <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a> classes. All new agent implimentations should inherit from <code>Agent</code>.</p>
 <p>TODO Describe what role agents do exactly here. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac775ee34451fdfa742b318538164070e"></a>
@@ -280,41 +280,7 @@ list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Initializes the \ agent object. </p>
-<div class="fragment"><div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">def </span>__init__(self,representation,policy,domain,logger,initial_alpha = 0.1,alpha_decay_mode = &#39;dabney&#39;, boyan_N0 = 1000):</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="comment">## @var initial_alpha </span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="comment"># default is 0.1</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="comment"># @var alpha_decay_mode</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="comment"># default is &#39;dabney&#39;</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="comment"># @var boyan_N0 </span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment"># default is 1000</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        self.representation = representation</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        self.policy     = policy</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        self.domain     = domain</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        self.logger     = logger</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        self.initial_alpha = initial_alpha</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        self.alpha      = initial_alpha</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        self.alpha_decay_mode = alpha_decay_mode.lower()</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        self.boyan_N0   = boyan_N0  </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">if</span> self.logger:</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            self.logger.line()</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Agent:\t\t&quot;</span>+str(className(self)))</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Policy:\t\t&quot;</span>+str(className(self.policy)))</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;boyan&#39;</span>: self.logger.log(<span class="stringliteral">&quot;boyan_N0:\t%.1f&quot;</span>%self.boyan_N0)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="comment"># Check to make sure selected alpha_decay mode is valid</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">if</span> <span class="keywordflow">not</span> self.alpha_decay_mode <span class="keywordflow">in</span> self.valid_decay_modes:</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            errMsg = <span class="stringliteral">&quot;Invalid decay mode selected:&quot;</span>+self.alpha_decay -_mode+<span class="stringliteral">&quot;.\nValid choices are: &quot;</span>+str(self.valid_decay_modes)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="keywordflow">if</span> self.logger:</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                self.logger.log(errMsg)</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordflow">else</span>: shout(errMsg)</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            sys.exit(1)</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="comment"># Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="comment"># initial_alpha will act as a permanent upper-bound on alpha.</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;dabney&#39;</span>:</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            self.initial_alpha = 1.0</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            self.alpha = 1.0</div>
-            </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -333,19 +299,8 @@ list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Prints all of the class information. </p>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        printClass(self)</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    <span class="keyword">def </span>useless(self):</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">while</span> <span class="keyword">False</span>:</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;            <span class="keywordflow">print</span> <span class="stringliteral">&quot;HAI&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;            variable = 1</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;            <span class="comment"># Please look nice?</span></div>
-</div><!-- fragment --><div class="fragment"><div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        printClass(self)</div>
-        </div>
-</div><!-- fragment -->
+<p>See code <a class="el" href="_agent.html#Agent_printAll">Here</a>. </p>
+
 </div>
 </div>
 <a class="anchor" id="a86f3f766914e88f28af9b7ae90740cdf"></a>
@@ -411,25 +366,7 @@ list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
-<div class="fragment"><div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">def </span>updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;dabney&#39;</span>:</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="comment"># We only update alpha if this step is non-terminal; else phi_prime becomes</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="comment"># zero and the dot product below becomes very large, creating a very small alpha</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordflow">if</span> <span class="keywordflow">not</span> terminal:</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                <span class="comment">#Automatic learning rate: [Dabney W. 2012]</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,eligibility_trace_s)) <span class="comment">#http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                self.candid_alpha    = 1/(self.candid_alpha*1.) <span class="keywordflow">if</span> self.candid_alpha != 0 <span class="keywordflow">else</span> inf</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                self.alpha          = min(self.alpha,self.candid_alpha)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="comment"># else we take no action</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">elif</span> self.alpha_decay_mode == <span class="stringliteral">&#39;boyan&#39;</span>:</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + self.episode_count ** 1.1)</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            self.alpha /= nnz <span class="comment"># divide by number of nonzero features; note that this method is only called if nnz &gt; 0</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            shout(<span class="stringliteral">&quot;Unrecognized decay mode&quot;</span>)</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Unrecognized decay mode &quot;</span>)    </div>
-    </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>

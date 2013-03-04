@@ -336,30 +336,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   </table>
   </dd>
 </dl>
-<div class="fragment"><div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keyword">def </span>batchDiscover(self,td_errors, all_phi_s, s):</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="comment"># need states here instead?</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        addedFeature = <span class="keyword">False</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="comment"># PLACEHOLDER for norm of function</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        norm = max(abs(td_errors))<span class="comment"># Norm of function</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordflow">for</span> j <span class="keywordflow">in</span> arange(self.maxBatchDicovery):</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">#            print &#39;s&#39;</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment">#            print &#39;tderr&#39;,td_errors[0:20]</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            self.features.append(self.getFunctionApproximation(s, td_errors))</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordflow">if</span> self.debug:</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                shout(<span class="stringliteral">&#39;s&#39;</span>,s)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                shout(<span class="stringliteral">&#39;td_errors&#39;</span>,td_errors)</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            self.logger.log(<span class="stringliteral">&#39;Norm: %0.4f&#39;</span> % norm)</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="keywordflow">if</span> norm &gt; self.batchThreshold:</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">#                print &#39;added feature&#39;</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                self.addNewWeight()</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                addedFeature        = <span class="keyword">True</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                self.features_num   += 1</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                self.logger.log(<span class="stringliteral">&#39;Added feature. \t %d total feats&#39;</span> % self.features_num)</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <span class="keywordflow">else</span>: </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                <span class="keywordflow">break</span></div>
-        <span class="keywordflow">return</span> addedFeature</div>
-</div><!-- fragment -->
+
 </div>
 </div>
 </div><!-- contents -->

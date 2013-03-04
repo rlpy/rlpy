@@ -284,11 +284,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> Returns r, ns, p. </p>
 <p>Each row of each output corresponds to one possibility. e.g. s,a -&gt; r[i], ns[i] with probability p[i] </p>
-<div class="fragment"><div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">def </span>expectedStep(self,s,a):</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">pass</span> </div>
-    </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a0c9595ac1e62a30b42574f8e1b335817"></a>
@@ -316,11 +312,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 </div><div class="memdoc">
 
 <p>Returns True if the state s is a terminal state, False otherwise. </p>
-<div class="fragment"><div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">def </span>isTerminal(self,s):</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span> <span class="comment"># By default the domain does not terminate unless it specifies the otherwise</span></div>
-       </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a397b5376f221417d22f8c40a1a7070eb"></a>
@@ -349,11 +341,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p>The vanilla (default) version returns all actions [0, 1, 2...] You may want to change this in your domain if all actions are not available at all times. </p>
 <dl class="section return"><dt>Returns</dt><dd>numpy array: possible actions in each state. </dd></dl>
-<div class="fragment"><div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keyword">def </span>possibleActions(self,s):</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> arange(self.actions_num)</div>
-    </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="ae8937534fa7cdd64071324f29058f930"></a>
@@ -370,11 +358,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
       </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>numpy array: the initial state. </dd></dl>
-<div class="fragment"><div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">def </span>s0(self):       </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        abstract</div>
-        </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a7586097063b6f1631f9bd32227a8a256"></a>
@@ -403,10 +387,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p>This function is used for cases when state vector has elements outside of its limits. </p>
 <p>This function simply caps each element of the state space to lie in the allowed state limits </p>
-<div class="fragment"><div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keyword">def </span>saturateState(self,s):</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">return</span> bound_vec(s,self.discrete_statespace_limits)</div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a883f55ec47a569b08fa2518309e6ee32"></a>
@@ -434,11 +415,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 </div><div class="memdoc">
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> Show a visualization of the current learning, usually in the form of a value gridded value function and policy (really only possible for 1 or 2-state domains). </p>
-<div class="fragment"><div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">def </span>showLearning(self,representation):</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">pass</span></div>
-    </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a95621a488f4bd554b9031ae0416b098d"></a>
@@ -473,11 +450,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CRITICAL_TERMINATION</
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> Perform action a while in state s: </p>
 <dl class="section return"><dt>Returns</dt><dd>[r,ns,t] =&gt; Reward, next state, isTerminal (boolean) </dd></dl>
-<div class="fragment"><div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">def </span>step(self,s,a):</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        abstract</div>
-        </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>

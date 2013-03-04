@@ -5,7 +5,6 @@ var class_agents_1_1_policy_evaluation_1_1_policy_evaluation =
     [ "learn", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#aeb9339921d4a63f47fd93e7d7822f0e1", null ],
     [ "A", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#a3b98e2dffc6cb06a89dcb0d5c60a0206", null ],
     [ "compare_with_me", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#abadad7c66909e97d8d6a7b2468ba5d97", null ],
-    [ "LOAD_POLICY_FILE", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#ae361b1e45e0546eacd065c1f187df60a", null ],
     [ "Q_MC", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#a163ea7fdb5e273a277c3c30bec9e8d8b", null ],
     [ "re_iterations", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#ab0f21f3937b6f24a20cfff88900685d4", null ],
     [ "S", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#ad53aeb78abc83a52ab8982f5c82a3d5b", null ],

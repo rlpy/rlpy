@@ -2,6 +2,7 @@ var NAVTREE =
 [
   [ "RL-Python", "index.html", [
     [ "Overview", "index.html", null ],
+    [ "Code", "_code.html", "_code" ],
     [ "Main Function", "main_8py.html", [
       [ "Overview", "main_8py.html#Overview", null ]
     ] ],
@@ -21,10 +22,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"class_domains_1_1_chain_m_d_p_1_1_chain_m_d_p.html#ad9e3fd811c6982ce7c12c1940592e45c",
-"class_domains_1_1_p_s_t_1_1_u_a_v_location.html#a121b8bab5c0ceda3e33140d406f4887e",
-"class_experiments_1_1_batch_experiment_1_1_batch_experiment.html#ab4ae7205573977222eadd0795db193e2",
-"functions_vars.html"
+"class_domains_1_1_mountain_car_1_1_mountain_car.html",
+"class_representations_1_1_representation_1_1_representation.html#a8d2d2ea82dfc9df7df63a2bb8eeaa8d0"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

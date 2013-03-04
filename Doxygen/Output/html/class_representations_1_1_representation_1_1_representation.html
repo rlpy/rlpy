@@ -272,11 +272,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Add a new 0 weight corresponding to the new added feature for all actions. </p>
-<div class="fragment"><div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">def </span>addNewWeight(self):</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        self.theta    = addNewElementForAllActions(self.theta,self.domain.actions_num)</div>
-      </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a8d2d2ea82dfc9df7df63a2bb8eeaa8d0"></a>
@@ -305,16 +301,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p>Given a state it returns a vector with the same dimensionality of s each element of the returned valued is the zero-indexed bin number corresponding to s This function accepts scalar inputs when the domain has 1 dimension CompactBinary version exclude feature activation for the negative case of binary features. </p>
 <p>For example if the light is off, no feature corresponds to this case and hence nothing is activated. </p>
-<div class="fragment"><div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">def </span>binState(self,s):</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keywordflow">if</span> isinstance(s,int): s = [s]</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        assert(len(s) == len(self.domain.statespace_limits[:,0]))</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        bs  = empty(len(s),<span class="stringliteral">&#39;uint16&#39;</span>)</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(self.domain.state_space_dims):</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">return</span> bs</div>
-   </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="ae5724debd14045befb050644876c3a59"></a>
@@ -343,11 +330,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p><b>ABSTRACT</b> <b>METHOD:</b> This is the actual function that each representation should fill </p>
 <dl class="section note"><dt>Note</dt><dd>if state is terminal the feature vector is always zero! </dd></dl>
-<div class="fragment"><div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">def </span>phi_nonTerminal(self,s):</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            abstract</div>
-            </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a class="anchor" id="a64fe699622519d8edc3a69716ce076c8"></a>
@@ -365,11 +348,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Prints the class information. </p>
-<div class="fragment"><div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        printClass(self)</div>
-        </div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>

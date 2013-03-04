@@ -15,18 +15,6 @@ var class_domains_1_1_domain_1_1_domain =
     [ "showLearning", "class_domains_1_1_domain_1_1_domain.html#a883f55ec47a569b08fa2518309e6ee32", null ],
     [ "step", "class_domains_1_1_domain_1_1_domain.html#a95621a488f4bd554b9031ae0416b098d", null ],
     [ "test", "class_domains_1_1_domain_1_1_domain.html#a3a5311f944836a8f4795a2506b37331d", null ],
-    [ "actions_num", "class_domains_1_1_domain_1_1_domain.html#a7bad0fd4ac255d0e0a6c8cae33e353a5", null ],
-    [ "continuous_dims", "class_domains_1_1_domain_1_1_domain.html#aea64b584b6bec2de752d46fab49c9b85", null ],
     [ "continuous_dims", "class_domains_1_1_domain_1_1_domain.html#a2b54aee68d9bd1722a997813248fdf83", null ],
-    [ "CRITICAL_TERMINATION", "class_domains_1_1_domain_1_1_domain.html#a71671f2bf754c6567230b59a582359f9", null ],
-    [ "discrete_statespace_limits", "class_domains_1_1_domain_1_1_domain.html#a9d445e83600c41b68d98d6ca708fbc6e", null ],
-    [ "episodeCap", "class_domains_1_1_domain_1_1_domain.html#adf810658aca075b3ad991ca73916bbcb", null ],
-    [ "gamma", "class_domains_1_1_domain_1_1_domain.html#a77727228881c1f85b729249f644bb14d", null ],
-    [ "gamma", "class_domains_1_1_domain_1_1_domain.html#a8d00631c9622112f1877fdb1222c242e", null ],
-    [ "logger", "class_domains_1_1_domain_1_1_domain.html#a0b14e488ae28d98d262453f3e9cd6e4d", null ],
-    [ "NOMINAL_TERMINATION", "class_domains_1_1_domain_1_1_domain.html#ac3ee45768003e8dd86d24e64a394e8dc", null ],
-    [ "NOT_TERMINATED", "class_domains_1_1_domain_1_1_domain.html#a1563f732252e319a7dc25248d3cac14c", null ],
-    [ "state_space_dims", "class_domains_1_1_domain_1_1_domain.html#ae5ce4ab7ffc1a5efb7a991ec3f4df13c", null ],
-    [ "states_num", "class_domains_1_1_domain_1_1_domain.html#a4eaaa983748749630db18721497583e0", null ],
-    [ "statespace_limits", "class_domains_1_1_domain_1_1_domain.html#a2407e8ef1957e60bb4c6f815855ba152", null ]
+    [ "gamma", "class_domains_1_1_domain_1_1_domain.html#a8d00631c9622112f1877fdb1222c242e", null ]
 ];
