@@ -56,7 +56,7 @@ from Domain import *
 # Else If it least one capable vehicle is in the surveillance region but no comms
 # link is available, a partial red comms line is drawn with a red vertical
 # line cutting down its center.
-# 
+#
 ########################################################
 
 class UAVLocation:
@@ -65,14 +65,14 @@ class UAVLocation:
     COMMS       = 2
     SURVEIL     = 3
     SIZE        = 4
-    
+
 class StateStruct:
     def __init__(self, locations, fuel, actuator, sensor):
         self.locations = locations
         self.fuel       = fuel
         self.actuator   = actuator
         self.sensor     = sensor
-    
+
 class ActuatorState:
     FAILED, RUNNING = 0,1 # Status of actuator
     SIZE = 2
@@ -89,13 +89,13 @@ class UAVAction:
 class UAVIndex:
     LOC, FUEL, ACT_STATUS, SENS_STATUS = 0,1,2,3
     SIZE = 4 # Number of indices required for state of each UAV
-        
+
 ## @author Robert H. Klein
 class PST(Domain):
-    
+
     episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
     gamma               = 0.9  # 0.9 used in tutorial and matlab
-    
+
     # Domain constants
     FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
     P_ACT_FAIL          = 0.05 # Probability that actuators fail on this timestep [0.02 in tutorial]
@@ -116,7 +116,7 @@ class PST(Domain):
     fuelUnitsBurned     = 0
     LIMITS              = []   # Limits on action indices
     isCommStatesCovered = False # All comms states are covered on a given timestep, enabling surveillance rewards
-    
+
     # Plotting constants
     UAV_RADIUS = 0.3
     SENSOR_REL_X        = 0.2 # Location of the sensor image relative to the uav
@@ -136,21 +136,21 @@ class PST(Domain):
     LOCATION_WIDTH      = 1.0 # Width of each rectangle used to represent a location
     RECT_GAP            = 0.9   # Gap to leave between rectangles
     dist_between_locations = 0 # Total distance between location rectangles in plot, computed in init()
-    
+
     ###
     def __init__(self, NUM_UAV = 3, motionNoise = 0, logger = None):
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (LOC, FUEL...) * NUM_UAV
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
         locations_lim = array(tile([0,UAVLocation.SIZE-1],(NUM_UAV,1)))
-        fuel_lim =      array(tile([0,self.FULL_FUEL],(NUM_UAV,1)))     
+        fuel_lim =      array(tile([0,self.FULL_FUEL],(NUM_UAV,1)))
         actuator_lim =  array(tile([0,ActuatorState.SIZE-1],(NUM_UAV,1)))
         sensor_lim =    array(tile([0,SensorState.SIZE-1],(NUM_UAV,1)))
         self.statespace_limits      = vstack([locations_lim, fuel_lim, actuator_lim, sensor_lim])# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.motionNoise            = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
         self.LIMITS                 = UAVAction.SIZE * ones(NUM_UAV, dtype='int') # eg [3,3,3,3], number of possible actions
         self.isCommStatesCovered    = False # Don't have communications available yet, so no surveillance reward allowed.
-        self.location_rect_vis      = None # 
+        self.location_rect_vis      = None #
         self.location_coord         = None
         self.uav_circ_vis           = None
         self.uav_text_vis           = None
@@ -170,11 +170,11 @@ class PST(Domain):
         [self.DimNames.append('UAV%d-sen' % i) for i in arange(NUM_UAV)]
         super(PST,self).__init__(logger)
         if self.logger: self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
-        
+
     def resetLocalVariables(self):
         self.numCrashed = 0 # Number of crashed UAVs [n_c]
-        
-        
+
+
     def showDomain(self,s,a = 0):
         if self.domain_fig is None:
             self.domain_fig = pl.figure(1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
@@ -182,7 +182,7 @@ class PST(Domain):
         pl.clf()
          #Draw the environment
          # Allocate horizontal 'lanes' for UAVs to traverse
-         
+
 # Formerly, we checked if this was the first time plotting; wedge shapes cannot be removed from
 # matplotlib environment, nor can their properties be changed, without clearing the figure
 # Thus, we must redraw the figure on each timestep
@@ -199,38 +199,38 @@ class PST(Domain):
         self.location_coord = [0.5 + (self.LOCATION_WIDTH / 2) + (self.dist_between_locations)*i for i in range(UAVLocation.SIZE-1)]
         crashLocationX = 1.0 + (self.dist_between_locations)*(UAVLocation.SIZE-1)
         self.location_coord.append(crashLocationX + self.LOCATION_WIDTH / 2)
-        
+
          # Create rectangular patches at each of those locations
         self.location_rect_vis = [mpatches.Rectangle([0.5 + (self.dist_between_locations)*i, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'w') for i in range(UAVLocation.SIZE-1)]
         self.location_rect_vis.append(mpatches.Rectangle([crashLocationX, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'r'))
         [self.subplot_axes.add_patch(self.location_rect_vis[i]) for i in range(4)]
         self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV + 0.5, self.NUM_UAV + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
         # Initialize list of circle objects
-        
+
         uav_x = self.location_coord[UAVLocation.MAINTENANCE]
-        
+
 #            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
         # Update the member variables storing all the figure objects
         self.uav_circ_vis = [mpatches.Circle((uav_x,1+uav_id), self.UAV_RADIUS, fc="w") for uav_id in range(0,self.NUM_UAV)]
         self.uav_text_vis = [pl.text(0, 0, 0) for uav_id in range(0,self.NUM_UAV)]
         self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
         self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
- 
- # The following was executed when we used to check if the environment needed re-drawing: see above.        
+
+ # The following was executed when we used to check if the environment needed re-drawing: see above.
          # Remove all UAV circle objects from visualization
 #        else:
 #            [self.uav_circ_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
 #            [self.uav_text_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
 #            [self.uav_sensor_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
-        
-    
+
+
         # For each UAV:
         # Draw a circle, with text inside = amt fuel remaining
         # Triangle on top of UAV for comms, black = good, red = bad
         # Triangle in front of UAV for surveillance
-        
+
         sStruct = self.state2Struct(s)
-        
+
         for uav_id in range(0,self.NUM_UAV):
             # Assign all the variables corresponding to this UAV for this iteration;
             # this could alternately be done with a UAV class whose objects keep track
@@ -240,26 +240,26 @@ class PST(Domain):
             uav_fuel = sStruct.fuel[uav_id]
             uav_sensor = sStruct.sensor[uav_id]
             uav_actuator = sStruct.actuator[uav_id]
-            
+
             # Assign coordinates on figure where UAV should be drawn
             uav_x = self.location_coord[uav_location]
             uav_y = 1 + uav_id
-            
+
             # Update plot wit this UAV
             self.uav_circ_vis[uav_id] = mpatches.Circle((uav_x,uav_y), self.UAV_RADIUS, fc="w")
             self.uav_text_vis[uav_id] = pl.text(uav_x-0.05, uav_y-0.05, uav_fuel)
             if uav_sensor == SensorState.RUNNING: objColor = 'black'
             else: objColor = 'red'
             self.uav_sensor_vis[uav_id] = mpatches.Wedge((uav_x+self.SENSOR_REL_X,uav_y),self.SENSOR_LENGTH, -30, 30, color=objColor)
-            
+
             if uav_actuator == ActuatorState.RUNNING: objColor = 'black'
             else: objColor = 'red'
             self.uav_actuator_vis[uav_id] = mpatches.Wedge((uav_x,uav_y + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120, color=objColor)
-            
+
             self.subplot_axes.add_patch(self.uav_circ_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
-            
+
         if self.isCommStatesCovered == True: # We have comms coverage: draw a line between comms states to show this
             if self.numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
                 commsColor = 'black'
@@ -274,7 +274,7 @@ class PST(Domain):
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
         sleep(0.5)
-        
+
 #===============================================================================
     def showLearning(self,representation):
         pass
@@ -286,43 +286,43 @@ class PST(Domain):
         # Subtract 1 below to give -1,0,1, easily sum actions
         actionVector = array(id2vec(a,self.LIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
         nsStruct.locations += (actionVector-1)
-        
+
         #TODO - incorporate cost graph as in matlab.
         fuelBurnedBool = [(actionVector[i] == UAVAction.LOITER and (nsStruct.locations[i] == UAVLocation.REFUEL or nsStruct.locations[i] == UAVLocation.MAINTENANCE)) for i in arange(self.NUM_UAV)]
         fuelBurnedBool = array(fuelBurnedBool) == False
         nsStruct.fuel = array([sStruct.fuel[i] - self.NOM_FUEL_BURN * fuelBurnedBool[i] for i in arange(self.NUM_UAV)]) # if fuel
         self.fuelUnitsBurned = sum(fuelBurnedBool)
         distanceTraveled = sum(logical_and(nsStruct.locations, sStruct.locations))
-        
+
         # Actuator failure transition
         randomFails = array([random.random() for dummy in arange(self.NUM_UAV)])
         randomFails = randomFails > self.P_ACT_FAIL
         nsStruct.actuator = logical_and(sStruct.actuator, randomFails)
-        
+
         # Sensor failure transition
         randomFails = array([random.random() for dummy in arange(self.NUM_UAV)])
         randomFails = randomFails > self.P_SENSOR_FAIL
         nsStruct.sensor = logical_and(sStruct.sensor, randomFails)
-        
+
         #Refuel those in base
         refuelIndices = nonzero(logical_and(sStruct.locations == UAVLocation.REFUEL, nsStruct.locations == UAVLocation.REFUEL))
         nsStruct.fuel[refuelIndices] = self.FULL_FUEL
-        
+
         # Fix sensors and motors in maintenance state
         maintenanceIndices = nonzero(logical_and(sStruct.locations == UAVLocation.MAINTENANCE, nsStruct.locations == UAVLocation.MAINTENANCE))
         nsStruct.actuator[maintenanceIndices] = ActuatorState.RUNNING
         nsStruct.sensor[maintenanceIndices] = SensorState.RUNNING
-        
+
         # Test if have communication
         self.isCommStatesCovered = any(nonzero(sStruct.locations == UAVLocation.COMMS))
-        
+
         surveillanceBool = (sStruct.locations == UAVLocation.SURVEIL)
         self.numHealthySurveil = sum(logical_and(surveillanceBool, sStruct.sensor))
-        
+
         totalStepReward = 0
-        
+
         ns = self.struct2State(nsStruct)
-        
+
         ##### Compute reward #####
         if(self.isCommStatesCovered == True):
             totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
@@ -337,9 +337,9 @@ class PST(Domain):
         fuel        = ones(self.NUM_UAV, dtype='int') * self.FULL_FUEL
         actuator    = ones(self.NUM_UAV, dtype='int') * ActuatorState.RUNNING
         sensor      = ones(self.NUM_UAV, dtype='int') * SensorState.RUNNING
-        
+
         return self.properties2StateVec(locations, fuel, actuator, sensor)
-    
+
     ## @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):
         # Only perform multiplication once to save time
@@ -350,15 +350,15 @@ class PST(Domain):
         fuel =      s[self.NUM_UAV   :fuelEndInd]
         actuator =  s[fuelEndInd :actuatorEndInd]
         sensor =    s[actuatorEndInd   :sensorEndInd]
-        
+
         return StateStruct(locations, fuel, actuator, sensor)
     ## @return: the state vector s
     def properties2StateVec(self,locations, fuel, actuator, sensor):
         return hstack([locations, fuel, actuator, sensor])
-    
+
     def struct2State(self,sState):
         return hstack([sState.locations, sState.fuel, sState.actuator, sState.sensor])
-    
+
     def possibleActions(self,s):
         # return the id of possible actions
         # find empty blocks (nothing on top)
@@ -371,12 +371,12 @@ class PST(Domain):
             sStruct.locations[uav_id] == UAVLocation.REFUEL or \
             sStruct.locations[uav_id] == UAVLocation.MAINTENANCE):
                 uav_actions.append(UAVAction.LOITER)
-                
+
             if(sStruct.fuel[uav_id] > 0): # This UAV is not crashed
                 if(sStruct.locations[uav_id] != UAVLocation.SURVEIL and \
                 sStruct.actuator[uav_id] == ActuatorState.RUNNING):
                     uav_actions.append(UAVAction.ADVANCE)
-                    
+
                 if(sStruct.locations[uav_id] != UAVLocation.MAINTENANCE):
                     uav_actions.append(UAVAction.RETREAT)
             else: # This UAV is crashed; give it a dummy action for now
@@ -386,13 +386,13 @@ class PST(Domain):
             else:
                 validActions.append(uav_actions)
         return array(self.vecList2id(validActions, UAVAction.SIZE)) # TODO place this in tools
-    
+
             # Given a list of lists 'validActions' of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
         # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
         # ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists)
         # Takes parameters of totalActionSpaceSize, here 3^4-1, and number of actions available
         # to each agent, here 3
-            
+
             ####### TODO place this in Tools
             # Given a list of lists of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
             # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
@@ -405,9 +405,9 @@ class PST(Domain):
         lenX = len(x)
         limits = tile(maxValue, (1,lenX))[0] # eg [3,3,3,3] # TODO redundant computation
         self.vecList2idHelper(x,actionIDs,0, curActionList, maxValue,limits) # TODO remove self
-        
+
         return actionIDs
-        
+
     def vecList2idHelper(self,x,actionIDs,ind,curActionList, maxValue,limits):
     #returns a list of unique id's based on possible permutations of this list of lists.  See vecList2id
         for curAction in x[ind]: # x[ind] is one of the lists, e.g [0, 2] or [1,2]
@@ -426,12 +426,12 @@ if __name__ == '__main__':
         random.seed(0)
         p = PST(NUM_UAV = 3, motionNoise = 0)
         p.test(1000)
-        
+
         # Code below was used to test output of this domain for various actions,
         # confirmed alignment with MATLAB version (see bobtest there)
-        
+
         allA = arange(27)
-        
+
         s = p.s0()
         for i in arange(20): # Number of steps desired for test
             a = 17 - i
@@ -439,34 +439,34 @@ if __name__ == '__main__':
 #            print 'pythontest: vector action ', array(id2vec(a,p.LIMITS))
             (r, s, isT) = p.step(s,a)
             print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions(s)
-        
+
 #        actionVectors = [array(id2vec(a,p.LIMITS)) for a in allA]
-#        
+#
 #        a_aVect_tups = zip(allA, actionVectors)
 #        for a_aVect_tup in a_aVect_tups:
 #            print a_aVect_tup
 
 
-        
+
 #        x = array([[1,2,0],[1,2],[0,1],[0]])
 #        q = p.vecList2id(x, 3)
 #        print x, q
-#        
+#
 #        x = array([[1,2,0],[1],[0,1],[0]])
 #        q = p.vecList2id(x, 3)
 #        print x, q
-#        
+#
 #        x = array([[1,2,0],[2],[0,1],[0]])
 #        q = p.vecList2id(x, 3)
 #        print x, q
-#        
+#
 #        x = array([[1,2,0],[2,1],[0,1],[0]])
 #        q = p.vecList2id(x, 3)
 #        print x, q
-#        
-        
-        
-        
-        
-    
+#
+
+
+
+
+
 
