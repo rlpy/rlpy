@@ -1,7 +1,7 @@
 // \file mainpage.txt
 /*!
-  \mainpage Overview
-  ...
-  more contents
-  \image html ACL_logo.png "Image"
+  \mainpage The Big Picture
+  \image html BigPicture.png "Image"
+w
+  \image html Logos.png "Image"	
 */
