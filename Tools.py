@@ -15,7 +15,7 @@ from numpy  import *
 from Config import *
 import os
 
-os.environ['HOME'] = "/data/old-scratch/agf-tmp"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+os.environ['HOME'] = "/home/trevor/ACL_Files/RL-Python/"  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
 os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 # http://matplotlib.1069221.n5.nabble.com/Set-MPLCONFIGDIR-to-something-different-td12922.html#a19033822
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
@@ -51,7 +51,7 @@ from scipy import stats
 from scipy import misc
 from scipy import linalg
 from scipy.sparse import linalg as slinalg
-from scipy import sparse as sp 
+from scipy import sparse as sp
 from time import *
 from hashlib import sha1
 import datetime, csv
@@ -67,7 +67,7 @@ from os import path
 import numpy # We need to be able to reference numpy by name
 
 # BELOW we have opted to always use the custom count_nonzero function; see comments
-# 
+#
 
 def matrix_mult(A,B):
     # TO BE COMPLETED!
@@ -92,35 +92,35 @@ def count_nonzero(arr):
     # Tools.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) returns 9.
     # The latter is the desired functionality, irrelevant when single arrays/lists are passed.
     nnz = 0
-    
+
     # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
     # NOT TESTED with high-dimensional matrices (only 2-dimensional matrices)
     if sp.issparse(arr):
         return arr.getnnz()
-    
+
     if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
         nonzero_indices = arr.nonzero() # Tuple of length = # dimensions (usu. 2) containing indices of nonzero elements
         nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
         return nnz
-    
+
     if isinstance(arr,ndarray):
         return sum([1 for x in arr.ravel() if x != 0])
-    
+
     if isinstance(arr,list):
         for el in arr:
             if isinstance(el, list):
                 nnz += count_nonzero(el)
             elif el != 0: nnz+=1
         return nnz
-    
+
     print "In tools.py attempted count_nonzero with unsupported type of", type(arr)
     return None
 
 # Tips:
 # array.astype(float) => convert elements
-# matlibplot initializes the maping from the values to 
-# colors on the first time creating unless bounds are set manually. 
-# Hence you may update color values later but dont see any updates!  
+# matlibplot initializes the maping from the values to
+# colors on the first time creating unless bounds are set manually.
+# Hence you may update color values later but dont see any updates!
 # in specifying dimensions for reshape you can put -1 so it will be automatically infered
 # [2,2,2] = [2]*3
 # [1,2,2,1,2,2,1,2,2] = ([1]+[2]*2)*3
@@ -141,7 +141,7 @@ def alborzrandint(low,high,m=1,n=1):
     res = zeros((m,n),'int64')
     d = high - low
     for i in arange(m):
-        for j in range(n): 
+        for j in range(n):
             coin = random.rand()
             res[i,j] = round(coin*d)+low
     return res
@@ -159,13 +159,13 @@ def closestDiscretization(x, bins, limits):
     return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
 def binNumber(s,bins,limits):
     # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
-    # note that s can be continuous.  
-    # examples: 
+    # note that s can be continuous.
+    # examples:
     # s = 0, limits = [-1,5], bins = 6 => 1
     # s = .001, limits = [-1,5], bins = 6 => 1
     # s = .4, limits = [-.5,.5], bins = 3 => 2
     # each element of the returned valued is the zero-indexed bin number corresponding to s
-    if s == limits[1]: 
+    if s == limits[1]:
         return bins-1
     width = limits[1]-limits[0]
     if s > limits[1]:
@@ -225,7 +225,7 @@ def createColorMaps():
 #    yellow_red_blue = make_colormap({0.:'#ffff00', 0.5:'r', 1.:'b'})
 #    white_red = make_colormap({0.:'w', 1.:'r'})
 #    white_blue = make_colormap({0.:'w', 1.:'b'})
-#    
+#
 #    schlieren_grays = schlieren_colormap('k')
 #    schlieren_reds = schlieren_colormap('r')
 #    schlieren_blues = schlieren_colormap('b')
@@ -243,20 +243,20 @@ def make_colormap(colors):
 
     from matplotlib.colors import LinearSegmentedColormap, ColorConverter
     from numpy import sort
-    
+
     z = sort(colors.keys())
     n = len(z)
     z1 = min(z)
     zn = max(z)
     x0 = (z - z1) / ((zn - z1)*1.)
-    
+
     CC = ColorConverter()
     R = []
     G = []
     B = []
     for i in arange(n):
         #i'th color at level z[i]:
-        Ci = colors[z[i]]      
+        Ci = colors[z[i]]
         if type(Ci) == str:
             # a hex string of form '#ff0000' for example (for red)
             RGB = CC.to_rgb(Ci)
@@ -304,13 +304,13 @@ def schlieren_colormap(color=[0,0,0]):
     return schlieren_colors
 def make_amrcolors(nlevels=4):
     """
-    Make lists of colors useful for distinguishing different grids when 
+    Make lists of colors useful for distinguishing different grids when
     plotting AMR results.
 
     INPUT::
        nlevels: maximum number of AMR levels expected.
     OUTPUT::
-       (linecolors, bgcolors) 
+       (linecolors, bgcolors)
        linecolors = list of nlevels colors for grid lines, contour lines
        bgcolors = list of nlevels pale colors for grid background
     """
@@ -334,7 +334,7 @@ def make_amrcolors(nlevels=4):
     return (linecolors, bgcolors)
 def linearMap(x,a,b,A=0,B=1):
     # This function takes scalar X in range [a1,b1] and maps it to [A1,B1]
-    # values oout of a and b are clipped to boundaries 
+    # values oout of a and b are clipped to boundaries
     if a == b:
         res = B
     else:
@@ -358,7 +358,7 @@ def findElem(x,A):
     if x in A:
         return A.index(x)
     else:
-        return []    
+        return []
 def findElemArray1D(x,A): # Returns an array of indices in x where x[i] == A
     res = where(A==x)
     if len(res[0]):
@@ -378,7 +378,7 @@ def findRow(r,X):
     #return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
     #return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
     ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))]))
-    return ind[0] 
+    return ind[0]
 def perms(X):
     # Returns all permutations
     # X = [2 3]
@@ -414,18 +414,18 @@ def vec2id2(x,limits):
     #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
     # Slower than the other implementation by a factor of 2
-    if isinstance(x,int): return x 
+    if isinstance(x,int): return x
     lim_prod = cumprod(limits[:-1])
-    return x[0] + sum(map(lambda (x,y):x*y,zip(x[1:],lim_prod))) 
+    return x[0] + sum(map(lambda (x,y):x*y,zip(x[1:],lim_prod)))
 def vec2id(x,limits):
     #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
-    if isinstance(x,int): return x 
+    if isinstance(x,int): return x
     _id = 0
     for d in arange(len(x)-1,-1,-1):
         _id *= limits[d]
         _id += x[d]
-    
+
     return _id
 ######################################################
 def id2vec(_id,limits):
@@ -439,7 +439,7 @@ def id2vec(_id,limits):
     s[0] = _id
     return s
 def bound_vec(X,limits):
-    #Input: 
+    #Input:
     # given X as 1-by-n array
     # limits as 2-by-n array
     # Output:
@@ -470,7 +470,7 @@ def wrap(x,m,M):
     return x
 def shout(obj,s=''):
     # Print the name of the object and then the message. Use to remember to comment prints
-    print "In " + className(obj) + " :" + str(s) 
+    print "In " + className(obj) + " :" + str(s)
 def powerset(iterable, ascending = 1):
     s = list(iterable)
     if ascending:
@@ -488,7 +488,7 @@ def normalize(x):
 def addNewElementForAllActions(x,a,newElem = None):
         # When features are expanded several parameters such as the weight vector should expand. Since we are adding the new feature for all actions
         # these vectors should expand by size of the action as for each action phi(s) is expand by 1 element.
-        # Because we later stack all of them we need this function to insert the new element in proper locations 
+        # Because we later stack all of them we need this function to insert the new element in proper locations
         # Add a new 0 weight corresponding to the new added feature for all actions.
         # new elem = None means just insert zeros for new elements. x is a numpy array
         # example:
@@ -512,8 +512,8 @@ def solveLinear(A,b):
         start_log_time = time()
         result  = slinalg.spsolve(A,b)
         solve_time = deltaT(start_log_time)
-        error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0]) 
-        #For extensive comparision of methods refer to InversionComparison.txt 
+        error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
+        #For extensive comparision of methods refer to InversionComparison.txt
     else:
         #print 'not sparse, type',type(A)
         if sp.issparse(A):
@@ -523,7 +523,7 @@ def solveLinear(A,b):
         start_log_time = time()
         result = linalg.solve(A,b)
         solve_time = deltaT(start_log_time)
-        
+
         if isinstance(A, numpy.matrixlib.defmatrix.matrix): # use numpy matrix multiplication
             error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
         elif isinstance(A, numpy.ndarray): # use array multiplication
@@ -559,7 +559,7 @@ def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10
                                 shrinkA=shrinkA, shrinkB=shrinkB,
                                 patchA=None,
                                 patchB=None,
-                                connectionstyle=connectionstyle), 
+                                connectionstyle=connectionstyle),
                 )
 def drawHist(data,bins=50,fig=101):
     hist, bins = histogram(data,bins = bins)
@@ -586,16 +586,16 @@ def sp_dot_array(sp_m, A):
         return sum(A[ind])
     else:
         # Multiply by feature values since they are not binary
-        
+
         return sum([A[i]*sp_m[0,i] for i in ind])
 def sp_dot_sp(sp_1, sp_2):
     #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
-    assert sp_1.shape[0] == sp_2.shape[0] and sp_1.shape[1] == 1 and sp_2.shape[1] == 1 
+    assert sp_1.shape[0] == sp_2.shape[0] and sp_1.shape[1] == 1 and sp_2.shape[1] == 1
     ind_1 = sp_1.nonzero()[0]
     ind_2 = sp_2.nonzero()[0]
     if len(ind_1)*len(ind_2) == 0:
         return 0
-    
+
     ind = intersect1d(ind_1,ind_2)
     # See if they are boolean
     if sp_1.dtype == bool and sp_2.dtype == bool:
@@ -687,12 +687,12 @@ def rootMeanSquareError(X):
     return sqrt(mean(X**2))
 class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
-    PE_AXES         = ['Iterations','Features','Error','Time(s)'] 
+    PE_AXES         = ['Iterations','Features','Error','Time(s)']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
-        self.std_errs               = [] 
+        self.std_errs               = []
         self.bars                   = bars  #Draw bars?
         self.colors                 = colors
         self.styles                 = styles
@@ -714,7 +714,7 @@ class Merger(object):
             self.path                   = path
             self.exp_paths              = os.listdir(path)
             self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and self.hasResults(self.path+'/'+p+'/')]
-        
+
         #Setup the output path:
         if output_path == None:
             if len(paths) > 1:
@@ -723,18 +723,18 @@ class Merger(object):
                 self.output_path = path
         else:
              self.output_path = output_path
-        
+
         self.labels                 = labels if labels != [] else [self.extractLabel(p) for p in self.exp_paths]
         print "Experiment Labels: ", self.labels
-        self.exp_num                = len(self.exp_paths) 
+        self.exp_num                = len(self.exp_paths)
         self.means                  = []
-        self.std_errs               = [] 
+        self.std_errs               = []
         if not isOnCluster():
             self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
             print "No directory including result was found at %s" % paths
-            return False 
+            return False
         for exp in self.exp_paths:
             means, std_errs = self.parseExperiment(exp)
             self.means.append(means)
@@ -747,7 +747,7 @@ class Merger(object):
         else:
             return tokens[-1]
     def parseExperiment(self,exp):
-        # Parses all the files in form of <number>-results.txt and return 
+        # Parses all the files in form of <number>-results.txt and return
         # two matrices corresponding to mean and std_err
         path        = self.path + '/'+exp
         files       = glob.glob('%s/*-results.txt'%path)
@@ -768,23 +768,23 @@ class Merger(object):
         else:
             self.isPolicyEvaluation = False
             self.AXES = self.CONTROL_AXES
-        samples     = zeros((rows,cols,samples_num)) 
+        samples     = zeros((rows,cols,samples_num))
         for i,f in enumerate(files):
-            if i == samples_num: break                
+            if i == samples_num: break
             M = readMatrixFromFile(files[i])
             #print M.shape
-            samples[:,:cols,i] = M  
+            samples[:,:cols,i] = M
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis = None, X_axis = None):
         #Setting default values based on the Policy Evaluation or control
         if Y_axis == None: Y_axis = 'Error' if self.isPolicyEvaluation else 'Return'
-        if X_axis == None: X_axis = 'Iterations' if self.isPolicyEvaluation else 'Learning Steps'        
+        if X_axis == None: X_axis = 'Iterations' if self.isPolicyEvaluation else 'Learning Steps'
 
         if not isOnCluster(): self.fig.clear()
         min_ = +inf
-        max_ = -inf    
-        
+        max_ = -inf
+
         #See if requested axes are reasonable
         if Y_axis in self.AXES:
             y_ind = self.AXES.index(Y_axis)
@@ -798,11 +798,11 @@ class Merger(object):
             print 'unknown X_axis = %s', X_axis
             print 'Allowed values:'
             print self.AXES
-            
+
         Xs      = zeros((self.exp_num,self.datapoints_per_graph))
         Ys      = zeros((self.exp_num,self.datapoints_per_graph))
         Errs    = zeros((self.exp_num,self.datapoints_per_graph))
-        
+
         for i in arange(self.exp_num):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
@@ -821,7 +821,7 @@ class Merger(object):
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
-        
+
         if not isOnCluster():
             if self.legend:
                 #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
@@ -829,8 +829,8 @@ class Merger(object):
                 #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
             pl.xlim(0,max(Xs[:,-1])*1.02)
             if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
-            X_axis_label = r'$\|A\theta - b\|$' if X_axis == 'Error' else X_axis 
-            Y_axis_label = r'$\|A\theta - b\|$' if Y_axis == 'Error' else Y_axis 
+            X_axis_label = r'$\|A\theta - b\|$' if X_axis == 'Error' else X_axis
+            Y_axis_label = r'$\|A\theta - b\|$' if Y_axis == 'Error' else Y_axis
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
@@ -845,7 +845,7 @@ class Merger(object):
         for i in range(self.exp_num):
             # Print in the standard error:
             print "======================"
-            print "Algorithm: ", self.exp_paths[i] 
+            print "Algorithm: ", self.exp_paths[i]
             print "======================"
             print X_axis +': ' + pretty(Xs[i,:],'%0.0f')
             print Y_axis +': ' + pretty(Ys[i,:])
@@ -863,7 +863,7 @@ class Merger(object):
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
         # Save the figure as pdf
-        if not isOnCluster(): 
+        if not isOnCluster():
             if self.legend:
                 self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
             else:
@@ -910,14 +910,14 @@ if module_exists('matplotlib'):
     mpl.rcParams['axes.labelsize'] = 15.
     mpl.rcParams['xtick.labelsize'] = 15.
     mpl.rcParams['ytick.labelsize'] = 15.
-    
+
         # Add tex directories if they exist
-#    if os.path.exists('/usr/texbin'): 
+#    if os.path.exists('/usr/texbin'):
 #        os.environ['PATH'] += ':/usr/texbin'
 #    if os.path.exists('/usr/share/texmf'):
 #        os.environ['PATH'] += ':/usr/share/texmf'
-        
-#Colors 
+
+#Colors
 PURPLE  = '\033[95m'
 BLUE    = '\033[94m'
 GREEN   = '\033[92m'
@@ -930,7 +930,7 @@ FONTSIZE = 15
 SEP_LINE = "="*60
 
 # Setup the latdex path
-if sys.platform == 'darwin': 
+if sys.platform == 'darwin':
     os.environ['PATH'] += ':' + TEXPATH
 if sys.platform == 'win32':
     print os.environ['PATH']

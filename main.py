@@ -25,13 +25,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
          SHOW_FINAL_PLOT = 1,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
          MAKE_EXP_NAME = 1      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
          ):
-
+    print "Started Job ID %d" % jobID
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 1
-    LEARNING_STEPS      = 10000
-    #EXPERIMENT_NAMING   = ['domain','agent','representation']
-    EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
+    PERFORMANCE_CHECKS  = 20
+    LEARNING_STEPS      = 100000
+    EXPERIMENT_NAMING   = ['domain','agent','representation']
+    #EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
@@ -106,9 +106,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
-    domain          = MountainCar(noise = NOISE,logger = logger)
+    #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
@@ -129,23 +129,23 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon[className(domain)])
-    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
-    representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
+    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
 
     # POLICY
     #================
-    #policy          = eGreedy(representation,logger, epsilon = EPSILON)
+    policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
-    policy          = FixedPolicy(representation,logger)
+    #policy          = FixedPolicy(representation,logger)
 
     # LEARNING AGENT
     #================
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize, LSPI_return_best_policy)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
-    agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations)
+    #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations)
 
     experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
     experiment.run()
