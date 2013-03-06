@@ -1,7 +1,5 @@
 import sys, os
 from numpy.ma.core import logical_or
-#Add all paths
-sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 ######################################################
@@ -100,9 +98,9 @@ class IntruderMonitoring(Domain):
         actions     = self.ACTIONS_PER_AGENT[actions]
         agents      += actions
         
-        # Generate uniform random actions for intruders and move them
+        # Generate actions for each intruder based on the function IntruderPolicy
         intruders       = array(s[self.NUMBER_OF_AGENTS*2:].reshape(-1,2))
-        actions         = random.randint(len(self.ACTIONS_PER_AGENT), size=self.NUMBER_OF_INTRUDERS)
+        actions         = [self.IntruderPolicy(intruders[i]) for i in arange(self.NUMBER_OF_INTRUDERS)]
         actions         = self.ACTIONS_PER_AGENT[actions]
         intruders       += actions
         
@@ -179,7 +177,8 @@ class IntruderMonitoring(Domain):
        s_intruder           = s[self.NUMBER_OF_AGENTS*2:].reshape((-1,2)) 
        self.ally_fig        = pl.plot(s_ally[:,1],s_ally[:,0],'bo',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
        self.intruder_fig    = pl.plot(s_intruder[:,1],s_intruder[:,0],'g>',color='gray',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
-       pl.draw()   
+       pl.draw()
+       #pl.gcf().savefig('domain.pdf', transparent=True, pad_inches=.1)
 if __name__ == '__main__':
    
     #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/1x3_1A_1I.txt')
@@ -188,5 +187,6 @@ if __name__ == '__main__':
     random.seed(99)
     p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/4x4_2A_3I.txt')
     p.test(1000)
+
     
     
