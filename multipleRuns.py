@@ -5,10 +5,6 @@
 # Run the main file multiple times and store the result of each run in a separate directory:
 from main import *
 from os import *
-from multiprocessing import Pool
-import itertools
-import platform
-import pdb
 
 def unpackjob(args):
     main(*args)
@@ -17,10 +13,12 @@ def unpackjob(args):
 StartID         = 1
 FinishId        = 50
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/MultiTrack1v1/'
+PROJECT_PATH    = 'Results/TEST'
 max_cpu         = multiprocessing.cpu_count()-2
 
 
+#Create the ouput directory
+checkNCreateDirectory(PROJECT_PATH)
 #create the pool with the correct number of cpus
 pool = Pool(max_cpu)
 #pack the arguments into tuples

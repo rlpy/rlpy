@@ -31,7 +31,7 @@ from Domain import *
 # corresponding to each UAV:
 # [location, fuel quantity, actuator status, sensor status]
 #   so for example, state [1,9,1,1,2,3,0,1] -->
-# [1,9,1,1 || 2,3,0,1] --> 2 UAV's;
+# [1,9,1,1 || 2,3,0,1] --> 2 UAV's; <<< THIS DOES NOT MATCH WHAT IS THERE. IT IS TRANSPOSED BELOW
 #   UAV1 in location 1, with 9 fuel units remaining, and
 # sensor + actuator with status 1 (defined in the classes below).
 #   UAV 2 in location 2, 3 fuel units remaining, actuator

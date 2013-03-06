@@ -14,7 +14,7 @@ from CartPole import *
 # NOTE the different reward scheme from Pendulum_InvertedBalance
 #
 # ---OBJECTIVE---
-# Reward 1 i    s received on each timestep spent within the goal region,
+# Reward 1 is received on each timestep spent within the goal region,
 # zero elsewhere.
 # This is also the terminal condition.
 #

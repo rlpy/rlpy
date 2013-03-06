@@ -21,5 +21,10 @@ Decay mode:		boyan
 Experiment:		OnlineExperiment
 Output:			Results/Temp/PitMaze-Tabular-10000/1-results.txt
 Learning Steps:		10000
-Performance Checks:	10
+Performance Checks:	1
 Log Intervals:		1(s)
+1393: E[0:00:01]-R[0:00:06]: Return=+0.99, Steps=11, Features = 20
+2818: E[0:00:02]-R[0:00:05]: Return=+0.98, Steps=23, Features = 20
+4211: E[0:00:03]-R[0:00:04]: Return=+0.99, Steps=15, Features = 20
+5626: E[0:00:04]-R[0:00:03]: Return=+0.99, Steps=15, Features = 20
+7038: E[0:00:05]-R[0:00:02]: Return=+0.98, Steps=19, Features = 20

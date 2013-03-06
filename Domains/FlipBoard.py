@@ -36,6 +36,7 @@ class FlipBoard(Domain):
        #Draw the environment
        if self.domain_fig is None:
            self.move_fig  = pl.subplot(111)
+           s = s.reshape((self.BOARD_SIZE,self.BOARD_SIZE))
            self.domain_fig = pl.imshow(s, cmap='FlipBoard',interpolation='nearest',vmin=0,vmax=1)
            pl.xticks(arange(self.BOARD_SIZE), fontsize= FONTSIZE)
            pl.yticks(arange(self.BOARD_SIZE), fontsize= FONTSIZE)
@@ -47,6 +48,7 @@ class FlipBoard(Domain):
        self.move_fig.pop(0).remove()
        #print a_row,a_col
        self.move_fig = pl.plot(a_col,a_row,'kx',markersize=30.0) # Instead of '>' you can use 'D', 'o'
+       s = s.reshape((self.BOARD_SIZE,self.BOARD_SIZE))
        self.domain_fig.set_data(s)
        pl.draw()   
        #raw_input()

@@ -109,9 +109,9 @@ class Domain(object):
         while steps < T:
             if terminal:
                 if steps != 0: self.showDomain(s,a)
-                s = self.s0uniform()
+                s = self.s0()
             elif steps % self.episodeCap == 0:
-                s = self.s0uniform()
+                s = self.s0()
             a = randSet(self.possibleActions(s))
             self.showDomain(s,a)
             r,s,terminal = self.step(s, a)

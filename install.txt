@@ -1,4 +1,4 @@
-The only requirements to run and contribute to RL-Python are
+xThe only requirements to run and contribute to RL-Python are
 installation of the required package dependencies.  Once Python and Latex
 are installed, users of one of the recommended operating systems can
 install dependencies using one of the provided scripts.
