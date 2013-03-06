@@ -67,8 +67,6 @@ class MultiTrack(Domain):
         self.ASTEP                  = ASTEP
         self.TSTEP                  = TSTEP
         self.motionNoise            = motionNoise
-        print "params"
-        print GRID, ASTEP, TSTEP, NUM_AGENTS, NUM_TARGETS
 
         #Inherited
         self.episodeCap = 1000
@@ -99,15 +97,10 @@ class MultiTrack(Domain):
         #For each agent, move them deterministically with their preferred action
         actionVector = array(id2vec(a,self.ALIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
 
-        print "Agent locs"
         for i in range(0, self.NUM_AGENTS):
            ac = actionVector[i]
            dy = floor(ac/(self.ASTEP*2+1)) - self.ASTEP
            dx = ac%(self.ASTEP*2+1) - self.ASTEP
-           print "X->X'"
-           print ss.agentlocs[i].x, ss.agentlocs[i].x + dx, dx
-           print "Y->Y'"
-           print ss.agentlocs[i].y, ss.agentlocs[i].y + dy, dy
            nss.agentlocs[i] = LocStruct(ss.agentlocs[i].x + dx, ss.agentlocs[i].y + dy, -1, self.GRID)
 
 
@@ -154,7 +147,6 @@ class MultiTrack(Domain):
             #otherwise, targetavail is left alone (still equal to the previous state's target avail
 
         ns = self.struct2State(nss)
-        print ns
         return rwd,ns,self.isTerminal(ns)
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
 
