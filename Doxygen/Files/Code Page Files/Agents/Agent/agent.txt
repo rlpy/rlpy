@@ -2,28 +2,23 @@
 /*! 
 	\page Agent
 	\section Agent_top Agent Superclass
-	\subsection Agent_init Initialization
-	\snippet Agent.py printAll code
 	
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-
+	\subsection Agent_init Initialization
+	\snippet Agent.py init code
+	
+	\subsection Agent_updateAlpha Update Alpha
+	\snippet Agent.py updateAlpha code
 	
 	\subsection Agent_printAll Print All
 	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
-	\snippet Agent.py printAll code
+
+	\subsection Agent_MC_episode Monte-Carlo Episode
+	\snippet Agent.py MC_episode code
 	
-	\subsection Agent_useless Useless
+	\subsection Agent_Q_MC Q_MC
+	\snippet Agent.py Q_MC code
+	
+	\subsection Agent_eval Evaluation
+	\snippet Agent.py eval code
 	
 */

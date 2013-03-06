@@ -2,6 +2,7 @@ var hierarchy =
 [
     [ "ActuatorState", "class_domains_1_1_p_s_t_1_1_actuator_state.html", null ],
     [ "ActuatorState", "class_domains_1_1_p_s_t_orig_1_1_actuator_state.html", null ],
+    [ "LocStruct", "class_domains_1_1_multi_track_1_1_loc_struct.html", null ],
     [ "object", null, [
       [ "Agent", "class_agents_1_1_agent_1_1_agent.html", [
         [ "LSPI", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html", [
@@ -23,6 +24,7 @@ var hierarchy =
         [ "FlipBoard", "class_domains_1_1_flip_board_1_1_flip_board.html", null ],
         [ "IntruderMonitoring", "class_domains_1_1_intruder_monitoring_1_1_intruder_monitoring.html", null ],
         [ "MountainCar", "class_domains_1_1_mountain_car_1_1_mountain_car.html", null ],
+        [ "MultiTrack", "class_domains_1_1_multi_track_1_1_multi_track.html", null ],
         [ "Pendulum", "class_domains_1_1_pendulum_1_1_pendulum.html", [
           [ "Pendulum_InvertedBalance", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html", null ],
           [ "Pendulum_SwingUp", "class_domains_1_1_pendulum___swing_up_1_1_pendulum___swing_up.html", null ]
@@ -54,10 +56,11 @@ var hierarchy =
         [ "Tabular", "class_representations_1_1_tabular_1_1_tabular.html", null ]
       ] ]
     ] ],
-    [ "SensorState", "class_domains_1_1_p_s_t_1_1_sensor_state.html", null ],
     [ "SensorState", "class_domains_1_1_p_s_t_orig_1_1_sensor_state.html", null ],
+    [ "SensorState", "class_domains_1_1_p_s_t_1_1_sensor_state.html", null ],
     [ "StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
     [ "StateIndex", "class_domains_1_1_pendulum_1_1_state_index.html", null ],
+    [ "StateStruct", "class_domains_1_1_multi_track_1_1_state_struct.html", null ],
     [ "StateStruct", "class_domains_1_1_p_s_t_1_1_state_struct.html", null ],
     [ "UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
     [ "UAVAction", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_action.html", null ],

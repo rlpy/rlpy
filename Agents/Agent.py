@@ -6,52 +6,53 @@
 from Tools import *
 from Representations import *
 
-## The \c %Agent class controls the actions of an RL agent 
+## The Agent receives observations from the \ref Domains.Domain.Domain "Domain" and performs actions to obtain some goal.
 # 
-# \c Agent provides the basic framework for RL agents to interact with the Domain,
-# Representation, Policy, and \ref Domains.Domain.Domain "Domain" classes. All new agent implimentations should inherit
-# from \c %Agent.
-#
-# TODO Describe what role agents do exactly here.
+# The %Agent interacts with the Domain in discrete timesteps. Each timestep, the Agent receives some observations from the 
+# Domain and uses this information to update its \ref Representations.Representation.Representation "Representation" of the Domain.
+# It then uses its \ref Policies.Policy.Policy "Policy" to select an action to perform. This process (observe, update, act) repeats 
+# itself until some goal or fail state, determined by the Domain, is reached. 
+# At this point the \ref Experiments.Experiment.Experiment "Experiment" determines whether the %Agent starts over or is tested.
+# 
+# The \c %Agent class is a superclass that provides the basic framework for all RL agents. It provides the methods and attributes
+# that allow child classes to interact with the \c Domain, \c Representation, \c Policy, and \c Experiment classes within the RL-Python library. \n
+# All new agent implimentations should inherit from \c %Agent.
 
 class Agent(object):
-	## Link to the representation object 
+	## The \ref Representations.Representation.Representation "Representation" to be used by the %Agent
     representation      = None 
-	## Link to the domain object
+	## The \ref Domains.Domain.Domain "Domain" that the %Agent interacts with
     domain              = None         
-	## Link to the policy object
+	## The \ref Policies.Policy.Policy "Policy" to be used by the %Agent
     policy              = None         
-	## Initial learning rate
-    initial_alpha       = 0             
-	## Learning rate to be used
+	## The initial learning rate. Note that initial_alpha should be set to 1 for automatic learning rate; otherwise, initial_alpha will act as a permanent upper-bound on alpha.
+    initial_alpha       = 0.1             
+	## The learning rate
     alpha               = 0             
-	## Candid Learning Rate Calculated by [Dabney W 2012]
+	## The Candid Learning Rate. This value is updated in the updateAlpha method. We use the rate calculated by [Dabney W 2012] \n http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
     candid_alpha        = 0             
-	## In case lambda parameter in SARSA definition is used
+	## Only used by \ref Agents.SARSA.SARSA "SARSA" agent \b Do \b we \b even \b need \b this \b here? Shouldn't it only be defined in SARSA child class? (confusing).
+	# In case lambda parameter in SARSA definition is used. 
     eligibility_trace   = []            
 	## A simple objects that record the prints in a file
     logger              = None          
 	## Used by some alpha_decay modes
     episode_count       = 0             
-	## Decay mode of learning rate; 'boyan' or 'dabney (automatic)'
-    alpha_decay_mode    = None          
-    
-	## decay modes with an implementation [use all lowercase]
+	## Decay mode of learning rate. Options are determined by valid_decay_modes.
+    alpha_decay_mode    = 'dabney'          
+	## Decay modes with an implementation. 
+	# At the moment the choice is either 'boyan' or 'dabney'. Please use all lowercase letters to properly select a mode. \n
+	# The decay mode 'dabney' is an automatic rate described by Dabney. [Dabney W. 2012]
     valid_decay_modes   = ['dabney','boyan'] 
-    # Automatic learning rate: [Dabney W. 2012]
-	##	N0 parameter for boyan learning rate decay
-    boyan_N0            = 0             
-    # 
-    
+	##	The N0 parameter for boyan learning rate decay
+    boyan_N0            = 1000                 
 	
-	## Initializes the \ %agent object.
+	
+	## Initializes the %Agent object. See code
+	# \ref Agent_init "Here".
+	
+	# [init code]
     def __init__(self,representation,policy,domain,logger,initial_alpha = 0.1,alpha_decay_mode = 'dabney', boyan_N0 = 1000):
-		## @var initial_alpha 
-		# default is 0.1
-		# @var alpha_decay_mode
-		# default is 'dabney'
-		# @var boyan_N0 
-		# default is 1000
         self.representation = representation
         self.policy     = policy
         self.domain     = domain
@@ -77,20 +78,33 @@ class Agent(object):
         if self.alpha_decay_mode == 'dabney':
             self.initial_alpha = 1.0
             self.alpha = 1.0
-            
+	# [init code]
+    	
+		
     ## \b ABSTRACT \b METHOD: Defined by child class            
     def learn(self,s,a,r,ns,na,terminal):
         if terminal: self.episode_count += 1
         # ABSTRACT
         
-    ## Computes a new alpha for this agent based on self.alpha_decay_mode.
-    # Note that we divide by number of active features in SARShe A
+		
+    ## Computes a new alpha for the agent based on self.alpha_decay_mode.
+    # Note that we divide by number of active features in SARSA.
     # We pass the phi corresponding to the STATE, *NOT* the copy/pasted
-    # phi_s_a.
+    # phi_s_a. \n See code \ref Agent_updateAlpha "Here".
 	# @param nnz 
 	# The number of nonzero features
 	# @param terminal
 	# Boolean that determines if the step is terminal or not
+	# @param phi_s
+	# WHAT IS THIS, WHAT DOES THIS DO? 
+	# @param phi_prime_s
+	# WHAT IS THIS, WHAT DOES THIS DO?
+	# @param gamma
+	# WHAT IS THIS, WHAT DOES THIS DO?
+	# @param eligibility_trace_s
+	# Eligibility trace using state only (no copy-paste)
+	
+	# [updateAlpha code]
     def updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):
         if self.alpha_decay_mode == 'dabney':
         # We only update alpha if this step is non-terminal; else phi_prime becomes
@@ -107,19 +121,15 @@ class Agent(object):
         else:
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")    
-    
+    # [updateAlpha code]
+	
+	
 	## Prints all of the class information. See code
 	# \ref Agent_printAll "Here".
 	
 	# [printAll code]
     def printAll(self):
         printClass(self)
-		
-	def useless(self):
-		while False:
-			print "HAI"
-			variable = 1
-			# Please look nice?
 	# [printAll code]
 		
 	## \cond DEV
@@ -141,9 +151,27 @@ class Agent(object):
             eps_length     += 1
         self.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
+	## \endcond
+	
+	## Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent.
+	# See code \ref Agent_MC_episode "Here".
+	# @param s
+	# The state used in the simulation
+	# @param a
+	# The action used in the simulation
+	# @param tolerance
+	# WHAT IS THIS, WHAT DOES IT DO?
+	# @return eps_return
+	# WHAT IS THIS, WHAT DOES IT DO?
+	# @return eps_length
+	# WHAT IS THIS, WHAT DOES IT DO?
+	# @return eps_term
+	# WHAT IS THIS, WHAT DOES IT DO?
+	# @return eps_discounted_return
+	# WHAT IS THIS, WHAT DOES IT DO?
+	
+	# [MC_episode code]
     def MC_episode(self,s=None,a=None, tolerance = 0):
-        # Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent and return:
-        # eps_return, eps_length, eps_term, eps_discounted_return
         eps_length              = 0
         eps_return              = 0
         eps_discounted_return   = 0
@@ -161,21 +189,47 @@ class Agent(object):
             if self.representation.domain.gamma**eps_length < tolerance:
                 break
         return eps_return, eps_length, eps_term, eps_discounted_return
-        
+    # [MC_episode code] 
+	
+	## Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a).
+	# See code \ref Agent_Q_MC "Here".
+	# @param s
+	# The state used in the simulation
+	# @param a
+	# The action used in the simulation
+	# @param tolerance
+	# WHAT IS THIS, WHAT DOES IT DO?
+	# @param MC_samples
+	# WHAT IS THIS, WHAT DOES IT DO?
+	# @return Q_avg
+	# WHAT IS THIS, WHAT DOES IT DO?
+	
+	# [Q_MC code]
     def Q_MC(self,s,a,MC_samples = 1000, tolerance = 0):
-        # Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a)
         Q_avg = 0
         for i in arange(MC_samples):
             #print "MC Sample:", i
             _,_,_,Q = self.MC_episode(s,a,tolerance)
             Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)
         return Q_avg
+	# [Q_MC code]
+	
+	## Evaluate the current policy for fixed number of samples and store them in samples-by-|S|+2.
+    # Note: (2 corresponds to action and Q(s,a)) \n
+	# Saves the data generated in a file. \n
+	# See code \ref Agent_eval "Here".
+	# @param samples
+	# The number of samples (s,a)
+	# @param MC_samples
+	# The number of MC simulations used to estimate Q(s,a)
+	# @param output_file
+	# The file in which the data is saved.
+	# The number of MC simulations used to estimate Q(s,a)
+	# @return DATA
+	# The data generated and stored in the output_file
+	
+	# [eval code]
     def evaulate(self,samples, MC_samples, output_file):
-        # Evaluate the current policy for fixed number of samples and store them in samples-by-|S|+2 (2 corresponds to action and Q(s,a))
-        # inputs: 
-        # samples: number of samples (s,a)
-        # MC_samples: Number of MC simulations used to estimate Q(s,a)
-        # output_file: The DATA is stored in this file
         tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q
         cols            = self.domain.state_space_dims + 2
         DATA            = empty((samples,cols))
@@ -195,5 +249,4 @@ class Agent(object):
 
         save(output_file, DATA)
         return DATA
-    
-	## @endcond
+		# [eval code]

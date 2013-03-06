@@ -55,6 +55,11 @@ var annotated =
       [ "MountainCar", null, [
         [ "MountainCar", "class_domains_1_1_mountain_car_1_1_mountain_car.html", "class_domains_1_1_mountain_car_1_1_mountain_car" ]
       ] ],
+      [ "MultiTrack", null, [
+        [ "LocStruct", "class_domains_1_1_multi_track_1_1_loc_struct.html", "class_domains_1_1_multi_track_1_1_loc_struct" ],
+        [ "StateStruct", "class_domains_1_1_multi_track_1_1_state_struct.html", "class_domains_1_1_multi_track_1_1_state_struct" ],
+        [ "MultiTrack", "class_domains_1_1_multi_track_1_1_multi_track.html", "class_domains_1_1_multi_track_1_1_multi_track" ]
+      ] ],
       [ "Pendulum", null, [
         [ "Pendulum", "class_domains_1_1_pendulum_1_1_pendulum.html", "class_domains_1_1_pendulum_1_1_pendulum" ],
         [ "StateIndex", "class_domains_1_1_pendulum_1_1_state_index.html", "class_domains_1_1_pendulum_1_1_state_index" ]

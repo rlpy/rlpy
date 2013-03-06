@@ -28,6 +28,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="ACL_logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RL-Python
    &#160;<span id="projectnumber">Version 1.0</span>
@@ -138,7 +139,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>SIZE</b> = 4</td></tr>
 <p>Persistent Search and Track Mission with: NUM_UAV: num vehicles present NUM_COMMS num intermediate communication states Other associated parameters shown below.</p>
 <p>Goal is to maintain as many UAVs with functional sensor and actuator as possible in the surveillance state, while maintaining at least 1 UAV with working actuator in each communication state.</p>
 <p>Failure to satisfy the communication state above results in zero reward earned for surveillance.</p>
-<p>State vector consists of blocks of 4 states, corresponding to each UAV: [location, fuel quantity, actuator status, sensor status] so for example, state [1,9,1,1,2,3,0,1] &ndash;&gt; [1,9,1,1 || 2,3,0,1] &ndash;&gt; 2 UAV's; UAV1 in location 1, with 9 fuel units remaining, and sensor + actuator with status 1 (defined in the classes below). UAV 2 in location 2, 3 fuel units remaining, actuator with status 0 and sensor with status 1.</p>
+<p>State vector consists of blocks of 4 states, corresponding to each UAV: [location, fuel quantity, actuator status, sensor status] so for example, state [1,9,1,1,2,3,0,1] &ndash;&gt; [1,9,1,1 || 2,3,0,1] &ndash;&gt; 2 UAV's; &lt;&lt;&lt; THIS DOES NOT MATCH WHAT IS THERE. IT IS TRANSPOSED BELOW UAV1 in location 1, with 9 fuel units remaining, and sensor + actuator with status 1 (defined in the classes below). UAV 2 in location 2, 3 fuel units remaining, actuator with status 0 and sensor with status 1.</p>
 <p>Location transitions, sensor and actuator failures, and fuel consumption are stochastic.</p>
 <p>In the current visualization, the 'actuator' which enables communication is represented by a wedge above each UAV circle; a failed actuator is red, functional is black. Similarly, the 'sensor' which enables surveillance is represented by a wedge in front of the UAV circle, with similar coloring.</p>
 <p>If each comms location has at least 1 UAV able to perform communications, lines are drawn connecting the surveillance location through each comms location back to base. If at least 1 vehicle is actively performing surveillance, this line is black; Else If there are no vehicles performing surveillance, this line is red. Else if there is no available comms link, no line is drawn. </p>
