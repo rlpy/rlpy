@@ -106,7 +106,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
@@ -116,7 +116,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     #domain          = FiftyChain(logger = logger)
-    #domain          = MultiTrack()
+    domain           = MultiTrack(GRID = 10, NUM_AGENTS = 1, NUM_TARGETS = 1)
 
     # REPRESENTATION
     #================
