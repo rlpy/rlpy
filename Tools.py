@@ -38,7 +38,7 @@ if module_exists('matplotlib'):
     from matplotlib.patches import ConnectionStyle # for cartpole
     pl.ion()
 else:
-    'matplotlib is not available => No Graphics'
+    print 'matplotlib is not available => No Graphics'
 
 if module_exists('networkx'):
     import networkx as nx
