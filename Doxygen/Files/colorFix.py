@@ -2,7 +2,9 @@ import os
 global lineColor
 
 
-lineColor = '#C0C0C0'
+lineColor = '#E0E0E0'
+
+insert = 'div.line2 {\n\tfont-family: monospace, fixed;\n\tfont-size: 13px;\n\tmin-height: 13px;\n\tline-height: 1.0;\n\ttext-wrap: unrestricted;\n\twhite-space: -moz-pre-wrap; /* Moz */\n\twhite-space: -pre-wrap;     /* Opera 4-6 */\n\twhite-space: -o-pre-wrap;   /* Opera 7 */\n\twhite-space: pre-wrap;      /* CSS3  */\n\tword-wrap: break-word;      /* IE 5.5+ */\n\ttext-indent: -53px;\n\tpadding-left: 53px;\n\tpadding-bottom: 0px;\n\tmargin: 0px;\n\t-webkit-transition-property: background-color, box-shadow;\n\t-webkit-transition-duration: 0.5s;\n\t-moz-transition-property: background-color, box-shadow;\n\t-moz-transition-duration: 0.5s;\n\t-ms-transition-property: background-color, box-shadow;\n\t-ms-transition-duration: 0.5s;\n\t-o-transition-property: background-color, box-shadow;\n\t-o-transition-duration: 0.5s;\n\ttransition-property: background-color, box-shadow;\n\ttransition-duration: 0.5s;\n\tbackground-color: '+lineColor+';\n\t}\n'
 
 def fixLineColors(f):
     write = False
@@ -35,8 +37,12 @@ for root,dirs,files in os.walk(directory):
            f.close()
         if file.endswith("doxygen.css"):
             f = open(os.path.join(root, file), mode='r+')
-            string = 'div.line2 {\nfont-family: monospace, fixed;\nfont-size: 13px;\nmin-height: 13px;\nline-height: 1.0;\ntext-wrap: unrestricted;\nwhite-space: -moz-pre-wrap; /* Moz */\nwhite-space: -pre-wrap;     /* Opera 4-6 */\nwhite-space: -o-pre-wrap;   /* Opera 7 */\nwhite-space: pre-wrap;      /* CSS3  */\nword-wrap: break-word;      /* IE 5.5+ */\ntext-indent: -53px;\npadding-left: 53px;\npadding-bottom: 0px;\nmargin: 0px;\n-webkit-transition-property: background-color, box-shadow;\n-webkit-transition-duration: 0.5s;\n-moz-transition-property: background-color, box-shadow;\n-moz-transition-duration: 0.5s;\n-ms-transition-property: background-color, box-shadow;\n-ms-transition-duration: 0.5s;\n-o-transition-property: background-color, box-shadow;\n-o-transition-duration: 0.5s;\ntransition-property: background-color, box-shadow;\ntransition-duration: 0.5s;\nbackground-color: '+lineColor+';\n}\n'
-            f.write(string)
+            l = f.readlines()
+            string = "".join(l)
+            newString = string.replace('div.line {', insert + '\ndiv.line {')
+            f.close()
+            f = open(os.path.join(root, file), mode='w')
+            f.write(newString)
             f.close()
             
             

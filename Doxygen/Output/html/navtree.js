@@ -1,7 +1,7 @@
 var NAVTREE =
 [
   [ "RL-Python", "index.html", [
-    [ "Overview", "index.html", null ],
+    [ "The Big Picture", "index.html", null ],
     [ "Code", "_code.html", "_code" ],
     [ "Main Function", "main_8py.html", [
       [ "Overview", "main_8py.html#Overview", null ]

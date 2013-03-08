@@ -102,103 +102,103 @@ Agent Superclass</h1>
 <h2><a class="anchor" id="Agent_init"></a>
 Initialization</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>__init__(self,representation,policy,domain,logger,initial_alpha = 0.1,alpha_decay_mode = &#39;dabney&#39;, boyan_N0 = 1000):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.representation = representation</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.representation = representation</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        self.policy     = policy</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        self.domain     = domain</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        self.domain     = domain</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        self.logger     = logger</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        self.initial_alpha = initial_alpha</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;        self.initial_alpha = initial_alpha</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        self.alpha      = initial_alpha</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        self.alpha_decay_mode = alpha_decay_mode.lower()</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;        self.alpha_decay_mode = alpha_decay_mode.lower()</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        self.boyan_N0   = boyan_N0  </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keywordflow">if</span> self.logger:</div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keywordflow">if</span> self.logger:</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            self.logger.line()</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Agent:\t\t&quot;</span>+str(className(self)))</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Agent:\t\t&quot;</span>+str(className(self)))</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Policy:\t\t&quot;</span>+str(className(self.policy)))</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;boyan&#39;</span>: self.logger.log(<span class="stringliteral">&quot;boyan_N0:\t%.1f&quot;</span>%self.boyan_N0)</div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;boyan&#39;</span>: self.logger.log(<span class="stringliteral">&quot;boyan_N0:\t%.1f&quot;</span>%self.boyan_N0)</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="comment"># Check to make sure selected alpha_decay mode is valid</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">if</span> <span class="keywordflow">not</span> self.alpha_decay_mode <span class="keywordflow">in</span> self.valid_decay_modes:</div>
+<div class="line2"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">if</span> <span class="keywordflow">not</span> self.alpha_decay_mode <span class="keywordflow">in</span> self.valid_decay_modes:</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            errMsg = <span class="stringliteral">&quot;Invalid decay mode selected:&quot;</span>+self.alpha_decay -_mode+<span class="stringliteral">&quot;.\nValid choices are: &quot;</span>+str(self.valid_decay_modes)</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keywordflow">if</span> self.logger:</div>
+<div class="line2"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keywordflow">if</span> self.logger:</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                self.logger.log(errMsg)</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keywordflow">else</span>: shout(errMsg)</div>
+<div class="line2"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keywordflow">else</span>: shout(errMsg)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            sys.exit(1)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="comment"># Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,</span></div>
+<div class="line2"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="comment"># Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="comment"># initial_alpha will act as a permanent upper-bound on alpha.</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;dabney&#39;</span>:</div>
+<div class="line2"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;dabney&#39;</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            self.initial_alpha = 1.0</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            self.alpha = 1.0</div>
+<div class="line2"><a name="l00026"></a><span class="lineno">   26</span>&#160;            self.alpha = 1.0</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Agent_updateAlpha"></a>
 Update Alpha</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;dabney&#39;</span>:</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> self.alpha_decay_mode == <span class="stringliteral">&#39;dabney&#39;</span>:</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="comment"># We only update alpha if this step is non-terminal; else phi_prime becomes</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="comment"># zero and the dot product below becomes very large, creating a very small alpha</span></div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="comment"># zero and the dot product below becomes very large, creating a very small alpha</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;            <span class="keywordflow">if</span> <span class="keywordflow">not</span> terminal:</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;                <span class="comment">#Automatic learning rate: [Dabney W. 2012]</span></div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;                <span class="comment">#Automatic learning rate: [Dabney W. 2012]</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,eligibility_trace_s)) <span class="comment">#http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                self.candid_alpha    = 1/(self.candid_alpha*1.) <span class="keywordflow">if</span> self.candid_alpha != 0 <span class="keywordflow">else</span> inf</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;                self.candid_alpha    = 1/(self.candid_alpha*1.) <span class="keywordflow">if</span> self.candid_alpha != 0 <span class="keywordflow">else</span> inf</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                self.alpha          = min(self.alpha,self.candid_alpha)</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;            <span class="comment"># else we take no action</span></div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;            <span class="comment"># else we take no action</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">elif</span> self.alpha_decay_mode == <span class="stringliteral">&#39;boyan&#39;</span>:</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + self.episode_count ** 1.1)</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + self.episode_count ** 1.1)</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            self.alpha /= nnz <span class="comment"># divide by number of nonzero features; note that this method is only called if nnz &gt; 0</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            shout(<span class="stringliteral">&quot;Unrecognized decay mode&quot;</span>)</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Unrecognized decay mode &quot;</span>)    </div>
+<div class="line2"><a name="l00016"></a><span class="lineno">   16</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Unrecognized decay mode &quot;</span>)    </div>
 </div><!-- fragment --> <h2><a class="anchor" id="Agent_printAll"></a>
 Print All</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        printClass(self)</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        printClass(self)</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Agent_MC_episode"></a>
 Monte-Carlo Episode</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>MC_episode(self,s=None,a=None, tolerance = 0):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        eps_length              = 0</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        eps_length              = 0</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        eps_return              = 0</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        eps_discounted_return   = 0</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        eps_discounted_return   = 0</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        eps_term                = 0</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keywordflow">if</span> s <span class="keywordflow">is</span> <span class="keywordtype">None</span>: s = self.domain.s0()</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keywordflow">if</span> s <span class="keywordflow">is</span> <span class="keywordtype">None</span>: s = self.domain.s0()</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keywordflow">if</span> a <span class="keywordflow">is</span> <span class="keywordtype">None</span>: a = self.policy.pi(s)</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        terminal    = <span class="keyword">False</span></div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;        terminal    = <span class="keyword">False</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordflow">while</span> <span class="keywordflow">not</span> eps_term <span class="keywordflow">and</span> eps_length &lt; self.domain.episodeCap:</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;            r,ns,eps_term       = self.domain.step(s, a)</div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;            r,ns,eps_term       = self.domain.step(s, a)</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            s                   = ns</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            eps_return          += r</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            eps_return          += r</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            eps_discounted_return += self.representation.domain.gamma**eps_length * r</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            eps_length          += 1</div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;            eps_length          += 1</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            a                   = self.policy.pi(s)</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordflow">if</span> self.representation.domain.gamma**eps_length &lt; tolerance:</div>
+<div class="line2"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordflow">if</span> self.representation.domain.gamma**eps_length &lt; tolerance:</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keywordflow">break</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">return</span> eps_return, eps_length, eps_term, eps_discounted_return</div>
+<div class="line2"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">return</span> eps_return, eps_length, eps_term, eps_discounted_return</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Agent_Q_MC"></a>
 Q_MC</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>Q_MC(self,s,a,MC_samples = 1000, tolerance = 0):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        Q_avg = 0</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        Q_avg = 0</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">for</span> i <span class="keywordflow">in</span> arange(MC_samples):</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="comment">#print &quot;MC Sample:&quot;, i</span></div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="comment">#print &quot;MC Sample:&quot;, i</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;            _,_,_,Q = self.MC_episode(s,a,tolerance)</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;            Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;            Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keywordflow">return</span> Q_avg</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Agent_eval"></a>
 Evaluation</h2>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>evaulate(self,samples, MC_samples, output_file):</div>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>evaulate(self,samples, MC_samples, output_file):</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        tolerance       = 1e-10 <span class="comment">#if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        cols            = self.domain.state_space_dims + 2</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        cols            = self.domain.state_space_dims + 2</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        DATA            = empty((samples,cols))</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        terminal        = <span class="keyword">True</span></div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;        terminal        = <span class="keyword">True</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        steps           = 0</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keywordflow">while</span> steps &lt; samples:</div>
+<div class="line2"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keywordflow">while</span> steps &lt; samples:</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;            s = self.domain.s0() <span class="keywordflow">if</span> terminal <span class="keywordflow">or</span> steps % self.domain.episodeCap == 0 <span class="keywordflow">else</span> s </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;            a = self.policy.pi(s)</div>
+<div class="line2"><a name="l00009"></a><span class="lineno">    9</span>&#160;            a = self.policy.pi(s)</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="comment">#Store the corresponding Q</span></div>
+<div class="line2"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="comment">#Store the corresponding Q</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            Q = self.Q_MC(s,a,MC_samples, tolerance)</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            DATA[steps,:] = hstack((s,[a, Q]))</div>
+<div class="line2"><a name="l00013"></a><span class="lineno">   13</span>&#160;            DATA[steps,:] = hstack((s,[a, Q]))</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            r,s,terminal = self.domain.step(s, a)</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            steps += 1</div>
+<div class="line2"><a name="l00015"></a><span class="lineno">   15</span>&#160;            steps += 1</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Sample &quot;</span>+ str(steps)+<span class="stringliteral">&quot;:&quot;</span>+ str(s)+<span class="stringliteral">&quot; &quot;</span>+str(a)+<span class="stringliteral">&quot; &quot;</span>+str(Q)) </div>
+<div class="line2"><a name="l00017"></a><span class="lineno">   17</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Sample &quot;</span>+ str(steps)+<span class="stringliteral">&quot;:&quot;</span>+ str(s)+<span class="stringliteral">&quot; &quot;</span>+str(a)+<span class="stringliteral">&quot; &quot;</span>+str(Q)) </div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        save(output_file, DATA)</div>
+<div class="line2"><a name="l00019"></a><span class="lineno">   19</span>&#160;        save(output_file, DATA)</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">return</span> DATA</div>
 </div><!-- fragment --></div></div><!-- contents -->
 </div><!-- doc-content -->
