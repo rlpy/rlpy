@@ -2,8 +2,12 @@
 /*! 
 	\page Code
 	\subpage Agents
+	\n
 	\subpage Domains
+	\n
 	\subpage Experiments
+	\n
 	\subpage Policies
+	\n
 	\subpage Representations
 */

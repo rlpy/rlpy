@@ -8,7 +8,7 @@ from Representations import *
 
 ## The Agent receives observations from the \ref Domains.Domain.Domain "Domain" and performs actions to obtain some goal.
 # 
-# The %Agent interacts with the Domain in discrete timesteps. Each timestep, the Agent receives some observations from the 
+# The %Agent interacts with the Domain in discrete timesteps. Each timestep, the %Agent receives some observations from the 
 # Domain and uses this information to update its \ref Representations.Representation.Representation "Representation" of the Domain.
 # It then uses its \ref Policies.Policy.Policy "Policy" to select an action to perform. This process (observe, update, act) repeats 
 # itself until some goal or fail state, determined by the Domain, is reached. 
@@ -34,7 +34,7 @@ class Agent(object):
 	## Only used by \ref Agents.SARSA.SARSA "SARSA" agent \b Do \b we \b even \b need \b this \b here? Shouldn't it only be defined in SARSA child class? (confusing).
 	# In case lambda parameter in SARSA definition is used. 
     eligibility_trace   = []            
-	## A simple objects that record the prints in a file
+	## A simple object that records the prints in a file
     logger              = None          
 	## Used by some alpha_decay modes
     episode_count       = 0             
@@ -48,7 +48,7 @@ class Agent(object):
     boyan_N0            = 1000                 
 	
 	
-	## Initializes the %Agent object. See code
+	## Initializes the \c %Agent object. See code
 	# \ref Agent_init "Here".
 	
 	# [init code]

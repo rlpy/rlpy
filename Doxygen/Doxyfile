@@ -45,7 +45,7 @@ PROJECT_BRIEF          = "The Reinforced Learning Library for Education and Rese
 # exceed 55 pixels and the maximum width should not exceed 200 pixels. 
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = "C:/Users/Elliott/Documents/UROP Stuff/Code/RL-Python/Doxygen/Files/ACL_logo.png"
+PROJECT_LOGO           = "C:/Users/Elliott/Documents/UROP Stuff/Code/RL-Python/Doxygen/Files/Logos.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
