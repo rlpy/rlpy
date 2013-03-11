@@ -42,6 +42,10 @@ class Experiment(object):
 	## An object to record the print outs in a file
     logger = None  
 	
+	## Initializes the \c %Experiment object. See code
+	# \ref Experiment_init "Here".
+	
+	# [init code]
     def __init__(self,id, agent, domain,logger, exp_naming, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
         self.id = id
         # Find the corresponding random seed for the experiment id
@@ -69,8 +73,13 @@ class Experiment(object):
         self.logger.log("Experiment:\t\t%s" % className(self))
         self.logger.log("Output:\t\t\t%s/%s" % (self.full_path, self.output_filename))
         self.logger.setOutput("%s/%d-out.txt" % (self.full_path, self.id))
+	# [init code]
 	
-	## Performs a run 
+	
+	## Performs a run. See code
+	# \ref Experiment_performanceRun "Here".
+	
+	# [performanceRun code]
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -96,13 +105,23 @@ class Experiment(object):
         if self.show_performance: self.domain.showDomain(s,a)
         self.agent.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
+	# [performanceRun code]
 	
-	## Prints class info
+	
+	## Prints class info. See code
+	# \ref Experiment_printAll "Here".
+	
+	# [printAll code]
     def printAll(self):
         printClass(self)
-		
-	## Saves experimental data
-    def save(self):
+	# [printAll code]
+	
+	
+	## Saves experimental data. See code
+	# \ref Experiment_save "Here".
+    
+	# [save code]
+	def save(self):
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
         savetxt(self.full_path+'/'+self.output_filename,self.result, fmt='%.18e', delimiter='\t')
@@ -110,10 +129,15 @@ class Experiment(object):
         self.logger.log("Took %s\nResults\t=> %s/%s" % (hhmmss(deltaT(self.start_time)), self.full_path, self.output_filename))
         # Set the output path for the logger
         # This is done here because it is dependent on the combination of agent, representation, and domain
-		
+	# [save code]
+	
+	
 	## Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X  
     # Example: X = ['domain','agent','representation','LEARNING_STEPS']
-    # Output: 'PitMaze-SARSA-Tabular-10000'
+    # Output: 'PitMaze-SARSA-Tabular-10000'. See code
+	# \ref Experiment_makeExperimentName "Here".
+	
+	# [makeExperimentName code]
     def makeExperimentName(self,variables):
         exp_name = ''
         
@@ -137,4 +161,5 @@ class Experiment(object):
                     exp_name += '-'
                 except:
                     pass
-        return exp_name[:-1]  
+        return exp_name[:-1] 
+	# [makeExperimentName code]

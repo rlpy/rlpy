@@ -19,24 +19,52 @@ class Policy(object):
 	## In Debug Mode?
     DEBUG          = False
 	
+	## Initializes the \c %Policy object. See code
+	# \ref Policy_init "Here".
+	
+	# [init code]
     def __init__(self,representation,logger):
         self.representation = representation
 		## An object to record the print outs in a file
         self.logger         = logger
+	# [init code]
 	
-	## \b ABSTRACT \b METHOD: Select an action given a state
+	
+	## \b ABSTRACT \b METHOD: Select an action given a state. See code
+	# \ref Policy_pi "Here".
+	
+	# [pi code]
     def pi(self,s):
        abstract 
-	## \b ABSTRACT \b METHOD: Turn exploration off
+	# [pi code]
+	
+	
+	## \b ABSTRACT \b METHOD: Turn exploration off. See code
+	# \ref Policy_turnOffExploration "Here".
+	
+	# [turnOffExploration code]
     def turnOffExploration(self):
         pass
-	## \b ABSTRACT \b METHOD: Turn exploration on
+	# [turnOffExploration code]
+	
+	
+	## \b ABSTRACT \b METHOD: Turn exploration on. See code
+	# \ref Policy_turnOnExploration "Here".
+	
+	# [turnOnExploration code]
     def turnOnExploration(self):
         pass
-	## Prints class information
-    def printAll(self):
+	# [turnOnExploration code]
+	
+	
+	## Prints class information. See code
+	# \ref Policy_printAll "Here".
+	
+    # [printAll code]
+	def printAll(self):
         print className(self)
         print '======================================='
         for property, value in vars(self).iteritems():
             print property, ": ", value
+	# [printAll code]
     

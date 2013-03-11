@@ -2,6 +2,7 @@
 /*! 
 	\page Agent
 	\section Agent_top Agent Superclass
+	Return to \ref Agents.Agent.Agent "Agent"
 	
 	\subsection Agent_init Initialization
 	\snippet Agent.py init code

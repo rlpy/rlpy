@@ -53,7 +53,7 @@ class Domain(object):
     NOMINAL_TERMINATION     = 1
 	## Termination Signal of Episode: episode is over, goal or fail state reached
     CRITICAL_TERMINATION    = 2
-
+	
 	## Initializes the \c %Domain object. See code
 	# \ref Domain_init "Here".
 	
@@ -83,6 +83,7 @@ class Domain(object):
             self.logger.log("Gamma:\t\t"+str(self.gamma))
 	# [init code]
 
+	
 	## Shows a visualization of the current state of the domain and that of learning. See code
 	# \ref Domain_show "Here".
 	# @param s 
@@ -98,6 +99,7 @@ class Domain(object):
         self.showLearning(representation)
 	# [show code]
 
+	
     ## \b ABSTRACT \b METHOD: Shows a visualization of the current state of the domain. See code
 	# \ref Domain_showDomain "Here".
 	# @param s 
@@ -110,6 +112,7 @@ class Domain(object):
         pass
 	# [showDomain code]
 
+	
     ## \b ABSTRACT \b METHOD: Shows a visualization of the current learning. This visualization is usually in the form
     # of a value gridded value function and policy. It is thus really only possible for 1 or 2-state domains. See code
 	# \ref Domain_showLearning "Here".
@@ -121,6 +124,7 @@ class Domain(object):
         pass
 	# [showLearning code]
 
+	
     ## Returns the initial state of the %Domain
 	# @return 
 	# A numpy array that defines the initial state of the %Domain. See code
@@ -130,6 +134,7 @@ class Domain(object):
     def s0(self):
         abstract
 	# [s0 code]
+	
 	
     ## Returns all actions in the domain.
 	# The default version returns all actions [0, 1, 2...].
@@ -142,6 +147,7 @@ class Domain(object):
     def possibleActions(self,s):
         return arange(self.actions_num)
 	# [possActions code]
+	
 	
     ## \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
 	# This function should return a reward that the agent acheives for the action, the next state that the domain/agent should be in,
@@ -157,6 +163,7 @@ class Domain(object):
     def step(self,s,a):
         abstract
 	# [step code]
+	
 	
 	## \b ABSTRACT \b METHOD: Each row of each output corresponds to one possibility.
     # e.g. s,a -> r[i], ns[i] with probability p[i]. I AM CONFUSED HOW THIS WORKS OR WHAT IT IS DOING. See code
@@ -186,7 +193,13 @@ class Domain(object):
         return False
 	# [isTerminal code]
 	
-	## Run the environment by performing random actions for T steps
+	
+	## Run the environment by performing random actions for T steps. See code
+	# \ref Domain_test "Here".
+	# @param T
+	# The desired number of steps
+
+	# [test code]
     def test(self,T):
         terminal    = True
         steps       = 0
@@ -200,11 +213,22 @@ class Domain(object):
             self.showDomain(s,a)
             r,s,terminal = self.step(s, a)
             steps += 1
+	# [test code]
+	
+	
+	## Prints the class data. See code
+	# \ref Domain_test "Here".
 
-	## Prints the class data
+	# [printAll code]
     def printAll(self):
         printClass(self)
-
+	# [printAll code]
+	
+	
+	## What is this? What does it do?.  See code
+	# \ref Domain_extendDiscreteDimensions "Here".
+	
+	# [extendDiscreteDimensions code]
     def extendDiscreteDimensions(self):
         # Store the original limits for other types of calculations
         self.discrete_statespace_limits = self.statespace_limits
@@ -213,8 +237,21 @@ class Domain(object):
              if not d in self.continuous_dims:
                  self.statespace_limits[d,0] += -.5
                  self.statespace_limits[d,1] += +.5
-
-	## Sample no_samples of next states and rewards from the domain
+	# [extendDiscreteDimensions code]
+	
+	
+	## Sample a set number of next states and rewards from the domain. See code
+	# \ref Domain_MCExpectedStep "Here". 
+	# @param s
+	# What is this? What does it do?
+	# @param a 
+	# What is this? What does it do?
+	# @param no_samples 
+	# The number of next states and rewards to be sampled.
+	# @return 
+	# [S,A] => S is an array of next states, A is an array of rewards for those states
+	
+	# [MCExpectedStep code]
     def MCExpectedStep(self,s,a,no_samples):
 
         next_states = []
@@ -228,8 +265,15 @@ class Domain(object):
             rewards.append(r)
 
         return array(next_states),array(rewards)
+	# [MCExpectedStep code]
 
-	## Returns a state sampled uniformely from the state space
+	
+	## Returns a state sampled uniformely from the state space. See code
+	# \ref Domain_s0uniform "Here". 
+	# @return
+	# The state
+	
+	# [s0uniform code]
     def s0uniform(self):
         if className(self) == 'BlocksWorld':
             print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)
@@ -245,7 +289,18 @@ class Domain(object):
                 s[d] = int(s[d])
         if len(s) == 1: s = s[0]
         return s
+	# [s0uniform code]
 
-	## This function is used for cases when state vector has elements outside of its limits. This function simply caps each element of the state space to lie in the allowed state limits
+	
+	## Caps each element of the state space to lie within the allowed state limits.
+	#This function is used for cases when state vector has elements outside of its limits. See code
+	# \ref Domain_saturateState "Here". 
+	# @param s
+	# What is this? What does it do?
+	# @return
+	# What is this? What does it do?
+	
+	# [saturateState code]
     def saturateState(self,s):
         return bound_vec(s,self.discrete_statespace_limits)
+	# [saturateState code]

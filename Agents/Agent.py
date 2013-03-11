@@ -131,7 +131,8 @@ class Agent(object):
     def printAll(self):
         printClass(self)
 	# [printAll code]
-		
+	
+	
 	## \cond DEV
     def checkPerformance(self):
         # This function should not be here. This is just for debugging and getting insight into the performance evolution
@@ -152,6 +153,7 @@ class Agent(object):
         self.policy.turnOnExploration()
         return eps_return, eps_length, eps_term
 	## \endcond
+	
 	
 	## Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent.
 	# See code \ref Agent_MC_episode "Here".
@@ -191,6 +193,7 @@ class Agent(object):
         return eps_return, eps_length, eps_term, eps_discounted_return
     # [MC_episode code] 
 	
+	
 	## Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a).
 	# See code \ref Agent_Q_MC "Here".
 	# @param s
@@ -213,6 +216,7 @@ class Agent(object):
             Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)
         return Q_avg
 	# [Q_MC code]
+	
 	
 	## Evaluate the current policy for fixed number of samples and store them in samples-by-|S|+2.
     # Note: (2 corresponds to action and Q(s,a)) \n

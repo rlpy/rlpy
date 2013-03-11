@@ -1,4 +1,63 @@
 // \file representation.txt
 /*! 
 	\page Representation
+	\section Representation_top Representation Superclass
+	Return to \ref Representations.Representation.Representation "Representation"
+	
+	\subsection Representation_init Initialization
+	\snippet Representation.py init code
+	
+	\subsection Representation_V V
+	\snippet Representation.py V code
+	
+	\subsection Representation_Qs Qs
+	\snippet Representation.py Qs code
+	
+	\subsection Representation_Q Q
+	\snippet Representation.py Q code
+	
+	\subsection Representation_phi Phi
+	\snippet Representation.py phi code
+	
+	\subsection Representation_phi_sa Phi Sa
+	\snippet Representation.py phi_sa code
+	
+	\subsection Representation_addNewWeight Add New Weight
+	\snippet Representation.py addNewWeight code
+	
+	\subsection Representation_hashState Hash State
+	\snippet Representation.py hashState code
+	
+	\subsection Representation_setBinsPerDimension Set Bins Per Dimension
+	\snippet Representation.py setBinsPerDimension code
+	
+	\subsection Representation_binState Bin State
+	\snippet Representation.py binState code
+	
+	\subsection Representation_printAll Print All
+	\snippet Representation.py printAll code
+	
+	\subsection Representation_bestActions Best Actions
+	\snippet Representation.py bestActions code
+	
+	\subsection Representation_bestAction Best Action
+	\snippet Representation.py bestAction code
+	
+	\subsection Representation_phi_nonTerminal Phi Non Terminal
+	\snippet Representation.py phi_nonTerminal code
+	
+	\subsection Representation_activeInitialFeatures Active Initial Features
+	\snippet Representation.py activeInitialFeatures code
+	
+	\subsection Representation_batchDiscover Batch Discover
+	\snippet Representation.py batchDiscover code
+	
+	\subsection Representation_batchPhi_s_a Batch Phi Sa
+	\snippet Representation.py batchPhi_s_a code
+	
+	\subsection Representation_batchBestAction Batch Best Action
+	\snippet Representation.py batchBestAction code
+	
+	\subsection Representation_featureType Feature Type
+	\snippet Representation.py featureType code
 */

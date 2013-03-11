@@ -2,8 +2,23 @@
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
 ######################################################
-# 
+
 from Tools import *
+
+## The Representation is the \ref Agents.Agent.Agent "Agent's" model of the \ref Domains.Domain.Domain "Domain".
+# 
+# As the %Agent interacts with the Domain, it receives some observations. The agent then passes this information to its
+# %Repres
+
+# Domain and uses this information to update its \ref Representations.Representation.Representation "Representation" of the Domain.
+# It then uses its \ref Policies.Policy.Policy "Policy" to select an action to perform. This process (observe, update, act) repeats 
+# itself until some goal or fail state, determined by the Domain, is reached. 
+# At this point the \ref Experiments.Experiment.Experiment "Experiment" determines whether the %Agent starts over or is tested.
+# 
+# The \c %Agent class is a superclass that provides the basic framework for all RL agents. It provides the methods and attributes
+# that allow child classes to interact with the \c Domain, \c Representation, \c Policy, and \c Experiment classes within the RL-Python library. \n
+# All new agent implimentations should inherit from \c %Agent.
+
 
 ## The \c %Representation class describes the information the Agent gathered about the Domain.
 # 
@@ -30,6 +45,10 @@ class Representation(object):
 	## Object for capturing output text in a file	
 	logger = None	   
 	
+	## Initializes the \c %Representation object. See code
+	# \ref Representation_init "Here".
+	
+	# [init code]
 	def __init__(self,domain,logger,discretization = 20):
 		# See if the child has set important attributes  
 		for v in ['features_num']:
@@ -48,40 +67,65 @@ class Representation(object):
 			self.logger.log("Discretization:\t\t%d"% self.discretization)
 			self.logger.log("Starting Features:\t%d"% self.features_num)
 			self.logger.log("Aggregated States:\t%d"% self.agg_states_num)
+	# [init code]
 	
-	## Returns the value of a state	
+	
+	## Returns the value of a state. See code
+	# \ref Representation_V "Here".
+	
+	# [V code]
 	def V(self,s, phi_s = None):
 		if phi_s is None: phi_s = self.phi(s)
 		AllQs,A   = self.Qs(s,phi_s)
 		V	   = max(AllQs)
 		return V
-		
+	# [V code]
+	
+	
 	## Returns two arrays
 	# Q: array of Q(s,a)
 	# A: Corresponding array of action numbers
-	# If phi_s is given, it uses that to speed up the process
+	# If phi_s is given, it uses that to speed up the process. See code
+	# \ref Representation_Qs "Here".
+	
+	# [Qs code]
 	def Qs(self,s, phi_s = None):
 		A = self.domain.possibleActions(s)
 		if phi_s is None: phi_s   = self.phi(s)
 		return array([self.Q(s,a,phi_s) for a in A]), A   
+	# [Qs code]
 	
-	##Returns the state-action value
+	
+	##Returns the state-action value. See code
+	# \ref Representation_Q "Here".
+	
+	# [Q code]
 	def Q(self,s,a,phi_s = None):
 		
 		if len(self.theta) > 0:
 			return dot(self.phi_sa(s,a, phi_s),self.theta)
 		else:
 			return 0.0
-			
-	##Returns the phi(s)
+	# [Q code]
+	
+	
+	##Returns the phi(s). See code
+	# \ref Representation_phi "Here".
+	
+	# [phi code]
 	def phi(self,s):
 		if self.domain.isTerminal(s) or self.features_num == 0:
 			return zeros(self.features_num,'bool')
 		else:
 			return self.phi_nonTerminal(s)
+	# [phi code]
+	
 	
 	## Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
-	#If phi_s is passed it is used to avoid phi_s calculation
+	#If phi_s is passed it is used to avoid phi_s calculation. See code
+	# \ref Representation_phi_sa "Here".
+	
+	# [phi_sa code]
 	def phi_sa(self,s,a, phi_s = None):
 		if phi_s is None: phi_s = self.phi(s)
 		phi_sa = zeros(self.features_num*self.domain.actions_num, dtype=phi_s.dtype)
@@ -96,20 +140,35 @@ class Representation(object):
 		#A[a] = 1
 		#F_sa = kron(A,F_s)
 		return phi_sa
+	# [phi_sa code]
 	
-	## Add a new 0 weight corresponding to the new added feature for all actions.
+	
+	## Add a new 0 weight corresponding to the new added feature for all actions.. See code
+	# \ref Representation_addNewWeight "Here".
+	
+	# [addNewWeight code]
 	def addNewWeight(self):
 		self.theta	  = addNewElementForAllActions(self.theta,self.domain.actions_num)
-		
+	# [addNewWeight code]
+	
+	
 	## returns a unique id by calculating the enumerated number corresponding to a state
 	# it first translates the state into a binState (bin number corresponding to each dimension)
-	# it then maps the binstate to an integer
+	# it then maps the binstate to an integer. See code
+	# \ref Representation_hashState "Here".
+	
+	# [hashState code]
 	def hashState(self,s,):
 		ds = self.binState(s)
 		#self.logger.log(str(s)+"=>"+str(ds))
 		return vec2id(ds,self.bins_per_dim)
-		
-	## Set the number of bins for each dimension of the domain (continuous spaces will be slices using the discritization parameter)
+	# [hashState code]
+	
+	
+	## Set the number of bins for each dimension of the domain (continuous spaces will be slices using the discritization parameter). See code
+	# \ref Representation_setBinsPerDimension "Here".
+	
+	# [setBinsPerDimension code]
 	def setBinsPerDimension(self,domain,discretization):
 		self.bins_per_dim	   = zeros(domain.state_space_dims,uint16)
 		self.binWidth_per_dim   = zeros(domain.state_space_dims)
@@ -119,12 +178,17 @@ class Representation(object):
 			 else:
 				 self.bins_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]
 			 self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d,0])/(self.bins_per_dim[d]*1.)
-			 
+	# [setBinsPerDimension code]
+	
+	
 	## Given a state it returns a vector with the same dimensionality of s
 	# each element of the returned valued is the zero-indexed bin number corresponding to s
 	# This function accepts scalar inputs when the domain has 1 dimension 
 	# CompactBinary version exclude feature activation for the negative case of binary features.
-	# For example if the light is off, no feature corresponds to this case and hence nothing is activated.
+	# For example if the light is off, no feature corresponds to this case and hence nothing is activated. See code
+	# \ref Representation_binState "Here".
+	
+	# [binState code]
 	def binState(self,s):
 		if isinstance(s,int): s = [s]
 		assert(len(s) == len(self.domain.statespace_limits[:,0]))
@@ -132,13 +196,23 @@ class Representation(object):
 		for d in arange(self.domain.state_space_dims):
 			bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
 		return bs
+	# [binState code]
 	
-	## Prints the class information.
+	
+	## Prints the class information. See code
+	# \ref Representation_printAll "Here".
+	
+	# [printAll code]
 	def printAll(self):
 		printClass(self)
-		
+	# [printAll code]
+	
+	
 	## Given a state returns the best action possibles at that state
-	# If phi_s is given it is used to speed up
+	# If phi_s is given it is used to speed up. See code
+	# \ref Representation_bestActions "Here".
+	
+	# [bestActions code]
 	def bestActions(self,s, phi_s = None):
 		Qs, A = self.Qs(s,phi_s)
 		# Find the index of best actions
@@ -152,14 +226,20 @@ class Representation(object):
 			self.logger.log('Best: %s, Max: %s' % (str(A[ind]),str(Qs.max())))
 			#raw_input()
 		return A[ind]
-
+	# [bestActions code]
+	
+	
 #	def discretized(self,s):
 #		ds = s.copy()
 #		for dim in self.domain.continuous_dims:
 #				ds[dim] = closestDiscretization(ds[dim],self.discretization,self.domain.statespace_limits[dim][:]) 
 #		return ds
 
-	## return an action among the best actions uniformly randomly:
+
+	## return an action among the best actions uniformly randomly. See code
+	# \ref Representation_bestAction "Here".
+	
+	# [bestAction code]
 	def bestAction(self,s, phi_s = None):
 		bestA = self.bestActions(s,phi_s)
 		if len(bestA) > 1:
@@ -167,33 +247,54 @@ class Representation(object):
 			#return bestA[0]
 		else:
 			return bestA[0]
+	# [bestAction code]
+	
+	
 	##\b ABSTRACT \b METHOD: This is the actual function that each representation should fill
-	# \note if state is terminal the feature vector is always zero!
+	# \note if state is terminal the feature vector is always zero! See code
+	# \ref Representation_phi_nonTerminal "Here".
+	
+	# [phi_nonTerminal code]
 	def phi_nonTerminal(self,s):
 			abstract
-			
-	## return the index of active initial features based on bins on each dimensions
+	# [phi_nonTerminal code]
+	
+	
+	## return the index of active initial features based on bins on each dimensions. See code
+	# \ref Representation_activeInitialFeatures "Here".
+	
+	# [activeInitialFeatures code]
 	def activeInitialFeatures(self,s):
 		bs		  = self.binState(s)
 		shifts	  = hstack((0, cumsum(self.bins_per_dim)[:-1]))
 		index	   = bs+shifts
 		return	  index.astype('uint32')
-		
+	# [activeInitialFeatures code]
+	
+	
 	## Discovers features and adds it to the representation
 	# If it adds any feature it should return True, otherwise False
 	# This is a dummy function for representations with no discovery
 	# TD_error is a vector of TD-Errors for all samples p-by-1
 	# all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
-	# data_s is the states p-by-|dim(s)|
+	# data_s is the states p-by-|dim(s)|. See code
+	# \ref Representation_batchDiscover "Here".
+	
+	# [batchDiscover code]
 	def batchDiscover(self, td_errors, all_phi_s, data_s):
 		return False
-		
+	# [batchDiscover code]
+	
+	
 	## Input: 
 	# all_phi_s p-by-n [feature vectors]
 	# all_actions p-by-1 [set of actions corresponding to each feature
 	# Optional) If phi_s_a has been built for all actions pass it for speed boost
 	# output:
-	# returns all_phi_s_a p-by-na
+	# returns all_phi_s_a p-by-na. See code
+	# \ref Representation_batchPhi_s_a "Here".
+	
+	# [batchPhi_s_a code]
 	def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
 		p,n			= all_phi_s.shape
 		a_num		= self.domain.actions_num
@@ -203,8 +304,11 @@ class Representation(object):
 			rows = where(all_actions==i)[0]
 			if len(rows): phi_s_a[rows,i*n:(i+1)*n] = all_phi_s[rows,:]
 		return phi_s_a
+	# [batchPhi_s_a code]
+	
+	
 		# closed on 2/27/2013: Effort to sparsify things
-		####################################
+		#=====================================================================
 #		if all_phi_s_a == None: 
 #			if use_sparse:
 #				all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = uint8),all_phi_s) #all_phi_s_a will be ap-by-an
@@ -280,6 +384,12 @@ class Representation(object):
 	# output =>  0 1
 	#			1 0
 	#			0 0 
+	
+	
+	## DESCRIPTION. See code
+	# \ref Representation_batchBestAction "Here".
+	
+	# [batchBestAction code]
 	def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
 		p,n	 = all_phi_s.shape
 		a_num   = self.domain.actions_num
@@ -303,7 +413,13 @@ class Representation(object):
 		# Calculate the corresponding phi_s_a
 		phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a, useSparse)
 		return best_action, phi_s_a, action_mask 
-
-	## \b ABSTRACT \b METHOD: Return the data type for features
+	# [batchBestAction code]
+	
+	
+	## \b ABSTRACT \b METHOD: Return the data type for features. See code
+	# \ref Representation_featureType "Here".
+	
+	# [featureType code]
 	def featureType(self):
 		abstract
+	# [featureType code]

@@ -2,6 +2,7 @@
 /*! 
 	\page Domain
 	\section Domain_top Domain Superclass
+	Return to \ref Domains.Domain.Domain "Domain"
 	
 	\subsection Domain_init Initialization
 	\snippet Domain.py init code
@@ -29,4 +30,22 @@
 	
 	\subsection Domain_isTerminal isTerminal
 	\snippet Domain.py isTerminal code
+	
+    \subsection Domain_test Test
+	\snippet Domain.py test code
+	
+    \subsection Domain_printAll Print All
+	\snippet Domain.py printAll code
+	
+    \subsection Domain_extendDiscreteDimensions Extended Discrete Dimensions
+	\snippet Domain.py extendDiscreteDimensions code
+	
+    \subsection Domain_MCExpectedStep MC Expected Step
+	\snippet Domain.py MCExpectedStep code
+	
+    \subsection Domain_s0uniform S0 Uniform
+	\snippet Domain.py s0uniform code
+	
+    \subsection Domain_saturateState Saturate State
+	\snippet Domain.py saturateState code
 */

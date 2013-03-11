@@ -28,7 +28,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="Logos.png"/></td>
+  <td id="projectlogo"><img alt="Logo" src="ACL_logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RL-Python
    &#160;<span id="projectnumber">Version 1.0</span>
@@ -97,7 +97,187 @@ $(document).ready(function(){initNavTree('_representation.html','');});
 </div>
 
 <div class="contents">
-<div class="textblock"></div></div><!-- contents -->
+<div class="textblock"><h1><a class="anchor" id="Representation_top"></a>
+Representation Superclass</h1>
+<p>Return to <a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a></p>
+<h2><a class="anchor" id="Representation_init"></a>
+Initialization</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>__init__(self,domain,logger,discretization = 20):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="comment"># See if the child has set important attributes  </span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">for</span> v <span class="keywordflow">in</span> [<span class="stringliteral">&#39;features_num&#39;</span>]:</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="keywordflow">if</span> getattr(self,v) == <span class="keywordtype">None</span>:</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                <span class="keywordflow">raise</span> Exception(<span class="stringliteral">&#39;Missed domain initialization of &#39;</span>+ v)</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;        self.setBinsPerDimension(domain,discretization)</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        self.domain = domain</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;        self.discretization = discretization</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        self.theta  = zeros(self.features_num*self.domain.actions_num) </div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;        self.agg_states_num = prod(self.bins_per_dim.astype(<span class="stringliteral">&#39;uint64&#39;</span>))</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        self.logger = logger</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;        self.logger.line()</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        self.logger.log(<span class="stringliteral">&quot;Representation:\t\t%s&quot;</span> % className(self))</div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;        self.logger.log(<span class="stringliteral">&quot;Features per action:\t%d&quot;</span> % self.features_num)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">if</span> len(self.domain.continuous_dims): </div>
+<div class="line2"><a name="l00016"></a><span class="lineno">   16</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Discretization:\t\t%d&quot;</span>% self.discretization)</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Starting Features:\t%d&quot;</span>% self.features_num)</div>
+<div class="line2"><a name="l00018"></a><span class="lineno">   18</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Aggregated States:\t%d&quot;</span>% self.agg_states_num)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_V"></a>
+V</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>V(self,s, phi_s = None):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> phi_s <span class="keywordflow">is</span> <span class="keywordtype">None</span>: phi_s = self.phi(s)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        AllQs,A   = self.Qs(s,phi_s)</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        V      = max(AllQs)</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">return</span> V</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_Qs"></a>
+Qs</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>Qs(self,s, phi_s = None):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        A = self.domain.possibleActions(s)</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">if</span> phi_s <span class="keywordflow">is</span> <span class="keywordtype">None</span>: phi_s   = self.phi(s)</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">return</span> array([self.Q(s,a,phi_s) <span class="keywordflow">for</span> a <span class="keywordflow">in</span> A]), A   </div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_Q"></a>
+Q</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>Q(self,s,a,phi_s = None):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        </div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">if</span> len(self.theta) &gt; 0:</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="keywordflow">return</span> dot(self.phi_sa(s,a, phi_s),self.theta)</div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;            <span class="keywordflow">return</span> 0.0</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_phi"></a>
+Phi</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>phi(self,s):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> self.domain.isTerminal(s) <span class="keywordflow">or</span> self.features_num == 0:</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;            <span class="keywordflow">return</span> zeros(self.features_num,<span class="stringliteral">&#39;bool&#39;</span>)</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;            <span class="keywordflow">return</span> self.phi_nonTerminal(s)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_phi_sa"></a>
+Phi Sa</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>phi_sa(self,s,a, phi_s = None):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> phi_s <span class="keywordflow">is</span> <span class="keywordtype">None</span>: phi_s = self.phi(s)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        phi_sa = zeros(self.features_num*self.domain.actions_num, dtype=phi_s.dtype)</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        ind_a = arange(a*self.features_num,(a+1)*self.features_num)</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        phi_sa[ind_a] = phi_s</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="comment">##Slower alternatives</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="comment">##Alternative 1: Set only non_zeros (Very close on running time with the current solution. In fact it is sometimes better)</span></div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="comment">#nnz_ind = phi_s.nonzero()</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="comment">#phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]</span></div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="comment">##Alternative 2: Use of Kron </span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="comment">#A = zeros(self.domain.actions_num)</span></div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="comment">#A[a] = 1</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="comment">#F_sa = kron(A,F_s)</span></div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">return</span> phi_sa</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_addNewWeight"></a>
+Add New Weight</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>addNewWeight(self):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.theta    = addNewElementForAllActions(self.theta,self.domain.actions_num)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_hashState"></a>
+Hash State</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>hashState(self,s,):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        ds = self.binState(s)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="comment">#self.logger.log(str(s)+&quot;=&gt;&quot;+str(ds))</span></div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">return</span> vec2id(ds,self.bins_per_dim)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_setBinsPerDimension"></a>
+Set Bins Per Dimension</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>setBinsPerDimension(self,domain,discretization):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.bins_per_dim      = zeros(domain.state_space_dims,uint16)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        self.binWidth_per_dim   = zeros(domain.state_space_dims)</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(domain.state_space_dims):</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;             <span class="keywordflow">if</span> d <span class="keywordflow">in</span> domain.continuous_dims:</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;                 self.bins_per_dim[d] = discretization</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;             <span class="keywordflow">else</span>:</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;                 self.bins_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;             self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d,0])/(self.bins_per_dim[d]*1.)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_binState"></a>
+Bin State</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>binState(self,s):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> isinstance(s,int): s = [s]</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        assert(len(s) == len(self.domain.statespace_limits[:,0]))</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        bs  = empty(len(s),<span class="stringliteral">&#39;uint16&#39;</span>)</div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(self.domain.state_space_dims):</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;            bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])</div>
+<div class="line2"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keywordflow">return</span> bs</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_printAll"></a>
+Print All</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        printClass(self)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_bestActions"></a>
+Best Actions</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>bestActions(self,s, phi_s = None):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        Qs, A = self.Qs(s,phi_s)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="comment"># Find the index of best actions</span></div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        ind   = findElemArray1D(Qs,Qs.max())</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">if</span> self.DEBUG:</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;            self.logger.log(<span class="stringliteral">&#39;State:&#39;</span> +str(s))</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;            self.logger.line()</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;            <span class="keywordflow">for</span> i <span class="keywordflow">in</span> arange(len(A)):</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                self.logger.log(<span class="stringliteral">&#39;Action %d, Q = %0.3f&#39;</span> % (A[i], Qs[i]))</div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;            self.logger.line()</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            self.logger.log(<span class="stringliteral">&#39;Best: %s, Max: %s&#39;</span> % (str(A[ind]),str(Qs.max())))</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="comment">#raw_input()</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordflow">return</span> A[ind]</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_bestAction"></a>
+Best Action</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>bestAction(self,s, phi_s = None):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        bestA = self.bestActions(s,phi_s)</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">if</span> len(bestA) &gt; 1:</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="keywordflow">return</span> randSet(bestA)</div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;            <span class="comment">#return bestA[0]</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line2"><a name="l00007"></a><span class="lineno">    7</span>&#160;            <span class="keywordflow">return</span> bestA[0]</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_phi_nonTerminal"></a>
+Phi Non Terminal</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>phi_nonTerminal(self,s):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;            abstract</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_activeInitialFeatures"></a>
+Active Initial Features</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>activeInitialFeatures(self,s):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        bs        = self.binState(s)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        shifts    = hstack((0, cumsum(self.bins_per_dim)[:-1]))</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        index      = bs+shifts</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">return</span>    index.astype(<span class="stringliteral">&#39;uint32&#39;</span>)</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_batchDiscover"></a>
+Batch Discover</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>batchDiscover(self, td_errors, all_phi_s, data_s):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span></div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_batchPhi_s_a"></a>
+Batch Phi Sa</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):      </div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        p,n         = all_phi_s.shape</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        a_num       = self.domain.actions_num</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        phi_s_a         = zeros((p,n*a_num),dtype = all_phi_s.dtype)                    </div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;    </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keywordflow">for</span> i <span class="keywordflow">in</span> arange(a_num):</div>
+<div class="line2"><a name="l00007"></a><span class="lineno">    7</span>&#160;            rows = where(all_actions==i)[0]</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;            <span class="keywordflow">if</span> len(rows): phi_s_a[rows,i*n:(i+1)*n] = all_phi_s[rows,:]</div>
+<div class="line2"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordflow">return</span> phi_s_a</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_batchBestAction"></a>
+Batch Best Action</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        p,n  = all_phi_s.shape</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        a_num   = self.domain.actions_num</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        </div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">if</span> action_mask == <span class="keywordtype">None</span>:</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;            action_mask = ones((p,a_num))</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;            <span class="keywordflow">for</span> i,s <span class="keywordflow">in</span> enumerate(all_s):</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;                action_mask[i,self.domain.possibleActions(s)] = 0 </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        </div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;        a_num      = self.domain.actions_num</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">if</span> useSparse:</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;                all_phi_s_a = sp.kron(eye(a_num,a_num),all_phi_s)    <span class="comment">#all_phi_s_a will be ap-by-an</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                all_q_s_a   = all_phi_s_a*self.theta.reshape(-1,1) <span class="comment">#ap-by-1</span></div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) <span class="comment">#all_phi_s_a will be ap-by-an</span></div>
+<div class="line2"><a name="l00016"></a><span class="lineno">   16</span>&#160;                all_q_s_a   = dot(all_phi_s_a,self.theta.T) <span class="comment">#ap-by-1</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        all_q_s_a   = all_q_s_a.reshape((a_num,-1)).T  <span class="comment">#a-by-p</span></div>
+<div class="line2"><a name="l00018"></a><span class="lineno">   18</span>&#160;        all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        best_action = argmax(all_q_s_a,axis=1)</div>
+<div class="line2"><a name="l00020"></a><span class="lineno">   20</span>&#160;        </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="comment"># Calculate the corresponding phi_s_a</span></div>
+<div class="line2"><a name="l00022"></a><span class="lineno">   22</span>&#160;        phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a, useSparse)</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">return</span> best_action, phi_s_a, action_mask </div>
+</div><!-- fragment --> <h2><a class="anchor" id="Representation_featureType"></a>
+Feature Type</h2>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>featureType(self):</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        abstract</div>
+</div><!-- fragment --></div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

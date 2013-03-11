@@ -28,7 +28,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="Logos.png"/></td>
+  <td id="projectlogo"><img alt="Logo" src="ACL_logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RL-Python
    &#160;<span id="projectnumber">Version 1.0</span>
@@ -97,7 +97,35 @@ $(document).ready(function(){initNavTree('_policy.html','');});
 </div>
 
 <div class="contents">
-<div class="textblock"></div></div><!-- contents -->
+<div class="textblock"><h1><a class="anchor" id="Policy_top"></a>
+Policy Superclass</h1>
+<p>Return to <a class="el" href="class_policies_1_1_policy_1_1_policy.html">Policy</a></p>
+<h2><a class="anchor" id="Policy_init"></a>
+Initialization</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>__init__(self,representation,logger):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.representation = representation</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="comment">## An object to record the print outs in a file</span></div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        self.logger         = logger</div>
+</div><!-- fragment --> <h2><a class="anchor" id="Policy_pi"></a>
+Pi</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>pi(self,s):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;       abstract </div>
+</div><!-- fragment --> <h2><a class="anchor" id="Policy_turnOffExploration"></a>
+Turn Off Exploration</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>turnOffExploration(self):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">pass</span></div>
+</div><!-- fragment --> <h2><a class="anchor" id="Policy_turnOnExploration"></a>
+Turn On Exploration</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>turnOnExploration(self):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">pass</span></div>
+</div><!-- fragment --> <h2><a class="anchor" id="Policy_printAll"></a>
+Print All</h2>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">print</span> className(self)</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">print</span> <span class="stringliteral">&#39;=======================================&#39;</span></div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">for</span> property, value <span class="keywordflow">in</span> vars(self).iteritems():</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;            <span class="keywordflow">print</span> property, <span class="stringliteral">&quot;: &quot;</span>, value</div>
+</div><!-- fragment --></div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
