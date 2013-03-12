@@ -13,8 +13,7 @@ c) Ubuntu Linux
 Requirements for Installation (Detailed in next section):
 1. Python 2.7
 2. An IDE capable of development in Python
-3. Latex (with extra fonts, for plotting)
-Then run install_dep.py to obtain RL-Python dependencies.
+Recommended: Latex (with extra fonts, for plotting)
 
 ===============================================================
 ===============================================================
@@ -50,14 +49,16 @@ c) Ubuntu Linux - automated in script
 
 ===============================================================
 ===============================================================
-3. Latex (with extra fonts)
+3 (Optional): Latex (with extra fonts)
+
 a) Windows 32/64-bit
-We recommend installing Miktex ( http://miktex.org/download )
+We recommend installing Miktex ( http://miktex.org/download)
 which includes dvipng and all required font packages.
 
 b) Mac OSX - 
 
 c) Ubuntu Linux - automated in script
+
 
 ===============================================================
 ===============================================================
@@ -75,6 +76,16 @@ and run the provided script with ./OSX_setup.sh
 
 c) Ubuntu - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./ubuntu_setup.sh
+===============================================================
+===============================================================
+If you installed latex, Set your TEXPATH variable in config.py
+to point to your latex directory.
+
+NOTE that in Windows, you must not terminate the string with a ' \ ' or you
+will receive errors.
+
+Example: TEXPATH = r"S:\Program Files\MiKTeX 2.9\miktex\bin"
+
 ===============================================================
 ===============================================================
 Installation of RL-Python is now complete! Test the installation by
@@ -196,3 +207,6 @@ S-U: sudo apt-get install texlive-latex-extra
 ===============================================================
 E: ! I can't find file `pncr7t'.
 S-U: sudo apt-get install texlive-fonts-recommended
+===============================================================
+E: In windows, "The system can't find the file specified"
+S-W: This likely means you have set your latex path incorrectly
