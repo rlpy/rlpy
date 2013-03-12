@@ -61,7 +61,7 @@ class Policy(object):
 	# \ref Policy_printAll "Here".
 	
     # [printAll code]
-	def printAll(self):
+    def printAll(self):
         print className(self)
         print '======================================='
         for property, value in vars(self).iteritems():

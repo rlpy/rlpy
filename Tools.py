@@ -905,15 +905,43 @@ class PriorityQueueWithNovelty():
         for i in range(len(temp)):
             p,c,x = heappop(temp)
             print "Priotiry = %d, Novelty = %d, Obj = %s" % (p,c,str(x))
+            
+            
+# Setup the latdex path
+if sys.platform == 'darwin':
+    os.environ['PATH'] += ':' + TEXPATH
+if sys.platform == 'win32':
+    print os.environ['PATH']
+    os.environ['PATH'] += ';' + TEXPATH
+
+def isLatexConfigured():
+    try:
+        pl.subplot(1,3,2)
+        pl.xlabel(r"$\theta$")
+        pl.show()
+        pl.draw()
+        pl.close()
+        print "Latex tested and functioning"
+    except:
+        print "Matplotlib failed to plot, likely due to a Latex problem."
+        print "Check that your TEXPATH is set correctly in config.py,"
+        print "and that latex is installed correctly."
+        print "\nDisabling latex functionality, using matplotlib native fonts."
+
 if module_exists('matplotlib'):
     createColorMaps()
     rc('font',**{'family':'serif','sans-serif':['Helvetica']})
-    rc('text',usetex=True)
     mpl.rcParams['font.size'] = 15.
     mpl.rcParams['font.weight'] = 'bold'
     mpl.rcParams['axes.labelsize'] = 15.
     mpl.rcParams['xtick.labelsize'] = 15.
     mpl.rcParams['ytick.labelsize'] = 15.
+    
+    # Try to use latex fonts, if available
+    rc('text',usetex=True)
+    if not isLatexConfigured():
+        rc('text',usetex=False)
+        
 
         # Add tex directories if they exist
 #    if os.path.exists('/usr/texbin'):
@@ -932,11 +960,4 @@ RESEDUAL_THRESHOLD = 1e-7
 REGULARIZATION = 1e-6
 FONTSIZE = 15
 SEP_LINE = "="*60
-
-# Setup the latdex path
-if sys.platform == 'darwin':
-    os.environ['PATH'] += ':' + TEXPATH
-if sys.platform == 'win32':
-    print os.environ['PATH']
-    os.environ['PATH'] += ';' + TEXPATH
 

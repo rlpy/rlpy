@@ -121,7 +121,7 @@ class Experiment(object):
 	# \ref Experiment_save "Here".
     
 	# [save code]
-	def save(self):
+    def save(self):
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
         savetxt(self.full_path+'/'+self.output_filename,self.result, fmt='%.18e', delimiter='\t')
