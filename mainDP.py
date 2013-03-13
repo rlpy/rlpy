@@ -2,6 +2,15 @@
 # Developed by N. Kemal Ure Dec 24th 2012 at MIT #
 ######################################################
 
+import sys, os
+#Add all paths
+RL_PYTHON_ROOT = '.'
+while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools.py'):
+    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RL-Python')
+sys.path.insert(0, RL_PYTHON_ROOT)
+
 from Tools import *
 from Domains import *
 from MDPSolvers import *
@@ -26,15 +35,16 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     PROJECT_PATH        = 'Results/Temp' if PROJECT_PATH == '' else PROJECT_PATH
     DEBUG               = 0
     logger              = Logger()
-    MAX_ITERATIONS      = 1
+    MAX_ITERATIONS      = 100
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
-    NETWORKNMAP     = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
+    NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     #NETWORKNMAP     = '/Domains/SystemAdministratorMaps/5Machines.txt'
-    NOISE               = 0.1   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = 0.2   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 3     # Number of blocks for the BlocksWorld domain
+    pitmaze_episodeCap  = 100   # Number of steps to finish an episode of pitmaze
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
@@ -46,12 +56,14 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     FeatureExpandThreshold      = .5    # Minimum relevance required for representation expansion techniques to add a feature 
     iFDD_CACHED                 = 1     # Results will remiain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 20     # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
-    FourierOrder                = 3     # 
+    FourierOrder                = 3     #
+    NS_SAMPLES                  = 100   # Number of Samples used to estimate the expected r+\gamma*V(s') given a state and action.  
+    PLANNING_TIME               = 60    # Amount of time given to each planning algorithm (MDP Solver) to think in seconds
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy
     
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger, episodeCap = pitmaze_episodeCap)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=NETWORKMAP,logger = logger)
@@ -62,7 +74,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = CartPole_InvertedBalance(logger = logger);
     #domain          = CartPole_SwingUp(logger = logger);
     #domain          = FiftyChain(logger = logger)
-    domain          = FlipBoard(logger=logger)
+    #domain          = FlipBoard(logger=logger)
     
     representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
@@ -73,8 +85,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation   = BEBF(domain,logger)
       
     #MDPsolver = ValueIteration(representation,domain,logger, mc_ns_samples= 10,max_iterations = MAX_ITERATIONS)
-    MDPsolver = ValueIteration(representation,domain,logger, mc_ns_samples= 1,max_iterations = MAX_ITERATIONS)
-    
+    MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH)
     MDPsolver.solve()
     
     #domain.showLearning(representation)

@@ -1,11 +1,11 @@
 ######################################################
-# Developed by N. Kemal Ure Dec 10th 2012 at MIT #
-# Editted by A. Geramifard March 13th 2013 at MIT #
+# Developed by A. Geramifard March 13th 2013 at MIT #
 ######################################################
-# Classical Value Iteration
-# Performs full Bellman Backup on a given s,a pair by sweeping through the state space  
+# Classical Policy Iteration
+# Performs Bellman Backup on a given s,a pair given a fixed policy by sweeping through the state space
+# Once the errors are bounded, the policy is changed  
 from MDPSolver import *
-class ValueIteration(MDPSolver):
+class PolicyIteration(MDPSolver):
     mc_ns_samples = 0          # Number of next state samples used to approximate BE expectation
     check_interval = 500      # After how many bellman backups show the performance        
     def __init__(self,job_id,representation,domain,logger, ns_samples= 10, convergence_threshold = .005, project_path = '.'):
@@ -17,6 +17,7 @@ class ValueIteration(MDPSolver):
     def solve(self):
             self.result = []
             self.start_time     = time() # Used to show the total time took the process
+            
             # Check for Tabular Representation
             rep  = self.representation
             if className(rep) != 'Tabular':
@@ -24,7 +25,6 @@ class ValueIteration(MDPSolver):
                 return 0         
                         
             no_of_states    = self.domain.states_num
-            prev_return         = inf   # used to track the performance improvement. 
             bellmanUpdates      = 0
             converged           = False
             while deltaT(self.start_time) < self.planning_time and not converged:
@@ -62,3 +62,6 @@ class ValueIteration(MDPSolver):
             if converged:
                 self.logger.log('Converged')
             self.saveStats()
+            
+
+            

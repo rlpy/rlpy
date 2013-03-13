@@ -30,7 +30,7 @@ from pydoc import classname
 
 class Domain(object):
 	## The discount factor by which rewards are reduced
-    gamma = .80
+    gamma = .9
 	## The number of possible states in the domain
     states_num = 0 # was None
 	## The number of Actions the agent can perform
@@ -237,11 +237,12 @@ class Domain(object):
              if not d in self.continuous_dims:
                  self.statespace_limits[d,0] += -.5
                  self.statespace_limits[d,1] += +.5
+
 	# [extendDiscreteDimensions code]
 	
 	
 	## Sample a set number of next states and rewards from the domain. See code
-	# \ref Domain_MCExpectedStep "Here". 
+	# \ref sampleStep "Here". 
 	# @param s
 	# What is this? What does it do?
 	# @param a 
@@ -251,8 +252,8 @@ class Domain(object):
 	# @return 
 	# [S,A] => S is an array of next states, A is an array of rewards for those states
 	
-	# [MCExpectedStep code]
-    def MCExpectedStep(self,s,a,no_samples):
+	# [sampleStep code]
+    def sampleStep(self,s,a,no_samples):
 
         next_states = []
         rewards = []
@@ -265,7 +266,7 @@ class Domain(object):
             rewards.append(r)
 
         return array(next_states),array(rewards)
-	# [MCExpectedStep code]
+	# [sampleStep code]
 
 	
 	## Returns a state sampled uniformely from the state space. See code

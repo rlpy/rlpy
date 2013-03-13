@@ -19,11 +19,6 @@ import platform
 import pdb
 import os
 
-os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-os.environ['MPLCONFIGDIR'] = os.environ['HOME']
-# http://matplotlib.1069221.n5.nabble.com/Set-MPLCONFIGDIR-to-something-different-td12922.html#a19033822
-#matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
-
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
     from matplotlib import mpl,rc,colors
@@ -377,8 +372,8 @@ def findElemArray2D(x,A):
     else:
         return [], []
 def findRow(r,X):
-    # return the indices of X that are equal to X.
-    # row and X must have the same number of columns
+    # return the indices of X that are equal to r.
+    # r and X must have the same number of columns
     #return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
     #return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
     ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))]))
@@ -626,6 +621,7 @@ def sp_add2_array(sp,A):
     return A
 def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
+    
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.makedirs(path)
@@ -910,6 +906,8 @@ class PriorityQueueWithNovelty():
 # Setup the latdex path
 if sys.platform == 'darwin':
     os.environ['PATH'] += ':' + TEXPATH
+    os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+    os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 if sys.platform == 'win32':
     print os.environ['PATH']
     os.environ['PATH'] += ';' + TEXPATH

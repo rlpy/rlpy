@@ -77,8 +77,10 @@ class Representation(object):
 	def V(self,s, phi_s = None):
 		if phi_s is None: phi_s = self.phi(s)
 		AllQs,A   = self.Qs(s,phi_s)
-		V	   = max(AllQs)
-		return V
+		if len(A):
+			return max(AllQs)
+		else:
+			return 0 #Return 0 value when no action is possible
 	# [V code]
 	
 	

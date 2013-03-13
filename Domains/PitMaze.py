@@ -61,13 +61,13 @@ class PitMaze(Domain):
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            #pl.tight_layout()
-           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0)
+           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0/(self.ROWS*self.COLS/50))
            pl.show()
        #mapcopy = copy(self.map) 
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
        self.agent_fig.pop(0).remove()
-       self.agent_fig = pl.plot(s[1],s[0],'k>',markersize=30.0) # Instead of '>' you can use 'D', 'o'
+       self.agent_fig = pl.plot(s[1],s[0],'k>',markersize=30.0/(self.ROWS*self.COLS/50)) # Instead of '>' you can use 'D', 'o'
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
@@ -189,6 +189,41 @@ class PitMaze(Domain):
         if self.map[s[0],s[1]] == self.PIT:
                 return self.CRITICAL_TERMINATION
         return self.NOT_TERMINATED
+    def expectedStep(self,s,a):
+        #Returns k possible outcomes
+        #  p: k-by-1    probability of each transition
+        #  r: k-by-1    rewards
+        # ns: k-by-|s|  next state
+        #  t: k-by-1    terminal values
+#        print "State:", s
+#        print "Action:", a
+        actions = self.possibleActions(s)
+        k       = len(actions)
+        #Make Probabilities
+        intended_action_index = findElemArray1D(a,actions) 
+        p       = ones((k,1))*self.NOISE/(k*1.)
+        p[intended_action_index,0] += 1-self.NOISE  
+#       print "Probabilities:", p
+        #Make next states
+        ns      = tile(s,(k,1)).astype(int)
+        actions = self.ACTIONS[actions]
+        ns     += actions
+#        print "next states:", ns
+        #Make rewards
+        r       = ones((k,1))*self.STEP_REWARD
+        goal    = self.map[ns[:,0], ns[:,1]] == self.GOAL  
+        pit     = self.map[ns[:,0], ns[:,1]] == self.PIT  
+        r[goal] = self.GOAL_REWARD
+        r[pit]  = self.PIT_REWARD
+#        print"rewards", r
+        #Make terminals
+        t       = zeros((k,1),bool)
+        t[goal] = True
+        t[pit]  = True
+#        print"terminals", t
+#        raw_input()
+        return p,r,ns,t
+        
 if __name__ == '__main__':
     p = PitMaze(mapname='PitmazeMaps/4x5.txt');
     p.test(1000)
