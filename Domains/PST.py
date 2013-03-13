@@ -1,10 +1,9 @@
+# NEEDS VISUALIZATION UPDATE
+
 import sys, os
 import copy
 
 import csv
-#
-
-
 
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
@@ -14,26 +13,47 @@ from Domain import *
 ########################################################
 # Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT #
 ########################################################
-# Persistent Search and Track Mission with:
-# NUM_UAV:       num vehicles present
-# NUM_COMMS  num intermediate communication states
-# Other associated parameters shown below.
+# Persistent Search and Track Mission per [MATLAB implementation]
 #
-#   Goal is to maintain as many UAVs with functional
-# sensor and actuator as possible in the
-# surveillance state, while maintaining at least 1 UAV
-# with working actuator in each communication state.
+# See [[]] for domain detailed domain description.
 #
-#   Failure to satisfy the communication state above
-# results in zero reward earned for surveillance.
+# --------------------DESCRIPTION-----------------------
 #
-#   State vector consists of blocks of 4 states,
-# corresponding to each UAV:
-# [location, fuel quantity, actuator status, sensor status]
-#   so for example, state [1,9,1,1,2,3,0,1] -->
-# [1,9,1,1 || 2,3,0,1] --> 2 UAV's; <<< THIS DOES NOT MATCH WHAT IS THERE. IT IS TRANSPOSED BELOW
+# Each UAV has 4 states; location, fuel, actuator status, sensor status.
+#
+# There are 4 types of locations a uav can be in; Maintenance,
+# Refuel, Communications, surveillance.
+# Loitering for 1 timestep at Refuel assigns fuel of 10 to that UAV.
+# Loitering for 1 timestep at Maintenance assigns status 1 to
+# Actuator and Sensor.
+#
+#     Goal is to maintain as many UAVS with working sensor in the Surveillance
+# state as there are targets (NUM_TARGETS), while maintaining at least 1 UAV
+# in each communication state.
+# Reward of 20 is earned for each UAV in the surveillance state with working
+# sensor, up to the number of targets.
+# If no UAV is in the communication state, zero reward earned for surveillance.
+# (No reward is earned for excess UAVs or those with failed sensor)
+#
+# If the actuator fails, the UAV can only take actions leading it back to the
+# refuel or maintenance states, where it may loiter.
+#
+#     A penalty is applied for each unit of fuel consumed,
+# which occurs when a UAV moves between locations or when it is loitering
+# above a communications or surveilllance location.
+# (ie, no penalty when loitering at REFUEL or MAINTENANCE)
+#
+# Finally, if any UAV has fuel 0, the episode terminates with large penalty.
+#
+# --------------------FORMULATION-----------------------
+#
+#     State vector consists of 4 blocks of states,
+# each corresponding to a property of the UAVs
+# [locations, fuel quantities, actuator statuses, sensor statuses]
+#     So for example, state [1,2,9,3,1,0,1,1] -->
+# [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs:
 #   UAV1 in location 1, with 9 fuel units remaining, and
-# sensor + actuator with status 1 (defined in the classes below).
+# sensor + actuator with status 1 (functioning).
 #   UAV 2 in location 2, 3 fuel units remaining, actuator
 # with status 0 and sensor with status 1.
 #
@@ -41,6 +61,7 @@ from Domain import *
 # fuel consumption are stochastic.
 #
 #
+# --------------------VISUALIZATION-----------------------
 #   In the current visualization, the 'actuator' which enables communication
 # is represented by a wedge above each UAV circle; a failed actuator is red,
 # functional is black.  Similarly, the 'sensor' which enables surveillance
@@ -367,36 +388,36 @@ class PST(Domain):
         sStruct = self.state2Struct(s)
         for uav_id in range(0,self.NUM_UAV):
             uav_actions = []
+            # Only allowed to loiter if have working actuator or are
+            # in refuel/repair location
             if(sStruct.actuator[uav_id] == ActuatorState.RUNNING or \
             sStruct.locations[uav_id] == UAVLocation.REFUEL or \
             sStruct.locations[uav_id] == UAVLocation.MAINTENANCE):
                 uav_actions.append(UAVAction.LOITER)
 
             if(sStruct.fuel[uav_id] > 0): # This UAV is not crashed
+                # Can advance to right as long as have working actuator and
+                # are not in 'rightmost' state, surveillance
                 if(sStruct.locations[uav_id] != UAVLocation.SURVEIL and \
                 sStruct.actuator[uav_id] == ActuatorState.RUNNING):
                     uav_actions.append(UAVAction.ADVANCE)
 
+                # Can retreat left anytime as long as aren't already in
+                # 'leftmost' state, maintenance
                 if(sStruct.locations[uav_id] != UAVLocation.MAINTENANCE):
                     uav_actions.append(UAVAction.RETREAT)
             else: # This UAV is crashed; give it a dummy action for now
                 if(len(uav_actions) < 1): uav_actions.append(UAVAction.LOITER)
-            if(isinstance(uav_actions,int)):
+            if(isinstance(uav_actions,int)): # Test for single-UAV case
                 validActions.append([uav_actions])
             else:
                 validActions.append(uav_actions)
         return array(self.vecList2id(validActions, UAVAction.SIZE)) # TODO place this in tools
 
-            # Given a list of lists 'validActions' of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
-        # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
-        # ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists)
-        # Takes parameters of totalActionSpaceSize, here 3^4-1, and number of actions available
-        # to each agent, here 3
-
-            ####### TODO place this in Tools
-            # Given a list of lists of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
-            # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
-            # ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists, maxValue)
+    ####### TODO place this in Tools
+    # Given a list of lists of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
+    # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
+    # ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists, maxValue)
     def vecList2id(self,x,maxValue):
     #returns a list of unique id's based on possible permutations of this list of lists
         _id = 0

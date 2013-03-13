@@ -18,12 +18,16 @@ from Domain import *
 #
 # Network Administrator with n computers, at most 1 reboot
 # action allowed per timestep.
-# Penalty -1.75 for taking a reboot action. [netting -0.75
-# since the computer status becomes 'RUNNING' after action].
+# Penalty -0.75 for taking a reboot action.
 # State is the vector of binary computer statuses:
 # RUNNING = 1 for working computers, BROKEN = 0 otherwise.
 # Example: [1 1 0 1] -> computers 0,1,3 are RUNNING,
 # computer 2 is BROKEN.
+#
+# In visualization, broken computers are colored red,
+# and any links to other computers change from solid to
+# dotted, reflecting the higher probability of failure
+# of those machines.
 ########################################################
 
 ########################################################
