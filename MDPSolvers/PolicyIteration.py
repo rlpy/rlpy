@@ -27,7 +27,11 @@ class PolicyIteration(MDPSolver):
             no_of_states    = self.domain.states_num
             bellmanUpdates      = 0
             converged           = False
-            while deltaT(self.start_time) < self.planning_time and not converged:
+            #Initialize the policy to a random policy
+            policyChanged       = True
+            policy              = array([randSet(self.domain.possibleActions(s)) for s in arange(no_of_states)])
+            
+            while policyChanged and deltaT(self.start_time) < self.planning_time:
                 prev_theta = self.representation.theta.copy()
                 # Sweep The State Space
                 for i in arange(0,no_of_states):
