@@ -425,3 +425,29 @@ class Representation(object):
 	def featureType(self):
 		abstract
 	# [featureType code]
+	def Q_oneStepLookAhead(self,s,a, ns_samples):
+		# Returns the Q(s,a) by performing one step look-ahead (e.g. Line 8 of Figure 4.3 in Sutton and Barto 1998) using the domain.
+		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
+		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
+		gamma 	= self.domain.gamma 
+		if hasFunction(self.domain,'expectedStep'):
+			p,r,ns,t	= self.domain.expectedStep(s,a)
+			Q	 	= 0
+			for j in arange(len(p)):
+				Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
+		else:
+			next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
+			Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
+		return Q			
+	def V_oneStepLookAhead(self,s,ns_samples):
+		# Returns V(s) and the corresponding action by performing one step look-ahead (e.g. Line 6 of Figure 4.5 in Sutton and Barto 1998) using the domain.
+		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
+		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
+		actions = self.domain.possibleActions(s)
+		Qs 		= [self.Q_oneStepLookAhead(s,a,ns_samples) for a in actions]
+		a_ind   = argmax(Qs)
+		return Qs[a_ind],actions[a_ind]		 
+			
+			
+			
+			

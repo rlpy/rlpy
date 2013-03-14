@@ -33,25 +33,10 @@ class MDPSolver(object):
     def printAll(self):
         printClass(self)  
     def BellmanBackup(self,s,a,ns_samples):
-        # Performs Bellman backup assuming the model is known if expectedStep function is available it runs a full backup otherwise it uses <ns_samples> samples to estimate the bellman backup
-        if hasFunction(self.domain,'expectedStep'):
-            self.fullBellmanBackup(s,a)
-        else:
-            self.approximateBellmanBackup(s,a,ns_samples)
-    def approximateBellmanBackup(self,s,a,ns_samples):
-        
-        # Perform approximate Bellman Backup on a given s,a pair where ns_samples are generated and used for backup
-        gamma               = self.representation.domain.gamma
-        
-        # Sample Next States and rewards
-        next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
-        update = mean([rewards[i] + gamma*self.representation.V(next_states[i,:]) for i in arange(ns_samples)])        
-
-        # Update the representation
+        Q                                       = self.representation.Q_oneStepLookAhead(s,a,ns_samples)
         s_index                                 = vec2id(self.representation.binState(s),self.representation.bins_per_dim)
         theta_index                             = self.domain.states_num*a + s_index
-        self.representation.theta[theta_index]  =  update
-        print theta_index
+        self.representation.theta[theta_index]  =  Q
     def performanceRun(self):
         # Set Exploration to zero and sample one episode from the domain
         eps_length  = 0
@@ -78,21 +63,7 @@ class MDPSolver(object):
         #if self.show_performance: self.domain.showDomain(s,a)
         #self.agent.policy.turnOnExploration()
         return eps_return, eps_length, eps_term, eps_discounted_return   
-    def fullBellmanBackup(self,s,a):
-        # Performs a full Bellman backup assuming the model is known and it has a function named expectedStep that returns the probabilities for each possible s',r, t
-        gamma       = self.domain.gamma
-
-        p,r,ns,t    = self.domain.expectedStep(s,a)
-        update = 0
-        for i in arange(len(p)):
-            update += p[i]*(r[i] + gamma*self.representation.V(ns[i,:]))
-        
-        # Update the representation
-        s_index                                 = vec2id(self.representation.binState(s),self.representation.bins_per_dim)
-        theta_index                             = self.domain.states_num*a + s_index
-        self.representation.theta[theta_index]  =  update[0]
     def saveStats(self):
         checkNCreateDirectory(self.project_path+'/')
         savetxt('%s/%d-result.txt' % (self.project_path,self.id),self.result, fmt='%.18e', delimiter='\t')
-
-            
+                

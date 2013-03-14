@@ -84,8 +84,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation   = BEBF(domain,logger)
       
-    #MDPsolver = ValueIteration(representation,domain,logger, mc_ns_samples= 10,max_iterations = MAX_ITERATIONS)
-    MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH)
+    #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH)
+    MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH)
     MDPsolver.solve()
     
     #domain.showLearning(representation)

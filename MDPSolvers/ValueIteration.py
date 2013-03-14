@@ -27,6 +27,7 @@ class ValueIteration(MDPSolver):
             prev_return         = inf   # used to track the performance improvement. 
             bellmanUpdates      = 0
             converged           = False
+            iteration           = 0
             while deltaT(self.start_time) < self.planning_time and not converged:
                 prev_theta = self.representation.theta.copy()
                 # Sweep The State Space
@@ -43,10 +44,11 @@ class ValueIteration(MDPSolver):
                             self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
 
                 #check for convergence
+                iteration += 1
                 theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
                 performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
                 converged = theta_change < self.convergence_threshold        
-                self.logger.log('[%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change, performance_return))
+                self.logger.log('#%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.4f' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change, performance_return))
                 #self.domain.show(s,a,self.representation)
                 
                 # store stats
@@ -55,10 +57,12 @@ class ValueIteration(MDPSolver):
                                    deltaT(self.start_time), # index = 2
                                    self.representation.features_num, # index = 3
                                    performance_steps,# index = 4
-                                   performance_term # index = 5
+                                   performance_term, # index = 5
+                                   performance_discounted_return, # index = 6
+                                   iteration #index = 7 
                                 ])
                     
-            self.result = array(self.result)
+            self.result = array(self.result).T
             if converged:
                 self.logger.log('Converged')
             self.saveStats()
