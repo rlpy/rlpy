@@ -23,7 +23,7 @@ class PitMaze(Domain):
     GOAL_REWARD = +1
     PIT_REWARD = -1
     STEP_REWARD = -.001
-    episodeCap  = 0                 # Set by the domain = min(100,rows*cols)
+    episodeCap  = None             # Set by the domain = min(100,rows*cols)
     NOISE = 0                      # Movement Noise
     MAX_RETURN  = 1                 # Used for graphical normalization
     MIN_RETURN  = -1                # Used for graphical normalization
@@ -45,10 +45,7 @@ class PitMaze(Domain):
         self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])
         self.NOISE              = noise
         self.DimNames           = ['Row','Col']
-        if episodeCap is None:
-            self.episodeCap         = 2*self.ROWS*self.COLS
-        else:
-            self.episodeCap         = episodeCap
+        self.episodeCap         = 1000 #2*self.ROWS*self.COLS, small values can cause problem for some planning techniques 
         super(PitMaze,self).__init__(logger)
         if logger: 
             self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
@@ -61,13 +58,13 @@ class PitMaze(Domain):
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            #pl.tight_layout()
-           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0/(self.ROWS*self.COLS/50))
+           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0/(self.ROWS+self.COLS))
            pl.show()
        #mapcopy = copy(self.map) 
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
        self.agent_fig.pop(0).remove()
-       self.agent_fig = pl.plot(s[1],s[0],'k>',markersize=30.0/(self.ROWS*self.COLS/50)) # Instead of '>' you can use 'D', 'o'
+       self.agent_fig = pl.plot(s[1],s[0],'k>',markersize=30.0/(self.ROWS+self.COLS)) # Instead of '>' you can use 'D', 'o'
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:

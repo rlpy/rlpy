@@ -6,14 +6,6 @@
 # Performs full Bellman Backup on a given s,a pair by sweeping through the state space  
 from MDPSolver import *
 class ValueIteration(MDPSolver):
-    mc_ns_samples = 0          # Number of next state samples used to approximate BE expectation
-    check_interval = 500      # After how many bellman backups show the performance        
-    def __init__(self,job_id,representation,domain,logger, ns_samples= 10, convergence_threshold = .005, project_path = '.'):
-        
-        self.ns_samples             = ns_samples
-        self.convergence_threshold  = convergence_threshold
-        super(ValueIteration, self).__init__(job_id,representation, domain,logger, project_path = project_path)
-        self.logger.log('Convergence Threshold:\t%0.3f' % convergence_threshold)
     def solve(self):
             self.result = []
             self.start_time     = time() # Used to show the total time took the process
@@ -49,7 +41,7 @@ class ValueIteration(MDPSolver):
                 performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
                 converged = theta_change < self.convergence_threshold        
                 self.logger.log('#%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.4f' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change, performance_return))
-                #self.domain.show(s,a,self.representation)
+                if self.show: self.domain.show(s,a,self.representation)
                 
                 # store stats
                 self.result.append([bellmanUpdates, # index = 0 

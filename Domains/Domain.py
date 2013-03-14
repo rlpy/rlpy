@@ -44,9 +44,9 @@ class Domain(object):
 	## List of the continuous dimensions of the domain
     continuous_dims = []
 	## The cap used to bound each episode (return to state 0 after)
-    episodeCap = 0 # was None
+    episodeCap = None 
 	## A simple object that records the prints in a file
-    logger = None # was None
+    logger = None 
     ## Termination Signal of Episode: episode is not over
     NOT_TERMINATED          = 0
 	## Termination Signal of Episode: episode is over, neither goal or fail state reached

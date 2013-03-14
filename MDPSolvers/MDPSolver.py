@@ -11,23 +11,34 @@ class MDPSolver(object):
     id                  = None          # The job id of this run of the algorithm
     mainSeed            = 999999999     # To make sure all same job ids see the same random sequence
     maxRuns             = 100           # Maximum number of runs of an algorithm for averaging    
-    def __init__(self,job_id, representation,domain,logger, planning_time = inf, project_path = '.'):
+    convergence_threshold = None        # Threshold to determine the convergence of the planner
+    ns_samples          = None          # Number of samples to be used to generate estimated bellman backup if the domain does not provide explicit probablities though expectedStep function.
+    log_interval        = None          # Number of bellman backups before reporting the performance. (Not planners may use this 
+    show                = None          # Show the learning if possible?
+    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False):
         self.id = job_id
         self.representation = representation
         self.domain = domain
         self.logger = logger
+        self.ns_samples = ns_samples
         self.planning_time = planning_time
         self.project_path = project_path
+        self.log_interval = log_interval
+        self.show = show
+        self.convergence_threshold = convergence_threshold
         # Set random seed for this job id
         random.seed(self.mainSeed)
         self.randomSeeds = alborzrandint(1,self.mainSeed,self.maxRuns,1)
         random.seed(self.randomSeeds[self.id-1,0])
-
         if self.logger:
             self.logger.line()
             self.logger.log("Job ID:\t\t\t%d" % self.id)
             self.logger.log("Solver:\t\t\t"+str(className(self)))
             self.logger.log("Max Time:\t\t%0.0f(s)" %planning_time)
+            self.logger.log('Convergence Threshold:\t%0.3f' % convergence_threshold)
+            if not hasFunction(self.domain,'expectedStep'):
+                self.logger.log('Next Step Samples:\t%d' % ns_samples)
+            self.logger.log('Log Interval:\t\t%d (Backups)' % log_interval)
     def solve(self):
         abstract
     def printAll(self):

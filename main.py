@@ -18,6 +18,8 @@ from Agents import *
 from Representations import *
 from Policies import *
 from Experiments import *
+from MDPSolvers import *
+
 #from pandas.tests.test_series import CheckNameIntegration
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
@@ -96,11 +98,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
     PolicyEvaluation_MC_samples     = 100  # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
     PolicyEvaluation_LOAD_PATH      = RL_PYTHON_ROOT + '/Policies/FixedPolicyEvaluations' # Directory path to load the base of policy evaluations (True Q(s,a)) 
-    #Load Main Setting and override any parameter
-    #    if os.path.exists('mainSetting.py'):
-    #        print 'Incorporating mainSetting.py'
-    #        from mainSetting import *
-    # Python does not allow import * in functions... so this can not work this way
+    
+    # MDP Solver Parameters:
+    NS_SAMPLES                  = 100   # Number of Samples used to estimate the expected r+\gamma*V(s') given a state and action.  
+    PLANNING_TIME               = 60    # Amount of time given to each planning algorithm (MDP Solver) to think in seconds
 
     # DOMAIN
     #=================
@@ -133,22 +134,32 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # POLICY
     #================
-    policy          = eGreedy(representation,logger, epsilon = EPSILON)
+    #policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     #policy          = FixedPolicy(representation,logger)
     
     # LEARNING AGENT
     #================
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize, LSPI_return_best_policy)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           =  Q_LEARNING(representation,policy,domain,logger)
     #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations)
     
-    experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
-    experiment.run()
-    experiment.save()
+    # MDP_Solver
+    #================
+    #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE)
+    #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE)
+    MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE)
+    
+    # If agent is defined run the agent. Otherwise run the MDP Solver:
+    if 'agent' in locals().keys():
+        experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
+        experiment.run()
+        experiment.save()
+    else:
+        MDPsolver.solve()
     
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
