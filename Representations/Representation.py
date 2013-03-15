@@ -426,17 +426,26 @@ class Representation(object):
 			Q	 	= 0
 			for j in arange(len(p)):
 				Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
+			Q = Q[0]
 		else:
 			next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
 			Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
 		return Q			
+	def Qs_oneStepLookAhead(self,s, ns_samples):
+		# Returns Q(s,a) for all possible actions by performing one step look-ahead (e.g. Line 8 of Figure 4.3 in Sutton and Barto 1998) using the domain.
+		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
+		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
+		# It also returns all posssible actions as the second output
+		actions = self.domain.possibleActions(s)
+		Qs 		= array([self.Q_oneStepLookAhead(s, a, ns_samples) for a in actions]) 
+		return Qs, actions
 	def V_oneStepLookAhead(self,s,ns_samples):
 		# Returns V(s) and the corresponding action by performing one step look-ahead (e.g. Line 6 of Figure 4.5 in Sutton and Barto 1998) using the domain.
 		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
 		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
-		actions = self.domain.possibleActions(s)
-		Qs 		= [self.Q_oneStepLookAhead(s,a,ns_samples) for a in actions]
-		a_ind   = argmax(Qs)
+		
+		Qs, actions 	= self.Qs_oneStepLookAhead(s,ns_samples)
+		a_ind   		= argmax(Qs)
 		return Qs[a_ind],actions[a_ind]		 
 			
 			

@@ -39,8 +39,13 @@ class MDPSolver(object):
             if not hasFunction(self.domain,'expectedStep'):
                 self.logger.log('Next Step Samples:\t%d' % ns_samples)
             self.logger.log('Log Interval:\t\t%d (Backups)' % log_interval)
+            self.logger.log('Show Learning:\t\t%d' % show)
     def solve(self):
-        abstract
+        #Abstract
+        self.result = array(self.result).T
+        self.logger.log('Value of S0 is = %0.5f' % self.representation.V(self.domain.s0()))
+        self.saveStats()
+
     def printAll(self):
         printClass(self)  
     def BellmanBackup(self,s,a,ns_samples):

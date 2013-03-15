@@ -58,13 +58,13 @@ class PitMaze(Domain):
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            #pl.tight_layout()
-           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0/(self.ROWS+self.COLS))
+           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=20.0-self.COLS)
            pl.show()
        #mapcopy = copy(self.map) 
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
        self.agent_fig.pop(0).remove()
-       self.agent_fig = pl.plot(s[1],s[0],'k>',markersize=30.0/(self.ROWS+self.COLS)) # Instead of '>' you can use 'D', 'o'
+       self.agent_fig = pl.subplot(1,2,1).plot(s[1],s[0],'k>',markersize=20.0-self.COLS) # Instead of '>' you can use 'D', 'o'
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
@@ -110,8 +110,9 @@ class PitMaze(Domain):
                     bestA    = representation.bestActions(s)
                     V[r,c]   = max(Qs)
                     Mask[c,r,As]             = False
-                    arrowColors[c,r,bestA]   = 1
-#                    print r,c,Qs
+                    arrowColors[c,r,bestA]   = 1.
+                    #print r,c, bestA
+                    #print Qs
                     
                     for i in arange(len(As)):
                         a = As[i]
@@ -126,6 +127,7 @@ class PitMaze(Domain):
         DX = ma.masked_array(DX, mask=Mask[:,:,0])
         DY = ma.masked_array(DY, mask=Mask[:,:,0])
         C  = ma.masked_array(arrowColors[:,:,0], mask=Mask[:,:,0])
+        print DY.T,DX.T,C.T
         self.upArrows_fig.set_UVC(DY,DX,C)
         #Show Policy Down Arrows
         DX = -arrowSize[:,:,1]

@@ -37,7 +37,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 if not RUN_IN_BATCH else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size 
     JOB_ID              = 1 if jobID == -1 else jobID
@@ -47,8 +47,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     MAX_ITERATIONS      = 10
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
-    #MAZE                = '/Domains/PitmazeMaps/3x3.txt'
+    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/1x3_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x2_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x3_1A_1I.txt'
@@ -94,15 +94,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RE_LSPI_iterations      = 50
     LSPI_return_best_policy = False # Track the best policy through LSPI iterations using Monte-Carlo simulation. It uses extra samples to evaluate the policy
     
-    #Policy Evaluation Parameters:
+    #Policy Evaluation Parameters: ----------------------
     PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
     PolicyEvaluation_MC_samples     = 100  # Number of Monte-Carlo samples used to estimate Q(s,a) of the policy 
     PolicyEvaluation_LOAD_PATH      = RL_PYTHON_ROOT + '/Policies/FixedPolicyEvaluations' # Directory path to load the base of policy evaluations (True Q(s,a)) 
     
-    # MDP Solver Parameters:
+    # MDP Solver Parameters: ----------------------
     NS_SAMPLES                  = 100   # Number of Samples used to estimate the expected r+\gamma*V(s') given a state and action.  
     PLANNING_TIME               = 60    # Amount of time given to each planning algorithm (MDP Solver) to think in seconds
-
+    CONVERGENCE_THRESHOLD       = 1e-4  # Parameter used to define convergence in the planner
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
@@ -121,15 +121,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # REPRESENTATION
     #================
     #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = initial_rep
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon[className(domain)])
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
     
     # POLICY
@@ -149,9 +149,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # MDP_Solver
     #================
-    #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE)
-    #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE)
-    MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE)
+    MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
+    #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
+    #MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
     
     # If agent is defined run the agent. Otherwise run the MDP Solver:
     if 'agent' in locals().keys():
@@ -160,6 +160,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
         experiment.save()
     else:
         MDPsolver.solve()
+        if SHOW_PERFORMANCE:
+            pl.ioff()
+            pl.show()
     
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
