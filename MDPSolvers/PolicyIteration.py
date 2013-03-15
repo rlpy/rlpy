@@ -19,12 +19,11 @@ class PolicyIteration(MDPSolver):
         no_of_states    = self.domain.states_num
         bellmanUpdates      = 0
         
-        #Initialize the policy to a random policy
+        #Initialize the policy 
+        policy              = eGreedy(deepcopy(self.representation),self.logger, epsilon = 0, forcedDeterministicAmongBestActions = True) # Copy the representation so that the weight change during the evaluation does not change the policy
         policyChanged       = True
-        policy              = empty(no_of_states)
         for i in arange(no_of_states):
             s           = array(id2vec(i,rep.bins_per_dim))
-            policy[i]   = randSet(self.domain.possibleActions(s))
         
         policy_improvement_iteration = 0
         while policyChanged and deltaT(self.start_time) < self.planning_time:
@@ -40,28 +39,25 @@ class PolicyIteration(MDPSolver):
                 # Sweep The State Space
                 for i in arange(0,no_of_states):
                     s       = array(id2vec(i,rep.bins_per_dim))
-                    self.BellmanBackup(s,policy[i],self.ns_samples)                        
+                    self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)                        
                     bellmanUpdates += 1
                 
                 #check for convergence
                 theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
                 converged = theta_change < self.convergence_threshold        
                 self.logger.log('#%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
-                if self.show: self.domain.show(s,policy[0],self.representation)
+                if self.show: self.domain.show(s,policy.pi(s),self.representation)
             
             #Policy Improvement:
             new_policy = zeros(no_of_states)
+            policyChanged = 0
             for i in arange(no_of_states):
-                s               = array(id2vec(i,rep.bins_per_dim))
+                s = array(id2vec(i,rep.bins_per_dim))
                 for a in self.domain.possibleActions(s):
-                    self.BellmanBackup(s,a,self.ns_samples)
-                new_policy[i] = self.representation.bestAction(s) 
+                    self.BellmanBackup(s,a,self.ns_samples, policy)
+                if policy.pi(s) != self.representation.bestAction(s): policyChanged += 1 
                 
-            # See policy change
-            policyChanged       = (policy - new_policy).nonzero()[0]
-            #print policyChanged
-            policyChanged       = len(policyChanged)
-            policy              = new_policy
+            policy.representation.theta = self.representation.theta.copy() # This will cause the policy to be copied over
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             self.logger.log('#%d [%s]: BellmanUpdates=%d, Policy Change =%d, Return = %0.4f' % (policy_improvement_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, policyChanged, performance_return))
 

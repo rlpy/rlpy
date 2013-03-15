@@ -9,5 +9,4 @@ A = array([
            [1,4],
            [5,6],
            ])
-pits = array([[1,4],[3,7]])
-print [x in pits for x in A]
+print A

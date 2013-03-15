@@ -1,6 +1,10 @@
 ######################################################
 # Developed by N. Kemal Ure Dec 24th 2012 at MIT #
 ######################################################
+import sys, os
+#Add all paths
+sys.path.insert(0, os.path.abspath('..'))
+from Policies import *
 from Tools import *
 from Representations import *
 class MDPSolver(object):
@@ -48,8 +52,11 @@ class MDPSolver(object):
 
     def printAll(self):
         printClass(self)  
-    def BellmanBackup(self,s,a,ns_samples):
-        Q                                       = self.representation.Q_oneStepLookAhead(s,a,ns_samples)
+    def BellmanBackup(self,s,a,ns_samples, policy = None):
+        # Applied Bellman Backup to state-action pair s,a
+        # i.e. Q(s,a) = E[r + gamma * V(s')]
+        # If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]                                     
+        Q                                       = self.representation.Q_oneStepLookAhead(s,a,ns_samples,policy)
         s_index                                 = vec2id(self.representation.binState(s),self.representation.bins_per_dim)
         theta_index                             = self.domain.states_num*a + s_index
         self.representation.theta[theta_index]  =  Q

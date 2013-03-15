@@ -68,4 +68,41 @@ class Policy(object):
         for property, value in vars(self).iteritems():
             print property, ": ", value
 	# [printAll code]
-    
+    def collectSamples(self, samples):
+    		# Return matrices of S,A,NS,R,T where each row of each matrix is a sample by following the current policy
+    	 	domain = self.representation.domain
+    	 	S 	= empty((samples,self.representation.domain.state_space_dims),dtype = type(domain.s0()))
+		A   = empty((samples,1),dtype='uint16')
+		NS	= S.copy()
+		T 	= A.copy()
+		R 	= empty((samples,1))
+    		
+    		sample 		= 0
+    		eps_length 	= 0
+    		terminal 	= True # So the first sample forces initialization of s and a
+    		while sample < samples:
+			if terminal or eps_length > self.representation.domain.episodeCap:
+				s = domain.s0()
+				a = self.pi(s)
+			
+			#Transition
+			r,ns,terminal = domain.step(s,a)
+			#Collect Samples
+			S[sample] 	= s
+			A[sample] 	= a
+			NS[sample]	= ns
+			T[sample]	= terminal
+			R[sample]	= r
+			
+			sample += 1
+			eps_length += 1
+			s = ns
+			a = self.pi(s)
+			
+		return S,A,NS,R,T
+    			
+    			
+    	
+    	
+    	
+    	

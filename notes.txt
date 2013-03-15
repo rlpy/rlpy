@@ -12,3 +12,4 @@ Tasks:
 - Remove SHOW_FINAL_PLOT from the main and all places that it will affect (scripts, multipleRuns, etc.)
 - PST description is wrong (Transpose)
 - Make arrows in the pitmaze to be bounded in each grid, regardless of window size.
+- Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
