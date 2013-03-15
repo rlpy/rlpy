@@ -11,7 +11,7 @@ from Domain import *
 # Based on http://planning.cs.uiuc.edu/node658.html. We refer to it as webpage.
 # State: x,y (center point on the line connecting the back wheels), speed (S on the webpage), heading (theta on the webpage)
 # heading is the angle with respect to the body frame. positive values => Turning right. Negative values => Turning left
-# Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right]. The second argument is \phi based on the webpage 
+# Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right]. The second argument is phi based on the webpage 
 # Reward: -1 per step, 100 at goal.
 
 class RCCar(Domain):

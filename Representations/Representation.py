@@ -16,24 +16,27 @@ from Tools import *
 # that allow child classes to interact with the \c Agent and \c Domain classes within the RL-Python library. \n
 # All new representation implimentations should inherit from \c %Representation.
 # \note It is assumed that the Linear Function approximator family of representations is being used.
+
 class Representation(object):
 	## In Debug Mode?
+	## \cond DEV
 	DEBUG		   = 0
-	## Linear Weights
+	## \endcond
+	## A numpy array of the Linear Weights
 	theta		   = None  
-	## Link to the domain object 
+	## The \ref Domains.Domain.Domain "Domain" that the %Representation is modeling 
 	domain		  = None  
 	## Number of features
-	features_num	= None  
-	## Number of bins used for discretization for each continuous dimension
-	discretization  = 0	 
+	features_num	= 0  
+	## Number of bins used for discretization of each continuous dimension
+	discretization  = 20	 
 	## Number of possible states per dimension [1-by-dim]	
-	bins_per_dim	= None  
+	bins_per_dim	= 0  
 	## Width of bins in each dimension
-	binWidth_per_dim= None  
-	## Number of aggregated states based on the discretization. If the represenation is adaptive set it to the best resolution possible	
-	agg_states_num  = None  
-	## Object for capturing output text in a file	
+	binWidth_per_dim= 0  
+	## Number of aggregated states based on the discretization. If the represenation is adaptive, set to the best resolution possible	
+	agg_states_num  = 0
+	## A simple object that records the prints in a file	
 	logger = None	   
 	
 	## Initializes the \c %Representation object. See code
@@ -75,11 +78,14 @@ class Representation(object):
 	# [V code]
 	
 	
-	## Returns two arrays
-	# Q: array of Q(s,a)
-	# A: Corresponding array of action numbers
-	# If phi_s is given, it uses that to speed up the process. See code
+	## Returns an array of actions available at a state and their associated values.
+    # If phi_s is given, the function uses it to speed up the process. See code
 	# \ref Representation_Qs "Here".
+	# @param s The state to examine.
+	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @return [Q,A] \n
+	# \b Q: an array of Q(s,a), the values of each action. \n
+	# \b A: the corresponding array of action numbers
 	
 	# [Qs code]
 	def Qs(self,s, phi_s = None):
@@ -89,8 +95,12 @@ class Representation(object):
 	# [Qs code]
 	
 	
-	##Returns the state-action value. See code
+	## Returns the state-action value. See code
 	# \ref Representation_Q "Here".
+	# @param s The state to examine.
+	# @param a The action to examine.
+	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @return The value of the action in that state.
 	
 	# [Q code]
 	def Q(self,s,a,phi_s = None):
@@ -102,8 +112,10 @@ class Representation(object):
 	# [Q code]
 	
 	
-	##Returns the phi(s). See code
+	##Returns the phi WHAT IS THIS WHAT DOES IT DO? at a given state. See code
 	# \ref Representation_phi "Here".
+	# @param s The given state
+	# @returns Phi
 	
 	# [phi code]
 	def phi(self,s):
@@ -114,9 +126,14 @@ class Representation(object):
 	# [phi code]
 	
 	
-	## Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
-	#If phi_s is passed it is used to avoid phi_s calculation. See code
-	# \ref Representation_phi_sa "Here".
+	## Returns the feature vector corresponding to a given state and action. 
+	# We use the copy paste technique (Lagoudakis & Parr 2003)
+	# If phi_s is passed it is used to avoid phi_s calculation. See code
+	# \ref Representation_phi_sa "Here".	
+	# @param s The given state
+	# @param a The given action
+	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @return The associated feature vector.
 	
 	# [phi_sa code]
 	def phi_sa(self,s,a, phi_s = None):
@@ -136,7 +153,7 @@ class Representation(object):
 	# [phi_sa code]
 	
 	
-	## Add a new 0 weight corresponding to the new added feature for all actions.. See code
+	## Add a new zero weight, corresponding to a newly added feature, to all actions. See code
 	# \ref Representation_addNewWeight "Here".
 	
 	# [addNewWeight code]
@@ -145,10 +162,13 @@ class Representation(object):
 	# [addNewWeight code]
 	
 	
-	## returns a unique id by calculating the enumerated number corresponding to a state
-	# it first translates the state into a binState (bin number corresponding to each dimension)
-	# it then maps the binstate to an integer. See code
+	## Returns a unique id for a given state. 
+	# It operates by calculating the enumerated number corresponding to said state.
+	# First it translates the state into a binState (bin number corresponding to each dimension).
+	# Then it maps the binstate to an integer. See code
 	# \ref Representation_hashState "Here".
+	# @param s The given state
+	# @returns The unique id of the state.
 	
 	# [hashState code]
 	def hashState(self,s,):
@@ -158,8 +178,11 @@ class Representation(object):
 	# [hashState code]
 	
 	
-	## Set the number of bins for each dimension of the domain (continuous spaces will be slices using the discritization parameter). See code
+	## Set the number of bins for each dimension of the domain.
+	# Continuous spaces will be slices using the discritization parameter. See code
 	# \ref Representation_setBinsPerDimension "Here".
+	# @param domain The \ref Domains.Domain.Domain "Domain" associated with the %Representation
+	# @param discretization The number of slices a continous domain should be sliced into.
 	
 	# [setBinsPerDimension code]
 	def setBinsPerDimension(self,domain,discretization):
@@ -174,12 +197,14 @@ class Representation(object):
 	# [setBinsPerDimension code]
 	
 	
-	## Given a state it returns a vector with the same dimensionality of s
-	# each element of the returned valued is the zero-indexed bin number corresponding to s
-	# This function accepts scalar inputs when the domain has 1 dimension 
-	# CompactBinary version exclude feature activation for the negative case of binary features.
-	# For example if the light is off, no feature corresponds to this case and hence nothing is activated. See code
-	# \ref Representation_binState "Here".
+	## Returns a vector where each element is the zero-indexed bin number corresponding with the given state.
+	# Note that this vector will have the same dimensionality of the given state.
+	# Each element of the returned vector is the zero-indexed bin number corresponding with the given state.
+	# This method is binary compact; the negative case of binary features is excluded from feature activation.
+	# For example, if the domain has a light and the light is off, no feature will be added. This is because no
+	# features correspont to a light being off. See code \ref Representation_binState "Here".
+	# @param s The given state, can be a scalar value if the dimension is one dimensional.
+	# @return The desired vector
 	
 	# [binState code]
 	def binState(self,s):
@@ -201,9 +226,12 @@ class Representation(object):
 	# [printAll code]
 	
 	
-	## Given a state returns the best action possibles at that state
-	# If phi_s is given it is used to speed up. See code
+	## Returns a list of the best actions at a given state.
+	# If phi_s is given, WHAT IS THIS? it is used to speed up. See code
 	# \ref Representation_bestActions "Here".
+	# @param s The given state
+	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @return A list of the best actions at the given state.
 	
 	# [bestActions code]
 	def bestActions(self,s, phi_s = None):
@@ -229,8 +257,12 @@ class Representation(object):
 #		return ds
 
 
-	## return an action among the best actions uniformly randomly. See code
+	## Returns the best action at a given state.
+    # If there are multiple best actions, this method selects one of them uniformly randomly. See code
 	# \ref Representation_bestAction "Here".
+	# @param s The given state
+	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @return The best action at the given state.
 	
 	# [bestAction code]
 	def bestAction(self,s, phi_s = None):
@@ -243,9 +275,10 @@ class Representation(object):
 	# [bestAction code]
 	
 	
-	##\b ABSTRACT \b METHOD: This is the actual function that each representation should fill
-	# \note if state is terminal the feature vector is always zero! See code
+	##\b ABSTRACT \b METHOD: WHAT IS THIS WHAT DOES IT DO? See code
 	# \ref Representation_phi_nonTerminal "Here".
+	# \note if state is terminal the feature vector is always zero! 
+	# @param s The given state
 	
 	# [phi_nonTerminal code]
 	def phi_nonTerminal(self,s):
@@ -253,8 +286,10 @@ class Representation(object):
 	# [phi_nonTerminal code]
 	
 	
-	## return the index of active initial features based on bins on each dimensions. See code
+	## returns the index of active initial features based on bins in each dimensions. See code
 	# \ref Representation_activeInitialFeatures "Here".
+	# @param s The given state
+	# @return The desired index
 	
 	# [activeInitialFeatures code]
 	def activeInitialFeatures(self,s):
@@ -265,13 +300,13 @@ class Representation(object):
 	# [activeInitialFeatures code]
 	
 	
-	## Discovers features and adds it to the representation
-	# If it adds any feature it should return True, otherwise False
-	# This is a dummy function for representations with no discovery
-	# TD_error is a vector of TD-Errors for all samples p-by-1
-	# all_phi_s is phi(s) for all s in (s,a,r,s',a') p-by-|dim(phi(s))|
-	# data_s is the states p-by-|dim(s)|. See code
+	## \b ABSTRACT \b METHOD: Discovers features and adds them to the representation.
+	# Representations that do not have discovery do not have to overwrite this method. See code
 	# \ref Representation_batchDiscover "Here".
+	# @param td_errors A vector of TD-Errors for all samples p-by-1  WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING
+	# @param all_phi_s Phi for all states in (s,a,r,s',a') p-by-|dim(phi(s))| WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING
+	# @param data_s The states p-by-|dim(s)| WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING
+	# @return A boolean stating whether the method added a feature or not.
 	
 	# [batchDiscover code]
 	def batchDiscover(self, td_errors, all_phi_s, data_s):
@@ -279,13 +314,13 @@ class Representation(object):
 	# [batchDiscover code]
 	
 	
-	## Input: 
-	# all_phi_s p-by-n [feature vectors]
-	# all_actions p-by-1 [set of actions corresponding to each feature
-	# Optional) If phi_s_a has been built for all actions pass it for speed boost
-	# output:
-	# returns all_phi_s_a p-by-na. See code
+	## WHAT IS THIS? WHAT DOES IT DO?. See code
 	# \ref Representation_batchPhi_s_a "Here".
+	# @param all_phi_s The feature vectors. p-by-n WHAT IS THIS? Does p-by-n mean it is an array of dimension p by n? what is p?
+	# @param all_actions The set of actions corresponding to each feature. p-by-1 WHAT IS THIS? Does p-by-n mean it is an array of dimension p by n? what is p?
+	# @param all_phi_s_a Optional: If phi_s_a has already been built for all actions, pass it for speed boost.
+	# @param use_sparse WHAT IS THIS? DO WE STILL USE THIS?
+	# @return all_phi_s_a p-by-na. WHAT IS THIS?
 	
 	# [batchPhi_s_a code]
 	def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
@@ -350,37 +385,35 @@ class Representation(object):
 #		return phi_s_a
 
 
-	## Returns the best-action and phi_s_a corresponding to the states
-	# inputs:
-	# 1: all-s: p-by-dim(s)
-	# 2: all_phi_s: p-by-|phi(s))|
-	# 3: Optional) If action mask is available it can be passed to boost the calculation
-	# outputs:
-	# best_action: p-by-1
-	# phi_s_a: p-by-|phi(s,a)|
-	# action_mask
-	
-	# Algorithm:
-	# 1. Calculate the phi_s_a for all actions and given s for each row
-	# 2. Multiply theta to the corresponding phi_s_a
-	# 3. Rearrange the matrix to have in each row all values corresponding to possible actions
-	# 4. Maskout irrelevant actions
-	# 5. find the max index in each row
-	# 6. return the action and corresponding_phi_s_a
-	
-	# make a mask for the invalid_actions
-	# build a matrix p-by-a where in each row the missing action is 1
-	# Example: 2 actions, 3 states
-	# possibleActions(s1) = 0
-	# possibleActions(s2) = 1
-	# possibleActions(s3) = 0,1
-	# output =>  0 1
-	#			1 0
-	#			0 0 
-	
-	
-	## DESCRIPTION. See code
-	# \ref Representation_batchBestAction "Here".
+	## Returns the best-action and phi_s_a corresponding to the every state. See code
+	# \ref Representation_batchBestAction "Here". \n \n
+	# Algorithm: \n
+	# 1. Calculate the phi_s_a for all states and their associated actions \n
+	# 2. Multiply theta by the corresponding phi_s_a \n
+	# 3. Rearrange the matrix to have all values corresponding to possible actions in each row \n
+	# 4. Maskout irrelevant actions \n
+	# 5. Find the max index in each row \n
+	# 6. Return the action and corresponding_phi_s_a \n \n
+	#
+	# How to use: WHAT IS THIS? AM I RIGHT THAT BELOW IS INTENDED TO BE HOW TO USE?\n 
+	# First: make a mask for the invalid_actions  \n
+	# Second: build a matrix p-by-a where in each row the missing action is 1 \n \n
+	# \b Example: \n
+	# 2 actions, 3 states \n 
+	# possibleActions(s1) = 0 \n
+	# possibleActions(s2) = 1 \n 
+	# possibleActions(s3) = 0,1 \n
+	# \b Example \b output: \n
+    # 0 1 \n 
+	# 1 0 \n
+	# 0 0
+	# @param all_s An array of all of the states. p-by-dim(s)
+	# @param all_phi_s WHAT IS THIS? p-by-|phi(s))|
+	# @param action_mask WHAT IS THIS?  Optional: pass it for a speed boost
+	# @param useSparse WHAT IS THIS? DO WE STILL USE THIS?
+	# @return [best_action, phi_s_a] \n
+	# \b best_action: An array of the best actions at every state. p-by-1 \n 
+	# \b phi_s_a: WHAT IS THIS? p-by-|phi(s,a)|
 	
 	# [batchBestAction code]
 	def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
@@ -416,44 +449,68 @@ class Representation(object):
 	def featureType(self):
 		abstract
 	# [featureType code]
-	def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
-		# Returns the Q(s,a) by performing one step look-ahead (e.g. Line 8 of Figure 4.3 in Sutton and Barto 1998) using the domain.
-		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
-		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
-		# If policy is passed it is used to generate the action for the next state. Otherwise the best action is selected
+	
+	
+	## Returns the state action value, Q(s,a), by performing one step look-ahead on the domain.
+	# An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998.
+	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
+	# \ref Representation_Q_oneStepLookAhead "Here".
+	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
+	# @param s The given state
+	# @param a The given action
+	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
+	# @ return \b Q: The state-action value.
+	
+	# [Q_oneStepLookAhead code]
+	def Q_oneStepLookAhead(self,s,a, ns_samples):  
 		gamma 	= self.domain.gamma 
 		if hasFunction(self.domain,'expectedStep'):
 			p,r,ns,t	= self.domain.expectedStep(s,a)
 			Q	 	= 0
 			for j in arange(len(p)):
-				if policy == None:
-					Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
-				else:
-					Q += p[j]*(r[j] + gamma*self.Q(ns[j,:],policy.pi(ns[j,:])))
+				Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
 			Q = Q[0]
 		else:
 			next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
-			if policy == None:
-				Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
-			else:
-				Q = mean([rewards[i] + gamma*self.Q(next_states[i,:],policy.pi(next_states[i,:])) for i in arange(ns_samples)])
-		return Q			
-	def Qs_oneStepLookAhead(self,s, ns_samples, policy = None):
-		# Returns Q(s,a) for all possible actions by performing one step look-ahead (e.g. Line 8 of Figure 4.3 in Sutton and Barto 1998) using the domain.
-		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
-		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
-		# It also returns all posssible actions as the second output
+			Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
+		return Q	
+	# [Q_oneStepLookAhead code]
+	
+	
+	## Returns an array of actions available at a state and their associated values, Qs(s,a), by performing one step look-ahead on the domain.
+	# An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998.
+	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
+	# \ref Representation_Qs_oneStepLookAhead "Here".
+	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
+	# @param s The given state
+	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
+	# @return [Qs, actions] \n
+	# \b Qs: an array of Q(s,a), the values of each action. \n
+	# \b actions: the corresponding array of action numbers
+	
+	# [Qs_oneStepLookAhead code]
+	def Qs_oneStepLookAhead(self,s, ns_samples):
 		actions = self.domain.possibleActions(s)
-		Qs 		= array([self.Q_oneStepLookAhead(s, a, ns_samples, policy) for a in actions]) 
+		Qs 		= array([self.Q_oneStepLookAhead(s, a, ns_samples) for a in actions]) 
 		return Qs, actions
-	def V_oneStepLookAhead(self,s,ns_samples):
-		# Returns V(s) and the corresponding action by performing one step look-ahead (e.g. Line 6 of Figure 4.5 in Sutton and Barto 1998) using the domain.
-		# As a result this function should not be called in any RL algorithms unless the underlying domain is approximation of the true model
-		# If domain does not have expectedStep function, it uses <ns_samples> samples to estimate the one_step look-ahead  
-		
+	# [Qs_oneStepLookAhead code]
+	
+	
+	## Returns V(s) by performing one step look-ahead on the domain.
+	# An example of how this function works can be found on Line 6 of Figure 4.5 in Sutton and Barto 1998.
+	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
+	# \ref Representation_V_oneStepLookAhead "Here".
+	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
+	# @param s The given state
+	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
+	# @return V WHAT IS THIS? IS IT NOT THE VALUE OF A STATE? YET IT APPEARS TO BE TWO VALUES QS AND ACTIONS?
+
+	# [V_oneStepLookAhead code]
+	def V_oneStepLookAhead(self,s,ns_samples): 
 		Qs, actions 	= self.Qs_oneStepLookAhead(s,ns_samples)
 		a_ind   		= argmax(Qs)
 		return Qs[a_ind],actions[a_ind]		 
+	# [V_oneStepLookAhead code]	
 			
 			
 			

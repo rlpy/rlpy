@@ -84,13 +84,18 @@ class SystemAdministrator(Domain):
 #        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,self.s0())):
 #            [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
 
-    ## @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/<mapname>.txt'
-    # @param maptype: Specify the format for the map file, 'eachNeighbor' or 'edges'.
+    # @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/<mapname>.txt'             [Elliott Note: Doxygen did not like this documentation because it listed]
+    # @param maptype: Specify the format for the map file, 'eachNeighbor' or 'edges'.                         [@params that are not called, I did not fixed documentation used below. ]
     # @param numNodes: Number of nodes in the map.
     # @see: SystemAdministrator(Domain) for a description of 'eachNeighbor' and 'edges'.
     #
     # @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
     # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
+    # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
+	
+	## @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/mapname.txt'
+	# @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
+    # containing the neighbors of computer node i at index i, and _Edges is a list
     # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def loadNetwork(self, path):
         _Neighbors = []
@@ -188,7 +193,7 @@ class SystemAdministrator(Domain):
         possibleActs.append(self.computers_num) # append the no-op action
         return array(possibleActs)
         
-    ## @param neighborsList: each element at index <i> is a list of nodes connected to the node at <i>.
+    ## @param neighborsList: each element at index i is a list of nodes connected to the node at i.
     # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def setUniqueEdges(self, neighborsList):
         # set Unique Edges of the network (all edges are bidirectional)

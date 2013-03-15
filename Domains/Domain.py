@@ -6,7 +6,7 @@
 from Tools import *
 from pydoc import classname
 
-## The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that it is trying to acheive.
+## The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
 #
 # The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations 
 # about its surrondings. Based on that information, the Agent informs the %Domain what action it wants to perform. 

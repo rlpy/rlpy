@@ -115,7 +115,7 @@ $(document).ready(function(){initNavTree('class_experiments_1_1_experiment_1_1_e
 </div><!--header-->
 <div class="contents">
 
-<p>The <code>Experiment</code> class controls the.  
+<p>The <a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html" title="The Experiment controls the training, testing, and evaluation of the Agent.">Experiment</a> controls the training, testing, and evaluation of the <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a>.  
  <a href="class_experiments_1_1_experiment_1_1_experiment.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for Experiment:</div>
@@ -143,7 +143,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aba0970ece8740693d3b82e656500a9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves experimental data.  <a href="#aba0970ece8740693d3b82e656500a9c0">More...</a><br/></td></tr>
 <tr class="separator:aba0970ece8740693d3b82e656500a9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a09a75719edd93c51932842268ec62a"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a5a09a75719edd93c51932842268ec62a">makeExperimentName</a></td></tr>
-<tr class="memdesc:a5a09a75719edd93c51932842268ec62a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X Example: X = ['domain','agent','representation','LEARNING_STEPS'] Output: 'PitMaze-SARSA-Tabular-10000'.  <a href="#a5a09a75719edd93c51932842268ec62a">More...</a><br/></td></tr>
+<tr class="memdesc:a5a09a75719edd93c51932842268ec62a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a string name for the experiment by connecting the values corresponding to the given variables.  <a href="#a5a09a75719edd93c51932842268ec62a">More...</a><br/></td></tr>
 <tr class="separator:a5a09a75719edd93c51932842268ec62a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -177,45 +177,45 @@ Public Attributes</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a18b0c79ff472d1dd05c5a08cc471ea40"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a18b0c79ff472d1dd05c5a08cc471ea40"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a18b0c79ff472d1dd05c5a08cc471ea40">showDomain</a> = False</td></tr>
-<tr class="memdesc:a18b0c79ff472d1dd05c5a08cc471ea40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the domain during execution? <br/></td></tr>
+<tr class="memdesc:a18b0c79ff472d1dd05c5a08cc471ea40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the domain is shown during execution /b THIS AND SHOW_ALL/SHOW_PERFORMANCE NEED TO BE RESOLVED. <br/></td></tr>
 <tr class="separator:a18b0c79ff472d1dd05c5a08cc471ea40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1c23be37dbe9c964900f69f7559137f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1c23be37dbe9c964900f69f7559137f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#ab1c23be37dbe9c964900f69f7559137f">mainSeed</a> = 999999999</td></tr>
-<tr class="memdesc:ab1c23be37dbe9c964900f69f7559137f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main Random Seed used to generate other random seeds. <br/></td></tr>
+<tr class="memdesc:ab1c23be37dbe9c964900f69f7559137f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Main Random Seed used to generate other random seeds. <br/></td></tr>
 <tr class="separator:ab1c23be37dbe9c964900f69f7559137f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3714978c3a03676a8d4a0e3651e64690"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a3714978c3a03676a8d4a0e3651e64690">randomSeeds</a> = None</td></tr>
 <tr class="memdesc:a3714978c3a03676a8d4a0e3651e64690"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of random seeds.  <a href="#a3714978c3a03676a8d4a0e3651e64690">More...</a><br/></td></tr>
 <tr class="separator:a3714978c3a03676a8d4a0e3651e64690"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0da1e3872aa054765de049f49dd542ca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a0da1e3872aa054765de049f49dd542ca">maxRuns</a> = 100</td></tr>
-<tr class="memdesc:a0da1e3872aa054765de049f49dd542ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of runs used for averaging.  <a href="#a0da1e3872aa054765de049f49dd542ca">More...</a><br/></td></tr>
+<tr class="memitem:a0da1e3872aa054765de049f49dd542ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0da1e3872aa054765de049f49dd542ca"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a0da1e3872aa054765de049f49dd542ca">maxRuns</a> = 100</td></tr>
+<tr class="memdesc:a0da1e3872aa054765de049f49dd542ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of runs used for averaging, specified so that enough random seeds are generated. <br/></td></tr>
 <tr class="separator:a0da1e3872aa054765de049f49dd542ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7441ef0865bcb3db9b8064dd7375c1ea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7441ef0865bcb3db9b8064dd7375c1ea"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a7441ef0865bcb3db9b8064dd7375c1ea">id</a> = 1</td></tr>
-<tr class="memdesc:a7441ef0865bcb3db9b8064dd7375c1ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the experiment running. <br/></td></tr>
+<tr class="memdesc:a7441ef0865bcb3db9b8064dd7375c1ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the current experiment running. <br/></td></tr>
 <tr class="separator:a7441ef0865bcb3db9b8064dd7375c1ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a6287602630db6aeffcb6cf5787a216"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a6287602630db6aeffcb6cf5787a216"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a8a6287602630db6aeffcb6cf5787a216">domain</a> = None</td></tr>
-<tr class="memdesc:a8a6287602630db6aeffcb6cf5787a216"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Domain to be tested on. <br/></td></tr>
+<tr class="memdesc:a8a6287602630db6aeffcb6cf5787a216"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a> to be tested on. <br/></td></tr>
 <tr class="separator:a8a6287602630db6aeffcb6cf5787a216"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab127f2768fff9c4628c413617137a553"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab127f2768fff9c4628c413617137a553"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#ab127f2768fff9c4628c413617137a553">agent</a> = None</td></tr>
-<tr class="memdesc:ab127f2768fff9c4628c413617137a553"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Agent to be tested. <br/></td></tr>
+<tr class="memdesc:ab127f2768fff9c4628c413617137a553"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a> to be tested. <br/></td></tr>
 <tr class="separator:ab127f2768fff9c4628c413617137a553"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c28667ea35a2948d3a31747085a691a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c28667ea35a2948d3a31747085a691a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a4c28667ea35a2948d3a31747085a691a">show_all</a> = 0</td></tr>
-<tr class="memdesc:a4c28667ea35a2948d3a31747085a691a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the domain and the value function during the experiment. <br/></td></tr>
+<tr class="memdesc:a4c28667ea35a2948d3a31747085a691a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the domain and the value function are shown during the experiment. <br/></td></tr>
 <tr class="separator:a4c28667ea35a2948d3a31747085a691a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ff817d51e0aa8dea4e9824eae3908be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ff817d51e0aa8dea4e9824eae3908be"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a0ff817d51e0aa8dea4e9824eae3908be">show_performance</a> = 0</td></tr>
-<tr class="memdesc:a0ff817d51e0aa8dea4e9824eae3908be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the domain and the value function during the performance runs. <br/></td></tr>
+<tr class="memdesc:a0ff817d51e0aa8dea4e9824eae3908be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the domain and the value function are shown during the performance runs. <br/></td></tr>
 <tr class="separator:a0ff817d51e0aa8dea4e9824eae3908be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54133c27505b36b6afb87b2ea570ff3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a54133c27505b36b6afb87b2ea570ff3e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a54133c27505b36b6afb87b2ea570ff3e">result_fig</a> = None</td></tr>
-<tr class="memdesc:a54133c27505b36b6afb87b2ea570ff3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Figure window generated to show the results? <br/></td></tr>
+<tr class="memdesc:a54133c27505b36b6afb87b2ea570ff3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Figure window generated to show the results /b WHAT IS THIS? WHAT DOES IT DO? <br/></td></tr>
 <tr class="separator:a54133c27505b36b6afb87b2ea570ff3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a937d4dd628a8858b443a399410d2600b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a937d4dd628a8858b443a399410d2600b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a937d4dd628a8858b443a399410d2600b">result</a> = None</td></tr>
-<tr class="memdesc:a937d4dd628a8858b443a399410d2600b"><td class="mdescLeft">&#160;</td><td class="mdescRight">All data is saved in the result array: stats_num-by-performanceChecks. <br/></td></tr>
+<tr class="memitem:a937d4dd628a8858b443a399410d2600b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a937d4dd628a8858b443a399410d2600b">result</a> = None</td></tr>
+<tr class="memdesc:a937d4dd628a8858b443a399410d2600b"><td class="mdescLeft">&#160;</td><td class="mdescRight">An array that stores all generated.  <a href="#a937d4dd628a8858b443a399410d2600b">More...</a><br/></td></tr>
 <tr class="separator:a937d4dd628a8858b443a399410d2600b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0647ad8713153cc6b448750dbeb1b15"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac0647ad8713153cc6b448750dbeb1b15"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#ac0647ad8713153cc6b448750dbeb1b15">output_filename</a> = ''</td></tr>
@@ -223,13 +223,15 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="separator:ac0647ad8713153cc6b448750dbeb1b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b14e488ae28d98d262453f3e9cd6e4d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html#a0b14e488ae28d98d262453f3e9cd6e4d">logger</a> = None</td></tr>
-<tr class="memdesc:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">An object to record the print outs in a file. <br/></td></tr>
+<tr class="memdesc:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple object that records the prints in a file. <br/></td></tr>
 <tr class="separator:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The <code>Experiment</code> class controls the. </p>
-<p><code>Experiment</code> defines the... TODO: think of a good descritption.. All new domains should inherit from <code><a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html" title="The Experiment class controls the.">Experiment</a></code>. Agent</p>
-<p>TODO Describe what role experiments do exactly here. </p>
+<div class="textblock"><p>The <a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html" title="The Experiment controls the training, testing, and evaluation of the Agent.">Experiment</a> controls the training, testing, and evaluation of the <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a>. </p>
+<p>Reinforced learning is based around the concept of training an Agent to solve a task and later testing its ability to use what it has learned to solve the task. This cycle forms a loop that the Experiment defines and controls. First the Agent is repeatedly tasked with solving a problem determined by the <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a>, restarting every time it succeeds or fails. Each time the Agent attempts to solve the task, it learns more about how to accomplish its goal. The Experiment controls this loop of "training
+ sessions", iterating over each step in which the Agent and Domain interact. After a set number of training sessions defined by the Experiment, the Agent is tested on its ability to solve the task. The Experiment collects data on the Agent's performance and then puts the Agent through more training sessions. After a set number of loops, training sessions followed by an evaluation, the Experiment is complete and the gathered data is printed and saved. For each section, training and evaluation, the Experiment determines whether or not the visualization of the step should generated.</p>
+<p>The <code>Experiment</code> class is a superclass that provides the basic framework for all RL experiments. It provides the methods and attributes that allow child classes to interact with the <code>Agent</code> and <code>Domain</code> classes within the RL-Python library. <br/>
+ All new experiment implimentations should inherit from <code>Experiment</code>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac775ee34451fdfa742b318538164070e"></a>
 <div class="memitem">
@@ -333,8 +335,17 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
       </table>
 </div><div class="memdoc">
 
-<p>Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X Example: X = ['domain','agent','representation','LEARNING_STEPS'] Output: 'PitMaze-SARSA-Tabular-10000'. </p>
+<p>Creates a string name for the experiment by connecting the values corresponding to the given variables. </p>
 <p>See code <a class="el" href="_experiment.html#Experiment_makeExperimentName">Here</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">variables</td><td>The list of variables to be used for the experiment name. <br/>
+ <b>Example:</b> [ 'domain', 'agent', 'representation', 'LEARNING_STEPS'] </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The string name associated with the variables. <br/>
+ <b>Example:</b> 'PitMaze-SARSA-Tabular-10000' </dd></dl>
 
 </div>
 </div>
@@ -363,7 +374,7 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div><div class="memdoc">
 
 <p>Performs a run. </p>
-<p>See code <a class="el" href="_experiment.html#Experiment_performanceRun">Here</a>. </p>
+<p>/b IS THIS A RUN OF THE EXPERIMENT OR IS IT JUST A PERFORMANCE RUN. ALSO IS RUN AN ABTRACT METHOD? See code <a class="el" href="_experiment.html#Experiment_performanceRun">Here</a>. </p>
 
 </div>
 </div>
@@ -406,29 +417,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a0da1e3872aa054765de049f49dd542ca"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int maxRuns = 100</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Maximum number of runs used for averaging. </p>
-<p>This is specified so that enough random seeds are generated </p>
-
-</div>
-</div>
 <a class="anchor" id="a3714978c3a03676a8d4a0e3651e64690"></a>
 <div class="memitem">
 <div class="memproto">
@@ -449,6 +437,29 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 <p>Array of random seeds. </p>
 <p>This is used to make sure all jobs start with the same random seed </p>
+
+</div>
+</div>
+<a class="anchor" id="a937d4dd628a8858b443a399410d2600b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">result = None</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>An array that stores all generated. </p>
+<p>Size is stats_num-by-performanceChecks. </p>
 
 </div>
 </div>

@@ -60,4 +60,12 @@
 	
 	\subsection Representation_featureType Feature Type
 	\snippet Representation.py featureType code
+	
+	
+	\subsection Representation_Q_oneStepLookAhead Q One Step Look Ahead
+	\snippet Representation.py Q_oneStepLookAhead code
+	\subsection Representation_Qs_oneStepLookAhead Qs One Step Look Ahead
+	\snippet Representation.py Qs_oneStepLookAhead code
+	\subsection Representation_V_oneStepLookAhead V One Step Look Ahead
+	\snippet Representation.py V_oneStepLookAhead code
 */

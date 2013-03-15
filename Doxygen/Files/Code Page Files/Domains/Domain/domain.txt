@@ -40,9 +40,6 @@
     \subsection Domain_extendDiscreteDimensions Extended Discrete Dimensions
 	\snippet Domain.py extendDiscreteDimensions code
 	
-    \subsection Domain_MCExpectedStep MC Expected Step
-	\snippet Domain.py MCExpectedStep code
-	
     \subsection Domain_s0uniform S0 Uniform
 	\snippet Domain.py s0uniform code
 	

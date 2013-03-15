@@ -15,10 +15,12 @@ from Representations import *
 # All new policty implimentations should inherit from \c %Policy.
 
 class Policy(object):
-	## Link to the representation
+	## The \ref Representations.Representation.Representation "Representation" to be associated with
     representation = None 
-	## In Debug Mode?
+	## \cond DEV
     DEBUG          = False
+	# \endcond
+	
 	
 	## Initializes the \c %Policy object. See code
 	# \ref Policy_init "Here".

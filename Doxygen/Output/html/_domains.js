@@ -14,7 +14,6 @@ var _domains =
         [ "Test", "_domain.html#Domain_test", null ],
         [ "Print All", "_domain.html#Domain_printAll", null ],
         [ "Extended Discrete Dimensions", "_domain.html#Domain_extendDiscreteDimensions", null ],
-        [ "MC Expected Step", "_domain.html#Domain_MCExpectedStep", null ],
         [ "S0 Uniform", "_domain.html#Domain_s0uniform", null ],
         [ "Saturate State", "_domain.html#Domain_saturateState", null ]
       ] ]

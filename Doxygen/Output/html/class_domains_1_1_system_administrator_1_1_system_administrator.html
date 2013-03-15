@@ -123,7 +123,7 @@ Inheritance diagram for SystemAdministrator:</div>
  <div class="center">
   <img src="class_domains_1_1_system_administrator_1_1_system_administrator.png" usemap="#SystemAdministrator_map" alt=""/>
   <map id="SystemAdministrator_map" name="SystemAdministrator_map">
-<area href="class_domains_1_1_domain_1_1_domain.html" title="The Domain controls the environment in which the Agent resides and the goal that it is trying to ache..." alt="Domain" shape="rect" coords="0,56,126,80"/>
+<area href="class_domains_1_1_domain_1_1_domain.html" title="The Domain controls the environment in which the Agent resides and the goal that said Agent is trying..." alt="Domain" shape="rect" coords="0,56,126,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -383,14 +383,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path,:</td><td>Path to the map file, of form '/Domains/SystemAdministratorMaps/&lt;mapname&gt;.txt' </td></tr>
-    <tr><td class="paramname">maptype,:</td><td>Specify the format for the map file, 'eachNeighbor' or 'edges'. </td></tr>
-    <tr><td class="paramname">numNodes,:</td><td>Number of nodes in the map. </td></tr>
+    <tr><td class="paramname">path,:</td><td>Path to the map file, of form '/Domains/SystemAdministratorMaps/mapname.txt' </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See Also</dt><dd>: SystemAdministrator(Domain) for a description of 'eachNeighbor' and 'edges'.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list containing the neighbors of computer node <em> at index <em>, and _Edges is a list of tuples (node1, node2) where node1 and node2 share an edge and node1 &lt; node2. </em></em></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list containing the neighbors of computer node i at index i, and _Edges is a list of tuples (node1, node2) where node1 and node2 share an edge and node1 &lt; node2. </dd></dl>
 
 </div>
 </div>
@@ -419,11 +416,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">neighborsList,:</td><td>each element at index <em> is a list of nodes connected to the node at <em>. </em></em></td></tr>
+    <tr><td class="paramname">neighborsList,:</td><td>each element at index i is a list of nodes connected to the node at i. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><em><em>: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 &lt; node2. </em></em></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 &lt; node2. </dd></dl>
 
 </div>
 </div>

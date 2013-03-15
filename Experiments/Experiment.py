@@ -7,39 +7,44 @@ from Agents import *
 from Domains import *
 from Representations import *
 
-## The \c %Experiment class controls the  
-# 
-# \c %Experiment defines the... TODO: think of a good descritption.. 
-# All new domains should inherit from \c Experiment. Agent
+## The Experiment controls the training, testing, and evaluation of the \ref Agents.Agent.Agent "Agent".
+# Reinforced learning is based around the concept of training an Agent to solve a task and later testing its ability to use what it has learned to solve the task.
+# This cycle forms a loop that the %Experiment defines and controls. First the Agent is repeatedly tasked with solving a problem determined by the \ref Domains.Domain.Domain "Domain",
+# restarting every time it succeeds or fails. Each time the Agent attempts to solve the task, it learns more about how to accomplish its goal. The %Experiment controls this loop of "training
+# sessions", iterating over each step in which the Agent and Domain interact. After a set number of training sessions defined by the %Experiment, the Agent is tested on its ability to solve the task. 
+# The %Experiment collects data on the Agent's performance and then puts the Agent through more training sessions. After a set number of loops, training sessions followed by an evaluation, the %Experiment
+# is complete and the gathered data is printed and saved. For each section, training and evaluation, the %Experiment determines whether or not the visualization of the step should generated.
 #
-# TODO Describe what role experiments do exactly here.
+# The \c %Experiment class is a superclass that provides the basic framework for all RL experiments. It provides the methods and attributes
+# that allow child classes to interact with the \c Agent and \c Domain classes within the RL-Python library. \n
+# All new experiment implimentations should inherit from \c %Experiment.
 
 class Experiment(object):
-	## Show the domain during execution?
+	## Determines whether the domain is shown during execution /b THIS AND SHOW_ALL/SHOW_PERFORMANCE NEED TO BE RESOLVED
     showDomain = False      
-	## Main Random Seed used to generate other random seeds
+	## The Main Random Seed used to generate other random seeds
     mainSeed = 999999999    
 	## Array of random seeds. This is used to make sure all jobs start with the same random seed
     randomSeeds = None      
-	## Maximum number of runs used for averaging. This is specified so that enough random seeds are generated	
+	## Maximum number of runs used for averaging, specified so that enough random seeds are generated	
     maxRuns = 100          
-	## ID of the experiment running
+	## ID of the current experiment running
     id = 1                
-	## The Domain to be tested on	
+	## The \ref Domains.Domain.Domain "Domain" to be tested on	
     domain = None           
-	## The Agent to be tested
+	## The \ref Agents.Agent.Agent "Agent" to be tested
     agent = None            
-	## Show the domain and the value function during the experiment
+	## Determines whether the domain and the value function are shown during the experiment
     show_all = 0            
-	## Show the domain and the value function during the performance runs
+	## Determines whether the domain and the value function are shown during the performance runs
     show_performance = 0    
-	## Figure window generated to show the results?
+	## The Figure window generated to show the results /b WHAT IS THIS? WHAT DOES IT DO?
     result_fig = None       
-	## All data is saved in the result array: stats_num-by-performanceChecks
+	## An array that stores all generated. Size is stats_num-by-performanceChecks.
     result  = None          
 	## The name of the file used to store the data
     output_filename = ''    
-	## An object to record the print outs in a file
+	## A simple object that records the prints in a file
     logger = None  
 	
 	## Initializes the \c %Experiment object. See code
@@ -76,7 +81,7 @@ class Experiment(object):
 	# [init code]
 	
 	
-	## Performs a run. See code
+	## Performs a run. /b IS THIS A RUN OF THE EXPERIMENT OR IS IT JUST A PERFORMANCE RUN. ALSO IS RUN AN ABTRACT METHOD?  See code
 	# \ref Experiment_performanceRun "Here".
 	
 	# [performanceRun code]
@@ -132,10 +137,10 @@ class Experiment(object):
 	# [save code]
 	
 	
-	## Creates a string name for the experiment by connecting the values corresponding to the variables mentioned in X  
-    # Example: X = ['domain','agent','representation','LEARNING_STEPS']
-    # Output: 'PitMaze-SARSA-Tabular-10000'. See code
-	# \ref Experiment_makeExperimentName "Here".
+	## Creates a string name for the experiment by connecting the values corresponding to the given variables.  
+	# See code \ref Experiment_makeExperimentName "Here".
+	# @param variables The list of variables to be used for the experiment name. \n \b Example: [ 'domain', 'agent', 'representation', 'LEARNING_STEPS']
+	# @returns The string name associated with the variables. \n \b Example: 'PitMaze-SARSA-Tabular-10000'
 	
 	# [makeExperimentName code]
     def makeExperimentName(self,variables):

@@ -164,8 +164,8 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ac7a504aeb6cd3a431c9344017fcf7957"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7a504aeb6cd3a431c9344017fcf7957"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>lambda_</b></td></tr>
 <tr class="separator:ac7a504aeb6cd3a431c9344017fcf7957"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62197192f0fbf4e0675eb37be1c4c175"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html#a62197192f0fbf4e0675eb37be1c4c175">alpha</a></td></tr>
-<tr class="memdesc:a62197192f0fbf4e0675eb37be1c4c175"><td class="mdescLeft">&#160;</td><td class="mdescRight">find the best guess of Q^*: {Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g.  <a href="#a62197192f0fbf4e0675eb37be1c4c175">More...</a><br/></td></tr>
+<tr class="memitem:a62197192f0fbf4e0675eb37be1c4c175"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62197192f0fbf4e0675eb37be1c4c175"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b></td></tr>
 <tr class="separator:a62197192f0fbf4e0675eb37be1c4c175"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_class_agents_1_1_agent_1_1_agent"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_agents_1_1_agent_1_1_agent')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a></td></tr>
 <tr class="memitem:a29150be19dd04c7c111b8b986f8f345f inherit pub_attribs_class_agents_1_1_agent_1_1_agent"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29150be19dd04c7c111b8b986f8f345f"></a>
@@ -216,7 +216,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memdesc:a6249353116217ff45c96ff345a7c20c5 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Candid Learning Rate.  <a href="#a6249353116217ff45c96ff345a7c20c5">More...</a><br/></td></tr>
 <tr class="separator:a6249353116217ff45c96ff345a7c20c5 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ac272a92a0586fc45e7b37c5a0fa837 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#a9ac272a92a0586fc45e7b37c5a0fa837">eligibility_trace</a> = []</td></tr>
-<tr class="memdesc:a9ac272a92a0586fc45e7b37c5a0fa837 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Only used by <a class="el" href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html">SARSA</a> agent <b>Do</b> <b>we</b> <b>even</b> <b>need</b> <b>this</b> <b>here</b>? Shouldn't it only be defined in SARSA child class? (confusing).  <a href="#a9ac272a92a0586fc45e7b37c5a0fa837">More...</a><br/></td></tr>
+<tr class="memdesc:a9ac272a92a0586fc45e7b37c5a0fa837 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used by <a class="el" href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html">SARSA</a> agent WHAT IS THIS? WHAT DOES IT DO? In case lambda parameter in SARSA definition is used.  <a href="#a9ac272a92a0586fc45e7b37c5a0fa837">More...</a><br/></td></tr>
 <tr class="separator:a9ac272a92a0586fc45e7b37c5a0fa837 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b14e488ae28d98d262453f3e9cd6e4d inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b14e488ae28d98d262453f3e9cd6e4d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#a0b14e488ae28d98d262453f3e9cd6e4d">logger</a> = None</td></tr>
@@ -237,22 +237,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memdesc:a125c6abfd41c7c3229c2de3fed0ec960 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="mdescLeft">&#160;</td><td class="mdescRight">The N0 parameter for boyan learning rate decay. <br/></td></tr>
 <tr class="separator:a125c6abfd41c7c3229c2de3fed0ec960 inherit pub_static_attribs_class_agents_1_1_agent_1_1_agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a62197192f0fbf4e0675eb37be1c4c175"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">alpha</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>find the best guess of Q^*: {Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. </p>
-<p>Busoniu et al.'s book 2010 </p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

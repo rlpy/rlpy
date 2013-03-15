@@ -20,7 +20,10 @@ var _representations =
         [ "Batch Discover", "_representation.html#Representation_batchDiscover", null ],
         [ "Batch Phi Sa", "_representation.html#Representation_batchPhi_s_a", null ],
         [ "Batch Best Action", "_representation.html#Representation_batchBestAction", null ],
-        [ "Feature Type", "_representation.html#Representation_featureType", null ]
+        [ "Feature Type", "_representation.html#Representation_featureType", null ],
+        [ "Q One Step Look Ahead", "_representation.html#Representation_Q_oneStepLookAhead", null ],
+        [ "Qs One Step Look Ahead", "_representation.html#Representation_Qs_oneStepLookAhead", null ],
+        [ "V One Step Look Ahead", "_representation.html#Representation_V_oneStepLookAhead", null ]
       ] ]
     ] ]
 ];

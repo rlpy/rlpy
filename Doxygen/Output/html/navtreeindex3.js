@@ -1,5 +1,7 @@
 var NAVTREEINDEX3 =
 {
+"class_domains_1_1_pendulum_1_1_pendulum.html#a7d0dbd38157140981e10fb45fc87b449":[3,0,1,11,0,43],
+"class_domains_1_1_pendulum_1_1_pendulum.html#a7d8e8e05ffb74cb91c2bdc9fce3ba40e":[3,0,1,11,0,62],
 "class_domains_1_1_pendulum_1_1_pendulum.html#a7e540281f54d93ffe83da848edf6387f":[3,0,1,11,0,38],
 "class_domains_1_1_pendulum_1_1_pendulum.html#a83167280d9faeb83853d923f63383927":[3,0,1,11,0,42],
 "class_domains_1_1_pendulum_1_1_pendulum.html#a85c9a6647898bbc94de1619f3318ba8f":[3,0,1,11,0,57],
@@ -233,12 +235,11 @@ var NAVTREEINDEX3 =
 "class_policies_1_1_fixed_policy_1_1_fixed_policy.html#a2203d3d6059aa9162eb0be250d7cc38a":[3,0,3,1,0,0],
 "class_policies_1_1_fixed_policy_1_1_fixed_policy.html#aba063df200722bf5e6983ef2c5eb6ed2":[3,0,3,1,0,1],
 "class_policies_1_1_policy_1_1_policy.html":[3,0,3,2,0],
-"class_policies_1_1_policy_1_1_policy.html#a0b14e488ae28d98d262453f3e9cd6e4d":[3,0,3,2,0,6],
+"class_policies_1_1_policy_1_1_policy.html#a0b14e488ae28d98d262453f3e9cd6e4d":[3,0,3,2,0,5],
 "class_policies_1_1_policy_1_1_policy.html#a2203d3d6059aa9162eb0be250d7cc38a":[3,0,3,2,0,1],
 "class_policies_1_1_policy_1_1_policy.html#a64fe699622519d8edc3a69716ce076c8":[3,0,3,2,0,2],
 "class_policies_1_1_policy_1_1_policy.html#a6cbea10aa2cbc0d0147df1dd66eb3db3":[3,0,3,2,0,4],
-"class_policies_1_1_policy_1_1_policy.html#a73585d7121de037cf2e2ca12b27eb83e":[3,0,3,2,0,5],
-"class_policies_1_1_policy_1_1_policy.html#a954b5778d0028f8a45b36d0e8a693216":[3,0,3,2,0,7],
+"class_policies_1_1_policy_1_1_policy.html#a954b5778d0028f8a45b36d0e8a693216":[3,0,3,2,0,6],
 "class_policies_1_1_policy_1_1_policy.html#ac775ee34451fdfa742b318538164070e":[3,0,3,2,0,0],
 "class_policies_1_1_policy_1_1_policy.html#afe9e56fe163053f213118463eba8dcdd":[3,0,3,2,0,3],
 "class_policies_1_1_uniform_random_1_1_uniform_random.html":[3,0,3,3,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX3 =
 "class_policies_1_1e_greedy_1_1e_greedy.html#a6cbea10aa2cbc0d0147df1dd66eb3db3":[3,0,3,0,0,3],
 "class_policies_1_1e_greedy_1_1e_greedy.html#a81ae64cb4c85980e82e0a9c061cfc26d":[3,0,3,0,0,5],
 "class_policies_1_1e_greedy_1_1e_greedy.html#aa571c8173dde514963e974e8c1da1945":[3,0,3,0,0,4],
-"class_policies_1_1e_greedy_1_1e_greedy.html#ac775ee34451fdfa742b318538164070e":[3,0,3,0,0,0],
-"class_policies_1_1e_greedy_1_1e_greedy.html#afe9e56fe163053f213118463eba8dcdd":[3,0,3,0,0,2]
+"class_policies_1_1e_greedy_1_1e_greedy.html#ac775ee34451fdfa742b318538164070e":[3,0,3,0,0,0]
 };

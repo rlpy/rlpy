@@ -31,7 +31,7 @@ class Agent(object):
     alpha               = 0             
 	## The Candid Learning Rate. This value is updated in the updateAlpha method. We use the rate calculated by [Dabney W 2012] \n http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
     candid_alpha        = 0             
-	## Only used by \ref Agents.SARSA.SARSA "SARSA" agent \b Do \b we \b even \b need \b this \b here? Shouldn't it only be defined in SARSA child class? (confusing).
+	## Used by \ref Agents.SARSA.SARSA "SARSA" agent WHAT IS THIS? WHAT DOES IT DO?
 	# In case lambda parameter in SARSA definition is used. 
     eligibility_trace   = []            
 	## A simple object that records the prints in a file

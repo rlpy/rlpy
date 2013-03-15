@@ -86,7 +86,7 @@ class BEBF(Representation):
     
     ## Adds new features based on the Bellman Error in batch setting.
     # @param td_errors: p-by-1 (How much error observed for each sample)
-    # @param phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
+    # @param all_phi_s: n-by-p features corresponding to all samples (each column corresponds to one sample)
     # @param s: List of states corresponding to each td_error in td_errors (note that the same state may appear multiple times because of different actions taken while there)
     # self.batchThreshold is threshold below which no more BEBFs are added.
     def batchDiscover(self,td_errors, all_phi_s, s):

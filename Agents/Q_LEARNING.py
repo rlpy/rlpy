@@ -30,7 +30,7 @@ class Q_LEARNING(Agent):
         else:
             self.eligibility_trace    = phi
         
-        ## find the best guess of Q^*: \hat{Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. Busoniu et al.'s book 2010
+        # find the best guess of Q^*: \hat{Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. Busoniu et al.'s book 2010
         na                  = self.representation.bestAction(ns,phi_ns)
         phi_prime           = self.representation.phi_sa(ns,na,phi_ns)
         Q_max               = dot(phi_prime, theta)
