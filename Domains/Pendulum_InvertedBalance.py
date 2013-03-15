@@ -39,15 +39,16 @@ class Pendulum_InvertedBalance(Pendulum):
     ANGULAR_RATE_LIMITS = [-2, 2] # Limits on pendulum rate, per 1Link of Lagoudakis & Parr
                                 # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.
-    episodeCap          = 3000    # Max number of steps per trajectory
+    episodeCap          = None  # Max number of steps per trajectory (default 3000)
     gamma               = .95   # Based on Parr 2003 and ICML 11 (RL-Matlab)
     
     # For Visual Stuff
     MAX_RETURN = 0
     MIN_RETURN = -1
 
-    def __init__(self, logger = None):
+    def __init__(self, episodeCap = 3000, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
+        self.episodeCap = episodeCap
         super(Pendulum_InvertedBalance,self).__init__(logger)
     def s0(self):    
         # Returns the initial state, pendulum vertical
