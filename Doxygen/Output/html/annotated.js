@@ -90,6 +90,9 @@ var annotated =
         [ "UAVIndex", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_index.html", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_index" ],
         [ "PST", "class_domains_1_1_p_s_t_orig_1_1_p_s_t.html", "class_domains_1_1_p_s_t_orig_1_1_p_s_t" ]
       ] ],
+      [ "RCCar", null, [
+        [ "RCCar", "class_domains_1_1_r_c_car_1_1_r_c_car.html", "class_domains_1_1_r_c_car_1_1_r_c_car" ]
+      ] ],
       [ "SystemAdministrator", null, [
         [ "SystemAdministrator", "class_domains_1_1_system_administrator_1_1_system_administrator.html", "class_domains_1_1_system_administrator_1_1_system_administrator" ]
       ] ]

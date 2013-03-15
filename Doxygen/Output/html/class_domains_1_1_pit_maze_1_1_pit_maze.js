@@ -1,6 +1,7 @@
 var class_domains_1_1_pit_maze_1_1_pit_maze =
 [
     [ "__init__", "class_domains_1_1_pit_maze_1_1_pit_maze.html#ac775ee34451fdfa742b318538164070e", null ],
+    [ "expectedStep", "class_domains_1_1_pit_maze_1_1_pit_maze.html#a2d40d468bcb54772b5c61ae0dc501c7f", null ],
     [ "isTerminal", "class_domains_1_1_pit_maze_1_1_pit_maze.html#a0c9595ac1e62a30b42574f8e1b335817", null ],
     [ "possibleActions", "class_domains_1_1_pit_maze_1_1_pit_maze.html#a397b5376f221417d22f8c40a1a7070eb", null ],
     [ "s0", "class_domains_1_1_pit_maze_1_1_pit_maze.html#ae8937534fa7cdd64071324f29058f930", null ],
@@ -14,7 +15,6 @@ var class_domains_1_1_pit_maze_1_1_pit_maze =
     [ "DimNames", "class_domains_1_1_pit_maze_1_1_pit_maze.html#a348e68ce6eeeee995b6af7cc33ebdfa8", null ],
     [ "domain_fig", "class_domains_1_1_pit_maze_1_1_pit_maze.html#ad892c3449ed79e4597c0525f940acef8", null ],
     [ "downArrows_fig", "class_domains_1_1_pit_maze_1_1_pit_maze.html#a86f030d8f9c5a8c4d891545125adaad2", null ],
-    [ "episodeCap", "class_domains_1_1_pit_maze_1_1_pit_maze.html#ac5c69d7d44548bdbc649b1f221be7581", null ],
     [ "episodeCap", "class_domains_1_1_pit_maze_1_1_pit_maze.html#adf810658aca075b3ad991ca73916bbcb", null ],
     [ "GOAL_REWARD", "class_domains_1_1_pit_maze_1_1_pit_maze.html#a7e415b4c019af2f5f462bb4b731f20df", null ],
     [ "leftArrows_fig", "class_domains_1_1_pit_maze_1_1_pit_maze.html#aef3a782cea40aa1ea7ab9f22902f9a54", null ],

@@ -5,26 +5,17 @@
 
 from Tools import *
 
-## The Representation is the \ref Agents.Agent.Agent "Agent's" model of the \ref Domains.Domain.Domain "Domain".
+## The Representation is the \ref Agents.Agent.Agent "Agent"'s model of the \ref Domains.Domain.Domain "Domain".
 # 
-# As the %Agent interacts with the Domain, it receives some observations. The agent then passes this information to its
-# %Repres
-
-# Domain and uses this information to update its \ref Representations.Representation.Representation "Representation" of the Domain.
-# It then uses its \ref Policies.Policy.Policy "Policy" to select an action to perform. This process (observe, update, act) repeats 
-# itself until some goal or fail state, determined by the Domain, is reached. 
-# At this point the \ref Experiments.Experiment.Experiment "Experiment" determines whether the %Agent starts over or is tested.
-# 
-# The \c %Agent class is a superclass that provides the basic framework for all RL agents. It provides the methods and attributes
-# that allow child classes to interact with the \c Domain, \c Representation, \c Policy, and \c Experiment classes within the RL-Python library. \n
-# All new agent implimentations should inherit from \c %Agent.
-
-
-## The \c %Representation class describes the information the Agent gathered about the Domain.
-# 
-# \c %Representation provides the basic framework for Representations to interact with the Agent and Policy Classes.
-# All new Representation implimentations should inherit from \c %Representation.
-# \note It is assumed that the Linear Function approximator Family is being used.
+# As the Agent interacts with the Domain, it receives observations. The Agent passes these observations to its
+# %Representation which extracts and stores the useful information by updating its iternal model apporpriately. 
+# The %Representation then uses this updated model and the current state of the Agent supplied by the Domain to provide the Agent with
+# any information it needs. The Agent then uses this information and its \ref Policies.Policy.Policy "Policy" to select an action to perform. \n
+#
+# The \c %Representation class is a superclass that provides the basic framework for all representations. It provides the methods and attributes
+# that allow child classes to interact with the \c Agent and \c Domain classes within the RL-Python library. \n
+# All new representation implimentations should inherit from \c %Representation.
+# \note It is assumed that the Linear Function approximator family of representations is being used.
 class Representation(object):
 	## In Debug Mode?
 	DEBUG		   = 0

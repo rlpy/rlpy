@@ -32,6 +32,7 @@ var hierarchy =
         [ "PitMaze", "class_domains_1_1_pit_maze_1_1_pit_maze.html", null ],
         [ "PST", "class_domains_1_1_p_s_t_1_1_p_s_t.html", null ],
         [ "PST", "class_domains_1_1_p_s_t_orig_1_1_p_s_t.html", null ],
+        [ "RCCar", "class_domains_1_1_r_c_car_1_1_r_c_car.html", null ],
         [ "SystemAdministrator", "class_domains_1_1_system_administrator_1_1_system_administrator.html", null ]
       ] ],
       [ "Experiment", "class_experiments_1_1_experiment_1_1_experiment.html", [
@@ -58,12 +59,12 @@ var hierarchy =
     ] ],
     [ "SensorState", "class_domains_1_1_p_s_t_orig_1_1_sensor_state.html", null ],
     [ "SensorState", "class_domains_1_1_p_s_t_1_1_sensor_state.html", null ],
-    [ "StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
     [ "StateIndex", "class_domains_1_1_pendulum_1_1_state_index.html", null ],
-    [ "StateStruct", "class_domains_1_1_multi_track_1_1_state_struct.html", null ],
+    [ "StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
     [ "StateStruct", "class_domains_1_1_p_s_t_1_1_state_struct.html", null ],
-    [ "UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
+    [ "StateStruct", "class_domains_1_1_multi_track_1_1_state_struct.html", null ],
     [ "UAVAction", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_action.html", null ],
+    [ "UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
     [ "UAVIndex", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_index.html", null ],
     [ "UAVIndex", "class_domains_1_1_p_s_t_1_1_u_a_v_index.html", null ],
     [ "UAVLocation", "class_domains_1_1_p_s_t_1_1_u_a_v_location.html", null ],

@@ -115,7 +115,7 @@ $(document).ready(function(){initNavTree('class_policies_1_1_policy_1_1_policy.h
 </div><!--header-->
 <div class="contents">
 
-<p>The <code>Policy</code> class controls the.  
+<p>The <a class="el" href="class_policies_1_1_policy_1_1_policy.html" title="The Policy determines the action that an Agent will take given its Representation.">Policy</a> determines the action that an <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a> will take given its <a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a>.  
  <a href="class_policies_1_1_policy_1_1_policy.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for Policy:</div>
@@ -166,9 +166,11 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a73585d7121de037cf2e2ca12b27eb83e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The <code>Policy</code> class controls the. </p>
-<p><code>Policy</code> provides the basic framework for Agents to interact with Policies and for Policies to interact with Representations. All new policy implimentations should inherit from <code>Policy</code>.</p>
-<p>A policy determines the action that an Agent will take given its representaion. </p>
+<div class="textblock"><p>The <a class="el" href="class_policies_1_1_policy_1_1_policy.html" title="The Policy determines the action that an Agent will take given its Representation.">Policy</a> determines the action that an <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a> will take given its <a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a>. </p>
+<p>The Agent learns about the <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a> as the two interact. Each step, the Agent passes information about its current state and information revelent to that state to the Policy. The Policy uses this information to decide what action the Agent should perform next. <br/>
+</p>
+<p>The <code>Policy</code> class is a superclass that provides the basic framework for all policiess. It provides the methods and attributes that allow child classes to interact with the <code>Agent</code> and <code>Represemtatopm</code> classes within the RL-Python library. <br/>
+ All new policty implimentations should inherit from <code>Policy</code>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac775ee34451fdfa742b318538164070e"></a>
 <div class="memitem">

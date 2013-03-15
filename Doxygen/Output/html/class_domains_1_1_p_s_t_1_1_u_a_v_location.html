@@ -136,12 +136,22 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>SIZE</b> = 4</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT #. </p>
-<p>Persistent Search and Track Mission with: NUM_UAV: num vehicles present NUM_COMMS num intermediate communication states Other associated parameters shown below.</p>
-<p>Goal is to maintain as many UAVs with functional sensor and actuator as possible in the surveillance state, while maintaining at least 1 UAV with working actuator in each communication state.</p>
-<p>Failure to satisfy the communication state above results in zero reward earned for surveillance.</p>
-<p>State vector consists of blocks of 4 states, corresponding to each UAV: [location, fuel quantity, actuator status, sensor status] so for example, state [1,9,1,1,2,3,0,1] &ndash;&gt; [1,9,1,1 || 2,3,0,1] &ndash;&gt; 2 UAV's; &lt;&lt;&lt; THIS DOES NOT MATCH WHAT IS THERE. IT IS TRANSPOSED BELOW UAV1 in location 1, with 9 fuel units remaining, and sensor + actuator with status 1 (defined in the classes below). UAV 2 in location 2, 3 fuel units remaining, actuator with status 0 and sensor with status 1.</p>
+<p>Persistent Search and Track Mission per [MATLAB implementation]</p>
+<p>See [[]] for domain detailed domain description.</p>
+<p>-----------------&mdash;DESCRIPTION--------------------&mdash;</p>
+<p>Each UAV has 4 states; location, fuel, actuator status, sensor status.</p>
+<p>There are 4 types of locations a uav can be in; Maintenance, Refuel, Communications, surveillance. Loitering for 1 timestep at Refuel assigns fuel of 10 to that UAV. Loitering for 1 timestep at Maintenance assigns status 1 to Actuator and Sensor. </p>
+<pre class="fragment">Goal is to maintain as many UAVS with working sensor in the Surveillance
+</pre><p> state as there are targets (NUM_TARGETS), while maintaining at least 1 UAV in each communication state. Reward of 20 is earned for each UAV in the surveillance state with working sensor, up to the number of targets. If no UAV is in the communication state, zero reward earned for surveillance. (No reward is earned for excess UAVs or those with failed sensor)</p>
+<p>If the actuator fails, the UAV can only take actions leading it back to the refuel or maintenance states, where it may loiter. </p>
+<pre class="fragment">A penalty is applied for each unit of fuel consumed,
+</pre><p> which occurs when a UAV moves between locations or when it is loitering above a communications or surveilllance location. (ie, no penalty when loitering at REFUEL or MAINTENANCE)</p>
+<p>Finally, if any UAV has fuel 0, the episode terminates with large penalty.</p>
+<p>-----------------&mdash;FORMULATION--------------------&mdash; </p>
+<pre class="fragment">State vector consists of 4 blocks of states,
+</pre><p> each corresponding to a property of the UAVs [locations, fuel quantities, actuator statuses, sensor statuses] So for example, state [1,2,9,3,1,0,1,1] &ndash;&gt; [1,2] | [9,3] | [1,0] | [1,1] &ndash;&gt; 2 UAVs: UAV1 in location 1, with 9 fuel units remaining, and sensor + actuator with status 1 (functioning). UAV 2 in location 2, 3 fuel units remaining, actuator with status 0 and sensor with status 1.</p>
 <p>Location transitions, sensor and actuator failures, and fuel consumption are stochastic.</p>
-<p>In the current visualization, the 'actuator' which enables communication is represented by a wedge above each UAV circle; a failed actuator is red, functional is black. Similarly, the 'sensor' which enables surveillance is represented by a wedge in front of the UAV circle, with similar coloring.</p>
+<p>-----------------&mdash;VISUALIZATION--------------------&mdash; In the current visualization, the 'actuator' which enables communication is represented by a wedge above each UAV circle; a failed actuator is red, functional is black. Similarly, the 'sensor' which enables surveillance is represented by a wedge in front of the UAV circle, with similar coloring.</p>
 <p>If each comms location has at least 1 UAV able to perform communications, lines are drawn connecting the surveillance location through each comms location back to base. If at least 1 vehicle is actively performing surveillance, this line is black; Else If there are no vehicles performing surveillance, this line is red. Else if there is no available comms link, no line is drawn. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->

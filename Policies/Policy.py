@@ -5,13 +5,14 @@
 from Tools import *
 from Representations import *
 
-## The \c %Policy class controls the  
+## The Policy determines the action that an \ref Agents.Agent.Agent "Agent" will take given its \ref Representations.Representation.Representation "Representation".
 # 
-# \c %Policy provides the basic framework for Agents to interact with Policies and for
-# Policies to interact with Representations.
-# All new policy implimentations should inherit from \c %Policy.
+# The Agent learns about the \ref Domains.Domain.Domain "Domain" as the two interact. Each step, the Agent passes information about its current state and information
+# revelent to that state to the %Policy. The %Policy uses this information to decide what action the Agent should perform next. \n
 #
-# A policy determines the action that an Agent will take given its representaion.
+# The \c %Policy class is a superclass that provides the basic framework for all policiess. It provides the methods and attributes
+# that allow child classes to interact with the \c Agent and \c Represemtatopm classes within the RL-Python library. \n
+# All new policty implimentations should inherit from \c %Policy.
 
 class Policy(object):
 	## Link to the representation

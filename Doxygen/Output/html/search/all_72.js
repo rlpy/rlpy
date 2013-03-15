@@ -2,6 +2,7 @@ var searchData=
 [
   ['randomseeds',['randomSeeds',['../class_experiments_1_1_experiment_1_1_experiment.html#a3714978c3a03676a8d4a0e3651e64690',1,'Experiments::Experiment::Experiment']]],
   ['rbf',['RBF',['../class_representations_1_1_r_b_f_1_1_r_b_f.html',1,'Representations::RBF']]],
+  ['rccar',['RCCar',['../class_domains_1_1_r_c_car_1_1_r_c_car.html',1,'Domains::RCCar']]],
   ['re_5flspi',['RE_LSPI',['../class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html',1,'Agents::RE_LSPI']]],
   ['re_5flspi_5fsarsa',['RE_LSPI_SARSA',['../class_agents_1_1_r_e___l_s_p_i___s_a_r_s_a_1_1_r_e___l_s_p_i___s_a_r_s_a.html',1,'Agents::RE_LSPI_SARSA']]],
   ['remainingfeatures',['remainingFeatures',['../class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#a19a6f599a0f83fbaba2dc83bbdd020c8',1,'Representations::OMPTD::OMPTD']]],

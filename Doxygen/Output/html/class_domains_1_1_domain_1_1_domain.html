@@ -135,7 +135,8 @@ Inheritance diagram for Domain:</div>
 <area href="class_domains_1_1_pit_maze_1_1_pit_maze.html" title="Developed by Alborz Geramiard Oct 25th 2012 at MIT #." alt="PitMaze" shape="rect" coords="136,616,262,640"/>
 <area href="class_domains_1_1_p_s_t_1_1_p_s_t.html" alt="PST" shape="rect" coords="136,672,262,696"/>
 <area href="class_domains_1_1_p_s_t_orig_1_1_p_s_t.html" alt="PST" shape="rect" coords="136,728,262,752"/>
-<area href="class_domains_1_1_system_administrator_1_1_system_administrator.html" title="Robert H Klein, Alborz Geramifard Nov 21st 2012 at MIT #." alt="SystemAdministrator" shape="rect" coords="136,784,262,808"/>
+<area href="class_domains_1_1_r_c_car_1_1_r_c_car.html" title="Developed by Alborz Geramifard March 14th 2013 at MIT #." alt="RCCar" shape="rect" coords="136,784,262,808"/>
+<area href="class_domains_1_1_system_administrator_1_1_system_administrator.html" title="Robert H Klein, Alborz Geramifard Nov 21st 2012 at MIT #." alt="SystemAdministrator" shape="rect" coords="136,840,262,864"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -177,9 +178,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad162f49e1cdfe593dcb27da90d627b5b"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#ad162f49e1cdfe593dcb27da90d627b5b">extendDiscreteDimensions</a></td></tr>
 <tr class="memdesc:ad162f49e1cdfe593dcb27da90d627b5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">What is this? What does it do?.  <a href="#ad162f49e1cdfe593dcb27da90d627b5b">More...</a><br/></td></tr>
 <tr class="separator:ad162f49e1cdfe593dcb27da90d627b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26ebefda7296a4f674826d958f5945b9"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a26ebefda7296a4f674826d958f5945b9">MCExpectedStep</a></td></tr>
-<tr class="memdesc:a26ebefda7296a4f674826d958f5945b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample a set number of next states and rewards from the domain.  <a href="#a26ebefda7296a4f674826d958f5945b9">More...</a><br/></td></tr>
-<tr class="separator:a26ebefda7296a4f674826d958f5945b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8f69890c9127078f0143fb52909bcd0"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#ad8f69890c9127078f0143fb52909bcd0">sampleStep</a></td></tr>
+<tr class="memdesc:ad8f69890c9127078f0143fb52909bcd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample a set number of next states and rewards from the domain.  <a href="#ad8f69890c9127078f0143fb52909bcd0">More...</a><br/></td></tr>
+<tr class="separator:ad8f69890c9127078f0143fb52909bcd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f89b89c9134c685832ef7d7881868a4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a3f89b89c9134c685832ef7d7881868a4">s0uniform</a></td></tr>
 <tr class="memdesc:a3f89b89c9134c685832ef7d7881868a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a state sampled uniformely from the state space.  <a href="#a3f89b89c9134c685832ef7d7881868a4">More...</a><br/></td></tr>
 <tr class="separator:a3f89b89c9134c685832ef7d7881868a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -201,9 +202,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a4eaaa983748749630db18721497583e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4eaaa983748749630db18721497583e0"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>states_num</b></td></tr>
 <tr class="separator:a4eaaa983748749630db18721497583e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf810658aca075b3ad991ca73916bbcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf810658aca075b3ad991ca73916bbcb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>episodeCap</b></td></tr>
-<tr class="separator:adf810658aca075b3ad991ca73916bbcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d445e83600c41b68d98d6ca708fbc6e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d445e83600c41b68d98d6ca708fbc6e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>discrete_statespace_limits</b></td></tr>
 <tr class="separator:a9d445e83600c41b68d98d6ca708fbc6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -214,7 +212,7 @@ Public Attributes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a77727228881c1f85b729249f644bb14d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77727228881c1f85b729249f644bb14d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a77727228881c1f85b729249f644bb14d">gamma</a> = .80</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a77727228881c1f85b729249f644bb14d">gamma</a> = .9</td></tr>
 <tr class="memdesc:a77727228881c1f85b729249f644bb14d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The discount factor by which rewards are reduced. <br/></td></tr>
 <tr class="separator:a77727228881c1f85b729249f644bb14d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82e7e2c0056f1b4f189507d8454a475c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82e7e2c0056f1b4f189507d8454a475c"></a>
@@ -239,10 +237,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#aea64b584b6bec2de752d46fab49c9b85">continuous_dims</a> = []</td></tr>
 <tr class="memdesc:aea64b584b6bec2de752d46fab49c9b85"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of the continuous dimensions of the domain. <br/></td></tr>
 <tr class="separator:aea64b584b6bec2de752d46fab49c9b85"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5c69d7d44548bdbc649b1f221be7581"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac5c69d7d44548bdbc649b1f221be7581"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#ac5c69d7d44548bdbc649b1f221be7581">episodeCap</a> = 0</td></tr>
-<tr class="memdesc:ac5c69d7d44548bdbc649b1f221be7581"><td class="mdescLeft">&#160;</td><td class="mdescRight">The cap used to bound each episode (return to state 0 after) <br/></td></tr>
-<tr class="separator:ac5c69d7d44548bdbc649b1f221be7581"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf810658aca075b3ad991ca73916bbcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf810658aca075b3ad991ca73916bbcb"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#adf810658aca075b3ad991ca73916bbcb">episodeCap</a> = None</td></tr>
+<tr class="memdesc:adf810658aca075b3ad991ca73916bbcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">The cap used to bound each episode (return to state 0 after) <br/></td></tr>
+<tr class="separator:adf810658aca075b3ad991ca73916bbcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b14e488ae28d98d262453f3e9cd6e4d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a0b14e488ae28d98d262453f3e9cd6e4d">logger</a> = None</td></tr>
 <tr class="memdesc:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple object that records the prints in a file. <br/></td></tr>
@@ -396,56 +394,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 </div>
 </div>
-<a class="anchor" id="a26ebefda7296a4f674826d958f5945b9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def MCExpectedStep </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>no_samples</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sample a set number of next states and rewards from the domain. </p>
-<p>See code <a class="el" href="_domain.html#Domain_MCExpectedStep">Here</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">s</td><td>What is this? What does it do? </td></tr>
-    <tr><td class="paramname">a</td><td>What is this? What does it do? </td></tr>
-    <tr><td class="paramname">no_samples</td><td>The number of next states and rewards to be sampled. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>[S,A] =&gt; S is an array of next states, A is an array of rewards for those states </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="a397b5376f221417d22f8c40a1a7070eb"></a>
 <div class="memitem">
 <div class="memproto">
@@ -531,6 +479,56 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <p>Returns a state sampled uniformely from the state space. </p>
 <p>See code <a class="el" href="_domain.html#Domain_s0uniform">Here</a>. </p>
 <dl class="section return"><dt>Returns</dt><dd>The state </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ad8f69890c9127078f0143fb52909bcd0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def sampleStep </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>no_samples</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sample a set number of next states and rewards from the domain. </p>
+<p>See code <a class="el" href="class_domains_1_1_domain_1_1_domain.html#ad8f69890c9127078f0143fb52909bcd0">Here</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>What is this? What does it do? </td></tr>
+    <tr><td class="paramname">a</td><td>What is this? What does it do? </td></tr>
+    <tr><td class="paramname">no_samples</td><td>The number of next states and rewards to be sampled. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>[S,A] =&gt; S is an array of next states, A is an array of rewards for those states </dd></dl>
 
 </div>
 </div>
