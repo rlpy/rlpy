@@ -1,5 +1,11 @@
 var NAVTREEINDEX3 =
 {
+"class_domains_1_1_pendulum_1_1_pendulum.html#a7e540281f54d93ffe83da848edf6387f":[3,0,1,11,0,38],
+"class_domains_1_1_pendulum_1_1_pendulum.html#a83167280d9faeb83853d923f63383927":[3,0,1,11,0,42],
+"class_domains_1_1_pendulum_1_1_pendulum.html#a85c9a6647898bbc94de1619f3318ba8f":[3,0,1,11,0,57],
+"class_domains_1_1_pendulum_1_1_pendulum.html#a85d897846bb64fe74a8ce36c2365e3b8":[3,0,1,11,0,23],
+"class_domains_1_1_pendulum_1_1_pendulum.html#a883f55ec47a569b08fa2518309e6ee32":[3,0,1,11,0,5],
+"class_domains_1_1_pendulum_1_1_pendulum.html#a88864a03cc54ef240d25cc4244a69f78":[3,0,1,11,0,26],
 "class_domains_1_1_pendulum_1_1_pendulum.html#a8d5615623538d70045a6403eb5893150":[3,0,1,11,0,63],
 "class_domains_1_1_pendulum_1_1_pendulum.html#a9462796adb3a9d3e865a12e7e46dc129":[3,0,1,11,0,17],
 "class_domains_1_1_pendulum_1_1_pendulum.html#a95621a488f4bd554b9031ae0416b098d":[3,0,1,11,0,6],
@@ -37,9 +43,9 @@ var NAVTREEINDEX3 =
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a8fb251ada5e57b8dbc17322882c6bb59":[3,0,1,12,0,3],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#aa2b19db4b006a61f8cf68c213e5f969a":[3,0,1,12,0,12],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#aacfe2bba9d1a0972de56112fcbb2ccfc":[3,0,1,12,0,5],
-"class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#ac5c69d7d44548bdbc649b1f221be7581":[3,0,1,12,0,8],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#ac775ee34451fdfa742b318538164070e":[3,0,1,12,0,0],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#ad9e3fd811c6982ce7c12c1940592e45c":[3,0,1,12,0,15],
+"class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#adf810658aca075b3ad991ca73916bbcb":[3,0,1,12,0,8],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#ae37d94df4167f546fe64f88b55e7a7e0":[3,0,1,12,0,16],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#ae8937534fa7cdd64071324f29058f930":[3,0,1,12,0,2],
 "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#af214a9fb4dc1f34661a29fe7a83b9865":[3,0,1,12,0,4],
@@ -243,11 +249,5 @@ var NAVTREEINDEX3 =
 "class_policies_1_1e_greedy_1_1e_greedy.html#a81ae64cb4c85980e82e0a9c061cfc26d":[3,0,3,0,0,5],
 "class_policies_1_1e_greedy_1_1e_greedy.html#aa571c8173dde514963e974e8c1da1945":[3,0,3,0,0,4],
 "class_policies_1_1e_greedy_1_1e_greedy.html#ac775ee34451fdfa742b318538164070e":[3,0,3,0,0,0],
-"class_policies_1_1e_greedy_1_1e_greedy.html#afe9e56fe163053f213118463eba8dcdd":[3,0,3,0,0,2],
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html":[3,0,4,0,0],
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a0514aabed091ee5e2f35766eb01eced6":[3,0,4,0,0,8],
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a13a97a165f2de301739dbddd4d2e976a":[3,0,4,0,0,11],
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a3ec34ce120f84eebc42cd14304241c60":[3,0,4,0,0,6],
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a63e6fad47da6b21e91876d1fd11e9d91":[3,0,4,0,0,14],
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a8c253159fc65687f7a26cd30389525e3":[3,0,4,0,0,1]
+"class_policies_1_1e_greedy_1_1e_greedy.html#afe9e56fe163053f213118463eba8dcdd":[3,0,3,0,0,2]
 };

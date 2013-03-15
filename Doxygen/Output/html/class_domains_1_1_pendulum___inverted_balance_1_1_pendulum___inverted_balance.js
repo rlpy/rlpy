@@ -8,7 +8,7 @@ var class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balanc
     [ "ANGULAR_RATE_LIMITS", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#aacfe2bba9d1a0972de56112fcbb2ccfc", null ],
     [ "AVAIL_FORCE", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a28ee469db2ed643c3ca9d236cc19feef", null ],
     [ "dt", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a778e38aa889751afffa2dea6b803e67a", null ],
-    [ "episodeCap", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#ac5c69d7d44548bdbc649b1f221be7581", null ],
+    [ "episodeCap", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#adf810658aca075b3ad991ca73916bbcb", null ],
     [ "FELL_REWARD", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a616e4961d726c88d0cf7a98fac075966", null ],
     [ "force_noise_max", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a62f14df71de1f6e9a6758048945c118c", null ],
     [ "gamma", "class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a77727228881c1f85b729249f644bb14d", null ],

@@ -6,7 +6,7 @@
 Welcome to RL-Python!\n
 If you receive errors during any of the steps below, please refer to install.txt for solutions to common issues. \n \n
 
-Begin by opening IShouldRun.py.  You will notice a series of parameters at the top of the file, followed by assignments to each of the functional components shown in [[ref: The Big Picture]]: domain, representation, policy, agent, and experiment.\n
+Begin by opening IShouldRun.py.  You will notice a series of parameters at the top of the file, followed by assignments to each of the functional components shown in \ref big_pic "The Big Picture": domain, representation, policy, agent, and experiment.\n
 Leave these alone for now; just run the file as-is.  You should see something like the following:
 
 \image html pitMaze_learning.png "PitMaze Domain Visualization (IShouldRun.py)"

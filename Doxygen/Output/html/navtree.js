@@ -3,8 +3,12 @@ var NAVTREE =
   [ "RL-Python", "index.html", [
     [ "The Big Picture", "index.html", null ],
     [ "Code", "_code.html", "_code" ],
-    [ "Main Function", "main_8py.html", [
-      [ "Overview", "main_8py.html#Overview", null ]
+    [ "Getting Started: A 10-15 Minute Introduction", "_i_shouldrun_8py.html", [
+      [ "Run", "_i_shouldrun_8py.html#First", null ],
+      [ "Output", "_i_shouldrun_8py.html#Interpreting", null ],
+      [ "Data", "_i_shouldrun_8py.html#Analyzing", null ],
+      [ "Slightly More Challenging Domain: Inverted Pendulum", "_i_shouldrun_8py.html#A", null ],
+      [ "Conclusion", "_i_shouldrun_8py.html#Conclusion", null ]
     ] ],
     [ "Classes", null, [
       [ "Class List", "annotated.html", "annotated" ],
@@ -22,10 +26,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"class_domains_1_1_blocks_world_1_1_blocks_world.html#af5d4178948650814442c4dc60bf43f68",
-"class_domains_1_1_multi_track_1_1_multi_track.html#a2407e8ef1957e60bb4c6f815855ba152",
-"class_domains_1_1_pendulum_1_1_pendulum.html#a8d5615623538d70045a6403eb5893150",
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a906d4ae59e02d539932640fddb3f7783"
+"class_domains_1_1_blocks_world_1_1_blocks_world.html#ac634998198079b40a68865f8cdf4a84d",
+"class_domains_1_1_multi_track_1_1_loc_struct.html#ac775ee34451fdfa742b318538164070e",
+"class_domains_1_1_pendulum_1_1_pendulum.html#a7e540281f54d93ffe83da848edf6387f",
+"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
