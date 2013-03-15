@@ -79,18 +79,22 @@ class PitMaze(Domain):
             DX = DY = ones(X.shape)
             C = zeros(X.shape); C[0,0] = 1 # Making sure C has both 0 and 1             
             self.upArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')#, headwidth=1.5, headlength = 2.5, headaxislength = 2.25)
+            self.upArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)+self.SHIFT
             Y   = arange(self.COLS)
             X,Y = pl.meshgrid(X,Y) 
             self.downArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
+            self.downArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)
             Y   = arange(self.COLS)-self.SHIFT
             X,Y = pl.meshgrid(X,Y) 
             self.leftArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
+            self.leftArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)
             Y   = arange(self.COLS)+self.SHIFT
             X,Y = pl.meshgrid(X,Y) 
             self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
+            self.rightArrows_fig.set_clim(vmin=0,vmax=1)
             f = pl.gcf()
 #            f.set_size_inches(10,20)
             pl.show()
@@ -110,7 +114,7 @@ class PitMaze(Domain):
                     bestA    = representation.bestActions(s)
                     V[r,c]   = max(Qs)
                     Mask[c,r,As]             = False
-                    arrowColors[c,r,bestA]   = 1.
+                    arrowColors[c,r,bestA]   = 1
                     #print r,c, bestA
                     #print Qs
                     
@@ -127,7 +131,6 @@ class PitMaze(Domain):
         DX = ma.masked_array(DX, mask=Mask[:,:,0])
         DY = ma.masked_array(DY, mask=Mask[:,:,0])
         C  = ma.masked_array(arrowColors[:,:,0], mask=Mask[:,:,0])
-        print DY.T,DX.T,C.T
         self.upArrows_fig.set_UVC(DY,DX,C)
         #Show Policy Down Arrows
         DX = -arrowSize[:,:,1]

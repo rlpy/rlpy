@@ -4,8 +4,8 @@ Dimensions:	2
 |S|:		20
 |A|:		4
 |S|x|A|:		80
-Episode Cap:	40
-Gamma:		0.8
+Episode Cap:	1000
+Gamma:		0.9
 Dims:		4x5
 Movement Noise:	30%
 ============================================================
@@ -18,13 +18,15 @@ boyan_N0:	100.0
 Alpha_0:		0.10
 Decay mode:		boyan
 ============================================================
+Job ID:			1
+Solver:			ValueIteration
+Max Time:		inf(s)
+Convergence Threshold:	0.000
+Log Interval:		500 (Backups)
+Show Learning:		1
+============================================================
 Experiment:		OnlineExperiment
 Output:			Results/Temp/PitMaze-Tabular-10000/1-results.txt
 Learning Steps:		10000
-Performance Checks:	1
+Performance Checks:	10
 Log Intervals:		1(s)
-1393: E[0:00:01]-R[0:00:06]: Return=+0.99, Steps=11, Features = 20
-2818: E[0:00:02]-R[0:00:05]: Return=+0.98, Steps=23, Features = 20
-4211: E[0:00:03]-R[0:00:04]: Return=+0.99, Steps=15, Features = 20
-5626: E[0:00:04]-R[0:00:03]: Return=+0.99, Steps=15, Features = 20
-7038: E[0:00:05]-R[0:00:02]: Return=+0.98, Steps=19, Features = 20

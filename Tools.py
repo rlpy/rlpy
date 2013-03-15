@@ -209,7 +209,7 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['.6','k'], 'Actions')
+    mycmap = colors.ListedColormap(['.5','k'], 'Actions')
     cm.register_cmap(cmap=mycmap)
     mycmap = make_colormap({0:'r', 1: 'w', 2.:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
@@ -935,8 +935,8 @@ if module_exists('matplotlib'):
     mpl.rcParams['axes.labelsize'] = 15.
     mpl.rcParams['xtick.labelsize'] = 15.
     mpl.rcParams['ytick.labelsize'] = 15.
-    
     rc('text',usetex=False)
+
     # Try to use latex fonts, if available
     #rc('text',usetex=True)
         
