@@ -905,26 +905,27 @@ class PriorityQueueWithNovelty():
             
 # Setup the latdex path
 if sys.platform == 'darwin':
-    os.environ['PATH'] += ':' + TEXPATH
+    #os.environ['PATH'] += ':' + TEXPATH
     os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
     os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 if sys.platform == 'win32':
     print os.environ['PATH']
-    os.environ['PATH'] += ';' + TEXPATH
+    #os.environ['PATH'] += ';' + TEXPATH
 
-def isLatexConfigured():
-    try:
-        pl.subplot(1,3,2)
-        pl.xlabel(r"$\theta$")
-        pl.show()
-        pl.draw()
-        pl.close()
-        print "Latex tested and functioning"
-    except:
-        print "Matplotlib failed to plot, likely due to a Latex problem."
-        print "Check that your TEXPATH is set correctly in config.py,"
-        print "and that latex is installed correctly."
-        print "\nDisabling latex functionality, using matplotlib native fonts."
+#def isLatexConfigured():
+#    return False
+#    try:
+#        pl.subplot(1,3,2)
+#        pl.xlabel(r"$\theta$")
+#        pl.show()
+#        pl.draw()
+#        pl.close()
+#        print "Latex tested and functioning"
+#    except:
+#        print "Matplotlib failed to plot, likely due to a Latex problem."
+#        print "Check that your TEXPATH is set correctly in config.py,"
+#        print "and that latex is installed correctly."
+#        print "\nDisabling latex functionality, using matplotlib native fonts."
 
 if module_exists('matplotlib'):
     createColorMaps()
@@ -935,10 +936,9 @@ if module_exists('matplotlib'):
     mpl.rcParams['xtick.labelsize'] = 15.
     mpl.rcParams['ytick.labelsize'] = 15.
     
+    rc('text',usetex=False)
     # Try to use latex fonts, if available
-    rc('text',usetex=True)
-    if not isLatexConfigured():
-        rc('text',usetex=False)
+    #rc('text',usetex=True)
         
 
         # Add tex directories if they exist
