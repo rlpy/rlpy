@@ -6,6 +6,9 @@
 # Provides the option to write a requirements file based on results.
 #
 # Set the dictionary filtered_terms in main() below.
+#
+# Note that condor_status -constraint provides similar functionality
+# but doesn't work for some attributes like 'name', 'OpSys', etc.
 
 import os, sys, time, re, string
 from Script_Tools import *
@@ -95,6 +98,7 @@ def filterCondorMachines(allMachines, filteredTerms):
 
 if __name__ == '__main__':
     CONDOR_STATUS_FILE = 'condorStatusFile.txt'
+    REQ_FILE = 'Requirements.txt'
     FILTERED_TERMS = {'OpSys':'LINUX'} # See CondorMachine class for valid filter terms
     # Must manually specify status below since condor automatically truncates otherwise.
     COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
@@ -114,7 +118,13 @@ if __name__ == '__main__':
     print ''
     print 'total number of machines: %d' % len(allMachines)
     print 'number of machines matching properties: %d' % len(filteredMachines)
-    print 'Valid machines'
-    #for machine in filteredMachines:
-    #    print machine
+    print ''
+    print 'Now logging requirements file'
+    requirementsFile= FileHelper(REQ_FILE)
+    requirementsFile.open('w') # clear the contents
+    for machine in filteredMachines:
+        requirementsFile.log('Machine == \"%s\" && \\' % machine.Name)
+    badMachinesFile.close()
+    requirementsFile.close()
+    sys.exit(0)
     
