@@ -903,11 +903,6 @@ class PriorityQueueWithNovelty():
             print "Priotiry = %d, Novelty = %d, Obj = %s" % (p,c,str(x))
             
             
-#For condor
-os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-os.environ['MPLCONFIGDIR'] = os.environ['HOME']
-print os.environ['MPLCONFIGDIR']
-
 # Setup the latdex path
 #if sys.platform == 'darwin':
     #os.environ['PATH'] += ':' + TEXPATH
@@ -944,11 +939,10 @@ if module_exists('matplotlib'):
     #rc('text',usetex=True)
         
 
-        # Add tex directories if they exist
-#    if os.path.exists('/usr/texbin'):
-#        os.environ['PATH'] += ':/usr/texbin'
-#    if os.path.exists('/usr/share/texmf'):
-#        os.environ['PATH'] += ':/usr/share/texmf'
+#For condor
+os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+os.environ['MPLCONFIGDIR'] = os.environ['HOME']
+print os.environ['MPLCONFIGDIR']
 
 #Colors
 PURPLE  = '\033[95m'
