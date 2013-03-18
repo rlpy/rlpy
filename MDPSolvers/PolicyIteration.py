@@ -28,7 +28,6 @@ class PolicyIteration(MDPSolver):
         policy_improvement_iteration = 0
         while policyChanged and deltaT(self.start_time) < self.planning_time:
             policy_improvement_iteration += 1
-            self.logger.log("Policy Iteration #%d:" % policy_improvement_iteration)
 
             # Policy Evaluation
             converged = False
@@ -45,7 +44,7 @@ class PolicyIteration(MDPSolver):
                 #check for convergence
                 theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
                 converged = theta_change < self.convergence_threshold        
-                self.logger.log('#%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
+                self.logger.log('PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
                 if self.show: self.domain.show(s,policy.pi(s),self.representation)
             
             #Policy Improvement:
@@ -59,7 +58,7 @@ class PolicyIteration(MDPSolver):
                 
             policy.representation.theta = self.representation.theta.copy() # This will cause the policy to be copied over
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
-            self.logger.log('#%d [%s]: BellmanUpdates=%d, Policy Change =%d, Return = %0.4f' % (policy_improvement_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, policyChanged, performance_return))
+            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, Policy Change =%d, Return = %0.4f' % (policy_improvement_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, policyChanged, performance_return))
 
             # store stats
             self.result.append([bellmanUpdates, # index = 0 

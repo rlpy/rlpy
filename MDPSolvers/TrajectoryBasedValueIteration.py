@@ -60,7 +60,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
                 converged_trajectories = 0
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             converged = converged_trajectories >= self.MIN_CONVERGED_TRAJECTORIES      
-            self.logger.log('#%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f, Return = %0.4f' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, max_Bellman_Error, performance_return))
+            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f, Return = %0.4f' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, max_Bellman_Error, performance_return))
             if self.show:  self.domain.show(s,a,self.representation)
             
             # store stats
