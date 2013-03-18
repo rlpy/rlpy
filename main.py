@@ -72,7 +72,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
-    iFDDOnlineThreshold         = 200 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
+    iFDDOnlineThreshold         = 100 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
     BatchDiscoveryThreshold     = 0 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
@@ -87,7 +87,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Boyan works better in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = .1
-    boyan_N0                = 100
+    boyan_N0                = 1000
     LAMBDA                  = 0
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
