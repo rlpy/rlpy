@@ -1,7 +1,24 @@
 Learning Steps:		10000
 Performance Checks:	10
 Log Intervals:		1(s)
-1000: E[0:00:01]-R[0:00:10]: Return=-1.00, Steps=1000, Features = 100
-1000 >>> E[0:01:26]-R[0:12:53]: Return=-1.00, Steps=1000, Features = 100
-2000: E[0:01:27]-R[0:05:48]: Return=-1.00, Steps=1000, Features = 100
-2000 >>> E[0:02:06]-R[0:08:25]: Return=+0.54, Steps=458, Features = 100
+1000: E[0:00:01]-R[0:00:09]: Return=-1.00, Steps=1000, Features = 100
+1000 >>> E[0:00:01]-R[0:00:13]: Return=-1.00, Steps=1000, Features = 100
+2000: E[0:00:03]-R[0:00:10]: Return=-1.00, Steps=1000, Features = 100
+2000 >>> E[0:00:03]-R[0:00:11]: Return=+0.54, Steps=458, Features = 100
+3000 >>> E[0:00:04]-R[0:00:10]: Return=-1.00, Steps=1000, Features = 100
+3982: E[0:00:05]-R[0:00:08]: Return=+0.46, Steps=540, Features = 100
+4000 >>> E[0:00:05]-R[0:00:08]: Return=+0.48, Steps=524, Features = 100
+5000 >>> E[0:00:07]-R[0:00:07]: Return=+0.74, Steps=260, Features = 100
+5974: E[0:00:08]-R[0:00:05]: Return=+0.81, Steps=194, Features = 100
+6000 >>> E[0:00:08]-R[0:00:05]: Return=-1.00, Steps=1000, Features = 100
+6960: E[0:00:09]-R[0:00:04]: Return=+0.87, Steps=130, Features = 100
+7000 >>> E[0:00:10]-R[0:00:04]: Return=-1.00, Steps=1000, Features = 100
+7950: E[0:00:11]-R[0:00:03]: Return=+0.96, Steps=42, Features = 100
+8000 >>> E[0:00:11]-R[0:00:03]: Return=+0.68, Steps=316, Features = 100
+8968: E[0:00:12]-R[0:00:01]: Return=+0.62, Steps=380, Features = 100
+9000 >>> E[0:00:12]-R[0:00:01]: Return=+0.92, Steps=84, Features = 100
+9968: E[0:00:13]-R[0:00:00]: Return=+0.97, Steps=28, Features = 100
+10000 >>> E[0:00:13]-R[0:00:00]: Return=+0.28, Steps=716, Features = 100
+============================================================
+Took 0:00:13
+Results	=> Results/Temp/PitMaze-Tabular-10000/1-results.txt
