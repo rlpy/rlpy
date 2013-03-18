@@ -68,6 +68,7 @@ machineAttributes = vars(CondorMachine())
 machineAttributes = machineAttributes.keys()
 CondorMachine.NUM_ATTRIBUTES = len(machineAttributes) # Initialize static variable
 CondorMachine.SORTED_ATTRIBUTES = machineAttributes.sort() # Initialize static variable
+print CondorMachine.SORTED_ATTRIBUTES
 del machineAttributes # finished initializing static variables, this is now an unused global variable, delete.
 
 def generateCondorCommand():
