@@ -6,10 +6,10 @@ Tasks:
 - Improve installation process; automate setting of platform-dependent environment variables, either during installation or at runtime from Tools.py
 - Remove SHOW_FINAL_PLOT from the main and all places that it will affect (scripts, multipleRuns, etc.)
 - Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
+- Tools.py Arrangement
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
 - Fix the issue with legend not being shown during the run
 - Config File For Experiments
-- Tools.py Arrangement
 - Optimization
 - Feature Names
 - bestAction in matrix form (how about breaking ties randomly)
