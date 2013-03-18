@@ -69,8 +69,9 @@ machineAttributes = vars(CondorMachine())
 print machineAttributes
 machineAttributes = machineAttributes.keys()
 print machineAttributes
+machineAttributes.sort()
 CondorMachine.NUM_ATTRIBUTES = len(machineAttributes) # Initialize static variable
-CondorMachine.SORTED_ATTRIBUTES = machineAttributes.sort() # Initialize static variable
+CondorMachine.SORTED_ATTRIBUTES = machineAttributes # Initialize static variable
 print CondorMachine.SORTED_ATTRIBUTES
 del machineAttributes # finished initializing static variables, this is now an unused global variable, delete.
 
