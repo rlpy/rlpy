@@ -155,7 +155,8 @@ if __name__ == '__main__':
     uniqueLines = getUniqueLines(allLines)
     # Obtain list of all 
     allMachines = getCondorMachines(uniqueLines)
-    print allMachines[0], allMachines[1], allMachines[2]
+    for machine in allMachines
+        print machine
     filteredMachines = filterCondorMachines(allMachines, FILTERED_TERMS)
 
     print 'Now logging requirements file'
