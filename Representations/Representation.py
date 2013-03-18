@@ -1,3 +1,4 @@
+TEST
 ## \file Representation.py
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
