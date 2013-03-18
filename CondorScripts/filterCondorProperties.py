@@ -150,13 +150,12 @@ if __name__ == '__main__':
     # Get all lines from file, remove 'slot' preceding their names, remove duplicates
     allLines = getAllLines(CONDOR_STATUS_FILE)
     allLines = removeNonMachineLines(allLines)
-    
+    print allLines
     allLines = removeSlotFromNames(allLines)
+    print allLines
     uniqueLines = getUniqueLines(allLines)
     # Obtain list of all 
     allMachines = getCondorMachines(uniqueLines)
-    for machine in allMachines:
-        print machine
     filteredMachines = filterCondorMachines(allMachines, FILTERED_TERMS)
 
     print 'Now logging requirements file'
