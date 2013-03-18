@@ -1,14 +1,23 @@
 #!/usr/bin/python
 #
-# Queries condor for status of all nodes, tokenizes each one, and allows
+# Queries condor for specified attributes of all nodes, tokenizes each one, and allows
 # for filtering by certain properties e.g. operating system.
 #
 # Provides the option to write a requirements file based on results.
 #
-# Set the dictionary filtered_terms in main() below.
+# #### INSTRUCTIONS ####
 #
-# Note that condor_status -constraint provides similar functionality
-# but doesn't work for some attributes like 'name', 'OpSys', etc.
+# Choose which attributes to output by adding them to CondorMachine below.
+# Choose which attributes to filter by adding them too the dictionary filtered_terms in main() below.
+# Note that in order to filter by some property, it must appear in the attributes
+# of CondorMachine
+#
+# #######################
+#
+# Aside: condor_status -constraint provides similar functionality to script,
+# but doesn't work for some attributes like 'Name', 'OpSys', etc.
+#
+
 
 import os, sys, time, re, string
 from Script_Tools import *
@@ -27,8 +36,11 @@ class CondorMachine(object):
     Memory      = None
     KFlops      = None
 #    ActvtyTime  = None
+
+    NUM_ATTRIBUTES = None # assigned after class definition
+    SORTED_ATTRIBUTES = None # assigned after class definition, sorted list of attributes
     
-    def __init__(self, name, opsys, arch, state, activity, loadavg, memory, kflops):
+    def __init__(self, name=None, opsys=None, arch=None, state=None, activity=None, loadavg=None, memory=None, kflops=None):
         self.Name        = name
         self.OpSys       = opsys
         self.Arch        = arch
@@ -52,6 +64,19 @@ class CondorMachine(object):
     def __str__(self):
         return self.Name
         #return string.join([getattr(self,attr) for attr in dir(self)])
+machineAttributes = vars(CondorMachine()) 
+machineAttributes = machineAttributes.keys()
+CondorMachine.NUM_ATTRIBUTES = len(machineAttributes) # Initialize static variable
+CondorMachine.SORTED_ATTRIBUTES = machineAttributes.sort() # Initialize static variable
+del machineAttributes # finished initializing static variables, this is now an unused global variable, delete.
+
+def generateCondorCommand():
+    COMMAND = 'condor_status'
+    for attr in CondorMachine.SORTED_ATTRIBUTES:
+        COMMAND = COMMAND + ' -format "%s "' + attr
+    COMMAND = COMMAND + ' -format "\n" ArbitraryString' # If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
+    #COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "%s " KFlops -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
+    
     
 # Takes list of strings (lines of file) and only returns those which appear
 # to be lines corresponding to status of a single condor machine
@@ -61,12 +86,13 @@ def removeNonMachineLines(allLines):
 # Returns true if this line corresponds to a condor status line, false otherwise
 def isMachineLine(line):
     tokenizedLine = string.split(line)
-    if(len(tokenizedLine) != 8):
+    if(len(tokenizedLine) != CondorMachine.NUM_ATTRIBUTES):
         print 'this is not a machine line: %s' % line
-        return False # Expect 8 attributes
-    elif(tokenizedLine[0] == 'Name' and tokenizedLine[1] == 'OpSys'):
-        print 'this is a header line %s' % line
-        return False # This is the header
+        return False # Expect NUM_ATTRIBUTES attributes
+    # Below elif not needed with new '-format' specification for condor_status
+#    elif(tokenizedLine[0] == 'Name' and tokenizedLine[1] == 'OpSys'):
+#        print 'this is a header line %s' % line
+#        return False # This is the header
     return True # Line appears to be machine status
 
 # Takes list of strings of the condor status format 
@@ -81,16 +107,22 @@ def removeSlotFromNames(allLines):
             allLines[ind] = slot_string[0]
     return allLines
 
-def getCondorMachines(uniqueLines):
+# Requires that attributes on each line be sorted alphabetically, 
+# since CondorMachine parameters are assigned under that assumption.
+def getCondorMachines(sortedLines):
     allMachines = []
-    for line in uniqueLines:
+    for line in sortedLines:
         tL = string.split(line) # tL = tokenized Line
-        if(len(tL) != 8):
+        if(len(tL) != CondorMachine.NUM_ATTRIBUTES):
             print 'Error in filterCondorProperties.py: the following line '
-            print 'does not have the expected 8-token format:'
+            print 'does not have the expected %d-token format:' % CondorMachine.NUM_ATTRIBUTES
             print tL
             sys.exit(1)
-        newMachine = CondorMachine(tL[0], tL[1], tL[2], tL[3], tL[4], tL[5], tL[6], tL[7])
+        # We assume that each line is sorted alphabetically by attribute, so we can match
+        # each attribute to its parameter automatically:
+        machineAttrAssignments = dict(zip(CondorMachine.SORTED_ATTRIBUTES, tL))
+        # machineAttrAssignments is dictionary containing attr:value (eg 'Name':'cocsi.csail.mit.edu')
+        newMachine = CondorMachine(**machineAttrAssignments)
         allMachines.append(newMachine)
     return allMachines
 
@@ -102,8 +134,10 @@ if __name__ == '__main__':
     CONDOR_STATUS_FILE = 'condorStatusFile.txt'
     REQ_FILE = 'Requirements.txt'
     FILTERED_TERMS = {'OpSys':'LINUX', 'Arch':'X86_64', 'KFlops':'1647069'} # See CondorMachine class for valid filter terms
-    # Must manually specify status below since condor automatically truncates otherwise.
-    COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "%s " KFlops -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
+    # Must specify status attributes in command below since condor automatically truncates otherwise.
+    # We generate this command automatically, with ATTRIBUTES IN ALPHABETICAL ORDER
+    # as required by later code.
+    COMMAND = generateCondorCommand()
     
     # Output condor status to file
     os.system(string.join([COMMAND,' > ',CONDOR_STATUS_FILE]));
