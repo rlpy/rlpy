@@ -158,7 +158,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # If agent is defined run the agent. Otherwise run the MDP Solver:
     if 'agent' in locals().keys():
         experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
-        experiment.run()
+        experiment.runz()
         experiment.save()
     else:
         MDPsolver.solve()

@@ -1,4 +1,3 @@
-TEST
 ## \file Representation.py
 ######################################################
 # \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
@@ -455,26 +454,34 @@ class Representation(object):
 	## Returns the state action value, Q(s,a), by performing one step look-ahead on the domain.
 	# An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998.
 	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
+	# If policy is passed (used in the policy evaluation), it is used to generate the action for the next state. Otherwise the best action is selected.
 	# \ref Representation_Q_oneStepLookAhead "Here".
 	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
 	# @param s The given state
 	# @param a The given action
 	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
+	# @param policy The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead. If not set the best action will be selected.
 	# @ return \b Q: The state-action value.
 	
 	# [Q_oneStepLookAhead code]
-	def Q_oneStepLookAhead(self,s,a, ns_samples):  
+	def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
 		gamma 	= self.domain.gamma 
 		if hasFunction(self.domain,'expectedStep'):
 			p,r,ns,t	= self.domain.expectedStep(s,a)
 			Q	 	= 0
 			for j in arange(len(p)):
-				Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
+				if policy == None:
+					Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
+				else:
+					Q += p[j]*(r[j] + gamma*self.Q(ns[j,:],policy.pi(ns[j,:])))
 			Q = Q[0]
 		else:
 			next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
-			Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
-		return Q	
+			if policy == None:
+				Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
+			else:
+				Q = mean([rewards[i] + gamma*self.Q(next_states[i,:],policy.pi(next_states[i,:])) for i in arange(ns_samples)])
+		return Q			
 	# [Q_oneStepLookAhead code]
 	
 	
@@ -485,14 +492,15 @@ class Representation(object):
 	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
 	# @param s The given state
 	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
+	# @param policy The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead.
 	# @return [Qs, actions] \n
 	# \b Qs: an array of Q(s,a), the values of each action. \n
 	# \b actions: the corresponding array of action numbers
 	
 	# [Qs_oneStepLookAhead code]
-	def Qs_oneStepLookAhead(self,s, ns_samples):
+	def Qs_oneStepLookAhead(self,s, ns_samples, policy = None):
 		actions = self.domain.possibleActions(s)
-		Qs 		= array([self.Q_oneStepLookAhead(s, a, ns_samples) for a in actions]) 
+		Qs 		= array([self.Q_oneStepLookAhead(s, a, ns_samples, policy) for a in actions]) 
 		return Qs, actions
 	# [Qs_oneStepLookAhead code]
 	
@@ -512,6 +520,3 @@ class Representation(object):
 		a_ind   		= argmax(Qs)
 		return Qs[a_ind],actions[a_ind]		 
 	# [V_oneStepLookAhead code]	
-			
-			
-			
