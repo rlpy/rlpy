@@ -48,8 +48,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
     #MAZE                = '/Domains/PitmazeMaps/2x3.txt'
-    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
-    #MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
+    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/1x3_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x2_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x3_1A_1I.txt'
