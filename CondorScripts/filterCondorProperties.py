@@ -66,13 +66,10 @@ class CondorMachine(object):
         return self.Name
         #return string.join([getattr(self,attr) for attr in dir(self)])
 machineAttributes = vars(CondorMachine()) 
-print machineAttributes
 machineAttributes = machineAttributes.keys()
-print machineAttributes
 machineAttributes.sort()
 CondorMachine.NUM_ATTRIBUTES = len(machineAttributes) # Initialize static variable
 CondorMachine.SORTED_ATTRIBUTES = machineAttributes # Initialize static variable
-print CondorMachine.SORTED_ATTRIBUTES
 del machineAttributes # finished initializing static variables, this is now an unused global variable, delete.
 
 def generateCondorCommand():
@@ -81,7 +78,7 @@ def generateCondorCommand():
         COMMAND = COMMAND + ' -format "%s "' + attr
     COMMAND = COMMAND + ' -format "\n" ArbitraryString' # If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
     #COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "%s " KFlops -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
-    
+    return COMMAND
     
 # Takes list of strings (lines of file) and only returns those which appear
 # to be lines corresponding to status of a single condor machine
