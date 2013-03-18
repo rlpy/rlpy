@@ -41,15 +41,15 @@ class CondorMachine(object):
     NUM_ATTRIBUTES = None # assigned after class definition
     SORTED_ATTRIBUTES = None # assigned after class definition, sorted list of attributes
     
-    def __init__(self, name=None, opsys=None, arch=None, state=None, activity=None, loadavg=None, memory=None, kflops=None):
-        self.Name        = name
-        self.OpSys       = opsys
-        self.Arch        = arch
-        self.State       = state
-        self.Activity    = activity
-        self.LoadAvg     = loadavg
-        self.Memory      = memory
-        self.KFlops      = kflops
+    def __init__(self, Name=None, OpSys=None, Arch=None, State=None, Activity=None, LoadAvg=None, Memory=None, KFlops=None):
+        self.Name        = Name
+        self.OpSys       = OpSys
+        self.Arch        = Arch
+        self.State       = State
+        self.Activity    = Activity
+        self.LoadAvg     = LoadAvg
+        self.Memory      = Memory
+        self.KFlops      = KFlops
 #        self.ActvtyTime  = actvtytime
     
     def conditionsSatisfied(self, **kwargs):
