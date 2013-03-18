@@ -98,17 +98,19 @@ class FileHelper(object):
 	def line(self):
 		self.log(SEP_LINE)
 
-def getUniqueLines(fileName):
-	myFile = FileHelper(fileName)
-	myFile.open('r') 
-	allLines = []
-	while True:
+def getUniqueLines(allLines):
+	return Set(allLines)	
+
+def getAllLines(fileName):
+    myFile = FileHelper(fileName)
+    myFile.open('r') 
+    allLines = []
+    while True:
             line = myFile.myReadLine()
             if not line: break
             else: allLines.append(line)
-	myFile.close()
-	return Set(allLines)	
-
+    myFile.close()
+    
 def addText(fileName,text, fileOpFlag = 'a'): # default append text
 	myFile = FileHelper(fileName)
 	myFile.open(fileOpFlag)
