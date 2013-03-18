@@ -15,7 +15,7 @@ TOTAL_COLOR     = BLUE
 RESUMING_COLOR  = PURPLE
 
 PARALLEL_SUBDIR     = 'Results/' # Where each jobs are supposed to be stored
-USERNAME            = 'agf'
+USERNAME            = 'rhklein'
 FINALFILE           = 'results.txt'
 GRAPH_DIR           = ' ~/Graphs/FeatureDiscovery/'
 PYTHON_PATH          = ' /usr/bin/python'
@@ -87,7 +87,9 @@ class FileHelper(object):
 		if not line:
 			return None
 		if line.endswith("\n"):
-			line = line[:-1] # Omit the \n
+			if(len(line) > 1):
+				line = line[:-1] # Omit the \n
+			else: return ' ' # This line is ONLY a "\n"
 		return line
 	   	
 	def log(self,str):
@@ -99,7 +101,7 @@ class FileHelper(object):
 		self.log(SEP_LINE)
 
 def getUniqueLines(allLines):
-	return Set(allLines)	
+	return set(allLines)	
 
 def getAllLines(fileName):
     myFile = FileHelper(fileName)
@@ -110,7 +112,8 @@ def getAllLines(fileName):
             if not line: break
             else: allLines.append(line)
     myFile.close()
-    
+    return allLines
+
 def addText(fileName,text, fileOpFlag = 'a'): # default append text
 	myFile = FileHelper(fileName)
 	myFile.open(fileOpFlag)
