@@ -25,9 +25,10 @@ class CondorMachine(object):
     Activity    = None
     LoadAvg     = None
     Memory      = None
+    KFlops      = None
 #    ActvtyTime  = None
     
-    def __init__(self, name, opsys, arch, state, activity, loadavg, memory):
+    def __init__(self, name, opsys, arch, state, activity, loadavg, memory, kflops):
         self.Name        = name
         self.OpSys       = opsys
         self.Arch        = arch
@@ -35,6 +36,7 @@ class CondorMachine(object):
         self.Activity    = activity
         self.LoadAvg     = loadavg
         self.Memory      = memory
+        self.KFlops      = kflops
 #        self.ActvtyTime  = actvtytime
     
     def conditionsSatisfied(self, **kwargs):
@@ -59,9 +61,9 @@ def removeNonMachineLines(allLines):
 # Returns true if this line corresponds to a condor status line, false otherwise
 def isMachineLine(line):
     tokenizedLine = string.split(line)
-    if(len(tokenizedLine) != 7):
+    if(len(tokenizedLine) != 8):
         print 'this is not a machine line: %s' % line
-        return False # Expect 7 attributes
+        return False # Expect 8 attributes
     elif(tokenizedLine[0] == 'Name' and tokenizedLine[1] == 'OpSys'):
         print 'this is a header line %s' % line
         return False # This is the header
@@ -83,12 +85,12 @@ def getCondorMachines(uniqueLines):
     allMachines = []
     for line in uniqueLines:
         tL = string.split(line) # tL = tokenized Line
-        if(len(tL) != 7):
+        if(len(tL) != 8):
             print 'Error in filterCondorProperties.py: the following line '
-            print 'does not have the expected 7-token format:'
+            print 'does not have the expected 8-token format:'
             print tL
             sys.exit(1)
-        newMachine = CondorMachine(tL[0], tL[1], tL[2], tL[3], tL[4], tL[5], tL[6])
+        newMachine = CondorMachine(tL[0], tL[1], tL[2], tL[3], tL[4], tL[5], tL[6], tL[7])
         allMachines.append(newMachine)
     return allMachines
 
@@ -99,9 +101,9 @@ def filterCondorMachines(allMachines, filteredTerms):
 if __name__ == '__main__':
     CONDOR_STATUS_FILE = 'condorStatusFile.txt'
     REQ_FILE = 'Requirements.txt'
-    FILTERED_TERMS = {'OpSys':'LINUX', 'Arch':'X86_64'} # See CondorMachine class for valid filter terms
+    FILTERED_TERMS = {'OpSys':'LINUX', 'Arch':'X86_64', 'KFlops':'1647069'} # See CondorMachine class for valid filter terms
     # Must manually specify status below since condor automatically truncates otherwise.
-    COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
+    COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "%s " KFlops -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
     
     # Output condor status to file
     os.system(string.join([COMMAND,' > ',CONDOR_STATUS_FILE]));
