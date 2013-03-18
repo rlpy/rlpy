@@ -21,6 +21,7 @@
 
 import os, sys, time, re, string
 from Script_Tools import *
+from scipy.constants.constants import mach
 
 # Contains all properties of a Condor Machine listed by condor status.
 # see http://research.cs.wisc.edu/htcondor/manual/v7.6/condor_status.html
@@ -65,7 +66,9 @@ class CondorMachine(object):
         return self.Name
         #return string.join([getattr(self,attr) for attr in dir(self)])
 machineAttributes = vars(CondorMachine()) 
+print machineAttributes
 machineAttributes = machineAttributes.keys()
+print machineAttributes
 CondorMachine.NUM_ATTRIBUTES = len(machineAttributes) # Initialize static variable
 CondorMachine.SORTED_ATTRIBUTES = machineAttributes.sort() # Initialize static variable
 print CondorMachine.SORTED_ATTRIBUTES
