@@ -1,32 +1,7 @@
-============================================================
-Domain:		PitMaze
-Dimensions:	2
-|S|:		20
-|A|:		4
-|S|x|A|:		80
-Episode Cap:	1000
-Gamma:		0.9
-Dims:		4x5
-Movement Noise:	30%
-============================================================
-Representation:		Tabular
-Features per action:	20
-============================================================
-Agent:		SARSA
-Policy:		eGreedy
-boyan_N0:	100.0
-Alpha_0:		0.10
-Decay mode:		boyan
-============================================================
-Job ID:			1
-Solver:			ValueIteration
-Max Time:		inf(s)
-Convergence Threshold:	0.000
-Log Interval:		500 (Backups)
-Show Learning:		1
-============================================================
-Experiment:		OnlineExperiment
-Output:			Results/Temp/PitMaze-Tabular-10000/1-results.txt
 Learning Steps:		10000
 Performance Checks:	10
 Log Intervals:		1(s)
+1000: E[0:00:01]-R[0:00:10]: Return=-1.00, Steps=1000, Features = 100
+1000 >>> E[0:01:26]-R[0:12:53]: Return=-1.00, Steps=1000, Features = 100
+2000: E[0:01:27]-R[0:05:48]: Return=-1.00, Steps=1000, Features = 100
+2000 >>> E[0:02:06]-R[0:08:25]: Return=+0.54, Steps=458, Features = 100

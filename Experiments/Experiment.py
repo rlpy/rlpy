@@ -122,6 +122,10 @@ class Experiment(object):
 	# [printAll code]
 	
 	
+	## Runs the experimental data based on batch or online setting
+    def run(self):
+		abstract
+		
 	## Saves experimental data. See code
 	# \ref Experiment_save "Here".
     

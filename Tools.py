@@ -690,8 +690,11 @@ def isOnCluster():
 def rootMeanSquareError(X):
     return sqrt(mean(X**2))
 class Merger(object):
+    #CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
     PE_AXES         = ['Iterations','Features','Error','Time(s)']
+    #MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Iterations', 'Discounted Return', 'Iteration Time']
+    MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Iterations', 'Discounted Return']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
@@ -703,6 +706,7 @@ class Merger(object):
         self.markersize             = markersize
         self.legend                 = legend
         self.maxSamples             = maxSamples # In case we want to use less than available number of samples
+        self.useLastDataPoint       = False # By default assume all data has the same number of points along the X axis.
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
         if self.hasResults(paths[0]):
@@ -753,6 +757,7 @@ class Merger(object):
     def parseExperiment(self,exp):
         # Parses all the files in form of <number>-results.txt and return
         # two matrices corresponding to mean and std_err
+        # If the number of points along the x axis is not identical across all runs and experiments it returns the last data point for all experiments
         path        = self.path + '/'+exp
         files       = glob.glob('%s/*-results.txt'%path)
         samples_num = len(files)
@@ -767,23 +772,41 @@ class Merger(object):
         matrix      = readMatrixFromFile(files[0])
         rows, cols  = matrix.shape
         if rows == len(self.PE_AXES):
-            self.isPolicyEvaluation = True
+            self.ResultType = 'Policy Evaluation'
             self.AXES = self.PE_AXES
-        else:
-            self.isPolicyEvaluation = False
+        elif rows == len(self.CONTROL_AXES):
+            self.ResultType = 'RL-Control'
             self.AXES = self.CONTROL_AXES
-        samples     = zeros((rows,cols,samples_num))
-        for i,f in enumerate(files):
-            if i == samples_num: break
-            M = readMatrixFromFile(files[i])
-            #print M.shape
-            samples[:,:cols,i] = M
+        else:
+            self.ResultType = 'MDPSolver'
+            self.AXES = self.MDPSOLVER_AXES
+            
+        if not self.useLastDataPoint:
+            samples     = zeros((rows,cols,samples_num))
+            for i,f in enumerate(files):
+                if i == samples_num: break
+                M = readMatrixFromFile(files[i])
+                #print M.shape
+                try:
+                    samples[:,:cols,i] = M
+                except:
+                    print "Unmatched number of points along X axis: %d != %d" % (cols,M.shape[1])
+                    print "Switching to last data point mode for all experiments"
+                    self.useLastDataPoint = True
+                    break
+        if self.useLastDataPoint:
+            samples     = zeros((rows,1,samples_num))
+            for i,f in enumerate(files):
+                if i == samples_num: break
+                M = readMatrixFromFile(files[i])
+                samples[:,:,i] = M[:,-1].reshape((-1,1)) # Get the last column of the matrix
+
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def plot(self,Y_axis = None, X_axis = None):
         #Setting default values based on the Policy Evaluation or control
-        if Y_axis == None: Y_axis = 'Error' if self.isPolicyEvaluation else 'Return'
-        if X_axis == None: X_axis = 'Iterations' if self.isPolicyEvaluation else 'Learning Steps'
+        if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
+        if X_axis == None: X_axis = 'Learning Steps' if self.ResultType == 'RL-Control' else 'Iterations'
 
         if not isOnCluster(): self.fig.clear()
         min_ = +inf
