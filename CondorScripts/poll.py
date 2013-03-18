@@ -38,6 +38,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
             #print jobids
             logs = []
             for jobid in jobids:
+                print idir+'/%d-results.txt' % jobid
                 if os.path.exists(idir+'/%d-results.txt' % jobid):                        
                     completed = completed + 1;
                 else:
