@@ -155,7 +155,7 @@ if __name__ == '__main__':
     uniqueLines = getUniqueLines(allLines)
     # Obtain list of all 
     allMachines = getCondorMachines(uniqueLines)
-    for machine in allMachines
+    for machine in allMachines:
         print machine
     filteredMachines = filterCondorMachines(allMachines, FILTERED_TERMS)
 
