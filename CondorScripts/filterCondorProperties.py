@@ -20,18 +20,18 @@ class CondorMachine(object):
     Arch        = None
     State       = None
     Activity    = None
-    LoadAv      = None
-    Mem         = None
+    LoadAvg     = None
+    Memory      = None
 #    ActvtyTime  = None
     
-    def __init__(self, name, opsys, arch, state, activity, loadav, mem):
+    def __init__(self, name, opsys, arch, state, activity, loadavg, memory):
         self.Name        = name
         self.OpSys       = opsys
         self.Arch        = arch
         self.State       = state
         self.Activity    = activity
-        self.LoadAv      = loadav
-        self.Mem         = mem
+        self.LoadAvg     = loadavg
+        self.Memory      = memory
 #        self.ActvtyTime  = actvtytime
     
     def conditionsSatisfied(self, **kwargs):
@@ -96,7 +96,7 @@ def filterCondorMachines(allMachines, filteredTerms):
 if __name__ == '__main__':
     CONDOR_STATUS_FILE = 'condorStatusFile.txt'
     FILTERED_TERMS = {'OpSys':'LINUX'} # See CondorMachine class for valid filter terms
-    COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAv -format "%s " Mem -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
+    COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
     
     # Output condor status to file
     os.system(string.join([COMMAND,' > ',CONDOR_STATUS_FILE]));
