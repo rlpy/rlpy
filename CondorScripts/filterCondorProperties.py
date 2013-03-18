@@ -75,6 +75,7 @@ del machineAttributes # finished initializing static variables, this is now an u
 def generateCondorCommand():
     COMMAND = 'condor_status'
     for attr in CondorMachine.SORTED_ATTRIBUTES:
+        print COMMAND
         COMMAND = COMMAND + ' -format "%s "' + attr
     COMMAND = COMMAND + ' -format "\n" ArbitraryString' # If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
     #COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "%s " KFlops -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
@@ -142,6 +143,7 @@ if __name__ == '__main__':
     COMMAND = generateCondorCommand()
     
     # Output condor status to file
+    print COMMAND
     os.system(string.join([COMMAND,' > ',CONDOR_STATUS_FILE]));
     
     # Get all lines from file, remove 'slot' preceding their names, remove duplicates
