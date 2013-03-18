@@ -34,6 +34,7 @@ class MDPSolver(object):
         random.seed(self.mainSeed)
         self.randomSeeds = alborzrandint(1,self.mainSeed,self.maxRuns,1)
         random.seed(self.randomSeeds[self.id-1,0])
+        self.logger.setOutput("%s/%d-out.txt" % (self.project_path, self.id))
         if self.logger:
             self.logger.line()
             self.logger.log("Job ID:\t\t\t%d" % self.id)
