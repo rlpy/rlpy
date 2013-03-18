@@ -19,6 +19,10 @@ import platform
 import pdb
 import os
 
+#For condor use
+os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+os.environ['MPLCONFIGDIR'] = os.environ['HOME']
+
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
     from matplotlib import mpl,rc,colors
@@ -938,12 +942,6 @@ if module_exists('matplotlib'):
     # Try to use latex fonts, if available
     #rc('text',usetex=True)
         
-
-#For condor
-os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-os.environ['MPLCONFIGDIR'] = os.environ['HOME']
-print os.environ['MPLCONFIGDIR']
-
 #Colors
 PURPLE  = '\033[95m'
 BLUE    = '\033[94m'
