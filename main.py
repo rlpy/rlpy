@@ -87,7 +87,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Boyan works better in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = .1
-    boyan_N0                = 1000
+    boyan_N0                = 100
     LAMBDA                  = 0
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
