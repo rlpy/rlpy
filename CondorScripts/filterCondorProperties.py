@@ -99,7 +99,7 @@ def filterCondorMachines(allMachines, filteredTerms):
 if __name__ == '__main__':
     CONDOR_STATUS_FILE = 'condorStatusFile.txt'
     REQ_FILE = 'Requirements.txt'
-    FILTERED_TERMS = {'OpSys':'LINUX'} # See CondorMachine class for valid filter terms
+    FILTERED_TERMS = {'OpSys':'LINUX', 'Arch':'X86_64'} # See CondorMachine class for valid filter terms
     # Must manually specify status below since condor automatically truncates otherwise.
     COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given.
     
@@ -115,15 +115,17 @@ if __name__ == '__main__':
     allMachines = getCondorMachines(uniqueLines)
     filteredMachines = filterCondorMachines(allMachines, FILTERED_TERMS)
 
-    print ''
-    print 'total number of machines: %d' % len(allMachines)
-    print 'number of machines matching properties: %d' % len(filteredMachines)
-    print ''
     print 'Now logging requirements file'
     requirementsFile= FileHelper(REQ_FILE)
     requirementsFile.open('w') # clear the contents
     for machine in filteredMachines:
-        requirementsFile.log('Machine == \"%s\" && \\' % machine.Name)
+        requirementsFile.log('Machine == \"%s\" || \\' % machine.Name)
     requirementsFile.close()
+
+    print ''
+    print 'total number of machines: %d' % len(allMachines)
+    print 'number of machines matching properties: %d' % len(filteredMachines)
+    print ''
+
     sys.exit(0)
     
