@@ -75,7 +75,6 @@ del machineAttributes # finished initializing static variables, this is now an u
 def generateCondorCommand():
     COMMAND = 'condor_status'
     for attr in CondorMachine.SORTED_ATTRIBUTES:
-        print COMMAND
         COMMAND = COMMAND + ' -format "%s " ' + attr
     COMMAND = COMMAND + ' -format "\n" ArbitraryString' # If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
     #COMMAND = 'condor_status -format "%s " Name -format "%s " OpSys -format "%s " Arch -format "%s " State -format "%s " Activity -format "%s " LoadAvg -format "%s " Memory -format "%s " KFlops -format "\n" ArbitraryString'# If no '%' is specified, then string is printed regardless of the field name, thus "ArbitraryString" fieldname is given. 
@@ -103,11 +102,14 @@ def isMachineLine(line):
 # And removes anything before the '@' symbol
 def removeSlotFromNames(allLines):
     for ind,line in enumerate(allLines):
-        slot_string = string.split(line, '@', 1) # Split on the '@' in at most 1 place
-        if(len(slot_string) > 1):
-            allLines[ind] = slot_string[1] # Element 1 has @ portion removed
-        else: # There was no @ symbol, ie no 'slots' on this machine, just use full name
-            allLines[ind] = slot_string[0]
+        #slot_string = string.split(line, '@', 1) # Split on the '@' in at most 1 place
+        #slot_string = string.split(line)
+        
+        #if(len(slot_string) > 1):
+        #    allLines[ind] = slot_string[1] # Element 1 has @ portion removed
+        #else: # There was no @ symbol, ie no 'slots' on this machine, just use full name
+        #    allLines[ind] = slot_string[0]
+        re.sub('slot.*@', '',line) # Looks for any instances of the text 'slot' and deletes up to the @ symbol.
     return allLines
 
 # Requires that attributes on each line be sorted alphabetically, 
@@ -149,6 +151,7 @@ if __name__ == '__main__':
     # Get all lines from file, remove 'slot' preceding their names, remove duplicates
     allLines = getAllLines(CONDOR_STATUS_FILE)
     allLines = removeNonMachineLines(allLines)
+    
     allLines = removeSlotFromNames(allLines)
     uniqueLines = getUniqueLines(allLines)
     # Obtain list of all 
