@@ -74,7 +74,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             policy.representation.theta = self.representation.theta.copy()
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             self.logger.line()
-            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.3f' % (PE_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, delta_theta, performance_return))
+            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.3f' % (PI_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, delta_theta, performance_return))
             self.logger.line()
             if self.show:  self.domain.show(s,a,self.representation)
             
