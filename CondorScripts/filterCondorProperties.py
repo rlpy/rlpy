@@ -109,7 +109,7 @@ def removeSlotFromNames(allLines):
         #    allLines[ind] = slot_string[1] # Element 1 has @ portion removed
         #else: # There was no @ symbol, ie no 'slots' on this machine, just use full name
         #    allLines[ind] = slot_string[0]
-        re.sub('slot.*@', '',line) # Looks for any instances of the text 'slot' and deletes up to the @ symbol.
+        allLines[ind] = re.sub('slot.*@', '',line) # Looks for any instances of the text 'slot' and deletes up to the @ symbol.
     return allLines
 
 # Requires that attributes on each line be sorted alphabetically, 
