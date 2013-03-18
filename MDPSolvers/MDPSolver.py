@@ -89,5 +89,5 @@ class MDPSolver(object):
         return eps_return, eps_length, eps_term, eps_discounted_return   
     def saveStats(self):
         checkNCreateDirectory(self.project_path+'/')
-        savetxt('%s/%d-result.txt' % (self.project_path,self.id),self.result, fmt='%.18e', delimiter='\t')
+        savetxt('%s/%d-results.txt' % (self.project_path,self.id),self.result, fmt='%.18e', delimiter='\t')
                 
