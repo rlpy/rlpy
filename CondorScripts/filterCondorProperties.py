@@ -145,7 +145,6 @@ if __name__ == '__main__':
     COMMAND = generateCondorCommand()
     
     # Output condor status to file
-    print COMMAND
     os.system(string.join([COMMAND,' > ',CONDOR_STATUS_FILE]));
     
     # Get all lines from file, remove 'slot' preceding their names, remove duplicates
@@ -156,6 +155,7 @@ if __name__ == '__main__':
     uniqueLines = getUniqueLines(allLines)
     # Obtain list of all 
     allMachines = getCondorMachines(uniqueLines)
+    print allMachines
     filteredMachines = filterCondorMachines(allMachines, FILTERED_TERMS)
 
     print 'Now logging requirements file'
