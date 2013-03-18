@@ -27,7 +27,6 @@ class PolicyIteration(MDPSolver):
         
         policy_improvement_iteration = 0
         while policyChanged and deltaT(self.start_time) < self.planning_time:
-            policy_improvement_iteration += 1
 
             # Policy Evaluation
             converged = False
@@ -48,6 +47,7 @@ class PolicyIteration(MDPSolver):
                 if self.show: self.domain.show(s,policy.pi(s),self.representation)
             
             #Policy Improvement:
+            policy_improvement_iteration += 1
             new_policy = zeros(no_of_states)
             policyChanged = 0
             for i in arange(no_of_states):

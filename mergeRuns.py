@@ -45,7 +45,8 @@ maxSamples          = inf   # Maximum number of samples to be loaded from the di
  
 merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples)
 pl.ioff()
-#print mergedData.means[0].shape
+# FOR Control
+#######################
 #merger.plot('Return')
 #merger.plot('Return','Features')
 #merger.plot('Return','Time(s)')
@@ -63,8 +64,13 @@ pl.ioff()
 #merger.plot("Error",'Iterations')
 #merger.plot("Error",'Features')
 #merger.plot("Error",'Time(s)')
+# FOR MDP Solvers
+#######################
+#merger.plot('Return')
+#merger.plot('Return','Features')
+#merger.plot('Return','Time(s)')
  
-merger.plot() #Works both with control and PE plotting the most common output
+merger.plot() #Plot the default Y-Axis and X-Axis 
 
 if not isOnCluster():
     pl.show()

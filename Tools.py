@@ -806,7 +806,13 @@ class Merger(object):
     def plot(self,Y_axis = None, X_axis = None):
         #Setting default values based on the Policy Evaluation or control
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
-        if X_axis == None: X_axis = 'Learning Steps' if self.ResultType == 'RL-Control' else 'Iterations'
+        if X_axis == None:
+            if self.ResultType == 'RL-Control':
+                X_axis = 'Learning Steps'
+            elif self.ResultType == 'MDPSolver':
+                X_axis = 'Time(s)'
+            else:
+                X_axis = 'Iterations'
 
         if not isOnCluster(): self.fig.clear()
         min_ = +inf
