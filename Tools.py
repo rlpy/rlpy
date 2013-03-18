@@ -906,6 +906,7 @@ class PriorityQueueWithNovelty():
 #For condor
 os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
 os.environ['MPLCONFIGDIR'] = os.environ['HOME']
+print os.environ['MPLCONFIGDIR']
 
 # Setup the latdex path
 #if sys.platform == 'darwin':
