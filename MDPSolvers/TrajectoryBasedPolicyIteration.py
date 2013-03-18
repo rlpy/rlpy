@@ -68,6 +68,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 self.logger.log('PE #%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f' % (PE_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, max_Bellman_Error))
             
             # Policy Improvement (Updating the representation of the value function will automatically improve the policy
+            PI_iteration += 1
             delta_theta = linalg.norm(policy.representation.theta-self.representation.theta)
             converged = delta_theta < self.convergence_threshold 
             policy.representation.theta = self.representation.theta.copy()
