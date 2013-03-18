@@ -38,7 +38,7 @@ class Experiment(object):
     show_all = 0            
 	## Determines whether the domain and the value function are shown during the performance runs
     show_performance = 0    
-	## The Figure window generated to show the results /b WHAT IS THIS? WHAT DOES IT DO?
+	## The Figure window generated to show the results
     result_fig = None       
 	## An array that stores all generated. Size is stats_num-by-performanceChecks.
     result  = None          
@@ -81,7 +81,7 @@ class Experiment(object):
 	# [init code]
 	
 	
-	## Performs a run. /b IS THIS A RUN OF THE EXPERIMENT OR IS IT JUST A PERFORMANCE RUN. ALSO IS RUN AN ABTRACT METHOD?  See code
+	## Performs a run. WHAT IS THIS? IS THIS A RUN OF THE EXPERIMENT OR IS IT JUST A PERFORMANCE RUN. ALSO IS RUN AN ABTRACT METHOD?  See code
 	# \ref Experiment_performanceRun "Here".
 	
 	# [performanceRun code]

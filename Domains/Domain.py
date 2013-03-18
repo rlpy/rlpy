@@ -91,7 +91,7 @@ class Domain(object):
 	# @param a
 	# The action being performed
 	# @param representation
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# The representation to show
 	
 	# [show code]
     def show(self,s,a, representation):
@@ -117,7 +117,7 @@ class Domain(object):
     # of a value gridded value function and policy. It is thus really only possible for 1 or 2-state domains. See code
 	# \ref Domain_showLearning "Here".
 	# @param representation
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# The representation to show
 	
 	# [showLearning code]
     def showLearning(self,representation):
@@ -166,13 +166,13 @@ class Domain(object):
 	
 	
 	## \b ABSTRACT \b METHOD: Each row of each output corresponds to one possibility.
-    # e.g. s,a -> r[i], ns[i] with probability p[i]. I AM CONFUSED HOW THIS WORKS OR WHAT IT IS DOING. See code
+    # e.g. s,a -> r[i], ns[i] with probability p[i]. WHAT IS THIS? I AM CONFUSED HOW THIS WORKS OR WHAT IT IS DOING. See code
 	# \ref Domain_exStep "Here".
 	# @param s
-	# WHAT IS THIS? WHAT DOES IT DO?
+	# The given state
 	# @param a 
-	# WHAT IS THIS? WHAT DOES IT DO?
-    # @return r, ns, p. WHAT ARE THESE EXACTLY?
+	# The given Action
+    # @return r, ns, p. WHAT IS THIS? WHAT ARE THESE EXACTLY?
 	
 	# [exStep code]
     def expectedStep(self,s,a):
@@ -225,7 +225,7 @@ class Domain(object):
 	# [printAll code]
 	
 	
-	## What is this? What does it do?.  See code
+	## WHAT IS THIS? WHAT DOES IT DO?.  See code
 	# \ref Domain_extendDiscreteDimensions "Here".
 	
 	# [extendDiscreteDimensions code]
@@ -244,9 +244,9 @@ class Domain(object):
 	## Sample a set number of next states and rewards from the domain. See code
 	# \ref sampleStep "Here". 
 	# @param s
-	# What is this? What does it do?
+	# The given state
 	# @param a 
-	# What is this? What does it do?
+	# The given action
 	# @param no_samples 
 	# The number of next states and rewards to be sampled.
 	# @return 
@@ -297,9 +297,9 @@ class Domain(object):
 	#This function is used for cases when state vector has elements outside of its limits. See code
 	# \ref Domain_saturateState "Here". 
 	# @param s
-	# What is this? What does it do?
+	# WHAT IS THIS? WHAT DOES IT DO?
 	# @return
-	# What is this? What does it do?
+	# WHAT IS THIS? WHAT DOES IT DO?
 	
 	# [saturateState code]
     def saturateState(self,s):

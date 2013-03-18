@@ -9,6 +9,7 @@ import csv
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
+# \cond DEV
 
 ########################################################
 # Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT #
@@ -420,6 +421,7 @@ class PST(Domain):
     def isTerminal(self,s):
         if self.numCrashed > 0: return True
         else: return False
+# \endcond
 if __name__ == '__main__':
         random.seed(0)
         p = PST(NUM_UAV = 3, motionNoise = 0);

@@ -5,13 +5,13 @@ from Tools import *
 from Domain import *
 
 #######################################################################
-# Developed by Alborz Geramifard March 14th 2013 at MIT #
+# \author Developed by Alborz Geramifard March 14th 2013 at MIT
 #######################################################################
-# This is a simple simulation of Remote Controlled Car in a room with no obstacle
-# Based on http://planning.cs.uiuc.edu/node658.html. We refer to it as webpage.
+# This is a simple simulation of Remote Controlled Car in a room with no obstacle \n \n
+# Based on http://planning.cs.uiuc.edu/node658.html. We refer to it as webpage. \n \n
 # State: x,y (center point on the line connecting the back wheels), speed (S on the webpage), heading (theta on the webpage)
-# heading is the angle with respect to the body frame. positive values => Turning right. Negative values => Turning left
-# Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right]. The second argument is phi based on the webpage 
+# heading is the angle with respect to the body frame. positive values => Turning right. Negative values => Turning left \n
+# Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right]. The second argument is phi based on the webpage  \n
 # Reward: -1 per step, 100 at goal.
 
 class RCCar(Domain):

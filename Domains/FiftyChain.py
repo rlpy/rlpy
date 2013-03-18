@@ -4,31 +4,43 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 ######################################################
-# Alborz Geramifard, Robert H. Klein at MIT, Dec. 21, 2012
+# \author Alborz Geramifard, Robert H. Klein at MIT, Dec. 21, 2012
 ######################################################
-# 50-state chain described by Lagoudakis & Parr, 2003
-# s0 <-> s1 <-> ... <-> s50  
-# actions are left [0] and right [1]
-# Reward of +1 at states 10 and 41 (indices 0 and 9)
+# 50-state chain described by Lagoudakis & Parr, 2003 \n
+# s0 <-> s1 <-> ... <-> s50   \n
+# Actions are left [0] and right [1]
+# Reward of +1 at states 10 and 41 (indices 0 and 9) \n
 # Actions succeed with probability .9, otherwise execute opposite action.
 ######################################################
 class FiftyChain(Domain):
     GOAL_REWARD = 1
-    GOAL_STATES = [9,40] # Indices of states with rewards
-    episodeCap  = 50            # Set by the domain = min(100,rows*cols)
-    MAX_RETURN  = 2.5             # Used for graphical normalization
-    MIN_RETURN  = 0             # Used for graphical normalization
-    SHIFT       = .01            # Used for graphical shifting of arrows
-    RADIUS      = .05            # Used for graphical radius of states
-    circles     = None          # Stores the graphical pathes for states so that we can later change their colors 
-    chainSize   = 50             # Number of states in the chain
-    Y           = 1             # Y values used for drawing circles
+	## Indices of states with rewards
+    GOAL_STATES = [9,40] 
+	## Set by the domain = min(100,rows*cols)
+    episodeCap  = 50            
+	## Used for graphical normalization
+    MAX_RETURN  = 2.5
+	## Used for graphical normalization
+    MIN_RETURN  = 0  	
+	## Used for graphical shifting of arrows
+    SHIFT       = .01            
+	## Used for graphical radius of states
+    RADIUS      = .05
+	## Stores the graphical pathes for states so that we can later change their colors 
+    circles     = None
+	## Number of states in the chain
+    chainSize   = 50
+	## Y values used for drawing circles
+    Y           = 1             
     actions_num = 2
-    p_action_failure = 0.1      # Probability of taking the other (unselected) action
+	## Probability of taking the other (unselected) action
+    p_action_failure = 0.1      
     V_star      = [0.25424059953210576, 0.32237043339365301, 0.41732244995544071, 0.53798770416976416, 0.69467264588670452, 0.91307612341516964, 1.1996067857970858, 1.5914978718669359, 2.1011316163482885, 2.7509878207260079, 2.2007902565808002, 1.7606322052646419, 1.4085057642117096, 1.1268046113693631, 0.90144368909548567, 0.72115495127639073, 0.5769239610211111, 0.46153916881688833, 0.36923133505350991, 0.29538506804280829, 0.23630805443424513, 0.18904644354739669, 0.15123715483791522, 0.12098972387033219, 0.096791779096267572, 0.077433423277011526, 0.064110827579671889, 0.080577201155275072, 0.10271844729124571, 0.13354008685155827, 0.17749076168535796, 0.22641620289304287, 0.29916005826456937, 0.39326998437016564, 0.52325275246999614, 0.67438770340963006, 0.90293435616054674, 1.1704408409975584, 1.5213965403184493, 2.0462009513290296, 2.7423074964894685, 2.1938459971915725, 1.7550767977532584, 1.404061438202612, 1.1232491505620894, 0.89859932044966939, 0.71887945635973116, 0.57510356508778659, 0.46008285207022837, 0.36806628165617972]          # Array of optimal values at each state
     
-    optimalPolicy = None        # The optimal policy for this domain
-    using_optimal_policy = False # Should the domain only allow optimal actions
+	# The optimal policy for this domain
+    optimalPolicy = None        
+	# Should the domain only allow optimal actions
+    using_optimal_policy = False 
     
     #Plotting values
     domain_fig          = None

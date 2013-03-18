@@ -6,43 +6,54 @@ from Domain import *
 from Pendulum import *
 
 #####################################################################
-# Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
+# \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
 #####################################################################
-# (See 1Link implementation by Lagoudakis & Parr, 2003)
+# ---OBJECTIVE--- \n
+# Reward is 1 within the goal region, 0 elsewhere. \n
+# There is no terminal condition aside from episodeCap. \n
 #
-# ---OBJECTIVE---
-# Reward is 1 within the goal region, 0 elsewhere.
-# There is no terminal condition aside from episodeCap.
-#
-# Pendulum starts straight down, theta = pi
-# (see Pendulum parent class for coordinate definitions).
+# Pendulum starts straight down, theta = pi 
+# (see Pendulum parent class for coordinate definitions). \n
 #
 # The objective is to get and then keep the pendulum in the goal
 # region for as long as possible, with +1 reward for
 # each step in which this condition is met; the expected
 # optimum then is to swing the pendulum vertically and
 # hold it there, collapsing the problem to Pendulum_InvertedBalance
-# but with much tighter bounds on the goal region.
+# but with much tighter bounds on the goal region. \n
+#
+# (See 1Link implementation by Lagoudakis & Parr, 2003)
 #
 #####################################################################
 
-## @author: Robert H. Klein
 class Pendulum_SwingUp(Pendulum):
     
     # Domain constants [temporary, per Lagoudakis & Parr 2003, for InvertedBalance Task]
-    AVAIL_FORCE         = array([-50,0,50]) # Newtons, N - Torque values available as actions
-    MASS_PEND           = 2.0   # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = 8.0   # kilograms, kg - Mass of cart
-    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
-    dt                  = 0.1   # Time between steps
-    force_noise_max     = 10    # Newtons, N - Maximum noise possible, uniformly distributed
-    
-    GOAL_REWARD         = 1             # Reward received on each step the pendulum is in the goal region
-    GOAL_LIMITS         = [-pi/6, pi/6] # Goal region for reward [temporary values]
-    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta
-    ANGULAR_RATE_LIMITS = [-3*pi, 3*pi] # Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
-    episodeCap          = 300          # Max number of steps per trajectory
+	## Newtons, N - Torque values available as actions
+    AVAIL_FORCE         = array([-50,0,50]) 
+	## kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = 2.0   
+	## kilograms, kg - Mass of cart
+    MASS_CART           = 8.0   
+	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = 1.0   
+	## m/s^2 - gravitational constant
+    ACCEL_G             = 9.8   
+	## Time between steps
+    dt                  = 0.1   
+	## Newtons, N - Maximum noise possible, uniformly distributed
+    force_noise_max     = 10    
+	
+	## Reward received on each step the pendulum is in the goal region
+    GOAL_REWARD         = 1             
+	## Goal region for reward [temporary values]
+    GOAL_LIMITS         = [-pi/6, pi/6] 
+	## Limit on theta
+    ANGLE_LIMITS        = [-pi, pi]     
+	## Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
+    ANGULAR_RATE_LIMITS = [-3*pi, 3*pi] 
+	## Max number of steps per trajectory
+    episodeCap          = 300          
     # For Visual Stuff
     MAX_RETURN = episodeCap*GOAL_REWARD
     MIN_RETURN = 0
@@ -51,7 +62,7 @@ class Pendulum_SwingUp(Pendulum):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(Pendulum_SwingUp,self).__init__(logger)  
     def s0(self):    
-        """Returns the initial state: pendulum straight up and unmoving."""
+        #Returns the initial state: pendulum straight up and unmoving.
         return array([pi,0])
     def _getReward(self, s, a):
         """Return the reward earned for this state-action pair.

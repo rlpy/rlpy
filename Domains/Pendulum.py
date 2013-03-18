@@ -8,61 +8,67 @@ from Domain import *
 from scipy import integrate # For integrate.odeint (accurate, slow)
 
 ##########################################################
-# Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012#
+# \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
 ##########################################################
 # This is the parent class for pendulum-type problems with two
 # (continuous) states only, and three discrete possible actions.
 #
-# NOTE: Despite the naming convention in common use
+# \note Despite the naming convention in common use
 # here and in the community, the dynamics of the
 # Pendulum actually correspond to the 4-state system
 # with a pendulum on a cart, with x and xDot states omitted.
 # Thus, actions still take the form of forces and not torques.
 #
-# All dynamics and conventions per Lagoudakis & Parr, 2003
-#
-# State: [theta, thetaDot].
+# State: [theta, thetaDot]. \n
 # Actions: [-50, 0, 50]
 #
 # theta = angular position of pendulum
-# (relative to straight up at 0 rad),and positive clockwise.
+# (relative to straight up at 0 rad), and positive clockwise. \n
 # thetaDot = Angular rate of pendulum
 #
-# Actions take the form of force applied to cart;
+# Actions take the form of force applied to cart; \n
 # [-50, 0, 50] N force are the default available actions.
 # Positive force acts to the right on the cart.
 #
 # Uniformly distributed noise is added with magnitude 10 N.
 #
-######################################################
-
-
-## 
-# NOTE: This domain cannot be instantiated; it is a superclass for the specific domains
+# All dynamics and conventions per Lagoudakis & Parr, 2003
+#
+# \note This domain cannot be instantiated; it is a superclass for the specific domains
 # Pendulum_SwingUp and Pendulum_InvertedBalance.
-# @author Robert H. Klein
+##########################################################
+
 class Pendulum(Domain):
 
     DEBUG               = 0     # Set to non-zero to enable print statements
     
     # Domain constants from children - Pendulum parameters are not standardized
     # (SwingUp and InvertedBalance parameters are different in the literature)
-    AVAIL_FORCE         = None # Newtons, N - Torque values available as actions
-    MASS_PEND           = None # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = None # kilograms, kg - Mass of cart
-    LENGTH              = None # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = None # m/s^2 - gravitational constant
-    dt                  = None # Time between steps
-    force_noise_max     = None # Newtons, N - Maximum noise possible, uniformly distributed
+	## Newtons, N - Torque values available as actions
+    AVAIL_FORCE         = None 
+	## kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = None 
+	## kilograms, kg - Mass of cart
+    MASS_CART           = None 
+	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = None 
+	## m/s^2 - gravitational constant
+    ACCEL_G             = None 
+	## Time between steps
+    dt                  = None 
+	## Newtons, N - Maximum noise possible, uniformly distributed
+    force_noise_max     = None 
     
     ANGLE_LIMITS        = None
     ANGULAR_RATE_LIMITS = None
-    episodeCap          = None  # Max number of steps per trajectory
+	## Max number of steps per trajectory
+    episodeCap          = None  
     
     # Domain constants computed in __init__
-    MOMENT_ARM          = 0 # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
-                            # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
-    _ALPHA_MASS         = 0 # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+	## m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+    MOMENT_ARM          = 0 # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
+	## 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    _ALPHA_MASS         = 0 
     
     # Internal Constants
     tol                     = 10 ** -5 # Tolerance used for pendulum_ode45 integration
@@ -257,7 +263,7 @@ class Pendulum(Domain):
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = append(s, forceAction)
 
-    ###########################################################################
+    #-------------------------------------------------------------------------#
     # There are several ways of integrating the nonlinear dynamics equations. #
     # For consistency with prior results, we include the custom integration   #
     # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
@@ -273,7 +279,7 @@ class Pendulum(Domain):
     #                                                                         #
     # Use of any of these methods is supported by selectively commenting      #
     # sections below.                                                         #
-    ###########################################################################
+    #-------------------------------------------------------------------------#
     
         # Decomment the 3 lines below to use mlab rk4 method.
         ns = rk4(self._dsdt, s_augmented, [0, self.dt])
@@ -296,7 +302,7 @@ class Pendulum(Domain):
         reward                      = self._getReward(ns,a)
         return reward, ns, terminal
    
-    ##
+    #
     # @param s_augmented: {The state at which to compute derivatives, augmented with the current action.
     # Specifically @code (theta,thetaDot,forceAction) @endcode .}
     #
@@ -370,9 +376,8 @@ class Pendulum(Domain):
 #        
 #        return (s_augmented[StateIndex.THETA_DOT], thetaDotDot, 0) # final cell corresponds to action passed in
     
-    ## 
+    ## \note \b CURRENTLY \b NOT \b IN \b USE - scipy.integrate functions preferred. 
     def pendulum_ode45(self, t0, tfinal, y0, tol):
-    ### CURRENTLY NOT IN USE - scipy.integrate functions preferred. ###
     # ODE function from "1Link" inverted pendulum implementation,
     # Lagoudakis & Parr 2003.
     #
@@ -380,7 +385,7 @@ class Pendulum(Domain):
     # final state is outputted.  This improves performance, since
     # the output array does not need to be extended on each timestep.
     # An alternative would be to preallocate and limit the output to a finite size.
-    ###########################################################################
+    #-------------------------------------------------------------------------------
     #
     # ode45_us customized for the pendulum
     #
@@ -466,10 +471,11 @@ class Pendulum(Domain):
     def _getReward(self, s, a):
         # Return the reward earned for this state-action pair
         abstract
-
-## Flexible way to index states in this domain.
+		
+## \cond DEV
+# Flexible way to index states in the Pendulum Domain
 #
-# This class enumerates the different indices used when indexing the state.
+# This class enumerates the different indices used when indexing the state. \n
 # e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
 
 class StateIndex:
@@ -477,3 +483,4 @@ class StateIndex:
     FORCE = 2 # Used by the state augmented with input in dynamics calculations
 
 
+# \endcond

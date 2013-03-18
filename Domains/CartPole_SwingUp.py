@@ -6,12 +6,10 @@ from Domain import *
 from CartPole import *
 
 #####################################################################
-# Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
+# \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
 #####################################################################
-# (See CartPole implementation in the RL Community,
-# http://library.rl-community.org/wiki/CartPole)
 #
-# ---OBJECTIVE---
+# ---OBJECTIVE--- \n
 # Reward is 1 within the goal region, 0 elsewhere.
 # The episode terminates if x leaves its bounds, [-2.4, 2.4]
 #
@@ -26,6 +24,8 @@ from CartPole import *
 # hold it there, collapsing the problem to Pendulum_InvertedBalance
 # but with much tighter bounds on the goal region.
 #
+# (See CartPole implementation in the RL Community,
+# http://library.rl-community.org/wiki/CartPole)
 #####################################################################
 
 class CartPole_SwingUp(CartPole):

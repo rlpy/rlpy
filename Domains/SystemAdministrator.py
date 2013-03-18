@@ -1,4 +1,4 @@
-## TODO
+# TODO
 # Rather than iterating through all nodes and neighbors each time want to display visual,
 # Only update the graph for those nodes which have changed.
 # Doesn't affect performance of domain itself though.
@@ -11,36 +11,33 @@ from Tools import *
 from Domain import *
 
 ##########################################################
-# Robert H Klein, Alborz Geramifard Nov 21st 2012 at MIT #
+# \author Robert H Klein, Alborz Geramifard Nov 21st 2012 at MIT
 ##########################################################
-# Download NetworkX package for visualization.
-# Ubuntu: sudo apt-get install python-networkx
+# Download NetworkX package for visualization. \n
+# Ubuntu: sudo apt-get install python-networkx \n
 #
 # Network Administrator with n computers, at most 1 reboot
-# action allowed per timestep.
-# Penalty -0.75 for taking a reboot action.
-# State is the vector of binary computer statuses:
-# RUNNING = 1 for working computers, BROKEN = 0 otherwise.
-# Example: [1 1 0 1] -> computers 0,1,3 are RUNNING,
+# action allowed per timestep. \n
+# Penalty -0.75 for taking a reboot action. \n
+# State is the vector of binary computer statuses: \n
+# RUNNING = 1 for working computers, BROKEN = 0 otherwise. \n
+# Example: 
+# [1 1 0 1] -> computers 0,1,3 are RUNNING,
 # computer 2 is BROKEN.
 #
 # In visualization, broken computers are colored red,
 # and any links to other computers change from solid to
 # dotted, reflecting the higher probability of failure
-# of those machines.
-########################################################
-
-########################################################
-##########               INPUT                ##########
+# of those machines. \n \n
+# -------------------INPUT-------------------\n
 # Each row is implicitly indexed starting at 0,
-# corresponding to the id of a computer.
+# corresponding to the id of a computer. \n
 # The sequence of numbers (arbitrary order) corresponds
-# to the computers connected to this one.
+# to the computers connected to this one. \n
 # NOTE: The graph is assumed to be bidirectional.
-# You dont have to specify both edges between the nodes!
-# 1,2 on the first line means these edges: (0,1),(1,0),(2,0),(0,2)
+# You dont have to specify both edges between the nodes! \n
+# 1,2 on the first line means these edges: (0,1),(1,0),(2,0),(0,2). \n
 # Each line has to have at least one element
-## @author: Robert H Klein and Alborz Geramifard
 class SystemAdministrator(Domain):
 
     NEIGHBORS       = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
@@ -65,7 +62,7 @@ class SystemAdministrator(Domain):
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2         # Number of values possible for each state, must be hand-coded to match number defined above
             
-    ## Note that you must pass a network map name as well as its format type.
+    # Note that you must pass a network map name as well as its format type.
     # @see SystemAdministrator(Domain)
     def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
         path                    = networkmapname
@@ -93,7 +90,7 @@ class SystemAdministrator(Domain):
     # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
     # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
 	
-	## @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/mapname.txt'
+	# @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/mapname.txt'
 	# @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
     # containing the neighbors of computer node i at index i, and _Edges is a list
     # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
@@ -193,7 +190,7 @@ class SystemAdministrator(Domain):
         possibleActs.append(self.computers_num) # append the no-op action
         return array(possibleActs)
         
-    ## @param neighborsList: each element at index i is a list of nodes connected to the node at i.
+    # @param neighborsList: each element at index i is a list of nodes connected to the node at i.
     # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def setUniqueEdges(self, neighborsList):
         # set Unique Edges of the network (all edges are bidirectional)

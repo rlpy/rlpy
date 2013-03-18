@@ -4,39 +4,43 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 ######################################################
-# Developed by Alborz Geramiard Oct 25th 2012 at MIT #
+# \author Developed by Alborz Geramiard Oct 25th 2012 at MIT
 ######################################################
-#State is x,y, Actions are 4 way directional with fixed noise
-#each grid cell is:
-# 0: empty
-# 1: blocked
-# 2: start
-# 3: goal
-# 4: pit
+# State is x,y, Actions are 4 way directional with fixed noise. \n
+# Each grid cell is: \n
+# 0: empty \n
+# 1: blocked \n
+# 2: start \n
+# 3: goal \n
+# 4: pit \n
 # The task is to reach the goal from the start while avoiding the pits
 ######################################################
 class PitMaze(Domain):
     map = start = goal              = None
-    agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None      # Used for graphics to show the domain
-    ROWS = COLS = 0                 # Number of rows and columns of the map
+	## Used for graphics to show the domain
+    agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None     
+	## Number of rows and columns of the map
+    ROWS = COLS = 0                 
     #Rewards
     GOAL_REWARD = +1
     PIT_REWARD = -1
     STEP_REWARD = -.001
-    episodeCap  = None             # Set by the domain = min(100,rows*cols)
-    NOISE = 0                      # Movement Noise
-    MAX_RETURN  = 1                 # Used for graphical normalization
-    MIN_RETURN  = -1                # Used for graphical normalization
-    SHIFT       = .1                # Used for graphical shifting of arrows
+	## Set by the domain = min(100,rows*cols)
+    episodeCap  = None             
+	## Movement Noise
+    NOISE = 0                      
+	## Used for graphical normalization
+    MAX_RETURN  = 1                 
+	## Used for graphical normalization
+    MIN_RETURN  = -1                
+	## Used for graphical shifting of arrows
+    SHIFT       = .1                
 
     actions_num        = 4
-    #Constants in the map
+    # Constants in the map
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
-    ACTIONS = array([[-1,0], #Up
-               [+1,0], #Down
-               [0,-1], #left
-               [0,+1] #Right
-               ])
+	## Up, Down, Left, Right
+    ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
     def __init__(self,mapname='/PitMazeMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
         self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]

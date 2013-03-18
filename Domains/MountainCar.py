@@ -5,7 +5,7 @@ from Tools import *
 from Domain import *
 
 #######################################################################
-# Developed by Josh Joseph and Alborz Geramifard Nov 15th 2012 at MIT #
+# \author Developed by Josh Joseph and Alborz Geramifard Nov 15th 2012 at MIT
 #######################################################################
 # Mountain Car Domain Based on http://library.rl-community.org/wiki/Mountain_Car_(Java)
 

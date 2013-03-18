@@ -4,25 +4,33 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 ######################################################
-# Developed by Alborz Geramiard Nov 20th 2012 at MIT #
+# \author Developed by Alborz Geramiard Nov 20th 2012 at MIT #
 ######################################################
-# A simple Chain MDP
-# s0 <-> s1 <-> ... <-> sn  
-# actions are left [0] and right [1]
-# The task is to reach sn from s0
-# optimal policy is always to go right
+# A simple Chain MDP \n
+# s0 <-> s1 <-> ... <-> sn \n  
+# Actions are left [0] and right [1] \n
+# The task is to reach sn from s0.
+# Optimal policy is always to go right
 ######################################################
 class ChainMDP(Domain):
     GOAL_REWARD = 0
     STEP_REWARD = -1
-    episodeCap  = 0             # Set by the domain = min(100,rows*cols)
-    MAX_RETURN  = 1             # Used for graphical normalization
-    MIN_RETURN  = 0             # Used for graphical normalization
-    SHIFT       = .3            # Used for graphical shifting of arrows
-    RADIUS      = .5            # Used for graphical radius of states
-    circles     = None          # Stores the graphical pathes for states so that we can later change their colors 
-    chainSize   = 0             # Number of states in the chain
-    Y           = 1             # Y values used for drawing circles
+	## Set by the domain = min(100,rows*cols)
+    episodeCap  = 0             
+	## Used for graphical normalization
+    MAX_RETURN  = 1             
+	## Used for graphical normalization
+    MIN_RETURN  = 0             
+	## Used for graphical shifting of arrows
+    SHIFT       = .3            
+	## Used for graphical radius of states
+    RADIUS      = .5            
+	## Stores the graphical pathes for states so that we can later change their colors 
+    circles     = None          
+	## Number of states in the chain
+    chainSize   = 0             
+	## Y values used for drawing circles
+    Y           = 1             
     actions_num = 2
     #Constants in the map
     def __init__(self, chainSize=2,logger = None):

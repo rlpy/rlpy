@@ -12,41 +12,20 @@ from Tools import *
 from Domain import *
 
 ########################################################
-# Trevor Campbell Mar 7 2013 at MIT #
+# \author Trevor Campbell Mar 7 2013 at MIT
 ########################################################
-# Multiagent Multitarget tracking mission
+# Multiagent Multitarget tracking mission. \n
 # Goal is to try to capture each target
 # (i.e. land on top or beside each target, with
-# capture probability 0.8 and 0.2 respectively).
-# Capturing a target provides a reward of 10.
+# capture probability 0.8 and 0.2 respectively). \n
+# Capturing a target provides a reward of 10. \n
 # Once a target is captured, it is removed from
-# The scenario (there is a binary vector denoting
+# the scenario (there is a binary vector denoting
 # availability of targets in the state)
 
 ########################################################
 
-class LocStruct:
-    def __init__(self, x, y, idx, GRID):
-        if 0 <= idx and idx < GRID*GRID:
-            self.GRID = GRID
-            self.idx = idx
-            self.y = floor(idx/GRID)
-            self.x = idx%GRID
-        elif 0 <= x and 0 <= y and x < GRID and y < GRID :
-            self.GRID = GRID
-            self.x = x
-            self.y = y
-            self.idx = self.y*self.GRID+self.x
-        else:
-            assert(False)
-
-class StateStruct:
-    def __init__(self, agentlocs, targetlocs, targetavail):
-        self.agentlocs  = agentlocs
-        self.targetlocs = targetlocs
-        self.targetavail= targetavail
-
-## @author Trevor Campbell
+# @author Trevor Campbell
 class MultiTrack(Domain):
 
     episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
@@ -162,7 +141,7 @@ class MultiTrack(Domain):
         binvec = ones(self.NUM_TARGETS, dtype='int')
         return self.struct2State(StateStruct(alocs, tlocs, binvec))
 
-    ## @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
+    # @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):
         alocs = [LocStruct(-1, -1, idx, self.GRID) for idx in s[0:self.NUM_AGENTS]]
         tlocs = [LocStruct(-1, -1, idx, self.GRID) for idx in s[self.NUM_AGENTS:self.NUM_AGENTS+self.NUM_TARGETS]]
@@ -232,6 +211,30 @@ class MultiTrack(Domain):
     def isTerminal(self,s):
         ss = self.state2Struct(s)
         return all([True if x == 0 else False for x in ss.targetavail])
+
+## \cond DEV
+class LocStruct:
+    def __init__(self, x, y, idx, GRID):
+        if 0 <= idx and idx < GRID*GRID:
+            self.GRID = GRID
+            self.idx = idx
+            self.y = floor(idx/GRID)
+            self.x = idx%GRID
+        elif 0 <= x and 0 <= y and x < GRID and y < GRID :
+            self.GRID = GRID
+            self.x = x
+            self.y = y
+            self.idx = self.y*self.GRID+self.x
+        else:
+            assert(False)
+
+
+class StateStruct:
+    def __init__(self, agentlocs, targetlocs, targetavail):
+        self.agentlocs  = agentlocs
+        self.targetlocs = targetlocs
+        self.targetavail= targetavail
+# \endcond
 
 if __name__ == '__main__':
         random.seed(0)

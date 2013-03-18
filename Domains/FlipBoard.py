@@ -4,17 +4,17 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 ######################################################
-# Developed by Alborz Geramiard Dec 28th 2012 at MIT #
+# \author Developed by Alborz Geramiard Dec 28th 2012 at MIT
 ######################################################
-# A domain based on the last puzzle of D&R Game stage 5-3
+# A domain based on the last puzzle of D&R Game stage 5-3 \n
 # The goal of the game is to get all elements of a 4x4 board
-# to have value 1.
-# The initial state is the following
-# 1 0 0 0
-# 0 0 0 0 
-# 0 1 0 0 
-# 0 0 1 0 
-# the action is to pick a spot on the board and all elements
+# to have value 1. \n \n
+# The initial state is the following \n
+# 1 0 0 0 \n
+# 0 0 0 0 \n
+# 0 1 0 0 \n
+# 0 0 1 0 \n \n
+# The action is to pick a spot on the board and all elements
 # on the same row and column will flip their values.
 ######################################################
 class FlipBoard(Domain):

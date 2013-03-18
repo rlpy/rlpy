@@ -4,24 +4,28 @@ sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
 from Domain import *
 ######################################################
-# Developed by Alborz Geramiard Nov 12th 2012 at MIT #
+# \author Developed by Alborz Geramiard Nov 12th 2012 at MIT
 ######################################################
-# Blocks world with n blocks. Goal is to make an order list of towers
-# Transitions are stochastic.
-# Reward 1 at goal, .001 per move
-# Episodic 
-# state is a vector of length blocks. Each dimension can have 'blocks' number of possibilities.
-# if the value of dimension d is d it means d is on the table (trick to save space)
+# Blocks world with n blocks. Goal is to make an order list of towers \n
+# Transitions are stochastic. \n
+# Reward 1 at goal, .001 per move \n
+# Episodic \n
+# State is a vector of length blocks. Each dimension can have 'blocks' number of possibilities. \n
+# If the value of dimension d is d it means d is on the table (trick to save space) \n
 # [0 1 2 3 4 0] => means all blocks on table except block 5 which is on top of block 0 
 ######################################################
 class BlocksWorld(Domain):
     STEP_REWARD             = -.001
     GOAL_REWARD             = 1
     gamma                   = 1
-    blocks                  = 0    # Total number of blocks
-    towerSize               = 0    # Goal tower size   
-    episodeCap              = 1000 # 1000 in Tutorial
-    domain_fig              = None  #Used to plot the domain
+	## Total number of blocks
+    blocks                  = 0    
+	## Goal tower size 
+    towerSize               = 0
+	## 1000 in Tutorial
+    episodeCap              = 1000 
+	## Used to plot the domain
+    domain_fig              = None  
     def __init__(self, blocks = 6, towerSize = 6, noise = .3, logger = None):
         self.blocks             = blocks    
         self.towerSize          = towerSize    

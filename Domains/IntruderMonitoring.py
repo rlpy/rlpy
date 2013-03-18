@@ -3,42 +3,41 @@ from numpy.ma.core import logical_or
 from Tools import *
 from Domain import *
 ######################################################
-# Developed by N. Kemal Ure Dec 3rd 2012 at MIT #
-# Edited by Alborz Geramifard on Feb 20 2013 #
+# \author Developed by N. Kemal Ure Dec 3rd 2012 at MIT
+# \author Edited by Alborz Geramifard on Feb 20 2013 
 ######################################################
-# State is : Location of Agent_1 x ... x Location of Agent n...
-# Location of Intruder 1 x ...x Location of Intruder_m
-# n is number of agents, m is number of intruders
-# Location is 2D position on a grid
-# Each agent can move in 4 directions + stay still, there is no noise
-# Each intruder moves with a fixed policy (specified by the user)
-# By Default, intruder policy is uniform random
+# State is : Location of Agent_1 x ... x Location of Agent n... \n
+# Location of Intruder 1 x ...x Location of Intruder_m \n
+# n is number of agents, m is number of intruders \n
+# Location is 2D position on a grid \n
+# Each agent can move in 4 directions + stay still, there is no noise \n
+# Each intruder moves with a fixed policy (specified by the user) \n
+# By Default, intruder policy is uniform random \n
 # Map of the world contains fixed number of danger zones,
 # Team receives a penalty whenever there is an intruder
-# on a danger zone in the absence of an agent  
+# on a danger zone in the absence of an agent  \n
 # Task is to allocate agents on the map
 # so that intruders do not enter the danger zones without 
 # attendance of an agent
 ######################################################
 class IntruderMonitoring(Domain):
     map = None
-    ROWS = COLS = 0                 # Number of rows and columns of the map
-    NUMBER_OF_AGENTS = 0            # Number of Cooperating agents
-    NUMBER_OF_INTRUDERS = 0         # Number of Intruders
+	## Number of rows and columns of the map
+    ROWS = COLS = 0                 
+	## Number of Cooperating agents
+    NUMBER_OF_AGENTS = 0            
+	## Number of Intruders
+    NUMBER_OF_INTRUDERS = 0         
     NUMBER_OF_DANGER_ZONES = 0
     gamma = .8
-    #Rewards
+    ## Rewards
     INTRUSION_PENALTY = -1.0
     episodeCap  = 1000              # Episode Cap
     
     #Constants in the map
     EMPTY, INTRUDER, AGENT, DANGER = arange(4)
-    ACTIONS_PER_AGENT = array([[-1,0], #Up
-               [+1,0], #Down
-               [0,-1], #left
-               [0,+1], #Right
-               [0,0], # Null
-               ])
+	## Actions: Up, Down, Left, Right, Null
+    ACTIONS_PER_AGENT = array([[-1,0], [+1,0], [0,-1], [0,+1], [0,0], ])
 
     #Visual Variables
     domain_fig      = None    

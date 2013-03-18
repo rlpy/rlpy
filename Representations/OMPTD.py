@@ -68,14 +68,14 @@ class OMPTD(Representation):
         # 1. Find the index of remaining features in the bag
         # 2. Calculate the inner product of each feature with the TD_Error vector
         # 3. Add the top maxBatchDicovery features to the selected features
-        ###############
+        #---------------
         # INPUT:
         # td_errors     p-by-1
         # phi           p-by-n
         # states        p-by-state-dim
-        ###############
+        #--------------------
         # OUTOUT: Boolean indicating expansion of features
-        ###############
+        #--------------------
         
         if len(self.remainingFeatures) == 0:
             # No More features to Expand

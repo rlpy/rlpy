@@ -7,66 +7,78 @@ from Domain import *
 #from scipy import integrate # for integration of state
 
 #########################################################
-# Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012 #
+# \author Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012
 #########################################################
-#
-# Per Lagoudakis and Parr 2003, derived from Wang 1996.
-# (See "1Link" implementation by L & P.)
-# Dynamics in x, xdot derived from CartPole implementation
-# of rl-community.org, from Sutton and Barto's Pole-balancing
-# task in <Reinforcement Learning: An Introduction> (1998)
-# (See CartPole implementation in the RL Community,
-# http://library.rl-community.org/wiki/CartPole)
 #
 # State: [theta, thetaDot, x, xDot].
 # Actions: [-50, 0, 50]
 #
 # theta    = Angular position of pendulum
-# (relative to straight up at 0 rad),and positive clockwise.
-# thetaDot = Angular rate of pendulum
-# x        = Linear position of the cart on its track (positive right).
+# (relative to straight up at 0 rad),and positive clockwise. \n
+# thetaDot = Angular rate of pendulum \n
+# x        = Linear position of the cart on its track (positive right). \n
 # xDot     = Linear velocity of the cart on its track.
 #
-# Actions take the form of force applied to cart;
-# [-50, 0, 50] N force are the default available actions.
+# Actions take the form of force applied to cart; \n
+# [-50, 0, 50] N force are the default available actions. \n
 # Positive force acts to the right on the cart.
 #
 # Uniformly distributed noise is added with magnitude 10 N.
 #
+# Per Lagoudakis and Parr 2003, derived from Wang 1996.
+# (See "1Link" implementation by L & P.) 
+# Dynamics in x, xdot derived from CartPole implementation  
+# of rl-community.org, from Sutton and Barto's Pole-balancing
+# task in <Reinforcement Learning: An Introduction> (1998)
+# (See CartPole implementation in the RL Community,
+# http://library.rl-community.org/wiki/CartPole)
 ######################################################
 
 
 ## @todo: can eliminate an entire dimension of the state space, xdot.
 # However, must internally keep track of it for use in dynamics.
 # RL_Glue and RL Community use the full 4-state system.
-# @author: Robert H. Klein
 class CartPole(Domain):
     
     # Domain constants per RL Community / RL_Glue CartPole implementation.
     # (http://code.google.com/p/rl-library/wiki/CartpoleJava)
-    AVAIL_FORCE         = array([-10,0,10]) # Newtons, N - Torque values available as actions [-50,0,50 per DPF]
-    MASS_PEND           = 0.1   # kilograms, kg - Mass of the pendulum arm
-    MASS_CART           = 1.0   # kilograms, kg - Mass of cart
-    LENGTH              = 1.0   # meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    ACCEL_G             = 9.8   # m/s^2 - gravitational constant
-    dt                  = 0.02  # Time between steps
-    force_noise_max     = 1     # Newtons, N - Maximum noise possible, uniformly distributed
+	## Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    AVAIL_FORCE         = array([-10,0,10]) 
+	## kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = 0.1   
+	## kilograms, kg - Mass of cart
+    MASS_CART           = 1.0   
+	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = 1.0   
+	## m/s^2 - gravitational constant
+    ACCEL_G             = 9.8   
+	## Time between steps
+    dt                  = 0.02  
+	## Newtons, N - Maximum noise possible, uniformly distributed
+    force_noise_max     = 1     
     
-    ANGULAR_RATE_LIMITS = [-6.0, 6.0]     # Limits on pendulum rate [per RL Community CartPole]
-    GOAL_REWARD         = 1               # Reward received on each step the pendulum is in the goal region
-    POSITON_LIMITS      = [-2.4, 2.4]     # m - Limits on cart position [Per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]     # m/s - Limits on cart velocity [per RL Community CartPole]   
+	## Limits on pendulum rate [per RL Community CartPole]
+    ANGULAR_RATE_LIMITS = [-6.0, 6.0]     
+	## Reward received on each step the pendulum is in the goal region
+    GOAL_REWARD         = 1               
+	## m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]     
+	## m/s - Limits on cart velocity [per RL Community CartPole]   
+    VELOCITY_LIMITS     = [-6.0, 6.0]     
     
     # Domain constants
 
+	## Max number of steps per trajectory
+    episodeCap          = 3000  
+	## Set to non-zero to enable print statements
+    DEBUG               = 0     
 
-    episodeCap          = 3000      # Max number of steps per trajectory
-    DEBUG               = 0     # Set to non-zero to enable print statements
-
-    # Domain constants computed in __init__
-    MOMENT_ARM          = 0     # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+    ## Domain constants computed in __init__. \n
+	# m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+    MOMENT_ARM          = 0     
                             # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
-    _ALPHA_MASS         = 0     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+	## 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    _ALPHA_MASS         = 0     
     
 #    cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
 #    cur_force_noise = 0 # Randomly generated noise for this timestep, stored here for the same reasons as cur_action
@@ -286,15 +298,18 @@ class CartPole(Domain):
                           (maxPosition, self.RECT_HEIGHT/2.0),
                           (maxPosition, -self.RECT_HEIGHT/2.0),
                           ])
-    
-## Flexible way to index states in this domain.
+  
+## \cond DEV
+ 
+# Flexible way to index states in the CartPole Domain.
 #
-# This class enumerates the different indices used when indexing the state.
+# This class enumerates the different indices used when indexing the state. \n
 # e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
 class StateIndex:
     THETA, THETA_DOT = 0,1
     X, X_DOT = 2,3
     FORCE = 4
+## \endcond
                 
 if __name__ == '__main__':
     print 'Please run one of my children: Swingup, InvertedBalanced'

@@ -1,6 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"class_domains_1_1_blocks_world_1_1_blocks_world.html#ac5c69d7d44548bdbc649b1f221be7581":[3,0,1,0,0,22],
 "class_domains_1_1_blocks_world_1_1_blocks_world.html#ac5ebc9432ec58d54aff086e0b5137b2f":[3,0,1,0,0,18],
 "class_domains_1_1_blocks_world_1_1_blocks_world.html#ac634998198079b40a68865f8cdf4a84d":[3,0,1,0,0,33],
 "class_domains_1_1_blocks_world_1_1_blocks_world.html#ac775ee34451fdfa742b318538164070e":[3,0,1,0,0,0],
@@ -49,8 +48,6 @@ var NAVTREEINDEX1 =
 "class_domains_1_1_cart_pole_1_1_cart_pole.html#afcbf087c73912361b61086f403a83fb8":[3,0,1,1,0,34],
 "class_domains_1_1_cart_pole_1_1_cart_pole.html#afcf997712c4a439e5230bec62324f32a":[3,0,1,1,0,28],
 "class_domains_1_1_cart_pole_1_1_cart_pole.html#afd4d4e098bdaef9feaf0c2f55c15c0e8":[3,0,1,1,0,19],
-"class_domains_1_1_cart_pole_1_1_state_index.html":[3,0,1,1,1],
-"class_domains_1_1_cart_pole_1_1_state_index.html#a62cc8db9cadde1e53f6994e68bda898c":[3,0,1,1,1,0],
 "class_domains_1_1_cart_pole___inverted_balance_1_1_cart_pole___inverted_balance.html":[3,0,1,2,0],
 "class_domains_1_1_cart_pole___inverted_balance_1_1_cart_pole___inverted_balance.html#a0c9595ac1e62a30b42574f8e1b335817":[3,0,1,2,0,1],
 "class_domains_1_1_cart_pole___inverted_balance_1_1_cart_pole___inverted_balance.html#a2407e8ef1957e60bb4c6f815855ba152":[3,0,1,2,0,4],
@@ -247,7 +244,10 @@ var NAVTREEINDEX1 =
 "class_domains_1_1_mountain_car_1_1_mountain_car.html#af5d4178948650814442c4dc60bf43f68":[3,0,1,9,0,30],
 "class_domains_1_1_mountain_car_1_1_mountain_car.html#afd57c2208cd2da0ae5d94ff02fd111c0":[3,0,1,9,0,11],
 "class_domains_1_1_mountain_car_1_1_mountain_car.html#afed4c8780d5cb8fda944f8c03115bfa4":[3,0,1,9,0,12],
-"class_domains_1_1_multi_track_1_1_loc_struct.html":[3,0,1,10,0],
-"class_domains_1_1_multi_track_1_1_loc_struct.html#a2fb1c5cf58867b5bbc9a1b145a86f3a0":[3,0,1,10,0,4],
-"class_domains_1_1_multi_track_1_1_loc_struct.html#a49654e4709f40aecccada266daa32fc6":[3,0,1,10,0,2]
+"class_domains_1_1_multi_track_1_1_multi_track.html":[3,0,1,10,0],
+"class_domains_1_1_multi_track_1_1_multi_track.html#a0c9595ac1e62a30b42574f8e1b335817":[3,0,1,10,0,1],
+"class_domains_1_1_multi_track_1_1_multi_track.html#a1195618d63c41f5656aa9946f60fd634":[3,0,1,10,0,8],
+"class_domains_1_1_multi_track_1_1_multi_track.html#a151f90b5b1d1d45ca07b42c8cf34ce7f":[3,0,1,10,0,27],
+"class_domains_1_1_multi_track_1_1_multi_track.html#a238705a24f1bbdfadf1ec5e646321ad4":[3,0,1,10,0,24],
+"class_domains_1_1_multi_track_1_1_multi_track.html#a2407e8ef1957e60bb4c6f815855ba152":[3,0,1,10,0,33]
 };

@@ -1,8 +1,5 @@
 var hierarchy =
 [
-    [ "ActuatorState", "class_domains_1_1_p_s_t_1_1_actuator_state.html", null ],
-    [ "ActuatorState", "class_domains_1_1_p_s_t_orig_1_1_actuator_state.html", null ],
-    [ "LocStruct", "class_domains_1_1_multi_track_1_1_loc_struct.html", null ],
     [ "object", null, [
       [ "Agent", "class_agents_1_1_agent_1_1_agent.html", [
         [ "LSPI", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html", [
@@ -31,7 +28,6 @@ var hierarchy =
         ] ],
         [ "PitMaze", "class_domains_1_1_pit_maze_1_1_pit_maze.html", null ],
         [ "PST", "class_domains_1_1_p_s_t_1_1_p_s_t.html", null ],
-        [ "PST", "class_domains_1_1_p_s_t_orig_1_1_p_s_t.html", null ],
         [ "RCCar", "class_domains_1_1_r_c_car_1_1_r_c_car.html", null ],
         [ "SystemAdministrator", "class_domains_1_1_system_administrator_1_1_system_administrator.html", null ]
       ] ],
@@ -57,18 +53,6 @@ var hierarchy =
         [ "Tabular", "class_representations_1_1_tabular_1_1_tabular.html", null ]
       ] ]
     ] ],
-    [ "SensorState", "class_domains_1_1_p_s_t_orig_1_1_sensor_state.html", null ],
-    [ "SensorState", "class_domains_1_1_p_s_t_1_1_sensor_state.html", null ],
-    [ "StateIndex", "class_domains_1_1_pendulum_1_1_state_index.html", null ],
-    [ "StateIndex", "class_domains_1_1_cart_pole_1_1_state_index.html", null ],
-    [ "StateStruct", "class_domains_1_1_p_s_t_1_1_state_struct.html", null ],
-    [ "StateStruct", "class_domains_1_1_multi_track_1_1_state_struct.html", null ],
-    [ "UAVAction", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_action.html", null ],
-    [ "UAVAction", "class_domains_1_1_p_s_t_1_1_u_a_v_action.html", null ],
-    [ "UAVIndex", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_index.html", null ],
-    [ "UAVIndex", "class_domains_1_1_p_s_t_1_1_u_a_v_index.html", null ],
-    [ "UAVLocation", "class_domains_1_1_p_s_t_1_1_u_a_v_location.html", null ],
-    [ "UAVLocation", "class_domains_1_1_p_s_t_orig_1_1_u_a_v_location.html", null ],
     [ "Representation", null, [
       [ "Fourier", "class_representations_1_1_fourier_1_1_fourier.html", null ]
     ] ]
