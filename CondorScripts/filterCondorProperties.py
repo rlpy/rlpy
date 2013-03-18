@@ -124,7 +124,6 @@ if __name__ == '__main__':
     requirementsFile.open('w') # clear the contents
     for machine in filteredMachines:
         requirementsFile.log('Machine == \"%s\" && \\' % machine.Name)
-    badMachinesFile.close()
     requirementsFile.close()
     sys.exit(0)
     
