@@ -66,7 +66,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
-    NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = .3   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 5     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
