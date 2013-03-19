@@ -20,7 +20,7 @@ from Script_Tools import *
 from Tools import perms,decimals
 #Mapping from each token name to their corresponding parameter in the text file in the main.py. Some tokens may have more than one corresponding parameter
 TOKEN_DICT={'T':['iFDDOnlineThreshold','BatchDiscoveryThreshold'], 'a':['initial_alpha'], 'N':['boyan_N0'], 'agent':['agent'], 'rep':['representation'], 'domain':['domain'], 'solver':['MDPSolver']}
-TOKEN_OBJECTS = {'domain','rep','agent','solver'}
+TOKEN_OBJECTS = ['domain','rep','agent','solver']
 def iscomment(str):
     stripped = str.strip()
     return len(stripped) == 0 or stripped[0] == '#'
