@@ -61,7 +61,6 @@ class RCCar(Domain):
         acc                     -= 1 # Mapping acc to [-1, 0 1]
         turn                    -= 1 # Mapping turn to [-1, 0 1]
         
-        print acc, turn
         #Calculate next state
         nx          = x + speed*cos(heading)*self.delta_t
         ny          = y + speed*sin(heading)*self.delta_t

@@ -175,8 +175,8 @@ class Domain(object):
     # @return r, ns, p. WHAT IS THIS? WHAT ARE THESE EXACTLY?
 	
 	# [exStep code]
-    def expectedStep(self,s,a):
-        pass
+    #def expectedStep(self,s,a):
+    #			abstract
 	# [exStep code]
 	
 	
