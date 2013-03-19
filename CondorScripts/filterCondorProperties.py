@@ -34,6 +34,7 @@ from scipy.constants.constants import mach
 # for additional possible specifications
 class CondorMachine(object):
     # Note the capitalization below to agree with Condor definitions
+    # Variable names MUST BE IDENTICAL to Condor's attributes
     Name        = None
     OpSys       = None
     Arch        = None
@@ -44,6 +45,7 @@ class CondorMachine(object):
     NUM_ATTRIBUTES = None # assigned after class definition
     SORTED_ATTRIBUTES = None # assigned after class definition, sorted list of attributes
     
+    # The variable names used in init MUST BE IDENTICAL to those in Condor, note capitalization.
     def __init__(self, Name=None, OpSys=None, Arch=None, Memory=None, KFlops=None):
         self.Name        = Name
         self.OpSys       = OpSys
