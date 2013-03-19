@@ -9,12 +9,14 @@
 #
 # Provides the option to write a requirements file based on results.
 #
+#
 # #### INSTRUCTIONS ####
 #
-# Choose which attributes to output by adding them to CondorMachine below.
-# Choose which attributes to filter by adding them too the dictionary filtered_terms in main() below.
-# Note that in order to filter by some property, it must appear in the attributes
-# of CondorMachine
+# - Choose which attributes to output by adding them to the CondorMachine class below
+# (don't forget about init()! ) (All other methods detect these new parameters and adjust automatically.)
+# - Choose which attributes to filter by adding them to the dictionary 'filtered_terms' in main() below.
+# - Note that in order to filter by some property, it must appear in the attributes
+# of the CondorMachine class (ie can't filter by an attribute you didn't output)
 #
 # #######################
 #
@@ -35,9 +37,6 @@ class CondorMachine(object):
     Name        = None
     OpSys       = None
     Arch        = None
-    State       = None
-    Activity    = None
-    LoadAvg     = None
     Memory      = None
     KFlops      = None
 #    ActvtyTime  = None
