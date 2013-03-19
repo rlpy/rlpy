@@ -131,6 +131,14 @@ def getCondorMachines(sortedLines):
         allMachines.append(newMachine)
     return allMachines
 
+def getUniqueMachines(allMachines):
+    foundNames = []
+    uniqueMachines = []
+    for machine in allMachines:
+        if not machine.Name in foundNames:
+            uniqueMachines.append(machine)
+    return uniqueMachines
+
 def filterCondorMachines(allMachines, filteredTerms):
     # Not sure how to use inbuilt filter() function with class methods
     return [machine for machine in allMachines if machine.conditionsSatisfied(**filteredTerms)] 
@@ -150,10 +158,12 @@ if __name__ == '__main__':
     # Get all lines from file, remove 'slot' preceding their names, remove duplicates
     allLines = getAllLines(CONDOR_STATUS_FILE)
     allLines = removeNonMachineLines(allLines)
+    # CURRENTLY WE ARE RETAINING SLOTS IN NAMES because on a single machine,
+    # different slots have different values for memory, etc.
     #allLines = removeSlotFromNames(allLines)
     # Obtain list of all 
     allMachines = getCondorMachines(allLines)
-    #uniqueMachines = getUniqueMachine(allMachines)
+    uniqueMachines = getUniqueMachines(allMachines)
     filteredMachines = filterCondorMachines(allMachines, FILTERED_TERMS)
 
     print 'Now logging requirements file'
