@@ -65,7 +65,7 @@ from heapq import *
 from copy import deepcopy
 import os, sys, multiprocessing
 from os import path
-
+from decimal import Decimal
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
 
@@ -382,6 +382,9 @@ def findRow(r,X):
     #return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
     ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))]))
     return ind[0]
+def decimals(x):
+    # Returns the number of decimal points required to capture X
+     return -Decimal(str(x)).as_tuple().exponent
 def perms(X):
     # Returns all permutations
     # X = [2 3]
@@ -389,20 +392,20 @@ def perms(X):
     # X = [[1,3],[2,3]]
     # res = [[1,2],[1,3],[3,2],[3,3]
     # Outputs are in numpy array format
-    allPerms, _ = perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0)
+    allPerms, _ = perms_r(X, perm_sample= array([]) , allPerms = None,ind = 0)
     return allPerms
 ######################################################
-def perms_r(X, perm_sample= array([],'uint8') , allPerms = None,ind = 0):
+def perms_r(X, perm_sample= array([]) , allPerms = None,ind = 0):
     if allPerms is None:
         #Get memory
         if isinstance(X[0], list):
             size        = prod([len(x) for x in X])
         else:
-            size        = prod(X)
-        allPerms    = zeros((size,len(X)),'uint8')
+            size        = prod(X, dtype=integer)
+        allPerms    = zeros((size,len(X)))
     if len(X) == 0:
         allPerms[ind,:] = perm_sample
-        perm_sample = array([],'uint8')
+        perm_sample = array([])
         ind = ind + 1;
     else:
         if isinstance(X[0], list):

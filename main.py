@@ -124,7 +124,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    representation  = initial_rep
+
+    #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
@@ -146,7 +148,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize, LSPI_return_best_policy)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
-    #agent           =  Q_LEARNING(representation,policy,domain,logger)
+    #agent           = Q_LEARNING(representation,policy,domain,logger)
     #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations)
     
     # MDP_Solver
