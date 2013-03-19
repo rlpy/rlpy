@@ -1,5 +1,9 @@
 #!/usr/bin/python
 #
+# !!!!!!!!!!!!!!!!!! NOTE !!!!!!!!!!!!!!!!!!!!!
+# Currently slots are not being removed from machine names, since on a given
+# machine, different slots can have different properties
+#
 # Queries condor for specified attributes of all nodes, tokenizes each one, and allows
 # for filtering by certain properties e.g. operating system.
 #
@@ -41,16 +45,12 @@ class CondorMachine(object):
     NUM_ATTRIBUTES = None # assigned after class definition
     SORTED_ATTRIBUTES = None # assigned after class definition, sorted list of attributes
     
-    def __init__(self, Name=None, OpSys=None, Arch=None, State=None, Activity=None, LoadAvg=None, Memory=None, KFlops=None):
+    def __init__(self, Name=None, OpSys=None, Arch=None, Memory=None, KFlops=None):
         self.Name        = Name
         self.OpSys       = OpSys
         self.Arch        = Arch
-        self.State       = State
-        self.Activity    = Activity
-        self.LoadAvg     = LoadAvg
         self.Memory      = Memory
         self.KFlops      = KFlops
-#        self.ActvtyTime  = actvtytime
     
     def conditionsSatisfied(self, **kwargs):
         for paramName,paramValue in kwargs.iteritems():
