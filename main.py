@@ -112,7 +112,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
-    #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
+    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
@@ -128,7 +128,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    #representation  = IncrementalTabular(domain,logger)
+    representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
     #representation  = Fourier(domain,logger,order=FourierOrder)
@@ -155,11 +155,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
     #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
-    MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON)
+    #MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON)
     #MDPsolver = TrajectoryBasedPolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON)
     
     # If agent is defined run the agent. Otherwise run the MDP Solver:
     if 'agent' in locals().keys():
+        if 'MDPsolver' in locals().keys():
+            print "You set both agent and MDPsolver. Please remove one as initializing both of them can mess with the logger."
         experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
         experiment.run()
         experiment.save()
