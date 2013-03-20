@@ -806,6 +806,23 @@ class Merger(object):
 
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
+    def bestExperiment(self,Y_axis = None, mode = 0):
+        # Returns the experiment with the best final results
+        # Best is defined in two settings:
+        # Mode 0: Final Mean+variance
+        # Mode 1: Area under the curve
+        if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
+        y_ind = self.AXES.index(Y_axis)
+        if mode == 0:
+            M = array([M[y_ind,-1] for M in self.means])
+            V = array([V[y_ind,-1] for V in self.std_errs])
+            best_index = argmax(M+V)
+        else:
+            M = array([M[y_ind,:] for M in self.means])
+            S = sum(M,axis=1)
+            best_index = argmax(S)
+        return self.exp_paths[best_index]
+            
     def plot(self,Y_axis = None, X_axis = None):
         #Setting default values based on the Policy Evaluation or control
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
