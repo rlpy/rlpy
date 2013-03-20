@@ -247,20 +247,22 @@ class PST(Domain):
             self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
 		
-		# HERE: As you can see, the lines only draw if the comm state is covered. Yet graphically this is not the case.
-        if self.isCommStatesCovered == True: # We have comms coverage: draw a line between comms states to show this
-            [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line)-1)]
-            #if self.numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
-            #    commsColor = 'black'
-            #else: commsColor = 'red'
-            #[self.comms_line[i].set_color(commsColor) for i in range(len(self.comms_line))]
-            #[self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
+        numHealthySurveil = sum(logical_and(sStruct.locations == UAVLocation.SURVEIL, sStruct.sensor))
+        if (any(sStruct.locations == UAVLocation.COMMS)): # We have comms coverage: draw a line between comms states to show this
+            if numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
+                commsColor = 'black'
+                [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
+            else: 
+                commsColor = 'red'
+                [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line)-1)]
+            [self.comms_line[i].set_color(commsColor) for i in range(len(self.comms_line))]
+            
         else: # No comms coverage
-            if self.numHealthySurveil > 0: # Surveillance but no comms; indicate with an X at the surveillance state
-                pass
-                #self.comms_line[len(self.comms_line)-1].set_color('red')
-                #self.comms_line[len(self.comms_line)-1].set_visible(True)
-                #self.subplot_axes.add_line(lines.Line2D([self.location_coord[i] + self.LOCATION_WIDTH, self.location_coord[i] + self.LOCATION_WIDTH],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
+            if numHealthySurveil > 0: # Surveillance but no comms; indicate with an X at the surveillance state               
+                self.comms_line[len(self.comms_line)-1].set_color('red')
+                self.comms_line[len(self.comms_line)-1].set_visible(True)
+                midpoint = (0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2 + crashLocationX)/2
+                self.subplot_axes.add_line(lines.Line2D([midpoint, midpoint],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
         sleep(0.5)
@@ -304,7 +306,7 @@ class PST(Domain):
         nsStruct.sensor[maintenanceIndices] = SensorState.RUNNING
 
         # Test if have communication
-        self.isCommStatesCovered = any(nonzero(sStruct.locations == UAVLocation.COMMS))
+        self.isCommStatesCovered = any(sStruct.locations == UAVLocation.COMMS)
 
         surveillanceBool = (sStruct.locations == UAVLocation.SURVEIL)
         self.numHealthySurveil = sum(logical_and(surveillanceBool, sStruct.sensor))
