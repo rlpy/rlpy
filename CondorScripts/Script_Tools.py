@@ -38,7 +38,7 @@ def logKey(log):
         m1 = eval(m1)    
         s1 = eval(s1)    
     except:
-        s1 = m1 = h1 = inf
+        s1 = m1 = h1 = 10000000
         
     return h1*10000+m1*100+s1
 
