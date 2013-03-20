@@ -33,10 +33,13 @@ def logKey(log):
         
     [h1,m1,s1] = re.split(':+',temp1)
 #    print h1, m1, s1
-    h1 = eval(h1)    
-    m1 = eval(m1)    
-    s1 = eval(s1)    
-    
+    try:
+        h1 = eval(h1)    
+        m1 = eval(m1)    
+        s1 = eval(s1)    
+    except:
+        s1 = m1 = h1 = inf
+        
     return h1*10000+m1*100+s1
 
 def sortLog(logs):
