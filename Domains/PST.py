@@ -176,14 +176,14 @@ class PST(Domain):
         # Figure with x width corresponding to number of location states, UAVLocation.SIZE
         # and rows (lanes) set aside in y for each UAV (NUM_UAV total lanes).  Add buffer of 1
         self.subplot_axes = self.domain_fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
-        self.subplot_axes.set_xlim(0, 1 + UAVLocation.SIZE * self.dist_between_locations)
+        crashLocationX = 2*(self.dist_between_locations)*(UAVLocation.SIZE-1)
+        self.subplot_axes.set_xlim(0, 1 + crashLocationX + self.RECT_GAP)
         self.subplot_axes.set_ylim(0, 1 + self.NUM_UAV)
         self.subplot_axes.xaxis.set_visible(False)
         self.subplot_axes.yaxis.set_visible(False)
 
         # Assign coordinates of each possible uav location on figure
         self.location_coord = [0.5 + (self.LOCATION_WIDTH / 2) + (self.dist_between_locations)*i for i in range(UAVLocation.SIZE-1)]
-        crashLocationX = 1.0 + (self.dist_between_locations)*(UAVLocation.SIZE-1)
         self.location_coord.append(crashLocationX + self.LOCATION_WIDTH / 2)
 
          # Create rectangular patches at each of those locations
@@ -191,6 +191,7 @@ class PST(Domain):
         self.location_rect_vis.append(mpatches.Rectangle([crashLocationX, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'r'))
         [self.subplot_axes.add_patch(self.location_rect_vis[i]) for i in range(4)]
         self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV + 0.5, self.NUM_UAV + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
+        self.comms_line.append(lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2, crashLocationX],[self.NUM_UAV + 0.5, self.NUM_UAV + 0.5], linewidth = 3, color='black', visible=False))
         # Initialize list of circle objects
 
         uav_x = self.location_coord[UAVLocation.MAINTENANCE]
@@ -245,18 +246,21 @@ class PST(Domain):
             self.subplot_axes.add_patch(self.uav_circ_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
-
+		
+		# HERE: As you can see, the lines only draw if the comm state is covered. Yet graphically this is not the case.
         if self.isCommStatesCovered == True: # We have comms coverage: draw a line between comms states to show this
-            if self.numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
-                commsColor = 'black'
-            else: commsColor = 'red'
-            [self.comms_line[i].set_color(commsColor) for i in range(len(self.comms_line))]
-            [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
+            [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line)-1)]
+            #if self.numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
+            #    commsColor = 'black'
+            #else: commsColor = 'red'
+            #[self.comms_line[i].set_color(commsColor) for i in range(len(self.comms_line))]
+            #[self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
         else: # No comms coverage
             if self.numHealthySurveil > 0: # Surveillance but no comms; indicate with an X at the surveillance state
-                self.comms_line[len(self.comms_line)-1].set_color('red')
-                self.comms_line[len(self.comms_line)-1].set_visible(True)
-                self.subplot_axes.add_line(lines.Line2D([self.location_coord[i] + self.LOCATION_WIDTH, self.location_coord[i] + self.LOCATION_WIDTH],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
+                pass
+                #self.comms_line[len(self.comms_line)-1].set_color('red')
+                #self.comms_line[len(self.comms_line)-1].set_visible(True)
+                #self.subplot_axes.add_line(lines.Line2D([self.location_coord[i] + self.LOCATION_WIDTH, self.location_coord[i] + self.LOCATION_WIDTH],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
         sleep(0.5)
