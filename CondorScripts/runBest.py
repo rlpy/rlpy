@@ -26,4 +26,4 @@ print "======================"
 print "Best Experiment: %s" % bestExp
 print "======================"
 os.chdir(bestExp)
-sys.command('runall.py')
+os.popen('runall.py')
