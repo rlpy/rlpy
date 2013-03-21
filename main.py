@@ -85,7 +85,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy Often is .1 CHANGE ME if I am not .1<<<
     #Agent ----------------------
-    alpha_decay_mode        = 'boyan' # Boyan works better in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
+    alpha_decay_mode        = 'dabney' # Boyan works better in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = .1
     boyan_N0                = 1000
     LAMBDA                  = 0
