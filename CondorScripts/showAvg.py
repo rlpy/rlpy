@@ -17,4 +17,4 @@ from Tools import *
 
 paths = ['.']
 merger = Merger(paths)
-merger.plot()
+merger.showLast()
