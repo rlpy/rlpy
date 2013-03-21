@@ -36,8 +36,8 @@ styles              = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>
 MarkerSize          = 7    
 Legend              = True  # Draw legends?
 maxSamples          = inf   # Maximum number of samples to be loaded from the directory. If set inf it will use all of them
- 
-merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples)
+minSamples          = 1     # Minimum number of samples required to include a directory for plotting 
+merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples, minSamples = minSamples)
 pl.ioff()
 # FOR Control
 #######################
