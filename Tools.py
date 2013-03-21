@@ -819,7 +819,7 @@ class Merger(object):
         print "Last Performance+std_errs"
         print "=========================="
         for i,e in enumerate(self.exp_paths):
-            print "%s: %0.3f+%0.3f" % (e,M[i],V[i])
+            print "%s:\t%0.3f+%0.3f" % (e,M[i],V[i])
     def bestExperiment(self,Y_axis = None, mode = 0):
         # Returns the experiment with the best final results
         # Best is defined in two settings:
