@@ -808,6 +808,14 @@ class Merger(object):
 
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
+    def showLast(selfself,Y_axis = None):
+        # Prints the last performance of all experiments
+        if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
+        y_ind = self.AXES.index(Y_axis)
+        M = array([M[y_ind,-1] for M in self.means])
+        V = array([V[y_ind,-1] for V in self.std_errs])
+        for i,e in enumerate(self.exp_paths):
+            print "%s: %0.3f+%0.3f" % (e,M[i],V[i])
     def bestExperiment(self,Y_axis = None, mode = 0):
         # Returns the experiment with the best final results
         # Best is defined in two settings:
