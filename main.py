@@ -31,7 +31,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 100000
+    LEARNING_STEPS      = 10000
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -48,8 +48,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Domain ----------------------
     #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
     #MAZE                = '/Domains/PitmazeMaps/2x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
-    MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
+    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    #MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/1x3_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x2_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x3_1A_1I.txt'
