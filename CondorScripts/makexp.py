@@ -92,6 +92,8 @@ if __name__ == '__main__':
         for i,e in enumerate(sys.argv):
             if i == 0: continue
             p,_,v = e.rpartition('=')
+            v = v.strip()
+            if v[0] != '[': v = '['+v+']'
             if v[1].isalpha():
                 v = v.replace('[','[\"')
                 v = v.replace(']','\"]')

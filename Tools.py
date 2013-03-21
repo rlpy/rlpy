@@ -701,7 +701,7 @@ class Merger(object):
     #MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Iterations', 'Discounted Return', 'Iteration Time']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf):
+    def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []
@@ -711,6 +711,7 @@ class Merger(object):
         self.markersize             = markersize
         self.legend                 = legend
         self.maxSamples             = maxSamples # In case we want to use less than available number of samples
+        self.minSamples             = minSamples # Directories with samples less than this value will be ignored.
         self.useLastDataPoint       = False # By default assume all data has the same number of points along the X axis.
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
@@ -746,7 +747,7 @@ class Merger(object):
             self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
-            print "No directory including result was found at %s" % paths
+            print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
             return False
         for exp in self.exp_paths:
             means, std_errs = self.parseExperiment(exp)
@@ -937,7 +938,7 @@ class Merger(object):
                 self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1, bbox_inches='tight')
             print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
     def hasResults(self,path):
-        return len(glob.glob(os.path.join(path, '*-results.txt'))) != 0
+        return len(glob.glob(os.path.join(path, '*-results.txt'))) >= self.minSamples
 class PriorityQueueWithNovelty():
     # This is a priority queue where it is sorted based on priority and then then novelty of elements
     # First Order: The Lower the priority the better

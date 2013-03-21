@@ -3,6 +3,6 @@ from Domains import *
 from Representations import *
 
 
-X = '09'
-X = X.lstrip('0')
-print eval(X)
+X = array([1,2,3])
+Y = array([2,2,2])
+print X/Y
