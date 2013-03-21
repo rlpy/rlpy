@@ -808,7 +808,7 @@ class Merger(object):
 
         _,self.datapoints_per_graph,_ = samples.shape
         return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
-    def showLast(selfself,Y_axis = None):
+    def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
         y_ind = self.AXES.index(Y_axis)
