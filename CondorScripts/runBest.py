@@ -22,8 +22,9 @@ from Tools import *
 paths = ['.']
 merger = Merger(paths)
 bestExp = merger.bestExperiment(mode = 1)
-print "======================"
-print "Best Experiment: %s" % bestExp
-print "======================"
-os.chdir(bestExp)
-osqu.popen('runall.py')
+if bestExp:
+    print "======================"
+    print "Best Experiment: %s" % bestExp
+    print "======================"
+    os.chdir(bestExp)
+    os.system('runall.py')
