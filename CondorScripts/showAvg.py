@@ -15,6 +15,7 @@ path += '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
+os.system('clear');
 paths = ['.']
 merger = Merger(paths)
 merger.showLast()

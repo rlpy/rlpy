@@ -814,6 +814,7 @@ class Merger(object):
         y_ind = self.AXES.index(Y_axis)
         M = array([M[y_ind,-1] for M in self.means])
         V = array([V[y_ind,-1] for V in self.std_errs])
+        
         for i,e in enumerate(self.exp_paths):
             print "%s: %0.3f+%0.3f" % (e,M[i],V[i])
     def bestExperiment(self,Y_axis = None, mode = 0):
