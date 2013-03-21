@@ -5,4 +5,4 @@ from Representations import *
 
 X = os.listdir('.')
 print X
-print sort(X)
+print sorted(X)

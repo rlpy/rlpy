@@ -14,7 +14,7 @@ from Script_Tools import *
 def pollOne(idir, count, detailed = False, fulldetailed = False):
         if not os.path.exists(idir+'/main.py'):
             #Not a task directory
-            for folder in sort(os.listdir(idir)):
+            for folder in sorted(os.listdir(idir)):
                 count += 1
                 if os.path.isdir(idir+'/'+folder) and folder[0] != '.':
                     pollOne(idir+'/'+folder,count,detailed,fulldetailed)
