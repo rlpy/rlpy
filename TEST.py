@@ -3,5 +3,6 @@ from Domains import *
 from Representations import *
 
 
-X = '            #123'
-print X.strip('#')
+X = '09'
+X = X.lstrip('0')
+print eval(X)

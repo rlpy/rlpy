@@ -32,6 +32,9 @@ def logKey(log):
         temp1 = temp1.group(0)[2:] 
         
     [h1,m1,s1] = re.split(':+',temp1)
+    h1 = h1.lstrip('0')
+    m1 = m1.lstrip('0')
+    s1 = s1.lstrip('0')
 #    print h1, m1, s1
     try:
         h1 = eval(h1)    

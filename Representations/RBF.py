@@ -10,11 +10,12 @@ class RBF(Representation):
         dims                = domain.state_space_dims
         self.rbfs_mu        = zeros((rbfs,dims))
         self.rbfs_sigma     = zeros((rbfs,dims))
+        dim_widths          = (domain.statespace_limits[:,1]-domain.statespace_limits[:,0])
         for i in arange(rbfs):
             for d in arange(dims):
                 self.rbfs_mu[i,d]        = random.uniform(domain.statespace_limits[d,0],
                                                         domain.statespace_limits[d,1])
-                self.rbfs_sigma[i,d]     = random.uniform(0,(domain.statespace_limits[d,1]-domain.statespace_limits[d,0])/2.0)
+                self.rbfs_sigma[i,d]     = random.uniform(dim_widths[d]/2.0,dim_widths[d])
 #        pl.plot(self.rbfs_mu[:,1],self.rbfs_mu[:,0],'.k')
 #        pl.show()
 #        raw_input()
@@ -24,6 +25,6 @@ class RBF(Representation):
         for i in arange(0,self.features_num-1):
             F_s[i] = prod(normpdf(s,self.rbfs_mu[i,:], self.rbfs_sigma[i,:]))
         return normalize(F_s)
-def featureType(self):
+    def featureType(self):
         return float
         
