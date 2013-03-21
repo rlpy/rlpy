@@ -92,8 +92,11 @@ if __name__ == '__main__':
         for i,e in enumerate(sys.argv):
             if i == 0: continue
             p,_,v = e.rpartition('=')
-            v = v.strip()
-            if v[0] != '[': v = '['+v+']'
+            p = p.strip() #Remove spaces
+            v = v.strip() #Removes spaces
+            if v[0] != '[': v = '['+v+']' # If not passed as a list at brackets around it
+            
+            # If inputs are strings add correct quote around them
             if v[1].isalpha():
                 v = v.replace('[','[\"')
                 v = v.replace(']','\"]')
