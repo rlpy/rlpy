@@ -751,7 +751,8 @@ class Merger(object):
         if len(self.exp_paths) == 0:
             print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
             return False
-        for exp in sorted(self.exp_paths):
+        self.exp_paths = sorted(self.exp_paths)
+        for exp in self.exp_paths:
             means, std_errs = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)

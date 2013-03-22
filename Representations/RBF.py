@@ -19,7 +19,7 @@ class RBF(Representation):
                 #random.uniform(dim_widths[d]/2.0,dim_widths[d]) 
 #        pl.figure()
 #        pl.plot(self.rbfs_mu[:,1],self.rbfs_mu[:,0],'.k')
-#        pl.ioff()
+#        pl.ioff
 #        pl.show()
 #        raw_input()
         super(RBF,self).__init__(domain,logger)
