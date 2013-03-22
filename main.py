@@ -69,9 +69,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NOISE               = .3   # Noise parameters used for some of the domains such as the pitmaze
     BLOCKS              = 5     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
-    DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
-    RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
-                                'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
+    DISCRITIZATION              = 20  # Number of bins used to discritize each continuous dimension. Used for some representations 
+    RBFS                        = 50  #{'PitMaze':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
     iFDDOnlineThreshold         = 100 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
     BatchDiscoveryThreshold     = 0 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
@@ -85,7 +84,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Policy ----------------------
     EPSILON                 = .1 # EGreedy Often is .1 CHANGE ME if I am not .1<<<
     #Agent ----------------------
-    alpha_decay_mode        = 'dabney' # Boyan works better in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
+    alpha_decay_mode        = 'Boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = 1
     boyan_N0                = 1000
     LAMBDA                  = 0
@@ -130,7 +129,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    representation  = RBF(domain,logger, rbfs = RBFS[className(domain)])
+    representation  = RBF(domain,logger, rbfs = RBFS)
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon[className(domain)])
     #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)

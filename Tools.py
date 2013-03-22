@@ -215,7 +215,8 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['.5','k'], 'Actions')
     cm.register_cmap(cmap=mycmap)
-    mycmap = make_colormap({0:(.8,.7,0), 1: 'w', 2:(0,0,1)})  # red to blue
+    #mycmap = make_colormap({0:(.8,.7,0), 1: 'w', 2:(0,0,1)})  # orange to blue
+    mycmap = make_colormap({0:'r', 1: 'w', 2:'g'})  # red to blue
     cm.register_cmap(cmap=mycmap,name='ValueFunction')
     mycmap = colors.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
     cm.register_cmap(cmap=mycmap)
