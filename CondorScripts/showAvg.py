@@ -15,6 +15,12 @@ path += '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
-paths = ['.']
-merger = Merger(paths)
-merger.showLast()
+if __name__ == '__main__':
+    
+    paths = ['.']
+    merger = Merger(paths)
+    if len(sys.argv) == 1:
+        merger.showLast()
+    else:
+        merger.showLast(sys.argv[1])
+
