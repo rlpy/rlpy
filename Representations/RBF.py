@@ -33,7 +33,7 @@ class RBF(Representation):
 #            print X, F_s[i]
         #exp(-sum((s - repmat(D.rbfm(i,:),rows(s),1)).^2,2)/D.rbfsigma)'
         #print s, F_s
-        return normalize(F_s)
+        return F_s #normalize(F_s)
     def featureType(self):
         return float
         
