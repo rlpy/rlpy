@@ -23,4 +23,3 @@ if __name__ == '__main__':
         merger.showLast()
     else:
         merger.showLast(sys.argv[1])
-

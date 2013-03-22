@@ -702,7 +702,7 @@ class Merger(object):
     #MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Iterations', 'Discounted Return', 'Iteration Time']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1):
+    def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []
@@ -713,7 +713,8 @@ class Merger(object):
         self.legend                 = legend
         self.maxSamples             = maxSamples # In case we want to use less than available number of samples
         self.minSamples             = minSamples # Directories with samples less than this value will be ignored.
-        self.useLastDataPoint       = False # By default assume all data has the same number of points along the X axis.
+        self.useLastDataPoint       = False     # By default assume all data has the same number of points along the X axis.
+        self.getMAX                 = False     # Instead of mean of all experiments find the best performance among them
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
         if self.hasResults(paths[0]):
@@ -809,7 +810,10 @@ class Merger(object):
                 samples[:,:,i] = M[:,-1].reshape((-1,1)) # Get the last column of the matrix
 
         _,self.datapoints_per_graph,_ = samples.shape
-        return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
+        if self.getMAX:
+            return max(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
+        else:
+            return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
     def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
