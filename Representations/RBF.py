@@ -39,14 +39,10 @@ class RBF(Representation):
     def phi_nonTerminal(self,s):
         F_s         = ones(self.features_num)
         for i in arange(0,self.features_num-1):
-            #F_s[i] = prod(normpdf(s,self.rbfs_mu[i,:], self.rbfs_sigma[i,:]))
-            #X = prod(normpdf(s,self.rbfs_mu[i,:], self.rbfs_sigma[i,:]))
             exponent = sum((s-self.rbfs_mu[i,:])**2/(2.0*self.rbfs_sigma[i,:]))
             F_s[i] = exp(-exponent)
-#            print X, F_s[i]
-        #exp(-sum((s - repmat(D.rbfm(i,:),rows(s),1)).^2,2)/D.rbfsigma)'
-        #print s, F_s
-        return F_s #normalize(F_s)
+        return F_s 
+        #return normalize(F_s) DO NOT normalize the rbfs as it can make the learning much slower if you dont increase alpha proportionally. 
     def featureType(self):
         return float
         
