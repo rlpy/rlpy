@@ -811,6 +811,7 @@ class Merger(object):
 
         _,self.datapoints_per_graph,_ = samples.shape
         if self.getMAX:
+            print max(samples,axis=2)
             return max(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
         else:
             return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
