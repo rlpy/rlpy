@@ -714,7 +714,7 @@ class Merger(object):
         self.maxSamples             = maxSamples # In case we want to use less than available number of samples
         self.minSamples             = minSamples # Directories with samples less than this value will be ignored.
         self.useLastDataPoint       = False     # By default assume all data has the same number of points along the X axis.
-        self.getMax                 = getMAX    # Instead of mean of all experiments find the best performance among them
+        self.getMAX                 = getMAX    # Instead of mean of all experiments find the best performance among them
         # See if the path is an experiment. If so just parse that directory
         # Otherwise parse all subdirectories with experiment results
         if self.hasResults(paths[0]):
