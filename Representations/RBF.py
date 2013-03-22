@@ -24,7 +24,7 @@ class RBF(Representation):
                 for d in arange(dims):
                     self.rbfs_mu[i,d]        = random.uniform(domain.statespace_limits[d,0],
                                                             domain.statespace_limits[d,1])
-                    self.rbfs_sigma[i,d]     = random.uniform(dim_widths[d]/2.0,dim_widths[d]/1.0)
+                    self.rbfs_sigma[i,d]     = random.uniform(dim_widths[d]/4.0,dim_widths[d]/3.0)
             data    = zeros((2,rbfs,dims))
             data[0] = self.rbfs_mu
             data[1] = self.rbfs_sigma
