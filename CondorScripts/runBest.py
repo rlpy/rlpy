@@ -21,10 +21,10 @@ from Tools import *
 
 paths = ['.']
 merger = Merger(paths)
-bestExp = merger.bestExperiment(mode = 1)
+bestExp, bestValue = merger.bestExperiment(mode = 1)
 if bestExp:
     print "======================"
-    print "Best Experiment: %s" % bestExp
+    print "Best Experiment: %s with Value=%0.4f" % (bestExp, bestValue)
     print "======================"
     os.chdir(bestExp)
     os.system('runall.py')
