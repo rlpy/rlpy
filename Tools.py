@@ -750,7 +750,7 @@ class Merger(object):
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
             print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
-            return False
+            return
         self.exp_paths = sorted(self.exp_paths)
         for exp in self.exp_paths:
             means, std_errs = self.parseExperiment(exp)
