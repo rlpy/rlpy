@@ -83,15 +83,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     experiment.run()
     experiment.save()
     
-    #domain.showLearning(representation)
-    if SHOW_FINAL_PLOT:
-        if module_exists('matplotlib'):
-            pl.ioff(); pl.show()
-        else:
-            logger.log('could not show final plot; no matplotlib')
-
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/IShouldRun',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
+         main(jobID = -1,PROJECT_PATH = 'Results/IShouldRun', MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
          main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))

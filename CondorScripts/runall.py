@@ -35,7 +35,6 @@ USERNAME='rhklein'
 FINALFILE='result'
 RESULTS_PATH='.' # Currently want results path to be in directory of the main file
 #RESULTS_PATH = RL_PYTHON_ROOT+'../RL-Results/RL-Python/13ICML-BatchiFDD/
-SHOW_FINAL_PLOT = 0   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
 MAKE_EXP_NAME = 0      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
 
 if os.path.exists(path+'/CondorScripts/setting.py'):
@@ -54,7 +53,7 @@ def submit(id, relPath): # relPath is the path to the main file relative to wher
                 'cd ..;' +\
 		'condor_submit'+\
                 ' -a \"arguments = main.py '+str(id)+' '+\
-                RESULTS_PATH +' '+str(SHOW_FINAL_PLOT)+' '+str(MAKE_EXP_NAME)+'\" '+ relPath+'/'+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
+                RESULTS_PATH +' '+' '+str(MAKE_EXP_NAME)+'\" '+ relPath+'/'+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''

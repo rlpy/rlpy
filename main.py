@@ -24,7 +24,6 @@ from MDPSolvers import *
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
          PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
-         SHOW_FINAL_PLOT = 1,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
          MAKE_EXP_NAME = 1      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
          ):
 
@@ -126,8 +125,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    representation  = IncrementalTabular(domain,logger)
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
@@ -143,7 +142,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # LEARNING AGENT
     #================
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize, LSPI_return_best_policy)
     #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
@@ -152,7 +151,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # MDP_Solver
     #================
-    #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
+    MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
     #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD)
     #MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON)
     #MDPsolver = TrajectoryBasedPolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON)
@@ -172,6 +171,6 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
+         main(jobID = -1,PROJECT_PATH = 'Results/Temp', MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
-         main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+         main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]))

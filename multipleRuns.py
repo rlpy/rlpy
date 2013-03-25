@@ -22,7 +22,7 @@ checkNCreateDirectory(PROJECT_PATH)
 #create the pool with the correct number of cpus
 pool = Pool(max_cpu)
 #pack the arguments into tuples
-jobs = [(i, PROJECT_PATH, 0, 1) for i in RUNS]
+jobs = [(i, PROJECT_PATH, 1) for i in RUNS]
 pool.map(unpackjob, jobs)
 
 #if(platform.system() == 'Windows'):

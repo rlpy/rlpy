@@ -22,7 +22,6 @@ from Experiments import *
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
          PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
-         SHOW_FINAL_PLOT = 0,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
          MAKE_EXP_NAME = 1      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
          ):
 
@@ -133,15 +132,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     experiment.run()
     experiment.save()
     
-    #domain.showLearning(representation)
-    if SHOW_FINAL_PLOT:
-        if module_exists('matplotlib'):
-            pl.ioff(); pl.show()
-        else:
-            logger.log('could not show final plot; no matplotlib')
-
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/Temp',SHOW_FINAL_PLOT = 1, MAKE_EXP_NAME = 1)
+         main(jobID = -1,PROJECT_PATH = 'Results/Temp', MAKE_EXP_NAME = 1)
      else: # Batch Mode through command line
-         main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+         main(int(sys.argv[1]),sys.argv[2], int(sys.argv[4]))

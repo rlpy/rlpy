@@ -8,7 +8,7 @@ import platform
 
 Output = 'TEST.pdf'
 print 'Profiling'
-cProfile.run('main(-1,SHOW_FINAL_PLOT=0,PROJECT_PATH = "Results/Temp")', 'Profiling/profile.dat')
+cProfile.run('main(-1,PROJECT_PATH = "Results/Temp")', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')
 p.sort_stats('time').print_stats(5)
 
