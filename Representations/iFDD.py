@@ -50,7 +50,7 @@ class iFDD_potential(object):
     def show(self):
         printClass(self)
 class iFDD(Representation):
-    PRINT_MAX_RELEVANCE     = True # It is a good starting point to see how relevances grow if threshold is set to infinity. 
+    PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity. 
     discovery_threshold     = None  # psi in the paper
     sparsify                = None  # boolean specifying the use of the trick mentioned in the paper so that features are getting sparser with more feature discoveries (i.e. use greedy algorithm for feature activation)
     iFDD_features           = {}    # dictionary mapping initial feature sets to iFDD_feature 
