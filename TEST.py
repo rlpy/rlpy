@@ -4,4 +4,4 @@ from Representations import *
 
 
 X = linspace(0,3.1,3)
-print X
+print X+1
