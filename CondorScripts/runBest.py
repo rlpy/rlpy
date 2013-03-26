@@ -21,7 +21,7 @@ from Tools import *
 
 paths = ['.']
 merger = Merger(paths)
-bestExp, bestValue = merger.bestExperiment(mode = 1)
+bestExp, bestValue = merger.bestExperiment(mode = 0)
 if bestExp:
     print "======================"
     print "Best Experiment: %s with Value=%0.4f" % (bestExp, bestValue)
