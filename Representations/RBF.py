@@ -6,6 +6,7 @@ class RBF(Representation):
     rbfs_mu     = None          # The mean of RBFs
     rbfs_sigma  = None          # The variance of the RBFs (uniformly selected between [0, dimension width]
     def __init__(self,domain,logger,rbfs = 20, id = 1):
+        id = 2 # Best Performing.
         self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
         self.rbfFile        = '%d-rbfs.npy' % id # used to save or load RBFs
         dims                = domain.state_space_dims
