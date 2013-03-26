@@ -3,6 +3,5 @@ from Domains import *
 from Representations import *
 
 
-X = os.listdir('.')
+X = linspace(0,3.1,3)
 print X
-print sorted(X)

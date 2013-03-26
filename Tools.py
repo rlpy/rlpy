@@ -667,6 +667,13 @@ def printMatrix(A,type='int'):
     print array(A,dtype=type)
 def incrementalAverageUpdate(avg,sample,sample_number):
     return avg+(sample-avg)/(sample_number*1.)
+def isOnCluster():
+    # detect if running on condor cluster
+    if os.path.abspath('.')[0:len(CONDOR_CLUSTER_PREFIX)] == CONDOR_CLUSTER_PREFIX: # arbitrary number of digits
+        return True
+    return False
+def rootMeanSquareError(X):
+    return sqrt(mean(X**2))
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     filename = ''
@@ -688,13 +695,6 @@ class Logger(object):
             self.buffer = ''
     def line(self):
         self.log(SEP_LINE)
-def isOnCluster():
-    # detect if running on condor cluster
-    if os.path.abspath('.')[0:len(CONDOR_CLUSTER_PREFIX)] == CONDOR_CLUSTER_PREFIX: # arbitrary number of digits
-        return True
-    return False
-def rootMeanSquareError(X):
-    return sqrt(mean(X**2))
 class Merger(object):
     #CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
