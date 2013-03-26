@@ -9,8 +9,9 @@ from Domains import *
 from Representation import *
 
 class RBF(Representation):
-    rbfs_mu     = None          # The mean of RBFs
-    rbfs_sigma  = None          # The variance of the RBFs (uniformly selected between [0, dimension width]
+    SHOW_CENTERS    = False
+    rbfs_mu         = None          # The mean of RBFs
+    rbfs_sigma      = None          # The variance of the RBFs (uniformly selected between [0, dimension width]
     def __init__(self,domain,logger,rbfs = 20, id = 1):
         if isinstance(domain,Pendulum):
             # Put 9 equal in the intersections + 1 extra
@@ -19,6 +20,16 @@ class RBF(Representation):
             self.rbfs_mu, rbfs      = self.uniformRBFs([3,3])
             logger.log('Using 3x3 uniform RBFs => 9 RBFs + 1 constant.') 
             self.rbfs_sigma         = ones((rbfs,dims))
+        elif isinstance(domain,PitMaze):
+            # Put 20 equal in the intersections + 1 extra
+            self.domain             = domain
+            dims                    = domain.state_space_dims
+            self.rbfs_mu, rbfs      = self.uniformRBFs([5,5])
+            logger.log('Using 5x5 uniform RBFs => 25 RBFs + 1 constant.') 
+            dim_widths              = (domain.statespace_limits[:,1]-domain.statespace_limits[:,0])
+            self.rbfs_sigma         = empty((rbfs,dims))
+            for d in arange(dims):
+                self.rbfs_sigma[:,d] = dim_widths[d]/3.0
         else:
             #id = 2 # Best Performing.
             self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
@@ -46,11 +57,12 @@ class RBF(Representation):
                 save(self.rbfFile,data)
                 self.logger.log('Saved the RBFs to: %s' % self.rbfFile)
                 #random.uniform(dim_widths[d]/2.0,dim_widths[d]) 
-#        pl.plot(self.rbfs_mu[:,1],self.rbfs_mu[:,0],'.k')
-#        pl.xlim(self.domain.statespace_limits[0])
-#        pl.ylim(self.domain.statespace_limits[1])
-#        pl.draw()
-#        raw_input()
+        if self.SHOW_CENTERS:
+            pl.plot(self.rbfs_mu[:,1],self.rbfs_mu[:,0],'.k')
+            pl.xlim(self.domain.statespace_limits[0])
+            pl.ylim(self.domain.statespace_limits[1])
+            pl.draw()
+            raw_input()
         self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
         super(RBF,self).__init__(domain,logger)
     def phi_nonTerminal(self,s):

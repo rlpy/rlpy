@@ -15,7 +15,7 @@ class ValueIteration(MDPSolver):
             self.logger.log("Value Iteration works only with the tabular representation.")
             return 0         
                     
-        no_of_states    = self.domain.states_num
+        no_of_states        = self.representation.agg_states_num
         prev_return         = inf   # used to track the performance improvement. 
         bellmanUpdates      = 0
         converged           = False
@@ -24,7 +24,9 @@ class ValueIteration(MDPSolver):
             prev_theta = self.representation.theta.copy()
             # Sweep The State Space
             for i in arange(0,no_of_states):
-                s       = array(id2vec(i,rep.bins_per_dim))
+                s = array(id2vec(i,rep.bins_per_dim))*self.representation.binWidth_per_dim
+                s += self.domain.statespace_limits[:,0] +.5
+                s[self.domain.continuous_dims] -= .5
                 actions = self.domain.possibleActions(s)
                 # Sweep The Actions
                 for a in actions:

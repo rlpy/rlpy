@@ -520,3 +520,4 @@ class Representation(object):
 		a_ind   		= argmax(Qs)
 		return Qs[a_ind],actions[a_ind]		 
 	# [V_oneStepLookAhead code]	
+	

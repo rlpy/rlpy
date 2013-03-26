@@ -59,7 +59,7 @@ class MDPSolver(object):
         # If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]                                     
         Q                                       = self.representation.Q_oneStepLookAhead(s,a,ns_samples,policy)
         s_index                                 = vec2id(self.representation.binState(s),self.representation.bins_per_dim)
-        theta_index                             = self.domain.states_num*a + s_index
+        theta_index                             = self.representation.agg_states_num*a + s_index
         self.representation.theta[theta_index]  =  Q
     def performanceRun(self):
         # Set Exploration to zero and sample one episode from the domain
