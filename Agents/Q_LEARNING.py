@@ -4,14 +4,17 @@
 ######################################################
 from Agent import *
 class Q_LEARNING(Agent):
-    lambda_ = 0        #lambda Parameter in [Sutton Book 1998]
-    eligibility_trace = []  #
-    def __init__(self, representation, policy, domain, logger = None, initial_alpha =.1, lambda_ = 0):
+    lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
+    eligibility_trace   = []
+    eligibility_trace_s = [] # eligibility trace using state only (no copy-paste), necessary for dabney decay mode
+    def __init__(self, representation, policy, domain,logger, initial_alpha =.1, lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000):
         self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
+        self.eligibility_trace_s= zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_
-        self.alpha              = initial_alpha 
-        super(Q_LEARNING,self).__init__(representation,policy,domain,logger)
+        super(Q_LEARNING,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
         self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
+        self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
+        
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):
         super(Q_LEARNING, self).learn(s,a,r,ns,na,terminal) # increment episode count
@@ -19,37 +22,41 @@ class Q_LEARNING(Agent):
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)
         phi                 = self.representation.phi_sa(s,a,phi_s)
-        phi_ns              = self.representation.phi(ns)
+        phi_prime_s         = self.representation.phi(ns)
+        na                  = self.representation.bestAction(ns,phi_prime_s) #Switch na to the best possible action
+        phi_prime           = self.representation.phi_sa(ns,na,phi_prime_s)
+        
+        nnz                 = count_nonzero(phi_s)    #Number of non-zero elements
+        if nnz == 0: # Phi has some nonzero elements, proceed with update
+            return
         
         #Set eligibility traces:
         if self.lambda_:
             self.eligibility_trace   *= gamma*self.lambda_
             self.eligibility_trace   += phi
+            
+            self.eligibility_trace_s  *= gamma*self.lambda_
+            self.eligibility_trace_s += phi_s
+            
             #Set max to 1
             self.eligibility_trace[self.eligibility_trace>1] = 1
+            self.eligibility_trace_s[self.eligibility_trace_s>1] = 1
         else:
             self.eligibility_trace    = phi
+            self.eligibility_trace_s  = phi_s
         
-        # find the best guess of Q^*: \hat{Q}=r+gamma*max_a(theta^T phi(s,a)), see e.g. Busoniu et al.'s book 2010
-        na                  = self.representation.bestAction(ns,phi_ns)
-        phi_prime           = self.representation.phi_sa(ns,na,phi_ns)
-        Q_max               = dot(phi_prime, theta)
-        td_error            = r + gamma*Q_max-dot(phi, theta)
-
-        #Automatic learning rate: [Dabney W. 2012]
-        candid_alpha    = abs(dot(phi-gamma*phi_prime,self.eligibility_trace)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-        candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf 
-        self.alpha      = min(self.alpha,candid_alpha)
-        #shout(self,self.alpha)
+        td_error            = r + dot(gamma*phi_prime - phi, theta)
+        
+        self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
+        #
         theta               += self.alpha * td_error * self.eligibility_trace
-        
-        #use this if you want to divide by the number of active features 
-        #nnz                 = count_nonzero(phi)    #Number of non-zero elements
-        #theta               += alpha * td_error * phi / (1.*nnz)  
-        
-        #Discover features using online iFDD
-        if isinstance(self.representation,iFDD):
+        #print max(theta)
+        #Discover features if the representation has the discover method
+        discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
+        if discover_func and callable(discover_func):
             self.representation.discover(phi_s,td_error)
         
         # Set eligibility Traces to zero if it is end of the episode
         if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
+        # Else there are no nonzero elements, halt update.
+ 
