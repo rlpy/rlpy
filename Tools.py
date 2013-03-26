@@ -837,14 +837,13 @@ class Merger(object):
         if mode == 0:
             M = array([M[y_ind,-1] for M in self.means])
             V = array([V[y_ind,-1] for V in self.std_errs])
-            print M
-            print V
-            print M+V
             best_index = argmax(M+V)
             best = max(M+V)
         else:
             M = array([M[y_ind,:] for M in self.means])
             S = sum(M,axis=1)
+            print M
+            print S
             best = max(S)
             best_index = argmax(S)
         return self.exp_paths[best_index], best
