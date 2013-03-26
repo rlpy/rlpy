@@ -837,6 +837,9 @@ class Merger(object):
         if mode == 0:
             M = array([M[y_ind,-1] for M in self.means])
             V = array([V[y_ind,-1] for V in self.std_errs])
+            print M
+            print V
+            print M+V
             best_index = argmax(M+V)
             best = max(M+V)
         else:
@@ -845,7 +848,6 @@ class Merger(object):
             best = max(S)
             best_index = argmax(S)
         return self.exp_paths[best_index], best
-            
     def plot(self,Y_axis = None, X_axis = None):
         #Setting default values based on the Policy Evaluation or control
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
