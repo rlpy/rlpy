@@ -50,6 +50,7 @@ class iFDD_potential(object):
     def show(self):
         printClass(self)
 class iFDD(Representation):
+    PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity. 
     discovery_threshold     = None  # psi in the paper
     sparsify                = None  # boolean specifying the use of the trick mentioned in the paper so that features are getting sparser with more feature discoveries (i.e. use greedy algorithm for feature activation)
     iFDD_features           = {}    # dictionary mapping initial feature sets to iFDD_feature 
@@ -64,7 +65,6 @@ class iFDD(Representation):
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
-    PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity. 
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
