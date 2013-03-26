@@ -71,7 +71,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     DISCRITIZATION              = 20  # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = 50  #{'PitMaze':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
     iFDDOnlineThreshold         = 100 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
-    BatchDiscoveryThreshold     = 0 #if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    BatchDiscoveryThreshold     = 0.001 #if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
@@ -87,7 +87,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     initial_alpha           = 1
     boyan_N0                = 1000
     LAMBDA                  = 0
-    LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
+    LSPI_iterations         = 10 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 50
@@ -128,10 +128,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
+    #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon[className(domain)])
-    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
     
     # POLICY
@@ -144,9 +144,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize, LSPI_return_best_policy)
-    #agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
+    agent           = RE_LSPI(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations)
     #agent           = RE_LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
-    agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations)
     
     # MDP_Solver
