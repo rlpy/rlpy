@@ -713,6 +713,7 @@ class Merger(object):
         self.legend                 = legend
         self.maxSamples             = maxSamples # In case we want to use less than available number of samples
         self.minSamples             = minSamples # Directories with samples less than this value will be ignored.
+        self.samples                = []         # Number of Samples for each experiments
         self.useLastDataPoint       = False     # By default assume all data has the same number of points along the X axis.
         self.getMAX                 = getMAX    # Instead of mean of all experiments find the best performance among them
         # See if the path is an experiment. If so just parse that directory
@@ -751,11 +752,12 @@ class Merger(object):
         if len(self.exp_paths) == 0:
             print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
             return
-        self.exp_paths = sorted(self.exp_paths)
+        self.exp_paths  = sorted(self.exp_paths)
         for exp in self.exp_paths:
-            means, std_errs = self.parseExperiment(exp)
+            means, std_errs, samples = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)
+            self.samples.append(samples)
     def extractLabel(self,p):
         # Given an experiment directoryname it extracts a reasonable label
         tokens = p.split('-')
@@ -812,9 +814,9 @@ class Merger(object):
 
         _,self.datapoints_per_graph,_ = samples.shape
         if self.getMAX:
-            return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
+            return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num
         else:
-            return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num)
+            return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num
     def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
@@ -826,7 +828,7 @@ class Merger(object):
         print "Last Performance+std_errs"
         print "=========================="
         for i,e in enumerate(self.exp_paths):
-            print "%s:\t%0.3f+%0.3f" % (e,M[i],V[i])
+            print "%s:\t%0.3f+%0.3f based on %d Samples" % (e,M[i],V[i],self.samples[i])
     def bestExperiment(self,Y_axis = None, mode = 0):
         # Returns the experiment with the best final results
         # Best is defined in two settings:
