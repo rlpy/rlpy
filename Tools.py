@@ -821,7 +821,7 @@ class Merger(object):
         y_ind = self.AXES.index(Y_axis)
         M = array([M[y_ind,-1] for M in self.means])
         V = array([V[y_ind,-1] for V in self.std_errs])
-        os.system('clear');
+        #os.system('clear');
         print "=========================="
         print "Last Performance+std_errs"
         print "=========================="
