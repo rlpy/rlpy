@@ -325,11 +325,12 @@ class LSPI(Agent):
         else:
             return R.ravel()+dot(gamma*F2-F1,self.representation.theta)
     def representationExpansionLSPI(self):
-        re_iteration    = 1
+        re_iteration    = 0
         added_feature   = True
         while added_feature and re_iteration <= self.re_iterations:
+            re_iteration += 1
             if hasFunction(self.representation,'batchDiscover'):
-                self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
+                self.logger.log('-----------------\nRepresentation Expansion iteration #%d\n-----------------' % re_iteration)
             # Run LSTD for first solution
             A,b, all_phi_s, all_phi_s_a, all_phi_ns,_ = self.LSTD()
             # Run Policy Iteration to change a_prime and recalculate theta
@@ -340,7 +341,6 @@ class LSPI(Agent):
             else:
                 self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
                 added_feature = False
-            re_iteration += 1
             #print 'L_inf distance to V*= ', self.domain.L_inf_distance_to_V_star(self.representation)
         if added_feature:
             # Run LSPI one last time with the new features
