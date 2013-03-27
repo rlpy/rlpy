@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
 def searchNShowAvg(path,Y_axis = None):
-    if os.path.exists('main.py'):
+    if os.path.exists(path+'/main.py'):
         merger = Merger([path])
         if Y_axis:
             merger.showLast(sys.argv[1])
@@ -25,7 +25,7 @@ def searchNShowAvg(path,Y_axis = None):
     else:
         for d in os.listdir(path):
             if os.path.isdir(d) and d[0] != '.':
-                #print "Looking into: %s" % d
+                print "Looking into: %s" % d
                 searchNShowAvg(path+'/'+d)
         
 if __name__ == '__main__':
