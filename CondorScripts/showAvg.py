@@ -23,9 +23,10 @@ def searchNShowAvg(path,Y_axis = None):
         else:
             merger.showLast()
     else:
-        for d in os.listdir('.'):
-            print "Looking into: %s" % d
-            searchNShowAvg([path+'/'+d])
+        for d in os.listdir(path):
+            if os.path.isdir(d) and d[0] != '.':
+                #print "Looking into: %s" % d
+                searchNShowAvg(path+'/'+d)
         
 if __name__ == '__main__':
     if len(sys.argv) == 1:
