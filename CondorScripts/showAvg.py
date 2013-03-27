@@ -15,6 +15,17 @@ path += '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
 
+def searchNShowAvg(path,Y_axis = None):
+    if os.path.exists('main.py'):
+        merger = Merger([path])
+        if Y_axis:
+            merger.showLast(sys.argv[1])
+        else:
+            merger.showLast()
+    else:
+        for d in os.listdir('.'):
+            searchNShowAvg([path+'/'+d])
+        
 if __name__ == '__main__':
     paths = ['.']
     merger = Merger(paths)
