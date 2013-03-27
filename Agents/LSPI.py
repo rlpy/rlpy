@@ -25,11 +25,12 @@ class LSPI(Agent):
     data_r          = []        #
     data_ns         = []        # 
     data_na         = []        # 
-    def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3,return_best_policy = 0):
+    def __init__(self,representation,policy,domain,logger, lspi_iterations = 5, sample_window = 100, epsilon = 1e-3,return_best_policy = 0, re_iterations = 100):
         self.samples_count      = 0
         self.sample_window      = sample_window
         self.epsilon            = epsilon
         self.lspi_iterations    = lspi_iterations
+        self.re_iterations      = re_iterations # Number of iterations over LSPI and iFDD
         self.return_best_policy = return_best_policy # Default is False. If set True it will track the best policy during iterations
         self.phi_sa_size        = domain.actions_num * representation.features_num
         self.data_s             = zeros((sample_window, domain.state_space_dims))
@@ -44,15 +45,12 @@ class LSPI(Agent):
                 self.logger.log('Weight Difference tol.:\t%0.3f' % epsilon)
                 self.logger.log('Track the best policy:\t%d' % self.return_best_policy)
                 self.logger.log('Use Sparse:\t\t%d' % self.use_sparse)
+                self.logger.log('Max Representation Expansion Iterations:\t%d' % re_iterations)
     def learn(self,s,a,r,ns,na,terminal):
-        
         self.storeData(s,a,r,ns,na)        
         if self.samples_count == self.sample_window: #zero based hence the -1
             self.samples_count = 0
-            # Run LSTD for first solution
-            A,b,all_phi_s, all_phi_s_a, all_phi_ns,_ = self.LSTD()
-            # Run Policy Iteration to change a_prime and recalculate theta
-            self.policyIteration(b,all_phi_s_a, all_phi_ns)
+            self.representationExpansionLSPI()
     def policyIteration(self,b,all_phi_s_a,all_phi_ns):
             # Update the policy by recalculating A based on new na
             # Returns the TD error for each sample based on the latest weights and next actions
@@ -326,3 +324,25 @@ class LSPI(Agent):
             return squeeze(asarray(answer))
         else:
             return R.ravel()+dot(gamma*F2-F1,self.representation.theta)
+    def representationExpansionLSPI(self):
+        re_iteration    = 1
+        added_feature   = True
+        while added_feature and re_iteration <= self.re_iterations:
+            if hasFunction(self.representation,'batchDiscover'):
+                self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
+            # Run LSTD for first solution
+            A,b, all_phi_s, all_phi_s_a, all_phi_ns,_ = self.LSTD()
+            # Run Policy Iteration to change a_prime and recalculate theta
+            td_errors = self.policyIteration(b,all_phi_s_a,all_phi_ns)
+            # Add new Features
+            if hasFunction(self.representation,'batchDiscover'):
+                added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
+            else:
+                self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
+                added_feature = False
+            re_iteration += 1
+            #print 'L_inf distance to V*= ', self.domain.L_inf_distance_to_V_star(self.representation)
+        if added_feature:
+            # Run LSPI one last time with the new features
+            A,b, all_phi_s, all_phi_s_a, all_phi_ns,_ = self.LSTD()
+            self.policyIteration(b,all_phi_s_a,all_phi_ns)
