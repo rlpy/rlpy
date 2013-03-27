@@ -46,9 +46,8 @@ class SARSA(Agent):
         td_error            = r + dot(gamma*phi_prime - phi, theta)
         
         self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
-        #
         theta               += self.alpha * td_error * self.eligibility_trace
-        #print max(theta)
+
         #Discover features if the representation has the discover method
         discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
