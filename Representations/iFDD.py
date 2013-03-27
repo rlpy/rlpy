@@ -208,7 +208,7 @@ class iFDD(Representation):
         self.updateWeight(feature.p1,feature.p2)
         # Update the index to feature dictionary
         self.featureIndex2feature[feature.index] = feature
-        #print "IN IFDD, New Feature = %d" % feature.index
+        print "IN IFDD, New Feature = %d => Total Features = %d" % (feature.index, self.features_num)
         # Update the sorted list of features
         priority = 1/(len(potential.f_set)*1.) # priority is 1/number of initial features corresponding to the feature
         self.sortediFDDFeatures.push(priority,feature)

@@ -27,11 +27,11 @@ class PolicyIteration(MDPSolver):
         
         policy_improvement_iteration = 0
         while policyChanged and deltaT(self.start_time) < self.planning_time:
-
+            
             # Policy Evaluation
             converged = False
             policy_evaluation_iteration = 0
-            while not converged:
+            while not converged and deltaT(self.start_time) < self.planning_time:
                 policy_evaluation_iteration += 1
                 prev_theta = self.representation.theta.copy()
                 # Sweep The State Space

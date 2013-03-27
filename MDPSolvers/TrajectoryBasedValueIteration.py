@@ -34,7 +34,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
             terminal                = False
             s                       = self.domain.s0()
             a                       = self.representation.bestAction(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
-            while not terminal and step < self.domain.episodeCap:
+            while not terminal and step < self.domain.episodeCap and deltaT(self.start_time) < self.planning_time:
                 new_Q           = self.representation.Q_oneStepLookAhead(s,a, self.ns_samples)
                 phi_s           = self.representation.phi(s)
                 phi_s_a         = self.representation.phi_sa(s,a,phi_s)

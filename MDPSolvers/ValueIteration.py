@@ -36,7 +36,9 @@ class ValueIteration(MDPSolver):
                     if False and bellmanUpdates % self.check_interval == 0:
                         performance_return, _,_,_  = self.performanceRun()
                         self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
-
+                
+                if deltaT(self.start_time) > self.planning_time: break
+                    
             #check for convergence
             iteration += 1
             theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
