@@ -29,7 +29,13 @@ def searchNShowAvg(path,Y_axis = None):
                 searchNShowAvg(path+'/'+d)
         
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        searchNShowAvg('.')
+#    if len(sys.argv) == 1:
+#        searchNShowAvg('.')
+#    else:
+#        searchNShowAvg('.',sys.argv[1])
+    merger = Merger(['.'])
+    if len(sys.argv) > 1:
+        merger.showLast(sys.argv[1])
     else:
-        searchNShowAvg('.',sys.argv[1])
+        merger.showLast()
+        
