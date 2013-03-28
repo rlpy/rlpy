@@ -24,7 +24,7 @@ import sys, os
 #Add all paths
 path = '.'
 print 'looking for Tools.py'
-while not os.path.exists(path+'/RL-Python/Tools.py'):
+while not os.path.exists(path+'/RL-Python/Tools/GeneralTools.py'):
     path = path + '/..'
     print path
 path += '/RL-Python'

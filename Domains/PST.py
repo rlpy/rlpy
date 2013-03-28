@@ -188,10 +188,16 @@ class PST(Domain):
 
          # Create rectangular patches at each of those locations
         self.location_rect_vis = [mpatches.Rectangle([0.5 + (self.dist_between_locations)*i, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'w') for i in range(UAVLocation.SIZE-1)]
-        self.location_rect_vis.append(mpatches.Rectangle([crashLocationX, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'r'))
+        self.location_rect_vis.append(mpatches.Rectangle([crashLocationX, 0], self.LOCATION_WIDTH, self.NUM_UAV * 2, fc = 'w'))
         [self.subplot_axes.add_patch(self.location_rect_vis[i]) for i in range(4)]
-        self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV + 0.5, self.NUM_UAV + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
-        self.comms_line.append(lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2, crashLocationX],[self.NUM_UAV + 0.5, self.NUM_UAV + 0.5], linewidth = 3, color='black', visible=False))
+        self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
+        self.comms_line.append(lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2, crashLocationX],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False))
+        
+        # Create location text below rectangles
+        locText = ["Repair","Refuel","Transmit","Survey"]
+        self.location_rect_txt = [pl.text(0.5 + self.dist_between_locations*i + 0.5*self.LOCATION_WIDTH,-0.3,locText[i], ha = 'center') for i in range(UAVLocation.SIZE-1)]
+        self.location_rect_txt.append(pl.text(crashLocationX + 0.5*self.LOCATION_WIDTH,-0.3,locText[UAVLocation.SIZE-1], ha = 'center'))
+        
         # Initialize list of circle objects
 
         uav_x = self.location_coord[UAVLocation.MAINTENANCE]
@@ -199,7 +205,7 @@ class PST(Domain):
 #            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
         # Update the member variables storing all the figure objects
         self.uav_circ_vis = [mpatches.Circle((uav_x,1+uav_id), self.UAV_RADIUS, fc="w") for uav_id in range(0,self.NUM_UAV)]
-        self.uav_text_vis = [pl.text(0, 0, 0) for uav_id in range(0,self.NUM_UAV)]
+        self.uav_text_vis = [None for uav_id in range(0,self.NUM_UAV)] # fuck
         self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
         self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
 
@@ -249,20 +255,14 @@ class PST(Domain):
 		
         numHealthySurveil = sum(logical_and(sStruct.locations == UAVLocation.SURVEIL, sStruct.sensor))
         if (any(sStruct.locations == UAVLocation.COMMS)): # We have comms coverage: draw a line between comms states to show this
+            [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
+            [self.comms_line[i].set_color('black') for i in range(len(self.comms_line))]
             if numHealthySurveil > 0: # We also have UAVs in surveillance; color the comms line black
-                commsColor = 'black'
-                [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
-            else: 
-                commsColor = 'red'
-                [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line)-1)]
-            [self.comms_line[i].set_color(commsColor) for i in range(len(self.comms_line))]
-            
-        else: # No comms coverage
-            if numHealthySurveil > 0: # Surveillance but no comms; indicate with an X at the surveillance state               
-                self.comms_line[len(self.comms_line)-1].set_color('red')
-                self.comms_line[len(self.comms_line)-1].set_visible(True)
-                midpoint = (0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2 + crashLocationX)/2
-                self.subplot_axes.add_line(lines.Line2D([midpoint, midpoint],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
+                self.location_rect_vis[len(self.location_rect_vis)-1].set_color('green')
+                #self.comms_line[len(self.comms_line)-1].set_color('red')
+                #self.comms_line[len(self.comms_line)-1].set_visible(True)
+                #midpoint = (0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2 + crashLocationX)/2
+                #self.subplot_axes.add_line(lines.Line2D([midpoint, midpoint],[self.NUM_UAV + 0.75, self.NUM_UAV + 0.25], linewidth = 3, color='red', visible=True))
         [self.subplot_axes.add_line(self.comms_line[i]) for i in range(len(self.comms_line))] # Only visible lines actually appear
         pl.draw()
         sleep(0.5)

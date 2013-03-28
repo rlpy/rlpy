@@ -82,23 +82,25 @@ class PitMaze(Domain):
             X,Y = pl.meshgrid(X,Y) 
             DX = DY = ones(X.shape)
             C = zeros(X.shape); C[0,0] = 1 # Making sure C has both 0 and 1  
-            arrow_ratio = 0.4 # length of arrow/width of bax. Less then 0.5 because each arrow is offset, 0.4 looks nice but could be better/auto generated           
-            self.upArrows_fig = pl.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio) #, headwidth=1.5, headlength = 2.5, headaxislength = 2.25) 
+            arrow_ratio = 0.4 # length of arrow/width of bax. Less then 0.5 because each arrow is offset, 0.4 looks nice but could be better/auto generated 
+            Max_Ratio_ArrowHead_to_ArrowLength = 0.25
+            ARROW_WIDTH = 0.5*Max_Ratio_ArrowHead_to_ArrowLength/5.0
+            self.upArrows_fig = pl.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio, width = -1*ARROW_WIDTH) 
             self.upArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)+self.SHIFT
             Y   = arange(self.COLS)
             X,Y = pl.meshgrid(X,Y) 
-            self.downArrows_fig = pl.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio)
+            self.downArrows_fig = pl.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio, width = -1*ARROW_WIDTH)
             self.downArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)
             Y   = arange(self.COLS)-self.SHIFT
             X,Y = pl.meshgrid(X,Y) 
-            self.leftArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio)
+            self.leftArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
             self.leftArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)
             Y   = arange(self.COLS)+self.SHIFT
             X,Y = pl.meshgrid(X,Y) 
-            self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio)
+            self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
             self.rightArrows_fig.set_clim(vmin=0,vmax=1)
             f = pl.gcf()
 #            f.set_size_inches(10,20)
@@ -126,8 +128,8 @@ class PitMaze(Domain):
                     for i in arange(len(As)):
                         a = As[i]
                         Q = Qs[i]
-                        value = linearMap(Q,self.MIN_RETURN,self.MAX_RETURN,.4,1)
-                        arrowSize[c,r,a] = value                     
+                        value = linearMap(Q,self.MIN_RETURN,self.MAX_RETURN,0,1)
+                        arrowSize[c,r,a] = value
         #Show Value Function
         self.valueFunction_fig.set_data(V)
         #Show Policy Up Arrows

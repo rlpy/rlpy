@@ -6,7 +6,7 @@
 import sys, os
 #Add all paths
 RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools.py'):
+while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools/GeneralTools.py'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RL-Python')
