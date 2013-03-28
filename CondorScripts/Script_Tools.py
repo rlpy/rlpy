@@ -48,8 +48,8 @@ def logKeyOLD(log):
     return h1*10000+m1*100+s1
 def logKey(log):
     if 'Return' in log:
-        _,_,value = rpartition(log,'Return=')
-        value,_,_ = rpartition(log,',')
+        _,_,value = log.rpartition('Return=')
+        value,_,_ = value.rpartition(',')
         value = eval(value)
     else:
         return -inf
