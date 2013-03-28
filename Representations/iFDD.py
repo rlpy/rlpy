@@ -5,6 +5,7 @@
 # iFDD implementation based on ICML 2011 paper
 import sys, os
 from Queue import PriorityQueue
+from copy import deepcopy
 #Add all paths
 sys.path.insert(0, os.path.abspath('..'))
 from Tools import *
@@ -214,7 +215,7 @@ class iFDD(Representation):
         self.updateWeight(feature.p1,feature.p2)
         # Update the index to feature dictionary
         self.featureIndex2feature[feature.index] = feature
-        print "IN IFDD, New Feature = %d => Total Features = %d" % (feature.index, self.features_num)
+        # print "IN IFDD, New Feature = %d => Total Features = %d" % (feature.index, self.features_num)
         # Update the sorted list of features
         priority = 1/(len(potential.f_set)*1.) # priority is 1/number of initial features corresponding to the feature
         self.sortediFDDFeatures.push(priority,feature)
@@ -344,7 +345,13 @@ class iFDD(Representation):
             return None
     def featureType(self):
         return bool
-        
+    def __deepcopy__(self,memo):
+        ifdd = iFDD(self.domain,self.logger,self.discovery_threshold, self.initial_representation, self.sparsify, self.discretization, self.debug, self.useCache,self.maxBatchDicovery, self.batchThreshold, self.iFDDPlus)
+        ifdd.iFDD_features      = deepcopy(self.iFDD_features)
+        ifdd.iFDD_potentials    = deepcopy(self.iFDD_potentials)
+        ifdd.cache              = deepcopy(self.cache)
+        ifdd.featureIndex2feature = deepcopy(self.featureIndex2feature)
+        return ifdd
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1

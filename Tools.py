@@ -674,6 +674,16 @@ def isOnCluster():
     return False
 def rootMeanSquareError(X):
     return sqrt(mean(X**2))
+def padZeros(X,L):
+    # X is a 1D numpy array
+    # L is an int
+    # if len(X) < L pad zeros to X so it will have length L
+    if len(X) < L:
+        new_X = zeros(L)
+        new_X[:len(X)] = X
+        return new_X
+    else:
+        return X
 class Logger(object):
     buffer = ''         # You can print into a logger without initializing its filename. Whenever the filename is set, the buffer is flushed to the output.
     filename = ''

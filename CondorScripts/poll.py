@@ -80,9 +80,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                     sys.stdout.write(log)
                 sys.stdout.write(nc)
             else:
-                if completed:
-                    print "%s: %s%d/%d Done! %s"  % (idir.replace('./',''), COMPLETED_COLOR,completed,total, nc)
-                else:
+                if not completed:
                     print "%s: %sEmpty.%s"  % (idir.replace('./',''), RED, nc)
 
 if __name__ == '__main__':
