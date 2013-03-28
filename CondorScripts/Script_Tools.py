@@ -47,12 +47,13 @@ def logKeyOLD(log):
         
     return h1*10000+m1*100+s1
 def logKey(log):
-    if 'Return' in log:
-        _,_,value = log.rpartition('Return=')
-        value,_,_ = value.rpartition(',')
+    if 'Return=' in log:
+        value = log.split('Return=',1)[1]
+        value = value.split(',',1)[0]
         value = eval(value)
+        return -value
     else:
-        return -inf
+        return inf
 def sortLog(logs):
     return sorted(logs,key=logKey)
 
