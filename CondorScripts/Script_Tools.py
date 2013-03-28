@@ -23,7 +23,7 @@ FINISHED_RUNS_NUM   = 5   # Number of runs which is counted as a finished run fo
 
 import os
 
-def logKey(log):
+def logKeyOLD(log):
     timeRE     = re.compile('R\[[0-9]*:[0-9]*:[0-9]*')
     temp1       = timeRE.search(log)
     if not temp1:
@@ -46,7 +46,13 @@ def logKey(log):
         s1 = m1 = h1 = 10000000
         
     return h1*10000+m1*100+s1
-
+def logKey(log):
+    if 'Return' in log:
+        _,_,value = rpartition(log,'Return=')
+        value,_,_ = rpartition(log,',')
+        value = eval(value)
+    else:
+        return -inf
 def sortLog(logs):
     return sorted(logs,key=logKey)
 

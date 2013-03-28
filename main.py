@@ -101,7 +101,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # MDP Solver Parameters: ----------------------
     NS_SAMPLES                  = 100   # Number of Samples used to estimate the expected r+\gamma*V(s') given a state and action.  
     PLANNING_TIME               = 60*60*5 #5 Hours = Max Amount of time given to each planning algorithm (MDP Solver) to think in seconds
-    CONVERGENCE_THRESHOLD       = 1e-2  # Parameter used to define convergence in the planner
+    CONVERGENCE_THRESHOLD       = 1e-4  # Parameter used to define convergence in the planner
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
