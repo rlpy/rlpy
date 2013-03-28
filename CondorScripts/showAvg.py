@@ -7,10 +7,10 @@
 import sys, os
 #Add all paths
 path = '.'
-print 'looking for Tools.py'
+#print 'looking for Tools.py'
 while not os.path.exists(path+'/RL-Python/Tools.py'):
     path = path + '/..'
-    print path
+    #print path
 path += '/RL-Python'
 sys.path.insert(0, os.path.abspath(path))
 from Tools import *
