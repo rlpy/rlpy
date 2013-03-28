@@ -104,7 +104,6 @@ class iFDD(Representation):
             F_s[finalActiveIndices] = 1
         except:
             print "ERRR"
-            raw_input()
         return F_s
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
@@ -348,10 +347,19 @@ class iFDD(Representation):
         return bool
     def __deepcopy__(self,memo):
         ifdd = iFDD(self.domain,self.logger,self.discovery_threshold, self.initial_representation, self.sparsify, self.discretization, self.debug, self.useCache,self.maxBatchDicovery, self.batchThreshold, self.iFDDPlus)
-        ifdd.iFDD_features      = deepcopy(self.iFDD_features)
-        ifdd.iFDD_potentials    = deepcopy(self.iFDD_potentials)
-        ifdd.cache              = deepcopy(self.cache)
-        ifdd.featureIndex2feature = deepcopy(self.featureIndex2feature)
+        for s,f in self.iFDD_features.items():
+            new_f = deepcopy(f)
+            new_s = deepcopy(s)
+            ifdd.iFDD_features[new_s] = new_f
+            ifdd.featureIndex2feature[new_f.index] = new_f
+        for s,p in self.iFDD_potentials.items():
+            new_s = deepcopy(s)
+            new_p = deepcopy(p)
+            ifdd.iFDD_potentials[new_s] = deepcopy(new_p) 
+        ifdd.cache = deepcopy(self.cache)
+        ifdd.sortediFDDFeatures = deepcopy(self.sortediFDDFeatures)
+        ifdd.features_num = self.features_num
+        ifdd.theta = deepcopy(self.theta)
         return ifdd
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'

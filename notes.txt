@@ -5,6 +5,7 @@ Tasks:
 (Elliot) - Update Visual for PST
 (Elliot) - Tools.py Arrangement
 (Elliot) - Fix the issue with legend not being shown during the run
+- Improve iFDD Speed
 - Optimization
 - Feature Names
 - bestAction in matrix form (how about breaking ties randomly)

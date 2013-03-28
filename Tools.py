@@ -737,7 +737,7 @@ class Merger(object):
 
         #Setup Labels if not defined
         if labels == None: self.labels = [self.extractLabel(p) for p in self.exp_paths]
-        print "Experiment Labels: ", self.labels
+        #print "Experiment Labels: ", self.labels
 
         self.exp_num                = len(self.exp_paths)
         self.means                  = []
