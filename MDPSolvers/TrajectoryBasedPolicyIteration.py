@@ -27,6 +27,8 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         bellmanUpdates      = 0
         converged           = False
         PI_iteration        = 0
+        # The policy is maintined as separate copy of the representation.
+        # This way as the representation is updated the policy remains intact
         policy              = eGreedy(deepcopy(self.representation),self.logger, epsilon = self.epsilon, forcedDeterministicAmongBestActions = True) # Copy the representation so that the weight change during the evaluation does not change the policy
         
         while deltaT(self.start_time) < self.planning_time and not converged:
@@ -80,9 +82,16 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             
             # Policy Improvement (Updating the representation of the value function will automatically improve the policy
             PI_iteration += 1
-            delta_theta = linalg.norm(padZeros(policy.representation.theta,self.representation.features_num)-self.representation.theta)
+            
+            #Calculate the change in the theta as L2-norm
+            #Theta may have increased in size if the representation is expanded.
+            paddedTheta = padZeros(policy.representation.theta,len(self.representation.theta))
+            delta_theta = linalg.norm(paddedTheta-self.representation.theta)
             converged = delta_theta < self.convergence_threshold 
+
+            #Update the underlying value function of the policy
             policy.representation = deepcopy(self.representation)
+            
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             self.logger.line()
             self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.3f, features=%d' % (PI_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, delta_theta, performance_return, self.representation.features_num))

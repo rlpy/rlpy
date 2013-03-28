@@ -104,6 +104,7 @@ class iFDD(Representation):
             F_s[finalActiveIndices] = 1
         except:
             print "ERRR"
+            raw_input()
         return F_s
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
