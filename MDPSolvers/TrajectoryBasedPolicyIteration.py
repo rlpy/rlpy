@@ -58,8 +58,9 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     #Discover features if the representation has the discover method
                     discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
                     if discover_func and callable(discover_func):
-                        self.representation.discover(phi_s,bellman_error)
-                        print "Features = %d" % self.representation.features_num
+                        discovered = self.representation.discover(phi_s,bellman_error)
+                        if discovered: 
+                            print "Features = %d" % self.representation.features_num
                     
                     #Simulate new state and action on trajectory
                     _,s,terminal    = self.domain.step(s,a)

@@ -702,7 +702,7 @@ class Merger(object):
     #MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Iterations', 'Discounted Return', 'Iteration Time']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = [], output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0):
+    def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []
@@ -716,33 +716,19 @@ class Merger(object):
         self.samples                = []         # Number of Samples for each experiments
         self.useLastDataPoint       = False     # By default assume all data has the same number of points along the X axis.
         self.getMAX                 = getMAX    # Instead of mean of all experiments find the best performance among them
-        # See if the path is an experiment. If so just parse that directory
-        # Otherwise parse all subdirectories with experiment results
-        if self.hasResults(paths[0]):
-            self.exp_paths = []
-            for path in paths:
-                #Fix the local accessing
-                if path.find('/') == -1:
-                    path = './'+path
-                self.path,char,exp_path = path.rpartition('/')
-                self.exp_paths += [exp_path]
-        else:
-            path                        = paths[0]
-            self.path                   = path
-            self.exp_paths              = os.listdir(path)
-            self.exp_paths              = [p for p in self.exp_paths if os.path.isdir(path+'/'+p) and self.hasResults(self.path+'/'+p+'/')]
-
-        #Setup the output path:
+        self.output_path            = output_path
+        self.labels                 = labels
+        #Extract experiment paths by finding all subdirectories in all given paths that contain experiment.
+        self.extractExperimentPaths(paths)
+        
+        #Setup the output path if it has not been defined:
         if output_path == None:
-            if len(paths) > 1:
-                self.output_path = '.'
-            else:
-                self.output_path = path
-        else:
-             self.output_path = output_path
+            self.output_path = '.' if len(paths) > 1 else paths[0]
 
-        self.labels                 = labels if labels != [] else [self.extractLabel(p) for p in self.exp_paths]
+        #Setup Labels if not defined
+        if labels == None: self.labels = [self.extractLabel(p) for p in self.exp_paths]
         print "Experiment Labels: ", self.labels
+
         self.exp_num                = len(self.exp_paths)
         self.means                  = []
         self.std_errs               = []
@@ -752,12 +738,20 @@ class Merger(object):
         if len(self.exp_paths) == 0:
             print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
             return
-        self.exp_paths  = sorted(self.exp_paths)
         for exp in self.exp_paths:
             means, std_errs, samples = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)
             self.samples.append(samples)
+    def extractExperimentPaths(self,paths):
+        self.exp_paths = []
+        for path in paths:
+            for p in os.walk(path):
+                dirname = p[0]
+                if self.hasResults(dirname):
+                   self.exp_paths.append(dirname)
+        if self.labels == None:
+            self.exp_paths  = sorted(self.exp_paths)
     def extractLabel(self,p):
         # Given an experiment directoryname it extracts a reasonable label
         tokens = p.split('-')
@@ -765,20 +759,23 @@ class Merger(object):
             return tokens[-2]+'-'+tokens[-1]
         else:
             return tokens[-1]
-    def parseExperiment(self,exp):
+    def parseExperiment(self,path):
         # Parses all the files in form of <number>-results.txt and return
         # two matrices corresponding to mean and std_err
         # If the number of points along the x axis is not identical across all runs and experiments it returns the last data point for all experiments
-        path        = self.path + '/'+exp
+        if '/' in path: 
+            _,_,fringeDirName = path.rpartition('/') 
+        else:
+             fringeDirName = path
+             
         files       = glob.glob('%s/*-results.txt'%path)
         samples_num = len(files)
-        if samples_num == 0:
-            print 'Error: %s is empty!' % path
         if self.maxSamples < samples_num:
-            print "%s => %d Samples. Using % samples" % (exp,samples_num, self.maxSamples)
+            print "%d/%d Samples <= %s" % (samples_num, self.maxSamples,fringeDirName)
             samples_num = self.maxSamples
         else:
-            print "%s => %d Samples." % (exp,samples_num)
+            print "%d Samples <= %s" % (samples_num, fringeDirName)
+            
         #read the first file to initialize the matricies
         matrix      = readMatrixFromFile(files[0])
         rows, cols  = matrix.shape

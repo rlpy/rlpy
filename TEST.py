@@ -3,5 +3,11 @@ from Domains import *
 from Representations import *
 
 
-X = linspace(0,3.1,3)
-print X+1
+def hasResults(path):
+    return len(glob.glob(os.path.join(path, '*-results.txt'))) >= 1
+
+path = '.'
+for p in os.walk(path):
+    dirname = p[0]
+    if not '/.' in dirname and hasResults(dirname):
+        print dirname

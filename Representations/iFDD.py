@@ -62,7 +62,7 @@ class iFDD(Representation):
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
     iFDDPlus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
-    sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, tt is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
+    sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, it is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
@@ -99,7 +99,10 @@ class iFDD(Representation):
                 finalActiveIndices     = self.findFinalActiveFeatures(activeIndices)
         else:
             finalActiveIndices         = self.findFinalActiveFeatures(activeIndices)
-        F_s[finalActiveIndices] = 1
+        try:
+            F_s[finalActiveIndices] = 1
+        except:
+            print "ERRR"
         return F_s
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
@@ -140,9 +143,12 @@ class iFDD(Representation):
             self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures     
     def discover(self,phi_s,td_error):            
+        # Returns true if any feature is added
         activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
+        discovered = False
         for g_index,h_index in combinations(activeFeatures,2):
-            self.inspectPair(g_index,h_index,td_error)
+            discovered = discovered or self.inspectPair(g_index,h_index,td_error)
+        return discovered
     def inspectPair(self,g_index,h_index,td_error):
         # Inspect feature f = g union h where g_index and h_index are the indices of features g and h        
         # If the relevance is > Threshold add it to the list of features
