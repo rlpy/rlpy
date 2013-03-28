@@ -53,7 +53,7 @@ def logKey(log):
         value = eval(value)
         return -value
     else:
-        return inf
+        return 1000000000
 def sortLog(logs):
     return sorted(logs,key=logKey)
 

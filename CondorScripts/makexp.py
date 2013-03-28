@@ -12,6 +12,7 @@ import os, sys, time, re, string
 RL_PYTHON_ROOT = '.'
 while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools.py'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+    print RL_PYTHON_ROOT
 RL_PYTHON_ROOT += '/RL-Python'
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
 sys.path.insert(0, RL_PYTHON_ROOT)

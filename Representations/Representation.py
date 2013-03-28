@@ -106,7 +106,10 @@ class Representation(object):
 	def Q(self,s,a,phi_s = None):
 		
 		if len(self.theta) > 0:
-			return dot(self.phi_sa(s,a, phi_s),self.theta)
+			try:
+				return dot(self.phi_sa(s,a, phi_s),self.theta)
+			except:
+				print "ERRRRRR"
 		else:
 			return 0.0
 	# [Q code]
@@ -309,8 +312,8 @@ class Representation(object):
 	# @return A boolean stating whether the method added a feature or not.
 	
 	# [batchDiscover code]
-	def batchDiscover(self, td_errors, all_phi_s, data_s):
-		return False
+	# def batchDiscover(self, td_errors, all_phi_s, data_s):
+	#	return False
 	# [batchDiscover code]
 	
 	
@@ -520,4 +523,3 @@ class Representation(object):
 		a_ind   		= argmax(Qs)
 		return Qs[a_ind],actions[a_ind]		 
 	# [V_oneStepLookAhead code]	
-	
