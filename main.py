@@ -101,14 +101,14 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # MDP Solver Parameters: ----------------------
     NS_SAMPLES                  = 100   # Number of Samples used to estimate the expected r+\gamma*V(s') given a state and action.  
     PLANNING_TIME               = 60*60*5 #5 Hours = Max Amount of time given to each planning algorithm (MDP Solver) to think in seconds
-    CONVERGENCE_THRESHOLD       = 1e-2  # Parameter used to define convergence in the planner
+    CONVERGENCE_THRESHOLD       = 1e-3  # Parameter used to define convergence in the planner
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
@@ -150,8 +150,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # MDP_Solver
     #================
-    #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME)
-    MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME)
+    MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME)
+    #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME)
     #MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME)
     #MDPsolver =  TrajectoryBasedPolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME)
     
