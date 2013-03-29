@@ -50,12 +50,15 @@ class PolicyIteration(MDPSolver):
                 self.logger.log('PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
                 if self.show: self.domain.show(s,policy.pi(s),self.representation)
             
+            if deltaT(self.start_time) >= self.planning_time: break
             #Policy Improvement:
             policy_improvement_iteration += 1
             new_policy = zeros(no_of_states)
             policyChanged = 0
             for i in arange(no_of_states):
-                s = array(id2vec(i,rep.bins_per_dim))
+                s = array(id2vec(i,rep.bins_per_dim))*self.representation.binWidth_per_dim
+                s += self.domain.statespace_limits[:,0] +.5
+                s[self.domain.continuous_dims] -= .5
                 for a in self.domain.possibleActions(s):
                     self.BellmanBackup(s,a,self.ns_samples, policy)
                 if policy.pi(s) != self.representation.bestAction(s): policyChanged += 1 
