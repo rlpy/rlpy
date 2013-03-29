@@ -328,7 +328,10 @@ class Representation(object):
 	def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
 		p,n			= all_phi_s.shape
 		a_num		= self.domain.actions_num
-		phi_s_a 		= zeros((p,n*a_num),dtype = all_phi_s.dtype)					
+		if use_sparse:
+			phi_s_a 		= sp.lil_matrix((p,n*a_num),dtype = all_phi_s.dtype)
+		else:										
+			phi_s_a 		= zeros((p,n*a_num),dtype = all_phi_s.dtype)					
 	
 		for i in arange(a_num):
 			rows = where(all_actions==i)[0]

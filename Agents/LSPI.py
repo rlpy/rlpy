@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from Agent import *
 from Domains import *
 class LSPI(Agent):
-    use_sparse          = 1         # Use sparse operators for building A?
+    use_sparse          = 0         # Use sparse operators for building A?
     lspi_iterations     = 0         # Number of LSPI iterations
     max_window          = 0         # Number of samples to be used to calculate the A and b matrices
     steps_between_LSPI  = 0         # Number of samples between each LSPI run.
@@ -44,7 +44,7 @@ class LSPI(Agent):
     #Reprsentation Expansion
     re_iterations   = 0 # Maximum number of iterations over LSPI and Representation expansion 
     
-    def __init__(self,representation,policy,domain,logger,max_window, steps_between_LSPI, lspi_iterations = 5, epsilon = 1e-3,return_best_policy = 0, re_iterations = 100):
+    def __init__(self,representation,policy,domain,logger,max_window, steps_between_LSPI, lspi_iterations = 5, epsilon = 1e-3,return_best_policy = 0, re_iterations = 100, use_sparse = False):
         self.samples_count      = 0
         self.max_window         = max_window
         self.steps_between_LSPI = steps_between_LSPI
@@ -52,6 +52,7 @@ class LSPI(Agent):
         self.lspi_iterations    = lspi_iterations
         self.re_iterations      = re_iterations 
         self.return_best_policy = return_best_policy
+        self.use_sparse         = use_sparse
         
         #Take memory for stored values 
         self.data_s             = zeros((max_window, domain.state_space_dims))
@@ -223,8 +224,13 @@ class LSPI(Agent):
                 phi_s_a     = self.representation.phi_sa(s,a,phi_s)
             else:
                 # This is because the current s,a will be the previous ns, na
-                phi_s       = self.all_phi_ns[self.samples_count-1,:].todense()
-                phi_s_a     = self.all_phi_ns_na[self.samples_count-1,:].todense()
+                if self.use_sparse:
+                    phi_s       = self.all_phi_ns[self.samples_count-1,:].todense()
+                    phi_s_a     = self.all_phi_ns_na[self.samples_count-1,:].todense()
+                else:
+                    phi_s       = self.all_phi_ns[self.samples_count-1,:]
+                    phi_s_a     = self.all_phi_ns_na[self.samples_count-1,:]
+                    
                 
             phi_ns      = self.representation.phi(ns)
             phi_ns_na   = self.representation.phi_sa(ns,na,phi_ns)

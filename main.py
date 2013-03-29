@@ -84,14 +84,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     EPSILON                 = .1 # EGreedy Often is .1 CHANGE ME if I am not .1<<<
     #Agent ----------------------
     alpha_decay_mode        = 'Boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
-    initial_alpha           = .1
-    boyan_N0                = 100
+    initial_alpha           = 1
+    boyan_N0                = 1000
     LAMBDA                  = 0
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 50
     LSPI_return_best_policy = False # Track the best policy through LSPI iterations using Monte-Carlo simulation. It uses extra samples to evaluate the policy
+    LSPI_use_sparse         = False # Represet large matrices such as A and all_phi with sparse matrices.
     
     #Policy Evaluation Parameters: ----------------------
     PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
@@ -105,11 +106,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
-    domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
+    #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger)
@@ -125,10 +126,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
+    #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon[className(domain)])
     #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
@@ -142,9 +143,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # LEARNING AGENT
     #================
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
-    #agent           = LSPI(representation,policy,domain,logger,LEARNING_STEPS, LEARNING_STEPS/PERFORMANCE_CHECKS, LSPI_iterations, epsilon = LSPI_WEIGHT_DIFF_TOL, return_best_policy = LSPI_return_best_policy,re_iterations = RE_LSPI_iterations)
+    agent           = LSPI(representation,policy,domain,logger,LEARNING_STEPS, LEARNING_STEPS/PERFORMANCE_CHECKS, LSPI_iterations, epsilon = LSPI_WEIGHT_DIFF_TOL, return_best_policy = LSPI_return_best_policy,re_iterations = RE_LSPI_iterations, use_sparse = LSPI_use_sparse)
     #agent           = LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           = PolicyEvaluation(representation,policy,domain,logger,LSPI_windowSize, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations)
     
