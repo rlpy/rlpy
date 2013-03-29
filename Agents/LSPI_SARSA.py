@@ -11,9 +11,8 @@ class LSPI_SARSA(Agent):
         self.LSPI = LSPI(representation,policy,domain,logger, lspi_iterations, sample_window, epsilon, re_iterations)
         super(LSPI_SARSA,self).__init__(representation,policy,domain,logger)
     def learn(self,s,a,r,ns,na,terminal):
-        self.LSPI.storeData(s,a,r,ns,na)        
-        if self.LSPI.samples_count == self.LSPI.sample_window:
-            self.LSPI.samples_count  = 0
+        self.LSPI.process(s,a,r,ns,na,terminal)        
+        if self.LSPI.samples_count+1 % self.LSPI.steps_between_LSPI == 0:
             self.LSPI.representationExpansionLSPI()
         else:
             self.SARSA.learn(s,a,r,ns,na,terminal)
