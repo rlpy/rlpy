@@ -123,10 +123,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
 
-    #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
+    representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    representation  = IncrementalTabular(domain,logger)
+    #representation  = IncrementalTabular(domain,logger)
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
