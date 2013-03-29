@@ -50,7 +50,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
                 if discover_func and callable(discover_func):
                     self.representation.discover(phi_s,bellman_error)
 
-                max_Bellman_Error = max(max_Bellman_Error,bellman_error)
+                max_Bellman_Error = max(max_Bellman_Error,abs(bellman_error))
                 #Simulate new state and action on trajectory
                 _,s,terminal    = self.domain.step(s,a)
                 a               = self.representation.bestAction(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 

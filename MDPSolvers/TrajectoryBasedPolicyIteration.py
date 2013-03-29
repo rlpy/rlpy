@@ -44,6 +44,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 s                       = self.domain.s0()
                 a                       = policy.pi(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
                 while not terminal and step < self.domain.episodeCap and deltaT(self.start_time) < self.planning_time:
+                    
                     #print "Features = %d" % self.representation.features_num
                     new_Q           = self.representation.Q_oneStepLookAhead(s,a, self.ns_samples,policy)
                     phi_s           = self.representation.phi(s)
@@ -55,7 +56,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     self.representation.theta   += self.alpha * bellman_error * phi_s_a
                     bellmanUpdates              += 1
                     step                        += 1
-                    max_Bellman_Error = max(max_Bellman_Error,bellman_error)
+                    max_Bellman_Error = max(max_Bellman_Error,abs(bellman_error))
                     
                     #Discover features if the representation has the discover method
                     discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute

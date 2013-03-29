@@ -4,7 +4,6 @@
 ######################################################
 
 from Tools import *
-
 ## The Representation is the \ref Agents.Agent.Agent "Agent"'s model of the \ref Domains.Domain.Domain "Domain".
 # 
 # As the Agent interacts with the Domain, it receives observations. The Agent passes these observations to its
@@ -468,6 +467,9 @@ class Representation(object):
 	
 	# [Q_oneStepLookAhead code]
 	def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
+		# Hash new state for the incremental tabular case
+		if hasFunction(self,'addState'): self.addState(s)
+		
 		gamma 	= self.domain.gamma 
 		if hasFunction(self.domain,'expectedStep'):
 			p,r,ns,t	= self.domain.expectedStep(s,a)
