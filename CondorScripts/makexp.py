@@ -9,11 +9,7 @@
 # iFDD-T: iFDD threshold
 import os, sys, time, re, string
 #find RL_ROOT and add it to path
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools.py'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-    print RL_PYTHON_ROOT
-RL_PYTHON_ROOT += '/RL-Python'
+RL_PYTHON_ROOT = findRLRoot()
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
 sys.path.insert(0, RL_PYTHON_ROOT)
 

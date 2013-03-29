@@ -22,7 +22,12 @@ PYTHON_PATH          = ' /usr/bin/python'
 FINISHED_RUNS_NUM   = 5   # Number of runs which is counted as a finished run for testing a learning rate
 
 import os
-
+def findRLRoot():
+    path = '.'
+    while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
+        RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+        print RL_PYTHON_ROOT
+        RL_PYTHON_ROOT += '/RL-Python'
 def logKeyOLD(log):
     timeRE     = re.compile('R\[[0-9]*:[0-9]*:[0-9]*')
     temp1       = timeRE.search(log)
