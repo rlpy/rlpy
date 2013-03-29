@@ -67,7 +67,7 @@ import numpy # We need to be able to reference numpy by name
 
 from GeneralTools import *
 
-class Merger(object):
+class Merger2(object):
     #CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes']
     PE_AXES         = ['Iterations','Features','Error','Time(s)']
@@ -249,17 +249,22 @@ class Merger(object):
         Xs      = zeros((self.exp_num,self.datapoints_per_graph))
         Ys      = zeros((self.exp_num,self.datapoints_per_graph))
         Errs    = zeros((self.exp_num,self.datapoints_per_graph))
-
+        
+        legLines = []
+        legLabels = []
         for i in arange(self.exp_num):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
+            legLabels.append(self.labels[i])
             if not isOnCluster():
                 if len(X) == 1 and self.bars:
                     pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    legLines.append(pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize))
                     max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                 else:
                     pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    legLines.append(lines.Line2D(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize))
                     if self.bars:
                         pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
                         max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
@@ -271,9 +276,10 @@ class Merger(object):
 
         if not isOnCluster():
             if self.legend:
-                #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
-                self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
-                #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
+                #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')                
+                self.legend = self.fig.legend(legLines,legLabels, loc = "best", fancybox=True,shadow=True, ncol=1, frameon=True)
+                #self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+                
             pl.xlim(0,max(Xs[:,-1])*1.02)
             if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
             X_axis_label = r'$\|A\theta - b\|$' if X_axis == 'Error' else X_axis
@@ -281,9 +287,9 @@ class Merger(object):
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
-        #if not isOnCluster and self.legend:
-        #        # This is a hack so we can see it correctly during the runtime
-        #        pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
+        if not isOnCluster and self.legend:
+                # This is a hack so we can see it correctly during the runtime
+                pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)

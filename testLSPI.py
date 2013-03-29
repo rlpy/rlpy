@@ -6,7 +6,7 @@
 import sys, os
 #Add all paths
 path = '.'
-while not os.path.exists(path+'/Tools.py'):
+while not os.path.exists(path+'/Tools/GeneralTools.py'):
     path = path + '/..'
 sys.path.insert(0, os.path.abspath(path))
 
