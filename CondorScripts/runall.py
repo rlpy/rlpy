@@ -32,7 +32,7 @@ if os.path.exists(RL_PYTHON_ROOT+'/CondorScripts/setting.py'):
     from setting import *
 
 
-def submit(id, relPath): # relPath is the path to the main file relative to where we started; needed to maintain RL_PYTHON_ROOT, since it's relative. [../../.. etc]
+def submit(id): 
     #Submit one task to condor using id
     if id > 0:
         condrun='mkdir -p CondorOutput;' + \
@@ -43,7 +43,7 @@ def submit(id, relPath): # relPath is the path to the main file relative to wher
                 'cd ..;' +\
 		'condor_submit'+\
                 ' -a \"arguments = main.py '+str(id)+' '+\
-                RESULTS_PATH +' '+' '+str(MAKE_EXP_NAME)+'\" '+ relPath+'/'+RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
+                RESULTS_PATH +' '+' '+str(MAKE_EXP_NAME)+'\" '+ RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'\
                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
@@ -65,16 +65,15 @@ def submit(id, relPath): # relPath is the path to the main file relative to wher
 
         sysCall(condrun)
      
-def searchNSubmit(idir,relPath,exp_num,answered,respawnjobs):
+def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
         #See if this directory is a potential experiment 
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
-            relPath+='/..'
             #print ' (!) ' + idir + '  not an experiment.'
             for folder in os.listdir(idir):
                 newdir = idir+'/'+folder
                 if os.path.isdir(newdir):
-                    [answered,respawnjobs] = searchNSubmit(newdir,relPath,exp_num,answered,respawnjobs)
+                    [answered,respawnjobs] = searchNSubmit(newdir,exp_num,answered,respawnjobs)
             return [answered,respawnjobs]
         
 #        if PURGEJOBS:
@@ -123,7 +122,7 @@ def searchNSubmit(idir,relPath,exp_num,answered,respawnjobs):
                         sysCommandHandle  = os.popen(command)
                         for line in sysCommandHandle:
                             print "Job #" + id + ": " + line,
-                        submit(eval(id), relPath)
+                        submit(eval(id))
                         print RESUMING_COLOR+">>> Respawned Job #"+id+NOCOLOR
                         respawned = respawned + 1
                 else:
@@ -141,7 +140,7 @@ def searchNSubmit(idir,relPath,exp_num,answered,respawnjobs):
                 continue
             
             newSubmission = newSubmission + 1
-            submit(jobid, relPath)
+            submit(jobid)
             print YELLOW+">>> Submitted Job #"+str(jobid)+NOCOLOR 
             jobid += 1
                 
