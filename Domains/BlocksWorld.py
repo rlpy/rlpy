@@ -82,7 +82,6 @@ class BlocksWorld(Domain):
             print 'State:%s, Invalid move from %d to %d' % (str(s),A,B)
             print self.possibleActions(s)
             print id2vec(self.possibleActions(s),[self.blocks, self.blocks])
-            raw_input()
 
         if random.random_sample() < self.noise: B = A #Drop on Table
         ns          = s.copy()
@@ -90,16 +89,6 @@ class BlocksWorld(Domain):
         terminal    = self.isTerminal(ns)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
-    def expectedStep(self,s,a):
-        [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
-        if not self.validAction(s,A,B):
-            print 'Invalid move from %d to %d' % (A,B)
-            return
-        #Scenario 1: Success
-        ns = s.copy()
-        ns[A] = B # A is on top of B now.
-        terminal    = self.isTerminal(s)
-        r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
     def s0(self):
         # all blocks on table
         return arange(self.blocks)
@@ -152,6 +141,37 @@ class BlocksWorld(Domain):
         return vec2id(array([A,A]),[self.blocks, self.blocks])
     def getActionPutAonB(self,A,B):
         return vec2id(array([A,B]),[self.blocks, self.blocks])
+    def expectedStep(self,s,a):
+        #Returns k possible outcomes
+        #  p: k-by-1    probability of each transition
+        #  r: k-by-1    rewards
+        # ns: k-by-|s|  next state
+        #  t: k-by-1    terminal values
+#        print "State:", s
+#        print "Action:", a
+        [A,B] = id2vec(a,[self.blocks, self.blocks])
+        #Nominal Move:
+        ns1          = s.copy()
+        ns1[A]       = B # A is on top of B now.
+        terminal1    = self.isTerminal(ns1)
+        r1           = self.GOAL_REWARD if terminal1 else self.STEP_REWARD
+        if self.destination_is_table(A,B):
+            p   = array([1]).reshape((1,-1))
+            r   = array([r1]).reshape((1,-1))
+            ns  = array([ns1]).reshape((1,-1))
+            t   = array([terminal1]).reshape((1,-1))
+            return p,r,ns,t
+        else:
+            # consider dropping the block
+            ns2         = s.copy()
+            ns2[A]      = A # Drop on table 
+            terminal2   = self.isTerminal(ns2)
+            r2          = self.GOAL_REWARD if terminal2 else self.STEP_REWARD
+            p   = array([1-self.noise, self.noise]).reshape((2,1))
+            r   = array([r1,r2]).reshape((2,1))
+            ns  = array([[ns1],[ns2]]).reshape((2,-1))
+            t   = array([terminal1, terminal2]).reshape((2,-1))
+            return p,r,ns,t
 if __name__ == '__main__':
     random.seed(0)
     p = BlocksWorld(blocks=6,noise=0);

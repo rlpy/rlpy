@@ -6,6 +6,7 @@
 # Performs full Bellman Backup on a given s,a pair by sweeping through the state space  
 from MDPSolver import *
 class ValueIteration(MDPSolver):
+    check_interval = 10000# After these many bellman updates show the current performance  
     def solve(self):
         self.result = []
         self.start_time     = time() # Used to show the total time took the process
@@ -33,7 +34,7 @@ class ValueIteration(MDPSolver):
                     self.BellmanBackup(s,a,ns_samples = self.ns_samples)                        
                     bellmanUpdates += 1
 
-                    if False and bellmanUpdates % self.check_interval == 0:
+                    if bellmanUpdates % self.check_interval == 0:
                         performance_return, _,_,_  = self.performanceRun()
                         self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
                 
