@@ -27,7 +27,7 @@ def findRLRoot():
     while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
         RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
         print RL_PYTHON_ROOT
-        RL_PYTHON_ROOT += '/RL-Python'
+    RL_PYTHON_ROOT += '/RL-Python'
 def logKeyOLD(log):
     timeRE     = re.compile('R\[[0-9]*:[0-9]*:[0-9]*')
     temp1       = timeRE.search(log)
