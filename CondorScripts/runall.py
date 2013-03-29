@@ -200,7 +200,7 @@ def rerun(idir,exp_num):
             print ">>> No job found for user " + USERNAME + "."
         
         #Start Searching and Purging
-        searchNSubmit(idir,'.',exp_num,False,False)
+        searchNSubmit(idir,exp_num,False,False)
     
 if __name__ == '__main__':
     
