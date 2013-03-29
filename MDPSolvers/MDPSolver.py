@@ -17,9 +17,9 @@ class MDPSolver(object):
     maxRuns             = 100           # Maximum number of runs of an algorithm for averaging    
     convergence_threshold = None        # Threshold to determine the convergence of the planner
     ns_samples          = None          # Number of samples to be used to generate estimated bellman backup if the domain does not provide explicit probablities though expectedStep function.
-    log_interval        = None          # Number of bellman backups before reporting the performance. (Not planners may use this 
+    log_interval        = None          # Number of bellman backups before reporting the performance. (Not all planners may use this) 
     show                = None          # Show the learning if possible?
-    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False):
+    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 5000, show = False):
         self.id = job_id
         self.representation = representation
         self.domain = domain

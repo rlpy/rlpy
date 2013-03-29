@@ -6,7 +6,6 @@
 # Once the errors are bounded, the policy is changed  
 from MDPSolver import *
 class PolicyIteration(MDPSolver):
-    check_interval = 10000# After these many bellman updates show the current performance  
     def solve(self):
         self.result = []
         self.start_time     = time() # Used to show the total time took the process
@@ -41,7 +40,7 @@ class PolicyIteration(MDPSolver):
                     self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)                        
                     bellmanUpdates += 1
 
-                    if bellmanUpdates % self.check_interval == 0:
+                    if bellmanUpdates % self.log_interval == 0:
                         performance_return, _,_,_  = self.performanceRun()
                         self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
                 
