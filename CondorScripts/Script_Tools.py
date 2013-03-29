@@ -28,6 +28,8 @@ def findRLRoot():
         RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
         print RL_PYTHON_ROOT
     RL_PYTHON_ROOT += '/RL-Python'
+    RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
+    return RL_PYTHON_ROOT
 def logKeyOLD(log):
     timeRE     = re.compile('R\[[0-9]*:[0-9]*:[0-9]*')
     temp1       = timeRE.search(log)

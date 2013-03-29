@@ -11,8 +11,8 @@ import os, sys, time, re, string
 #find RL_ROOT and add it to path
 from Script_Tools import *
 RL_PYTHON_ROOT = findRLRoot()
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
 sys.path.insert(0, RL_PYTHON_ROOT)
+
 from Tools import perms,decimals
 #Mapping from each token name to their corresponding parameter in the text file in the main.py. Some tokens may have more than one corresponding parameter
 TOKEN_DICT={'T':['iFDDOnlineThreshold','BatchDiscoveryThreshold'], 'a':['initial_alpha'], 'N':['boyan_N0'], 'agent':['agent'], 'rep':['representation'], 'domain':['domain'], 'solver':['MDPSolver'], 'rbfs':['RBFS']}
