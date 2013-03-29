@@ -23,7 +23,7 @@ FINISHED_RUNS_NUM   = 5   # Number of runs which is counted as a finished run fo
 
 import os
 def findRLRoot():
-    path = '.'
+    RL_PYTHON_ROOT = '.'
     while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
         RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
         print RL_PYTHON_ROOT
