@@ -27,7 +27,7 @@ RESULTS_PATH='.' # Currently want results path to be in directory of the main fi
 #RESULTS_PATH = RL_PYTHON_ROOT+'../RL-Results/RL-Python/13ICML-BatchiFDD/
 MAKE_EXP_NAME = 0      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
 
-if os.path.exists(path+'/CondorScripts/setting.py'):
+if os.path.exists(RL_PYTHON_ROOT+'/CondorScripts/setting.py'):
     print 'Incorporating setting.py'
     from setting import *
 
