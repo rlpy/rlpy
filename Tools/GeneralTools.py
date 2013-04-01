@@ -157,11 +157,17 @@ def randSet(x):
     return x[i]
 def closestDiscretization(x, bins, limits):
     #Return the closest point to x based on the discretization defined by the number of bins and limits
-    # equivalent to binNumber(x) / (bins-1) * width + limits[0]
-    width = limits[1]-limits[0]
-    return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
-def binNumber(s,bins,limits):
-    # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
+    # equivalent to state2bin(x) / (bins-1) * width + limits[0]
+    #width = limits[1]-limits[0]
+    #return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
+    return bin2state(state2bin(x,bins,limits),bins,limits)
+def bin2state(bin,bins,limits):
+    # inverse of state2bin function
+    # Given a bin number and the number of the bins and the limits on a single dimension it return the corresponding value in the middle of the bin
+    bin_width = (limits[1] - limits[0])/(bins*1.)
+    return bin*bin_width+bin_width/2.0+limits[0]
+def state2bin(s,bins,limits):
+    # return the bin number corresponding to state s given a state it returns a vector with the same dimensionality of s
     # note that s can be continuous.
     # examples:
     # s = 0, limits = [-1,5], bins = 6 => 1
@@ -418,15 +424,16 @@ def perms_r(X, perm_sample= array([]) , allPerms = None,ind = 0):
     return allPerms, ind
 ######################################################
 def vec2id2(x,limits):
-    #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
-    # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    #returns a unique id by calculating the enumerated number corresponding to a vector given the number of bins in each dimension
     # Slower than the other implementation by a factor of 2
     if isinstance(x,int): return x
     lim_prod = cumprod(limits[:-1])
     return x[0] + sum(map(lambda (x,y):x*y,zip(x[1:],lim_prod)))
 def vec2id(x,limits):
-    #returns a unique id by calculating the enumerated number corresponding to a vector given the limits on each dimenson of the vector
+    # returns a unique id by calculating the enumerated number corresponding to a vector given the number of bins in each dimension
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
+    # for example:
+    # vec2id([0,1],[5,10]) = 5
     if isinstance(x,int): return x
     _id = 0
     for d in arange(len(x)-1,-1,-1):
@@ -436,7 +443,9 @@ def vec2id(x,limits):
     return _id
 ######################################################
 def id2vec(_id,limits):
-    #returns the vector corresponding to an id given the limits (invers of vec2id)
+    #returns the vector corresponding to an id given the number of buckets in each dimension (invers of vec2id)
+    # for example:
+    # id2vec(5,[5,10]) = [0,1]
     prods = cumprod(limits)
     s = [0] * len(limits)
     for d in arange(len(prods)-1,0,-1):

@@ -65,7 +65,7 @@ class PolicyIteration(MDPSolver):
                 
             policy.representation.theta = self.representation.theta.copy() # This will cause the policy to be copied over
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
-            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, Policy Change =%d, Return = %0.4f' % (policy_improvement_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, policyChanged, performance_return))
+            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, Policy Change=%d, Return=%0.4f, Steps=%d' % (policy_improvement_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, policyChanged, performance_return,performance_steps))
 
             # store stats
             self.result.append([bellmanUpdates, # index = 0 

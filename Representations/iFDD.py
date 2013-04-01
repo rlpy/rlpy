@@ -433,6 +433,7 @@ if __name__ == '__main__':
             print '%d: %0.2f >> %s' % (i+1, threshold, str(phi.nonzero()[0]))
             rep.discover(phi,threshold)
         rep.show()
-    
+    def isAdaptive(self): 
+        return True
     
     

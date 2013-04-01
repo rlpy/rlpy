@@ -166,6 +166,8 @@ class OMPTD(Representation):
 
     def featureType(self):
         return self.initial_representation.featureType()
+    def isAdaptive(self): 
+        return True
 
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'

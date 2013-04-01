@@ -113,9 +113,11 @@ class Pendulum(Domain):
         self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         
         self.xTicks         = linspace(0,self.Theta_discretization-1,5)
-        self.xTicksLabels   = ["$-\\pi$","$-\\frac{\\pi}{2}$","$0$","$\\frac{\\pi}{2}$","$\\pi$"]
+        self.xTicksLabels   = around(linspace(self.statespace_limits[0,0]*180/pi,self.statespace_limits[0,1]*180/pi,5)).astype(int)
+        #self.xTicksLabels   = ["$-\\pi$","$-\\frac{\\pi}{2}$","$0$","$\\frac{\\pi}{2}$","$\\pi$"]
         self.yTicks         = [0,self.Theta_discretization/4.0,self.ThetaDot_discretization/2.0,self.ThetaDot_discretization*3/4.0,self.ThetaDot_discretization-1]
-        self.yTicksLabels   = ["$-8\\pi$","$-4\\pi$","$0$","$4\\pi$","$8\\pi$"]
+        self.yTicksLabels   = around(linspace(self.statespace_limits[1,0]*180/pi,self.statespace_limits[1,1]*180/pi,5)).astype(int)
+        #self.yTicksLabels   = ["$-8\\pi$","$-4\\pi$","$0$","$4\\pi$","$8\\pi$"]
         self.DimNames       = ['Theta','Thetadot']
         if self.logger: 
             self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
@@ -206,28 +208,33 @@ class Pendulum(Domain):
             self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$")
-            pl.ylabel(r"$\dot{\theta}$")
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.title('Value Function')
             
             self.policy_fig = pl.subplot(1,3,3)
             self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$")
-            pl.ylabel(r"$\dot{\theta}$")
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.title('Policy')
 #            f.set_size_inches(10,20)
             pl.show()
             f = pl.gcf()
-            f.subplots_adjust(left=0,wspace=.3)
+            f.subplots_adjust(left=0,wspace=.5)
             #pl.tight_layout()
         
-        for row, thetaDot in enumerate(linspace(self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1], self.ThetaDot_discretization)):
-            for col, theta in enumerate(linspace(self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1], self.Theta_discretization)):
+        # Create the center of the grid cells both in theta and thetadot_dimension
+        theta_binWidth      = (self.ANGLE_LIMITS[1]-self.ANGLE_LIMITS[0])/(self.Theta_discretization*1.)
+        thetas              = linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, self.Theta_discretization)
+        theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(self.ThetaDot_discretization*1.)
+        theta_dots          = linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.ThetaDot_discretization)
+        for row, thetaDot in enumerate(theta_dots):
+            for col, theta in enumerate(thetas):
                 s           = [theta,thetaDot]
                 Qs,As       = representation.Qs(s)
-                pi[row,col] = representation.bestAction(s)
+                pi[row,col] = As[argmax(Qs)]
                 V[row,col]  = max(Qs)
         #Update the value function
         # Wireframe, needs some work

@@ -37,7 +37,8 @@ class Representation(object):
 	agg_states_num  = 0
 	## A simple object that records the prints in a file	
 	logger = None	   
-	
+	## A dictionary used to cache expected step. Used for planning algorithms
+	expectedStepCached= {}
 	## Initializes the \c %Representation object. See code
 	# \ref Representation_init "Here".
 	
@@ -215,7 +216,7 @@ class Representation(object):
 		assert(len(s) == len(self.domain.statespace_limits[:,0]))
 		bs  = empty(len(s),'uint16')
 		for d in arange(self.domain.state_space_dims):
-			bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+			bs[d] = state2bin(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
 		return bs
 	# [binState code]
 	
@@ -471,6 +472,7 @@ class Representation(object):
 	# [Q_oneStepLookAhead code]
 	def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
 		# Hash new state for the incremental tabular case
+		self.continuous_state_starting_samples = 10
 		if hasFunction(self,'addState'): self.addState(s)
 		
 		gamma 	= self.domain.gamma 
@@ -484,7 +486,36 @@ class Representation(object):
 					Q += p[j]*(r[j] + gamma*self.Q(ns[j,:],policy.pi(ns[j,:])))
 			Q = Q[0]
 		else:
-			next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
+			# See if they are in cache:
+			key = tuple(hstack((s,[a])))
+			cacheHit	 = self.expectedStepCached.get(key)
+			if cacheHit is None:		
+#				# Not found in cache => Calculate and store in cache
+				# If continuous domain, sample <continuous_state_starting_samples> points within each discritized grid and sample <ns_samples>/<continuous_state_starting_samples> for each starting state.
+				# Otherwise take <ns_samples> for the state.
+				if len(self.domain.continuous_dims):
+					next_states = empty((ns_samples,self.domain.state_space_dims))
+					rewards 		= empty(ns_samples)
+					ns_samples_ = ns_samples/self.continuous_state_starting_samples # next states per samples initial state
+					for i in arange(self.continuous_state_starting_samples):
+						#sample a random state within the grid corresponding to input s
+						new_s = s.copy()
+						for d in arange(self.domain.state_space_dims):
+							w = self.binWidth_per_dim[d]
+							new_s[d] = random.rand()*w+s[d]
+							# If the dimension is discrete make make the sampled value to be int
+							if not d in self.domain.continuous_dims: 
+								new_s[d] = int(new_s[d])
+						#print new_s
+						ns,r = self.domain.sampleStep(new_s,a,ns_samples_)
+						next_states[i*ns_samples_:(i+1)*ns_samples_,:] = ns
+						rewards[i*ns_samples_:(i+1)*ns_samples_] = r
+				else:
+					next_states,rewards = self.domain.sampleStep(s,a,ns_samples)
+				self.expectedStepCached[key] = [next_states, rewards]
+			else:
+				#print "USED CACHED"
+				next_states, rewards = cacheHit
 			if policy == None:
 				Q = mean([rewards[i] + gamma*self.V(next_states[i,:]) for i in arange(ns_samples)])
 			else:
@@ -527,4 +558,11 @@ class Representation(object):
 		Qs, actions 	= self.Qs_oneStepLookAhead(s,ns_samples)
 		a_ind   		= argmax(Qs)
 		return Qs[a_ind],actions[a_ind]		 
-	# [V_oneStepLookAhead code]	
+	# [V_oneStepLookAhead code]
+	
+	## Returns a boolean specifying if the feature size change
+	# As a default this function always return False, unless changed by its child 
+	# [isAdaptive code]
+	def isAdaptive(self): 
+		return False
+	# [isAdaptive code]		

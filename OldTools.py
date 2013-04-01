@@ -157,10 +157,10 @@ def randSet(x):
     return x[i]
 def closestDiscretization(x, bins, limits):
     #Return the closest point to x based on the discretization defined by the number of bins and limits
-    # equivalent to binNumber(x) / (bins-1) * width + limits[0]
+    # equivalent to state2bin(x) / (bins-1) * width + limits[0]
     width = limits[1]-limits[0]
     return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
-def binNumber(s,bins,limits):
+def state2bin(s,bins,limits):
     # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
     # note that s can be continuous.
     # examples:

@@ -24,9 +24,10 @@ class ValueIteration(MDPSolver):
             prev_theta = self.representation.theta.copy()
             # Sweep The State Space
             for i in arange(0,no_of_states):
-                s = array(id2vec(i,rep.bins_per_dim))*self.representation.binWidth_per_dim
-                s += self.domain.statespace_limits[:,0] +.5
-                s[self.domain.continuous_dims] -= .5
+                s_id    = array(id2vec(i,rep.bins_per_dim))
+                s       = s_id.copy()   
+                for d in arange(self.domain.state_space_dims):
+                    s[d] = bin2state(s[d],self.representation.bins_per_dim[d],self.domain.statespace_limits[d,:])
                 actions = self.domain.possibleActions(s)
                 # Sweep The Actions
                 for a in actions:
@@ -44,7 +45,7 @@ class ValueIteration(MDPSolver):
             theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             converged = theta_change < self.convergence_threshold        
-            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.4f' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change, performance_return))
+            self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return = %0.4f, Steps = %d' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change, performance_return, performance_steps))
             if self.show: self.domain.show(s,a,self.representation)
             
             # store stats

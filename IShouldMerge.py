@@ -42,7 +42,7 @@ MarkerSize          = 7
 Legend              = True  # Draw legends?
 maxSamples          = inf   # Maximum number of samples to be loaded from the directory. If set inf it will use all of them
  
-merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples)
+merger = Merger2(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples)
 pl.ioff()
 #print mergedData.means[0].shape
 #merger.plot('Return')

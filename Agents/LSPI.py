@@ -62,7 +62,7 @@ class LSPI(Agent):
         self.data_r             = zeros((max_window,1))
         
         # Make A and r incrementally if the representation can not expand
-        self.fixedRep      = not hasFunction(representation,'batchDiscover')
+        self.fixedRep      = not representation.isAdaptive()
         if self.fixedRep:
             f_size          = representation.features_num*domain.actions_num
             self.b          = zeros((f_size,1))
@@ -91,7 +91,7 @@ class LSPI(Agent):
                 if not self.fixedRep: self.logger.log('Max Representation Expansion Iterations:\t%d' % self.re_iterations)
     def learn(self,s,a,r,ns,na,terminal):
         self.process(s,a,r,ns,na,terminal)
-        if (self.samples_count+1) % self.steps_between_LSPI == 0: 
+        if (self.samples_count) % self.steps_between_LSPI == 0: 
             self.representationExpansionLSPI()
     def policyIteration(self):
         # Update the policy by recalculating A based on new na
@@ -108,22 +108,22 @@ class LSPI(Agent):
         action_mask = None 
         gamma       = self.domain.gamma
         W           = self.representation.theta
-        F1          = sp.csr_matrix(self.all_phi_s_a) if self.use_sparse else self.all_phi_s_a
-        R           = self.data_r
+        F1          = sp.csr_matrix(self.all_phi_s_a[:self.samples_count,:]) if self.use_sparse else self.all_phi_s_a[:self.samples_count,:]
+        R           = self.data_r[:self.samples_count,:]
         while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
             
             #Find the best action for each state given the current value function
             #Notice if actions have the same value the first action is selected in the batch mode
             iteration_start_time = time()
-            bestAction, self.all_phi_ns_new_na,action_mask = self.representation.batchBestAction(self.data_ns,self.all_phi_ns,action_mask,self.use_sparse)
+            bestAction, self.all_phi_ns_new_na,action_mask = self.representation.batchBestAction(self.data_ns[:self.samples_count,:],self.all_phi_ns,action_mask,self.use_sparse)
             
             #Recalculate A matrix (b remains the same)
             # Solve for the new theta
             if self.use_sparse:
-                F2  = sp.csr_matrix(self.all_phi_ns_new_na)
+                F2  = sp.csr_matrix(self.all_phi_ns_new_na[:self.samples_count,:])
                 A   = F1.T*(F1 - gamma*F2)
             else:
-                F2  = self.all_phi_ns_new_na
+                F2  = self.all_phi_ns_new_na[:self.samples_count,:]
                 A   = dot(F1.T, F1 - gamma*F2)
             
             A = regularize(A)
@@ -186,17 +186,21 @@ class LSPI(Agent):
                 self.all_phi_ns[i,:] = self.representation.phi(self.data_ns[i])
             
             #build phi_s_a and phi_ns_na for all samples given phi_s and phi_ns
-            self.all_phi_s_a     = self.representation.batchPhi_s_a(self.all_phi_s, self.data_a,use_sparse=self.use_sparse)
-            self.all_phi_ns_na   = self.representation.batchPhi_s_a(self.all_phi_ns, self.data_na,use_sparse=self.use_sparse)
+            self.all_phi_s_a     = self.representation.batchPhi_s_a(self.all_phi_s[:self.samples_count,:], self.data_a[:self.samples_count,:],use_sparse=self.use_sparse)
+            self.all_phi_ns_na   = self.representation.batchPhi_s_a(self.all_phi_ns[:self.samples_count,:], self.data_na[:self.samples_count,:],use_sparse=self.use_sparse)
         
             #calculate A and b for LSTD
-            F1              = self.all_phi_s_a
-            F2              = self.all_phi_ns_na
-            R               = self.data_r
+            F1              = self.all_phi_s_a[:self.samples_count,:]
+            F2              = self.all_phi_ns_na[:self.samples_count,:]
+            R               = self.data_r[:self.samples_count,:]
             gamma           = self.domain.gamma
 
-            self.b = dot(F1.T,R).reshape(-1,1)
-            self.A = dot(F1.T, F1 - gamma*F2)
+            if self.use_sparse:
+                self.b = (F1.T*R).reshape(-1,1)
+                self.A = F1.T*(F1 - gamma*F2)
+            else:
+                self.b = dot(F1.T,R).reshape(-1,1)
+                self.A = dot(F1.T, F1 - gamma*F2)
         
         A = regularize(self.A)
         
@@ -249,15 +253,15 @@ class LSPI(Agent):
     def calculateTDErrors(self):
         # Calculates the TD-Errors in a matrix format for a set of samples = R + (gamma*F2 - F1) * Theta
         gamma   = self.representation.domain.gamma
-        R       = self.data_r
+        R       = self.data_r[:self.samples_count,:]
         if self.use_sparse:
-            F1      = sp.csr_matrix(self.all_phi_s_a)
-            F2      = sp.csr_matrix(self.all_phi_ns_na)
+            F1      = sp.csr_matrix(self.all_phi_s_a[:self.samples_count,:])
+            F2      = sp.csr_matrix(self.all_phi_ns_na[:self.samples_count,:])
             answer = (R+(gamma*F2-F1)*self.representation.theta.reshape(-1,1))
             return squeeze(asarray(answer))
         else:
-            F1 = self.all_phi_s_a
-            F2 = self.all_phi_ns_na
+            F1 = self.all_phi_s_a[:self.samples_count,:]
+            F2 = self.all_phi_ns_na[:self.samples_count,:]
             return R.ravel()+dot(gamma*F2-F1,self.representation.theta)
     def representationExpansionLSPI(self):
         re_iteration    = 0
@@ -278,7 +282,7 @@ class LSPI(Agent):
             td_errors = self.policyIteration()
             # Add new Features
             if hasFunction(self.representation,'batchDiscover'):
-                added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s, self.data_s)
+                added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s[:self.samples_count,:], self.data_s[:self.samples_count,:])
             else:
                 #self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
                 added_feature = False

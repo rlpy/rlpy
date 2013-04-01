@@ -27,6 +27,8 @@ class IncrementalTabular(Representation):
             self.addNewWeight()
     def featureType(self):
         return bool
+    def isAdaptive(self): 
+        return True
 
          
         

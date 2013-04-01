@@ -1,11 +1,8 @@
 Tasks:
 (Bobby) - Improve installation process; automate setting of platform-dependent environment variables, either during installation or at runtime from Tools.py
 -Alborz, Bobby) - Doxygen 
-(Elliot) - Make arrows in the pitmaze to be bounded in each grid, regardless of window size.
-(Elliot) - Update Visual for PST
-(Elliot) - Tools.py Arrangement
-(Elliot) - Fix the issue with legend not being shown during the run
-- Improve iFDD Speed
+(Elliot) Connect RL-Framework with ROS through the RCCar domain.
+(Elliot) Improve iFDD Speed
 - Optimization
 - Feature Names
 - bestAction in matrix form (how about breaking ties randomly)
@@ -13,3 +10,5 @@ Tasks:
 - Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
 - Config File For Experiments
+(Elliot) - Fix the issue with legend not being shown during the run
+- What is the little black thing on the bottom right of the policy plot in the pendulum when doing planning such as value iteration?

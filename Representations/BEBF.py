@@ -113,6 +113,9 @@ class BEBF(Representation):
         return addedFeature
     def featureType(self):
         return float
+    def isAdaptive(self): 
+        return True
+
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'
     JOB_ID              = 1
