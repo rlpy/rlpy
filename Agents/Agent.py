@@ -31,8 +31,7 @@ class Agent(object):
     alpha               = 0             
 	## The Candid Learning Rate. This value is updated in the updateAlpha method. We use the rate calculated by [Dabney W 2012] \n http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
     candid_alpha        = 0             
-	## Used by \ref Agents.SARSA.SARSA "SARSA" agent WHAT IS THIS? WHAT DOES IT DO?
-	# In case lambda parameter in SARSA definition is used. 
+	## The eligibility trace, which marks states as eligible for a learning update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the parameter lambda is set. See: \n http://www.incompleteideas.net/sutton/book/7/node1.html
     eligibility_trace   = []            
 	## A simple object that records the prints in a file
     logger              = None          
@@ -96,11 +95,11 @@ class Agent(object):
 	# @param terminal
 	# Boolean that determines if the step is terminal or not
 	# @param phi_s
-	# WHAT IS THIS, WHAT DOES THIS DO? 
+	# The feature vector evaluated at state (s)
 	# @param phi_prime_s
-	# WHAT IS THIS, WHAT DOES THIS DO?
+	# The feature vector evaluated at the new state (ns) = (s')
 	# @param gamma
-	# WHAT IS THIS, WHAT DOES THIS DO?
+	# The discount factor for learning
 	# @param eligibility_trace_s
 	# Eligibility trace using state only (no copy-paste)
 	

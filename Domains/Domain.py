@@ -165,14 +165,14 @@ class Domain(object):
 	# [step code]
 	
 	
-	## \b ABSTRACT \b METHOD: Each row of each output corresponds to one possibility.
-    # e.g. s,a -> r[i], ns[i] with probability p[i]. WHAT IS THIS? I AM CONFUSED HOW THIS WORKS OR WHAT IT IS DOING. See code
+	## \b ABSTRACT \b METHOD: Each row of output corresponds to a possible result from taking action a while in state s.
+    # e.g. s,a -> r[i], ns[i], t[i] with probability p[i]. See code
 	# \ref Domain_exStep "Here".
 	# @param s
 	# The given state
 	# @param a 
 	# The given Action
-    # @return r, ns, p. WHAT IS THIS? WHAT ARE THESE EXACTLY?
+    # @return p, r, ns, t. Probability of transition (float), Reward (int), next state (state), isTerminal (bool)
 	
 	# [exStep code]
     #def expectedStep(self,s,a):
@@ -225,7 +225,7 @@ class Domain(object):
 	# [printAll code]
 	
 	
-	## WHAT IS THIS? WHAT DOES IT DO?.  See code
+	## Offsets discrete dimensions by 0.5 so that binning works properly. See code
 	# \ref Domain_extendDiscreteDimensions "Here".
 	
 	# [extendDiscreteDimensions code]
@@ -297,9 +297,10 @@ class Domain(object):
 	#This function is used for cases when state vector has elements outside of its limits. See code
 	# \ref Domain_saturateState "Here". 
 	# @param s
-	# WHAT IS THIS? WHAT DOES IT DO?
+	# A given state
 	# @return
-	# WHAT IS THIS? WHAT DOES IT DO?
+	# If s lies within statespace limits, return s unchanged; otherwise return the statespace_limit closest to s
+	# e.g. discrete_statespace_limits = [0, 10] and s = [12], return [10].
 	
 	# [saturateState code]
     def saturateState(self,s):

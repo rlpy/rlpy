@@ -81,7 +81,7 @@ class Experiment(object):
 	# [init code]
 	
 	
-	## Performs a run. WHAT IS THIS? IS THIS A RUN OF THE EXPERIMENT OR IS IT JUST A PERFORMANCE RUN. ALSO IS RUN AN ABTRACT METHOD?  See code
+	## Execute a single episode using the current policy to evaluate its performance; no exploration or learning is enabled.?  See code
 	# \ref Experiment_performanceRun "Here".
 	
 	# [performanceRun code]

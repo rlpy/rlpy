@@ -81,7 +81,7 @@ class Representation(object):
     # If phi_s is given, the function uses it to speed up the process. See code
 	# \ref Representation_Qs "Here".
 	# @param s The state to examine.
-	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @param phi_s The feature vector evaluated at state (s).
 	# @return [Q,A] \n
 	# \b Q: an array of Q(s,a), the values of each action. \n
 	# \b A: the corresponding array of action numbers
@@ -98,7 +98,7 @@ class Representation(object):
 	# \ref Representation_Q "Here".
 	# @param s The state to examine.
 	# @param a The action to examine.
-	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @param phi_s The feature vector evaluated at state (s)
 	# @return The value of the action in that state.
 	
 	# [Q code]
@@ -114,7 +114,8 @@ class Representation(object):
 	# [Q code]
 	
 	
-	##Returns the phi WHAT IS THIS WHAT DOES IT DO? at a given state. See code
+	## Returns phi_nonTerminal(s) for a given representation, or a zero feature vector in a terminal state.
+	# This is done to [[]] See code
 	# \ref Representation_phi "Here".
 	# @param s The given state
 	# @returns Phi
@@ -134,7 +135,7 @@ class Representation(object):
 	# \ref Representation_phi_sa "Here".	
 	# @param s The given state
 	# @param a The given action
-	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @param phi_s The feature vector evaluated at state (s)
 	# @return The associated feature vector.
 	
 	# [phi_sa code]
@@ -229,10 +230,10 @@ class Representation(object):
 	
 	
 	## Returns a list of the best actions at a given state.
-	# If phi_s is given, WHAT IS THIS? it is used to speed up. See code
+	# If phi_s [the feature vector at state (s)]is given, it is used to speed up code by preventing re-computation. See code
 	# \ref Representation_bestActions "Here".
 	# @param s The given state
-	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @param phi_s the feature vector at state (s)
 	# @return A list of the best actions at the given state.
 	
 	# [bestActions code]
@@ -263,7 +264,7 @@ class Representation(object):
     # If there are multiple best actions, this method selects one of them uniformly randomly. See code
 	# \ref Representation_bestAction "Here".
 	# @param s The given state
-	# @param phi_s WHAT IS THIS WHAT DOES IT DO?
+	# @param phi_s the feature vector at state (s)
 	# @return The best action at the given state.
 	
 	# [bestAction code]
@@ -277,7 +278,7 @@ class Representation(object):
 	# [bestAction code]
 	
 	
-	##\b ABSTRACT \b METHOD: WHAT IS THIS WHAT DOES IT DO? See code
+	##\b ABSTRACT \b METHOD: Returns the feature vector evaluated at state (s) for non-terminal states; see function phi(s) for the general case.
 	# \ref Representation_phi_nonTerminal "Here".
 	# \note if state is terminal the feature vector is always zero! 
 	# @param s The given state
@@ -302,12 +303,12 @@ class Representation(object):
 	# [activeInitialFeatures code]
 	
 	
-	## \b ABSTRACT \b METHOD: Discovers features and adds them to the representation.
+	## \b ABSTRACT \b METHOD: Discovers features from a collection of data ('p' samples) and adds them to the representation.
 	# Representations that do not have discovery do not have to overwrite this method. See code
 	# \ref Representation_batchDiscover "Here".
-	# @param td_errors A vector of TD-Errors for all samples p-by-1  WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING
-	# @param all_phi_s Phi for all states in (s,a,r,s',a') p-by-|dim(phi(s))| WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING
-	# @param data_s The states p-by-|dim(s)| WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING
+	# @param td_errors A vector of TD (Temporal Difference)-Errors for all 'p' samples [p-by-1 vector]
+	# @param all_phi_s Feature vector Phi evaluated at state (s), p-by-|dim(phi(s))| (i.e. there are p rows, each containing the feature vector phi_s for a single state s)
+	# @param data_s The states themselves, p-by-|dim(s)|
 	# @return A boolean stating whether the method added a feature or not.
 	
 	# [batchDiscover code]
@@ -316,15 +317,14 @@ class Representation(object):
 	# [batchDiscover code]
 	
 	
-	## WHAT IS THIS? WHAT DOES IT DO?. See code
+	## Build the feature vector for a series of state-action pairs (s,a) using the copy-paste method. See code
 	# \ref Representation_batchPhi_s_a "Here".
-	# @param all_phi_s The feature vectors. p-by-n WHAT IS THIS? Does p-by-n mean it is an array of dimension p by n? what is p?
-	# @param all_actions The set of actions corresponding to each feature. p-by-1 WHAT IS THIS? Does p-by-n mean it is an array of dimension p by n? what is p?
-	# @param all_phi_s_a Optional: If phi_s_a has already been built for all actions, pass it for speed boost.
-	# @param use_sparse WHAT IS THIS? DO WE STILL USE THIS?
-	# @return all_phi_s_a p-by-na. WHAT IS THIS?
-	
-	# [batchPhi_s_a code]
+	# @param all_phi_s The feature vectors. p-by-n, where p is the number of s-a pairs (indexed by row), and n is the number of features.
+	# @param all_actions The set of actions corresponding to each feature. p-by-1, where p is the number of states included in this batch.
+	# @param all_phi_s_a fOptional: Feature vector for a series of state-action pairs (s,a) using the copy-paste method. 
+	# If phi_s_a has already been built for all actions, pass it for speed boost.  
+	# @param use_sparse Determines whether or not to use sparse matrix libraries provided with numpy
+	# @return all_phi_s_a (of dimension p x (s_a) )
 	def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
 		p,n			= all_phi_s.shape
 		a_num		= self.domain.actions_num
@@ -400,7 +400,6 @@ class Representation(object):
 	# 5. Find the max index in each row \n
 	# 6. Return the action and corresponding_phi_s_a \n \n
 	#
-	# How to use: WHAT IS THIS? AM I RIGHT THAT BELOW IS INTENDED TO BE HOW TO USE?\n 
 	# First: make a mask for the invalid_actions  \n
 	# Second: build a matrix p-by-a where in each row the missing action is 1 \n \n
 	# \b Example: \n
@@ -413,12 +412,13 @@ class Representation(object):
 	# 1 0 \n
 	# 0 0
 	# @param all_s An array of all of the states. p-by-dim(s)
-	# @param all_phi_s WHAT IS THIS? p-by-|phi(s))|
-	# @param action_mask WHAT IS THIS?  Optional: pass it for a speed boost
-	# @param useSparse WHAT IS THIS? DO WE STILL USE THIS?
+	# @param all_phi_s Each row is the feature vector evaluated at a state (s), one row for each state in the batch. [ p-by-|phi(s))| ]
+	# @param action_mask Binary matrix, where each row corresponds to a single
+	# state (s), with a column for each action; '0' elements correspond to allowable actions in the state (as returned by possibleActions(s)
+	# @param useSparse Determines whether or not to use sparse matrix libraries provided with numpy
 	# @return [best_action, phi_s_a] \n
 	# \b best_action: An array of the best actions at every state. p-by-1 \n 
-	# \b phi_s_a: WHAT IS THIS? p-by-|phi(s,a)|
+	# \b phi_s_a:  p-by-|phi(s,a)|
 	
 	# [batchBestAction code]
 	def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
