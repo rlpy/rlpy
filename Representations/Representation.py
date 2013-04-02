@@ -566,3 +566,21 @@ class Representation(object):
 	def isAdaptive(self): 
 		return False
 	# [isAdaptive code]		
+
+	## Returns the state vector correponding to a state_id
+	# If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins)
+	# @param s_id The id of the state, often calculated using the state2bin function
+
+	# [stateID2state code]
+	def stateID2state(self,s_id):
+		
+		#Find the bin number on each dimension
+		s   = array(id2vec(s_id,self.bins_per_dim))
+
+		#Find the value corresponding to each bin number
+		for d in arange(self.domain.state_space_dims):
+			s[d] = bin2state(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+		return s
+	# [stateID2state code]
+
+		

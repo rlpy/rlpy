@@ -230,6 +230,8 @@ class Pendulum(Domain):
         thetas              = linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, self.Theta_discretization)
         theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(self.ThetaDot_discretization*1.)
         theta_dots          = linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.ThetaDot_discretization)
+        print thetas
+        print theta_dots
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = [theta,thetaDot]

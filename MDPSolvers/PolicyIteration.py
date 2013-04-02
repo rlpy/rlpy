@@ -34,9 +34,7 @@ class PolicyIteration(MDPSolver):
                 prev_theta = self.representation.theta.copy()
                 # Sweep The State Space
                 for i in arange(0,no_of_states):
-                    s = array(id2vec(i,rep.bins_per_dim))*self.representation.binWidth_per_dim
-                    s += self.domain.statespace_limits[:,0] +.5
-                    s[self.domain.continuous_dims] -= .5
+                    s = self.representation.stateID2state(i)
                     self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)                        
                     bellmanUpdates += 1
 

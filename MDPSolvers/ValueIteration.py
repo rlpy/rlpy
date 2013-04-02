@@ -24,10 +24,7 @@ class ValueIteration(MDPSolver):
             prev_theta = self.representation.theta.copy()
             # Sweep The State Space
             for i in arange(0,no_of_states):
-                s_id    = array(id2vec(i,rep.bins_per_dim))
-                s       = s_id.copy()   
-                for d in arange(self.domain.state_space_dims):
-                    s[d] = bin2state(s[d],self.representation.bins_per_dim[d],self.domain.statespace_limits[d,:])
+                s = self.stateID2state(i)
                 actions = self.domain.possibleActions(s)
                 # Sweep The Actions
                 for a in actions:
