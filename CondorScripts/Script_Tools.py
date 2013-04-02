@@ -57,7 +57,6 @@ def logKey(log):
         value = log.split('Return=',1)[1]
         value = value.split(',',1)[0]
         value = eval(value)
-        print value
         return -value
     else:
         return 1000000000

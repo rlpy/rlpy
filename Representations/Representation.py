@@ -493,6 +493,11 @@ class Representation(object):
 #				# Not found in cache => Calculate and store in cache
 				# If continuous domain, sample <continuous_state_starting_samples> points within each discritized grid and sample <ns_samples>/<continuous_state_starting_samples> for each starting state.
 				# Otherwise take <ns_samples> for the state.
+				
+				#First put s in the middle of the grid:
+				#shout(self,s)
+				s = self.stateInTheMiddleOfGrid(s)
+				#print "After:", shout(self,s)
 				if len(self.domain.continuous_dims):
 					next_states = empty((ns_samples,self.domain.state_space_dims))
 					rewards 		= empty(ns_samples)
@@ -587,4 +592,15 @@ class Representation(object):
 		return s
 	# [stateID2state code]
 
+	## This function returns the state in the middle of the grid that captures the input state. 
+	# For continuous MDPs this plays a major rule in improving the speed through caching of next samples
+	# @param s The given state
+
+	# [stateInTheMiddleOfGrid]
+	def stateInTheMiddleOfGrid(self,s):
+		s_normalized = s.copy()
+		for d in arange(self.domain.state_space_dims):
+			s_normalized[d] = closestDiscretization(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+		return s_normalized
+	# [stateInTheMiddleOfGrid]
 		
