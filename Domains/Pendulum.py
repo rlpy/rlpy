@@ -191,9 +191,9 @@ class Pendulum(Domain):
                 (forceAction > 0 and (-pi/2. < theta < pi/2.)) or
                 (forceAction < 0 and not (-pi/2. < theta < pi/2.))
                 ): # counterclockwise torque
-                self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2")
+                self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2", ax =self.domain_fig)
             else:# clockwise torque
-                self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2")
+                self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2", ax =self.domain_fig)
             
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
         self.domain_fig.add_patch(self.pendulumBob)

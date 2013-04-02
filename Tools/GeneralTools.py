@@ -565,9 +565,11 @@ def rank(A, eps=1e-12):
 def easy2read(A, _precision=3):
     # returns an array easy to read (used for debugging mainly. _precision is the number of decimal digits
     return array_repr(A, precision=_precision, suppress_small=True)
-def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10,shrinkB=10,arrowstyle="fancy"):
+def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10,shrinkB=10,arrowstyle="fancy",ax = None):
     #draw an arrow from point A=(x1,y1) to point B=(x2,y2)
-    return pl.annotate("",
+    # ax is optional to specifify the axis used for drawing
+    if ax is None:
+        return pl.annotate("",
                 xy=(x2,y2), xycoords='data',
                 xytext=(x1,y1), textcoords='data',
                 arrowprops=dict(arrowstyle=arrowstyle, #linestyle="dashed",
@@ -577,6 +579,18 @@ def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10
                                 patchB=None,
                                 connectionstyle=connectionstyle),
                 )
+    else:
+        return ax.annotate("",
+                xy=(x2,y2), xycoords='data',
+                xytext=(x1,y1), textcoords='data',
+                arrowprops=dict(arrowstyle=arrowstyle, #linestyle="dashed",
+                                color= color,
+                                shrinkA=shrinkA, shrinkB=shrinkB,
+                                patchA=None,
+                                patchB=None,
+                                connectionstyle=connectionstyle),
+                )
+        
 def drawHist(data,bins=50,fig=101):
     hist, bins = histogram(data,bins = bins)
     width = 0.7*(bins[1]-bins[0])
