@@ -581,6 +581,9 @@ class Representation(object):
 		#Find the value corresponding to each bin number
 		for d in arange(self.domain.state_space_dims):
 			s[d] = bin2state(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+		
+		if len(self.domain.continuous_dims) == 0:
+			s = s.astype(int)
 		return s
 	# [stateID2state code]
 

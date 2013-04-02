@@ -39,12 +39,13 @@ class PolicyIteration(MDPSolver):
                 # Sweep The State Space
                 for i in arange(0,no_of_states):
                     s = self.representation.stateID2state(i)
-                    self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)                        
-                    bellmanUpdates += 1
+                    if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
+                        self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)                        
+                        bellmanUpdates += 1
 
-                    if bellmanUpdates % self.log_interval == 0:
-                        performance_return, _,_,_  = self.performanceRun()
-                        self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
+                        if bellmanUpdates % self.log_interval == 0:
+                            performance_return, _,_,_  = self.performanceRun()
+                            self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
                 
                 #check for convergence
                 theta_change = linalg.norm(policy.representation.theta - self.representation.theta,inf)
@@ -58,12 +59,11 @@ class PolicyIteration(MDPSolver):
             new_policy = zeros(no_of_states)
             policyChanged = 0
             for i in arange(no_of_states):
-                s = array(id2vec(i,rep.bins_per_dim))*self.representation.binWidth_per_dim
-                s += self.domain.statespace_limits[:,0] +.5
-                s[self.domain.continuous_dims] -= .5
-                for a in self.domain.possibleActions(s):
-                    self.BellmanBackup(s,a,self.ns_samples, policy)
-                if policy.pi(s) != self.representation.bestAction(s): policyChanged += 1 
+                s = self.representation.stateID2state(i)
+                if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
+                    for a in self.domain.possibleActions(s):
+                        self.BellmanBackup(s,a,self.ns_samples, policy)
+                    if policy.pi(s) != self.representation.bestAction(s): policyChanged += 1 
                 
             policy.representation.theta = self.representation.theta.copy() # This will cause the policy to be copied over
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
