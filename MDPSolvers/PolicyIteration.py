@@ -6,6 +6,11 @@
 # Once the errors are bounded, the policy is changed  
 from MDPSolver import *
 class PolicyIteration(MDPSolver):
+
+    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 5000, show = False, max_PE_iterations = 10):
+        super(PolicyIteration,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
+        self.max_PE_iterations = max_PE_iterations
+        self.logger.log('Max PE Iterations:\t%d' % self.max_PE_iterations)
     def solve(self):
         self.result = []
         self.start_time     = time() # Used to show the total time took the process
@@ -29,9 +34,8 @@ class PolicyIteration(MDPSolver):
             # Policy Evaluation
             converged = False
             policy_evaluation_iteration = 0
-            while not converged and deltaT(self.start_time) < self.planning_time:
+            while not converged and deltaT(self.start_time) < self.planning_time and policy_evaluation_iteration < self.max_PE_iterations:
                 policy_evaluation_iteration += 1
-                prev_theta = self.representation.theta.copy()
                 # Sweep The State Space
                 for i in arange(0,no_of_states):
                     s = self.representation.stateID2state(i)
@@ -43,7 +47,7 @@ class PolicyIteration(MDPSolver):
                         self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
                 
                 #check for convergence
-                theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
+                theta_change = linalg.norm(policy.representation.theta - self.representation.theta,inf)
                 converged = theta_change < self.convergence_threshold        
                 self.logger.log('PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
                 if self.show: self.domain.show(s,policy.pi(s),self.representation)

@@ -502,7 +502,8 @@ class Representation(object):
 						new_s = s.copy()
 						for d in arange(self.domain.state_space_dims):
 							w = self.binWidth_per_dim[d]
-							new_s[d] = random.rand()*w+s[d]
+							# Sample each dimension of the new_s within the cell
+							new_s[d] = (random.rand()-.5)*w+s[d]
 							# If the dimension is discrete make make the sampled value to be int
 							if not d in self.domain.continuous_dims: 
 								new_s[d] = int(new_s[d])
