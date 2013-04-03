@@ -12,15 +12,17 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
     epsilon     = None # Probability of taking a random action during each decision making
     alpha       = .1 # step size parameter to adjust the weights. If the representation is tabular you can set this to 1.
     MIN_CONVERGED_TRAJECTORIES = 5 # Minimum number of trajectories required for convergence in which the max bellman error was below the threshold
-    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False, epsilon = .1):
+    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False, epsilon = .1, max_PE_iterations = 10):
         super(TrajectoryBasedPolicyIteration,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
         self.epsilon = epsilon
+        self.max_PE_iterations = max_PE_iterations
         if className(representation) == 'Tabular': 
             self.alpha = 1
         else:
             self.logger.log('gradient step:\t\t\t%0.2f' % self.alpha)
         self.logger.log('epsilon:\t\t\t%0.2f' % self.epsilon)
         self.logger.log('# Trajectories used for convergence: %d' % self.MIN_CONVERGED_TRAJECTORIES)
+        self.logger.log('Max PE Iterations:\t%d' % self.max_PE_iterations)
     def solve(self):
         self.result         = []
         self.start_time     = time() # Used to show the total time took the process
@@ -36,7 +38,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             PE_iteration            = 0
             evaluation_is_accurate  = False
             converged_trajectories  = 0
-            while not evaluation_is_accurate and deltaT(self.start_time) < self.planning_time:
+            while not evaluation_is_accurate and deltaT(self.start_time) < self.planning_time and PE_iteration < self.max_PE_iterations:
                 # Generate a new episode e-greedy with the current values
                 max_Bellman_Error       = 0
                 step                    = 0
