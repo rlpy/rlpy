@@ -1,6 +1,6 @@
 Tasks:
-(Bobby) - Improve installation process; automate setting of platform-dependent environment variables, either during installation or at runtime from Tools.py
--Alborz, Bobby) - Doxygen 
+	[done]	(Bobby) - Improve installation process; automate setting of platform-dependent environment variables, either during installation or at runtime from Tools.py
+-(Alborz, Bobby) - Doxygen 
 (Elliot) Connect RL-Framework with ROS through the RCCar domain.
 (Elliot) Improve iFDD Speed
 - Optimization
@@ -11,3 +11,8 @@ Tasks:
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
 - Config File For Experiments
 (Elliot) - Fix the issue with legend not being shown during the run
+
+
+Other todo:
+
+Doxygen page reads "Reinforced Learning", s/b "Reinforcement Learning"

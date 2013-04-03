@@ -1,7 +1,6 @@
-xThe only requirements to run and contribute to RL-Python are
-installation of the required package dependencies.  Once Python and Latex
-are installed, users of one of the recommended operating systems can
-install dependencies using one of the provided scripts.
+The only requirements to run and contribute to RL-Python are
+a working Python 2.7 environment and the required package dependencies,
+which can be installed automatically by the provided scripts.
 Detailed installation instructions are shown below.
 Installation FAQ available at bottom.
 
@@ -10,20 +9,17 @@ a) Windows 32/64-bit
 b) Mac OSX
 c) Ubuntu Linux
 
-Requirements for Installation (Detailed in next section):
-1. Python 2.7
-2. An IDE capable of development in Python
-Recommended: Latex (with extra fonts, for plotting)
 
+INSTALLATION
 ===============================================================
 ===============================================================
 1. Python 2.7
 
-Check to see if python is already installed by opening a terminal
-and typing:
+Check to see if python is already installed by opening a terminal in any
+OS and typing:
 > python --version
 
-If you do not see the output Python 2.7.3, download and install python,
+If you do not see the output "Python 2.7.3", download and install python,
 for example, from ( http://www.python.org/getit/ )
 
 ===============================================================
@@ -49,47 +45,28 @@ c) Ubuntu Linux - automated in script
 
 ===============================================================
 ===============================================================
-3 (Optional): Latex (with extra fonts)
-
-a) Windows 32/64-bit
-We recommend installing Miktex ( http://miktex.org/download)
-which includes dvipng and all required font packages.
-
-b) Mac OSX - 
-
-c) Ubuntu Linux - automated in script
-
-
-===============================================================
-===============================================================
-4. Run the dependency installer script
+3. Run the dependency installer script
 a) Windows 32-bit
 a.i)  Extract Win32_files.zip to a temporary directory of choice
+(recommend extracting to a folder within RL-Python directory to speed installation)
 a.ii) Open a command prompt window with administrative privileges:
 	Windows 8: 		 WindowsKey-X, select "Command Prompt Admin"
 	Windows 7,Vista: type 'cmd' in the start menu, right click and open with admin privileges
 	Windows XP:      Start-->Run cmd.exe
 a.iii) Navigate to the temporary directory and run the .bat script.
 
+
 b) Mac OSX - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./OSX_setup.sh
 
+
 c) Ubuntu - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./ubuntu_setup.sh
-===============================================================
-===============================================================
-If you installed latex, Set your TEXPATH variable in config.py
-to point to your latex directory.
-
-NOTE that in Windows, you must not terminate the string with a ' \ ' or you
-will receive errors.
-
-Example: TEXPATH = r"S:\Program Files\MiKTeX 2.9\miktex\bin"
 
 ===============================================================
 ===============================================================
 Installation of RL-Python is now complete! Test the installation by
-running IshouldRun.py
+running IshouldRun.py, and see the tutorial Doxygen->Output->html->index.html
 
 
 If your setup does not match those recommended above,
@@ -162,6 +139,13 @@ If you are having trouble installing on OSX, see the following:
 http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/#numpy
 
 ===============================================================
+E: Generic messages about missing environmental variables
+S: Ensure that the environment variable 'RL_PYTHON_ROOT' is set on your OS for
+whatever environment you are running RL-Python in (e.g. it might be set in a terminal
+window but not in general).
+This should have been configured by the installer script; if your RL-Python
+directory has moved since then, merely re-run the installer script.
+===============================================================
 E: Generic messages about missing functions or 'module does not contain function xxx'
 S: Ensure you have the latest version of scipy (0.11 as of this writing):
 import scipy
@@ -195,18 +179,3 @@ fails to locate python, or running 'python' in a command prompt gives
 program or batch file."
 S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )
 ===============================================================
-E: In Windows, Latex fonts do not appear to be installed
-S-W: Set the latex environment variable per http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH:
-For example, add ' ;C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64 '
-to the end of your PATH variable, editing as required for your specific
-binaries installation directory.
-NOTE THE '\\' - using '\' only, you might trigger an escape character.
-===============================================================
-E: ! LaTeX Error: File `type1cm.sty' not found.
-S-U: sudo apt-get install texlive-latex-extra
-===============================================================
-E: ! I can't find file `pncr7t'.
-S-U: sudo apt-get install texlive-fonts-recommended
-===============================================================
-E: In windows, "The system can't find the file specified"
-S-W: This likely means you have set your latex path incorrectly
