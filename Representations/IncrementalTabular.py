@@ -5,7 +5,8 @@ from Representation import *
 class IncrementalTabular(Representation):
     hash = {}
     def __init__(self,domain,logger,discretization = 20):
-        self.features_num = 0
+        self.features_num   = 0
+        self.isDynamic      = True
         super(IncrementalTabular,self).__init__(domain,logger,discretization)
     def phi_nonTerminal(self,s):
         hash_id = self.hashState(s)
@@ -27,8 +28,6 @@ class IncrementalTabular(Representation):
             self.addNewWeight()
     def featureType(self):
         return bool
-    def isAdaptive(self): 
-        return True
 
          
         

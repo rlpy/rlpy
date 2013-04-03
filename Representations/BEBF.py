@@ -47,7 +47,7 @@ class BEBF(Representation):
         super(BEBF,self).__init__(domain,logger,discretization)
         self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
         self.logger.log("Norm Threshold:\t\t%0.3f"% self.batchThreshold)
-    
+        self.isDynamic  = True
         ## @return: a function object corresponding to the 
     def getFunctionApproximation(self,X,y):
         #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = 0.0005) # support vector regression
@@ -113,8 +113,6 @@ class BEBF(Representation):
         return addedFeature
     def featureType(self):
         return float
-    def isAdaptive(self): 
-        return True
 
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'

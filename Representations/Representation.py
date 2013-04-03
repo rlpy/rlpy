@@ -37,6 +37,9 @@ class Representation(object):
 	agg_states_num  = 0
 	## A simple object that records the prints in a file	
 	logger = None	   
+	
+	## A boolan stating that if the representation is dynamic meaning the size of features is going to change (default value = False). 
+	isDynamic = False
 	## A dictionary used to cache expected step. Used for planning algorithms
 	expectedStepCached= {}
 	## Initializes the \c %Representation object. See code
@@ -106,10 +109,7 @@ class Representation(object):
 	def Q(self,s,a,phi_s = None):
 		
 		if len(self.theta) > 0:
-			try:
-				return dot(self.phi_sa(s,a, phi_s),self.theta)
-			except:
-				print "ERRRRRR"
+			return dot(self.phi_sa(s,a, phi_s),self.theta)
 		else:
 			return 0.0
 	# [Q code]
@@ -566,13 +566,6 @@ class Representation(object):
 		return Qs[a_ind],actions[a_ind]		 
 	# [V_oneStepLookAhead code]
 	
-	## Returns a boolean specifying if the feature size change
-	# As a default this function always return False, unless changed by its child 
-	# [isAdaptive code]
-	def isAdaptive(self): 
-		return False
-	# [isAdaptive code]		
-
 	## Returns the state vector correponding to a state_id
 	# If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins)
 	# @param s_id The id of the state, often calculated using the state2bin function

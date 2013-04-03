@@ -62,7 +62,7 @@ class LSPI(Agent):
         self.data_r             = zeros((max_window,1))
         
         # Make A and r incrementally if the representation can not expand
-        self.fixedRep      = not representation.isAdaptive()
+        self.fixedRep      = not representation.isDynamic
         if self.fixedRep:
             f_size          = representation.features_num*domain.actions_num
             self.b          = zeros((f_size,1))
@@ -271,7 +271,7 @@ class LSPI(Agent):
             print "No features, hence no LSPI is necessary!"
             return
 
-        self.logger.log("============================\nRunning LSPI\n============================")
+        self.logger.log("============================\nRunning LSPI with %d Samples\n============================" % self.samples_count)
         while added_feature and re_iteration <= self.re_iterations:
             re_iteration += 1
             #Some Prints

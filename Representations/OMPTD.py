@@ -23,6 +23,7 @@ class OMPTD(Representation):
         self.iFDD                   = iFDD(domain,logger,self.iFDD_ONLINETHRESHOLD, initial_representation, sparsify = 0, discretization = discretization, useCache = 1)
         self.bagSize                = bagSize
         self.features_num           = self.initial_representation.features_num
+        self.isDynamic              = True
 
         super(OMPTD,self).__init__(domain,logger,discretization)
         
@@ -166,8 +167,6 @@ class OMPTD(Representation):
 
     def featureType(self):
         return self.initial_representation.featureType()
-    def isAdaptive(self): 
-        return True
 
 if __name__ == '__main__':
     STDOUT_FILE         = 'out.txt'

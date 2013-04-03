@@ -78,6 +78,7 @@ class iFDD(Representation):
         self.sortediFDDFeatures     = PriorityQueueWithNovelty()
         self.initial_representation = initial_representation
         self.iFDDPlus               = iFDDPlus
+        self.isDynamic              = True
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
         if self.logger:
@@ -433,7 +434,5 @@ if __name__ == '__main__':
             print '%d: %0.2f >> %s' % (i+1, threshold, str(phi.nonzero()[0]))
             rep.discover(phi,threshold)
         rep.show()
-    def isAdaptive(self): 
-        return True
     
     
