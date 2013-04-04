@@ -481,10 +481,13 @@ class Representation(object):
 			Q	 	= 0
 			for j in arange(len(p)):
 				if policy == None:
-					Q += p[j]*(r[j] + gamma*self.V(ns[j,:]))
+					Q += p[j,0]*(r[j,0] + gamma*self.V(ns[j,:]))
 				else:
-					Q += p[j]*(r[j] + gamma*self.Q(ns[j,:],policy.pi(ns[j,:])))
-			Q = Q[0]
+					# For some domains such as blocks world, you may want to apply bellman backup to impossible states which may not have any possible actions.
+					# This if statement makes sure that there exist at least one action in the next state so the bellman backup with the fixed policy is valid
+					if len(self.domain.possibleActions(ns[j,:])):
+						na = policy.pi(ns[j,:])
+						Q += p[j,0]*(r[j,0] + gamma*self.Q(ns[j,:],na))
 		else:
 			# See if they are in cache:
 			key = tuple(hstack((s,[a])))
