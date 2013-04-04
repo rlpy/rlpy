@@ -64,8 +64,8 @@ echo -e "otherwise attempt sudo apt-get install <<missing package>> manually.\n"
 read -p "Ready to continue to final step of installation? (Press [Enter])"
 clear
 
-# Final step adds a line to .bashrc to source the file RL_Python_setup.bash,
-# after the user locates the install directory.
+# Final step adds a line to .bashrc and /etc/environment
+# to source the file RL_Python_setup.bash, after the user locates the install directory.
 # The file RL_Python_setup.bash is included in the repository, but we have
 # commented code here to automatically regenerate it.
 
@@ -108,12 +108,15 @@ cd $INSTALL_PATH
 #echo "Creating file RL_Python_setup.bash in directory $INSTALL_PATH"
 # sudo echo 'export RL_PYTHON_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RL_Python_setup.bash
 
-# Make a backup of the .bashrc file before editing!
+# Make a backup of the .bashrc and environment files before editing!
 cd
+HOMEDIR=`pwd`
+
 sudo cp .bashrc .bashrc_RL_PYTHON_BACKUP
+sudo cp /etc/environment /etc/environment_RL_PYTHON_BACKUP
 
 # Determine if .bashrc already sources this file in some way
-ALREADY_EXPORTED=`find ~ -name '.bashrc' -exec grep RL_Python_setup.bash {} +`
+ALREADY_EXPORTED=`find $HOMEDIR -name '.bashrc' -exec grep RL_Python_setup.bash {} +`
 
 # A file is already sourced from bashrc
 if [ "$?" -eq 0 ]; then
@@ -121,11 +124,38 @@ if [ "$?" -eq 0 ]; then
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
     # Delete the line(s) containing 'RL_Python_setup.bash'
-    sed -i '/RL_Python_setup.bash/d' .bashrc > /dev/null
+    sudo sed -i '/RL_Python_setup.bash/d' .bashrc > /dev/null
 fi
 
-echo -e "\nAdding source of RL_Python_setup.bash to .bashrc\n"
+# Determine if /etc/environment already sources this file in some way
+ALREADY_EXPORTED=`sudo find /etc -name 'environment' -exec grep RL_Python_setup.bash {} +`
 
+# A file is already sourced from environment
+if [ "$?" -eq 0 ]; then
+    cd /etc
+    echo -e "Your /etc/environment file already appears to source RL_Python_setup.bash;"
+    echo -e "this line will be overwritten with the newly created one based on"
+    echo -e "your answer above."
+    # Delete the line(s) containing 'RL_Python_setup.bash'
+    sudo sed -i '/RL_Python_setup.bash/d' environment > /dev/null
+fi
+
+echo -e "\nAdding source of RL_Python_setup.bash to environment ..."
+
+cd /etc
+
+# Note we must use sudo su (or execute as root directly) in order to modify
+# the /etc/environment file [apparently... sudo echo etc. does not work].
+# Thus the crazy syntax below.
+
+#if [ "$?" -eq 0 ]; then
+    sudo -u root -H sh -c "echo '# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RL-Python' >> /etc/environment"
+    sudo -u root -H sh -c "echo 'source $INSTALL_PATH/RL_Python_setup.bash' >> /etc/environment"
+    echo -e "Successfully modified environment.\n"
+
+echo -e "Adding source of RL_Python_setup.bash to .bashrc ..."
+
+cd $HOMEDIR
 #if [ "$?" -eq 0 ]; then
     sudo echo "# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RL-Python" >> .bashrc
     sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .bashrc
@@ -137,6 +167,89 @@ echo -e "\nAdding source of RL_Python_setup.bash to .bashrc\n"
 #    echo -e "is used on your machine.\n"
 #fi
 
+
+# Finally, create the config.py file which we can use to add other environment
+# variables to our project.
+
+echo -e "\n"
+echo -e "Final step:"
+echo -e "Please enter a directory in which to store matplotlib temporary"
+echo -e "files; the only constraint is that you have read/write priveleges to"
+echo -e "this directory."
+echo -e ""
+
+echo -e "May we suggest: $HOMEDIR/mpl_tmp ."
+echo -e "Is this ok? (Yes or No)"
+read yes_no
+TMP_PATH="null"
+VALID_DIRECTORY_ZERO="1" # Start with improper directory
+while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
+do
+    case $yes_no in
+        Yes) TMP_PATH="$HOMEDIR/mpl_tmp"
+             ;;
+        No)  echo -e "Please enter the absolute path to a temporary directory of choice: "
+             read TMP_PATH
+             ;;
+    esac
+    #-p option makes directories only as needed.
+    mkdir -p $TMP_PATH
+    VALID_DIRECTORY_ZERO="$?"
+    if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
+        echo -e "\nValid directory specified. "
+    else
+        echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
+        # Automatically force entry of python path in loop above
+        yes_no="No"
+    fi
+done
+echo ""
+
+# Now create the config.py file
+cd $INSTALL_PATH
+(
+echo "# *****************************************************************************"
+echo "# *** WARNING: CHANGES TO THIS FILE WILL BE OVERWRITTEN BY INSTALLER SCRIPT ***"
+echo "# *****************************************************************************"
+echo ""
+echo "HOME_DIR = r\"$TMP_PATH\" # Where to store tempfiles for matplotlib"
+echo "CONDOR_CLUSTER_PREFIX = '/data' # not used anywhere as part of path,"
+echo "# only as unique identifier distinguishing cluster from normal local machine."
+echo "# See isOnCluster()."
+) > Config.py
+
+# Create shortcut on desktop to automatically source files
+echo -e "\nLastly, would you like a shortcut to be created on your desktop which will"
+echo -e "automatically source the required files on eclipse startup?"
+echo -e "Note that we assume a single default eclipse installation."
+echo -e "See (http://answers.ros.org/question/29424/eclipse-ros-fuerte/)"
+echo -e "to create a custom shortcut."
+echo -e "Select (Yes, No) :"
+select yes_no in "Yes" "No";
+do
+    case $yes_no in
+        Yes ) (
+                echo -e ""
+                echo -e "[Desktop Entry]"
+                echo -e "Version=1.0"
+                echo -e "Type=Application"
+                echo -e "Terminal=false"
+                echo -e "Icon[en_US]=/opt/eclipse/icon.xpm"
+                echo -e "Exec=bash -c \"source ~/.bashrc; source /etc/environment; /opt/eclipse/eclipse\""
+                echo -e "Name[en_US]=Eclipse"
+                echo -e "Name=Eclipse"
+                echo -e "Icon=/opt/eclipse/icon.xpm"
+              ) > "$HOMEDIR/Desktop/RL_Python_Eclipse_Env.Desktop"
+              echo -e "\n\nYou may need to right-click the icon, go to properties->permissions,"
+              echo -e "and check the box which enables execution."
+              break;;
+        No ) echo -e "\n\nYou will need to source ~/.bashrc and/or /etc/environment"
+             echo -e "for necessary environmental variables to be available to eclipse."
+             echo -e "Alternatively, launch eclipse from the console."
+             break;;
+    esac
+done
+echo ""
 
 echo -e "\n"
 read -p "Installation script complete, press [Enter] to exit."

@@ -1,5 +1,8 @@
-global TEXPATH, CONDOR_CLUSTER_PREFIX
-#TEXPATH = r'/usr/texbin'         # Location of Latex bin files. "r" is used to indicate raw string avoiding escape character interpretation
-HOME_DIR = r"/data/scratch/agf-tmp" # Where to store tempfiles
-CONDOR_CLUSTER_PREFIX = '/data' # not used anywhere as part of path, only as unique identifier distinguishing cluster from normal local machine. See isOnCluster()
+# *****************************************************************************
+# *** WARNING: CHANGES TO THIS FILE WILL BE OVERWRITTEN BY INSTALLER SCRIPT ***
+# *****************************************************************************
 
+HOME_DIR = r"/home/bob/mpl_tmp" # Where to store tempfiles for matplotlib
+CONDOR_CLUSTER_PREFIX = '/data' # not used anywhere as part of path,
+# only as unique identifier distinguishing cluster from normal local machine.
+# See isOnCluster().

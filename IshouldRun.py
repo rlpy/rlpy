@@ -5,13 +5,13 @@
 
 import sys, os
 #Add all paths
-path = '.'
-while not os.path.exists(path+'/RL-Python/Tools/GeneralTools.py'):
-    path = path + '/..'
+RL_PYTHON_ROOT = os.environ.get('RL_PYTHON_ROOT')
+if (RL_PYTHON_ROOT == None):
+    print 'Could not get environment variable RL_PYTHON_ROOT: \
+    \nplease re-run installer script or see FAQ.txt. \nExiting.'
+    sys.exit()
 
-path = path + '/RL-Python'
-sys.path.insert(0, os.path.abspath(path))
-RL_PYTHON_ROOT = path
+sys.path.insert(0, RL_PYTHON_ROOT)
   
 
 from Tools import *

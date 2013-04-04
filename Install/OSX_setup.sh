@@ -1,6 +1,10 @@
 #!/bin/bash
 #VERSION_NUM=$(python --version *.lis|grep -c "")
 #
+# We modify ~/.launchd.conf since it propagates changes to all programs launched by
+# a user, not limited to terminal or GUI apps only.
+# See http://stackoverflow.com/questions/603785/environment-variables-in-mac-os-x
+#
 #TODO - check for installation of XCode
 clear
 echo "This script installs the required dependencies for the RL_Python Framework."
@@ -104,7 +108,7 @@ echo ""
 read -p "Ready to continue to final step of installation? (Press [Enter])"
 clear
 
-# Final step adds a line to .bash_profile to source the file RL_Python_setup.bash,
+# Final step adds a line to .launchd.conf to source the file RL_Python_setup.bash,
 # after the user locates the install directory.
 # The file RL_Python_setup.bash is included in the repository, but we have
 # commented code here to automatically regenerate it.
@@ -153,32 +157,121 @@ cd $INSTALL_PATH
 
 # Make a backup of the .bashrc file before editing!
 cd ~
-sudo cp .bash_profile .bash_profile_RL_PYTHON_BACKUP
+HOMEDIR=`pwd`
+sudo cp .launchd.conf .launchd.conf_RL_PYTHON_BACKUP
 
 # Determine if .bashrc already sources this file in some way
-ALREADY_EXPORTED=`find ~ -name '.bash_profile' -exec grep RL_Python_setup.bash {} +`
+ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -exec grep RL_Python_setup.bash {} +`
 
 # A file is already sourced from bash_profile
 if [ "$?" -eq 0 ]; then
-    echo -e "Your .bash_profile file already appears to source RL_Python_setup.bash;"
+    echo -e "Your .launchd.conf file already appears to source RL_Python_setup.bash;"
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
     # Delete the line(s) containing 'RL_Python_setup.bash'
-    sed -i '/RL_Python_setup.bash/d' .bash_profile > /dev/null
+    sed -i '/RL_Python_setup.bash/d' .launchd.conf > /dev/null
 fi
 
-echo -e "\nAdding source of RL_Python_setup.bash to .bash_profile\n"
+echo -e "\nAdding source of RL_Python_setup.bash to .launchd.conf\n"
 
 #if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RL_Python_setup.bash below by OSX_setup.sh script for RL-Python" >> .bash_profile
-    sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .bash_profile
-    echo -e "Successfully modified .bash_profile\n"
+    sudo echo "# Automatically added RL_Python_setup.bash below by OSX_setup.sh script for RL-Python" >> .launchd.conf
+    sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .launchd.conf
+    echo -e "Successfully modified .launchd.conf\n"
 #else
-#    echo -e "There was a problem creating a backup of .bash_profile.  You will need \n"
+#    echo -e "There was a problem creating a backup of .launchd.conf.  You will need \n"
 #    echo -e "to manually 'source' the file RL_Python_setup.bash for your shell\n"
 #    echo -e "environment; we recommend adding it to whatever startup script\n"
 #    echo -e "is used on your machine.\n"
 #fi
+
+
+
+# Finally, create the config.py file which we can use to add other environment
+# variables to our project.
+
+echo -e "\n"
+echo -e "Final step:"
+echo -e "Please enter a directory in which to store matplotlib temporary"
+echo -e "files; the only constraint is that you have read/write priveleges to"
+echo -e "this directory."
+echo -e ""
+
+echo -e "May we suggest: $HOMEDIR/mpl_tmp ."
+echo -e "Is this ok? (Yes or No)"
+read yes_no
+TMP_PATH="null"
+VALID_DIRECTORY_ZERO="1" # Start with improper directory
+while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
+do
+    case $yes_no in
+        Yes) TMP_PATH="$HOMEDIR/mpl_tmp"
+             ;;
+        No)  echo -e "Please enter the absolute path to a temporary directory of choice: "
+             read TMP_PATH
+             ;;
+    esac
+    #-p option makes directories only as needed.
+    mkdir -p $TMP_PATH
+    VALID_DIRECTORY_ZERO="$?"
+    if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
+        echo -e "\nValid directory specified. "
+    else
+        echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
+        # Automatically force entry of python path in loop above
+        yes_no="No"
+    fi
+done
+echo ""
+
+# Now create the config.py file
+cd $INSTALL_PATH
+(
+echo "# *****************************************************************************"
+echo "# *** WARNING: CHANGES TO THIS FILE WILL BE OVERWRITTEN BY INSTALLER SCRIPT ***"
+echo "# *****************************************************************************"
+echo ""
+echo "HOME_DIR = r\"$TMP_PATH\" # Where to store tempfiles for matplotlib"
+echo "CONDOR_CLUSTER_PREFIX = '/data' # not used anywhere as part of path,"
+echo "# only as unique identifier distinguishing cluster from normal local machine."
+echo "# See isOnCluster()."
+) > Config.py
+
+# Create shortcut on desktop to automatically source files
+echo -e "\nLastly, would you like a shortcut to be created on your desktop which will"
+echo -e "automatically source the required files on eclipse startup?"
+echo -e "Note that we assume a single default eclipse installation."
+echo -e "See (http://answers.ros.org/question/29424/eclipse-ros-fuerte/)"
+echo -e "to create a custom shortcut."
+echo -e "Select (Yes, No) :"
+select yes_no in "Yes" "No";
+do
+    case $yes_no in
+        Yes ) (
+                echo -e ""
+                echo -e "[Desktop Entry]"
+                echo -e "Version=1.0"
+                echo -e "Type=Application"
+                echo -e "Terminal=false"
+                echo -e "Icon[en_US]=/opt/eclipse/icon.xpm"
+                echo -e "Exec=bash -c \"source ~/.bashrc; source /etc/environment; /opt/eclipse/eclipse\""
+                echo -e "Name[en_US]=Eclipse"
+                echo -e "Name=Eclipse"
+                echo -e "Icon=/opt/eclipse/icon.xpm"
+              ) > "$HOMEDIR/Desktop/RL_Python_Eclipse_Env.Desktop"
+              echo -e "\n\nYou may need to right-click the icon, go to properties->permissions,"
+              echo -e "and check the box which enables execution."
+              break;;
+        No ) echo -e "\n\nYou will need to source ~/.bashrc and/or /etc/environment"
+             echo -e "for necessary environmental variables to be available to eclipse."
+             echo -e "Alternatively, launch eclipse from the console."
+             break;;
+    esac
+done
+echo ""
+
+echo -e "\n"
+read -p "Installation script complete, press [Enter] to exit."
 
 echo -e "\n"
 read -p "Installation script complete, press [Enter] to exit."

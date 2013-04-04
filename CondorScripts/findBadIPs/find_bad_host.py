@@ -6,7 +6,14 @@
 
 import sys,os
 
-sys.path.insert(0, os.path.abspath('..'))
+#Add all paths
+RL_PYTHON_ROOT = os.environ.get('RL_PYTHON_ROOT')
+if (RL_PYTHON_ROOT == None):
+    print 'Could not get environment variable RL_PYTHON_ROOT: \
+    \nplease re-run installer script or see FAQ.txt. \nExiting.'
+    sys.exit()
+
+sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Script_Tools import *
 
