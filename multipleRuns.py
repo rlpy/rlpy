@@ -3,7 +3,7 @@
 ######################################################
 
 # Run the main file multiple times and store the result of each run in a separate directory:
-from os import *
+import os
 
 RL_PYTHON_ROOT = os.environ.get('RL_PYTHON_ROOT')
 if (RL_PYTHON_ROOT == None):
