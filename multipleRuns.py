@@ -17,7 +17,7 @@ PROJECT_PATH    = 'Results/TEST'
 max_cpu         = multiprocessing.cpu_count()-2
 
 print "Found %d free CPUs" % max_cpu
-os.exit()
+sys.exit()
 #Create the ouput directory
 checkNCreateDirectory(PROJECT_PATH)
 #create the pool with the correct number of cpus
