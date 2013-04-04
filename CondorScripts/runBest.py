@@ -15,7 +15,7 @@ sys.path.insert(0, path)
 from Tools import *
 
 paths = ['.']
-merger = Merger(['.'],showSplash=False)
+merger = Merger(paths,showSplash=False)
 bestExp, bestValue = merger.bestExperiment(mode = 0)
 if bestExp:
     print "======================"

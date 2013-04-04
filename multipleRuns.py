@@ -5,14 +5,14 @@
 # Run the main file multiple times and store the result of each run in a separate directory:
 import sys, os
 
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RL-Python'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
 from main import *
 
+#RL_PYTHON_ROOT = '.'
+#while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
+#    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+#RL_PYTHON_ROOT += '/RL-Python'
+#RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
+#sys.path.insert(0, RL_PYTHON_ROOT)
 def unpackjob(args):
     main(*args)
 
