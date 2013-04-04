@@ -20,7 +20,8 @@ def unpackjob(args):
 StartID         = 1
 FinishId        = 5
 RUNS            = arange(StartID,FinishId+1)
-PROJECT_PATH    = 'Results/TEST'
+#PROJECT_PATH    = 'Results/TEST'
+PROJECT_PATH    = '.'
 max_cpu         = multiprocessing.cpu_count()/2-1
 
 print "Found %d free CPUs (Not using HT)" % max_cpu
