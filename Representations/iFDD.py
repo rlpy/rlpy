@@ -107,10 +107,10 @@ class iFDD(Representation):
                 finalActiveIndices     = self.findFinalActiveFeatures(activeIndices)
         else:
             finalActiveIndices         = self.findFinalActiveFeatures(activeIndices)
-        try:
-            F_s[finalActiveIndices] = 1
-        except:
-            print "ERRR"
+#        try:
+        F_s[finalActiveIndices] = 1
+        #except:
+            #print "ERRR"
         return F_s
     def findFinalActiveFeatures(self,intialActiveFeatures):
         # Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
