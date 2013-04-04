@@ -3,8 +3,16 @@
 ######################################################
 
 # Run the main file multiple times and store the result of each run in a separate directory:
-from main import *
 from os import *
+
+RL_PYTHON_ROOT = os.environ.get('RL_PYTHON_ROOT')
+if (RL_PYTHON_ROOT == None):
+    print 'Could not get environment variable RL_PYTHON_ROOT: \
+    \nplease re-run installer script or see FAQ.txt. \nExiting.'
+    sys.exit()
+
+sys.path.insert(0, RL_PYTHON_ROOT)
+from main import *
 
 def unpackjob(args):
     main(*args)
@@ -16,7 +24,7 @@ RUNS            = arange(StartID,FinishId+1)
 PROJECT_PATH    = 'Results/TEST'
 max_cpu         = multiprocessing.cpu_count()/2-1
 
-print "Found %d free CPUs" % max_cpu
+print "Found %d free CPUs (Not using HT)" % max_cpu
 sys.exit()
 #Create the ouput directory
 checkNCreateDirectory(PROJECT_PATH)
