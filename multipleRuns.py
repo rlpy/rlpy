@@ -27,8 +27,9 @@ max_cpu         = multiprocessing.cpu_count()/2-1
 print "Found %d free CPUs (Not using HT)" % max_cpu
 print "Running Jobs %d-%d..." % (StartID,FinishId)
 #Create the ouput directory
-checkNCreateDirectory(PROJECT_PATH)
+#checkNCreateDirectory(PROJECT_PATH)
 #create the pool with the correct number of cpus
+#sys.exit()
 pool = Pool(max_cpu)
 #pack the arguments into tuples
 jobs = [(i, PROJECT_PATH, 1) for i in RUNS]
