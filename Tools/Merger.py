@@ -7,7 +7,7 @@ class Merger(object):
     #MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Iterations', 'Discounted Return', 'Iteration Time']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations']
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0):
+    def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0,showSplash=True):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []
@@ -23,6 +23,7 @@ class Merger(object):
         self.getMAX                 = getMAX    # Instead of mean of all experiments find the best performance among them
         self.output_path            = output_path
         self.labels                 = labels
+        self.showSplash             = showSplash  # No figures just txt output
         #Extract experiment paths by finding all subdirectories in all given paths that contain experiment.
         self.extractExperimentPaths(paths)
         #Setup the output path if it has not been defined:
@@ -36,7 +37,7 @@ class Merger(object):
         self.exp_num                = len(self.exp_paths)
         self.means                  = []
         self.std_errs               = []
-        if not isOnCluster():
+        if not isOnCluster() and self.showSplash:
             self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
         if len(self.exp_paths) == 0:
@@ -161,7 +162,7 @@ class Merger(object):
             else:
                 X_axis = 'Iterations'
 
-        if not isOnCluster(): self.fig.clear()
+        if not isOnCluster() and self.showSplash: self.fig.clear()
         min_ = +inf
         max_ = -inf
 
@@ -187,7 +188,7 @@ class Merger(object):
             X   = self.means[i][x_ind,:]
             Y   = self.means[i][y_ind,:]
             Err = self.std_errs[i][y_ind,:]
-            if not isOnCluster():
+            if not isOnCluster() and self.showSplash:
                 if len(X) == 1 and self.bars:
                     pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
                     max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
@@ -202,7 +203,7 @@ class Merger(object):
             Ys[i,:]     = Y
             Errs[i,:]   = Err
 
-        if not isOnCluster():
+        if not isOnCluster() and showSplash:
             if self.legend:
                 #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
                 self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
@@ -243,7 +244,7 @@ class Merger(object):
                 savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
         # Save the figure as pdf
-        if not isOnCluster():
+        if not isOnCluster() and self.showSplash:
             if self.legend:
                 self.fig.savefig(fullfilename+'.pdf', transparent=True, pad_inches=.1,bbox_extra_artists=(self.legend,), bbox_inches='tight')
             else:

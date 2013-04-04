@@ -28,7 +28,7 @@ if __name__ == '__main__':
 #        searchNShowAvg('.')
 #    else:
 #        searchNShowAvg('.',sys.argv[1])
-    merger = Merger(['.'])
+    merger = Merger(['.'],showSplash=False)
     if len(sys.argv) > 1:
         merger.showLast(sys.argv[1])
     else:

@@ -13,7 +13,7 @@ from Tools import *
 if __name__ == '__main__':
     
     paths = ['.']
-    merger = Merger(paths,getMAX = 1)
+    merger = Merger(['.'],showSplash=False,getMAX = 1)
     if len(sys.argv) == 1:
         merger.showLast()
     else:
