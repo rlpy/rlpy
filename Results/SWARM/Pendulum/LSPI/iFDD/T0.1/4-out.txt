@@ -1,0 +1,244 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.95
+============================================================
+Representation:		IndependentDiscretizationCompactBinary
+Features per action:	41
+Discretization:		20
+Starting Features:	41
+Aggregated States:	400
+Binary Dimensions:	[]
+============================================================
+Representation:		iFDD
+Features per action:	41
+Discretization:		20
+Starting Features:	41
+Aggregated States:	400
+Initial Representation:	IndependentDiscretizationCompactBinary
+Plus:			1
+Sparsify:		1
+Cached:			1
+Online Threshold:	0.020
+Batch Threshold:		0.020
+Max Batch Discovery:	1
+============================================================
+Agent:		LSPI
+Policy:		eGreedy
+Max LSPI Iterations:	5
+Max Data Size:		10000
+Steps Between LSPI run:	1000
+Weight Difference tol.:	0.001
+Track the best policy:	0
+Use Sparse:		0
+Max Representation Expansion Iterations:	50
+============================================================
+Experiment:		OnlineExperiment
+Output:			././4-results.txt
+Learning Steps:		10000
+Performance Checks:	10
+Log Intervals:		60(s)
+============================
+Running LSPI with 1000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 0(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.5708, Sparsity=98.1%, -1.000 Return, 13 Steps, 41 Features
+2: 0(s), ||w1-w2|| = 0.0046, Sparsity=98.1%, -1.000 Return, 7 Steps, 41 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.1%, -1.000 Return, 9 Steps, 41 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 1.145
+New Feature 41: [13, 39], Relevance = 1.145
+-----------------
+Representation Expansion iteration #2
+-----------------
+Total LSTD Time = 0(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.4971, Sparsity=98.2%, -1.000 Return, 10 Steps, 42 Features
+2: 0(s), ||w1-w2|| = 0.0046, Sparsity=98.2%, -1.000 Return, 8 Steps, 42 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.2%, -1.000 Return, 12 Steps, 42 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.877
+New Feature 42: [6, 20], Relevance = 0.877
+-----------------
+Representation Expansion iteration #3
+-----------------
+Total LSTD Time = 1(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.4816, Sparsity=98.3%, -1.000 Return, 11 Steps, 43 Features
+2: 0(s), ||w1-w2|| = 0.0046, Sparsity=98.3%, -1.000 Return, 12 Steps, 43 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.3%, -1.000 Return, 9 Steps, 43 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.682
+New Feature 43: [5, 20], Relevance = 0.682
+-----------------
+Representation Expansion iteration #4
+-----------------
+Total LSTD Time = 0(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.4091, Sparsity=98.4%, -1.000 Return, 9 Steps, 44 Features
+2: 0(s), ||w1-w2|| = 0.0046, Sparsity=98.4%, -1.000 Return, 10 Steps, 44 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.4%, -1.000 Return, 11 Steps, 44 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.376
+New Feature 44: [14, 38], Relevance = 0.376
+-----------------
+Representation Expansion iteration #5
+-----------------
+Total LSTD Time = 0(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.3367, Sparsity=98.5%, -1.000 Return, 13 Steps, 45 Features
+2: 0(s), ||w1-w2|| = 0.0046, Sparsity=98.5%, -1.000 Return, 11 Steps, 45 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.5%, -1.000 Return, 11 Steps, 45 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.020
+New Feature 45: [6, 21], Relevance = 0.020
+-----------------
+Representation Expansion iteration #6
+-----------------
+Total LSTD Time = 0(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.3398, Sparsity=98.6%, -1.000 Return, 10 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0046, Sparsity=98.6%, -1.000 Return, 9 Steps, 46 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.6%, -1.000 Return, 11 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.017
+============================
+1000 >>> E[0:00:04]-R[0:00:36]: Return=-1.00, Steps=10, Features = 46
+============================
+Running LSPI with 2000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 1(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.2300, Sparsity=98.5%, -1.000 Return, 8 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0035, Sparsity=98.5%, -1.000 Return, 8 Steps, 46 Features
+3: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.5%, -1.000 Return, 10 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.007
+============================
+2000 >>> E[0:00:06]-R[0:00:23]: Return=-1.00, Steps=9, Features = 46
+============================
+Running LSPI with 3000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 1(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.2256, Sparsity=98.5%, -1.000 Return, 9 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0006, Sparsity=98.5%, -1.000 Return, 10 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.006
+============================
+3000 >>> E[0:00:08]-R[0:00:18]: Return=-1.00, Steps=15, Features = 46
+============================
+Running LSPI with 4000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 2(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1949, Sparsity=98.4%, -1.000 Return, 8 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.4%, -1.000 Return, 14 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.009
+============================
+4000 >>> E[0:00:11]-R[0:00:16]: Return=-1.00, Steps=11, Features = 46
+============================
+Running LSPI with 5000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 3(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1780, Sparsity=98.4%, -1.000 Return, 9 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.4%, -1.000 Return, 11 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.008
+============================
+5000 >>> E[0:00:14]-R[0:00:14]: Return=-1.00, Steps=10, Features = 46
+============================
+Running LSPI with 6000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 3(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1839, Sparsity=98.3%, -1.000 Return, 12 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.3%, -1.000 Return, 8 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.007
+============================
+6000 >>> E[0:00:18]-R[0:00:12]: Return=-1.00, Steps=8, Features = 46
+============================
+Running LSPI with 7000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 4(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1723, Sparsity=98.3%, -1.000 Return, 8 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.3%, -1.000 Return, 13 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.015
+============================
+7000 >>> E[0:00:22]-R[0:00:10]: Return=-1.00, Steps=9, Features = 46
+============================
+Running LSPI with 8000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 4(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1602, Sparsity=98.2%, -1.000 Return, 11 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.2%, -1.000 Return, 12 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.010
+============================
+8000 >>> E[0:00:27]-R[0:00:07]: Return=-1.00, Steps=8, Features = 46
+============================
+Running LSPI with 9000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 4(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1420, Sparsity=98.2%, -1.000 Return, 11 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.2%, -1.000 Return, 14 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.018
+============================
+9000 >>> E[0:00:33]-R[0:00:04]: Return=-1.00, Steps=9, Features = 46
+============================
+Running LSPI with 10000 Samples
+============================
+-----------------
+Representation Expansion iteration #1
+-----------------
+Total LSTD Time = 5(s)
+Running Policy Iteration:
+1: 0(s), ||w1-w2|| = 0.1188, Sparsity=98.2%, -1.000 Return, 7 Steps, 46 Features
+2: 0(s), ||w1-w2|| = 0.0000, Sparsity=98.2%, -1.000 Return, 9 Steps, 46 Features
+Total Policy Iteration Time = 0(s)
+iFDD Batch: Max Relevance = 0.016
+============================
+10000 >>> E[0:00:38]-R[0:00:00]: Return=-1.00, Steps=8, Features = 46
+============================================================
+Took 0:00:38
+Results	=> ././4-results.txt
