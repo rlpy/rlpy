@@ -21,5 +21,5 @@ requirements = OpSys == "LINUX"
 Error = CondorOutput/err/$(PROCESS).err
 Log = CondorOutput/log/$(PROCESS).log
 Output = CondorOutput/out/$(PROCESS).out
-
+getenv = True
 queue 1
