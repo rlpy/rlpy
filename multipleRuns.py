@@ -13,8 +13,8 @@ RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
 sys.path.insert(0, RL_PYTHON_ROOT)
 from main import *
 
-def unpackjob(id):
-    main(id, '.',0)
+def unpackjob(args):
+    main(*args)
 
 StartID         = 1
 FinishId        = 5
@@ -31,7 +31,7 @@ print "Running Jobs %d-%d..." % (StartID,FinishId)
 #sys.exit()
 pool = Pool(max_cpu)
 #pack the arguments into tuples
-jobs = [(i, PROJECT_PATH, 1) for i in RUNS]
+jobs = [(i, PROJECT_PATH, 0) for i in RUNS]
 pool.map(unpackjob, jobs)
 
 #if(platform.system() == 'Windows'):
