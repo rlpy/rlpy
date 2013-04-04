@@ -13,9 +13,8 @@ RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
 sys.path.insert(0, RL_PYTHON_ROOT)
 from main import *
 
-def unpackjob(args):
-    main(*args)
-
+def unpackjob(id):
+    main(id, '.',0)
 
 StartID         = 1
 FinishId        = 5
