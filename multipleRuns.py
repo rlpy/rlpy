@@ -14,7 +14,7 @@ StartID         = 1
 FinishId        = 50
 RUNS            = arange(StartID,FinishId+1)
 PROJECT_PATH    = 'Results/TEST'
-max_cpu         = multiprocessing.cpu_count()-2
+max_cpu         = multiprocessing.cpu_count()/2-1
 
 print "Found %d free CPUs" % max_cpu
 sys.exit()
