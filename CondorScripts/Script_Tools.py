@@ -23,13 +23,19 @@ FINISHED_RUNS_NUM   = 5   # Number of runs which is counted as a finished run fo
 
 import os
 def findRLRoot():
+    RL_PYTHON_ROOT = '.'
+    while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
+        RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+    RL_PYTHON_ROOT += '/RL-Python'
+    RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
+    return RL_PYTHON_ROOT
+def findRLRoot2():
     #Add all paths
     RL_PYTHON_ROOT = os.environ.get('RL_PYTHON_ROOT')
     if (RL_PYTHON_ROOT == None):
         print 'Could not get environment variable RL_PYTHON_ROOT: \
         \nplease re-run installer script or see FAQ.txt. \nExiting.'
         sys.exit()
-    
     return RL_PYTHON_ROOT
 def logKeyOLD(log):
     timeRE     = re.compile('R\[[0-9]*:[0-9]*:[0-9]*')
