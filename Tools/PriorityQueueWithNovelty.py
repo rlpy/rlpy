@@ -29,4 +29,8 @@ class PriorityQueueWithNovelty():
         for i in range(len(temp)):
             p,c,x = heappop(temp)
             print "Priotiry = %d, Novelty = %d, Obj = %s" % (p,c,str(x))
- 
+    def __deepcopy__(self,memo):
+        new_q           = PriorityQueueWithNovelty()
+        new_q.h         = deepcopy(self.h)
+        new_q.counter   = self.counter
+        return new_q

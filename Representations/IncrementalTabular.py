@@ -3,8 +3,9 @@
 ######################################################
 from Representation import *
 class IncrementalTabular(Representation):
-    hash = {}
+    hash = None
     def __init__(self,domain,logger,discretization = 20):
+        self.hash           = {}
         self.features_num   = 0
         self.isDynamic      = True
         super(IncrementalTabular,self).__init__(domain,logger,discretization)

@@ -41,7 +41,7 @@ class Representation(object):
 	## A boolan stating that if the representation is dynamic meaning the size of features is going to change (default value = False). 
 	isDynamic = False
 	## A dictionary used to cache expected step. Used for planning algorithms
-	expectedStepCached= {}
+	expectedStepCached=None
 	## Initializes the \c %Representation object. See code
 	# \ref Representation_init "Here".
 	
@@ -51,6 +51,7 @@ class Representation(object):
 		for v in ['features_num']:
 			if getattr(self,v) == None:
 				raise Exception('Missed domain initialization of '+ v)
+		self.expectedStepCached = {}
 		self.setBinsPerDimension(domain,discretization)
 		self.domain = domain
 		self.discretization = discretization

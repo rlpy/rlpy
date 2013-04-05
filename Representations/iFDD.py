@@ -38,6 +38,12 @@ class iFDD_feature(object):
             self.f_set      = frozenset([index])
             self.p1         = -1
             self.p2         = -1
+    def __deepcopy__(self,memo):
+        new_f       = iFDD_feature(self.index)
+        new_f.p1    = self.p1
+        new_f.p2    = self.p2
+        new_f.f_set = deepcopy(self.f_set)
+        return new_f
     def show(self):
         printClass(self)
 class iFDD_potential(object):
@@ -54,17 +60,20 @@ class iFDD_potential(object):
         self.p2         = parent2
         self.relevance  = relevance
         self.count      = 1
+    def __deepcopy__(self,memo):
+        new_p       = iFDD_potential(self.f_set,self.relevance,self.p1,self.p2)
+        return new_p
     def show(self):
         printClass(self)
 class iFDD(Representation):
     PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity. 
     discovery_threshold     = None  # psi in the paper
     sparsify                = None  # boolean specifying the use of the trick mentioned in the paper so that features are getting sparser with more feature discoveries (i.e. use greedy algorithm for feature activation)
-    iFDD_features           = {}    # dictionary mapping initial feature sets to iFDD_feature 
-    iFDD_potentials         = {}    # dictionary mapping initial feature sets to iFDD_potential
-    featureIndex2feature    = {}    # dictionary mapping each feature index (ID) to its feature object
+    iFDD_features           = None    # dictionary mapping initial feature sets to iFDD_feature 
+    iFDD_potentials         = None    # dictionary mapping initial feature sets to iFDD_potential
+    featureIndex2feature    = None    # dictionary mapping each feature index (ID) to its feature object
     debug                   = 0     # Print more stuff
-    cache                   = {}    # dictionary mapping  initial active feature set phi_0(s) to its corresponding active features at phi(s). Based on Tuna's Trick to speed up iFDD
+    cache                   = None    # dictionary mapping  initial active feature set phi_0(s) to its corresponding active features at phi(s). Based on Tuna's Trick to speed up iFDD
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
     batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
@@ -73,6 +82,10 @@ class iFDD(Representation):
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD 
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
+        self.iFDD_features          = {}
+        self.iFDD_potentials        = {}
+        self.featureIndex2feature   = {}
+        self.cache                  = {}
         self.discovery_threshold    = discovery_threshold
         self.sparsify               = sparsify
         self.setBinsPerDimension(domain,discretization)

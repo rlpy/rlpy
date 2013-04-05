@@ -31,6 +31,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         PI_iteration        = 0
         # The policy is maintined as separate copy of the representation.
         # This way as the representation is updated the policy remains intact
+        r2                  = deepcopy(self.representation)
         policy              = eGreedy(deepcopy(self.representation),self.logger, epsilon = 0, forcedDeterministicAmongBestActions = True) # Copy the representation so that the weight change during the evaluation does not change the policy
         
         while self.hasTime() and not converged:
@@ -47,7 +48,13 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 a                       = policy.pi(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
                 while not terminal and step < self.domain.episodeCap and self.hasTime():
                     
-                    #print "Features = %d" % self.representation.features_num
+                    print "Policy Features = %d" % policy.representation.features_num
+                    print "Policy iFDD Feature = %d" % len(policy.representation.iFDD_features.keys())
+                    print "Policy iFDD Potentials = %d" % len(policy.representation.iFDD_potentials.keys())
+                    print "Policy iFDD Sorted = %d" % len(policy.representation.sortediFDDFeatures.h)
+                    print "Policy iFDD index2feature = %d" % len(policy.representation.featureIndex2feature.keys())
+                    print "Policy theta = %d" % len(self.representation.theta)
+                    raw_input()
                     new_Q           = self.representation.Q_oneStepLookAhead(s,a, self.ns_samples,policy)
                     phi_s           = self.representation.phi(s)
                     phi_s_a         = self.representation.phi_sa(s,a,phi_s)

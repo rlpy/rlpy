@@ -11,11 +11,12 @@ from Representation import *
 from iFDD import *
 
 class OMPTD(Representation):
-    maxBatchDicovery = 0     # Maximum number of features to be expanded on each iteration
-    batchThreshold  = 0      # Minimum threshold to add features
-    selectedFeatures = []    # List of selected features. In this implementation initial features are selected initially by default
-    remainingFeatures = None # Array of remaining features
+    maxBatchDicovery    = 0     # Maximum number of features to be expanded on each iteration
+    batchThreshold      = 0      # Minimum threshold to add features
+    selectedFeatures    = None    # List of selected features. In this implementation initial features are selected initially by default
+    remainingFeatures   = None # Array of remaining features
     def __init__(self,domain,logger, initial_representation, discretization = 20,maxBatchDicovery = 1, batchThreshold = 0, bagSize = 100000, sparsify = False):
+        self.selectedFeatures       = []
         self.iFDD_ONLINETHRESHOLD   = 1 # This is dummy since omptd will not use ifdd in the online fashion
         self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold         = batchThreshold
