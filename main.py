@@ -71,8 +71,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Representation ----------------------
     DISCRITIZATION              = 20  # Number of bins used to discritize each continuous dimension. Used for some representations 
     RBFS                        = 500  #{'PitMaze':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
-    iFDDOnlineThreshold         = 0.01 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
-    BatchDiscoveryThreshold     = 0.01 #if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
+    iFDDOnlineThreshold         = 0.1 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
+    BatchDiscoveryThreshold     = 0.1 #if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
@@ -104,7 +104,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NS_SAMPLES                  = 100   # Number of Samples used to estimate the expected r+\gamma*V(s') given a state and action.  
     PLANNING_TIME               = 60*60*2 #2 Hours = Max Amount of time given to each planning algorithm (MDP Solver) to think in seconds
     CONVERGENCE_THRESHOLD       = 1e-3  # Parameter used to define convergence in the planner
-    MAX_PE_ITERATIONS           = 3 #CHANGEME    # Maximum number of sweeps used for PE
+    MAX_PE_ITERATIONS           = 10    # Maximum number of sweeps used for PE
     
     # DOMAIN
     #=================
