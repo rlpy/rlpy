@@ -7,18 +7,27 @@
 #
 #TODO - check for installation of XCode
 clear
-echo "This script installs the required dependencies for the RL_Python Framework."
-echo "Note that if installation fails, or you wish to install optional packages"
-echo "at any time, you may safely re-run this script."
+echo "========================== RL-PYTHON INSTALLER ============================"
+echo "This script installs the required dependencies for the RL-Python Framework."
+echo "Note that if installation fails, or you wish to install optional packages  "
+echo "at any time, you may safely re-run this script.                            "
+echo "==========================================================================="
 echo ""
-# pkg-config required for broken matplotlib pip package
-echo "Homebrew is required for installation of pkg-config and other packages.  Install Homebrew and pkg-config?"
-select yes_no in "Yes" "No";
+
+INVALID_INPUT="1" # Start with improper directory
+while [ "$INVALID_INPUT" -ne 0 ]
 do
-    case $yes_no in
-        Yes ) ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go); brew doctor; brew install pkg-config; echo -e "\nInstallation of homebrew and pkg-config complete.\n"; break;;
-        No ) echo -e "\nUser opted to ignore homebrew.\n"; break;;
-    esac
+    # pkg-config required for broken matplotlib pip package
+    echo "Homebrew is required for installation of pkg-config and other packages."
+    echo "Install Homebrew and pkg-config?"
+    select yes_no in "Yes" "No";
+    do
+        case $yes_no in
+            Yes ) ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go); brew doctor; brew install pkg-config; echo -e "\nInstallation of homebrew and pkg-config complete.\n"; INVALID_INPUT="0"; break;;
+            No ) echo -e "\nUser opted to ignore homebrew.\n"; INVALID_INPUT="0"; break;;
+             * ) echo -e "Unrecognized Input: Please enter [0 or 1]\n\n\n"; break;;
+        esac
+    done
 done
 
 echo Your Python version:
@@ -80,13 +89,20 @@ sudo pip install networkx
 
 # TODO: Scikit learn also requires setuptools, some sites say no further update req'd.
 # Must test below on fresh system. 
-echo -e "\nDo you want to install the package scikit-learn as well?"
-select yes_no in "Yes" "No";
+INVALID_INPUT="1" # Start with improper directory
+while [ "$INVALID_INPUT" -ne 0 ]
 do
-    case $yes_no in
-        Yes ) sudo pip install -U scikit-learn; echo -e "\nInstallation of scikit-learn complete.\n"; break;;
-        No ) echo -e "\nUser opted to ignore scikit-learn.\n"; break;;
-    esac
+    echo -e "\nDo you want to install the package scikit-learn as well?"
+    echo -e "(Highly recommended, required for Pendulum domain and BEBF representation)"
+    echo -e "[Enter 1 or 2]"
+    select yes_no in "Yes" "No";
+    do
+        case $yes_no in
+           Yes ) sudo pip install -U scikit-learn; echo -e "\nInstallation of scikit-learn complete.\n"; INVALID_INPUT="0"; break;;
+            No ) echo -e "\nUser opted to ignore scikit-learn.\n"; INVALID_INPUT="0"; break;;
+             * ) echo -e "Unrecognized Input: Please enter [0 or 1]\n\n\n"; break;;
+        esac
+    done
 done
 
 echo -e "A list of all installed packages is shown below.\n"
@@ -116,29 +132,38 @@ clear
 # TODO Test: if the environment variable is not properly set after testing,
 # modify a plist instead: http://stackoverflow.com/questions/7501678/set-environment-variables-on-mac-os-x-lion#
 
-# Set the environment variable RL_PYTHON_ROOT
-echo -e "We need to set an environment variable for the location of the RL-Python"
-echo -e "project directory.\nIt appears to be located in:\n"
-cd ..
-pwd
-cd - > /dev/null
-# Above suppresses output of cd - command, which returns to previous directory.
-
-echo -e "\nIs this correct? (And where you intend to continue working from?)\n [Yes or No]"
-read yes_no
-INSTALL_PATH="null"
 VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
+    # Set the environment variable RL_PYTHON_ROOT
+    echo -e "We need to set an environment variable for the location of the RL-Python"
+    echo -e "project directory.\nIt appears to be located in:\n"
+    cd ..
+    pwd
+    cd - > /dev/null
+    # Above suppresses output of cd - command, which returns to previous directory.
+
+    echo -e "\nIs this correct? (And where you intend to continue working from?)"
+    echo -e "[Enter 1 or 2]"
+    echo -e "1) Yes"
+    echo -e "2) No"
+    read yes_no
+    INSTALL_PATH=""
     case $yes_no in
-        Yes) cd ..
+        1) cd ..
              INSTALL_PATH=`pwd`
              cd - > /dev/null; VALID_DIRECTORY_ZERO="0"
              ;;
-        No)  echo -e "Please enter the absolute path to the RL-Python root directory: "
+        2)  echo -e "Please enter the absolute path to the RL-Python root directory: "
+            # Change to root directory in case a sneaky user tries to specify
+            # a relative path
+             cd /
              read INSTALL_PATH
              cd $INSTALL_PATH
              VALID_DIRECTORY_ZERO=$?
+             ;;
+        *)  echo -e "\nUnrecognized Input: Please enter [0 or 1].\n\n\n"
+            continue
              ;;
     esac
     if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
@@ -147,7 +172,7 @@ do
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
         # Automatically force entry of python path in loop above
-        yes_no="No"
+        yes_no="2"
     fi
 done
 echo ""
@@ -155,21 +180,24 @@ cd $INSTALL_PATH
 #echo "Creating file RL_Python_setup.bash in directory $INSTALL_PATH"
 # sudo echo 'export RL_PYTHON_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RL_Python_setup.bash
 
-# Make a backup of the .bashrc file before editing!
+# Make a backup of the .launchd.conf file before editing!
 cd ~
 HOMEDIR=`pwd`
-sudo cp .launchd.conf .launchd.conf_RL_PYTHON_BACKUP
 
-# Determine if .bashrc already sources this file in some way
+# Only copy the .launchd.conf file if it exists (to prevent throwing an error)
+if [ -f .launchd.conf  ]; then
+    sudo cp .launchd.conf .launchd.conf_RL_PYTHON_BACKUP
+fi
+# Determine if .launchd.conf already sources the RL_Python_setup file in some way
 ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -exec grep RL_Python_setup.bash {} +`
 
-# A file is already sourced from bash_profile
+# A file is already sourced from .launchd.conf
 if [ "$?" -eq 0 ]; then
     echo -e "Your .launchd.conf file already appears to source RL_Python_setup.bash;"
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
     # Delete the line(s) containing 'RL_Python_setup.bash'
-    sed -i '/RL_Python_setup.bash/d' .launchd.conf > /dev/null
+    sudo sed -i '/RL_Python_setup.bash/d' .launchd.conf > /dev/null
 fi
 
 echo -e "\nAdding source of RL_Python_setup.bash to .launchd.conf\n"
@@ -190,25 +218,33 @@ echo -e "\nAdding source of RL_Python_setup.bash to .launchd.conf\n"
 # Finally, create the config.py file which we can use to add other environment
 # variables to our project.
 
-echo -e "\n"
-echo -e "Final step:"
-echo -e "Please enter a directory in which to store matplotlib temporary"
-echo -e "files; the only constraint is that you have read/write priveleges to"
-echo -e "this directory."
-echo -e ""
-
-echo -e "May we suggest: $HOMEDIR/mpl_tmp ."
-echo -e "Is this ok? (Yes or No)"
-read yes_no
-TMP_PATH="null"
 VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
+    echo -e "\n"
+    echo -e "Final step:"
+    echo -e "Please enter a directory in which to store matplotlib temporary"
+    echo -e "files; the only constraint is that you have read/write priveleges to"
+    echo -e "this directory."
+    echo -e ""
+
+    echo -e "May we suggest: $HOMEDIR/mpl_tmp ."
+    echo -e "Is this ok? [Enter 1 or 2]"
+    echo -e "1) Yes"
+    echo -e "2) No"
+    read yes_no
+    TMP_PATH=""
     case $yes_no in
-        Yes) TMP_PATH="$HOMEDIR/mpl_tmp"
+        1) TMP_PATH="$HOMEDIR/mpl_tmp"
              ;;
-        No)  echo -e "Please enter the absolute path to a temporary directory of choice: "
+        2)  echo -e "Please enter the absolute path to a temporary directory of choice: "
+            # Change to root directory in case a sneaky user tries to specify
+            # a relative path
+             cd /
              read TMP_PATH
+             ;;
+         *)  echo -e "Unrecognized Input: Please enter [0 or 1].\n\n\n"
+             continue
              ;;
     esac
     #-p option makes directories only as needed.
@@ -219,7 +255,7 @@ do
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
         # Automatically force entry of python path in loop above
-        yes_no="No"
+        yes_no="2"
     fi
 done
 echo ""
@@ -237,41 +273,12 @@ echo "# only as unique identifier distinguishing cluster from normal local machi
 echo "# See isOnCluster()."
 ) > Config.py
 
-# Create shortcut on desktop to automatically source files
-echo -e "\nLastly, would you like a shortcut to be created on your desktop which will"
-echo -e "automatically source the required files on eclipse startup?"
-echo -e "Note that we assume a single default eclipse installation."
-echo -e "See (http://answers.ros.org/question/29424/eclipse-ros-fuerte/)"
-echo -e "to create a custom shortcut."
-echo -e "Select (Yes, No) :"
-select yes_no in "Yes" "No";
-do
-    case $yes_no in
-        Yes ) (
-                echo -e ""
-                echo -e "[Desktop Entry]"
-                echo -e "Version=1.0"
-                echo -e "Type=Application"
-                echo -e "Terminal=false"
-                echo -e "Icon[en_US]=/opt/eclipse/icon.xpm"
-                echo -e "Exec=bash -c \"source ~/.bashrc; source /etc/environment; /opt/eclipse/eclipse\""
-                echo -e "Name[en_US]=Eclipse"
-                echo -e "Name=Eclipse"
-                echo -e "Icon=/opt/eclipse/icon.xpm"
-              ) > "$HOMEDIR/Desktop/RL_Python_Eclipse_Env.Desktop"
-              echo -e "\n\nYou may need to right-click the icon, go to properties->permissions,"
-              echo -e "and check the box which enables execution."
-              break;;
-        No ) echo -e "\n\nYou will need to source ~/.bashrc and/or /etc/environment"
-             echo -e "for necessary environmental variables to be available to eclipse."
-             echo -e "Alternatively, launch eclipse from the console."
-             break;;
-    esac
-done
-echo ""
+# No need to create desktop shortcut to source files, .launchd.conf automatically
+# adds variables on user login to all programs launched by user.
 
-echo -e "\n"
-read -p "Installation script complete, press [Enter] to exit."
+echo -e "You must *** RESTART YOUR COMPUTER *** for environmental"
+echo -e "variable changes to take effect."
+
 
 echo -e "\n"
 read -p "Installation script complete, press [Enter] to exit."

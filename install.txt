@@ -1,16 +1,27 @@
+  _____  _          _______     _________ _    _  ____  _   _ 
+ |  __ \| |        |  __ \ \   / /__   __| |  | |/ __ \| \ | |
+ | |__) | |  ______| |__) \ \_/ /   | |  | |__| | |  | |  \| |
+ |  _  /| | |______|  ___/ \   /    | |  |  __  | |  | | . ` |
+ | | \ \| |____    | |      | |     | |  | |  | | |__| | |\  |
+ |_|  \_\______|   |_|      |_|     |_|  |_|  |_|\____/|_| \_|
+
+
 The only requirements to run and contribute to RL-Python are
 a working Python 2.7 environment and the required package dependencies,
 which can be installed automatically by the provided scripts.
 Detailed installation instructions are shown below.
-Installation FAQ available at bottom.
+Installation FAQ available at bottom, general FAQ available in FAQ.txt.
 
 Recommended Operating Systems:
 a) Windows 32/64-bit
 b) Mac OSX
 c) Ubuntu Linux
 
+If your setup does not match those recommended above,
+you must download the packages manually, described in manual_install.txt.
 
-INSTALLATION
+
+INSTALLATION: As easy as 1,2,3 (+4 to run)
 ===============================================================
 ===============================================================
 1. Python 2.7
@@ -38,7 +49,8 @@ See FAQ if eclipse fails to run.
 ===============================================================
 2.5. pip
 a) Windows 32/64-bit
-Install per instructions here: http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows
+Install per instructions here:
+http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows
 
 b) Mac OSX - automated in script
 c) Ubuntu Linux - automated in script
@@ -46,6 +58,12 @@ c) Ubuntu Linux - automated in script
 ===============================================================
 ===============================================================
 3. Run the dependency installer script
+
+FIRST ensure the RL-Python directory is located in the workspace folder of your
+IDE, or whatever final location you intend it to be.
+
+THEN:
+
 a) Windows 32-bit
 a.i)  Extract Win32_files.zip to a temporary directory of choice
 (recommend extracting to a folder within RL-Python directory to speed installation)
@@ -56,78 +74,48 @@ a.ii) Open a command prompt window with administrative privileges:
 a.iii) Navigate to the temporary directory and run the .bat script.
 
 
+
 b) Mac OSX - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./OSX_setup.sh
+
+*** If the script fails to run, first type:
+chmod u+x OSX_setup.sh
+*** and re-run it.
+
 
 
 c) Ubuntu - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./ubuntu_setup.sh
 
+*** If the script fails to run, first type:
+chmod u+x ubuntu_setup.sh
+*** and re-run it.
+
 ===============================================================
 ===============================================================
-Installation of RL-Python is now complete! Test the installation by
-running IshouldRun.py, and see the tutorial Doxygen->Output->html->index.html
+Installation of RL-Python is now complete!
 
+4. Now open the framework in your IDE of choice.
 
-If your setup does not match those recommended above,
-you must download the following packages manually:
+If using Eclipse:
+a) Go to file -> switch workspace -> other
+And navigate to the folder containing RL-Python (NOT the RL-Python folder itself.)
+
+b) Go to file -> import -> general -> existing projects into workspace
+And select 'Browse.'  Navigate into the RL-Python directory and select 'Next.'
+You should now see the RL-Python directory structure in the left pane.
+
 ===============================================================
-1. numpy
-(Has 1,2,3 together for OS Lion) http://fonnesbeck.github.com/ScipySuperpack/
-http://penandpants.com/2012/02/24/install-python/
-http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/
 ===============================================================
-2. matlibplot  
-http://wolfpaulus.com/journal/mac/installing_python_osx
 
-Helped partially but I kept receiving errors for core.multiarray
-http://sourceforge.net/projects/matplotlib/files/matplotlib/ 
-For Lion: sudo easy_install -N -Z https://dl.dropbox.com/u/233041/matplotlib-1.2.x-py2.7-macosx-10.8-intel.egg
-===============================================================
-3. Scipy
-http://fonnesbeck.github.com/ScipySuperpack/
-* If you have mac os lion (10.7) do not install matplotlib 10.8 from the above!
-* If you did, delete it from the directory where the error during python execution refers to
-===============================================================
-4. networkx (for NetworkAdmin domain)
-http://networkx.lanl.gov/
-===============================================================
-5. graphvis
-http://www.graphviz.org/Download.php
+That's it!
 
-You need to run the following from the RL-Python Directory command line:
-===============================================================
-Nothing at the moment!
+Now take a look at the tutorial in: Doxygen -> Output -> html -> index.html,
+and (as part of the tutorial) test the installation by running IshouldRun.py
+and finally, start experimenting with RL-Python yourself!
 
-
-Optional:
-scikit-learn
-http://scikit-learn.org/stable/install.html
-=================
-SymPy 
-git clone git://github.com/sympy/sympy.git
-cd sympy
-sudo python setup.py install 
-===============================================================
-Pydev for Eclipse
-Eclipse > 
-http://pydev.org/updates
-===============================================================
-Visual Python
-http://www.vpython.org/index.html
-=================
-dvipng
-sudo apt-get install dvipng
-
-
-glumly 
-sudo easy_install glumpy
-
-PyOpenGL
-sudo easy_install PyOpenGL
-
-
-
+If you encountered errors in the installation, see the FAQ section at bottom
+(and an extended FAQ located in the FAQ.txt file).
 
 
 
@@ -140,12 +128,18 @@ http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-
 
 ===============================================================
 E: Generic messages about missing environmental variables
-S: Ensure that the environment variable 'RL_PYTHON_ROOT' is set on your OS for
+S1: Ensure that the environment variable 'RL_PYTHON_ROOT' is set on your OS for
 whatever environment you are running RL-Python in (e.g. it might be set in a terminal
 window but not in general).
 This should have been configured by the installer script; if your RL-Python
-directory has moved since then, merely re-run the installer script.
-===============================================================
+directory has moved since then, merely re-run the installer script and
+restart your computer.
+S2: If the installer script fails to solve the problem, the easiest solution is
+to add the RL_PYTHON_ROOT variable to your IDE directly.
+In eclipse, go to window->preferences->pydev->interpreter Pydev->environment.
+There, add a variable called RL_PYTHON_ROOT and set its value to be the path to
+your RL-Python directory.
+=========================s======================================
 E: Generic messages about missing functions or 'module does not contain function xxx'
 S: Ensure you have the latest version of scipy (0.11 as of this writing):
 import scipy
@@ -161,21 +155,15 @@ S2: sudo easy_install -U numpy
 E: In eclipse sty is out of synch with the file system
 S: Refresh (F5)
 ===============================================================
-E: RuntimeError: LaTeX was not able to process the following string: 'lp'
-[Note that many other errors can follow; this would be the first]
-S-U: 1. Locate tex directory: kpsewhich --var-value=TEXMFMAIN
-   2. Add this path at the bottom of Tools.py:
-   e.g.
-   1. :~$ kpsewhich --var-value=TEXMFMAIN
-	-----> /usr/share/texmf
-   2. os.environ['PATH'] += ':/usr/share/texmf'
-   
-s-W: Check environmental variables: see 'Latex fonts do not
-appear to be installed' below.
-===============================================================
 E: In Windows: Python does not appear to be installed (Eclipse
 fails to locate python, or running 'python' in a command prompt gives
 'python' is not recognized as an internal or external command, operable
 program or batch file."
 S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )
 ===============================================================
+
+
+Please direct additional questions or bug reports to
+rhklein[at]mit[dot]edu   or   agf[at]mit[dot]edu
+
+Thanks to taag for the ASCII art (http://patorjk.com/software/taag/)
