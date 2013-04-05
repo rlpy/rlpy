@@ -20,14 +20,16 @@ class ValueIteration(MDPSolver):
         bellmanUpdates      = 0
         converged           = False
         iteration           = 0
-        while deltaT(self.start_time) < self.planning_time and not converged:
+        while self.hasTime() and not converged:
             prev_theta = self.representation.theta.copy()
             # Sweep The State Space
             for i in arange(0,no_of_states):
+                if not self.hasTime(): break
                 s = self.representation.stateID2state(i)
                 actions = self.domain.possibleActions(s)
                 # Sweep The Actions
                 for a in actions:
+                    if not self.hasTime(): break
                     self.BellmanBackup(s,a,ns_samples = self.ns_samples)                        
                     bellmanUpdates += 1
 
@@ -35,7 +37,7 @@ class ValueIteration(MDPSolver):
                         performance_return, _,_,_  = self.performanceRun()
                         self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
                 
-                if deltaT(self.start_time) > self.planning_time: break
+                
                     
             #check for convergence
             iteration += 1

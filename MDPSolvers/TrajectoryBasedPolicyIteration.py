@@ -33,7 +33,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         # This way as the representation is updated the policy remains intact
         policy              = eGreedy(deepcopy(self.representation),self.logger, epsilon = 0, forcedDeterministicAmongBestActions = True) # Copy the representation so that the weight change during the evaluation does not change the policy
         
-        while deltaT(self.start_time) < self.planning_time and not converged:
+        while self.hasTime() and not converged:
             # Policy Evaluation
             PE_iteration            = 0
             evaluation_is_accurate  = False
@@ -45,7 +45,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 terminal                = False
                 s                       = self.domain.s0()
                 a                       = policy.pi(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
-                while not terminal and step < self.domain.episodeCap and deltaT(self.start_time) < self.planning_time:
+                while not terminal and step < self.domain.episodeCap and self.hasTime():
                     
                     #print "Features = %d" % self.representation.features_num
                     new_Q           = self.representation.Q_oneStepLookAhead(s,a, self.ns_samples,policy)
@@ -70,9 +70,6 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     #Simulate new state and action on trajectory
                     _,s,terminal    = self.domain.step(s,a)
                     a                       = policy.pi(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
-                    if False and bellmanUpdates % self.check_interval == 0:
-                        performance_return, _,_,_  = self.performanceRun()
-                        self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f, Features=%d' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return, self.representation.features_num))
             
                 #check for convergence of policy evaluation
                 PE_iteration += 1

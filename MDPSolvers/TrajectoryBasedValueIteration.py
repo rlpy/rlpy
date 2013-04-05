@@ -26,7 +26,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
         converged           = False
         iteration           = 0
         converged_trajectories  = 0 # Track the number of consequent trajectories with very small observed BellmanError
-        while deltaT(self.start_time) < self.planning_time and not converged:
+        while self.hasTime() and not converged:
             
             # Generate a new episode e-greedy with the current values
             max_Bellman_Error       = 0
@@ -34,7 +34,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
             terminal                = False
             s                       = self.domain.s0()
             a                       = self.representation.bestAction(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
-            while not terminal and step < self.domain.episodeCap and deltaT(self.start_time) < self.planning_time:
+            while not terminal and step < self.domain.episodeCap and self.hasTime():
                 new_Q           = self.representation.Q_oneStepLookAhead(s,a, self.ns_samples)
                 phi_s           = self.representation.phi(s)
                 phi_s_a         = self.representation.phi_sa(s,a,phi_s)
@@ -54,9 +54,6 @@ class TrajectoryBasedValueIteration(MDPSolver):
                 #Simulate new state and action on trajectory
                 _,s,terminal    = self.domain.step(s,a)
                 a               = self.representation.bestAction(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
-                if False and bellmanUpdates % self.check_interval == 0:
-                    performance_return, _,_,_  = self.performanceRun()
-                    self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
             
             #check for convergence
             iteration += 1

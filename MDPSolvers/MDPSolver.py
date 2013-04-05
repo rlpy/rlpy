@@ -96,4 +96,6 @@ class MDPSolver(object):
     def saveStats(self):
         checkNCreateDirectory(self.project_path+'/')
         savetxt('%s/%d-results.txt' % (self.project_path,self.id),self.result, fmt='%.18e', delimiter='\t')
-                
+    def hasTime(self):
+        #Return a boolean stating if there is time left for planning
+        return deltaT(self.start_time) < self.planning_time           

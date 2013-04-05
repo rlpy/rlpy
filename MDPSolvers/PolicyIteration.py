@@ -34,10 +34,11 @@ class PolicyIteration(MDPSolver):
             # Policy Evaluation
             converged = False
             policy_evaluation_iteration = 0
-            while not converged and deltaT(self.start_time) < self.planning_time and policy_evaluation_iteration < self.max_PE_iterations:
+            while not converged and self.hasTime() and policy_evaluation_iteration < self.max_PE_iterations:
                 policy_evaluation_iteration += 1
                 # Sweep The State Space
                 for i in arange(0,no_of_states):
+                    if not self.hasTime(): break
                     s = self.representation.stateID2state(i)
                     if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
                         self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)                        
@@ -53,18 +54,19 @@ class PolicyIteration(MDPSolver):
                 self.logger.log('PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
                 if self.show: self.domain.show(s,policy.pi(s),self.representation)
             
-            if deltaT(self.start_time) >= self.planning_time: break
             #Policy Improvement:
             policy_improvement_iteration += 1
             new_policy = zeros(no_of_states)
             policyChanged = 0
-            for i in arange(no_of_states):
+            i = 0
+            while i < no_of_states and self.hasTime():
                 s = self.representation.stateID2state(i)
                 if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
                     for a in self.domain.possibleActions(s):
+                        if not self.hasTime(): break
                         self.BellmanBackup(s,a,self.ns_samples, policy)
                     if policy.pi(s) != self.representation.bestAction(s): policyChanged += 1 
-                
+                i += 1
             policy.representation.theta = self.representation.theta.copy() # This will cause the policy to be copied over
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             self.logger.log('PI #%d [%s]: BellmanUpdates=%d, Policy Change=%d, Return=%0.4f, Steps=%d' % (policy_improvement_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, policyChanged, performance_return,performance_steps))
