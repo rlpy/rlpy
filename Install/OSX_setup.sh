@@ -189,7 +189,7 @@ if [ -f .launchd.conf  ]; then
     sudo cp .launchd.conf .launchd.conf_RL_PYTHON_BACKUP
 fi
 # Determine if .launchd.conf already sources the RL_Python_setup file in some way
-ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -exec grep RL_Python_setup.bash {} +`
+ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -maxdepth 1 -exec grep RL_Python_setup.bash {} +`
 
 # A file is already sourced from .launchd.conf
 if [ "$?" -eq 0 ]; then
@@ -197,7 +197,10 @@ if [ "$?" -eq 0 ]; then
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
     # Delete the line(s) containing 'RL_Python_setup.bash'
-    sudo sed -i '/RL_Python_setup.bash/d' .launchd.conf > /dev/null
+    # NOTE THE DIFFERENT SYNTAX for 'sed' on OSX, need to explicitly include backup
+    # extension for the file, .BAK - see 
+    # https://sites.google.com/site/randomprogrammingnotes/macosxsed
+    sudo sed -i .BAK '/RL_Python_setup.bash/d' .launchd.conf > /dev/null
 fi
 
 echo -e "\nAdding source of RL_Python_setup.bash to .launchd.conf\n"
