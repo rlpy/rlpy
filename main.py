@@ -93,7 +93,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
     RE_LSPI_iterations      = 50
     LSPI_return_best_policy = False # Track the best policy through LSPI iterations using Monte-Carlo simulation. It uses extra samples to evaluate the policy
-    LSPI_use_sparse         = False # Represet large matrices such as A and all_phi with sparse matrices.
+    LSPI_use_sparse         = True # Represet large matrices such as A and all_phi with sparse matrices.
     
     #Policy Evaluation Parameters: ----------------------
     PolicyEvaluation_test_samples   = 10000 # Number of samples used for calculating the accuracy of a value function
