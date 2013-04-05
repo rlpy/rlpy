@@ -3,6 +3,14 @@ from Domains import *
 from Representations import *
 from fractions import Fraction
 
-print state2bin(.5,3,[-.5,.5])
-print bin2state(1,2,[-.5,1.5])
-print closestDiscretization(-.2,3,[-.5,.5])
+class C(object):
+    hash = {}
+    def __deepcopy__(self,memo):
+        c = C()
+        c.hash = deepcopy(self.hash)
+        return c
+c1 = C()
+c1.hash[1] = 3
+c2 = deepcopy(c1)
+c1.hash[2] = 3
+print c1.hash,c2.hash

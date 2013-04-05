@@ -26,6 +26,10 @@ class IncrementalTabular(Representation):
             self.hash[hash_id] = id
             #Add a new element to weight theta
             self.addNewWeight()
+    def __deepcopy__(self,memo):
+        new_copy = IncrementalTabular(self.domain,self.logger,self.discretization)
+        new_copy.hash = deepcopy(self.hash)
+        return new_copy
     def featureType(self):
         return bool
 
