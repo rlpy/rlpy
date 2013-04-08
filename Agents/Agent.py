@@ -161,15 +161,15 @@ class Agent(object):
 	# @param a
 	# The action used in the simulation
 	# @param tolerance
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
 	# @return eps_return
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# Sum of rewards
 	# @return eps_length
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# Length of the Episode
 	# @return eps_term
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# Specifies the terminal condition of the episode: 0 (stopped due to length), >0 (stopped due a terminal state) 
 	# @return eps_discounted_return
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# Sum of discounted rewards.
 	
 	# [MC_episode code]
     def MC_episode(self,s=None,a=None, tolerance = 0):
@@ -200,11 +200,11 @@ class Agent(object):
 	# @param a
 	# The action used in the simulation
 	# @param tolerance
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
 	# @param MC_samples
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# Number of samples to be used to evaluated the Q value 
 	# @return Q_avg
-	# WHAT IS THIS, WHAT DOES IT DO?
+	# Averaged sum of discounted rewards = estimate of the Q 
 	
 	# [Q_MC code]
     def Q_MC(self,s,a,MC_samples = 1000, tolerance = 0):

@@ -463,7 +463,7 @@ class Representation(object):
 	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
 	# If policy is passed (used in the policy evaluation), it is used to generate the action for the next state. Otherwise the best action is selected.
 	# \ref Representation_Q_oneStepLookAhead "Here".
-	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
+	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model 
 	# @param s The given state
 	# @param a The given action
 	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
@@ -538,7 +538,7 @@ class Representation(object):
 	# An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998.
 	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
 	# \ref Representation_Qs_oneStepLookAhead "Here".
-	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
+	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model
 	# @param s The given state
 	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
 	# @param policy The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead.
@@ -558,10 +558,12 @@ class Representation(object):
 	# An example of how this function works can be found on Line 6 of Figure 4.5 in Sutton and Barto 1998.
 	# If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
 	# \ref Representation_V_oneStepLookAhead "Here".
-	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION?
+	# \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model
 	# @param s The given state
 	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
-	# @return V WHAT IS THIS? IS IT NOT THE VALUE OF A STATE? YET IT APPEARS TO BE TWO VALUES QS AND ACTIONS?
+	# @return
+	# The estimated value = max_a Q(s,a) together with the corresponding action that maximizes the Q function 
+	
 
 	# [V_oneStepLookAhead code]
 	def V_oneStepLookAhead(self,s,ns_samples): 
