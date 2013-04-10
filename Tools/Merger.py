@@ -264,21 +264,21 @@ class Merger(object):
     def hasResults(self,path):
         return len(glob.glob(os.path.join(path, '*-results.txt'))) >= self.minSamples
     def extract_time_95(self,M):
-        # Find the time the algorithm required to reach to its 95% performance without dropping afterwards
+        # Find the time the algorithm required to reach to its 95% performance from the starting point
         # M is the matrix of the results
         return_row  = self.AXES.index('Return')
         time_row    = self.AXES.index('Time(s)')
         rows,cols   = M.shape
-        target_col  = cols-1
+        target_col  = 1
         last_return = M[return_row,-1] 
         #print last_return
-        while target_col >= 0 and abs(M[return_row,target_col]) >= abs(last_return)*.95:
-            #print  M[return_row,target_col]
-            #print target_col
-            target_col -= 1
+        while target_col < cols  and abs(M[return_row,target_col]-last_return) > abs(last_return)*.05:
+            print  M[return_row,target_col]
+            print target_col
+            target_col += 1
             
         #print M[time_row,target_col+1]
-        return M[time_row,target_col+1]
+        return M[time_row,target_col-1]
     def showTime95(self):
         print "======================================="
         print " Time to reach 95% of last performance "
