@@ -272,8 +272,9 @@ class Merger(object):
         last_return = M[return_row,-1] 
         print last_return
         while target_col >= 0 and M[return_row,target_col] >= last_return*.95:
+            print  M[return_row,target_col]
             target_col -= 1
-            #print  M[return_row,target_col]
+            
         #print M[time_row,target_col+1]
         return M[time_row,target_col+1]
     def showTime95(self):
