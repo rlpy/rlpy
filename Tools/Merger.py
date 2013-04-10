@@ -37,6 +37,8 @@ class Merger(object):
         self.exp_num                = len(self.exp_paths)
         self.means                  = []
         self.std_errs               = []
+        self.time_95_mean           = []
+        self.time_95_std_errs       = []
         if not isOnCluster() and self.showSplash:
             self.fig                    = pl.figure(1)
         self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
@@ -44,10 +46,12 @@ class Merger(object):
             print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
             return
         for exp in self.exp_paths:
-            means, std_errs, samples = self.parseExperiment(exp)
+            means, std_errs, samples, time_95_mean, time_95_std_errs = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)
             self.samples.append(samples)
+            self.time_95_mean.append(time_95_mean)
+            self.time_95_std_errs.append(time_95_std_errs)
     def extractExperimentPaths(self,paths):
         self.exp_paths = []
         for path in paths:
@@ -68,6 +72,7 @@ class Merger(object):
         # Parses all the files in form of <number>-results.txt and return
         # two matrices corresponding to mean and std_err
         # If the number of points along the x axis is not identical across all runs and experiments it returns the last data point for all experiments
+        # This function also keeps track of the time it took each method to reach its 95% of its final performance without dropping afterwards.
         if '/' in path: 
             _,_,fringeDirName = path.rpartition('/') 
         else:
@@ -94,14 +99,18 @@ class Merger(object):
             self.ResultType = 'MDPSolver'
             self.AXES = self.MDPSOLVER_AXES
             
+        #Extract time to get to 95% of performance
+        
         if not self.useLastDataPoint:
             samples     = zeros((rows,cols,samples_num))
+            times_95    = zeros(samples_num)
             for i,f in enumerate(files):
                 if i == samples_num: break
                 M = readMatrixFromFile(files[i])
                 #print M.shape
                 try:
                     samples[:,:cols,i] = M
+                    times_95[i] = self.extract_time_95(M)
                 except:
                     print "Unmatched number of points along X axis: %d != %d" % (cols,M.shape[1])
                     print "Switching to last data point mode for all experiments"
@@ -112,13 +121,14 @@ class Merger(object):
             for i,f in enumerate(files):
                 if i == samples_num: break
                 M = readMatrixFromFile(files[i])
+                times_95[i] = self.extract_time_95(M)
                 samples[:,:,i] = M[:,-1].reshape((-1,1)) # Get the last column of the matrix
 
         _,self.datapoints_per_graph,_ = samples.shape
         if self.getMAX:
-            return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num
+            return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
         else:
-            return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num
+            return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
     def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
         if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
@@ -203,7 +213,7 @@ class Merger(object):
             Ys[i,:]     = Y
             Errs[i,:]   = Err
 
-        if not isOnCluster() and showSplash:
+        if not isOnCluster() and self.showSplash:
             if self.legend:
                 #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
                 self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
@@ -252,3 +262,22 @@ class Merger(object):
             print "==================\nSaved Outputs at\n1. %s\n2. %s" % (fullfilename+'.txt',fullfilename+'.pdf')
     def hasResults(self,path):
         return len(glob.glob(os.path.join(path, '*-results.txt'))) >= self.minSamples
+    def extract_time_95(self,M):
+        # Find the time the algorithm required to reach to its 95% performance without dropping afterwards
+        # M is the matrix of the results
+        return_row  = self.AXES.index('Return')
+        time_row    = self.AXES.index('Time(s)')
+        rows,cols   = M.shape
+        target_col  = cols-1
+        last_return = M[return_row,-1] 
+        while target_col >= 0 and M[return_row,target_col] >= last_return*.95:
+            target_col -= 1
+            #print  M[return_row,target_col]
+        #print M[time_row,target_col+1]
+        return M[time_row,target_col+1]
+    def showTime95(self):
+        print "======================================="
+        print " Time to reach 95% of last performance "
+        print "======================================="
+        for i in range(self.exp_num):
+            print "%s: %0.3f+%0.3f" % (self.exp_paths[i], self.time_95_mean[i] , self.time_95_std_errs[i])
