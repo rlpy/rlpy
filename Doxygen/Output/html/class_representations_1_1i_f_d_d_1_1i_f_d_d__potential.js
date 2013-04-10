@@ -1,6 +1,7 @@
 var class_representations_1_1i_f_d_d_1_1i_f_d_d__potential =
 [
     [ "__init__", "class_representations_1_1i_f_d_d_1_1i_f_d_d__potential.html#ac775ee34451fdfa742b318538164070e", null ],
+    [ "__deepcopy__", "class_representations_1_1i_f_d_d_1_1i_f_d_d__potential.html#a0fc7f009b31b1a6b05d4d3d97993c437", null ],
     [ "show", "class_representations_1_1i_f_d_d_1_1i_f_d_d__potential.html#a051649d4f6e0c3c1e1e47d8699feb801", null ],
     [ "count", "class_representations_1_1i_f_d_d_1_1i_f_d_d__potential.html#ae11b3deb3de3df7dc48e439074023e35", null ],
     [ "f_set", "class_representations_1_1i_f_d_d_1_1i_f_d_d__potential.html#a60eecf6436d6c16c93f22bf790277ec2", null ],

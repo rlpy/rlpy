@@ -123,12 +123,11 @@ Inheritance diagram for Agent:</div>
  <div class="center">
   <img src="class_agents_1_1_agent_1_1_agent.png" usemap="#Agent_map" alt=""/>
   <map id="Agent_map" name="Agent_map">
-<area href="class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html" alt="LSPI" shape="rect" coords="60,112,170,136"/>
-<area href="class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html" alt="Q_LEARNING" shape="rect" coords="180,112,290,136"/>
-<area href="class_agents_1_1_r_e___l_s_p_i___s_a_r_s_a_1_1_r_e___l_s_p_i___s_a_r_s_a.html" alt="RE_LSPI_SARSA" shape="rect" coords="300,112,410,136"/>
-<area href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html" alt="SARSA" shape="rect" coords="420,112,530,136"/>
-<area href="class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html" alt="PolicyEvaluation" shape="rect" coords="0,168,110,192"/>
-<area href="class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html" alt="RE_LSPI" shape="rect" coords="120,168,230,192"/>
+<area href="class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html" alt="LSPI" shape="rect" coords="0,112,106,136"/>
+<area href="class_agents_1_1_l_s_p_i___s_a_r_s_a_1_1_l_s_p_i___s_a_r_s_a.html" alt="LSPI_SARSA" shape="rect" coords="116,112,222,136"/>
+<area href="class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html" alt="Q_LEARNING" shape="rect" coords="232,112,338,136"/>
+<area href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html" alt="SARSA" shape="rect" coords="348,112,454,136"/>
+<area href="class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html" alt="PolicyEvaluation" shape="rect" coords="0,168,106,192"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -200,7 +199,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memdesc:a6249353116217ff45c96ff345a7c20c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Candid Learning Rate.  <a href="#a6249353116217ff45c96ff345a7c20c5">More...</a><br/></td></tr>
 <tr class="separator:a6249353116217ff45c96ff345a7c20c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ac272a92a0586fc45e7b37c5a0fa837"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#a9ac272a92a0586fc45e7b37c5a0fa837">eligibility_trace</a> = []</td></tr>
-<tr class="memdesc:a9ac272a92a0586fc45e7b37c5a0fa837"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used by <a class="el" href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html">SARSA</a> agent WHAT IS THIS? WHAT DOES IT DO? In case lambda parameter in SARSA definition is used.  <a href="#a9ac272a92a0586fc45e7b37c5a0fa837">More...</a><br/></td></tr>
+<tr class="memdesc:a9ac272a92a0586fc45e7b37c5a0fa837"><td class="mdescLeft">&#160;</td><td class="mdescRight">The eligibility trace, which marks states as eligible for a learning update.  <a href="#a9ac272a92a0586fc45e7b37c5a0fa837">More...</a><br/></td></tr>
 <tr class="separator:a9ac272a92a0586fc45e7b37c5a0fa837"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b14e488ae28d98d262453f3e9cd6e4d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_agents_1_1_agent_1_1_agent.html#a0b14e488ae28d98d262453f3e9cd6e4d">logger</a> = None</td></tr>
@@ -387,17 +386,17 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   <table class="params">
     <tr><td class="paramname">s</td><td>The state used in the simulation </td></tr>
     <tr><td class="paramname">a</td><td>The action used in the simulation </td></tr>
-    <tr><td class="paramname">tolerance</td><td>WHAT IS THIS, WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">tolerance</td><td>If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>eps_return WHAT IS THIS, WHAT DOES IT DO? </dd>
+<dl class="section return"><dt>Returns</dt><dd>eps_return Sum of rewards </dd>
 <dd>
-eps_length WHAT IS THIS, WHAT DOES IT DO? </dd>
+eps_length Length of the Episode </dd>
 <dd>
-eps_term WHAT IS THIS, WHAT DOES IT DO? </dd>
+eps_term Specifies the terminal condition of the episode: 0 (stopped due to length), &gt;0 (stopped due a terminal state) </dd>
 <dd>
-eps_discounted_return WHAT IS THIS, WHAT DOES IT DO? </dd></dl>
+eps_discounted_return Sum of discounted rewards. </dd></dl>
 
 </div>
 </div>
@@ -468,12 +467,12 @@ eps_discounted_return WHAT IS THIS, WHAT DOES IT DO? </dd></dl>
   <table class="params">
     <tr><td class="paramname">s</td><td>The state used in the simulation </td></tr>
     <tr><td class="paramname">a</td><td>The action used in the simulation </td></tr>
-    <tr><td class="paramname">tolerance</td><td>WHAT IS THIS, WHAT DOES IT DO? </td></tr>
-    <tr><td class="paramname">MC_samples</td><td>WHAT IS THIS, WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">tolerance</td><td>If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold </td></tr>
+    <tr><td class="paramname">MC_samples</td><td>Number of samples to be used to evaluated the Q value </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Q_avg WHAT IS THIS, WHAT DOES IT DO? </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Q_avg Averaged sum of discounted rewards = estimate of the Q </dd></dl>
 
 </div>
 </div>
@@ -538,9 +537,9 @@ eps_discounted_return WHAT IS THIS, WHAT DOES IT DO? </dd></dl>
   <table class="params">
     <tr><td class="paramname">nnz</td><td>The number of nonzero features </td></tr>
     <tr><td class="paramname">terminal</td><td>Boolean that determines if the step is terminal or not </td></tr>
-    <tr><td class="paramname">phi_s</td><td>WHAT IS THIS, WHAT DOES THIS DO? </td></tr>
-    <tr><td class="paramname">phi_prime_s</td><td>WHAT IS THIS, WHAT DOES THIS DO? </td></tr>
-    <tr><td class="paramname">gamma</td><td>WHAT IS THIS, WHAT DOES THIS DO? </td></tr>
+    <tr><td class="paramname">phi_s</td><td>The feature vector evaluated at state (s) </td></tr>
+    <tr><td class="paramname">phi_prime_s</td><td>The feature vector evaluated at the new state (ns) = (s') </td></tr>
+    <tr><td class="paramname">gamma</td><td>The discount factor for learning </td></tr>
     <tr><td class="paramname">eligibility_trace_s</td><td>Eligibility trace using state only (no copy-paste) </td></tr>
   </table>
   </dd>
@@ -614,7 +613,9 @@ eps_discounted_return WHAT IS THIS, WHAT DOES IT DO? </dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p>Used by <a class="el" href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html">SARSA</a> agent WHAT IS THIS? WHAT DOES IT DO? In case lambda parameter in SARSA definition is used. </p>
+<p>The eligibility trace, which marks states as eligible for a learning update. </p>
+<p>Used by <a class="el" href="class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html">SARSA</a> agent when the parameter lambda is set. See: <br/>
+ <a href="http://www.incompleteideas.net/sutton/book/7/node1.html">http://www.incompleteideas.net/sutton/book/7/node1.html</a> </p>
 
 </div>
 </div>

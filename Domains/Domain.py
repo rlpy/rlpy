@@ -165,7 +165,7 @@ class Domain(object):
 	# [step code]
 	
 	
-	## \b ABSTRACT \b METHOD: Each row of output corresponds to a possible result from taking action a while in state s.
+	# \b ABSTRACT \b METHOD: Each row of output corresponds to a possible result from taking action a while in state s.
     # e.g. s,a -> r[i], ns[i], t[i] with probability p[i]. See code
 	# \ref Domain_exStep "Here".
 	# @param s
@@ -178,6 +178,7 @@ class Domain(object):
     #def expectedStep(self,s,a):
     #			abstract
 	# [exStep code]
+
 	
 	
     ## Determines whether the stats s is a terminal state.

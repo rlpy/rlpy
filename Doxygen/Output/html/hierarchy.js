@@ -3,11 +3,10 @@ var hierarchy =
     [ "object", null, [
       [ "Agent", "class_agents_1_1_agent_1_1_agent.html", [
         [ "LSPI", "class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html", [
-          [ "PolicyEvaluation", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html", null ],
-          [ "RE_LSPI", "class_agents_1_1_r_e___l_s_p_i_1_1_r_e___l_s_p_i.html", null ]
+          [ "PolicyEvaluation", "class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html", null ]
         ] ],
+        [ "LSPI_SARSA", "class_agents_1_1_l_s_p_i___s_a_r_s_a_1_1_l_s_p_i___s_a_r_s_a.html", null ],
         [ "Q_LEARNING", "class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html", null ],
-        [ "RE_LSPI_SARSA", "class_agents_1_1_r_e___l_s_p_i___s_a_r_s_a_1_1_r_e___l_s_p_i___s_a_r_s_a.html", null ],
         [ "SARSA", "class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html", null ]
       ] ],
       [ "Domain", "class_domains_1_1_domain_1_1_domain.html", [

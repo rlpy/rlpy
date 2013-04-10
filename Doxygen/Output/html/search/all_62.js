@@ -1,7 +1,7 @@
 var searchData=
 [
   ['batchbestaction',['batchBestAction',['../class_representations_1_1_representation_1_1_representation.html#a254f34a2c7b460d9aadfe2a4a4e99b34',1,'Representations::Representation::Representation']]],
-  ['batchdiscover',['batchDiscover',['../class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a906d4ae59e02d539932640fddb3f7783',1,'Representations.BEBF.BEBF.batchDiscover()'],['../class_representations_1_1_representation_1_1_representation.html#a906d4ae59e02d539932640fddb3f7783',1,'Representations.Representation.Representation.batchDiscover()']]],
+  ['batchdiscover',['batchDiscover',['../class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a906d4ae59e02d539932640fddb3f7783',1,'Representations::BEBF::BEBF']]],
   ['batchexperiment',['BatchExperiment',['../class_experiments_1_1_batch_experiment_1_1_batch_experiment.html',1,'Experiments::BatchExperiment']]],
   ['batchphi_5fs_5fa',['batchPhi_s_a',['../class_representations_1_1_representation_1_1_representation.html#a7d798a8a4a9c430e9c9348a73962e1b6',1,'Representations::Representation::Representation']]],
   ['bebf',['BEBF',['../class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html',1,'Representations::BEBF']]],

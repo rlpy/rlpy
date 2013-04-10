@@ -16,10 +16,10 @@ var class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d =
     [ "iFDD", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#aa1d569a983689321c4f06dec3ce085d4", null ],
     [ "iFDD_ONLINETHRESHOLD", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#aebc6ca7902ae38e237961b114a5f5a4b", null ],
     [ "initial_representation", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#a927c99777262bbb817c6980632151c7b", null ],
+    [ "isDynamic", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#a16294eb3eeb9ceb1a6c102a1f52cf030", null ],
     [ "maxBatchDicovery", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#af397340b8969f1c9e9428e3abddd3dad", null ],
     [ "maxBatchDicovery", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#addf0038331bdee1c7e7195799ad90430", null ],
     [ "remainingFeatures", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#a19a6f599a0f83fbaba2dc83bbdd020c8", null ],
-    [ "selectedFeatures", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#a7666b218538b98ea1fef291fb858941b", null ],
     [ "selectedFeatures", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#acf004f437d17430371313be06fc42cbf", null ],
     [ "totalFeatureSize", "class_representations_1_1_o_m_p_t_d_1_1_o_m_p_t_d.html#a4c53ef7cc9dd0a354f8adee424c9fe7d", null ]
 ];

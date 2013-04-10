@@ -149,7 +149,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ab133544576661effdff85afc6fa20e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the state-action value.  <a href="#ab133544576661effdff85afc6fa20e8a">More...</a><br/></td></tr>
 <tr class="separator:ab133544576661effdff85afc6fa20e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d3c800c20ed7893a623f30ffab7bcf3"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a6d3c800c20ed7893a623f30ffab7bcf3">phi</a></td></tr>
-<tr class="memdesc:a6d3c800c20ed7893a623f30ffab7bcf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the phi WHAT IS THIS WHAT DOES IT DO? at a given state.  <a href="#a6d3c800c20ed7893a623f30ffab7bcf3">More...</a><br/></td></tr>
+<tr class="memdesc:a6d3c800c20ed7893a623f30ffab7bcf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns phi_nonTerminal(s) for a given representation, or a zero feature vector in a terminal state.  <a href="#a6d3c800c20ed7893a623f30ffab7bcf3">More...</a><br/></td></tr>
 <tr class="separator:a6d3c800c20ed7893a623f30ffab7bcf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c37ce03f712185c70367b477abb7281"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a9c37ce03f712185c70367b477abb7281">phi_sa</a></td></tr>
 <tr class="memdesc:a9c37ce03f712185c70367b477abb7281"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the feature vector corresponding to a given state and action.  <a href="#a9c37ce03f712185c70367b477abb7281">More...</a><br/></td></tr>
@@ -176,16 +176,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad05e2a8d01a13d7489257d62ff1b2d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the best action at a given state.  <a href="#ad05e2a8d01a13d7489257d62ff1b2d07">More...</a><br/></td></tr>
 <tr class="separator:ad05e2a8d01a13d7489257d62ff1b2d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5724debd14045befb050644876c3a59"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#ae5724debd14045befb050644876c3a59">phi_nonTerminal</a></td></tr>
-<tr class="memdesc:ae5724debd14045befb050644876c3a59"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> WHAT IS THIS WHAT DOES IT DO? See code <a class="el" href="_representation.html#Representation_phi_nonTerminal">Here</a>.  <a href="#ae5724debd14045befb050644876c3a59">More...</a><br/></td></tr>
+<tr class="memdesc:ae5724debd14045befb050644876c3a59"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> Returns the feature vector evaluated at state (s) for non-terminal states; see function phi(s) for the general case.  <a href="#ae5724debd14045befb050644876c3a59">More...</a><br/></td></tr>
 <tr class="separator:ae5724debd14045befb050644876c3a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7df2faa619121dfe7486b03447c2cb82"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a7df2faa619121dfe7486b03447c2cb82">activeInitialFeatures</a></td></tr>
 <tr class="memdesc:a7df2faa619121dfe7486b03447c2cb82"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the index of active initial features based on bins in each dimensions.  <a href="#a7df2faa619121dfe7486b03447c2cb82">More...</a><br/></td></tr>
 <tr class="separator:a7df2faa619121dfe7486b03447c2cb82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a906d4ae59e02d539932640fddb3f7783"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a906d4ae59e02d539932640fddb3f7783">batchDiscover</a></td></tr>
-<tr class="memdesc:a906d4ae59e02d539932640fddb3f7783"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> Discovers features and adds them to the representation.  <a href="#a906d4ae59e02d539932640fddb3f7783">More...</a><br/></td></tr>
-<tr class="separator:a906d4ae59e02d539932640fddb3f7783"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d798a8a4a9c430e9c9348a73962e1b6"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a7d798a8a4a9c430e9c9348a73962e1b6">batchPhi_s_a</a></td></tr>
-<tr class="memdesc:a7d798a8a4a9c430e9c9348a73962e1b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">WHAT IS THIS? WHAT DOES IT DO?.  <a href="#a7d798a8a4a9c430e9c9348a73962e1b6">More...</a><br/></td></tr>
+<tr class="memdesc:a7d798a8a4a9c430e9c9348a73962e1b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build the feature vector for a series of state-action pairs (s,a) using the copy-paste method.  <a href="#a7d798a8a4a9c430e9c9348a73962e1b6">More...</a><br/></td></tr>
 <tr class="separator:a7d798a8a4a9c430e9c9348a73962e1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a254f34a2c7b460d9aadfe2a4a4e99b34"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a254f34a2c7b460d9aadfe2a4a4e99b34">batchBestAction</a></td></tr>
 <tr class="memdesc:a254f34a2c7b460d9aadfe2a4a4e99b34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the best-action and phi_s_a corresponding to the every state.  <a href="#a254f34a2c7b460d9aadfe2a4a4e99b34">More...</a><br/></td></tr>
@@ -202,6 +199,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3c487ff749f536bfe7d21f8e1d2a8073"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a3c487ff749f536bfe7d21f8e1d2a8073">V_oneStepLookAhead</a></td></tr>
 <tr class="memdesc:a3c487ff749f536bfe7d21f8e1d2a8073"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns V(s) by performing one step look-ahead on the domain.  <a href="#a3c487ff749f536bfe7d21f8e1d2a8073">More...</a><br/></td></tr>
 <tr class="separator:a3c487ff749f536bfe7d21f8e1d2a8073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4a2f0508e699a5871087e069d597aee"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#ae4a2f0508e699a5871087e069d597aee">stateID2state</a></td></tr>
+<tr class="memdesc:ae4a2f0508e699a5871087e069d597aee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the state vector correponding to a state_id If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins)  <a href="#ae4a2f0508e699a5871087e069d597aee">More...</a><br/></td></tr>
+<tr class="separator:ae4a2f0508e699a5871087e069d597aee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3848ad8e3828dd94c535d0cad1578162"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a3848ad8e3828dd94c535d0cad1578162">stateInTheMiddleOfGrid</a></td></tr>
+<tr class="memdesc:a3848ad8e3828dd94c535d0cad1578162"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function returns the state in the middle of the grid that captures the input state.  <a href="#a3848ad8e3828dd94c535d0cad1578162">More...</a><br/></td></tr>
+<tr class="separator:a3848ad8e3828dd94c535d0cad1578162"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -220,6 +223,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a7e77c6bed4ac93ecc52ce9f7039a7d3d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e77c6bed4ac93ecc52ce9f7039a7d3d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>binWidth_per_dim</b></td></tr>
 <tr class="separator:a7e77c6bed4ac93ecc52ce9f7039a7d3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a669af884da51bfd4585fce5611f7c32d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a669af884da51bfd4585fce5611f7c32d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>continuous_state_starting_samples</b></td></tr>
+<tr class="separator:a669af884da51bfd4585fce5611f7c32d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -253,6 +259,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a0b14e488ae28d98d262453f3e9cd6e4d">logger</a> = None</td></tr>
 <tr class="memdesc:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple object that records the prints in a file. <br/></td></tr>
 <tr class="separator:a0b14e488ae28d98d262453f3e9cd6e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16294eb3eeb9ceb1a6c102a1f52cf030"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#a16294eb3eeb9ceb1a6c102a1f52cf030">isDynamic</a> = False</td></tr>
+<tr class="memdesc:a16294eb3eeb9ceb1a6c102a1f52cf030"><td class="mdescLeft">&#160;</td><td class="mdescRight">A boolan stating that if the representation is dynamic meaning the size of features is going to change (default value = False).  <a href="#a16294eb3eeb9ceb1a6c102a1f52cf030">More...</a><br/></td></tr>
+<tr class="separator:a16294eb3eeb9ceb1a6c102a1f52cf030"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5bc8092586130addac5b54f96bf0b51"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_representations_1_1_representation_1_1_representation.html#ac5bc8092586130addac5b54f96bf0b51">expectedStepCached</a> = None</td></tr>
+<tr class="memdesc:ac5bc8092586130addac5b54f96bf0b51"><td class="mdescLeft">&#160;</td><td class="mdescRight">A dictionary used to cache expected step.  <a href="#ac5bc8092586130addac5b54f96bf0b51">More...</a><br/></td></tr>
+<tr class="separator:ac5bc8092586130addac5b54f96bf0b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="class_representations_1_1_representation_1_1_representation.html" title="The Representation is the Agent&#39;s model of the Domain.">Representation</a> is the <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a>'s model of the <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a>. </p>
@@ -421,8 +433,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
  <br/>
 </li>
 </ol>
-<p>How to use: WHAT IS THIS? AM I RIGHT THAT BELOW IS INTENDED TO BE HOW TO USE?<br/>
- First: make a mask for the invalid_actions <br/>
+<p>First: make a mask for the invalid_actions <br/>
  Second: build a matrix p-by-a where in each row the missing action is 1 <br/>
  <br/>
  <b>Example:</b> <br/>
@@ -437,65 +448,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">all_s</td><td>An array of all of the states. p-by-dim(s) </td></tr>
-    <tr><td class="paramname">all_phi_s</td><td>WHAT IS THIS? p-by-|phi(s))| </td></tr>
-    <tr><td class="paramname">action_mask</td><td>WHAT IS THIS? Optional: pass it for a speed boost </td></tr>
-    <tr><td class="paramname">useSparse</td><td>WHAT IS THIS? DO WE STILL USE THIS? </td></tr>
+    <tr><td class="paramname">all_phi_s</td><td>Each row is the feature vector evaluated at a state (s), one row for each state in the batch. [ p-by-|phi(s))| ] </td></tr>
+    <tr><td class="paramname">action_mask</td><td>Binary matrix, where each row corresponds to a single state (s), with a column for each action; '0' elements correspond to allowable actions in the state (as returned by possibleActions(s) </td></tr>
+    <tr><td class="paramname">useSparse</td><td>Determines whether or not to use sparse matrix libraries provided with numpy </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>[best_action, phi_s_a] <br/>
  <b>best_action:</b> An array of the best actions at every state. p-by-1 <br/>
- <b>phi_s_a:</b> WHAT IS THIS? p-by-|phi(s,a)| </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a906d4ae59e02d539932640fddb3f7783"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def batchDiscover </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>td_errors</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>all_phi_s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>data_s</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><b>ABSTRACT</b> <b>METHOD:</b> Discovers features and adds them to the representation. </p>
-<p>Representations that do not have discovery do not have to overwrite this method. See code <a class="el" href="_representation.html#Representation_batchDiscover">Here</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">td_errors</td><td>A vector of TD-Errors for all samples p-by-1 WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING </td></tr>
-    <tr><td class="paramname">all_phi_s</td><td>Phi for all states in (s,a,r,s',a') p-by-|dim(phi(s))| WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING </td></tr>
-    <tr><td class="paramname">data_s</td><td>The states p-by-|dim(s)| WHAT IS THIS? THESE DESCRIPTIONS ARE CONFUSING </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A boolean stating whether the method added a feature or not. </dd></dl>
+ <b>phi_s_a:</b> p-by-|phi(s,a)| </dd></dl>
 
 </div>
 </div>
@@ -541,18 +502,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
       </table>
 </div><div class="memdoc">
 
-<p>WHAT IS THIS? WHAT DOES IT DO?. </p>
+<p>Build the feature vector for a series of state-action pairs (s,a) using the copy-paste method. </p>
 <p>See code <a class="el" href="_representation.html#Representation_batchPhi_s_a">Here</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">all_phi_s</td><td>The feature vectors. p-by-n WHAT IS THIS? Does p-by-n mean it is an array of dimension p by n? what is p? </td></tr>
-    <tr><td class="paramname">all_actions</td><td>The set of actions corresponding to each feature. p-by-1 WHAT IS THIS? Does p-by-n mean it is an array of dimension p by n? what is p? </td></tr>
-    <tr><td class="paramname">all_phi_s_a</td><td>Optional: If phi_s_a has already been built for all actions, pass it for speed boost. </td></tr>
-    <tr><td class="paramname">use_sparse</td><td>WHAT IS THIS? DO WE STILL USE THIS? </td></tr>
+    <tr><td class="paramname">all_phi_s</td><td>The feature vectors. p-by-n, where p is the number of s-a pairs (indexed by row), and n is the number of features. </td></tr>
+    <tr><td class="paramname">all_actions</td><td>The set of actions corresponding to each feature. p-by-1, where p is the number of states included in this batch. </td></tr>
+    <tr><td class="paramname">all_phi_s_a</td><td>fOptional: Feature vector for a series of state-action pairs (s,a) using the copy-paste method. If phi_s_a has already been built for all actions, pass it for speed boost. </td></tr>
+    <tr><td class="paramname">use_sparse</td><td>Determines whether or not to use sparse matrix libraries provided with numpy </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>all_phi_s_a p-by-na. WHAT IS THIS? </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>all_phi_s_a (of dimension p x (s_a) ) </dd></dl>
 
 </div>
 </div>
@@ -591,7 +552,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
-    <tr><td class="paramname">phi_s</td><td>WHAT IS THIS WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">phi_s</td><td>the feature vector at state (s) </td></tr>
   </table>
   </dd>
 </dl>
@@ -630,11 +591,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Returns a list of the best actions at a given state. </p>
-<p>If phi_s is given, WHAT IS THIS? it is used to speed up. See code <a class="el" href="_representation.html#Representation_bestActions">Here</a>. </p>
+<p>If phi_s [the feature vector at state (s)]is given, it is used to speed up code by preventing re-computation. See code <a class="el" href="_representation.html#Representation_bestActions">Here</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
-    <tr><td class="paramname">phi_s</td><td>WHAT IS THIS WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">phi_s</td><td>the feature vector at state (s) </td></tr>
   </table>
   </dd>
 </dl>
@@ -757,8 +718,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
       </table>
 </div><div class="memdoc">
 
-<p>Returns the phi WHAT IS THIS WHAT DOES IT DO? at a given state. </p>
-<p>See code <a class="el" href="_representation.html#Representation_phi">Here</a>. </p>
+<p>Returns phi_nonTerminal(s) for a given representation, or a zero feature vector in a terminal state. </p>
+<p>This is done to [[]] See code <a class="el" href="_representation.html#Representation_phi">Here</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
@@ -793,7 +754,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
       </table>
 </div><div class="memdoc">
 
-<p><b>ABSTRACT</b> <b>METHOD:</b> WHAT IS THIS WHAT DOES IT DO? See code <a class="el" href="_representation.html#Representation_phi_nonTerminal">Here</a>. </p>
+<p><b>ABSTRACT</b> <b>METHOD:</b> Returns the feature vector evaluated at state (s) for non-terminal states; see function phi(s) for the general case. </p>
+<p><a class="el" href="_representation.html#Representation_phi_nonTerminal">Here</a>. </p>
 <dl class="section note"><dt>Note</dt><dd>if state is terminal the feature vector is always zero! </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -846,7 +808,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
     <tr><td class="paramname">a</td><td>The given action </td></tr>
-    <tr><td class="paramname">phi_s</td><td>WHAT IS THIS WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">phi_s</td><td>The feature vector evaluated at state (s) </td></tr>
   </table>
   </dd>
 </dl>
@@ -915,7 +877,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   <table class="params">
     <tr><td class="paramname">s</td><td>The state to examine. </td></tr>
     <tr><td class="paramname">a</td><td>The action to examine. </td></tr>
-    <tr><td class="paramname">phi_s</td><td>WHAT IS THIS WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">phi_s</td><td>The feature vector evaluated at state (s) </td></tr>
   </table>
   </dd>
 </dl>
@@ -949,7 +911,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>ns_samples</em>&#160;</td>
+          <td class="paramname"><em>ns_samples</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>policy</em> = <code>None</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -960,13 +928,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Returns the state action value, Q(s,a), by performing one step look-ahead on the domain. </p>
-<p>An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998. If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code <a class="el" href="_representation.html#Representation_Q_oneStepLookAhead">Here</a>. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION? </dd></dl>
+<p>An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998. If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code If policy is passed (used in the policy evaluation), it is used to generate the action for the next state. Otherwise the best action is selected. <a class="el" href="_representation.html#Representation_Q_oneStepLookAhead">Here</a>. </p>
+<dl class="section note"><dt>Note</dt><dd>This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
     <tr><td class="paramname">a</td><td>The given action </td></tr>
-    <tr><td class="paramname">ns_samples</td><td>The number of samples used to estimate the one_step look-aghead. @ return <b>Q:</b> The state-action value. </td></tr>
+    <tr><td class="paramname">ns_samples</td><td>The number of samples used to estimate the one_step look-aghead. </td></tr>
+    <tr><td class="paramname">policy</td><td>The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead. If not set the best action will be selected. @ return <b>Q:</b> The state-action value. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1008,7 +977,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The state to examine. </td></tr>
-    <tr><td class="paramname">phi_s</td><td>WHAT IS THIS WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">phi_s</td><td>The feature vector evaluated at state (s). </td></tr>
   </table>
   </dd>
 </dl>
@@ -1038,7 +1007,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>ns_samples</em>&#160;</td>
+          <td class="paramname"><em>ns_samples</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>policy</em> = <code>None</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1050,11 +1025,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p>Returns an array of actions available at a state and their associated values, Qs(s,a), by performing one step look-ahead on the domain. </p>
 <p>An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998. If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code <a class="el" href="_representation.html#Representation_Qs_oneStepLookAhead">Here</a>. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION? </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
     <tr><td class="paramname">ns_samples</td><td>The number of samples used to estimate the one_step look-aghead. </td></tr>
+    <tr><td class="paramname">policy</td><td>The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1100,6 +1076,75 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   <table class="params">
     <tr><td class="paramname">domain</td><td>The <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a> associated with the Representation </td></tr>
     <tr><td class="paramname">discretization</td><td>The number of slices a continous domain should be sliced into. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ae4a2f0508e699a5871087e069d597aee"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def stateID2state </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>s_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the state vector correponding to a state_id If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s_id</td><td>The id of the state, often calculated using the state2bin function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a3848ad8e3828dd94c535d0cad1578162"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def stateInTheMiddleOfGrid </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function returns the state in the middle of the grid that captures the input state. </p>
+<p>For continuous MDPs this plays a major rule in improving the speed through caching of next samples </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>The given state </td></tr>
   </table>
   </dd>
 </dl>
@@ -1173,7 +1218,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p>Returns V(s) by performing one step look-ahead on the domain. </p>
 <p>An example of how this function works can be found on Line 6 of Figure 4.5 in Sutton and Barto 1998. If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code <a class="el" href="_representation.html#Representation_V_oneStepLookAhead">Here</a>. </p>
-<dl class="section note"><dt>Note</dt><dd>This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model WHAT IS THIS? DO YOU MEAN UNLESS IT IS OR IS NOT AN APPROXIMATION? </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>The given state </td></tr>
@@ -1181,7 +1226,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>V WHAT IS THIS? IS IT NOT THE VALUE OF A STATE? YET IT APPEARS TO BE TWO VALUES QS AND ACTIONS? </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The estimated value = max_a Q(s,a) together with the corresponding action that maximizes the Q function </dd></dl>
 
 </div>
 </div>
@@ -1206,6 +1251,51 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <p>Number of aggregated states based on the discretization. </p>
 <p>If the represenation is adaptive, set to the best resolution possible </p>
+
+</div>
+</div>
+<a class="anchor" id="ac5bc8092586130addac5b54f96bf0b51"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">expectedStepCached = None</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A dictionary used to cache expected step. </p>
+<p>Used for planning algorithms </p>
+
+</div>
+</div>
+<a class="anchor" id="a16294eb3eeb9ceb1a6c102a1f52cf030"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">isDynamic = False</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A boolan stating that if the representation is dynamic meaning the size of features is going to change (default value = False). </p>
 
 </div>
 </div>

@@ -13,6 +13,7 @@ var class_representations_1_1_b_e_b_f_1_1_b_e_b_f =
     [ "features_num", "class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#acb5162e6c9ed7495937f6d771add3bbb", null ],
     [ "initial_features_num", "class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a13a97a165f2de301739dbddd4d2e976a", null ],
     [ "initial_features_num", "class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a915b888c06794422c924e29b3bfff311", null ],
+    [ "isDynamic", "class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a16294eb3eeb9ceb1a6c102a1f52cf030", null ],
     [ "maxBatchDicovery", "class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#af397340b8969f1c9e9428e3abddd3dad", null ],
     [ "svm_epsilon", "class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a63e6fad47da6b21e91876d1fd11e9d91", null ]
 ];

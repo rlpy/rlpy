@@ -305,7 +305,7 @@ class Representation(object):
 	# [activeInitialFeatures code]
 	
 	
-	## \b ABSTRACT \b METHOD: Discovers features from a collection of data ('p' samples) and adds them to the representation.
+	# \b ABSTRACT \b METHOD: Discovers features from a collection of data ('p' samples) and adds them to the representation.
 	# Representations that do not have discovery do not have to overwrite this method. See code
 	# \ref Representation_batchDiscover "Here".
 	# @param td_errors A vector of TD (Temporal Difference)-Errors for all 'p' samples [p-by-1 vector]
@@ -327,7 +327,9 @@ class Representation(object):
 	# If phi_s_a has already been built for all actions, pass it for speed boost.  
 	# @param use_sparse Determines whether or not to use sparse matrix libraries provided with numpy
 	# @return all_phi_s_a (of dimension p x (s_a) )
-	def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
+	
+    # [batchPhi_s_a code]
+    def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
 		p,n			= all_phi_s.shape
 		a_num		= self.domain.actions_num
 		if use_sparse:

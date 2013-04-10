@@ -4,6 +4,7 @@ var class_experiments_1_1_experiment_1_1_experiment =
     [ "makeExperimentName", "class_experiments_1_1_experiment_1_1_experiment.html#a5a09a75719edd93c51932842268ec62a", null ],
     [ "performanceRun", "class_experiments_1_1_experiment_1_1_experiment.html#a9c16b367f78bd48b68e062ee56119194", null ],
     [ "printAll", "class_experiments_1_1_experiment_1_1_experiment.html#a64fe699622519d8edc3a69716ce076c8", null ],
+    [ "run", "class_experiments_1_1_experiment_1_1_experiment.html#aedcaade7dd45761ddcc3b3cc07005314", null ],
     [ "save", "class_experiments_1_1_experiment_1_1_experiment.html#aba0970ece8740693d3b82e656500a9c0", null ],
     [ "agent", "class_experiments_1_1_experiment_1_1_experiment.html#ab127f2768fff9c4628c413617137a553", null ],
     [ "domain", "class_experiments_1_1_experiment_1_1_experiment.html#a8a6287602630db6aeffcb6cf5787a216", null ],

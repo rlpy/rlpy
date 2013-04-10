@@ -4,10 +4,10 @@ var NAVTREE =
     [ "The Big Picture", "index.html", null ],
     [ "Code", "_code.html", "_code" ],
     [ "Getting Started: A 10-15 Minute Introduction", "_i_shouldrun_8py.html", [
-      [ "Run", "_i_shouldrun_8py.html#First", null ],
-      [ "Output", "_i_shouldrun_8py.html#Interpreting", null ],
-      [ "Data", "_i_shouldrun_8py.html#Analyzing", null ],
-      [ "Slightly More Challenging Domain: Inverted Pendulum", "_i_shouldrun_8py.html#A", null ],
+      [ "First Run", "_i_shouldrun_8py.html#First_Run", null ],
+      [ "Interpreting Output", "_i_shouldrun_8py.html#Interpreting_Output", null ],
+      [ "Analyzing Data", "_i_shouldrun_8py.html#Analyzing_Data", null ],
+      [ "A Slightly More Challenging Domain: Inverted Pendulum", "_i_shouldrun_8py.html#Inv_Pend", null ],
       [ "Conclusion", "_i_shouldrun_8py.html#Conclusion", null ]
     ] ],
     [ "Classes", null, [
@@ -26,10 +26,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"class_domains_1_1_blocks_world_1_1_blocks_world.html#ac5ebc9432ec58d54aff086e0b5137b2f",
-"class_domains_1_1_multi_track_1_1_multi_track.html#a29e38d78050ae336c83379961e550f49",
-"class_domains_1_1_r_c_car_1_1_r_c_car.html#a411dd57d451731e349ebea8207160ce3",
-"class_representations_1_1_tabular_1_1_tabular.html"
+"class_domains_1_1_blocks_world_1_1_blocks_world.html#a9ef5200066c676a2904e5745f8e00179",
+"class_domains_1_1_multi_track_1_1_multi_track.html#a151f90b5b1d1d45ca07b42c8cf34ce7f",
+"class_domains_1_1_r_c_car_1_1_r_c_car.html#a2f6a91cc1de8bd43e4a538210b4cafa0",
+"class_representations_1_1_representation_1_1_representation.html#a9c37ce03f712185c70367b477abb7281"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

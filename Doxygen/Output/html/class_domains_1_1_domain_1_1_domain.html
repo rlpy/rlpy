@@ -162,9 +162,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a95621a488f4bd554b9031ae0416b098d"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a95621a488f4bd554b9031ae0416b098d">step</a></td></tr>
 <tr class="memdesc:a95621a488f4bd554b9031ae0416b098d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> Performs an action while in a specific state and updates the domain accordingly.  <a href="#a95621a488f4bd554b9031ae0416b098d">More...</a><br/></td></tr>
 <tr class="separator:a95621a488f4bd554b9031ae0416b098d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d40d468bcb54772b5c61ae0dc501c7f"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a2d40d468bcb54772b5c61ae0dc501c7f">expectedStep</a></td></tr>
-<tr class="memdesc:a2d40d468bcb54772b5c61ae0dc501c7f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>ABSTRACT</b> <b>METHOD:</b> Each row of each output corresponds to one possibility.  <a href="#a2d40d468bcb54772b5c61ae0dc501c7f">More...</a><br/></td></tr>
-<tr class="separator:a2d40d468bcb54772b5c61ae0dc501c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c9595ac1e62a30b42574f8e1b335817"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#a0c9595ac1e62a30b42574f8e1b335817">isTerminal</a></td></tr>
 <tr class="memdesc:a0c9595ac1e62a30b42574f8e1b335817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the stats s is a terminal state.  <a href="#a0c9595ac1e62a30b42574f8e1b335817">More...</a><br/></td></tr>
 <tr class="separator:a0c9595ac1e62a30b42574f8e1b335817"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,7 +172,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a64fe699622519d8edc3a69716ce076c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the class data.  <a href="#a64fe699622519d8edc3a69716ce076c8">More...</a><br/></td></tr>
 <tr class="separator:a64fe699622519d8edc3a69716ce076c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad162f49e1cdfe593dcb27da90d627b5b"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#ad162f49e1cdfe593dcb27da90d627b5b">extendDiscreteDimensions</a></td></tr>
-<tr class="memdesc:ad162f49e1cdfe593dcb27da90d627b5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">WHAT IS THIS? WHAT DOES IT DO?.  <a href="#ad162f49e1cdfe593dcb27da90d627b5b">More...</a><br/></td></tr>
+<tr class="memdesc:ad162f49e1cdfe593dcb27da90d627b5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offsets discrete dimensions by 0.5 so that binning works properly.  <a href="#ad162f49e1cdfe593dcb27da90d627b5b">More...</a><br/></td></tr>
 <tr class="separator:ad162f49e1cdfe593dcb27da90d627b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8f69890c9127078f0143fb52909bcd0"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_domains_1_1_domain_1_1_domain.html#ad8f69890c9127078f0143fb52909bcd0">sampleStep</a></td></tr>
 <tr class="memdesc:ad8f69890c9127078f0143fb52909bcd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample a set number of next states and rewards from the domain.  <a href="#ad8f69890c9127078f0143fb52909bcd0">More...</a><br/></td></tr>
@@ -295,49 +292,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a2d40d468bcb54772b5c61ae0dc501c7f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def expectedStep </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>a</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><b>ABSTRACT</b> <b>METHOD:</b> Each row of each output corresponds to one possibility. </p>
-<p>e.g. s,a -&gt; r[i], ns[i] with probability p[i]. WHAT IS THIS? I AM CONFUSED HOW THIS WORKS OR WHAT IT IS DOING. See code <a class="el" href="_domain.html#Domain_exStep">Here</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">s</td><td>The given state </td></tr>
-    <tr><td class="paramname">a</td><td>The given Action </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>r, ns, p. WHAT IS THIS? WHAT ARE THESE EXACTLY? </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="ad162f49e1cdfe593dcb27da90d627b5b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -352,7 +306,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
       </table>
 </div><div class="memdoc">
 
-<p>WHAT IS THIS? WHAT DOES IT DO?. </p>
+<p>Offsets discrete dimensions by 0.5 so that binning works properly. </p>
 <p>See code <a class="el" href="_domain.html#Domain_extendDiscreteDimensions">Here</a>. </p>
 
 </div>
@@ -559,11 +513,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <p>This function is used for cases when state vector has elements outside of its limits. See code <a class="el" href="_domain.html#Domain_saturateState">Here</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">s</td><td>WHAT IS THIS? WHAT DOES IT DO? </td></tr>
+    <tr><td class="paramname">s</td><td>A given state </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>WHAT IS THIS? WHAT DOES IT DO? </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If s lies within statespace limits, return s unchanged; otherwise return the statespace_limit closest to s e.g. discrete_statespace_limits = [0, 10] and s = [12], return [10]. </dd></dl>
 
 </div>
 </div>

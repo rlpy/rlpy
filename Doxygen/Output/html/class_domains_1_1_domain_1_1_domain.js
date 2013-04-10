@@ -1,7 +1,6 @@
 var class_domains_1_1_domain_1_1_domain =
 [
     [ "__init__", "class_domains_1_1_domain_1_1_domain.html#ac775ee34451fdfa742b318538164070e", null ],
-    [ "expectedStep", "class_domains_1_1_domain_1_1_domain.html#a2d40d468bcb54772b5c61ae0dc501c7f", null ],
     [ "extendDiscreteDimensions", "class_domains_1_1_domain_1_1_domain.html#ad162f49e1cdfe593dcb27da90d627b5b", null ],
     [ "isTerminal", "class_domains_1_1_domain_1_1_domain.html#a0c9595ac1e62a30b42574f8e1b335817", null ],
     [ "possibleActions", "class_domains_1_1_domain_1_1_domain.html#a397b5376f221417d22f8c40a1a7070eb", null ],
