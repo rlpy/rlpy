@@ -271,7 +271,7 @@ class Merger(object):
         target_col  = cols-1
         last_return = M[return_row,-1] 
         print last_return
-        while target_col >= 0 and M[return_row,target_col] >= last_return*.95:
+        while target_col >= 0 and abs(M[return_row,target_col]) >= abs(last_return)*.95:
             print  M[return_row,target_col]
             print target_col
             target_col -= 1
