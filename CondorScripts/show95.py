@@ -12,5 +12,5 @@ from Tools import *
 
 if __name__ == '__main__':
     merger = Merger(['.'],showSplash=False)
-    merger.showTime95(sys.argv[1])
+    merger.showTime95()
         
