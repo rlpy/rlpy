@@ -278,6 +278,7 @@ class Merger(object):
             target_col += 1
             
         #print M[time_row,target_col+1]
+        print  M[return_row,target_col], last_return, abs(M[return_row,target_col]-last_return), abs(last_return)*.05
         return M[time_row,target_col-1]
     def showTime95(self):
         print "======================================="
