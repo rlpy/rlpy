@@ -118,6 +118,7 @@ class Merger(object):
                     break
         if self.useLastDataPoint:
             samples     = zeros((rows,1,samples_num))
+            times_95    = zeros(samples_num)
             for i,f in enumerate(files):
                 if i == samples_num: break
                 M = readMatrixFromFile(files[i])
