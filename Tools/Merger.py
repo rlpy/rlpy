@@ -284,4 +284,4 @@ class Merger(object):
         print " Time to reach 95% of last performance "
         print "======================================="
         for i in range(self.exp_num):
-            print "%s: %0.3f+%0.3f" % (self.exp_paths[i], self.time_95_mean[i] , self.time_95_std_errs[i])
+            print "%s: %0.3f+%0.3f Based on %d Samples" % (self.exp_paths[i], self.time_95_mean[i] , self.time_95_std_errs[i],self.samples[i])
