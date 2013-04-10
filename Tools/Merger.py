@@ -273,7 +273,7 @@ class Merger(object):
         last_return = M[return_row,-1] 
         #print last_return
         while target_col < cols  and abs(M[return_row,target_col]-last_return) > abs(last_return)*.05:
-            print  M[return_row,target_col]
+            print  M[return_row,target_col], last_return, abs(M[return_row,target_col]-last_return), abs(last_return)*.05
             print target_col
             target_col += 1
             
