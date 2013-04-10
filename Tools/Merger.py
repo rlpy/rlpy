@@ -9,6 +9,7 @@ class Merger(object):
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0,showSplash=True):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
+        print 'Hi!'
         self.means                  = []
         self.std_errs               = []
         self.bars                   = bars  #Draw bars?
