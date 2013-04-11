@@ -232,7 +232,7 @@ class Agent(object):
 	# The data generated and stored in the output_file
 	
 	# [eval code]
-    def evaulate(self,samples, MC_samples, output_file):
+    def evaluate(self,samples, MC_samples, output_file):
         tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q
         cols            = self.domain.state_space_dims + 2
         DATA            = empty((samples,cols))

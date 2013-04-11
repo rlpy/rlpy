@@ -23,7 +23,7 @@ class PolicyEvaluation(LSPI):
                 self.logger.log('Generating Fixed Policy Evaluation')
                 self.logger.log('Samples for Accuracy Test = %d' % accuracy_test_samples)
                 self.logger.log('Samples for Monte-Carlo estimation of each Q(s,a) = %d' % MC_samples)
-                DATA = self.evaulate(accuracy_test_samples, MC_samples, self.compare_with_me)
+                DATA = self.evaluate(accuracy_test_samples, MC_samples, self.compare_with_me)
             else:
                 _,_,shortPolicyFile =  self.compare_with_me.rpartition('/')
                 DATA = load(self.compare_with_me)
