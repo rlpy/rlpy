@@ -215,7 +215,7 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['b','r'], 'FlipBoard')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['w','.75','b','r'], 'IntruderMonitorying')
+    mycmap = colors.ListedColormap(['w','.75','b','r'], 'IntruderMonitoring')
     cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
