@@ -144,7 +144,7 @@ class Experiment(object):
 	## Creates a string name for the experiment by connecting the values corresponding to the given variables.  
 	# See code \ref Experiment_makeExperimentName "Here".
 	# @param variables The list of variables to be used for the experiment name. \n \b Example: [ 'domain', 'agent', 'representation', 'LEARNING_STEPS']
-	# @returns The string name associated with the variables. \n \b Example: 'PitMaze-SARSA-Tabular-10000'
+	# @returns The string name associated with the variables. \n \b Example: 'GridWorld-SARSA-Tabular-10000'
 	
 	# [makeExperimentName code]
     def makeExperimentName(self,variables):

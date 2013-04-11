@@ -28,7 +28,7 @@ class RBF(Representation):
             self.rbfs_mu, rbfs      = self.uniformRBFs(array([bins,bins]),includeBorders)
             logger.log('Using 3x3 uniform RBFs => 9 RBFs + 1 constant.') 
             self.rbfs_sigma         = ones((rbfs,dims))
-        elif isinstance(domain,PitMaze):
+        elif isinstance(domain,GridWorld):
             # Put 20 equal in the intersections + 1 extra
             self.domain             = domain
             dims                    = domain.state_space_dims

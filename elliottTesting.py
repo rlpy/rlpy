@@ -46,11 +46,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/2x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
-    #MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
-    #MAZE                = '/Domains/PitmazeMaps/5x22-ICMLW-2011.txt' 
+    MAZE                = '/Domains/GridWorldMaps/1x3.txt'
+    #MAZE                = '/Domains/GridWorldMaps/2x3.txt'
+    #MAZE                = '/Domains/GridWorldMaps/4x5.txt'
+    #MAZE                = '/Domains/GridWorldMaps/10x10-12ftml.txt'
+    #MAZE                = '/Domains/GridWorldMaps/5x22-ICMLW-2011.txt' 
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/1x3_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x2_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x3_1A_1I.txt'
@@ -67,11 +67,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
-    NOISE               = .3   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = .3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 5     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
-    RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
+    RBFS                        = {'GridWorld':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
     iFDDOnlineThreshold         = 100 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 
     BatchDiscoveryThreshold     = 0 if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature 
@@ -108,7 +108,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)

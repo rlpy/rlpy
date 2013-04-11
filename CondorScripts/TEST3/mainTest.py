@@ -44,19 +44,19 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
+    #MAZE                = '/Domains/GridWorldMaps/1x3.txt'
+    MAZE                = '/Domains/GridWorldMaps/4x5.txt'
     INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/4x4_1A_1I.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/5Machines.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/9Star.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Machines.txt'
     NETWORKNMAP         = '/Domains/SystemAdministratorMaps/16-5Branches.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
-    NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = 0.3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
-    RBFS                        = {'PitMaze':10, 'CartPole':20, 'BlocksWorld':100,
+    RBFS                        = {'GridWorld':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000} # Values used in tutorial
     #iFDD_Threshold              = .001  # Good for Inverted Pendulum
     #iFDD_Threshold              = .05 # Good for bloackWorld #10 good for SystemAdministrator
@@ -79,7 +79,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     RE_LSPI_iterations      = 20
     
     #domain          = ChainMDP(10, logger = logger)
-    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)

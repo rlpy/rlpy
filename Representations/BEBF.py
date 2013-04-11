@@ -30,7 +30,7 @@ sys.path.insert(0, RL_PYTHON_ROOT)
 
 #from scipy.interpolate import Rbf
 from Tools import *
-from Domains import PitMaze
+from Domains import GridWorld
 from Representation import *
 
 
@@ -127,7 +127,7 @@ if __name__ == '__main__':
 #    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     logger              = Logger()
     discovery_threshold = 1
-    domain      = PitMaze()
+    domain      = GridWorld()
     rep         = BEBF(domain,logger,debug=1,batchThreshold = 10 ** -5)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
     print 'initial features'

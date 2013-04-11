@@ -45,9 +45,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    MAZE                = '/Domains/PitmazeMaps/4x5.txt'
-    NOISE               = 0.3   # Noise parameters used for some of the domains such as the pitmaze
+    #MAZE                = '/Domains/GridWorldMaps/1x3.txt'
+    MAZE                = '/Domains/GridWorldMaps/4x5.txt'
+    NOISE               = 0.3   # Noise parameters used for some of the domains such as the GridWorld
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
     # Policy ----------------------
@@ -59,7 +59,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LAMBDA                  = 0
     # DOMAIN
     #=================
-    domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(episodeCap = 300, logger = logger);
     
     # REPRESENTATION

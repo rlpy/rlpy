@@ -45,11 +45,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     logger              = Logger()
     MAX_ITERATIONS      = 10
     # Domain ----------------------
-    #MAZE                = '/Domains/PitmazeMaps/1x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/2x3.txt'
-    #MAZE                = '/Domains/PitmazeMaps/4x5.txt'
-    MAZE                = '/Domains/PitmazeMaps/10x10-12ftml.txt'
-    #MAZE                = '/Domains/PitmazeMaps/11x11-Rooms.txt'
+    #MAZE                = '/Domains/GridWorldMaps/1x3.txt'
+    #MAZE                = '/Domains/GridWorldMaps/2x3.txt'
+    #MAZE                = '/Domains/GridWorldMaps/4x5.txt'
+    MAZE                = '/Domains/GridWorldMaps/10x10-12ftml.txt'
+    #MAZE                = '/Domains/GridWorldMaps/11x11-Rooms.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/1x3_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x2_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x3_1A_1I.txt'
@@ -66,11 +66,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20MachTutorial.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/20Ring.txt'
     #NETWORKNMAP         = '/Domains/SystemAdministratorMaps/10Ring.txt'
-    NOISE               = .3   # Noise parameters used for some of the domains such as the pitmaze
+    NOISE               = .3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 6     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 20  # Number of bins used to discritize each continuous dimension. Used for some representations 
-    RBFS                        = 500  #{'PitMaze':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
+    RBFS                        = 500  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
 ##################################################
 ## Edited by makexp.py script
     iFDDOnlineThreshold =	0.2 # Edited by makexp.py script
@@ -115,7 +115,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = PitMaze(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
