@@ -1,4 +1,13 @@
 import sys, os
+
+#Add all paths
+RL_PYTHON_ROOT = '.'
+while not os.path.exists(RL_PYTHON_ROOT+'/RL-Python/Tools'):
+    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+RL_PYTHON_ROOT += '/RL-Python'
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
+sys.path.insert(0, RL_PYTHON_ROOT)
+
 from numpy.ma.core import logical_or
 from Tools import *
 from Domain import *
@@ -164,7 +173,7 @@ class IntruderMonitoring(Domain):
     def showDomain(self,s,a):
        #Draw the environment
        if self.domain_fig is None:
-           self.domain_fig  = pl.imshow(self.map, cmap='IntruderMonitorying',interpolation='nearest',vmin=0,vmax=3)
+           self.domain_fig  = pl.imshow(self.map, cmap='IntruderMonitoring',interpolation='nearest',vmin=0,vmax=3)
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            pl.show()
