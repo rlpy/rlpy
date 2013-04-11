@@ -329,7 +329,7 @@ class Representation(object):
 	# @return all_phi_s_a (of dimension p x (s_a) )
 	
     # [batchPhi_s_a code]
-    def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
+    	def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):		
 		p,n			= all_phi_s.shape
 		a_num		= self.domain.actions_num
 		if use_sparse:
