@@ -82,7 +82,7 @@ class ChainMDP(Domain):
         return (s == self.chainSize - 1)
 
 if __name__ == '__main__':
-    #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
+    #p = GridWorld('/Domains/GridWorldMaps/ACC2011.txt');
     p = ChainMDP(5);
     p.test(1000)
     

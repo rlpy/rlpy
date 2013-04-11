@@ -173,6 +173,6 @@ class MountainCar(Domain):
         pl.draw()
 #        sleep(self.dt)
 if __name__ == '__main__':
-    # p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
+    # p = GridWorld('/Domains/GridWorldMaps/ACC2011.txt');
     p = MountainCar();
     p.test(10000)

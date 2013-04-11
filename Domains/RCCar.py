@@ -115,6 +115,6 @@ class RCCar(Domain):
         pl.draw()
             
 if __name__ == '__main__':
-    # p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
+    # p = GridWorld('/Domains/GridWorldMaps/ACC2011.txt');
     p = RCCar();
     p.test(10000)
