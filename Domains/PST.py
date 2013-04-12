@@ -25,10 +25,10 @@ from Domain import *
 # --------------------DESCRIPTION----------------------- \n
 # Each UAV has 4 states; location, fuel, actuator status, sensor status.
 #
-# There are 4 types of locations a uav can be in; Maintenance,
+# There are 4 types of locations a uav can be in; Base,
 # Refuel, Communications, surveillance. \n
 # Loitering for 1 timestep at Refuel assigns fuel of 10 to that UAV.\n
-# Loitering for 1 timestep at Maintenance assigns status 1 to
+# Loitering for 1 timestep at Base assigns status 1 to
 # Actuator and Sensor.
 #
 # Goal is to maintain as many UAVS with working sensor in the Surveillance
@@ -40,12 +40,12 @@ from Domain import *
 # (No reward is earned for excess UAVs or those with failed sensor)
 #
 # If the actuator fails, the UAV can only take actions leading it back to the
-# refuel or maintenance states, where it may loiter.
+# refuel or base states, where it may loiter.
 #
 # A penalty is applied for each unit of fuel consumed,
 # which occurs when a UAV moves between locations or when it is loitering
 # above a communications or surveilllance location.
-# (ie, no penalty when loitering at REFUEL or MAINTENANCE)
+# (ie, no penalty when loitering at REFUEL or BASE)
 #
 # Finally, if any UAV has fuel 0, the episode terminates with large penalty.
 #
@@ -200,13 +200,13 @@ class PST(Domain):
         self.comms_line.append(lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2, crashLocationX],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False))
         
         # Create location text below rectangles
-        locText = ["Repair","Refuel","Transmit","Survey"]
+        locText = ["Base","Refuel","Communication","Surveillance"]
         self.location_rect_txt = [pl.text(0.5 + self.dist_between_locations*i + 0.5*self.LOCATION_WIDTH,-0.3,locText[i], ha = 'center') for i in range(UAVLocation.SIZE-1)]
         self.location_rect_txt.append(pl.text(crashLocationX + 0.5*self.LOCATION_WIDTH,-0.3,locText[UAVLocation.SIZE-1], ha = 'center'))
         
         # Initialize list of circle objects
 
-        uav_x = self.location_coord[UAVLocation.MAINTENANCE]
+        uav_x = self.location_coord[UAVLocation.BASE]
 
 #            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
         # Update the member variables storing all the figure objects
@@ -286,7 +286,7 @@ class PST(Domain):
         nsStruct.locations += (actionVector-1)
 
         #TODO - incorporate cost graph as in matlab.
-        fuelBurnedBool = [(actionVector[i] == UAVAction.LOITER and (nsStruct.locations[i] == UAVLocation.REFUEL or nsStruct.locations[i] == UAVLocation.MAINTENANCE)) for i in arange(self.NUM_UAV)]
+        fuelBurnedBool = [(actionVector[i] == UAVAction.LOITER and (nsStruct.locations[i] == UAVLocation.REFUEL or nsStruct.locations[i] == UAVLocation.BASE)) for i in arange(self.NUM_UAV)]
         fuelBurnedBool = array(fuelBurnedBool) == False
         nsStruct.fuel = array([sStruct.fuel[i] - self.NOM_FUEL_BURN * fuelBurnedBool[i] for i in arange(self.NUM_UAV)]) # if fuel
         self.fuelUnitsBurned = sum(fuelBurnedBool)
@@ -306,10 +306,10 @@ class PST(Domain):
         refuelIndices = nonzero(logical_and(sStruct.locations == UAVLocation.REFUEL, nsStruct.locations == UAVLocation.REFUEL))
         nsStruct.fuel[refuelIndices] = self.FULL_FUEL
 
-        # Fix sensors and motors in maintenance state
-        maintenanceIndices = nonzero(logical_and(sStruct.locations == UAVLocation.MAINTENANCE, nsStruct.locations == UAVLocation.MAINTENANCE))
-        nsStruct.actuator[maintenanceIndices] = ActuatorState.RUNNING
-        nsStruct.sensor[maintenanceIndices] = SensorState.RUNNING
+        # Fix sensors and motors in base state
+        baseIndices = nonzero(logical_and(sStruct.locations == UAVLocation.BASE, nsStruct.locations == UAVLocation.BASE))
+        nsStruct.actuator[baseIndices] = ActuatorState.RUNNING
+        nsStruct.sensor[baseIndices] = SensorState.RUNNING
 
         # Test if have communication
         self.isCommStatesCovered = any(sStruct.locations == UAVLocation.COMMS)
@@ -331,7 +331,7 @@ class PST(Domain):
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
         self.resetLocalVariables()
-        locations   = ones(self.NUM_UAV, dtype='int') * UAVLocation.MAINTENANCE
+        locations   = ones(self.NUM_UAV, dtype='int') * UAVLocation.BASE
         fuel        = ones(self.NUM_UAV, dtype='int') * self.FULL_FUEL
         actuator    = ones(self.NUM_UAV, dtype='int') * ActuatorState.RUNNING
         sensor      = ones(self.NUM_UAV, dtype='int') * SensorState.RUNNING
@@ -369,7 +369,7 @@ class PST(Domain):
             # in refuel/repair location
             if(sStruct.actuator[uav_id] == ActuatorState.RUNNING or \
             sStruct.locations[uav_id] == UAVLocation.REFUEL or \
-            sStruct.locations[uav_id] == UAVLocation.MAINTENANCE):
+            sStruct.locations[uav_id] == UAVLocation.BASE):
                 uav_actions.append(UAVAction.LOITER)
 
             if(sStruct.fuel[uav_id] > 0): # This UAV is not crashed
@@ -380,8 +380,8 @@ class PST(Domain):
                     uav_actions.append(UAVAction.ADVANCE)
 
                 # Can retreat left anytime as long as aren't already in
-                # 'leftmost' state, maintenance
-                if(sStruct.locations[uav_id] != UAVLocation.MAINTENANCE):
+                # 'leftmost' state, base
+                if(sStruct.locations[uav_id] != UAVLocation.BASE):
                     uav_actions.append(UAVAction.RETREAT)
             else: # This UAV is crashed; give it a dummy action for now
                 if(len(uav_actions) < 1): uav_actions.append(UAVAction.LOITER)
@@ -423,7 +423,7 @@ class PST(Domain):
 
 # \cond DEV		
 class UAVLocation:
-    MAINTENANCE = 0
+    BASE = 0
     REFUEL      = 1
     COMMS       = 2
     SURVEIL     = 3
