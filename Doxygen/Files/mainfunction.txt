@@ -17,13 +17,12 @@ On the right, you can see the representation of the value function overlayed on 
 The set of possible actions in each grid is highlighted by arrows, where the size of arrows correspond to the Q(s,a). The best action is shown as black. Each domain in RL-Python offers visualization like that shown on the left, and where possible, a representation of the value function like that shown on the right as well.
 
     \section Interpreting_Output Interpreting Output
-In the console window you should see output similar to the following:
-[[ Frame this somehow as code / output / make it stand out?]]
-...
-647: E[0:00:01]-R[0:00:15]: Return=+0.97, Steps=33, Features = 20
-1000 >>> E[0:00:04]-R[0:00:37]: Return=+0.99, Steps=11, Features = 20
-1810: E[0:00:05]-R[0:00:23]: Return=+0.98, Steps=19, Features = 20
-...
+In the console window you should see output similar to the following:\n
+...\n
+647: E[0:00:01]-R[0:00:15]: Return=+0.97, Steps=33, Features = 20\n
+1000 >>> E[0:00:04]-R[0:00:37]: Return=+0.99, Steps=11, Features = 20\n
+1810: E[0:00:05]-R[0:00:23]: Return=+0.98, Steps=19, Features = 20\n
+...\n
 
 The meaning of each component is shown in the figure.  Note that a "performance run" (indicated by ">>>" in the output window) tests the agent using its latest policy, without any exploration or modifications that might be used during learning (such as the randomization of the episilon-greedy policy).  The visualization shows these performance runs. \n
 (Note: If you see *only* performance runs as console output, this simply means that your machine is completing the batches of training data faster than the console logging rate, usually 1 Hz, and does not indicate a problem.)
@@ -42,7 +41,8 @@ You should now see several figures which demonstrate various performance measure
 \n
     \section Inv_Pend A Slightly More Challenging Domain: Inverted Pendulum
 The small PitMaze domain is easy to understand, but does not produce meaningful final plots because the optimal policy is learned so quickly.  We will now run an experiment on the Inverted Pendulum Domain, where the goal is to prevent the pendulum from falling below the horizontal by applying clockwise (red) or counterclockwise (black) torque.  No reward is received for balancing and there is no control penalty; a penalty is only applied if the pendulum falls, after which the episode terminates.\n
-Return to IShouldRun.py, and:
+\n
+Return to IShouldRun.py, and:\n
 1) Near the top (line 33), change the following two variables to allow more steps for learning the domain: \n
     PERFORMANCE_CHECKS  = 5 \n
     LEARNING_STEPS      = 8000 \n
@@ -72,7 +72,8 @@ IShouldMerge.py <--> mergeRuns.py - Identical, former just has "paths" prespecif
 Finally, you should explore the rest of the structure of the framework, and perhaps try implementing domains and algorithms of your own. \n
 \n
 
-If you have questions, email Alborz Geramifard (agf[at]csail[dot]mit[dot]edu) or Robert H Klein (rhklein[at]mit[dot]edu).
+If you have questions, email:\n
+Alborz Geramifard (agf [at] csail [dot] mit [dot] edu) or Robert H Klein (rhklein [at] mit [dot] edu).
 \n
 \n
 <EM> The only real mistake is the one from which we learn nothing. </EM> -John Powell

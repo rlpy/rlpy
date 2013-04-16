@@ -23,7 +23,6 @@ var class_representations_1_1_representation_1_1_representation =
     [ "stateInTheMiddleOfGrid", "class_representations_1_1_representation_1_1_representation.html#a3848ad8e3828dd94c535d0cad1578162", null ],
     [ "V", "class_representations_1_1_representation_1_1_representation.html#a31a8ceeacc46e52ae215b0b593e12f5b", null ],
     [ "V_oneStepLookAhead", "class_representations_1_1_representation_1_1_representation.html#a3c487ff749f536bfe7d21f8e1d2a8073", null ],
-    [ "a_num", "class_representations_1_1_representation_1_1_representation.html#a521318d374e9f5a8cc79ce35b55516be", null ],
     [ "agg_states_num", "class_representations_1_1_representation_1_1_representation.html#abd7c820584cd5d06d96f11042b6368e1", null ],
     [ "agg_states_num", "class_representations_1_1_representation_1_1_representation.html#adcde241f5f76870669c7888188b02414", null ],
     [ "bins_per_dim", "class_representations_1_1_representation_1_1_representation.html#a49b98978f2e7b1bb2a4a440e7e76a5e7", null ],
@@ -39,7 +38,5 @@ var class_representations_1_1_representation_1_1_representation =
     [ "features_num", "class_representations_1_1_representation_1_1_representation.html#acb5162e6c9ed7495937f6d771add3bbb", null ],
     [ "isDynamic", "class_representations_1_1_representation_1_1_representation.html#a16294eb3eeb9ceb1a6c102a1f52cf030", null ],
     [ "logger", "class_representations_1_1_representation_1_1_representation.html#a0b14e488ae28d98d262453f3e9cd6e4d", null ],
-    [ "phi_s_a", "class_representations_1_1_representation_1_1_representation.html#a4934c718e04b2ea475f1f16ea4b49faa", null ],
-    [ "rows", "class_representations_1_1_representation_1_1_representation.html#ac115b15e1f637d8d8e84626255513fcc", null ],
     [ "theta", "class_representations_1_1_representation_1_1_representation.html#aebf487f5d315cb61f0bd86455edff1fd", null ]
 ];
