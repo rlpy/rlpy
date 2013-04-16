@@ -6,12 +6,12 @@
 # 2. Samples are gathered using the e-greedy policy
 # The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
 from MDPSolver import *
-class RealTimeDynamicProgramming(MDPSolver):
+class TrajectoryBasedValueIteration(MDPSolver):
     epsilon     = None # Probability of taking a random action during each decision making
     alpha       = .1 # step size parameter to adjust the weights. If the representation is tabular you can set this to 1.
     MIN_CONVERGED_TRAJECTORIES = 5 # Minimum number of trajectories required for convergence in which the max bellman error was below the threshold
     def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False, epsilon = .1):
-        super(RealTimeDynamicProgramming,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
+        super(TrajectoryBasedValueIteration,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
         self.epsilon = epsilon
         if className(representation) == 'Tabular': 
             self.alpha = 1

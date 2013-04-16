@@ -1,4 +1,4 @@
 from ValueIteration import ValueIteration
 from PolicyIteration import PolicyIteration
-from RealTimeDynamicProgramming import RealTimeDynamicProgramming
+from TrajectoryBasedValueIteration import TrajectoryBasedValueIteration
 from TrajectoryBasedPolicyIteration import TrajectoryBasedPolicyIteration
