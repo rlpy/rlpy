@@ -1,14 +1,14 @@
 var searchData=
 [
   ['accel_5fg',['ACCEL_G',['../class_domains_1_1_cart_pole_1_1_cart_pole.html#a8fb251ada5e57b8dbc17322882c6bb59',1,'Domains.CartPole.CartPole.ACCEL_G()'],['../class_domains_1_1_pendulum_1_1_pendulum.html#a56accb232fec24a99110123a80e6b1d8',1,'Domains.Pendulum.Pendulum.ACCEL_G()'],['../class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a8fb251ada5e57b8dbc17322882c6bb59',1,'Domains.Pendulum_InvertedBalance.Pendulum_InvertedBalance.ACCEL_G()'],['../class_domains_1_1_pendulum___swing_up_1_1_pendulum___swing_up.html#a8fb251ada5e57b8dbc17322882c6bb59',1,'Domains.Pendulum_SwingUp.Pendulum_SwingUp.ACCEL_G()']]],
-  ['actions',['ACTIONS',['../class_domains_1_1_pit_maze_1_1_pit_maze.html#a2faa860f5aac9cfc0f002c920726dedf',1,'Domains::PitMaze::PitMaze']]],
+  ['actions',['ACTIONS',['../class_domains_1_1_grid_world_1_1_grid_world.html#a2faa860f5aac9cfc0f002c920726dedf',1,'Domains.GridWorld.GridWorld.ACTIONS()'],['../class_domains_1_1_pit_maze_1_1_pit_maze.html#a2faa860f5aac9cfc0f002c920726dedf',1,'Domains.PitMaze.PitMaze.ACTIONS()']]],
   ['actions_5fnum',['actions_num',['../class_domains_1_1_domain_1_1_domain.html#a75b052339f5f84e83ecf8a3e1f49af1a',1,'Domains::Domain::Domain']]],
   ['actions_5fper_5fagent',['ACTIONS_PER_AGENT',['../class_domains_1_1_intruder_monitoring_1_1_intruder_monitoring.html#a4c97014b4d8ecd96d5f5289dd1da09af',1,'Domains::IntruderMonitoring::IntruderMonitoring']]],
   ['activeinitialfeatures',['activeInitialFeatures',['../class_representations_1_1_representation_1_1_representation.html#a7df2faa619121dfe7486b03447c2cb82',1,'Representations::Representation::Representation']]],
   ['addnewweight',['addNewWeight',['../class_representations_1_1_representation_1_1_representation.html#a52416f401b425ffe57e952026f599f7f',1,'Representations::Representation::Representation']]],
   ['agent',['Agent',['../class_agents_1_1_agent_1_1_agent.html',1,'Agents::Agent']]],
   ['agent',['agent',['../class_experiments_1_1_experiment_1_1_experiment.html#ab127f2768fff9c4628c413617137a553',1,'Experiments::Experiment::Experiment']]],
-  ['agent_5ffig',['agent_fig',['../class_domains_1_1_pit_maze_1_1_pit_maze.html#af414cab7c7e2a5330e5a038ef2a2018e',1,'Domains::PitMaze::PitMaze']]],
+  ['agent_5ffig',['agent_fig',['../class_domains_1_1_grid_world_1_1_grid_world.html#af414cab7c7e2a5330e5a038ef2a2018e',1,'Domains.GridWorld.GridWorld.agent_fig()'],['../class_domains_1_1_pit_maze_1_1_pit_maze.html#af414cab7c7e2a5330e5a038ef2a2018e',1,'Domains.PitMaze.PitMaze.agent_fig()']]],
   ['agg_5fstates_5fnum',['agg_states_num',['../class_representations_1_1_representation_1_1_representation.html#abd7c820584cd5d06d96f11042b6368e1',1,'Representations::Representation::Representation']]],
   ['alpha',['alpha',['../class_agents_1_1_agent_1_1_agent.html#a98114e5c7c81b3f2003b0a4024bd41f7',1,'Agents::Agent::Agent']]],
   ['alpha_5fdecay_5fmode',['alpha_decay_mode',['../class_agents_1_1_agent_1_1_agent.html#ad95eb40b6543f8c24bf81101e8fdb313',1,'Agents::Agent::Agent']]],

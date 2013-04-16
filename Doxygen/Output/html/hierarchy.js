@@ -18,6 +18,7 @@ var hierarchy =
         [ "ChainMDP", "class_domains_1_1_chain_m_d_p_1_1_chain_m_d_p.html", null ],
         [ "FiftyChain", "class_domains_1_1_fifty_chain_1_1_fifty_chain.html", null ],
         [ "FlipBoard", "class_domains_1_1_flip_board_1_1_flip_board.html", null ],
+        [ "GridWorld", "class_domains_1_1_grid_world_1_1_grid_world.html", null ],
         [ "IntruderMonitoring", "class_domains_1_1_intruder_monitoring_1_1_intruder_monitoring.html", null ],
         [ "MountainCar", "class_domains_1_1_mountain_car_1_1_mountain_car.html", null ],
         [ "MultiTrack", "class_domains_1_1_multi_track_1_1_multi_track.html", null ],

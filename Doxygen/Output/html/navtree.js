@@ -1,7 +1,9 @@
 var NAVTREE =
 [
   [ "RL-Python", "index.html", [
-    [ "The Big Picture", "index.html", null ],
+    [ "The Big Picture", "index.html", [
+      [ "First Run", "index.html#First_Run", null ]
+    ] ],
     [ "Code", "_code.html", "_code" ],
     [ "Getting Started: A 10-15 Minute Introduction", "_i_shouldrun_8py.html", [
       [ "First Run", "_i_shouldrun_8py.html#First_Run", null ],
@@ -26,10 +28,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"class_domains_1_1_blocks_world_1_1_blocks_world.html#a9ef5200066c676a2904e5745f8e00179",
-"class_domains_1_1_multi_track_1_1_multi_track.html#a151f90b5b1d1d45ca07b42c8cf34ce7f",
-"class_domains_1_1_r_c_car_1_1_r_c_car.html#a2f6a91cc1de8bd43e4a538210b4cafa0",
-"class_representations_1_1_representation_1_1_representation.html#a9c37ce03f712185c70367b477abb7281"
+"class_domains_1_1_blocks_world_1_1_blocks_world.html#a9dce7c31f822def224ddebeac6f7c259",
+"class_domains_1_1_mountain_car_1_1_mountain_car.html#a281f60234322aab648e2a8981f2becdf",
+"class_domains_1_1_pit_maze_1_1_pit_maze.html#a2faa860f5aac9cfc0f002c920726dedf",
+"class_representations_1_1_r_b_f_1_1_r_b_f.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

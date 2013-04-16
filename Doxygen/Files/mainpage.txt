@@ -2,6 +2,13 @@
 /*!
   \mainpage The Big Picture
   \anchor big_pic
-  \image html smallBigPicture.png
-  \image html Logos.png	
+  \image html newBigPicture.png
+  \section First_Run First Run
+  
+You can enter Text here Alborz\n
+
+\b Don't forget to mention that only the big files (agent, domain, etc) have been documented and that sub-classes are listed but not documented. Include any links in this format Domain (Link). \n
+Also, there are some artifacts in mainfuntion.txt, lines like [ Frame this somehow as code / output / make it stand out?]]. You probably want to go over them in case they are still relevent, otherwise i will delete them
+
+
 */

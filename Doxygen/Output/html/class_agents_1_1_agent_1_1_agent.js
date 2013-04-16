@@ -1,7 +1,7 @@
 var class_agents_1_1_agent_1_1_agent =
 [
     [ "__init__", "class_agents_1_1_agent_1_1_agent.html#ac775ee34451fdfa742b318538164070e", null ],
-    [ "evaulate", "class_agents_1_1_agent_1_1_agent.html#ac6a96f211b86d18ce94d0234b6b4625c", null ],
+    [ "evaluate", "class_agents_1_1_agent_1_1_agent.html#a500a2737f9f41878929da3a807e6e2c0", null ],
     [ "learn", "class_agents_1_1_agent_1_1_agent.html#aeb9339921d4a63f47fd93e7d7822f0e1", null ],
     [ "MC_episode", "class_agents_1_1_agent_1_1_agent.html#a990ff0d3a67632bf9ae1ba5ae51652f5", null ],
     [ "printAll", "class_agents_1_1_agent_1_1_agent.html#a64fe699622519d8edc3a69716ce076c8", null ],

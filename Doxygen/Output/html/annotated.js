@@ -45,6 +45,9 @@ var annotated =
       [ "FlipBoard", null, [
         [ "FlipBoard", "class_domains_1_1_flip_board_1_1_flip_board.html", "class_domains_1_1_flip_board_1_1_flip_board" ]
       ] ],
+      [ "GridWorld", null, [
+        [ "GridWorld", "class_domains_1_1_grid_world_1_1_grid_world.html", "class_domains_1_1_grid_world_1_1_grid_world" ]
+      ] ],
       [ "IntruderMonitoring", null, [
         [ "IntruderMonitoring", "class_domains_1_1_intruder_monitoring_1_1_intruder_monitoring.html", "class_domains_1_1_intruder_monitoring_1_1_intruder_monitoring" ]
       ] ],
