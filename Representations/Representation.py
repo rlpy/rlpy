@@ -117,10 +117,10 @@ class Representation(object):
 	
 	
 	## Returns phi_nonTerminal(s) for a given representation, or a zero feature vector in a terminal state.
-	# This is done to [[]] See code
+	# See code
 	# \ref Representation_phi "Here".
 	# @param s The given state
-	# @returns Phi
+	# @returns Phi. Format is [[]].
 	
 	# [phi code]
 	def phi(self,s):
@@ -133,7 +133,7 @@ class Representation(object):
 	
 	## Returns the feature vector corresponding to a given state and action. 
 	# We use the copy paste technique (Lagoudakis & Parr 2003)
-	# If phi_s is passed it is used to avoid phi_s calculation. See code
+	# if phi_s is passed it is used to avoid phi_s calculation. See code
 	# \ref Representation_phi_sa "Here".	
 	# @param s The given state
 	# @param a The given action
@@ -281,7 +281,7 @@ class Representation(object):
 	
 	
 	##\b ABSTRACT \b METHOD: Returns the feature vector evaluated at state (s) for non-terminal states; see function phi(s) for the general case.
-	# \ref Representation_phi_nonTerminal "Here".
+	# See code \ref Representation_phi_nonTerminal "Here".
 	# \note if state is terminal the feature vector is always zero! 
 	# @param s The given state
 	
@@ -470,7 +470,7 @@ class Representation(object):
 	# @param a The given action
 	# @param ns_samples The number of samples used to estimate the one_step look-aghead.
 	# @param policy The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead. If not set the best action will be selected.
-	# @ return \b Q: The state-action value.
+	# @return \b Q: The state-action value.
 	
 	# [Q_oneStepLookAhead code]
 	def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):

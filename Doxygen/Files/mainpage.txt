@@ -3,7 +3,7 @@
   \mainpage The Big Picture
   \anchor big_pic
   \image html newBigPicture.png
-  \section First_Run First Run
+  \section big_pic_text Welcome to the RL-Python Framework.
   
 You can enter Text here Alborz\n
 

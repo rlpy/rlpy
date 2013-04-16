@@ -81,7 +81,7 @@ class Experiment(object):
 	# [init code]
 	
 	
-	## Execute a single episode using the current policy to evaluate its performance; no exploration or learning is enabled.?  See code
+	## Execute a single episode using the current policy to evaluate its performance; no exploration or learning is enabled.  See code
 	# \ref Experiment_performanceRun "Here".
 	
 	# [performanceRun code]

@@ -167,7 +167,7 @@ class Agent(object):
 	# @return eps_length
 	# Length of the Episode
 	# @return eps_term
-	# Specifies the terminal condition of the episode: 0 (stopped due to length), >0 (stopped due a terminal state) 
+	# Specifies the terminal condition of the episode: 0 (stopped due to length), >0 (stopped due to a terminal state) 
 	# @return eps_discounted_return
 	# Sum of discounted rewards.
 	
