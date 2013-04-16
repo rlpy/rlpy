@@ -29,7 +29,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         bellmanUpdates      = 0
         converged           = False
         PI_iteration        = 0
-        # The policy is maintined as separate copy of the representation.
+        # The policy is maintained as separate copy of the representation.
         # This way as the representation is updated the policy remains intact
         policy              = eGreedy(deepcopy(self.representation),self.logger, epsilon = 0, forcedDeterministicAmongBestActions = True) # Copy the representation so that the weight change during the evaluation does not change the policy
         
@@ -74,7 +74,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     
                     #Simulate new state and action on trajectory
                     _,s,terminal    = self.domain.step(s,a)
-                    a                       = policy.pi(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
+                    a               = policy.pi(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
             
                 #check for convergence of policy evaluation
                 PE_iteration += 1
