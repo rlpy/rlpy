@@ -1,3 +1,8 @@
+BEFORE PUBLIC RELEASE:
+- Select license (e.g. MIT, BSD, GNU)
+- Determine hosting / version control
+- Choose name for project, be aware of rules regarding use of "MIT" (http://web.mit.edu/policies/12/12.3.html)
+
 Tasks:
 	[done]	(Bobby) - Improve installation process; automate setting of platform-dependent environment variables, either during installation or at runtime from Tools.py
 -(Alborz, Bobby) - Doxygen 
@@ -12,7 +17,5 @@ Tasks:
 - Config File For Experiments
 (Elliot) - Fix the issue with legend not being shown during the run
 - TBPI has problem with graphics due to deepcopy use.
-
-Other todo:
 
 Doxygen page reads "Reinforced Learning", s/b "Reinforcement Learning"
