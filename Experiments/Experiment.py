@@ -20,7 +20,7 @@ from Representations import *
 # All new experiment implimentations should inherit from \c %Experiment.
 
 class Experiment(object):
-	## Determines whether the domain is shown during execution /b THIS AND SHOW_ALL/SHOW_PERFORMANCE NEED TO BE RESOLVED
+	## Determines whether the domain is shown during performance runs
     showDomain = False      
 	## The Main Random Seed used to generate other random seeds
     mainSeed = 999999999    
@@ -34,9 +34,9 @@ class Experiment(object):
     domain = None           
 	## The \ref Agents.Agent.Agent "Agent" to be tested
     agent = None            
-	## Determines whether the domain and the value function are shown during the experiment
+	## Determines whether the domain and the performance are shown during the experiment
     show_all = 0            
-	## Determines whether the domain and the value function are shown during the performance runs
+	## Determines whether the policy and the value function are shown during the performance runs
     show_performance = 0    
 	## The Figure window generated to show the results
     result_fig = None       

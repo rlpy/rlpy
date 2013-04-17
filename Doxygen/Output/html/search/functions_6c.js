@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['learn',['learn',['../class_agents_1_1_agent_1_1_agent.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::Agent::Agent.learn()'],['../class_agents_1_1_l_s_p_i_1_1_l_s_p_i.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::LSPI::LSPI.learn()'],['../class_agents_1_1_l_s_p_i___s_a_r_s_a_1_1_l_s_p_i___s_a_r_s_a.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::LSPI_SARSA::LSPI_SARSA.learn()'],['../class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::PolicyEvaluation::PolicyEvaluation.learn()'],['../class_agents_1_1_q___l_e_a_r_n_i_n_g_1_1_q___l_e_a_r_n_i_n_g.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::Q_LEARNING::Q_LEARNING.learn()'],['../class_agents_1_1_s_a_r_s_a_1_1_s_a_r_s_a.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::SARSA::SARSA.learn()']]]
+  ['learn',['learn',['../class_agents_1_1_agent_1_1_agent.html#aeb9339921d4a63f47fd93e7d7822f0e1',1,'Agents::Agent::Agent']]]
 ];
