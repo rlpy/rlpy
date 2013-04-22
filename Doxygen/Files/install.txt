@@ -21,10 +21,14 @@ or in the file FAQ.txt located in the RLPy folder.\n
 \n
 Recommended Operating Systems:\n
 a) Windows 32/64-bit\n
-b) Mac OSX\n
-c) Ubuntu Linux\n
+b) Ubuntu Linux\n
+c) Mac OSX ***\n
 \n
-If your setup does not match those recommended above,
+*** There is limited support for Mac OSX; the framework will operate as designed
+once required package dependencies (numpy, scipy, and scikit-learn) are installed,
+but manual installation is likely required for some if not all packages.\n
+\n
+If your setup does not match those recommended above (or if you are running (c) Mac OSX,)
 you must download the packages manually, described in manual_install.txt.\n
 \n
 \n
@@ -59,8 +63,8 @@ a) Windows 32/64-bit\n
 Install per instructions here:
 http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows\n
 \n
-b) Mac OSX - automated in script\n
-c) Ubuntu Linux - automated in script\n
+c) Mac OSX - automated in script\n
+b) Ubuntu Linux - automated in script\n
 \n
 ===============================================================\n
 ===============================================================\n
@@ -82,7 +86,7 @@ a.iii) Navigate to the temporary directory and run the .bat script.\n
 \n
 \n
 \n
-b) Mac OSX - Open a terminal window, navigate to the Installation folder,
+c) Mac OSX - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./OSX_setup.sh\n
 \n
 *** If the script fails to run, first type:\n
@@ -91,7 +95,7 @@ chmod u+x OSX_setup.sh\n
 \n
 \n
 \n
-c) Ubuntu - Open a terminal window, navigate to the Installation folder,
+b) Ubuntu - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./ubuntu_setup.sh\n
 \n
 *** If the script fails to run, first type:\n
@@ -108,7 +112,7 @@ If using Eclipse:\n
 a) Go to file -> switch workspace -> other\n
 And navigate to the folder containing RL-Python (NOT the RL-Python folder itself.)\n
 \n
-b) Go to file -> import -> general -> existing projects into workspace
+c) Go to file -> import -> general -> existing projects into workspace
 And select 'Browse.'  Navigate into the RL-Python directory and select 'Next.'\n
 You should now see the RL-Python directory structure in the left pane.\n
 \n

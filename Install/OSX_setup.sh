@@ -13,7 +13,16 @@ echo "Note that if installation fails, or you wish to install optional packages 
 echo "at any time, you may safely re-run this script.                            "
 echo "==========================================================================="
 echo ""
-
+echo ""
+echo "-------------------------------- CAUTION ----------------------------------"
+echo "THE OSX INSTALLER IS PROVIDED AS A CONVENIENCE, AND LIKELY WILL REQUIRE"
+echo "USER INTERVENTION AT SOME INSTALLATION STEPS."
+echo "If you are uncomfortable modifying system files, we recommend you install RLPy"
+echo "using one of the installers provided for supported operating systems"
+echo "(Windows 32-bit or Ubuntu Linux 32/64-bit),"
+echo "or locate an Apple machine that already has the dependencies installed :)"
+echo "-------------------------------- CAUTION ----------------------------------"
+echo ""
 INVALID_INPUT="1" # Start with improper directory
 while [ "$INVALID_INPUT" -ne 0 ]
 do
