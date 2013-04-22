@@ -1,0 +1,177 @@
+// \file install.txt
+/*! 
+  \page install.txt Installation
+  \section Prerequisites Prerequisites
+
+ |  __ \| |    |  __ \      \n
+ | |__) | |    | |__) |   _ \n
+ |  _  /| |    |  ___/ | | |\n
+ | | \ \| |____| |   | |_| |\n
+ |_|  \_\______|_|    \__, |\n
+                       __/ |\n
+                      |___/ \n
+\n
+\n
+The only requirements to run and contribute to RL-Python are
+a working Python 2.7 environment and the required package dependencies,
+which can be installed automatically by the provided scripts.\n
+Detailed installation instructions are shown below.\n
+Installation FAQ available at bottom, general FAQ available on the FAQ page
+or in the file FAQ.txt located in the RLPy folder.\n
+\n
+Recommended Operating Systems:\n
+a) Windows 32/64-bit\n
+b) Mac OSX\n
+c) Ubuntu Linux\n
+\n
+If your setup does not match those recommended above,
+you must download the packages manually, described in manual_install.txt.\n
+\n
+\n
+    \section installation INSTALLATION: As easy as 1,2,3 (+4 to run)
+===============================================================\n
+===============================================================\n
+1. Python 2.7\n
+\n
+Check to see if python is already installed by opening a terminal in any
+OS and typing:\n
+> python --version\n
+\n
+If you do not see the output "Python 2.7.3", download and install python,
+for example, from ( http://www.python.org/getit/ )\n
+\n
+===============================================================\n
+===============================================================\n
+2. An IDE capable of development in Python\n
+\n
+Install a development environment of choice with Python support.\n
+We recommend Eclipse Classic.  Note that eclipse requires the Java SDK.\n
+To obtain Eclipse, download and follow the instructions:\n
+i) Download+Install Eclipse Classic ( http://www.eclipse.org/downloads/ )\n
+ii) Install Pydev for Eclipse ( http://pydev.org/manual_101_install.html )\n
+\n
+See FAQ if eclipse fails to run.\n
+\n
+===============================================================\n
+===============================================================\n
+2.5. pip\n
+a) Windows 32/64-bit\n
+Install per instructions here:
+http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows\n
+\n
+b) Mac OSX - automated in script\n
+c) Ubuntu Linux - automated in script\n
+\n
+===============================================================\n
+===============================================================\n
+3. Run the dependency installer script\n
+\n
+FIRST ensure the RL-Python directory is located in the workspace folder of your
+IDE, or whatever final location you intend it to be.\n
+\n
+THEN:\n
+\n
+a) Windows 32-bit\n
+a.i)  Extract Win32_files.zip to a temporary directory of choice
+(recommend extracting to a folder within RL-Python directory to speed installation)\n
+a.ii) Open a command prompt window with administrative privileges:\n
+	Windows 8: 		 WindowsKey-X, select "Command Prompt Admin"\n
+	Windows 7,Vista: type 'cmd' in the start menu, right click and open with admin privileges\n
+	Windows XP:      Start-->Run cmd.exe\n
+a.iii) Navigate to the temporary directory and run the .bat script.\n
+\n
+\n
+\n
+b) Mac OSX - Open a terminal window, navigate to the Installation folder,
+and run the provided script with ./OSX_setup.sh\n
+\n
+*** If the script fails to run, first type:\n
+chmod u+x OSX_setup.sh\n
+*** and re-run it.\n
+\n
+\n
+\n
+c) Ubuntu - Open a terminal window, navigate to the Installation folder,
+and run the provided script with ./ubuntu_setup.sh\n
+\n
+*** If the script fails to run, first type:\n
+chmod u+x ubuntu_setup.sh\n
+*** and re-run it.\n
+\n
+===============================================================\n
+===============================================================\n
+Installation of RL-Python is now complete!\n
+\n
+4. Now open the framework in your IDE of choice.\n
+\n
+If using Eclipse:\n
+a) Go to file -> switch workspace -> other\n
+And navigate to the folder containing RL-Python (NOT the RL-Python folder itself.)\n
+\n
+b) Go to file -> import -> general -> existing projects into workspace
+And select 'Browse.'  Navigate into the RL-Python directory and select 'Next.'\n
+You should now see the RL-Python directory structure in the left pane.\n
+\n
+===============================================================\n
+===============================================================\n
+\n
+That's it!\n
+\n
+Now take a look at the \ref First_Run Getting Started Tutorial page,
+and (as part of the tutorial) test the installation by running IshouldRun.py.\n
+Finally, start experimenting with RL-Python yourself!\n
+\n
+If you encountered errors in the installation, see the FAQ section at bottom\n
+(and an extended FAQ located in the FAQ.txt file).\n
+\n
+\n
+\n
+\n
+\section install_faq Insallation FAQ: Error/Solutions
+U = Ubuntu, W = Windows, X = OSX\n
+===============================================================\n
+If you are having trouble installing on OSX, see the following:\n
+http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/#numpy\n
+\n
+===============================================================\n
+E: Generic messages about missing environmental variables\n
+S1: Ensure that the environment variable 'RL_PYTHON_ROOT' is set on your OS for
+whatever environment you are running RL-Python in (e.g. it might be set in a terminal
+window but not in general).\n
+This should have been configured by the installer script; if your RL-Python
+directory has moved since then, merely re-run the installer script and
+restart your computer.\n
+S2: If the installer script fails to solve the problem, the easiest solution is
+to add the RL_PYTHON_ROOT variable to your IDE directly.
+In eclipse, go to window->preferences->pydev->interpreter Pydev->environment.
+There, add a variable called RL_PYTHON_ROOT and set its value to be the path to
+your RL-Python directory.\n
+===============================================================\n
+E: Generic messages about missing functions or 'module does not contain function xxx'\n
+S: Ensure you have the latest version of scipy (0.11 as of this writing):\n
+import scipy\n
+scipy.version.version\n
+S-U: if you don't have the correct version, run the following commands\n
+sudo apt-get install libatlas-base-dev gfortran python-pip\n
+sudo pip install scipy --upgrade\n
+===============================================================\n
+E: ImportError: numpy.core.multiarray failed to import\n
+S1: Dont import pylab directly. Use Matplotlib.pylab\n
+S2: sudo easy_install -U numpy\n
+===============================================================\n
+E: In eclipse sty is out of synch with the file system\n
+S: Refresh (F5)\n
+===============================================================\n
+E: In Windows: Python does not appear to be installed (Eclipse
+fails to locate python, or running 'python' in a command prompt gives
+'python' is not recognized as an internal or external command, operable
+program or batch file."\n
+S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )\n
+===============================================================\n
+\n
+\n
+Please direct additional questions or bug reports to\n
+rlpy[at]mit[dot]edu\n
+\n
+Thanks to taag for the ASCII art (http://patorjk.com/software/taag/)
+*/
