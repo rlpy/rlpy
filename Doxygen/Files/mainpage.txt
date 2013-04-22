@@ -5,10 +5,30 @@
   \image html newBigPicture.png
   \section big_pic_text Welcome to the RL-Python Framework.
   
+
 You can enter Text here Alborz\n
+\b Vision
+The aim of the RLPy is to simplify education and research in solving Markov Decision Processes by providing a plug-n-play framework, where various components can be linked together to create experiments.
 
-\b Don't forget to mention that only the big files (agent, domain, etc) have been documented and that sub-classes are listed but not documented. Include any links in this format Domain (Link). \n
-Also, there are some artifacts in mainfuntion.txt, lines like [ Frame this somehow as code / output / make it stand out?]]. You probably want to go over them in case they are still relevent, otherwise i will delete them
+\b Reinforcement Learning (RL) (Refer to the top image) 
+Setting up an RL experiment requires selecting the following 4 key components:
+\1 Agent (LINK): This is the box where learning happens. It is often done by changing the weight vector corresponding to the features. 
+\2 Policy (LINK): This box is responsible to generate actions based on the current states. The action selection mechanism often dependends on the estimated value function.
+\3 Representation (LINK): In this framework, we assume the use of linear function approximators to represent the value function. This box realizes the underlying representation used for capturing the value function. Note that the features used for approximation can be non-linear.  
+\4 Domain (LINK): This box is an MDP that we are interested to solve.
+
+The experiment module (LINK) works as a glue that connect all these pieces together.
+
+\b Dynamic Programming (Refer to the bottom image)
+If the full model of the MDP is known, Dynamic Programming techniques can be used to solve the MDP. To setup a DP experiment the following 3 components have to be set:
+\1 MDP Solver (LINK): Dynamic programming algorithm  
+\2 Representation (LINK): Same as the RL case. Notice that the Value Iteration and Policy Iteration techniques can be only coupled with the Tabular representation.  
+\3 Domain (LINK): Same as the RL case.
 
 
+Notice that each of the components mentioned here has several realizations in RLPy, yet this website provides guidance only on the main abstaract classes, namely: Experiment (Link), Agent (Link), MDP Solver (Link), Domain (Link), Representation (Link), and Policy (Link). 
+The tutorial page (Link) provide simple 10-15 minutes examples on how various experiments can be setup and used.
+ 
+Todo:
+Make images small 
 */
