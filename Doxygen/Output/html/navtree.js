@@ -1,10 +1,16 @@
 var NAVTREE =
 [
-  [ "RL-Python", "index.html", [
+  [ "RLPy", "index.html", [
     [ "The Big Picture", "index.html", [
       [ "Welcome to the RL-Python Framework.", "index.html#big_pic_text", null ]
     ] ],
     [ "Code", "_code.html", "_code" ],
+    [ "Frequently Asked Questions (FAQ)", "_f_a_q_8txt.html", null ],
+    [ "Installation", "install_8txt.html", [
+      [ "Prerequisites", "install_8txt.html#Prerequisites", null ],
+      [ "INSTALLATION: As easy as 1,2,3 (+4 to run)", "install_8txt.html#installation", null ],
+      [ "Insallation FAQ: Error/Solutions", "install_8txt.html#install_faq", null ]
+    ] ],
     [ "Getting Started: A 10-15 Minute Introduction", "_i_shouldrun_8py.html", [
       [ "First Run", "_i_shouldrun_8py.html#First_Run", null ],
       [ "Interpreting Output", "_i_shouldrun_8py.html#Interpreting_Output", null ],
@@ -28,10 +34,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"class_domains_1_1_blocks_world_1_1_blocks_world.html#a9dce7c31f822def224ddebeac6f7c259",
-"class_domains_1_1_mountain_car_1_1_mountain_car.html#a281f60234322aab648e2a8981f2becdf",
-"class_domains_1_1_pit_maze_1_1_pit_maze.html#a2faa860f5aac9cfc0f002c920726dedf",
-"class_representations_1_1_r_b_f_1_1_r_b_f.html"
+"class_domains_1_1_blocks_world_1_1_blocks_world.html#a7bad0fd4ac255d0e0a6c8cae33e353a5",
+"class_domains_1_1_mountain_car_1_1_mountain_car.html#a0c6c96e38dd59e5abeaa4dfe58a830eb",
+"class_domains_1_1_pendulum___swing_up_1_1_pendulum___swing_up.html#af214a9fb4dc1f34661a29fe7a83b9865",
+"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a906d4ae59e02d539932640fddb3f7783"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

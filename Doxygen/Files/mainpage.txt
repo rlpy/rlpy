@@ -2,33 +2,28 @@
 /*!
   \mainpage The Big Picture
   \anchor big_pic
-  \image html newBigPicture.png
+  \image html newsmallBigPicture.png
   \section big_pic_text Welcome to the RL-Python Framework.
   
 
-You can enter Text here Alborz\n
 \b Vision
 The aim of the RLPy is to simplify education and research in solving Markov Decision Processes by providing a plug-n-play framework, where various components can be linked together to create experiments.
 
-\b Reinforcement Learning (RL) (Refer to the top image) 
-Setting up an RL experiment requires selecting the following 4 key components:
-\1 Agent (LINK): This is the box where learning happens. It is often done by changing the weight vector corresponding to the features. 
-\2 Policy (LINK): This box is responsible to generate actions based on the current states. The action selection mechanism often dependends on the estimated value function.
-\3 Representation (LINK): In this framework, we assume the use of linear function approximators to represent the value function. This box realizes the underlying representation used for capturing the value function. Note that the features used for approximation can be non-linear.  
-\4 Domain (LINK): This box is an MDP that we are interested to solve.
+\b Reinforcement \b Learning (RL) (Refer to the top image) \n
+Setting up an RL experiment requires selecting the following 4 key components: \n
+1. \ref Agents.Agent.Agent "Agent": This is the box where learning happens. It is often done by changing the weight vector corresponding to the features. \n 
+2. \ref Policies.Policy.Policy "Policy": This box is responsible to generate actions based on the current states. The action selection mechanism often dependends on the estimated value function. \n
+3. \ref Representations.Representation.Representation "Representation": In this framework, we assume the use of linear function approximators to represent the value function. This box realizes the underlying representation used for capturing the value function. Note that the features used for approximation can be non-linear.  \n
+4. \ref Domains.Domain.Domain "Domain": This box is an MDP that we are interested to solve. \n
 
-The experiment module (LINK) works as a glue that connect all these pieces together.
+The \ref Experiments.Experiment.Experiment "Experiment" module works as a glue that connect all these pieces together. \n
+\n
+\b Dynamic \b Programming (Refer to the bottom image) \n
+If the full model of the MDP is known, Dynamic Programming techniques can be used to solve the MDP. To setup a DP experiment the following 3 components have to be set: \n
+1. \ref MDPSolvers.MDPSolver.MDPSolver "MDP Solver": Dynamic programming algorithm  \n
+2. \ref Representations.Representation.Representation "Representation": Same as the RL case. Notice that the Value Iteration and Policy Iteration techniques can be only coupled with the Tabular representation.  \n
+3. \ref Domains.Domain.Domain "Domain": Same as the RL case. \n
 
-\b Dynamic Programming (Refer to the bottom image)
-If the full model of the MDP is known, Dynamic Programming techniques can be used to solve the MDP. To setup a DP experiment the following 3 components have to be set:
-\1 MDP Solver (LINK): Dynamic programming algorithm  
-\2 Representation (LINK): Same as the RL case. Notice that the Value Iteration and Policy Iteration techniques can be only coupled with the Tabular representation.  
-\3 Domain (LINK): Same as the RL case.
-
-
-Notice that each of the components mentioned here has several realizations in RLPy, yet this website provides guidance only on the main abstaract classes, namely: Experiment (Link), Agent (Link), MDP Solver (Link), Domain (Link), Representation (Link), and Policy (Link). 
-The tutorial page (Link) provide simple 10-15 minutes examples on how various experiments can be setup and used.
- 
-Todo:
-Make images small 
+Notice that each of the components mentioned here has several realizations in RLPy, yet this website provides guidance only on the main abstaract classes, namely: \ref Experiments.Experiment.Experiment "Experiment", \ref Agents.Agent.Agent "Agent", \ref MDPSolvers.MDPSolver.MDPSolver "MDP Solver", \ref Domains.Domain.Domain "Domain", \ref Representations.Representation.Representation "Representation", and \ref Policies.Policy.Policy "Policy". \n
+The \ref First_Run "tutorial page" provides simple 10-15 minutes examples on how various experiments can be setup and used.\n
 */

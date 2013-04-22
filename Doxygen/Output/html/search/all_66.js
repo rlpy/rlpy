@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['frequently_20asked_20questions_20_28faq_29',['Frequently Asked Questions (FAQ)',['../_f_a_q_8txt.html',1,'']]],
   ['features_5fnum',['features_num',['../class_representations_1_1_representation_1_1_representation.html#ac4d535597de5aa277430ac3175b104cb',1,'Representations::Representation::Representation']]],
   ['featuretype',['featureType',['../class_representations_1_1_representation_1_1_representation.html#ab4597ae96476fb75ef02d7bba7a3e379',1,'Representations::Representation::Representation']]],
   ['fell_5freward',['FELL_REWARD',['../class_domains_1_1_pendulum___inverted_balance_1_1_pendulum___inverted_balance.html#a616e4961d726c88d0cf7a98fac075966',1,'Domains::Pendulum_InvertedBalance::Pendulum_InvertedBalance']]],

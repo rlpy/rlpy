@@ -2,16 +2,6 @@
 /*! 
   \page install.txt Installation
   \section Prerequisites Prerequisites
-
- |  __ \| |    |  __ \      \n
- | |__) | |    | |__) |   _ \n
- |  _  /| |    |  ___/ | | |\n
- | | \ \| |____| |   | |_| |\n
- |_|  \_\______|_|    \__, |\n
-                       __/ |\n
-                      |___/ \n
-\n
-\n
 The only requirements to run and contribute to RL-Python are
 a working Python 2.7 environment and the required package dependencies,
 which can be installed automatically by the provided scripts.\n
@@ -177,6 +167,4 @@ S-W: Set the path variables for python as described in: ( http://docs.python.org
 \n
 Please direct additional questions or bug reports to\n
 rlpy[at]mit[dot]edu\n
-\n
-Thanks to taag for the ASCII art (http://patorjk.com/software/taag/)
 */

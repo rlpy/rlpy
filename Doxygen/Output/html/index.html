@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>RL-Python: The Big Picture</title>
+<title>RLPy: The Big Picture</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="ACL_logo.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RL-Python
+   <div id="projectname">RLPy
    &#160;<span id="projectnumber">Version 1.0</span>
    </div>
    <div id="projectbrief">The Reinforcement Learning Library for Education and Research</div>
@@ -103,14 +103,40 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="big_pic"></a></p>
 <div class="image">
-<img src="newBigPicture.png" alt="newBigPicture.png"/>
+<img src="newsmallBigPicture.png" alt="newsmallBigPicture.png"/>
 </div>
  <h1><a class="anchor" id="big_pic_text"></a>
 Welcome to the RL-Python Framework.</h1>
-<p>You can enter Text here Alborz<br/>
+<p><b>Vision</b> The aim of the RLPy is to simplify education and research in solving Markov Decision Processes by providing a plug-n-play framework, where various components can be linked together to create experiments.</p>
+<p><b>Reinforcement</b> <b>Learning</b> (RL) (Refer to the top image) <br/>
+ Setting up an RL experiment requires selecting the following 4 key components: <br/>
 </p>
-<p><b>Don't</b> forget to mention that only the big files (agent, domain, etc) have been documented and that sub-classes are listed but not documented. Include any links in this format Domain (Link). <br/>
- Also, there are some artifacts in mainfuntion.txt, lines like [ Frame this somehow as code / output / make it stand out?]]. You probably want to go over them in case they are still relevent, otherwise i will delete them </p>
+<ol type="1">
+<li><a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a>: This is the box where learning happens. It is often done by changing the weight vector corresponding to the features. <br/>
+</li>
+<li><a class="el" href="class_policies_1_1_policy_1_1_policy.html">Policy</a>: This box is responsible to generate actions based on the current states. The action selection mechanism often dependends on the estimated value function. <br/>
+</li>
+<li><a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a>: In this framework, we assume the use of linear function approximators to represent the value function. This box realizes the underlying representation used for capturing the value function. Note that the features used for approximation can be non-linear. <br/>
+</li>
+<li><a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a>: This box is an MDP that we are interested to solve. <br/>
+</li>
+</ol>
+<p>The <a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html">Experiment</a> module works as a glue that connect all these pieces together. <br/>
+ <br/>
+ <b>Dynamic</b> <b>Programming</b> (Refer to the bottom image) <br/>
+ If the full model of the MDP is known, Dynamic Programming techniques can be used to solve the MDP. To setup a DP experiment the following 3 components have to be set: <br/>
+</p>
+<ol type="1">
+<li><a class="el" href="class_m_d_p_solvers_1_1_m_d_p_solver_1_1_m_d_p_solver.html">MDP Solver</a>: Dynamic programming algorithm <br/>
+</li>
+<li><a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a>: Same as the RL case. Notice that the Value Iteration and Policy Iteration techniques can be only coupled with the Tabular representation. <br/>
+</li>
+<li><a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a>: Same as the RL case. <br/>
+</li>
+</ol>
+<p>Notice that each of the components mentioned here has several realizations in RLPy, yet this website provides guidance only on the main abstaract classes, namely: <a class="el" href="class_experiments_1_1_experiment_1_1_experiment.html">Experiment</a>, <a class="el" href="class_agents_1_1_agent_1_1_agent.html">Agent</a>, <a class="el" href="class_m_d_p_solvers_1_1_m_d_p_solver_1_1_m_d_p_solver.html">MDP Solver</a>, <a class="el" href="class_domains_1_1_domain_1_1_domain.html">Domain</a>, <a class="el" href="class_representations_1_1_representation_1_1_representation.html">Representation</a>, and <a class="el" href="class_policies_1_1_policy_1_1_policy.html">Policy</a>. <br/>
+ The <a class="el" href="_i_shouldrun_8py.html#First_Run">tutorial page</a> provides simple 10-15 minutes examples on how various experiments can be setup and used.<br/>
+ </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
