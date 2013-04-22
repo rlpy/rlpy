@@ -63,8 +63,8 @@ a) Windows 32/64-bit\n
 Install per instructions here:
 http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows\n
 \n
-c) Mac OSX - automated in script\n
 b) Ubuntu Linux - automated in script\n
+c) Mac OSX - automated in script\n
 \n
 ===============================================================\n
 ===============================================================\n
@@ -86,15 +86,6 @@ a.iii) Navigate to the temporary directory and run the .bat script.\n
 \n
 \n
 \n
-c) Mac OSX - Open a terminal window, navigate to the Installation folder,
-and run the provided script with ./OSX_setup.sh\n
-\n
-*** If the script fails to run, first type:\n
-chmod u+x OSX_setup.sh\n
-*** and re-run it.\n
-\n
-\n
-\n
 b) Ubuntu - Open a terminal window, navigate to the Installation folder,
 and run the provided script with ./ubuntu_setup.sh\n
 \n
@@ -102,6 +93,16 @@ and run the provided script with ./ubuntu_setup.sh\n
 chmod u+x ubuntu_setup.sh\n
 *** and re-run it.\n
 \n
+\n
+\n
+c) Mac OSX - Open a terminal window, navigate to the Installation folder,
+and run the provided script with ./OSX_setup.sh\n
+\n
+*** If the script fails to run, first type:\n
+chmod u+x OSX_setup.sh\n
+*** and re-run it.\n
+\n
+
 ===============================================================\n
 ===============================================================\n
 Installation of RL-Python is now complete!\n
@@ -109,10 +110,10 @@ Installation of RL-Python is now complete!\n
 4. Now open the framework in your IDE of choice.\n
 \n
 If using Eclipse:\n
-a) Go to file -> switch workspace -> other\n
+i) Go to file -> switch workspace -> other\n
 And navigate to the folder containing RL-Python (NOT the RL-Python folder itself.)\n
 \n
-c) Go to file -> import -> general -> existing projects into workspace
+ii) Go to file -> import -> general -> existing projects into workspace
 And select 'Browse.'  Navigate into the RL-Python directory and select 'Next.'\n
 You should now see the RL-Python directory structure in the left pane.\n
 \n
@@ -130,7 +131,7 @@ If you encountered errors in the installation, see the FAQ section at bottom\n
 \n
 \n
 \n
-\n
+
 \section install_faq Insallation FAQ: Error/Solutions
 U = Ubuntu, W = Windows, X = OSX\n
 ===============================================================\n
