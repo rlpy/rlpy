@@ -20,8 +20,8 @@ Installation FAQ available at bottom, general FAQ available on the FAQ page
 or in the file FAQ.txt located in the RLPy folder.\n
 \n
 Recommended Operating Systems:\n
-a) Windows 32/64-bit\n
-b) Ubuntu Linux\n
+a) Windows 32-bit\n
+b) Ubuntu Linux 32/64-bit\n
 c) Mac OSX ***\n
 \n
 *** There is limited support for Mac OSX; the framework will operate as designed
