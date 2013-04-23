@@ -133,9 +133,9 @@ echo ""
 read -p "Ready to continue to final step of installation? (Press [Enter])"
 clear
 
-# Final step adds a line to .launchd.conf to source the file RL_Python_setup.bash,
+# Final step adds a line to .launchd.conf to source the file RLPy_setup.bash,
 # after the user locates the install directory.
-# The file RL_Python_setup.bash is included in the repository, but we have
+# The file RLPy_setup.bash is included in the repository, but we have
 # commented code here to automatically regenerate it.
 #
 # TODO Test: if the environment variable is not properly set after testing,
@@ -144,7 +144,7 @@ clear
 VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
-    # Set the environment variable RL_PYTHON_ROOT
+    # Set the environment variable RLPy_ROOT
     echo -e "We need to set an environment variable for the location of the RLPy"
     echo -e "project directory.\nIt appears to be located in:\n"
     cd ..
@@ -177,7 +177,7 @@ do
     esac
     if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
         echo -e "\nValid directory specified. "
-#        echo -e "The file RL_Python_setup.bash will be created.\n"
+#        echo -e "The file RLPy_setup.bash will be created.\n"
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
         # Automatically force entry of python path in loop above
@@ -186,8 +186,8 @@ do
 done
 echo ""
 cd $INSTALL_PATH
-#echo "Creating file RL_Python_setup.bash in directory $INSTALL_PATH"
-# sudo echo 'export RL_PYTHON_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RL_Python_setup.bash
+#echo "Creating file RLPy_setup.bash in directory $INSTALL_PATH"
+# sudo echo 'export RLPy_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RLPy_setup.bash
 
 # Make a backup of the .launchd.conf file before editing!
 cd ~
@@ -195,32 +195,32 @@ HOMEDIR=`pwd`
 
 # Only copy the .launchd.conf file if it exists (to prevent throwing an error)
 if [ -f .launchd.conf  ]; then
-    sudo cp .launchd.conf .launchd.conf_RL_PYTHON_BACKUP
+    sudo cp .launchd.conf .launchd.conf_RLPy_BACKUP
 fi
-# Determine if .launchd.conf already sources the RL_Python_setup file in some way
-ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -maxdepth 1 -exec grep RL_Python_setup.bash {} +`
+# Determine if .launchd.conf already sources the RLPy_setup file in some way
+ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -maxdepth 1 -exec grep RLPy_setup.bash {} +`
 
 # A file is already sourced from .launchd.conf
 if [ "$?" -eq 0 ]; then
-    echo -e "Your .launchd.conf file already appears to source RL_Python_setup.bash;"
+    echo -e "Your .launchd.conf file already appears to source RLPy_setup.bash;"
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
-    # Delete the line(s) containing 'RL_Python_setup.bash'
+    # Delete the line(s) containing 'RLPy_setup.bash'
     # NOTE THE DIFFERENT SYNTAX for 'sed' on OSX, need to explicitly include backup
     # extension for the file, .BAK - see 
     # https://sites.google.com/site/randomprogrammingnotes/macosxsed
-    sudo sed -i .BAK '/RL_Python_setup.bash/d' .launchd.conf > /dev/null
+    sudo sed -i .BAK '/RLPy_setup.bash/d' .launchd.conf > /dev/null
 fi
 
-echo -e "\nAdding source of RL_Python_setup.bash to .launchd.conf\n"
+echo -e "\nAdding source of RLPy_setup.bash to .launchd.conf\n"
 
 #if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RL_Python_setup.bash below by OSX_setup.sh script for RLPy" >> .launchd.conf
-    sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .launchd.conf
+    sudo echo "# Automatically added RLPy_setup.bash below by OSX_setup.sh script for RLPy" >> .launchd.conf
+    sudo echo "source $INSTALL_PATH/RLPy_setup.bash" >> .launchd.conf
     echo -e "Successfully modified .launchd.conf\n"
 #else
 #    echo -e "There was a problem creating a backup of .launchd.conf.  You will need \n"
-#    echo -e "to manually 'source' the file RL_Python_setup.bash for your shell\n"
+#    echo -e "to manually 'source' the file RLPy_setup.bash for your shell\n"
 #    echo -e "environment; we recommend adding it to whatever startup script\n"
 #    echo -e "is used on your machine.\n"
 #fi

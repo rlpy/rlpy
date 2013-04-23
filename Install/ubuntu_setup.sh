@@ -73,8 +73,8 @@ read -p "Ready to continue to final step of installation? (Press [Enter])"
 clear
 
 # Final step adds a line to .bashrc and /etc/environment
-# to source the file RL_Python_setup.bash, after the user locates the install directory.
-# The file RL_Python_setup.bash is included in the repository, but we have
+# to source the file RLPy_setup.bash, after the user locates the install directory.
+# The file RLPy_setup.bash is included in the repository, but we have
 # commented code here to automatically regenerate it.
 VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
@@ -109,7 +109,7 @@ do
     esac
     if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
         echo -e "\nValid directory specified. This may take some time."
-#        echo -e "The file RL_Python_setup.bash will be created.\n"
+#        echo -e "The file RLPy_setup.bash will be created.\n"
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
         # Automatically force entry of python path in loop above
@@ -118,42 +118,42 @@ do
 done
 echo ""
 cd $INSTALL_PATH
-#echo "Creating file RL_Python_setup.bash in directory $INSTALL_PATH"
-# sudo echo 'export RL_PYTHON_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RL_Python_setup.bash
+#echo "Creating file RLPy_setup.bash in directory $INSTALL_PATH"
+# sudo echo 'export RL_Python_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RLPy_setup.bash
 
 # Make a backup of the .bashrc and environment files before editing!
 cd
 HOMEDIR=`pwd`
 
-sudo cp .bashrc .bashrc_RL_PYTHON_BACKUP
-sudo cp /etc/environment /etc/environment_RL_PYTHON_BACKUP
+sudo cp .bashrc .bashrc_RLPy_BACKUP
+sudo cp /etc/environment /etc/environment_RLPy_BACKUP
 
 # Determine if .bashrc already sources this file in some way
-ALREADY_EXPORTED=`find $HOMEDIR -name '.bashrc' -exec grep RL_Python_setup.bash {} +`
+ALREADY_EXPORTED=`find $HOMEDIR -name '.bashrc' -exec grep RLPy_setup.bash {} +`
 
 # A file is already sourced from bashrc
 if [ "$?" -eq 0 ]; then
-    echo -e "Your .bashrc file already appears to source RL_Python_setup.bash;"
+    echo -e "Your .bashrc file already appears to source RLPy_setup.bash;"
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
-    # Delete the line(s) containing 'RL_Python_setup.bash'
-    sudo sed -i '/RL_Python_setup.bash/d' .bashrc > /dev/null
+    # Delete the line(s) containing 'RLPy_setup.bash'
+    sudo sed -i '/RLPy_setup.bash/d' .bashrc > /dev/null
 fi
 
 # Determine if /etc/environment already sources this file in some way
-ALREADY_EXPORTED=`sudo find /etc -name 'environment' -exec grep RL_Python_setup.bash {} +`
+ALREADY_EXPORTED=`sudo find /etc -name 'environment' -exec grep RLPy_setup.bash {} +`
 
 # A file is already sourced from environment
 if [ "$?" -eq 0 ]; then
     cd /etc
-    echo -e "Your /etc/environment file already appears to source RL_Python_setup.bash;"
+    echo -e "Your /etc/environment file already appears to source RLPy_setup.bash;"
     echo -e "this line will be overwritten with the newly created one based on"
     echo -e "your answer above."
-    # Delete the line(s) containing 'RL_Python_setup.bash'
-    sudo sed -i '/RL_Python_setup.bash/d' environment > /dev/null
+    # Delete the line(s) containing 'RLPy_setup.bash'
+    sudo sed -i '/RLPy_setup.bash/d' environment > /dev/null
 fi
 
-echo -e "\nAdding source of RL_Python_setup.bash to environment ..."
+echo -e "\nAdding source of RLPy_setup.bash to environment ..."
 
 cd /etc
 
@@ -162,20 +162,20 @@ cd /etc
 # Thus the crazy syntax below.
 
 #if [ "$?" -eq 0 ]; then
-    sudo -u root -H sh -c "echo '# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RLPy' >> /etc/environment"
-    sudo -u root -H sh -c "echo 'source $INSTALL_PATH/RL_Python_setup.bash' >> /etc/environment"
+    sudo -u root -H sh -c "echo '# Automatically added RLPy_setup.bash below by ubuntu_setup.sh script for RLPy' >> /etc/environment"
+    sudo -u root -H sh -c "echo 'source $INSTALL_PATH/RLPy_setup.bash' >> /etc/environment"
     echo -e "Successfully modified environment.\n"
 
-echo -e "Adding source of RL_Python_setup.bash to .bashrc ..."
+echo -e "Adding source of RLPy_setup.bash to .bashrc ..."
 
 cd $HOMEDIR
 #if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RLPy" >> .bashrc
-    sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .bashrc
+    sudo echo "# Automatically added RLPy_setup.bash below by ubuntu_setup.sh script for RLPy" >> .bashrc
+    sudo echo "source $INSTALL_PATH/RLPy_setup.bash" >> .bashrc
     echo -e "Successfully modified .bashrc\n"
 #else
 #    echo -e "There was a problem creating a backup of .bashrc.  You will need \n"
-#    echo -e "to manually 'source' the file RL_Python_setup.bash for your shell\n"
+#    echo -e "to manually 'source' the file RLPy_setup.bash for your shell\n"
 #    echo -e "environment; we recommend adding it to whatever startup script\n"
 #    echo -e "is used on your machine.\n"
 #fi
@@ -264,7 +264,7 @@ do
                     echo -e "Name[en_US]=Eclipse"
                     echo -e "Name=Eclipse"
                     echo -e "Icon=/opt/eclipse/icon.xpm"
-                  ) > "$HOMEDIR/Desktop/RL_Python_Eclipse_Env.Desktop"
+                  ) > "$HOMEDIR/Desktop/RLPy_Eclipse_Env.Desktop"
                   echo -e "\n\n"
                   echo -e "*******************************************************************************"
                   echo -e "You may need to right-click the icon, go to properties->permissions,"
@@ -278,13 +278,13 @@ do
 #                 echo -e "2) Launch eclipse from the console, so that it receives needed variables."
 #                 echo -e "3) Create a custom shortcut - see:"
 #                 echo -e "[http://answers.ros.org/question/29424/eclipse-ros-fuerte/]"
-#                 echo -e "4) Add the RL_PYTHON_ROOT variable to your RLPy Eclipse project in:"
+#                 echo -e "4) Add the RL_Python_ROOT variable to your RLPy Eclipse project in:"
                  echo -e "Without this shortcut, the easiest way to obtain necessary environment"
                  echo -e "variables is to add it to your IDE project directly.  In Eclipse:"
                  echo -e "window->preferences->pydev->interpreter Pydev->environment"
-                 echo -e "Create the variable RL_PYTHON_ROOT and set it accordingly."
+                 echo -e "Create the variable RL_Python_ROOT and set it accordingly."
                  echo -e ""
-                 echo -e "FYI, earlier in the installation, you chose RL_PYTHON_ROOT ="
+                 echo -e "FYI, earlier in the installation, you chose RL_Python_ROOT ="
                  echo -e "$INSTALL_PATH"
                  INVALID_INPUT="0"
                  break;;
