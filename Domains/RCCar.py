@@ -63,9 +63,9 @@ class RCCar(Domain):
         super(RCCar,self).__init__(logger)
     def step(self, s, a):
         x,y,speed,heading       = s
-        acc,turn                = id2vec(a,[3,3]) #Map a number between [0,8] to a pair. The first element is acceleration direction. The second one is the indicator for the wheel
-        acc                     -= 1 # Mapping acc to [-1, 0 1]
-        turn                    -= 1 # Mapping turn to [-1, 0 1]
+        acc,turn                = id2vec(a,[3,3])   #Map a number between [0,8] to a pair. The first element is acceleration direction. The second one is the indicator for the wheel
+        acc                     -= 1                # Mapping acc to [-1, 0 1]
+        turn                    -= 1                # Mapping turn to [-1, 0 1]
         
         #Calculate next state
         nx          = x + speed*cos(heading)*self.delta_t
