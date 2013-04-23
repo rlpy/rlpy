@@ -12,7 +12,7 @@ from Tools import *
 # any information it needs. The Agent then uses this information and its \ref Policies.Policy.Policy "Policy" to select an action to perform. \n
 #
 # The \c %Representation class is a superclass that provides the basic framework for all representations. It provides the methods and attributes
-# that allow child classes to interact with the \c Agent and \c Domain classes within the RL-Python library. \n
+# that allow child classes to interact with the \c Agent and \c Domain classes within the RLPy library. \n
 # All new representation implimentations should inherit from \c %Representation.
 # \note It is assumed that the Linear Function approximator family of representations is being used.
 

@@ -46,7 +46,7 @@ def installPackage(packageName):
 def checkValidVersion():
     print "Your Python Version: "+sys.version
     if not((2,7) < sys.version_info < (3,0)):
-        print "RL-Python requires 2.7 < version < 3.0, please re-install before proceeding."
+        print "RLPy requires 2.7 < version < 3.0, please re-install before proceeding."
         print "If you believe the correct version of Python is already installed,"
         print "ensure that you only have one active copy of python in your PATH environment variable."
         print "If you suspect competing installations of Python, see the FAQ section."
@@ -56,7 +56,7 @@ def checkValidVersion():
         print "Python version valid."
     
 if __name__ == '__main__':
-    print """Welcome to the dependency installer for RL-Python.
+    print """Welcome to the dependency installer for RLPy.
 Note that you may safely re-run this script at any time
 (for example, if installation fails at an intermediate step.)
 """

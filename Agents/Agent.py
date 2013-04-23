@@ -15,7 +15,7 @@ from Representations import *
 # At this point the \ref Experiments.Experiment.Experiment "Experiment" determines whether the %Agent starts over or is tested.
 # 
 # The \c %Agent class is a superclass that provides the basic framework for all RL agents. It provides the methods and attributes
-# that allow child classes to interact with the \c Domain, \c Representation, \c Policy, and \c Experiment classes within the RL-Python library. \n
+# that allow child classes to interact with the \c Domain, \c Representation, \c Policy, and \c Experiment classes within the RLPy library. \n
 # All new agent implimentations should inherit from \c %Agent.
 
 class Agent(object):

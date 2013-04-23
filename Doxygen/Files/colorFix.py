@@ -21,7 +21,7 @@ def fixLineColors(f):
     s = "".join(l)
     return s, write
 
-path = "Users\\Elliott\\Documents\\UROP Stuff\\Code\\RL-Python\\Doxygen\\Output\\html"
+path = "Users\\Elliott\\Documents\\UROP Stuff\\Code\\RLPy\\Doxygen\\Output\\html"
 directory = os.path.join("c:\\",path)
 for root,dirs,files in os.walk(directory):
     for file in files:

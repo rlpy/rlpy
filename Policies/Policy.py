@@ -11,7 +11,7 @@ from Representations import *
 # revelent to that state to the %Policy. The %Policy uses this information to decide what action the Agent should perform next. \n
 #
 # The \c %Policy class is a superclass that provides the basic framework for all policiess. It provides the methods and attributes
-# that allow child classes to interact with the \c Agent and \c Represemtatopm classes within the RL-Python library. \n
+# that allow child classes to interact with the \c Agent and \c Represemtatopm classes within the RLPy library. \n
 # All new policty implimentations should inherit from \c %Policy.
 
 class Policy(object):

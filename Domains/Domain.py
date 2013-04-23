@@ -20,7 +20,7 @@ from pydoc import classname
 # Note that because RL-Agents are designed around obtaining a reward, observations that the %Domain returns should include a reward.
 #
 # The \c %Domain class is a superclass that provides the basic framework for all Domains. It provides the methods and attributes
-# that allow child classes to interact with the \c %Agent and \c Experiment classes within the RL-Python library.
+# that allow child classes to interact with the \c %Agent and \c Experiment classes within the RLPy library.
 # %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
 # All new domain implimentations should inherit from \c %Domain.
 #

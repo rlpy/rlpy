@@ -16,7 +16,7 @@ from Representations import *
 # is complete and the gathered data is printed and saved. For each section, training and evaluation, the %Experiment determines whether or not the visualization of the step should generated.
 #
 # The \c %Experiment class is a superclass that provides the basic framework for all RL experiments. It provides the methods and attributes
-# that allow child classes to interact with the \c Agent and \c Domain classes within the RL-Python library. \n
+# that allow child classes to interact with the \c Agent and \c Domain classes within the RLPy library. \n
 # All new experiment implimentations should inherit from \c %Experiment.
 
 class Experiment(object):
