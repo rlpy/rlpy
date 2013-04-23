@@ -263,7 +263,7 @@ do
     mkdir -p $TMP_PATH
     VALID_DIRECTORY_ZERO="$?"
     if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
-        echo -e "\nValid directory specified. "
+        echo -e "\nValid directory specified. This may take some time."
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
         # Automatically force entry of python path in loop above

@@ -108,7 +108,7 @@ do
              ;;
     esac
     if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
-        echo -e "\nValid directory specified. "
+        echo -e "\nValid directory specified. This may take some time."
 #        echo -e "The file RL_Python_setup.bash will be created.\n"
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
