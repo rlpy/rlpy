@@ -7,6 +7,7 @@ var NAVTREE =
     [ "Code", "_code.html", "_code" ],
     [ "Frequently Asked Questions (FAQ)", "_f_a_q_8txt.html", null ],
     [ "Installation", "install_8txt.html", [
+      [ "Download", "install_8txt.html#Download", null ],
       [ "Prerequisites", "install_8txt.html#Prerequisites", null ],
       [ "INSTALLATION: As easy as 1,2,3 (+4 to run)", "install_8txt.html#installation", null ],
       [ "Insallation FAQ: Error/Solutions", "install_8txt.html#install_faq", null ]

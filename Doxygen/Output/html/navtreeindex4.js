@@ -195,8 +195,9 @@ var NAVTREEINDEX4 =
 "index.html":[0],
 "index.html#big_pic_text":[0,0],
 "install_8txt.html":[3],
-"install_8txt.html#Prerequisites":[3,0],
-"install_8txt.html#install_faq":[3,2],
-"install_8txt.html#installation":[3,1],
+"install_8txt.html#Download":[3,0],
+"install_8txt.html#Prerequisites":[3,1],
+"install_8txt.html#install_faq":[3,3],
+"install_8txt.html#installation":[3,2],
 "pages.html":[]
 };

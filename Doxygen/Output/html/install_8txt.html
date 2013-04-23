@@ -101,18 +101,36 @@ $(document).ready(function(){initNavTree('install_8txt.html','');});
 <div class="title">Installation </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="Prerequisites"></a>
+<div class="textblock"><h1><a class="anchor" id="Download"></a>
+Download</h1>
+<p>Download RLPy <a href="http://acl.mit.edu/RLPy/RLPy.zip">Here</a> <br/>
+</p>
+<pre class="fragment">Copyright (c) 2013, Alborz Geramifard, Bob Klein
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre><h1><a class="anchor" id="Prerequisites"></a>
 Prerequisites</h1>
 <p>The only requirements to run and contribute to RL-Python are a working Python 2.7 environment and the required package dependencies, which can be installed automatically by the provided scripts.<br/>
  Detailed installation instructions are shown below.<br/>
  Installation FAQ available at bottom, general FAQ available on the FAQ page or in the file FAQ.txt located in the RLPy folder.<br/>
  <br/>
  Recommended Operating Systems:<br/>
- a) Windows 32/64-bit<br/>
- b) Mac OSX<br/>
- c) Ubuntu Linux<br/>
+ a) Windows 32-bit<br/>
+ b) Ubuntu Linux 32/64-bit<br/>
+ c) Mac OSX ***<br/>
  <br/>
- If your setup does not match those recommended above, you must download the packages manually, described in manual_install.txt.<br/>
+ There is limited support for Mac OSX; the framework will operate as designed once required package dependencies (numpy, scipy, and scikit-learn) are installed, but manual installation is likely required for some if not all packages.<br/>
+ <br/>
+ If your setup does not match those recommended above (or if you are running (c) Mac OSX,) you must download the packages manually, described in manual_install.txt.<br/>
  <br/>
  <br/>
  </p>
@@ -152,8 +170,8 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
  a) Windows 32/64-bit<br/>
  Install per instructions here: <a href="http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows">http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows</a><br/>
  <br/>
- b) Mac OSX - automated in script<br/>
- c) Ubuntu Linux - automated in script<br/>
+ b) Ubuntu Linux - automated in script<br/>
+ c) Mac OSX - automated in script<br/>
  <br/>
  ===============================================================<br/>
  ===============================================================<br/>
@@ -174,32 +192,35 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
  <br/>
  <br/>
  <br/>
- b) Mac OSX - Open a terminal window, navigate to the Installation folder, and run the provided script with ./OSX_setup.sh<br/>
- <br/>
- If the script fails to run, first type:<br/>
- chmod u+x OSX_setup.sh<br/>
- and re-run it.<br/>
- <br/>
- <br/>
- <br/>
- c) Ubuntu - Open a terminal window, navigate to the Installation folder, and run the provided script with ./ubuntu_setup.sh<br/>
+ b) Ubuntu - Open a terminal window, navigate to the Installation folder, and run the provided script with ./ubuntu_setup.sh<br/>
  <br/>
  If the script fails to run, first type:<br/>
  chmod u+x ubuntu_setup.sh<br/>
  and re-run it.<br/>
  <br/>
- ===============================================================<br/>
+ <br/>
+ <br/>
+ c) Mac OSX - Open a terminal window, navigate to the Installation folder, and run the provided script with ./OSX_setup.sh<br/>
+ <br/>
+ If the script fails to run, first type:<br/>
+ chmod u+x OSX_setup.sh<br/>
+ and re-run it.<br/>
+ <br/>
+</li>
+</ol>
+<p>===============================================================<br/>
  ===============================================================<br/>
  Installation of RL-Python is now complete!<br/>
  <br/>
-</li>
+</p>
+<ol type="1">
 <li>Now open the framework in your IDE of choice.<br/>
  <br/>
  If using Eclipse:<br/>
- a) Go to file -&gt; switch workspace -&gt; other<br/>
+ i) Go to file -&gt; switch workspace -&gt; other<br/>
  And navigate to the folder containing RL-Python (NOT the RL-Python folder itself.)<br/>
  <br/>
- b) Go to file -&gt; import -&gt; general -&gt; existing projects into workspace And select 'Browse.' Navigate into the RL-Python directory and select 'Next.'<br/>
+ ii) Go to file -&gt; import -&gt; general -&gt; existing projects into workspace And select 'Browse.' Navigate into the RL-Python directory and select 'Next.'<br/>
  You should now see the RL-Python directory structure in the left pane.<br/>
  <br/>
  ===============================================================<br/>
@@ -215,8 +236,7 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
  <br/>
  <br/>
  <br/>
- <br/>
- </li>
+</li>
 </ol>
 <h1><a class="anchor" id="install_faq"></a>
 Insallation FAQ: Error/Solutions</h1>
@@ -257,6 +277,16 @@ Insallation FAQ: Error/Solutions</h1>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40370665-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="footer">Generated by
