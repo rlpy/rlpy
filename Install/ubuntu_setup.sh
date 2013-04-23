@@ -1,8 +1,8 @@
 #!/bin/bash
 #VERSION_NUM=$(python --version *.lis|grep -c "")
 clear
-echo "========================== RL-PYTHON INSTALLER ============================"
-echo "This script installs the required dependencies for the RL-Python Framework."
+echo "============================== RLPy INSTALLER ============================="
+echo "This script installs the required dependencies for the RLPy Framework."
 echo "Note that if installation fails, or you wish to install optional packages  "
 echo "at any time, you may safely re-run this script.                            "
 echo "==========================================================================="
@@ -80,7 +80,7 @@ VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
     # Set the environment variable RL_PYTHON_ROOT
-    echo -e "We need to set an environment variable for the location of the RL-Python"
+    echo -e "We need to set an environment variable for the location of the RLPy"
     echo -e "project directory.\nIt appears to be located in:\n"
     cd ..
     pwd
@@ -98,7 +98,7 @@ do
              INSTALL_PATH=`pwd`
              cd - > /dev/null; VALID_DIRECTORY_ZERO="0"
              ;;
-        2)  echo -e "Please enter the absolute path to the RL-Python root directory: "
+        2)  echo -e "Please enter the absolute path to the RLPy root directory: "
              read INSTALL_PATH
              cd $INSTALL_PATH
              VALID_DIRECTORY_ZERO=$?
@@ -162,7 +162,7 @@ cd /etc
 # Thus the crazy syntax below.
 
 #if [ "$?" -eq 0 ]; then
-    sudo -u root -H sh -c "echo '# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RL-Python' >> /etc/environment"
+    sudo -u root -H sh -c "echo '# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RLPy' >> /etc/environment"
     sudo -u root -H sh -c "echo 'source $INSTALL_PATH/RL_Python_setup.bash' >> /etc/environment"
     echo -e "Successfully modified environment.\n"
 
@@ -170,7 +170,7 @@ echo -e "Adding source of RL_Python_setup.bash to .bashrc ..."
 
 cd $HOMEDIR
 #if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RL-Python" >> .bashrc
+    sudo echo "# Automatically added RL_Python_setup.bash below by ubuntu_setup.sh script for RLPy" >> .bashrc
     sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .bashrc
     echo -e "Successfully modified .bashrc\n"
 #else
@@ -278,7 +278,7 @@ do
 #                 echo -e "2) Launch eclipse from the console, so that it receives needed variables."
 #                 echo -e "3) Create a custom shortcut - see:"
 #                 echo -e "[http://answers.ros.org/question/29424/eclipse-ros-fuerte/]"
-#                 echo -e "4) Add the RL_PYTHON_ROOT variable to your RL-Python Eclipse project in:"
+#                 echo -e "4) Add the RL_PYTHON_ROOT variable to your RLPy Eclipse project in:"
                  echo -e "Without this shortcut, the easiest way to obtain necessary environment"
                  echo -e "variables is to add it to your IDE project directly.  In Eclipse:"
                  echo -e "window->preferences->pydev->interpreter Pydev->environment"

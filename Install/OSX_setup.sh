@@ -7,8 +7,8 @@
 #
 #TODO - check for installation of XCode
 clear
-echo "========================== RL-PYTHON INSTALLER ============================"
-echo "This script installs the required dependencies for the RL-Python Framework."
+echo "============================= RLPy INSTALLER =============================="
+echo "This script installs the required dependencies for the RLPy Framework."
 echo "Note that if installation fails, or you wish to install optional packages  "
 echo "at any time, you may safely re-run this script.                            "
 echo "==========================================================================="
@@ -145,7 +145,7 @@ VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
     # Set the environment variable RL_PYTHON_ROOT
-    echo -e "We need to set an environment variable for the location of the RL-Python"
+    echo -e "We need to set an environment variable for the location of the RLPy"
     echo -e "project directory.\nIt appears to be located in:\n"
     cd ..
     pwd
@@ -163,7 +163,7 @@ do
              INSTALL_PATH=`pwd`
              cd - > /dev/null; VALID_DIRECTORY_ZERO="0"
              ;;
-        2)  echo -e "Please enter the absolute path to the RL-Python root directory: "
+        2)  echo -e "Please enter the absolute path to the RLPy root directory: "
             # Change to root directory in case a sneaky user tries to specify
             # a relative path
              cd /
@@ -215,7 +215,7 @@ fi
 echo -e "\nAdding source of RL_Python_setup.bash to .launchd.conf\n"
 
 #if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RL_Python_setup.bash below by OSX_setup.sh script for RL-Python" >> .launchd.conf
+    sudo echo "# Automatically added RL_Python_setup.bash below by OSX_setup.sh script for RLPy" >> .launchd.conf
     sudo echo "source $INSTALL_PATH/RL_Python_setup.bash" >> .launchd.conf
     echo -e "Successfully modified .launchd.conf\n"
 #else
