@@ -2,6 +2,8 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
+tmp_directory = r"/home/bob/mpl_tmp"
+
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -13,7 +15,16 @@ def module_exists(module_name):
 from multiprocessing import Pool
 from operator import *
 from numpy  import *
-from Config import *
+try:
+    from Config import *
+except ImportError:
+    print 'Could not locate Config.py - please re-run installer.'
+    print 'Continuing assuming a readable/writeable directory for tmp files'
+    print 'located at ', tmp_directory
+    print 'If this is not the case, and you cannot use the installer scripts,'
+    print 'please edit the variable tmp_directory in GeneralTools.py accordingly'
+    print 'with the absolute path to any readable/writeable directory.'
+    HOME_DIR = tmp_directory
 import itertools
 import platform
 import pdb
