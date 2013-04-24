@@ -61,6 +61,7 @@ class ChainMDP(Domain):
         super(ChainMDP,self).__init__(logger)
     def showDomain(self,s,a = 0):
         #Draw the environment
+        s = s[0]
         if self.circles is None:
            fig = pl.figure(1, (self.chainSize*2, 2))
            ax = fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
@@ -82,17 +83,19 @@ class ChainMDP(Domain):
         self.circles[s].set_facecolor('k')
         pl.draw()
     def step(self,s,a):
+        s = s[0]
         if a == 0: #left
             ns = max(0,s-1)
         if a == 1:
             ns = min(self.chainSize-1,s+1)
+        ns = array([ns])
         terminal = self.isTerminal(ns)
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
     def s0(self):
-        return 0
+        return array([0])
     def isTerminal(self,s):
-        return (s == self.chainSize - 1)
+        return (s[0] == self.chainSize - 1)
 
 if __name__ == '__main__':
     #p = GridWorld('/Domains/GridWorldMaps/ACC2011.txt');
