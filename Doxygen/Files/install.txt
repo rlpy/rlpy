@@ -80,10 +80,8 @@ c) Mac OSX - automated in script\n
 \n
 FIRST ensure the RLPy directory is located in the workspace folder of your
 IDE, or whatever final location you intend it to be.\n
-NEXT Extract the relevant installer zip file (RLPy-*.zip, where '*'
-is Windows, Ubuntu, or MacOS) into the 'Installation' folder in the RLPy directory.\n
-\n
-THEN:\n
+THEN Run the installer script for your operating system: (on windows, first extract
+the zip file Win32_files.zip into the Install folder)\n
 \n
 a) Windows 32-bit\n
 a.i) Open a command prompt window with administrative privileges:\n
@@ -95,20 +93,15 @@ a.ii) Navigate to the Install directory and run the .bat script.\n
 \n
 \n
 b) Ubuntu - Open a terminal window, navigate to the Installation folder,
-and run the provided script with ./ubuntu_setup.sh\n
-\n
-*** If the script fails to run, first type:\n
-chmod u+x ubuntu_setup.sh\n
-*** and re-run it.\n
+and enter 'chmod u+x ubuntu_setup.sh'\n
+Then run the provided script with ./ubuntu_setup.sh\n
 \n
 \n
 \n
-c) Mac OSX - Open a terminal window, navigate to the Installation folder,
-and run the provided script with ./OSX_setup.sh\n
+c) OSX - Open a terminal window, navigate to the Installation folder,
+and enter 'chmod u+x OSX_setup.sh'\n
+Then run the provided script with ./OSX_setup.sh\n
 \n
-*** If the script fails to run, first type:\n
-chmod u+x OSX_setup.sh\n
-*** and re-run it.\n
 \n
 
 ===============================================================\n
