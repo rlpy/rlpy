@@ -53,7 +53,6 @@ class PolicyEvaluation(LSPI):
         if self.samples_count == self.max_window:
             STATS               = [] 
             start_time          = time()
-            self.samples_count  = 0
             re_iteration        = 0 # Representation expansion iteration. Only used if the representation can be expanded 
             added_feature       = True
             while added_feature and re_iteration < self.re_iterations:

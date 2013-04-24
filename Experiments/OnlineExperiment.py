@@ -127,7 +127,10 @@ class OnlineExperiment (Experiment):
         #Plot Performance
         if self.plot_performance:
             performance_fig = pl.figure(2)
-            if isinstance(self.agent.representation.domain,Pendulum_InvertedBalance):
+            if isinstance(self.agent,PolicyEvaluation):
+                row = 2
+                ylabel = "||TD-Error||"
+            elif isinstance(self.agent.representation.domain,Pendulum_InvertedBalance):
                 row = self.EPISODE_LENGTH
                 ylabel = "Episode Length"
             else:
