@@ -1,0 +1,26 @@
+var class_domains_1_1_system_administrator_1_1_system_administrator =
+[
+    [ "__init__", "class_domains_1_1_system_administrator_1_1_system_administrator.html#ac775ee34451fdfa742b318538164070e", null ],
+    [ "loadNetwork", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a0ebc47f6d92ac210bf6f3f72262e393c", null ],
+    [ "possibleActions", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a397b5376f221417d22f8c40a1a7070eb", null ],
+    [ "s0", "class_domains_1_1_system_administrator_1_1_system_administrator.html#ae8937534fa7cdd64071324f29058f930", null ],
+    [ "setNeighbors", "class_domains_1_1_system_administrator_1_1_system_administrator.html#ac4f5bbb131442b0fe00180ce28e17f9d", null ],
+    [ "setUniqueEdges", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a76dd6183df30825847ec31fb0c2e641f", null ],
+    [ "showDomain", "class_domains_1_1_system_administrator_1_1_system_administrator.html#acf7576148fddd5708057296e8c69a9f9", null ],
+    [ "step", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a95621a488f4bd554b9031ae0416b098d", null ],
+    [ "actions_num", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a7bad0fd4ac255d0e0a6c8cae33e353a5", null ],
+    [ "computers_num", "class_domains_1_1_system_administrator_1_1_system_administrator.html#af008761292ccf23c485261d84a8ae23e", null ],
+    [ "episodeCap", "class_domains_1_1_system_administrator_1_1_system_administrator.html#ac5c69d7d44548bdbc649b1f221be7581", null ],
+    [ "gamma", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a77727228881c1f85b729249f644bb14d", null ],
+    [ "IS_RING", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a30148a95c0e2c88677322201395961b1", null ],
+    [ "NEIGHBORS", "class_domains_1_1_system_administrator_1_1_system_administrator.html#aaf53fbd8167bfce038677f2c3bfd10e7", null ],
+    [ "NEIGHBORS", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a98c3ca9105d1ba514a5320b253ba7c87", null ],
+    [ "networkGraph", "class_domains_1_1_system_administrator_1_1_system_administrator.html#ae1ab1d812ccaff1d664458f95c7dc4f8", null ],
+    [ "networkPos", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a1a9389a7e2dfca7934abe8e0f46c65bf", null ],
+    [ "P_REBOOT_REPAIR", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a43368f352969c9837cee037f81465594", null ],
+    [ "P_SELF_REPAIR", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a8ebf41f35b8d37345ee5d8ec40ea833e", null ],
+    [ "REBOOT_REWARD", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a8e247196f1d665636d278597984e7a72", null ],
+    [ "statespace_limits", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a2407e8ef1957e60bb4c6f815855ba152", null ],
+    [ "UNIQUE_EDGES", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a89e17d66ee9ab905007fee1a06c94fb8", null ],
+    [ "UNIQUE_EDGES", "class_domains_1_1_system_administrator_1_1_system_administrator.html#a813a0e716e9e39a50275c67802284e62", null ]
+];
