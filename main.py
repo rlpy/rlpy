@@ -123,8 +123,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # DOMAIN
     #=================
-    #domain          = ChainMDP(10, logger = logger)
-    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = ChainMDP(10, logger = logger)
+    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
