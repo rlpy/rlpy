@@ -12,3 +12,4 @@ NOTES:
 1. Changing the location of the Doxyfile will change a lot of the compilation settings (they use relative directories), I recomend NOT moving it.
 2. Doxygen updates and creates NEW files, but doesn't delete used ones. I recomend periodically deleting the entire html 
    folder and rebuilding the entire website from scratch every once in a while to remove unneccesary files (which there may be a lot of)
+3. Sometimes you may have to reselect the project logo, to do this simply open the wizard, click the wizard tab, click the select button, open files, open ACL_logo.png

@@ -103,111 +103,111 @@ Domain Superclass</h1>
 <h2><a class="anchor" id="Domain_init"></a>
 Initialization</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>__init__(self,logger):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.logger = logger</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.logger = logger</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="keywordflow">for</span> v <span class="keywordflow">in</span> [<span class="stringliteral">&#39;statespace_limits&#39;</span>,<span class="stringliteral">&#39;actions_num&#39;</span>,<span class="stringliteral">&#39;episodeCap&#39;</span>]:</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="keywordflow">if</span> getattr(self,v) == <span class="keywordtype">None</span>:</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;            <span class="keywordflow">if</span> getattr(self,v) == <span class="keywordtype">None</span>:</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                <span class="keywordflow">raise</span> Exception(<span class="stringliteral">&#39;Missed domain initialization of &#39;</span>+ v)</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        self.state_space_dims = len(self.statespace_limits)</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;        self.state_space_dims = len(self.statespace_limits)</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        self.gamma = self.gamma * 1.0 <span class="comment"># To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="comment"># For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states</span></div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="comment"># For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="comment"># The original limits will be saved in self.discrete_statespace_limits</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        self.extendDiscreteDimensions()</div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;        self.extendDiscreteDimensions()</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">if</span> self.continuous_dims == []:</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            self.states_num = inf</div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;            self.states_num = inf</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">if</span> logger:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            self.logger.line()</div>
+<div class="line2"><a name="l00016"></a><span class="lineno">   16</span>&#160;            self.logger.line()</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Domain:\t\t&quot;</span>+str(className(self)))</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Dimensions:\t&quot;</span>+str(self.state_space_dims))</div>
+<div class="line2"><a name="l00018"></a><span class="lineno">   18</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Dimensions:\t&quot;</span>+str(self.state_space_dims))</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            self.logger.log(<span class="stringliteral">&quot;|S|:\t\t&quot;</span>+str(self.states_num))</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            self.logger.log(<span class="stringliteral">&quot;|A|:\t\t&quot;</span>+str(self.actions_num))</div>
+<div class="line2"><a name="l00020"></a><span class="lineno">   20</span>&#160;            self.logger.log(<span class="stringliteral">&quot;|A|:\t\t&quot;</span>+str(self.actions_num))</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            self.logger.log(<span class="stringliteral">&quot;|S|x|A|:\t\t&quot;</span>+str(self.actions_num*self.states_num))</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Episode Cap:\t&quot;</span>+str(self.episodeCap))</div>
+<div class="line2"><a name="l00022"></a><span class="lineno">   22</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Episode Cap:\t&quot;</span>+str(self.episodeCap))</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            self.logger.log(<span class="stringliteral">&quot;Gamma:\t\t&quot;</span>+str(self.gamma))</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_show"></a>
 Show All</h2>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>show(self,s,a, representation):</div>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>show(self,s,a, representation):</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        self.showDomain(s,a)</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        self.showLearning(representation)</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        self.showLearning(representation)</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_showDomain"></a>
 Show Domain</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>showDomain(self,s,a = 0):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">pass</span></div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">pass</span></div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_showLearning"></a>
 Show Learning</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>showLearning(self,representation):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">pass</span></div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">pass</span></div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_s0"></a>
 S0</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>s0(self):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        abstract</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        abstract</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_possActions"></a>
 Possible Actions</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>possibleActions(self,s):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">return</span> arange(self.actions_num)</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">return</span> arange(self.actions_num)</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_step"></a>
 Step</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>step(self,s,a):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        abstract</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        abstract</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_exStep"></a>
 Expected Step</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="comment">#def expectedStep(self,s,a):</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;    <span class="comment">#           abstract</span></div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;    <span class="comment">#           abstract</span></div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_isTerminal"></a>
 isTerminal</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>isTerminal(self,s):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span></div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span></div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_test"></a>
 Test</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>test(self,T):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        terminal    = <span class="keyword">True</span></div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        terminal    = <span class="keyword">True</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        steps       = 0</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">while</span> steps &lt; T:</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">while</span> steps &lt; T:</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;            <span class="keywordflow">if</span> terminal:</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;                <span class="keywordflow">if</span> steps != 0: self.showDomain(s,a)</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;                <span class="keywordflow">if</span> steps != 0: self.showDomain(s,a)</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;                s = self.s0()</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;            <span class="keywordflow">elif</span> steps % self.episodeCap == 0:</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;            <span class="keywordflow">elif</span> steps % self.episodeCap == 0:</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                s = self.s0()</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;            a = randSet(self.possibleActions(s))</div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;            a = randSet(self.possibleActions(s))</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            self.showDomain(s,a)</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            r,s,terminal = self.step(s, a)</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            r,s,terminal = self.step(s, a)</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            steps += 1</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_printAll"></a>
 Print All</h2>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>printAll(self):</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        printClass(self)</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_extendDiscreteDimensions"></a>
 Extended Discrete Dimensions</h2>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>extendDiscreteDimensions(self):</div>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>extendDiscreteDimensions(self):</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="comment"># Store the original limits for other types of calculations</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        self.discrete_statespace_limits = self.statespace_limits</div>
+<div class="line2"><a name="l00003"></a><span class="lineno">    3</span>&#160;        self.discrete_statespace_limits = self.statespace_limits</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        self.statespace_limits = self.statespace_limits.astype(<span class="stringliteral">&#39;float&#39;</span>)</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(self.state_space_dims):</div>
+<div class="line2"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(self.state_space_dims):</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;             <span class="keywordflow">if</span> <span class="keywordflow">not</span> d <span class="keywordflow">in</span> self.continuous_dims:</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;                 self.statespace_limits[d,0] += -.5</div>
+<div class="line2"><a name="l00007"></a><span class="lineno">    7</span>&#160;                 self.statespace_limits[d,0] += -.5</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                 self.statespace_limits[d,1] += +.5</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line2"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_s0uniform"></a>
 S0 Uniform</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>s0uniform(self):</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> className(self) == <span class="stringliteral">&#39;BlocksWorld&#39;</span>:</div>
+<div class="line2"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">if</span> className(self) == <span class="stringliteral">&#39;BlocksWorld&#39;</span>:</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;            <span class="keywordflow">print</span> <span class="stringliteral">&quot;s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states.&quot;</span> % className(self)</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">if</span> self.continuous_dims == []:</div>
+<div class="line2"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keywordflow">if</span> self.continuous_dims == []:</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;            s = empty(self.state_space_dims, dtype = integer)</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line2"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;            s = empty(self.state_space_dims)</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line2"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordflow">for</span> d <span class="keywordflow">in</span> arange(self.state_space_dims):</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;            a,b = self.statespace_limits[d]</div>
+<div class="line2"><a name="l00010"></a><span class="lineno">   10</span>&#160;            a,b = self.statespace_limits[d]</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            s[d] = random.rand()*(b-a)+a</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="keywordflow">if</span> <span class="keywordflow">not</span> d <span class="keywordflow">in</span> self.continuous_dims:</div>
+<div class="line2"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="keywordflow">if</span> <span class="keywordflow">not</span> d <span class="keywordflow">in</span> self.continuous_dims:</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                s[d] = int(s[d])</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">if</span> len(s) == 1: s = s[0]</div>
+<div class="line2"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">if</span> len(s) == 1: s = s[0]</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">return</span> s</div>
 </div><!-- fragment --> <h2><a class="anchor" id="Domain_saturateState"></a>
 Saturate State</h2>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>saturateState(self,s):</div>
+<div class="fragment"><div class="line2"><a name="l00001"></a><span class="lineno">    1</span>&#160;    <span class="keyword">def </span>saturateState(self,s):</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="keywordflow">return</span> bound_vec(s,self.discrete_statespace_limits)</div>
 </div><!-- fragment --></div></div><!-- contents -->
 </div><!-- doc-content -->
