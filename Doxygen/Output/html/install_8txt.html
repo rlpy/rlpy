@@ -119,7 +119,7 @@ Neither the name of ACL nor the names of its contributors may be used to endorse
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </pre><h1><a class="anchor" id="Prerequisites"></a>
 Prerequisites</h1>
-<p>The only requirements to run and contribute to RL-Python are a working Python 2.7 environment and the required package dependencies, which can be installed automatically by the provided scripts.<br/>
+<p>The only requirements to run and contribute to RLPy are a working Python 2.7 environment and the required package dependencies, which can be installed automatically by the provided scripts.<br/>
  Detailed installation instructions are shown below.<br/>
  Installation FAQ available at bottom, general FAQ available on the FAQ page or in the file FAQ.txt located in the RLPy folder.<br/>
  <br/>
@@ -178,17 +178,17 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
 </li>
 <li>Run the dependency installer script<br/>
  <br/>
- FIRST ensure the RL-Python directory is located in the workspace folder of your IDE, or whatever final location you intend it to be.<br/>
+ FIRST ensure the RLPy directory is located in the workspace folder of your IDE, or whatever final location you intend it to be.<br/>
+ NEXT Extract the relevant installer zip file (RLPy-*.zip, where '*' is Windows, Ubuntu, or MacOS) into the 'Installation' folder in the RLPy directory.<br/>
  <br/>
  THEN:<br/>
  <br/>
  a) Windows 32-bit<br/>
- a.i) Extract Win32_files.zip to a temporary directory of choice (recommend extracting to a folder within RL-Python directory to speed installation)<br/>
- a.ii) Open a command prompt window with administrative privileges:<br/>
+ a.i) Open a command prompt window with administrative privileges:<br/>
  Windows 8: WindowsKey-X, select "Command Prompt Admin"<br/>
  Windows 7,Vista: type 'cmd' in the start menu, right click and open with admin privileges<br/>
  Windows XP: Start&ndash;&gt;Run cmd.exe<br/>
- a.iii) Navigate to the temporary directory and run the .bat script.<br/>
+ a.ii) Navigate to the Install directory and run the .bat script.<br/>
  <br/>
  <br/>
  <br/>
@@ -210,7 +210,7 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
 </ol>
 <p>===============================================================<br/>
  ===============================================================<br/>
- Installation of RL-Python is now complete!<br/>
+ Installation of RLPy is now complete!<br/>
  <br/>
 </p>
 <ol type="1">
@@ -218,10 +218,10 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
  <br/>
  If using Eclipse:<br/>
  i) Go to file -&gt; switch workspace -&gt; other<br/>
- And navigate to the folder containing RL-Python (NOT the RL-Python folder itself.)<br/>
+ And navigate to the folder containing RLPy (NOT the RLPy folder itself.)<br/>
  <br/>
- ii) Go to file -&gt; import -&gt; general -&gt; existing projects into workspace And select 'Browse.' Navigate into the RL-Python directory and select 'Next.'<br/>
- You should now see the RL-Python directory structure in the left pane.<br/>
+ ii) Go to file -&gt; import -&gt; general -&gt; existing projects into workspace And select 'Browse.' Navigate into the RLPy directory and select 'Next.'<br/>
+ You should now see the RLPy directory structure in the left pane.<br/>
  <br/>
  ===============================================================<br/>
  ===============================================================<br/>
@@ -229,7 +229,7 @@ INSTALLATION: As easy as 1,2,3 (+4 to run)</h1>
  That's it!<br/>
  <br/>
  Now take a look at the <a class="el" href="_i_shouldrun_8py.html#First_Run">First Run</a> Getting Started Tutorial page, and (as part of the tutorial) test the installation by running IshouldRun.py.<br/>
- Finally, start experimenting with RL-Python yourself!<br/>
+ Finally, start experimenting with RLPy yourself!<br/>
  <br/>
  If you encountered errors in the installation, see the FAQ section at bottom<br/>
  (and an extended FAQ located in the FAQ.txt file).<br/>
@@ -247,9 +247,9 @@ Insallation FAQ: Error/Solutions</h1>
  <br/>
  ===============================================================<br/>
  E: Generic messages about missing environmental variables<br/>
- S1: Ensure that the environment variable 'RL_PYTHON_ROOT' is set on your OS for whatever environment you are running RL-Python in (e.g. it might be set in a terminal window but not in general).<br/>
- This should have been configured by the installer script; if your RL-Python directory has moved since then, merely re-run the installer script and restart your computer.<br/>
- S2: If the installer script fails to solve the problem, the easiest solution is to add the RL_PYTHON_ROOT variable to your IDE directly. In eclipse, go to window-&gt;preferences-&gt;pydev-&gt;interpreter Pydev-&gt;environment. There, add a variable called RL_PYTHON_ROOT and set its value to be the path to your RL-Python directory.<br/>
+ S1: Ensure that the environment variable 'RL_PYTHON_ROOT' is set on your OS for whatever environment you are running RLPy in (e.g. it might be set in a terminal window but not in general).<br/>
+ This should have been configured by the installer script; if your RLPy directory has moved since then, merely re-run the installer script and restart your computer.<br/>
+ S2: If the installer script fails to solve the problem, the easiest solution is to add the RL_PYTHON_ROOT variable to your IDE directly. In eclipse, go to window-&gt;preferences-&gt;pydev-&gt;interpreter Pydev-&gt;environment. There, add a variable called RL_PYTHON_ROOT and set its value to be the path to your RLPy directory.<br/>
  ===============================================================<br/>
  E: Generic messages about missing functions or 'module does not contain function xxx'<br/>
  S: Ensure you have the latest version of scipy (0.11 as of this writing):<br/>

@@ -1,0 +1,14 @@
+How to use Doxygen and generate the website:
+1. Open the Doxygen wizard
+2. Click File, Open, and open the file called Doxyfile in the Doxygen directory
+3. Click the Run Tab
+4. Click the Run Doxygen button
+5. When the Doxygen is finished, run colorFix.py
+6. Finished website is saved in html folder
+
+
+
+NOTES:
+1. Changing the location of the Doxyfile will change a lot of the compilation settings (they use relative directories), I recomend NOT moving it.
+2. Doxygen updates and creates NEW files, but doesn't delete used ones. I recomend periodically deleting the entire html 
+   folder and rebuilding the entire website from scratch every once in a while to remove unneccesary files (which there may be a lot of)

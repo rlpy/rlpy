@@ -1,6 +1,11 @@
 import os
 global lineColor
 
+path = '.'
+while not os.path.exists(path+'/RLPy/Tools'):
+    path = path + '/..'
+path += '\\RLPy\\Doxygen\\Output\\html'
+
 
 lineColor = '#E0E0E0'
 
@@ -20,10 +25,11 @@ def fixLineColors(f):
             n += 1
     s = "".join(l)
     return s, write
-
-path = "Users\\Elliott\\Documents\\UROP Stuff\\Code\\RLPy\\Doxygen\\Output\\html"
-directory = os.path.join("c:\\",path)
-for root,dirs,files in os.walk(directory):
+	
+	
+#path = "Users\\Elliott\\Documents\\UROP Stuff\\RLPy\\Doxygen\\Output\\html"
+#directory = os.path.join("c:\\",path)
+for root,dirs,files in os.walk(path): #directory):
     for file in files:
         if file.endswith(".html"):
            
