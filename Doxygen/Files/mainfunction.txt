@@ -3,18 +3,22 @@
   \page IShouldrun.py Getting Started: A 10-15 Minute Introduction
   \section First_Run First Run
   
-Welcome to RL-Python!\n
+Welcome to RLPy!\n
 If you receive errors during any of the steps below, please refer to install.txt for solutions to common issues. \n \n
 
 Begin by opening IShouldRun.py.  You will notice a series of parameters at the top of the file, followed by assignments to each of the functional components shown in \ref big_pic "The Big Picture": domain, representation, policy, agent, and experiment.\n
 Leave these alone for now; just run the file as-is.  You should see something like the following:
 
-\image html pitMaze_learning.png "GridWorld Domain Visualization (IShouldRun.py)"
+\image html gridWorld_learning.png "GridWorld Domain Visualization (IShouldRun.py)"
 
 This is a visual representation of the domain (here, "GridWorld") and is useful in quickly judging or demonstrating the performance of an experiment.  The objective on this domain is to move the agent (triangle) from the start (blue) to the goal (green) location in the shortest distance possible, while avoiding the pits (red); -0.001 reward is applied for every step, and reaching the goal or pit regions give rewards of +1.0 and -1.0 respectively, terminating the episode. \n
+\n
 On the left, you can see the learned policy in action after each 200 steps of training data.  Notice how the policy gradually converges to the optimal, direct route which avoids pits.
+\n
 On the right, you can see the representation of the value function overlayed on the domain.  Notice how after successive iterations, the agent learns the high (green) value of being in states that lie along the optimal path, even though they offer no immediate reward.  It also learns the low (red) value of unimportant / undesirable states.\n
-The set of possible actions in each grid is highlighted by arrows, where the size of arrows correspond to the Q(s,a). The best action is shown as black. Each domain in RL-Python offers visualization like that shown on the left, and where possible, a representation of the value function like that shown on the right as well.
+The set of possible actions in each grid is highlighted by arrows, where the size of arrows correspond to the Q(s,a). The best action is shown as black. If the agent hasn't learned the optimal policy in some grid cells (e.g. Row 2, Column 1), it has not explored enough to learn the correct action ('left' in Row 2, Column 1).  It likely still performs well though, since such states are only ever reached because of random noise in the agent's actions.\n
+\n
+Each domain in RLPy offers visualization like that shown on the left, and where possible, a representation of the value function like that shown on the right as well.
 
     \section Interpreting_Output Interpreting Output
 In the console window you should see output similar to the following:\n
@@ -27,9 +31,11 @@ In the console window you should see output similar to the following:\n
 The meaning of each component is shown in the figure.  Note that a "performance run" (indicated by ">>>" in the output window) tests the agent using its latest policy, without any exploration or modifications that might be used during learning (such as the randomization of the episilon-greedy policy).  The visualization shows these performance runs. \n
 (Note: If you see *only* performance runs as console output, this simply means that your machine is completing the learning before the performance run faster than the console logging rate, usually 1 Hz, and does not indicate a problem.)
 
-\image html rl-python_output.png "Sample Output (IShouldRun.py)"
+\image html rlpy_output.png "Sample Output (IShouldRun.py)"
 
-After the cutoff of 2,000 steps specified in IShouldRun.py, the experiment is complete, and a second figure window appears, showing the reward earned on each performance run.  On this domain, a near-optimal policy is located almost immediately (reward 0.989).
+After the cutoff of 2,000 steps specified in IShouldRun.py, the experiment is complete, and a second figure window appears, showing the reward earned on each performance run.  On this domain, an excellent policy is located almost immediately (reward 0.989).\n
+The final plot likely shows enormous variance in reward obtained on performance runs - this is because the GridWorld domain has a default noise level of 0.3, meaning that 30% of the time, a random action will be taken; at the start, when only two actions are available, this corresponds to a 30% failure rate (-1 reward), even when the optimal policy has been found.\n
+You can adjust the noise parameter "NOISE" at the top of IShouldRun.py; just be aware that the agent does not explore (epsilon=0) during performance runs, so with 0 noise and a bad initial policy, you may have to sit and watch the agent execute a (likely oscillatory) deterministic policy for all 1000 steps of an episode!\n
 
     \section Analyzing_Data Analyzing Data
 The variable PROJECT_PATH in IShouldRun.py determines the directory in which all results are stored; IShouldRun.py defaults to ./Results/IShouldRun.  A folder for a particular experiment is automatically generated in that directory based on its parameters; here, "GridWorld-Tabular-2000" for the GridWorld domain, Tabular representation, with 2,000 steps total. \n
@@ -75,7 +81,7 @@ Finally, you should explore the rest of the structure of the framework, and perh
 \n
 
 If you have questions, email:\n
-Alborz Geramifard (agf [at] csail [dot] mit [dot] edu) or Robert H Klein (rhklein [at] mit [dot] edu).
+rlpy[at]mit[dot]edu\n
 \n
 \n
 <EM> The only real mistake is the one from which we learn nothing. </EM> -John Powell
