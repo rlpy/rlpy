@@ -74,8 +74,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     LAMBDA                  = 0
     # DOMAIN
     #=================
-    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    domain          = Pendulum_InvertedBalance(episodeCap = 300, logger = logger);
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    #domain          = Pendulum_InvertedBalance(episodeCap = 300, logger = logger);
     
     # REPRESENTATION
     #================
