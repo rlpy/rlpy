@@ -31,7 +31,7 @@ class PolicyEvaluation(LSPI):
     def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.',re_iterations = 100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' %(target_path,className(domain))
         self.re_iterations  = re_iterations # Number of iterations over LSPI and iFDD
-        super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, sample_window = sample_window)
+        super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, max_window = sample_window, steps_between_LSPI = sample_window)
         # Load the fixedPolicy Estimation if it does not exist create it
         if self.LOAD_POLICY_FILE:
             if not os.path.exists(self.compare_with_me):
@@ -49,8 +49,8 @@ class PolicyEvaluation(LSPI):
         if logger and hasFunction(self.representation,'batchDiscover'):
             logger.log('Max Representation Expansion Iterations:\t%d' % re_iterations)
     def learn(self,s,a,r,ns,na,terminal):
-        self.storeData(s,a,r,ns,na)
-        if self.samples_count == self.sample_window:
+        self.process(s,a,r,ns,na,terminal)
+        if self.samples_count == self.max_window:
             STATS               = [] 
             start_time          = time()
             self.samples_count  = 0
@@ -58,7 +58,7 @@ class PolicyEvaluation(LSPI):
             added_feature       = True
             while added_feature and re_iteration < self.re_iterations:
                 # Evaluate the policy and the corresponding PE-Error (Policy Evaluation) and TD-Error
-                all_phi_s, PE_error, td_errors  = self.evaluatePolicy()
+                PE_error, td_errors  = self.evaluatePolicy()
                 # Save stats
                 STATS.append([re_iteration,                     # iteration number
                               self.representation.features_num, # Number of features
@@ -70,7 +70,7 @@ class PolicyEvaluation(LSPI):
                     break
                 re_iteration += 1
                 self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
-                added_feature = self.representation.batchDiscover(td_errors, all_phi_s, self.data_s)
+                added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s, self.data_s)
             self.STATS = array(STATS).T # Experiment will save this later
     def evaluatePolicy(self):
             #Calculate the Q for all samples using the new theta from LSTD
@@ -80,9 +80,9 @@ class PolicyEvaluation(LSPI):
             #4. Calculate ||Q-Q_MC||
             # returns all_phi_s (for samples used for LSTD) and td_erros (on samples used for LSTD)
             
-            A,b, all_phi_s, all_phi_s_a, all_phi_ns, all_phi_ns_na = self.LSTD()
-            td_errors           = self.calculateTDErrors(self.data_r,all_phi_s_a,all_phi_ns_na)            
-            PE_error            = linalg.norm(td_errors)
+            self.LSTD()
+            td_errors = self.calculateTDErrors()            
+            PE_error  = linalg.norm(td_errors)
             
             # Start Calculating the Policy Evaluation Error
 #            PE_error_time_start = time()
@@ -97,4 +97,4 @@ class PolicyEvaluation(LSPI):
 #            PE_error            = linalg.norm(Q.ravel()-self.Q_MC)
 #            self.logger.log("||Delta V|| = %f" % PE_error)
             self.logger.log("||TD-Errors|| = %f " % linalg.norm(td_errors))
-            return all_phi_s, PE_error, td_errors 
+            return PE_error, td_errors 
