@@ -25,6 +25,7 @@ except ImportError:
     print 'please edit the variable tmp_directory in GeneralTools.py accordingly'
     print 'with the absolute path to any readable/writeable directory.'
     HOME_DIR = tmp_directory
+    CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
 import itertools
 import platform
 import pdb
