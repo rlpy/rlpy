@@ -31,7 +31,7 @@ class PolicyEvaluation(LSPI):
     def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.',re_iterations = 100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' %(target_path,className(domain))
         self.re_iterations  = re_iterations # Number of iterations over LSPI and iFDD
-        super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, max_window = sample_window, steps_between_LSPI = sample_window)
+        super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, max_window = sample_window, steps_between_LSPI = sample_window, re_iterations = re_iterations)
         # Load the fixedPolicy Estimation if it does not exist create it
         if self.LOAD_POLICY_FILE:
             if not os.path.exists(self.compare_with_me):
@@ -46,8 +46,6 @@ class PolicyEvaluation(LSPI):
             self.S      = DATA[:,arange(self.domain.state_space_dims)]
             self.A      = DATA[:,self.domain.state_space_dims].astype(uint16)
             self.Q_MC   = DATA[:,self.domain.state_space_dims+1]
-        if logger and hasFunction(self.representation,'batchDiscover'):
-            logger.log('Max Representation Expansion Iterations:\t%d' % re_iterations)
     def learn(self,s,a,r,ns,na,terminal):
         self.process(s,a,r,ns,na,terminal)
         if self.samples_count == self.max_window:
