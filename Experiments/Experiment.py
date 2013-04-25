@@ -23,10 +23,12 @@ from Domains import *
 from Representations import *
 
 ## The Experiment controls the training, testing, and evaluation of the \ref Agents.Agent.Agent "Agent".
-# Reinforced learning is based around the concept of training an Agent to solve a task and later testing its ability to use what it has learned to solve the task.
+# Reinforcement learning is based around the concept of training an Agent to solve a task and later testing its ability to use what it has learned to solve the task.
 # This cycle forms a loop that the %Experiment defines and controls. First the Agent is repeatedly tasked with solving a problem determined by the \ref Domains.Domain.Domain "Domain",
-# restarting every time it succeeds or fails. Each time the Agent attempts to solve the task, it learns more about how to accomplish its goal. The %Experiment controls this loop of "training
-# sessions", iterating over each step in which the Agent and Domain interact. After a set number of training sessions defined by the %Experiment, the Agent is tested on its ability to solve the task. 
+# restarting after some termination condition is reached. (The sequence of steps between
+# terminations is known as an "episode.")
+# Each time the Agent attempts to solve the task, it learns more about how to accomplish its goal. The %Experiment controls this loop of "training
+# sessions", iterating over each step in which the Agent and Domain interact. After a set number of training sessions defined by the %Experiment, the Agent's current policy is tested for its performance on the task.
 # The %Experiment collects data on the Agent's performance and then puts the Agent through more training sessions. After a set number of loops, training sessions followed by an evaluation, the %Experiment
 # is complete and the gathered data is printed and saved. For each section, training and evaluation, the %Experiment determines whether or not the visualization of the step should generated.
 #

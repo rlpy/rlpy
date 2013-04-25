@@ -22,20 +22,20 @@ from pydoc import classname
 ## The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
 #
 # The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations 
-# about its surrondings. Based on that information, the Agent informs the %Domain what action it wants to perform. 
-# The %Domain then calculates the effects this action has on the enviroment and returns a new set of observations
-# to the Agent. This process repeats until the %Domain determines that the Agent has either completed its goal or 
+# about its surroundings. Based on that information, the Agent informs the %Domain what action it wants to perform. 
+# The %Domain then calculates the effects this action has on the environment and returns the new state, a reward/penalty, and whether or not the episode is over or not (thus resetting the agent to its initial state).
+# This process repeats until the %Domain determines that the Agent has either completed its goal or 
 # failed. The \ref Experiments.Experiment.Experiment "Experiment" controls this cycle.
 #
-# Because Agents are designed to be agnostic to the %Domain that they are acting withen and the problem they are trying to solve,
+# Because Agents are designed to be agnostic to the %Domain that they are acting within and the problem they are trying to solve,
 # the %Domain needs to completely describe everything related to the task. Therefore, the %Domain must not only define the observations 
-# that the Agent recieves, but also the states it can be in, the actions that it can perform, and the relationships between the three.
+# that the Agent receives, but also the states it can be in, the actions that it can perform, and the relationships between the three.
 # Note that because RL-Agents are designed around obtaining a reward, observations that the %Domain returns should include a reward.
 #
 # The \c %Domain class is a superclass that provides the basic framework for all Domains. It provides the methods and attributes
 # that allow child classes to interact with the \c %Agent and \c Experiment classes within the RLPy library.
 # %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
-# All new domain implimentations should inherit from \c %Domain.
+# All new domain implementations should inherit from \c %Domain.
 #
 # \note Though the state s can take on almost any
 # value, if a dimension is not marked as 'continuous'

@@ -23,11 +23,11 @@ from Representations import *
 ## The Policy determines the action that an \ref Agents.Agent.Agent "Agent" will take given its \ref Representations.Representation.Representation "Representation".
 # 
 # The Agent learns about the \ref Domains.Domain.Domain "Domain" as the two interact. Each step, the Agent passes information about its current state and information
-# revelent to that state to the %Policy. The %Policy uses this information to decide what action the Agent should perform next. \n
+# relevant to that state to the %Policy. The %Policy uses this information to decide what action the Agent should perform next. \n
 #
-# The \c %Policy class is a superclass that provides the basic framework for all policiess. It provides the methods and attributes
-# that allow child classes to interact with the \c Agent and \c Represemtatopm classes within the RLPy library. \n
-# All new policty implimentations should inherit from \c %Policy.
+# The \c %Policy class is a superclass that provides the basic framework for all policies. It provides the methods and attributes
+# that allow child classes to interact with the \c Agent and \c Representation classes within the RLPy library. \n
+# All new policy implementations should inherit from \c %Policy.
 
 class Policy(object):
 	## The \ref Representations.Representation.Representation "Representation" to be associated with

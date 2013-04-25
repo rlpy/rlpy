@@ -21,10 +21,12 @@
 from Tools import *
 ## The Representation is the \ref Agents.Agent.Agent "Agent"'s model of the \ref Domains.Domain.Domain "Domain".
 # 
-# As the Agent interacts with the Domain, it receives observations. The Agent passes these observations to its
-# %Representation which extracts and stores the useful information by updating its iternal model apporpriately. 
-# The %Representation then uses this updated model and the current state of the Agent supplied by the Domain to provide the Agent with
-# any information it needs. The Agent then uses this information and its \ref Policies.Policy.Policy "Policy" to select an action to perform. \n
+# As the Agent interacts with the Domain, it receives state updates. The Agent passes these associated state-action / state-action pairings
+# along with the associated reward for each timestep to its
+# %Representation, which is responsible for maintaining the value function for each state, usually in some
+# lower-dimensional feature space.
+# Agents can later query the %Representation for the value of being in a state V(s) or the value of taking an action
+# in a particular state ( known as the Q-function, Q(s,a) ).
 #
 # The \c %Representation class is a superclass that provides the basic framework for all representations. It provides the methods and attributes
 # that allow child classes to interact with the \c Agent and \c Domain classes within the RLPy library. \n

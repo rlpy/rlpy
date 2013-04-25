@@ -27,11 +27,11 @@ from Representations import *
 # Domain and uses this information to update its \ref Representations.Representation.Representation "Representation" of the Domain.
 # It then uses its \ref Policies.Policy.Policy "Policy" to select an action to perform. This process (observe, update, act) repeats 
 # itself until some goal or fail state, determined by the Domain, is reached. 
-# At this point the \ref Experiments.Experiment.Experiment "Experiment" determines whether the %Agent starts over or is tested.
+# At this point the \ref Experiments.Experiment.Experiment "Experiment" determines whether the %Agent starts over or has its current policy tested (without any exploration).
 # 
 # The \c %Agent class is a superclass that provides the basic framework for all RL agents. It provides the methods and attributes
 # that allow child classes to interact with the \c Domain, \c Representation, \c Policy, and \c Experiment classes within the RLPy library. \n
-# All new agent implimentations should inherit from \c %Agent.
+# All new agent implementations should inherit from \c %Agent.
 
 class Agent(object):
 	## The \ref Representations.Representation.Representation "Representation" to be used by the %Agent
