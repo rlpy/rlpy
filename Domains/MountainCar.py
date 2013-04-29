@@ -1,6 +1,6 @@
 #See http://acl.mit.edu/RLPy for documentation and future code updates
 
-#Copyright (c) 2013, Alborz Geramifard, Bob Klein
+#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

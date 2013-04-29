@@ -317,7 +317,7 @@ class PST(Domain):
         randomFails = randomFails > self.P_SENSOR_FAIL
         nsStruct.sensor = logical_and(sStruct.sensor, randomFails)
 
-        #Refuel those in base
+        #Refuel those in refuel node
         refuelIndices = nonzero(logical_and(sStruct.locations == UAVLocation.REFUEL, nsStruct.locations == UAVLocation.REFUEL))
         nsStruct.fuel[refuelIndices] = self.FULL_FUEL
 
