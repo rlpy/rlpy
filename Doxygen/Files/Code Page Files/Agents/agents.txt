@@ -1,5 +1,5 @@
 // \file agents.txt
 /*! 
 	\page Agents
-	\subpage Agent
+	\subpage Agent "Agent Superclass"
 */

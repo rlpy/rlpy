@@ -1,6 +1,7 @@
 // \file install.txt
 /*! 
   \page install.txt Installation
+  \anchor the_install_page
   \section Download Download
 Download RLPy <a href="http://acl.mit.edu/RLPy/RLPy.zip">Here</a> \n
 

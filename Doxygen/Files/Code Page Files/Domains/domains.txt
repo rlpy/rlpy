@@ -1,5 +1,5 @@
 // \file domains.txt
 /*! 
 	\page Domains
-	\subpage Domain
+	\subpage Domain "Domain Superclass"
 */

@@ -1,5 +1,5 @@
 // \file representations.txt
 /*! 
 	\page Representations
-	\subpage Representation
+	\subpage Representation "Representation Superclass"
 */

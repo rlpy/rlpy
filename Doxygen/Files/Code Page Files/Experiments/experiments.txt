@@ -1,5 +1,5 @@
 // \file experiments.txt
 /*! 
 	\page Experiments
-	\subpage Experiment
+	\subpage Experiment "Experiment Superclass"
 */

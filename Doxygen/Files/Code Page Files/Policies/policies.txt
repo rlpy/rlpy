@@ -1,5 +1,5 @@
 // \file policies.txt
 /*! 
 	\page Policies
-	\subpage Policy
+	\subpage Policy "Policy Superclass"
 */

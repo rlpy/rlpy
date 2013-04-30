@@ -4,29 +4,96 @@ var NAVTREE =
     [ "The Big Picture", "index.html", [
       [ "Welcome to the RL-Python Framework.", "index.html#big_pic_text", null ]
     ] ],
-    [ "Code", "_code.html", "_code" ],
-    [ "Frequently Asked Questions (FAQ)", "_f_a_q_8txt.html", null ],
-    [ "Installation", "install_8txt.html", [
+    [ "Installation", "install_8txt.html#the_install_page", [
       [ "Download", "install_8txt.html#Download", null ],
       [ "Prerequisites", "install_8txt.html#Prerequisites", null ],
-      [ "INSTALLATION: As easy as 1,2,3 (+4 to run)", "install_8txt.html#installation", null ],
-      [ "Insallation FAQ: Error/Solutions", "install_8txt.html#install_faq", null ]
+      [ "Installation", "install_8txt.html#installation", null ],
+      [ "Insallation FAQ", "install_8txt.html#install_faq", null ]
     ] ],
-    [ "Getting Started: A 10-15 Minute Introduction", "_i_shouldrun_8py.html", [
+    [ "Tutorial", "_i_shouldrun_8py.html", [
       [ "First Run", "_i_shouldrun_8py.html#First_Run", null ],
       [ "Interpreting Output", "_i_shouldrun_8py.html#Interpreting_Output", null ],
       [ "Analyzing Data", "_i_shouldrun_8py.html#Analyzing_Data", null ],
-      [ "A Slightly More Challenging Domain: Inverted Pendulum", "_i_shouldrun_8py.html#Inv_Pend", null ],
+      [ "Inverted Pendulum", "_i_shouldrun_8py.html#Inv_Pend", null ],
       [ "Conclusion", "_i_shouldrun_8py.html#Conclusion", null ]
     ] ],
+    [ "Frequently Asked Questions (FAQ)", "_f_a_q_8txt.html", null ],
     [ "Classes", null, [
       [ "Class List", "annotated.html", "annotated" ],
-      [ "Class Index", "classes.html", null ],
-      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
-      [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ]
+      [ "Class Index", "classes.html", null ]
+    ] ],
+    [ "Code", "_code.html", [
+      [ "Agents", "_agents.html", [
+        [ "Agent Superclass", "_agent.html", [
+          [ "Initialization", "_agent.html#Agent_init", null ],
+          [ "Update Alpha", "_agent.html#Agent_updateAlpha", null ],
+          [ "Print All", "_agent.html#Agent_printAll", null ],
+          [ "Monte-Carlo Episode", "_agent.html#Agent_MC_episode", null ],
+          [ "Q_MC", "_agent.html#Agent_Q_MC", null ],
+          [ "Evaluation", "_agent.html#Agent_eval", null ]
+        ] ]
+      ] ],
+      [ "Domains", "_domains.html", [
+        [ "Domain Superclass", "_domain.html", [
+          [ "Initialization", "_domain.html#Domain_init", null ],
+          [ "Show All", "_domain.html#Domain_show", null ],
+          [ "Show Domain", "_domain.html#Domain_showDomain", null ],
+          [ "Show Learning", "_domain.html#Domain_showLearning", null ],
+          [ "S0", "_domain.html#Domain_s0", null ],
+          [ "Possible Actions", "_domain.html#Domain_possActions", null ],
+          [ "Step", "_domain.html#Domain_step", null ],
+          [ "Expected Step", "_domain.html#Domain_exStep", null ],
+          [ "isTerminal", "_domain.html#Domain_isTerminal", null ],
+          [ "Test", "_domain.html#Domain_test", null ],
+          [ "Print All", "_domain.html#Domain_printAll", null ],
+          [ "Extended Discrete Dimensions", "_domain.html#Domain_extendDiscreteDimensions", null ],
+          [ "S0 Uniform", "_domain.html#Domain_s0uniform", null ],
+          [ "Saturate State", "_domain.html#Domain_saturateState", null ]
+        ] ]
+      ] ],
+      [ "Experiments", "_experiments.html", [
+        [ "Experiment Superclass", "_experiment.html", [
+          [ "Initialization", "_experiment.html#Experiment_init", null ],
+          [ "Performance Run", "_experiment.html#Experiment_performanceRun", null ],
+          [ "Print All", "_experiment.html#Experiment_printAll", null ],
+          [ "Save", "_experiment.html#Experiment_save", null ],
+          [ "Make Experiment Name", "_experiment.html#Experiment_makeExperimentName", null ]
+        ] ]
+      ] ],
+      [ "Policies", "_policies.html", [
+        [ "Policy Superclass", "_policy.html", [
+          [ "Initialization", "_policy.html#Policy_init", null ],
+          [ "Pi", "_policy.html#Policy_pi", null ],
+          [ "Turn Off Exploration", "_policy.html#Policy_turnOffExploration", null ],
+          [ "Turn On Exploration", "_policy.html#Policy_turnOnExploration", null ],
+          [ "Print All", "_policy.html#Policy_printAll", null ]
+        ] ]
+      ] ],
+      [ "Representations", "_representations.html", [
+        [ "Representation Superclass", "_representation.html", [
+          [ "Initialization", "_representation.html#Representation_init", null ],
+          [ "V", "_representation.html#Representation_V", null ],
+          [ "Qs", "_representation.html#Representation_Qs", null ],
+          [ "Q", "_representation.html#Representation_Q", null ],
+          [ "Phi", "_representation.html#Representation_phi", null ],
+          [ "Phi Sa", "_representation.html#Representation_phi_sa", null ],
+          [ "Add New Weight", "_representation.html#Representation_addNewWeight", null ],
+          [ "Hash State", "_representation.html#Representation_hashState", null ],
+          [ "Set Bins Per Dimension", "_representation.html#Representation_setBinsPerDimension", null ],
+          [ "Bin State", "_representation.html#Representation_binState", null ],
+          [ "Print All", "_representation.html#Representation_printAll", null ],
+          [ "Best Actions", "_representation.html#Representation_bestActions", null ],
+          [ "Best Action", "_representation.html#Representation_bestAction", null ],
+          [ "Phi Non Terminal", "_representation.html#Representation_phi_nonTerminal", null ],
+          [ "Active Initial Features", "_representation.html#Representation_activeInitialFeatures", null ],
+          [ "Batch Discover", "_representation.html#Representation_batchDiscover", null ],
+          [ "Batch Phi Sa", "_representation.html#Representation_batchPhi_s_a", null ],
+          [ "Batch Best Action", "_representation.html#Representation_batchBestAction", null ],
+          [ "Feature Type", "_representation.html#Representation_featureType", null ],
+          [ "Q One Step Look Ahead", "_representation.html#Representation_Q_oneStepLookAhead", null ],
+          [ "Qs One Step Look Ahead", "_representation.html#Representation_Qs_oneStepLookAhead", null ],
+          [ "V One Step Look Ahead", "_representation.html#Representation_V_oneStepLookAhead", null ]
+        ] ]
       ] ]
     ] ]
   ] ]
@@ -35,10 +102,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"class_domains_1_1_blocks_world_1_1_blocks_world.html#a7bad0fd4ac255d0e0a6c8cae33e353a5",
-"class_domains_1_1_mountain_car_1_1_mountain_car.html#a0c6c96e38dd59e5abeaa4dfe58a830eb",
-"class_domains_1_1_pendulum___swing_up_1_1_pendulum___swing_up.html#af214a9fb4dc1f34661a29fe7a83b9865",
-"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#a906d4ae59e02d539932640fddb3f7783"
+"class_domains_1_1_blocks_world_1_1_blocks_world.html#a95621a488f4bd554b9031ae0416b098d",
+"class_domains_1_1_mountain_car_1_1_mountain_car.html#a21c5a057476a6f973646c84aab848550",
+"class_domains_1_1_pit_maze_1_1_pit_maze.html#a2d40d468bcb54772b5c61ae0dc501c7f",
+"class_representations_1_1_b_e_b_f_1_1_b_e_b_f.html#ac775ee34451fdfa742b318538164070e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
