@@ -1,4 +1,16 @@
 #!/usr/bin/python
+
+# Developed by D. Elliott Williams on May 3rd, 2013 at MIT
+
+# Checks out a temporary clean copy of the RL-Python repo, generates documentation, removes unwanted files, and zips it into a zip.
+# Removes all folders and files specified by "Doxygen/Files/itemsNotInReleaseVersion.txt". Please add items using their path relative to the top of the RL-Python folder.
+
+# Note: This script is supports Windows and Unix, it does not support OSX. 
+# To work, this script needs to call svn, doxygen, and python from the command line. This should not be a problem if python, svn, and doxygen are properly installed.
+# It has been tested on Ubuntu and Windows. 
+
+# Please contact gadgy@mit.edu if you have any issues.
+
 try:
     import os, subprocess, shutil, traceback
     #---------------- Name Variables ----------------------#
@@ -7,19 +19,19 @@ try:
 
     #---------------- Checkout Repo -----------------------#
     print "Checking Out Fresh Copy of Repo"
-    p = subprocess.Popen('svn checkout  svn://acl.mit.edu/acl_collab/agf/' + REPO_NAME)
+    p = subprocess.Popen('svn checkout  svn://acl.mit.edu/acl_collab/agf/' + REPO_NAME, shell = True)
     p.wait()
-
+    
     #---------------- Run Doxygen -------------------------#
     print "Generating Doxygen"
     os.chdir('./' + REPO_NAME + '/Doxygen')
-    p = subprocess.Popen('doxygen Doxyfile')
+    p = subprocess.Popen('doxygen Doxyfile', shell = True)
     p.wait()
 
     #---------------- Fix Line Colors ---------------------#
     print "Fixing Colors"
     os.chdir('./Files')
-    p = subprocess.Popen('python colorFix.py')
+    p = subprocess.Popen('python colorFix.py', shell = True)
     p.wait()
 
     #---------------- Remove Unwanted Files ---------------#
