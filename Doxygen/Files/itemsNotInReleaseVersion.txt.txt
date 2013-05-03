@@ -1,0 +1,5 @@
+FILES
+elliottTesting.py
+
+DIRECTORIES
+CondorScripts
