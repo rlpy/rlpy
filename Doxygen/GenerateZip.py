@@ -58,7 +58,7 @@ try:
     #---------------- Remove Checkout ----------------------#
     print "Removing Temporary Checkout"
     shutil.rmtree('./' +OUTPUT_NAME)
-    raw_input("Succsess: press enter to exit")
+    raw_input("success: press enter to exit")
 except Exception as e:
     traceback.print_exc()
     raw_input("Error Occured: press enter to exit")

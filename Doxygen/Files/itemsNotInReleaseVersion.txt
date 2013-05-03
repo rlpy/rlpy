@@ -1,6 +1,10 @@
 FILES
 elliottTesting.py
+Doxygen/Doxyfile
+Doxygen/GenerateZip.py
+notes.txt
 
 DIRECTORIES
 CondorScripts
 Doxygen/Files
+.svn
