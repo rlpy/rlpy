@@ -2,9 +2,9 @@ import os
 global lineColor
 
 path = '.'
-while not os.path.exists(path+'/RLPy/Tools'):
+while not os.path.exists(path+'/Tools'):
     path = path + '/..'
-path += '\\RLPy\\Doxygen\\Output\\html'
+path += '\\Doxygen\\Output\\html'
 
 
 lineColor = '#E0E0E0'
@@ -50,6 +50,3 @@ for root,dirs,files in os.walk(path): #directory):
             f = open(os.path.join(root, file), mode='w')
             f.write(newString)
             f.close()
-            
-            
-print "done"

@@ -3,3 +3,4 @@ elliottTesting.py
 
 DIRECTORIES
 CondorScripts
+Doxygen/Files
