@@ -2,13 +2,16 @@ var NAVTREE =
 [
   [ "RLPy", "index.html", [
     [ "The Big Picture", "index.html", [
-      [ "Welcome to the RL-Python Framework.", "index.html#big_pic_text", null ]
+      [ "Welcome to the RL-Python Framework.", "index.html#big_pic_text", null ],
+      [ "Acknowledgements", "index.html#Acknowledgements", null ]
     ] ],
     [ "Installation", "install_8txt.html#the_install_page", [
       [ "Download", "install_8txt.html#Download", null ],
+      [ "Citations", "install_8txt.html#Citations", null ],
       [ "Prerequisites", "install_8txt.html#Prerequisites", null ],
       [ "Installation", "install_8txt.html#installation", null ],
-      [ "Insallation FAQ", "install_8txt.html#install_faq", null ]
+      [ "Insallation FAQ", "install_8txt.html#install_faq", null ],
+      [ "Copyright", "install_8txt.html#Copyright", null ]
     ] ],
     [ "Tutorial", "_i_shouldrun_8py.html", [
       [ "First Run", "_i_shouldrun_8py.html#First_Run", null ],

@@ -26,4 +26,7 @@ If the full model of the MDP is known, Dynamic Programming techniques can be use
 
 Notice that each of the components mentioned here has several realizations in RLPy, yet this website provides guidance only on the main abstaract classes, namely: \ref Experiments.Experiment.Experiment "Experiment", \ref Agents.Agent.Agent "Agent", \ref MDPSolvers.MDPSolver.MDPSolver "MDP Solver", \ref Domains.Domain.Domain "Domain", \ref Representations.Representation.Representation "Representation", and \ref Policies.Policy.Policy "Policy". \n
 The \ref First_Run "tutorial page" provides simple 10-15 minutes examples on how various experiments can be setup and used.\n
+
+  \section Acknowledgements
+This project was partially funded by the ONR and AFOSR grants. \n 
 */
