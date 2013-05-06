@@ -16,10 +16,13 @@ try:
     #---------------- Name Variables ----------------------#
     REPO_NAME = 'RL-Python'
     OUTPUT_NAME = 'RLPy'
+    USER_NAME = 'gadgy'
+    DOMAIN_NAME = 'athena.dialup.mit.edu'
+    DEST_FOLDER = 'Desktop'
 
     #---------------- Checkout Repo -----------------------#
     print "Checking Out Fresh Copy of Repo"
-    p = subprocess.Popen('svn checkout  svn://acl.mit.edu/acl_collab/agf/' + REPO_NAME, shell = True)
+    p = subprocess.Popen('svn export svn://acl.mit.edu/acl_collab/agf/' + REPO_NAME, shell = True)
     p.wait()
     
     #---------------- Run Doxygen -------------------------#
@@ -33,7 +36,12 @@ try:
     os.chdir('./Files')
     p = subprocess.Popen('python colorFix.py', shell = True)
     p.wait()
-
+    
+    #---------------- Updating Website ---------------#
+    p = subprocess.Popen('scp -r ./' + REPO_NAME + '/Doxygen/Output/testfolder ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
+    p.wait()
+    
+    
     #---------------- Remove Unwanted Files ---------------#
     print "Removing Files"
     f = open('./itemsNotInReleaseVersion.txt', mode='r')

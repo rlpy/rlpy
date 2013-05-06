@@ -7,4 +7,3 @@ notes.txt
 DIRECTORIES
 CondorScripts
 Doxygen/Files
-.svn
