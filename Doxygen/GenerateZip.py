@@ -16,9 +16,11 @@ try:
     #---------------- Name Variables ----------------------#
     REPO_NAME = 'RL-Python'
     OUTPUT_NAME = 'RLPy'
+    
     USER_NAME = 'gadgy'
     DOMAIN_NAME = 'athena.dialup.mit.edu'
     DEST_FOLDER = 'Desktop'
+    OPTIONS = '-r'
 
     #---------------- Checkout Repo -----------------------#
     print "Checking Out Fresh Copy of Repo"
@@ -39,7 +41,7 @@ try:
     
     #---------------- Updating Website ---------------#
     print "Updating website"
-    p = subprocess.Popen('scp -r ./../Output/testfolder ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
+    p = subprocess.Popen('scp '+ OPTIONS +' ./../Output/html ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
     p.wait()
     
     
