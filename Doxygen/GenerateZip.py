@@ -38,7 +38,8 @@ try:
     p.wait()
     
     #---------------- Updating Website ---------------#
-    p = subprocess.Popen('scp -r ./' + REPO_NAME + '/Doxygen/Output/testfolder ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
+    print "Updating website"
+    p = subprocess.Popen('scp -r ./../Output/testfolder ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
     p.wait()
     
     
