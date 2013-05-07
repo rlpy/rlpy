@@ -20,7 +20,7 @@ try:
     USER_NAME = 'gadgy'
     DOMAIN_NAME = 'athena.dialup.mit.edu'
     DEST_FOLDER = 'Desktop'
-    OPTIONS = '-r'
+    OPTIONS = '-r -q'
 
     #---------------- Checkout Repo -----------------------#
     print "Checking Out Fresh Copy of Repo"
