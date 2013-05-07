@@ -98,7 +98,13 @@ Then run the provided script with ./ubuntu_setup.sh\n
 \n
 \n
 \n
-c) OSX - Open a terminal window, navigate to the Installation folder,
+c) Mac OSX\n
+c.i) The Command Line Tools (CLT) and/or XCode are required to use the script.
+If you are unsure of your setup, type " xcode-select --version " at a terminal.\n
+If you don't see a valid version number appear, follow the instructions here to
+setup your environment: ( http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/ )\n
+\n
+c.ii) Open a terminal window, navigate to the Installation folder,
 and enter 'chmod u+x OSX_setup.sh'\n
 Then run the provided script with ./OSX_setup.sh\n
 \n
