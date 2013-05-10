@@ -39,13 +39,6 @@ try:
     p = subprocess.Popen('python colorFix.py', shell = True)
     p.wait()
     
-    #---------------- Updating Website ---------------#
-    print "Updating website"
-    p = subprocess.Popen('scp '+ OPTIONS +' ./../Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
-    p.wait()
-    print 
-    
-    
     #---------------- Remove Unwanted Files ---------------#
     print "Removing Files"
     f = open('./itemsNotInReleaseVersion.txt', mode='r')
@@ -78,11 +71,18 @@ try:
     os.chdir('.//..')
     os.rename('./' +REPO_NAME,'./' +OUTPUT_NAME)
     shutil.make_archive(OUTPUT_NAME, "zip", root_dir='.', base_dir='.//' + OUTPUT_NAME)
+    shutil.copy('./' +OUTPUT_NAME + '.zip', './' + OUTPUT_NAME+ '/Doxygen/Output/' + OUTPUT_NAME)
 
+    #---------------- Updating Website ---------------#
+    print "Updating website"
+    p = subprocess.Popen('scp '+ OPTIONS +' ./../Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
+    p.wait()
+    print 
+    
     #---------------- Remove Checkout ----------------------#
-    print "Removing Temporary Checkout"
-    shutil.rmtree('./' +OUTPUT_NAME)
-    raw_input("success: press enter to exit")
+    #print "Removing Temporary Checkout"
+    #shutil.rmtree('./' +OUTPUT_NAME)
+    #raw_input("success: press enter to exit")
 except Exception as e:
     traceback.print_exc()
     raw_input("Error Occured: press enter to exit")
