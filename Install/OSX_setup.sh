@@ -55,6 +55,28 @@ else
     echo -e "\nPython version valid.\n"
 fi
 
+echo -e "Now installing setuptools, required for package installation using pip."
+curl -O http://python-distribute.org/distribute_setup.py
+sudo python distribute_setup.py
+
+echo -e "\nNow installing gfortran."
+brew install gfortran
+echo -e "gfortran installation complete."
+
+echo -e "\n Now installing pip."
+sudo easy_install pip
+echo -e "pip installation complete."
+
+echo -e "\nBeginning installation of required Python packages.\n\n"
+#echo -e "Now installing swig, required for scipy."
+# nose is used to run unit tests on packages
+#sudo pip install nose
+
+#brew install swig
+sudo pip install numpy
+sudo pip install scipy
+brew install pkg-config
+
 # Check for numpy and scipy installation
 EXIT_CODE=`python test_numpy_scipy.py`
 if [ $EXIT_CODE -eq 1 ]; then
@@ -78,41 +100,12 @@ if [ $EXIT_CODE -eq 0 ]; then
     echo -e "Both numpy and scipy have been detected.  Installation will proceed.\n"
 fi
 
-echo -e "Now installing setuptools, required for package installation using pip."
-curl -O http://python-distribute.org/distribute_setup.py
-sudo python distribute_setup.py
-
-echo -e "\n Now installing pip."
-sudo easy_install pip
-echo -e "pip installation complete."
-
-echo -e "\nBeginning installation of required packages.\n\n"
-echo -e "Now installing swig, required for scipy."
-brew install swig
-#sudo pip install numpy
-#sudo pip install scipy
-#sudo pip install matplotlib
+sudo pip install matplotlib
 sudo pip install networkx
-# nose is used to run unit tests on packages
-#sudo pip install nose
 
 # TODO: Scikit learn also requires setuptools, some sites say no further update req'd.
 # Must test below on fresh system. 
-INVALID_INPUT="1" # Start with improper directory
-while [ "$INVALID_INPUT" -ne 0 ]
-do
-    echo -e "\nDo you want to install the package scikit-learn as well?"
-    echo -e "(Highly recommended, required for Pendulum domain and BEBF representation)"
-    echo -e "[Enter 1 or 2]"
-    select yes_no in "Yes" "No";
-    do
-        case $yes_no in
-           Yes ) sudo pip install -U scikit-learn; echo -e "\nInstallation of scikit-learn complete.\n"; INVALID_INPUT="0"; break;;
-            No ) echo -e "\nUser opted to ignore scikit-learn.\n"; INVALID_INPUT="0"; break;;
-             * ) echo -e "Unrecognized Input: Please enter [0 or 1]\n\n\n"; break;;
-        esac
-    done
-done
+sudo pip install -U scikit-learn
 
 echo -e "A list of all installed packages is shown below.\n"
 pip freeze
@@ -288,8 +281,14 @@ echo "# See isOnCluster()."
 # No need to create desktop shortcut to source files, .launchd.conf automatically
 # adds variables on user login to all programs launched by user.
 
-echo -e "You must *** RESTART YOUR COMPUTER *** for environmental"
-echo -e "variable changes to take effect."
+# Below removed per agf request, but it remains a true statement :)
+# As of this writing, we just aren't relying on environment variables at all.
+# TODO - Suggest exporting the variable at end of script, in addition to writing
+# config file, to eliminate need for restart.
+
+
+#echo -e "You must *** RESTART YOUR COMPUTER *** for environmental"
+#echo -e "variable changes to take effect."
 
 
 echo -e "\n"
