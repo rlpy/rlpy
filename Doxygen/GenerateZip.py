@@ -41,8 +41,9 @@ try:
     
     #---------------- Updating Website ---------------#
     print "Updating website"
-    p = subprocess.Popen('scp '+ OPTIONS +' ./../Output/html ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
+    p = subprocess.Popen('scp '+ OPTIONS +' ./../Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
     p.wait()
+    print 
     
     
     #---------------- Remove Unwanted Files ---------------#

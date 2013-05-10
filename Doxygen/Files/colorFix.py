@@ -4,7 +4,7 @@ global lineColor
 path = '.'
 while not os.path.exists(path+'/Tools'):
     path = path + '/..'
-path += '\\Doxygen\\Output\\html'
+path += '\\Doxygen\\Output\\RLPy'
 
 
 lineColor = '#E0E0E0'
