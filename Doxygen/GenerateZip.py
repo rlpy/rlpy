@@ -80,8 +80,8 @@ try:
     print 
     
     #---------------- Remove Checkout ----------------------#
-    #print "Removing Temporary Checkout"
-    #shutil.rmtree('./' +OUTPUT_NAME)
+    print "Removing Temporary Checkout"
+    shutil.rmtree('./' +OUTPUT_NAME)
     raw_input("success: press enter to exit")
 except Exception as e:
     traceback.print_exc()
