@@ -14,7 +14,6 @@ var searchData=
   ['policy',['policy',['../class_agents_1_1_agent_1_1_agent.html#ad986b73e9d5f47a623a9b6d773c25e34',1,'Agents::Agent::Agent']]],
   ['policy',['Policy',['../class_policies_1_1_policy_1_1_policy.html',1,'Policies::Policy']]],
   ['policyevaluation',['PolicyEvaluation',['../class_agents_1_1_policy_evaluation_1_1_policy_evaluation.html',1,'Agents::PolicyEvaluation']]],
-  ['policyiteration',['PolicyIteration',['../class_m_d_p_solvers_1_1_policy_iteration_1_1_policy_iteration.html',1,'MDPSolvers::PolicyIteration']]],
   ['positon_5flimits',['POSITON_LIMITS',['../class_domains_1_1_cart_pole_1_1_cart_pole.html#ac824c4a637353beda2ff307e38bd283e',1,'Domains::CartPole::CartPole']]],
   ['possibleactions',['possibleActions',['../class_domains_1_1_domain_1_1_domain.html#a397b5376f221417d22f8c40a1a7070eb',1,'Domains::Domain::Domain']]],
   ['printall',['printAll',['../class_agents_1_1_agent_1_1_agent.html#a64fe699622519d8edc3a69716ce076c8',1,'Agents.Agent.Agent.printAll()'],['../class_domains_1_1_domain_1_1_domain.html#a64fe699622519d8edc3a69716ce076c8',1,'Domains.Domain.Domain.printAll()'],['../class_experiments_1_1_experiment_1_1_experiment.html#a64fe699622519d8edc3a69716ce076c8',1,'Experiments.Experiment.Experiment.printAll()'],['../class_policies_1_1_policy_1_1_policy.html#a64fe699622519d8edc3a69716ce076c8',1,'Policies.Policy.Policy.printAll()'],['../class_representations_1_1_representation_1_1_representation.html#a64fe699622519d8edc3a69716ce076c8',1,'Representations.Representation.Representation.printAll()']]],

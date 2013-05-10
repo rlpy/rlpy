@@ -90,23 +90,6 @@ var annotated =
         [ "OnlineExperiment", "class_experiments_1_1_online_experiment_1_1_online_experiment.html", "class_experiments_1_1_online_experiment_1_1_online_experiment" ]
       ] ]
     ] ],
-    [ "MDPSolvers", null, [
-      [ "MDPSolver", null, [
-        [ "MDPSolver", "class_m_d_p_solvers_1_1_m_d_p_solver_1_1_m_d_p_solver.html", "class_m_d_p_solvers_1_1_m_d_p_solver_1_1_m_d_p_solver" ]
-      ] ],
-      [ "PolicyIteration", null, [
-        [ "PolicyIteration", "class_m_d_p_solvers_1_1_policy_iteration_1_1_policy_iteration.html", "class_m_d_p_solvers_1_1_policy_iteration_1_1_policy_iteration" ]
-      ] ],
-      [ "TrajectoryBasedPolicyIteration", null, [
-        [ "TrajectoryBasedPolicyIteration", "class_m_d_p_solvers_1_1_trajectory_based_policy_iteration_1_1_trajectory_based_policy_iteration.html", "class_m_d_p_solvers_1_1_trajectory_based_policy_iteration_1_1_trajectory_based_policy_iteration" ]
-      ] ],
-      [ "TrajectoryBasedValueIteration", null, [
-        [ "TrajectoryBasedValueIteration", "class_m_d_p_solvers_1_1_trajectory_based_value_iteration_1_1_trajectory_based_value_iteration.html", "class_m_d_p_solvers_1_1_trajectory_based_value_iteration_1_1_trajectory_based_value_iteration" ]
-      ] ],
-      [ "ValueIteration", null, [
-        [ "ValueIteration", "class_m_d_p_solvers_1_1_value_iteration_1_1_value_iteration.html", "class_m_d_p_solvers_1_1_value_iteration_1_1_value_iteration" ]
-      ] ]
-    ] ],
     [ "Policies", null, [
       [ "eGreedy", null, [
         [ "eGreedy", "class_policies_1_1e_greedy_1_1e_greedy.html", "class_policies_1_1e_greedy_1_1e_greedy" ]

@@ -35,12 +35,6 @@ var hierarchy =
         [ "BatchExperiment", "class_experiments_1_1_batch_experiment_1_1_batch_experiment.html", null ],
         [ "OnlineExperiment", "class_experiments_1_1_online_experiment_1_1_online_experiment.html", null ]
       ] ],
-      [ "MDPSolver", "class_m_d_p_solvers_1_1_m_d_p_solver_1_1_m_d_p_solver.html", [
-        [ "PolicyIteration", "class_m_d_p_solvers_1_1_policy_iteration_1_1_policy_iteration.html", null ],
-        [ "TrajectoryBasedPolicyIteration", "class_m_d_p_solvers_1_1_trajectory_based_policy_iteration_1_1_trajectory_based_policy_iteration.html", null ],
-        [ "TrajectoryBasedValueIteration", "class_m_d_p_solvers_1_1_trajectory_based_value_iteration_1_1_trajectory_based_value_iteration.html", null ],
-        [ "ValueIteration", "class_m_d_p_solvers_1_1_value_iteration_1_1_value_iteration.html", null ]
-      ] ],
       [ "Policy", "class_policies_1_1_policy_1_1_policy.html", [
         [ "eGreedy", "class_policies_1_1e_greedy_1_1e_greedy.html", null ],
         [ "FixedPolicy", "class_policies_1_1_fixed_policy_1_1_fixed_policy.html", null ],
