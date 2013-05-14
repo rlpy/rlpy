@@ -12,7 +12,7 @@ rlpy[at]mit[dot]edu\n
 Alborz Geramifard and Robert H Klein and Jonathan P How, RLPy: The Reinforcement Learning Library for Education and Research, 2013. http://acl.mit.edu/RLPy, April, 2013 
 \n
 \n
-<B> Bibtex </B>
+<B> Bibtex </B>\n
 \@ONLINE{RLPy, \n
 author = {Alborz Geramifard and Robert H Klein and Jonathan P How}, \n
 title = {{RLPy: The Reinforcement Learning Library for Education and Research}}, \n
