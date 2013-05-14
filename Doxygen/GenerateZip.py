@@ -75,13 +75,13 @@ try:
 
     #---------------- Updating Website ---------------#
     print "Updating website"
-    #p = subprocess.Popen('scp '+ OPTIONS +' ./' +OUTPUT_NAME +'/Doxygen/Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
-    #p.wait()
-    print "THIS IS THE COMMAND THAT I WOULD USE TO SCP"
-    print 'scp '+ OPTIONS +' ./' +OUTPUT_NAME +'/Doxygen/Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER
-    print 'Note that the destination folder is /var/www/acl.mit.edu/htdocs/ not /var/www/acl.mit.edu/htdocs/RLPy.'
-    print 'This is because I am scping the entire RLPy folder; the former address will enable the new folder to overwright the old while the later would create a new RLPy INSIDE the old RLPy'
-    print 
+    p = subprocess.Popen('scp '+ OPTIONS +' ./' +OUTPUT_NAME +'/Doxygen/Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER, shell = True)
+    p.wait()
+    #print "THIS IS THE COMMAND THAT I WOULD USE TO SCP"
+    #print 'scp '+ OPTIONS +' ./' +OUTPUT_NAME +'/Doxygen/Output/RLPy ' + USER_NAME + '@' + DOMAIN_NAME + ':' + DEST_FOLDER
+    #print 'Note that the destination folder is /var/www/acl.mit.edu/htdocs/ not /var/www/acl.mit.edu/htdocs/RLPy.'
+    #print 'This is because I am scping the entire RLPy folder; the former address will enable the new folder to overwright the old while the later would create a new RLPy INSIDE the old RLPy'
+    #print 
     
     #---------------- Remove Checkout ----------------------#
     print "Removing Temporary Checkout"

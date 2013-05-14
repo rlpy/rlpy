@@ -3,7 +3,7 @@
   \mainpage The Big Picture
   \anchor big_pic
   \image html newsmallBigPicture.png
-  \section big_pic_text Welcome to the RL-Python Framework.
+  \section big_pic_text Welcome to the RLPy Framework.
   
 
 \b Vision
