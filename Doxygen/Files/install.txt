@@ -16,7 +16,7 @@ author = {Alborz Geramifard and Robert H Klein and Jonathan P How}, \n
 title = {{RLPy: The Reinforcement Learning Library for Education and Research}}, \n
 month = April, \n
 year = {2013}, \n
-howpublished = {\url{http://acl.mit.edu/RLPy}}, \n
+howpublished = {http://acl.mit.edu/RLPy}, \n
 } \n
   \section Prerequisites Prerequisites
 The only requirements to run and contribute to RLPy are
