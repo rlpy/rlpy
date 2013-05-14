@@ -20,7 +20,9 @@ try:
     USER_NAME = 'acl'
     DOMAIN_NAME = 'acl.mit.edu'
     DEST_FOLDER = '/var/www/acl.mit.edu/htdocs/'
-    OPTIONS = '-rvq'
+    #OPTIONS = '-rvq' VERBOS
+    OPTIONS = '-rq'
+    
 
     #---------------- Remove Files From Previous Runs -----------------------#
     for dir in ['RLPy', 'RL-Python','Output']:
@@ -29,7 +31,7 @@ try:
 
     #---------------- Checkout Repo -----------------------#
     print "Checking Out Fresh Copy of Repo"
-    p = subprocess.Popen('svn export svn://acl.mit.edu/acl_collab/agf/' + REPO_NAME, shell = True)
+    p = subprocess.Popen('svn -q export svn://acl.mit.edu/acl_collab/agf/' + REPO_NAME, shell = True)
     p.wait()
     
     #---------------- Run Doxygen -------------------------#
