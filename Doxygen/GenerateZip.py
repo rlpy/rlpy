@@ -19,7 +19,7 @@ try:
     
     USER_NAME = 'acl'
     DOMAIN_NAME = 'acl.mit.edu'
-    DEST_FOLDER = '/var/www/acl.mit.edu/htdocs/'
+    DEST_FOLDER = 'var/www/acl.mit.edu/htdocs/'
     OPTIONS = '-r -q'
 
     #---------------- Checkout Repo -----------------------#
