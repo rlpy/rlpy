@@ -19,8 +19,13 @@ try:
     
     USER_NAME = 'acl'
     DOMAIN_NAME = 'acl.mit.edu'
-    DEST_FOLDER = 'var/www/acl.mit.edu/htdocs/'
+    DEST_FOLDER = '/var/www/acl.mit.edu/htdocs/'
     OPTIONS = '-r -q'
+
+    #---------------- Remove Files From Previous Runs -----------------------#
+    for dir in ['RLPy', 'RL-Python','Output']:
+        if os.path.exists(dir): shutil.rmtree(dir)
+    if os.path.isfile('RLPy.zip'): os.remove('RLPy.Zip')
 
     #---------------- Checkout Repo -----------------------#
     print "Checking Out Fresh Copy of Repo"
@@ -69,6 +74,7 @@ try:
     #---------------- Create Zip --------------------------#
     print "Zipping"
     os.chdir('.//..')
+    #if os.path.exist('./' +REPO_NAME):
     os.rename('./' +REPO_NAME,'./' +OUTPUT_NAME)
     shutil.make_archive(OUTPUT_NAME, "zip", root_dir='.', base_dir='.//' + OUTPUT_NAME)
     shutil.copy('./' +OUTPUT_NAME + '.zip', './' + OUTPUT_NAME+ '/Doxygen/Output/' + OUTPUT_NAME)

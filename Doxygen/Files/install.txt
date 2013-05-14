@@ -27,15 +27,12 @@ Installation FAQ available at bottom, general FAQ available on the FAQ page
 or in the file FAQ.txt located in the RLPy folder.\n
 \n
 Recommended Operating Systems:\n
-a) Windows 32-bit\n
-b) Ubuntu Linux 32/64-bit\n
-c) Mac OSX ***\n
+a) <B>Windows 32-bit</B>\n
+b) <B>Ubuntu Linux 32/64-bit</B>\n
+c) <B>Mac OSX</B> \n
 \n
-*** There is limited support for Mac OSX; the framework will operate as designed
-once required package dependencies (numpy, scipy, and scikit-learn) are installed,
-but manual installation is likely required for some if not all packages.\n
-\n
-If your setup does not match those recommended above (or if you are running (c) Mac OSX,)
+
+If your setup does not match those recommended above
 you must download the packages manually, described in manual_install.txt.\n
 \n
 \n
@@ -82,7 +79,7 @@ IDE, or whatever final location you intend it to be.\n
 THEN Run the installer script for your operating system: (on windows, first extract
 the zip file Win32_files.zip into the Install folder)\n
 \n
-a) Windows 32-bit\n
+a) <B>Windows 32-bit</B>\n
 a.i) Open a command prompt window with administrative privileges:\n
 	Windows 8: 		 WindowsKey-X, select "Command Prompt Admin"\n
 	Windows 7,Vista: type 'cmd' in the start menu, right click and open with admin privileges\n
@@ -91,13 +88,13 @@ a.ii) Navigate to the Install directory and run the .bat script.\n
 \n
 \n
 \n
-b) Ubuntu - Open a terminal window, navigate to the Installation folder,
+b) <B>Ubuntu</B> - Open a terminal window, navigate to the Installation folder,
 and enter 'chmod u+x ubuntu_setup.sh'\n
 Then run the provided script with ./ubuntu_setup.sh\n
 \n
 \n
 \n
-c) Mac OSX\n
+c) <B> Mac OSX </B> \n
 c.i) The Command Line Tools (CLT) and/or XCode are required to use the script.
 If you are unsure of your setup, type " xcode-select --version " at a terminal.\n
 If you don't see a valid version number appear, follow the instructions here to
