@@ -9,7 +9,7 @@ Please direct any questions or bug reports to\n
 rlpy[at]mit[dot]edu\n
 
   \section Citations Citations
-Alborz Geramifard and Robert H Klein and Jonathan P How, RLPy: The Reinforcement Learning Li- brary for Education and Research, 2013. URL http://acl.mit.edu/RLPy
+Alborz Geramifard and Robert H Klein and Jonathan P How, RLPy: The Reinforcement Learning Library for Education and Research, 2013. URL http://acl.mit.edu/RLPy
 
 \@ONLINE{RLPy, \n
 author = {Alborz Geramifard and Robert H Klein and Jonathan P How}, \n

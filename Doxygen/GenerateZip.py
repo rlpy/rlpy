@@ -20,7 +20,7 @@ try:
     USER_NAME = 'acl'
     DOMAIN_NAME = 'acl.mit.edu'
     DEST_FOLDER = '/var/www/acl.mit.edu/htdocs/'
-    OPTIONS = '-r -q'
+    OPTIONS = '-rvq'
 
     #---------------- Remove Files From Previous Runs -----------------------#
     for dir in ['RLPy', 'RL-Python','Output']:
