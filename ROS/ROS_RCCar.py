@@ -72,7 +72,7 @@ class ROS_RCCar(Domain):
     def __init__(self, noise = 0, logger = None):
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.YMIN, self.YMAX], [self.SPEEDMIN, self.SPEEDMAX], [self.HEADINGMIN, self.HEADINGMAX]])
         self.Noise = noise
-	self.ros = RC_Com()
+        self.ros = RC_Com()
         super(RCCar,self).__init__(logger)
     def step(self, s, a):
         x,y,speed,heading       = s
