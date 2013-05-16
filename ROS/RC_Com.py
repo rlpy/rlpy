@@ -21,6 +21,10 @@ from car_sim.msg import *
 #
 # The visualize flag determines whether Mark's simulation should visualize the simulation. Use this command to initialize the visualizer: "roslaunch raven_rviz raven_world.launch"
 #
+# See the following two tutorials to get ROS communicating between multiple computers:
+# http://www.ros.org/wiki/ROS/NetworkSetup
+# http://www.ros.org/wiki/ROS/Tutorials/MultipleMachines
+#
 # Email me at gadgy@mit.edu if you have any questions, Elliott
 
 class RC_Com():
