@@ -50,8 +50,6 @@ class Pendulum_InvertedBalance(Pendulum):
     AVAIL_FORCE         = array([-50,0,50]) 
 	## kilograms, kg - Mass of the pendulum arm
     MASS_PEND           = 2.0   
-	## kilograms, kg - Mass of cart
-    MASS_CART           = 8.0   
 	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
     LENGTH              = 1.0   
 	## m/s^2 - gravitational constant
@@ -66,7 +64,7 @@ class Pendulum_InvertedBalance(Pendulum):
 	## Limit on theta (Note that this may affect your representation's discretization)
     ANGLE_LIMITS        = [-pi/2.0, pi/2.0] 
 	## Limits on pendulum rate, per 1Link of Lagoudakis & Parr
-    ANGULAR_RATE_LIMITS = [-2, 2] # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
+    ANGULAR_RATE_LIMITS = [-2*pi, 2*pi] # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.                                
 	## Max number of steps per trajectory (default 3000)
     episodeCap          = None  
