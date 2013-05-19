@@ -15,3 +15,4 @@ from Pendulum_SwingUp import Pendulum_SwingUp
 from FiftyChain import FiftyChain
 from FlipBoard import FlipBoard
 from RCCar import RCCar
+from Acrobot import Acrobot
