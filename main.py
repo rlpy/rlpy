@@ -18,13 +18,18 @@
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
 
+#Locate RLPy
+#================
 import sys, os
-#Add all paths
 RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
+if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+    print 'Error: Could not locate RLPy directory.' 
+    print 'Please make sure the package directory is named RLPy.'
+    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
+    sys.exit(1)
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
 sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
@@ -143,8 +148,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
 
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
     #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
