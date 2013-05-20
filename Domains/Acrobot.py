@@ -200,7 +200,7 @@ class Acrobot(Domain):
             else:# clockwise torque
                 self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2", ax =self.domain_fig)
                 
-        sleep(self.dt*4)
+        #sleep(self.dt*4)
         pl.draw()
     def showLearning(self,representation):
         pass
