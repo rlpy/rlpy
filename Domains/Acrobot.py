@@ -120,7 +120,7 @@ class Acrobot(Domain):
     
     def __init__(self, logger = None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        print 'hello'
+        #print 'hello'
         sys.stdout.flush()
         
         
@@ -150,7 +150,7 @@ class Acrobot(Domain):
             self.logger.log("length2:\t\t%0.2f(m)" % self.L2)
             self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
         
-        print 'initialized'
+        #print 'initialized'
         
         super(Acrobot,self).__init__(logger)     
     def showDomain(self,s,a = 0):
@@ -308,6 +308,6 @@ class StateIndex:
 
 if __name__ == '__main__':
     random.seed(0)
-    print 'hello?'
+    #print 'hello?'
     p = Acrobot();
     p.test(1000)
