@@ -179,7 +179,7 @@ program or batch file."\n
 S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )\n
 ===============================================================\n
 
-  \section Copyright Copyright
+  \section Copyright Copyright (BSD License)
   
 \verbatim
 Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
