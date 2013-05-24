@@ -75,3 +75,12 @@ class Q_LEARNING(Agent):
         if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
         # Else there are no nonzero elements, halt update.
  
+
+
+
+
+
+
+
+
+

@@ -4,6 +4,7 @@ BEFORE PUBLIC RELEASE:
 - Choose logo, maybe feature cartpole or blocks as part of image
 
 Tasks:
+- Make Config.py (perhaps use global variable)
 - Make the assumption that actions are discrete very visible (both code and website)
 - Eliminate BatchExperiment and fues the onlineExperiment with experiment
 - Make representation usable with policy and other stuff. Take the value function dependency out
