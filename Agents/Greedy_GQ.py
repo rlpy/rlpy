@@ -78,7 +78,9 @@ class Greedy_GQ(Agent):
         #Discover features if the representation has the discover method
         discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
-            self.representation.discover(phi_s,TDError)
+            expanded = self.representation.discover(phi_s,td_error)
+            if expanded:
+                # Correct the size of self.GQWeight
         
         # Set eligibility Traces to zero if it is end of the episode
         if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 

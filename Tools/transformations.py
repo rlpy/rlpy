@@ -1875,7 +1875,7 @@ def _import_module(name, package=None, warn=True, prefix='_py_', ignore='_'):
 
     """
     import warnings
-    from importlib import import_module
+    #from importlib import import_module
     try:
         if not package:
             module = import_module(name)
@@ -1897,7 +1897,7 @@ def _import_module(name, package=None, warn=True, prefix='_py_', ignore='_'):
         return True
 
 
-_import_module('_transformations')
+#_import_module('_transformations')
 
 if __name__ == "__main__":
     import doctest
