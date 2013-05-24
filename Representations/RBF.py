@@ -46,7 +46,7 @@ class RBF(Representation):
             bins                    = 4
             includeBorders          = False
             self.rbfs_mu, rbfs      = self.uniformRBFs(array([bins,bins]),includeBorders)
-            logger.log('Using 3x3 uniform RBFs => 9 RBFs + 1 constant.') 
+            logger.log('Using 3x3 uniform RBFs => 9 RBFs + 1 constant.')
             self.rbfs_sigma         = ones((rbfs,dims))
         elif isinstance(domain,GridWorld):
             # Put 20 equal in the intersections + 1 extra
@@ -55,7 +55,7 @@ class RBF(Representation):
             bins                    = 5
             includeBorders          = True
             self.rbfs_mu, rbfs      = self.uniformRBFs(array([bins,bins]),includeBorders)
-            logger.log('Using %dx%d uniform RBFs => %d RBFs + 1 constant.' % (bins+1,bins+1,rbfs)) 
+            logger.log('Using %dx%d uniform RBFs => %d RBFs + 1 constant.' % (bins+1,bins+1,rbfs))
             dim_widths              = (domain.statespace_limits[:,1]-domain.statespace_limits[:,0])
             self.rbfs_sigma         = empty((rbfs,dims))
             for d in arange(dims):
@@ -63,8 +63,8 @@ class RBF(Representation):
         else:
             #id = 2 # Best Performing.
             self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
-            id                  = 1    # Temporarily use this number as the 26th set of rbf performed the best in PST. For blocksworld non of the tried rbf worked. 
-            self.rbfFile        = '%d-rbfs.npy' % id # used to save or load RBFs
+            id                  = 1    # Temporarily use this number as the 26th set of rbf performed the best in PST. For blocksworld non of the tried rbf worked.
+            self.rbfFile        = '{}-{}-rbfs.npy'.format(id, self.domain.__name__) # used to save or load RBFs
             dims                = domain.state_space_dims
             self.rbfs_mu        = zeros((rbfs,dims))
             self.rbfs_sigma     = zeros((rbfs,dims))
@@ -87,7 +87,7 @@ class RBF(Representation):
                 data[1] = self.rbfs_sigma
                 save(self.rbfFile,data)
                 self.logger.log('Saved the RBFs to: %s' % self.rbfFile)
-                #random.uniform(dim_widths[d]/2.0,dim_widths[d]) 
+                #random.uniform(dim_widths[d]/2.0,dim_widths[d])
         if self.SHOW_CENTERS:
             pl.plot(self.rbfs_mu[:,1],self.rbfs_mu[:,0],'.b', markersize=10)
             pl.xlim(self.domain.statespace_limits[0])
@@ -101,8 +101,8 @@ class RBF(Representation):
         for i in arange(0,self.features_num-1):
             exponent = sum((s-self.rbfs_mu[i,:])**2/(2.0*self.rbfs_sigma[i,:]))
             F_s[i] = exp(-exponent)
-        return F_s 
-        #return normalize(F_s) DO NOT normalize the rbfs as it can make the learning much slower if you dont increase alpha proportionally. 
+        return F_s
+        #return normalize(F_s) DO NOT normalize the rbfs as it can make the learning much slower if you dont increase alpha proportionally.
     def uniformRBFs(self,bins_per_dimension, IncludeBorders = False):
         # Positions RBF Centers uniformly across the state space and returns the centers as RBFs-by-dims matrix
         # Each row is a center of an RBF
@@ -127,7 +127,7 @@ class RBF(Representation):
         #Find centers in each dimension
         domain      = self.domain
         dims        = domain.state_space_dims
-        rbfs_num    = prod(bins_per_dimension[:]+1) if IncludeBorders else prod(bins_per_dimension[:]-1)  
+        rbfs_num    = prod(bins_per_dimension[:]+1) if IncludeBorders else prod(bins_per_dimension[:]-1)
         all_centers = []
         for d in arange(dims):
             centers = linspace(domain.statespace_limits[d,0],domain.statespace_limits[d,1],bins_per_dimension[d]+1)
@@ -141,4 +141,4 @@ class RBF(Representation):
         return result, rbfs_num
     def featureType(self):
         return float
-        
+
