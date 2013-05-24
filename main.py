@@ -50,7 +50,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Etc
     #----------------------
     PERFORMANCE_CHECKS  = 10 
-    LEARNING_STEPS      = 10000 # Max number of learning steps
+    LEARNING_STEPS      = 500000 # Max number of learning steps
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -134,12 +134,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = Acrobot(logger = logger)
-    #domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
+    domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
@@ -161,8 +161,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
-    scaling         = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) / (TileCodingScaling * 1.)
-    representation  = TileCoding(domain,logger,TileCodingmemory,scaling,num_tilings)
+    #scaling         = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) / (TileCodingScaling * 1.)
+    #representation  = TileCoding(domain,logger,TileCodingmemory,scaling,num_tilings)
     # POLICY
     #================
     policy          = eGreedy(representation,logger, epsilon = EPSILON)

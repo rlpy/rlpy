@@ -81,7 +81,7 @@ class Greedy_GQ(Agent):
             expanded = self.representation.discover(phi_s,td_error)
             # Correct the size of self.GQWeight
             if expanded:
-                pass
+                self.GQWeight      = addNewElementForAllActions(self.GQWeight,self.domain.actions_num)
         
         # Set eligibility Traces to zero if it is end of the episode
         if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 

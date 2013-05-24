@@ -32,7 +32,7 @@ def unpackjob(args):
     main(*args)
 
 StartID         = 1
-FinishId        = 30
+FinishId        = 10
 RUNS            = arange(StartID,FinishId+1)
 #PROJECT_PATH    = 'Results/TEST'
 PROJECT_PATH    = '.'
