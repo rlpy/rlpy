@@ -21,7 +21,7 @@ import pstats
 import platform
 
 
-Output = 'TEST.pdf'
+Output = 'AFTER-CANOPY.pdf'
 print 'Profiling'
 cProfile.run('main(-1,PROJECT_PATH = "Results/Temp")', 'Profiling/profile.dat')
 p = pstats.Stats('Profiling/profile.dat')
