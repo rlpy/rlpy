@@ -271,7 +271,7 @@ class HelicopterHoverExtended(Domain):
 
 
 
-class HelicopterHover(HelicopterExtended):
+class HelicopterHover(HelicopterHoverExtended):
     """
     Implementation of a simulator that models one of the Stanford
     autonomous helicopters (an XCell Tempest helicopter) in the flight
@@ -306,6 +306,13 @@ class HelicopterHover(HelicopterExtended):
     domain_fig = None
     states_num = 12
     episodeCap = 6000
+    MAX_POS = 20.  # m
+    MAX_VEL = 10.  # m/s
+    MAX_ANG_RATE = 4 * np.pi
+    MAX_ANG = 1.
+    WIND_MAX = 5.
+    MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.) # ??
+
     continuous_dims = np.arange(12)
     statespace_limits = np.array([[-MAX_POS, MAX_POS]] * 3 + [[-MAX_VEL, MAX_VEL]] * 3
                                  + [[-MAX_ANG, MAX_ANG]] * 3 + [[-MAX_ANG_RATE, MAX_ANG_RATE]] * 3)
