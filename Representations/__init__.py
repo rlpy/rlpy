@@ -7,4 +7,4 @@ from iFDD import iFDD
 from Fourier import Fourier
 from BEBF import BEBF
 from OMPTD import OMPTD
-from tiles import TileCoding
+from TileCoding import TileCoding
