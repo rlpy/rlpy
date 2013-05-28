@@ -99,6 +99,9 @@ import numpy # We need to be able to reference numpy by name
 # BELOW we have opted to always use the custom count_nonzero function; see comments
 #
 
+def discrete_sample(p):
+    cp = numpy.cumsum(p)
+    return numpy.sum(cp <= numpy.random.rand(1))
 def matrix_mult(A,B):
     # TO BE COMPLETED!
     # This function is defined due to many frustration with the dot, * operators that behave differently based on the input values: sparse.matrix, matrix, ndarray and array
@@ -617,7 +620,7 @@ def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10
                                 patchB=None,
                                 connectionstyle=connectionstyle),
                 )
-        
+
 def drawHist(data,bins=50,fig=101):
     hist, bins = histogram(data,bins = bins)
     width = 0.7*(bins[1]-bins[0])
@@ -679,7 +682,7 @@ def sp_add2_array(sp,A):
     return A
 def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
-    
+
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.makedirs(path)
@@ -734,8 +737,8 @@ def padZeros(X,L):
         return new_X
     else:
         return X
-           
-            
+
+
 # Setup the latdex path
 #if sys.platform == 'darwin':
     #os.environ['PATH'] += ':' + TEXPATH
@@ -770,7 +773,7 @@ if module_exists('matplotlib'):
 
     # Try to use latex fonts, if available
     #rc('text',usetex=True)
-        
+
 #Colors
 PURPLE  = '\033[95m'
 BLUE    = '\033[94m'

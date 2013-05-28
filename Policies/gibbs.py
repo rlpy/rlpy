@@ -1,5 +1,6 @@
 from Policy import Policy, Logger
 import numpy as np
+from Tools import randSet, discrete_sample
 
 
 class GibbsPolicy(Policy):
@@ -11,7 +12,8 @@ class GibbsPolicy(Policy):
     """
 
     def pi(self, s):
-        return np.argmax(self.probabilities)
+        p = self.probabilities(s)
+        return discrete_sample(p)
 
     def dlogpi(self, s, a):
 
@@ -21,7 +23,7 @@ class GibbsPolicy(Policy):
         phi = self.representation.phi(s)
         res = -np.outer(v, phi)
         res.shape = self.representation.theta.shape
-        res[a * n:(a+1) * n] += phi
+        res[a * n:(a + 1) * n] += phi
         #res.shape = self.representation.theta.shape
         return res
 
@@ -31,6 +33,14 @@ class GibbsPolicy(Policy):
         """
         v = self.probabilities(s)
         return v[a]
+
+    @property
+    def theta(self):
+        return self.representation.theta
+
+    @theta.setter
+    def theta(self, v):
+        self.representation.theta = v
 
     def probabilities(self, s):
 
@@ -46,7 +56,6 @@ if __name__ == "__main__":
     from Domains import GridWorld
     from Representations import Tabular
     from scipy.optimize import check_grad, approx_fprime
-    from Tools import randSet
 
     MAZE = './Domains/GridWorldMaps/4x5.txt'
     NOISE = .3
@@ -76,4 +85,4 @@ if __name__ == "__main__":
             #print "f", f(theta, s, a)
             #print "df", df(theta, s, a)
             #print "df_approx", df_approx(theta, s, a)
-            print "Error" check_grad(f, df, theta, s, a)
+            print "Error", check_grad(f, df, theta, s, a)

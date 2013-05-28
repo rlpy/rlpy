@@ -49,8 +49,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 10 
-    LEARNING_STEPS      = 500000 # Max number of learning steps
+    PERFORMANCE_CHECKS  = 20
+    LEARNING_STEPS      = 400000 # Max number of learning steps
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
@@ -67,8 +67,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Domain ----------------------
     #MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     #MAZE                = '/Domains/GridWorldMaps/2x3.txt'
-    MAZE                = '/Domains/GridWorldMaps/4x5.txt'
-    #MAZE                = '/Domains/GridWorldMaps/10x10-12ftml.txt'
+    #MAZE                = '/Domains/GridWorldMaps/4x5.txt'
+    MAZE                = '/Domains/GridWorldMaps/10x10-12ftml.txt'
     #MAZE                = '/Domains/GridWorldMaps/11x11-Rooms.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/1x3_1A_1I.txt'
     #INTRUDERMAP         = '/Domains/IntruderMonitoringMaps/2x2_1A_1I.txt'
@@ -133,7 +133,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    #domain          = HelicopterHoverExtended(logger=logger)
+    #domain          = Acrobot(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
@@ -155,10 +157,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = initial_rep
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
-    #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
+    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID, state_dimensions=range(12))
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
@@ -166,13 +168,20 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = TileCoding(domain,logger,TileCodingmemory,scaling,num_tilings)
     # POLICY
     #================
-    policy          = eGreedy(representation,logger, epsilon = EPSILON)
+
+    policy_representation = Tabular(domain, logger, discretization=DISCRITIZATION)
+    policy = GibbsPolicy(policy_representation, logger)
+    #policy          = eGreedy(representation,logger, epsilon = EPSILON)
     #policy          = UniformRandom(representation,logger)
     #policy          = FixedPolicy(representation,logger) # Use this together with the PolicyEvaluation agent
-    
+
     # LEARNING AGENT
     #================
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    agent = NaturalActorCritic(representation, policy, domain, logger,
+                               forgetting_rate=1., min_steps_between_updates=500,
+                               max_steps_between_updates=5000,
+                               lam=LAMBDA, alpha=0.1)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Greedy_GQ(representation, policy, domain,logger, initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0, BetaCoef)
     #agent           = LSPI(representation,policy,domain,logger,LEARNING_STEPS, LEARNING_STEPS/PERFORMANCE_CHECKS, LSPI_iterations, epsilon = LSPI_WEIGHT_DIFF_TOL, return_best_policy = LSPI_return_best_policy,re_iterations = RE_LSPI_iterations, use_sparse = LSPI_use_sparse)
@@ -184,7 +193,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME, max_PE_iterations = MAX_PE_ITERATIONS)
     #MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME)
     #MDPsolver = TrajectoryBasedPolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME, max_PE_iterations = MAX_PE_ITERATIONS)
-    
+
     # If agent is defined run the agent. Otherwise run the MDP Solver:
     if 'agent' in locals().keys():
         if 'MDPsolver' in locals().keys():
@@ -197,7 +206,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
         if SHOW_PERFORMANCE:
             pl.ioff()
             pl.show()
-    
+
 if __name__ == '__main__':
      if len(sys.argv) == 1: #Single Run
          main(jobID = -1,PROJECT_PATH = 'Results/Temp', MAKE_EXP_NAME = 1)
