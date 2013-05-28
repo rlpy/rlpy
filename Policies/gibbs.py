@@ -17,13 +17,13 @@ class GibbsPolicy(Policy):
 
     def dlogpi(self, s, a):
 
-        #TODO Finite differences check!
         v = self.probabilities(s)
         n = self.representation.features_num
         phi = self.representation.phi(s)
         res = -np.outer(v, phi)
         res.shape = self.representation.theta.shape
         res[a * n:(a + 1) * n] += phi
+        assert not np.any(np.isnan(res))
         #res.shape = self.representation.theta.shape
         return res
 
@@ -47,8 +47,10 @@ class GibbsPolicy(Policy):
         phi = self.representation.phi(s)
         n = self.representation.features_num
         v = np.exp(np.dot(self.representation.theta.reshape(-1, n), phi))
-        v /= v.sum()
-        return v
+        v[v > 1e30] = 1e30
+        r = v / v.sum()
+        assert not np.any(np.isnan(r))
+        return r
 
 if __name__ == "__main__":
 

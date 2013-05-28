@@ -90,7 +90,8 @@ class NaturalActorCritic(Agent):
         phi_s[:k] = self.representation.phi(s)
         phi_s[k:] = self.policy.dlogpi(s, a)
         phi_ns[:k] = self.representation.phi(ns)
-
+        assert not np.any(np.isnan(phi_s))
+        assert not np.any(np.isnan(phi_ns))
         # update statistics
         self.z = self.z * self.lam + phi_s
         self.A = self.A + np.outer(self.z, phi_s - self.domain.gamma * phi_ns)

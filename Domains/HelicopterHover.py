@@ -87,17 +87,18 @@ class HelicopterHoverExtended(Domain):
     WIND_MAX = 5.
     MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.) # ??
 
-    wind = np.array([5., 2., 0.]) # wind in neutral orientation
-
+    wind = np.array([5., 2., 0.])  # wind in neutral orientation
+    gamma = 0.9  # learning rate
     gust_memory = 0.8
     domain_fig = None
     states_num = 12
     episodeCap = 6000
     continuous_dims = np.arange(18)
-    statespace_limits = np.array([[-MAX_POS, MAX_POS]] * 3 + [[-MAX_VEL, MAX_VEL]] * 3
+    statespace_limits = np.array([[-MAX_POS, MAX_POS]] * 3
+                                 + [[-MAX_VEL, MAX_VEL]] * 3
                                  + [[-MAX_ANG, MAX_ANG]] * 3
                                  + [[-MAX_ANG_RATE, MAX_ANG_RATE]] * 3
-                                 + [[0,episodeCap]]
+                                 + [[0, episodeCap]]
                                  + [[-2., 2.]] * 6)
 
     # create all combinations of possible actions
