@@ -312,6 +312,7 @@ class HelicopterHover(HelicopterHoverExtended):
     MAX_ANG = 1.
     WIND_MAX = 5.
     MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.) # ??
+    gust_memory = 0.
 
     continuous_dims = np.arange(12)
     statespace_limits = np.array([[-MAX_POS, MAX_POS]] * 3 + [[-MAX_VEL, MAX_VEL]] * 3
