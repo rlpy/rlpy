@@ -1875,7 +1875,7 @@ def _import_module(name, package=None, warn=True, prefix='_py_', ignore='_'):
 
     """
     import warnings
-    #from importlib import import_module
+    from importlib import import_module
     try:
         if not package:
             module = import_module(name)
@@ -1896,8 +1896,13 @@ def _import_module(name, package=None, warn=True, prefix='_py_', ignore='_'):
             globals()[attr] = getattr(module, attr)
         return True
 
-
-#_import_module('_transformations')
+# if we use python 2.7 or newer, we can load fast c-operations of they
+# are compiled
+import sys
+req_version = (2,7)
+cur_version = sys.version_info
+if cur_version >= req_version:
+    _import_module('_transformations')
 
 if __name__ == "__main__":
     import doctest

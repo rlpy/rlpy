@@ -15,7 +15,7 @@
 
 ## \file Experiment.py
 ######################################################
-# \author Developed by Alborz Geramiard Oct 25th 2012 at MIT 
+# \author Developed by Alborz Geramiard Oct 25th 2012 at MIT
 ######################################################
 from Tools import *
 from Agents import *
@@ -38,35 +38,35 @@ from Representations import *
 
 class Experiment(object):
 	## Determines whether the domain is shown during performance runs
-    showDomain = False      
+    showDomain = False
 	## The Main Random Seed used to generate other random seeds
-    mainSeed = 999999999    
+    mainSeed = 999999999
 	## Array of random seeds. This is used to make sure all jobs start with the same random seed
-    randomSeeds = None      
-	## Maximum number of runs used for averaging, specified so that enough random seeds are generated	
-    maxRuns = 100          
+    randomSeeds = None
+	## Maximum number of runs used for averaging, specified so that enough random seeds are generated
+    maxRuns = 100
 	## ID of the current experiment running
-    id = 1                
-	## The \ref Domains.Domain.Domain "Domain" to be tested on	
-    domain = None           
+    id = 1
+	## The \ref Domains.Domain.Domain "Domain" to be tested on
+    domain = None
 	## The \ref Agents.Agent.Agent "Agent" to be tested
-    agent = None            
+    agent = None
 	## Determines whether the domain and the performance are shown during the experiment
-    show_all = 0            
+    show_all = 0
 	## Determines whether the policy and the value function are shown during the performance runs
-    show_performance = 0    
+    show_performance = 0
 	## The Figure window generated to show the results
-    result_fig = None       
+    result_fig = None
 	## An array that stores all generated. Size is stats_num-by-performanceChecks.
-    result  = None          
+    result  = None
 	## The name of the file used to store the data
-    output_filename = ''    
+    output_filename = ''
 	## A simple object that records the prints in a file
-    logger = None  
-	
+    logger = None
+
 	## Initializes the \c %Experiment object. See code
 	# \ref Experiment_init "Here".
-	
+
 	# [init code]
     def __init__(self,id, agent, domain,logger, exp_naming, show_all, show_performance, project_path = 'Results/Temp_Project', plot_performance = 1):
         self.id = id
@@ -75,7 +75,7 @@ class Experiment(object):
         random.seed(self.mainSeed)
         self.randomSeeds = alborzrandint(1,self.mainSeed,self.maxRuns,1)
         #for x in self.randomSeeds:
-        #    print('%d'%x) 
+        #    print('%d'%x)
         random.seed(self.randomSeeds[self.id-1,0])
         self.agent              = agent
         self.domain             = domain
@@ -86,9 +86,9 @@ class Experiment(object):
         checkNCreateDirectory(self.full_path+'/')
         self.show_all           = show_all
         self.show_performance   = show_performance
-        self.plot_performance   = plot_performance   
+        self.plot_performance   = plot_performance
         self.logger             = logger
-        if show_all or show_performance: 
+        if show_all or show_performance:
             self.result_fig = pl.figure(1,figsize=(14, 10))
             createColorMaps()
         self.logger.line()
@@ -96,11 +96,11 @@ class Experiment(object):
         self.logger.log("Output:\t\t\t%s/%s" % (self.full_path, self.output_filename))
         self.logger.setOutput("%s/%d-out.txt" % (self.full_path, self.id))
 	# [init code]
-	
-	
+
+
 	## Execute a single episode using the current policy to evaluate its performance; no exploration or learning is enabled.  See code
 	# \ref Experiment_performanceRun "Here".
-	
+
 	# [performanceRun code]
     def performanceRun(self,total_steps):
         # Set Exploration to zero and sample one episode from the domain
@@ -108,14 +108,15 @@ class Experiment(object):
         eps_return  = 0
         eps_term    = 0
         self.agent.policy.turnOffExploration()
+        hidden_state = self.domain.hidden_state_
         s           = self.domain.s0()
         terminal    = False
-        if self.show_performance: 
+        if self.show_performance:
             self.domain.showLearning(self.agent.representation)
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a               = self.agent.policy.pi(s)
-            if self.show_performance: 
+            if self.show_performance:
                 self.domain.showDomain(s,a)
                 pl.title('After '+str(total_steps)+' Steps')
 
@@ -126,26 +127,27 @@ class Experiment(object):
             eps_length     += 1
         if self.show_performance: self.domain.showDomain(s,a)
         self.agent.policy.turnOnExploration()
+        self.domain.hidden_state_ = hidden_state
         return eps_return, eps_length, eps_term
 	# [performanceRun code]
-	
-	
+
+
 	## Prints class info. See code
 	# \ref Experiment_printAll "Here".
-	
+
 	# [printAll code]
     def printAll(self):
         printClass(self)
 	# [printAll code]
-	
-	
+
+
 	## Runs the experimental data based on batch or online setting
     def run(self):
 		abstract
-		
+
 	## Saves experimental data. See code
 	# \ref Experiment_save "Here".
-    
+
 	# [save code]
     def save(self):
         if not os.path.exists(self.full_path):
@@ -156,17 +158,17 @@ class Experiment(object):
         # Set the output path for the logger
         # This is done here because it is dependent on the combination of agent, representation, and domain
 	# [save code]
-	
-	
-	## Creates a string name for the experiment by connecting the values corresponding to the given variables.  
+
+
+	## Creates a string name for the experiment by connecting the values corresponding to the given variables.
 	# See code \ref Experiment_makeExperimentName "Here".
 	# @param variables The list of variables to be used for the experiment name. \n \b Example: [ 'domain', 'agent', 'representation', 'LEARNING_STEPS']
 	# @returns The string name associated with the variables. \n \b Example: 'GridWorld-SARSA-Tabular-10000'
-	
+
 	# [makeExperimentName code]
     def makeExperimentName(self,variables):
         exp_name = ''
-        
+
         if len(variables) == 0:
             return '.'
 
@@ -176,7 +178,7 @@ class Experiment(object):
                 v = 'self.agent.' + v
             else:
                 v = 'self.' + v
-            
+
             if len([x for x in ['self.domain','self.agent','self.agent.policy','self.agent.representation'] if x == lower(v)]):
                 exp_name += eval('className(%s)' % v)
                 exp_name += '-'
@@ -187,5 +189,5 @@ class Experiment(object):
                     exp_name += '-'
                 except:
                     pass
-        return exp_name[:-1] 
+        return exp_name[:-1]
 	# [makeExperimentName code]

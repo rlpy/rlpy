@@ -10,7 +10,7 @@ from IntruderMonitoring import IntruderMonitoring
 from CartPole import CartPole
 from Pendulum import Pendulum
 from CartPole_InvertedBalance import CartPole_InvertedBalance
-from CartPole_SwingUp import CartPole_SwingUp
+from CartPole_SwingUp import CartPole_SwingUp, CartPole_SwingUpHeight
 from Pendulum_InvertedBalance import Pendulum_InvertedBalance
 from Pendulum_SwingUp import Pendulum_SwingUp
 from FiftyChain import FiftyChain

@@ -76,6 +76,7 @@ class NaturalActorCritic(Agent):
         self.steps_between_updates = 0
         self.b = np.zeros((self.n))
         self.A = np.zeros((self.n, self.n))
+        self.buf_ = np.zeros((self.n, self.n))
         self.z = np.zeros((self.n))
 
         super(NaturalActorCritic, self).__init__(representation, policy,
@@ -90,12 +91,14 @@ class NaturalActorCritic(Agent):
         phi_s[:k] = self.representation.phi(s)
         phi_s[k:] = self.policy.dlogpi(s, a)
         phi_ns[:k] = self.representation.phi(ns)
-        assert not np.any(np.isnan(phi_s))
-        assert not np.any(np.isnan(phi_ns))
+
         # update statistics
-        self.z = self.z * self.lam + phi_s
-        self.A = self.A + np.outer(self.z, phi_s - self.domain.gamma * phi_ns)
-        self.b = self.b + self.z * r
+        self.z *= self.lam
+        self.z += phi_s
+
+        self.A += np.einsum("i,j", self.z, phi_s - self.domain.gamma * phi_ns,
+                            out=self.buf_)
+        self.b += self.z * r
         if terminal:
             self.z[:] = 0.
         self.steps_between_updates += 1

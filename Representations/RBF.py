@@ -98,18 +98,19 @@ class RBF(Representation):
             pl.ylim(self.domain.statespace_limits[1])
             pl.draw()
             raw_input()
-        self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
-        super(RBF,self).__init__(domain,logger)
+        self.features_num = rbfs + 1  # adds a constant 1 to each feature vector
+        super(RBF, self).__init__(domain, logger)
 
-    def phi_nonTerminal_fast(self, s):
+    def phi_nonTerminal(self, s):
         F_s = ones(self.features_num)
         if self.state_dimensions is not None:
             s = s[self.state_dimensions]
 
-        exponent = sum((s-self.rbfs_mu)**2/(2.0*self.rbfs_sigma), axis=1)
+        exponent = sum((s - self.rbfs_mu)**2 / (2.0 * self.rbfs_sigma), axis=1)
         F_s[:-1] = exp(-exponent)
+        return F_s
 
-    def phi_nonTerminal(self,s):
+    def _phi_nonTerminal_slow(self,s):
         if self.state_dimensions is not None:
             s = s[self.state_dimensions]
         F_s         = ones(self.features_num)
@@ -146,7 +147,9 @@ class RBF(Representation):
         rbfs_num    = prod(bins_per_dimension[:]+1) if IncludeBorders else prod(bins_per_dimension[:]-1)
         all_centers = []
         for d in arange(dims):
-            centers = linspace(domain.statespace_limits[d,0],domain.statespace_limits[d,1],bins_per_dimension[d]+1)
+            centers = linspace(domain.statespace_limits[d, 0],
+                               domain.statespace_limits[d,1],
+                               bins_per_dimension[d]+1)
             if not IncludeBorders:
                 centers = centers[1:-1] #Exclude the beginning and ending
             all_centers.append(centers.tolist())
@@ -155,6 +158,20 @@ class RBF(Representation):
         result = perms(all_centers)
         #print result.shape
         return result, rbfs_num
+
     def featureType(self):
         return float
+
+
+if __name__ == "__main__":
+    # Test 2 different implementations against each other
+    from Domains import HelicopterHover
+    from Tools import Logger
+    domain = HelicopterHover(logger=Logger())
+    rep = RBF(domain, Logger(), rbfs=200)
+    for i in range(100):
+        s= random.rand(12) * 1.
+        phi1 = rep.phi_nonTerminal(s)
+        phi2 = rep._phi_nonTerminal_slow(s)
+        print allclose(phi1, phi2)
 

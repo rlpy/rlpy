@@ -47,7 +47,7 @@ class GibbsPolicy(Policy):
         phi = self.representation.phi(s)
         n = self.representation.features_num
         v = np.exp(np.dot(self.representation.theta.reshape(-1, n), phi))
-        v[v > 1e30] = 1e30
+        v[v > 1e50] = 1e50
         r = v / v.sum()
         assert not np.any(np.isnan(r))
         return r

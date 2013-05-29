@@ -18,7 +18,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -53,24 +53,35 @@ from CartPole import *
 #####################################################################
 
 class CartPole_SwingUp(CartPole):
-    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)    
+    ANGLE_LIMITS        = [-pi, pi]     # Limit on theta (used for discretization)
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_SwingUp,self).__init__(logger)
-    
+
     def s0(self):
         # Returns the initial state, pendulum vertical
         return array([pi,0,0,0])
-    
-    
+
+
     ## Return the reward earned for this state-action pair
     # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
     def _getReward(self, s, a):
         return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
-    
+
     def isTerminal(self,s):
         return not (-2.4 < s[StateIndex.X] < 2.4)
-    
+
+class CartPole_SwingUpHeight(CartPole_SwingUp):
+
+
+    ## Return the reward earned for this state-action pair
+    # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
+    def _getReward(self, s, a):
+        if not (-2.4 < s[StateIndex.X] < 2.4):
+            return -10.
+
+        return cos(s[StateIndex.THETA]) + 1.
+
 if __name__ == '__main__':
     random.seed(0)
     p = CartPole_SwingUp();

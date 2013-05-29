@@ -33,23 +33,23 @@ if(platform.system() != 'Windows'):
     os.system(command)
 
 if(platform.system() == 'Windows'):
-    #Load the STATS and prepare the dot file for graphvis 
+    #Load the STATS and prepare the dot file for graphvis
     command = '.\Profiling\gprof2dot.py -f pstats .\Profiling\profile.dat > .\Profiling\graph.txt'
     os.system(command)
-    
-        #Call Graphvis to generate the pdf 
+
+        #Call Graphvis to generate the pdf
     command = 'dot -T pdf .\Profiling\graph.txt -o .\Profiling\\'+Output
     os.system(command)
-    
-    
-    
+
+
+
 else:
-    #Load the STATS and prepare the dot file for graphvis 
+    #Load the STATS and prepare the dot file for graphvis
     command = './Profiling/gprof2dot.py -f pstats ./Profiling/profile.dat > ./Profiling/graph.txt'
     os.system(command)
-    
-    #Call Graphvis to generate the pdf 
-    command = '/usr/local/bin/dot -T pdf ./Profiling/graph.txt -o ./Profiling/'+Output
+
+    #Call Graphvis to generate the pdf
+    command = 'dot -T pdf ./Profiling/graph.txt -o ./Profiling/'+Output
     os.system(command)
 
 

@@ -49,15 +49,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     # Etc
     #----------------------
-    PERFORMANCE_CHECKS  = 20
-    LEARNING_STEPS      = 50000 # Max number of learning steps
+    PERFORMANCE_CHECKS  = 10
+    LEARNING_STEPS      = 10000 # Max number of learning steps
     #EXPERIMENT_NAMING   = ['domain','agent','representation']
     EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
-    SHOW_ALL            = 0 and not RUN_IN_BATCH
+    SHOW_ALL            = 1 and not RUN_IN_BATCH
     SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
-    PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    PLOT_PERFORMANCE    = 0 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 if not RUN_IN_BATCH else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size
     JOB_ID              = 1 if jobID == -1 else jobID
     PROJECT_PATH        = '.' if PROJECT_PATH == None else PROJECT_PATH
@@ -108,7 +108,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     initial_alpha           = 1.
     boyan_N0                = 1000
     BetaCoef                = 1e-6# In the Greedy_GQ Algorithm the second learning rate, Beta, is assumed to be Alpha * THIS CONSTANT
-    LAMBDA                  = 1.0
+    LAMBDA                  = .5
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
@@ -131,8 +131,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    #domain          = HelicopterHoverExtended(logger=logger)
-    domain          = AcrobotLegacy(logger=logger)
+    domain          = HelicopterHover(logger=logger)
+    #domain          = AcrobotLegacy(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
@@ -142,14 +142,14 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
-    #domain          = CartPole_SwingUp(logger = logger)
+    #domain          = CartPole_SwingUpHeight(logger = logger)
     #domain          = FiftyChain(logger = logger)
     #domain          = RCCar(logger = logger)
 
     # REPRESENTATION
     #================
     #initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
 
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
@@ -160,16 +160,16 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
-    tile_matrix = array(mat("""
-    72 72 84 84;
-    1 18 18 18; 18 1 18 18; 18 18 1 18; 18 18 18 1;
-    1 1 12 12; 1 12 12 1; 1 12 1 12; 12 1 1 12; 12 1 12 1; 12 12 1 1;
-    1 1 1 18; 1 1 18 1; 1 18 1 1; 18 1 1 1"""), dtype="float")
-    tile_matrix[tile_matrix == 1] = 0.5
-    representation = TileCoding(logger=logger, domain=domain,
-            resolution_matrix=tile_matrix,
-            num_tilings=[12, 3, 3, 3, 3]+[2]*6+[3]*4
-                                ,memory=15000)
+    #tile_matrix = array(mat("""
+    #72 72 84 84;
+    #1 18 18 18; 18 1 18 18; 18 18 1 18; 18 18 18 1;
+    #1 1 12 12; 1 12 12 1; 1 12 1 12; 12 1 1 12; 12 1 12 1; 12 12 1 1;
+    #1 1 1 18; 1 1 18 1; 1 18 1 1; 18 1 1 1"""), dtype="float")
+    #tile_matrix[tile_matrix == 1] = 0.5
+    #representation = TileCoding(logger=logger, domain=domain,
+    #        resolution_matrix=tile_matrix,
+    #        num_tilings=[12, 3, 3, 3, 3]+[2]*6+[3]*4
+    #                            ,memory=15000)
 
     # POLICY
     #================
@@ -184,8 +184,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # LEARNING AGENT
     #================
     #agent = NaturalActorCritic(representation, policy, domain, logger,
-    #                           forgetting_rate=1., min_steps_between_updates=500,
-    #                           max_steps_between_updates=5000,
+    #                           forgetting_rate=.8, min_steps_between_updates=500,
+    #                           max_steps_between_updates=2000,
     #                           lam=LAMBDA, alpha=0.1)
     agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
