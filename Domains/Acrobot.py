@@ -123,7 +123,13 @@ class Acrobot(Domain):
         phi2 = m2*lc2*g*np.cos(s[0]+s[1]-np.pi/2.)
         phi1 = - m2*l1*lc2*s[3]**2*np.sin(s[1]) - 2*m2*l1*lc2*s[3]*s[2]*np.sin(s[1])  \
                 +(m1*lc1+m2*l1)*g*np.cos(s[0] - np.pi/2) + phi2
-        ddtheta2 = (a + d2/d1*phi1 - phi2) / (m2*lc2**2 + I2 - d2**2/d1)
+        # the following line is consistent with the description in the paper
+        #ddtheta2 = (a + d2/d1*phi1 - phi2) / (m2*lc2**2 + I2 - d2**2/d1)
+
+        # the following line is consistent with the java implementation and the
+        # book
+        ddtheta2 = (a + d2/d1*phi1 - m2*l1*lc2*s[3]**2*np.sin(s[1]) - phi2) \
+                / (m2*lc2**2 + I2 - d2**2/d1)
         ddtheta1 = -(d2*ddtheta2 + phi1) / d1
         return (s[2], s[3], ddtheta1, ddtheta2, 0.)
 

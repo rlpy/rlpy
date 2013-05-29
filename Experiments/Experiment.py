@@ -109,6 +109,8 @@ class Experiment(object):
         eps_term    = 0
         self.agent.policy.turnOffExploration()
         hidden_state = self.domain.hidden_state_
+        if isinstance(hidden_state, ndarray):
+            hidden_state = hidden_state.copy()
         s           = self.domain.s0()
         terminal    = False
         if self.show_performance:
