@@ -31,13 +31,11 @@ PERFORMANCE_CHECKS  = 15
 LEARNING_STEPS      = 10000 # Max number of learning steps
 EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
 PROJECT_PATH="Results/Temp"
-jobID=-1
-SHOW_ALL            = False
+SHOW_ALL            = True
 SHOW_PERFORMANCE    = True
 PLOT_PERFORMANCE    = True
 LOG_INTERVAL        = 1  # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size
 JOB_ID              = 1
-PROJECT_PATH        = '.'
 logger              = Logger()
 MAX_ITERATIONS      = 10
 
