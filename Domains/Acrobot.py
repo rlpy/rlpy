@@ -16,8 +16,6 @@ WORK IN PROGRESS
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 import sys
 import os
 #Add all paths
@@ -32,6 +30,7 @@ from Tools import *
 from Domain import *
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 class Acrobot(Domain):
     """
@@ -51,16 +50,16 @@ class Acrobot(Domain):
     continuous_dims = np.arange(4)
     gamma = 1.
 
-    LINK_LENGTH_1 = 1. # [m]
-    LINK_LENGTH_2 = 1. #[m]
-    LINK_MASS_1 = 1. # [kg]
-    LINK_MASS_2 = 1. # [kg]
-    LINK_COM_POS_1 = 0.5 # [m] position of the center of mass of the links
-    LINK_COM_POS_2 = 0.5 # [m] position of the center of mass of the links
-    LINK_MOI = 1. # moments of inertia
+    LINK_LENGTH_1 = 1.  # [m]
+    LINK_LENGTH_2 = 1.  # [m]
+    LINK_MASS_1 = 1.  # [kg]
+    LINK_MASS_2 = 1.  # [kg]
+    LINK_COM_POS_1 = 0.5  # [m] position of the center of mass of the links
+    LINK_COM_POS_2 = 0.5  # [m] position of the center of mass of the links
+    LINK_MOI = 1.  # moments of inertia
 
-    MAX_VEL_1 = 4*np.pi
-    MAX_VEL_2 = 9*np.pi
+    MAX_VEL_1 = 4 * np.pi
+    MAX_VEL_2 = 9 * np.pi
 
     AVAIL_TORQUE = [-1., 0., +1]
 
@@ -69,18 +68,17 @@ class Acrobot(Domain):
                                  + [[-MAX_VEL_1, MAX_VEL_1]] \
                                  + [[-MAX_VEL_2, MAX_VEL_2]])
 
+    action_arrow = None
     domain_fig = None
     actions_num = 3
-
 
     def s0(self):
         return np.zeros((4))
 
-
     def isTerminal(self, s):
-        return -np.cos(s[0]) - np.cos(s[1]+s[0]) > 1.
+        return -np.cos(s[0]) - np.cos(s[1] + s[0]) > 1.
 
-    def step(self,s,a):
+    def step(self, s, a):
 
         torque = self.AVAIL_TORQUE[a]
 
@@ -128,46 +126,63 @@ class Acrobot(Domain):
 
         # the following line is consistent with the java implementation and the
         # book
-        ddtheta2 = (a + d2/d1*phi1 - m2*l1*lc2*s[3]**2*np.sin(s[1]) - phi2) \
+        ddtheta2 = (a + d2/d1*phi1 - m2*l1*lc2*s[2]**2*np.sin(s[1]) - phi2) \
                 / (m2*lc2**2 + I2 - d2**2/d1)
         ddtheta1 = -(d2*ddtheta2 + phi1) / d1
         return (s[2], s[3], ddtheta1, ddtheta2, 0.)
 
-
-    def showDomain(self,s,a = 0):
+    def showDomain(self, s, a=0):
         """
         Plot the 2 links
         """
         #TODO plot the action
 
-        if self.domain_fig == None: # Need to initialize the figure
+        if self.domain_fig is None:  # Need to initialize the figure
             self.domain_fig = plt.gcf()
-            ax = self.domain_fig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
-            self.link1 = lines.Line2D([],[], linewidth=2, color='black')
-            self.link2 = lines.Line2D([],[], linewidth=2, color='blue')
+            self.domain_ax = self.domain_fig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
+            ax = self.domain_ax
+            self.link1 = lines.Line2D([], [], linewidth=2, color='black')
+            self.link2 = lines.Line2D([], [], linewidth=2, color='blue')
             ax.add_line(self.link1)
             ax.add_line(self.link2)
 
             # Allow room for pendulum to swing without getting cut off on graph
-            viewable_distance = self.LINK_LENGTH_1+ self.LINK_LENGTH_2 + 0.5
+            viewable_distance = self.LINK_LENGTH_1 + self.LINK_LENGTH_2 + 0.5
             ax.set_xlim(-viewable_distance, +viewable_distance)
             ax.set_ylim(-viewable_distance, viewable_distance)
             # add bar
             bar = lines.Line2D([-viewable_distance, viewable_distance],
-                                    [self.LINK_LENGTH_1, self.LINK_LENGTH_1]
-                                    , linewidth=1, color='red')
+                               [self.LINK_LENGTH_1, self.LINK_LENGTH_1],
+                               linewidth=1, color='red')
             ax.add_line(bar)
             #ax.set_aspect('equal')
 
             plt.show()
 
-        # update pendulum arm on figure
-        p1 = [-self.LINK_LENGTH_1*np.cos(s[0]), self.LINK_LENGTH_1*np.sin(s[0])]
+        if self.action_arrow is not None:
+            self.action_arrow.remove()
+            self.action_arrow = None
 
-        self.link1.set_data([0., p1[1]],[0., p1[0]])
-        p2 = [p1[0] - self.LINK_LENGTH_2*np.cos(s[0]+s[1]), p1[1] + self.LINK_LENGTH_2*np.sin(s[0]+s[1])]
+        torque = self.AVAIL_TORQUE[a]
+        SHIFT = .5
+        if torque > 0:  # counterclockwise torque
+            self.action_arrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,
+                        -.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2",
+                        ax=self.domain_ax)
+        elif torque < 0:# clockwise torque
+            self.action_arrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,
+                        -.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2",
+                        ax=self.domain_ax)
+
+        # update pendulum arm on figure
+        p1 = [-self.LINK_LENGTH_1 * np.cos(s[0]), self.LINK_LENGTH_1 * np.sin(s[0])]
+
+        self.link1.set_data([0., p1[1]], [0., p1[0]])
+        p2 = [p1[0] - self.LINK_LENGTH_2 * np.cos(s[0] + s[1]),
+              p1[1] + self.LINK_LENGTH_2 * np.sin(s[0] + s[1])]
         self.link2.set_data([p1[1], p2[1]], [p1[0], p2[0]])
         plt.draw()
+
 
 class AcrobotLegacy(Acrobot):
     """
@@ -176,8 +191,6 @@ class AcrobotLegacy(Acrobot):
     This approach is consistent with the experiments in
 
     """
-
-
 
     def step(self, s, a):
 
@@ -191,17 +204,14 @@ class AcrobotLegacy(Acrobot):
         for i in range(4):
             s_dot = np.array(self._dsdt(s_augmented, 0))
             s_augmented += s_dot * self.dt / 4.
-
-        ns = s_augmented[:4] # omit action
-
-        ns[0] = wrap(ns[0],-np.pi,np.pi)
-        ns[1] = wrap(ns[1],-np.pi,np.pi)
-        ns[2] = bound(ns[2],-self.MAX_VEL_1, self.MAX_VEL_1)
-        ns[3] = bound(ns[3],-self.MAX_VEL_2, self.MAX_VEL_2)
-        terminal                    = self.isTerminal(ns)
-        reward                      = -1. if not terminal else 0.
+            s_augmented[0] = wrap(s_augmented[0], -np.pi, np.pi)
+            s_augmented[1] = wrap(s_augmented[1], -np.pi, np.pi)
+            s_augmented[2] = bound(s_augmented[2], -self.MAX_VEL_1, self.MAX_VEL_1)
+            s_augmented[3] = bound(s_augmented[3], -self.MAX_VEL_2, self.MAX_VEL_2)
+        ns = s_augmented[:4]  # omit action
+        terminal = self.isTerminal(ns)
+        reward = -1. if not terminal else 0.
         return reward, ns, terminal
-
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@
 ######################################################
 
 
-from Domains import AcrobotLegacy
+from Domains import AcrobotLegacy, Acrobot
 from Agents import SARSA
 from Representations import TileCoding
 from Policies import eGreedy
@@ -27,8 +27,8 @@ from Tools import Logger
 import numpy as np
 # Etc
 #----------------------
-PERFORMANCE_CHECKS  = 15
-LEARNING_STEPS      = 10000 # Max number of learning steps
+PERFORMANCE_CHECKS  = 100
+LEARNING_STEPS      = 20000 # Max number of learning steps
 EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
 PROJECT_PATH="Results/Temp"
 SHOW_ALL            = True
@@ -40,8 +40,8 @@ logger              = Logger()
 MAX_ITERATIONS      = 10
 
 #Agent ----------------------
-alpha_decay_mode        = 'Boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
-initial_alpha           = 1
+alpha_decay_mode        = 'const' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
+initial_alpha           = 0.2/48
 boyan_N0                = 1000
 LAMBDA                  = 0.9
 
