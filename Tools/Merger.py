@@ -4,6 +4,8 @@ class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes'] #,'Discounted Return']
     PE_AXES         = ['Iterations','Features','Error','Time(s)']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time']
+    DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE (Observed)', 'MSE (Truth)','Time(s)', 'Number of Clusters','Objective']
+    
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0,showSplash=True):
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
@@ -61,7 +63,7 @@ class Merger(object):
             self.exp_paths  = sorted(self.exp_paths)
     def extractLabel(self,p):
         # Given an experiment directoryname it extracts a reasonable label
-        tokens = p.split('-')
+        tokens = p.split('_')
         if len(tokens) > 1:
             return tokens[-2]+'-'+tokens[-1]
         else:
@@ -87,7 +89,11 @@ class Merger(object):
         #read the first file to initialize the matricies
         matrix      = readMatrixFromFile(files[0])
         rows, cols  = matrix.shape
-        if rows == len(self.PE_AXES):
+        
+        if rows == len(self.DYNMEANS_AXES):
+            self.ResultType = 'Dynamic Means'
+            self.AXES = self.DYNMEANS_AXES
+        elif rows == len(self.PE_AXES):
             self.ResultType = 'Policy Evaluation'
             self.AXES = self.PE_AXES
         elif rows == len(self.CONTROL_AXES):
@@ -108,7 +114,8 @@ class Merger(object):
                 #print M.shape
                 try:
                     samples[:,:cols,i] = M
-                    times_95[i] = self.extract_time_95(M)
+                    if('Return') in self.AXES:
+                        times_95[i] = self.extract_time_95(M)
                 except:
                     print "Unmatched number of points along X axis: %d != %d" % (cols,M.shape[1])
                     print "Switching to last data point mode for all experiments"
@@ -120,17 +127,25 @@ class Merger(object):
             for i,f in enumerate(files):
                 if i == samples_num: break
                 M = readMatrixFromFile(files[i])
-                times_95[i] = self.extract_time_95(M)
+                if('Return') in self.AXES:
+                    times_95[i] = self.extract_time_95(M)
+                else:
+                    print 'Could not extract time to 95%% performance:'
+                    print 'No \'Return\' field in axes: ', self.AXES
                 samples[:,:,i] = M[:,-1].reshape((-1,1)) # Get the last column of the matrix
 
-        _,self.datapoints_per_graph,_ = samples.shape
+        _,datapoints_per_graph_tmp,_ = samples.shape
+        if datapoints_per_graph_tmp > self.datapoints_per_graph: self.datapoints_per_graph = datapoints_per_graph_tmp
         if self.getMAX:
             return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
         else:
             return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
     def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
-        if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
+        if Y_axis == None:
+            if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
+            elif self.ResultType == 'Dynamic Means': Y_axis = 'L2 Observed Transition Errors'
+            else: Y_axis = 'Return'
         y_ind = self.AXES.index(Y_axis)
         M = array([M[y_ind,-1] for M in self.means])
         V = array([V[y_ind,-1] for V in self.std_errs])
@@ -145,7 +160,10 @@ class Merger(object):
         # Best is defined in two settings:
         # Mode 0: Final Mean+variance
         # Mode 1: Area under the curve
-        if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
+        if Y_axis == None:
+            if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
+            elif self.ResultType == 'Dynamic Means': Y_axis = 'L2 Observed Transition Errors'
+            else: Y_axis = 'Return'
         y_ind = self.AXES.index(Y_axis)
         if mode == 0:
             M = array([M[y_ind,-1] for M in self.means])
@@ -162,12 +180,16 @@ class Merger(object):
         return self.exp_paths[best_index], best
     def plot(self,Y_axis = None, X_axis = None):
         #Setting default values based on the Policy Evaluation or control
-        if Y_axis == None: Y_axis = 'Error' if self.ResultType == 'Policy Evaluation' else 'Return'
+        if Y_axis == None:
+            if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
+            elif self.ResultType == 'Dynamic Means': Y_axis = 'L2 Observed Transition Errors'
+            else: Y_axis = 'Return'
         if X_axis == None:
             if self.ResultType == 'RL-Control':
                 X_axis = 'Learning Steps'
             elif self.ResultType == 'MDPSolver':
                 X_axis = 'Time(s)'
+            elif self.ResultType == 'Dynamic Means': X_axis = 'Outer Iterations'
             else:
                 X_axis = 'Iterations'
 
@@ -208,6 +230,11 @@ class Merger(object):
                         max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
                     else:
                         max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
+            
+            if(len(X) < len(Xs[i,:])):
+                X = self.padFinalValue(X, len(Xs[i,:]))
+                Y = self.padFinalValue(Y, len(Ys[i,:]))
+                Err = self.padFinalValue(Err, len(Errs[i,:]))
             Xs[i,:]     = X
             Ys[i,:]     = Y
             Errs[i,:]   = Err
@@ -227,6 +254,16 @@ class Merger(object):
         #if not isOnCluster and self.legend:
         #        # This is a hack so we can see it correctly during the runtime
         #        pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
+    
+    ## Takes an array and extends it to desired length, copying final value.
+    def padFinalValue(self, arr, newLength):
+        if len(arr) < newLength: # Pad remaining values with final value
+            paddedArr = zeros(newLength)
+            paddedArr[:len(arr)] = arr[:] # Beginning of array = original
+            paddedArr[len(arr):] = arr[-1]; # Remainder = last value
+            return paddedArr
+        else: return arr
+    
     def save(self,Y_axis,X_axis,Xs,Ys,Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
