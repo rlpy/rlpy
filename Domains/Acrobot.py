@@ -50,9 +50,9 @@ class Acrobot(Domain):
     continuous_dims = np.arange(4)
     gamma = 1.
 
-    LINK_LENGTH_1 = 1.  # [m]
-    LINK_LENGTH_2 = 1.  # [m]
-    LINK_MASS_1 = 1.  # [kg]
+    LINK_LENGTH_1 = 1.  # [m] length of the inner link
+    LINK_LENGTH_2 = 1.  # [m]length of the outer link
+    LINK_MASS_1 = 1.  # [kg] mass of the inner link
     LINK_MASS_2 = 1.  # [kg]
     LINK_COM_POS_1 = 0.5  # [m] position of the center of mass of the links
     LINK_COM_POS_2 = 0.5  # [m] position of the center of mass of the links

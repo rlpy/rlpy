@@ -1,7 +1,8 @@
 #!/usr/bin/python
 import os, sys, time, re, string, pprint, re, glob, socket
+import subprocess
 
-#Colors 
+#Colors
 PURPLE  = '\033[95m'
 BLUE    = '\033[94m'
 GREEN   = '\033[92m'
@@ -15,7 +16,7 @@ TOTAL_COLOR     = BLUE
 RESUMING_COLOR  = PURPLE
 
 PARALLEL_SUBDIR     = 'Results/' # Where each jobs are supposed to be stored
-USERNAME            = 'rhklein'
+USERNAME = subprocess.Popen(['whoami'], stdout=subprocess.PIPE).communicate()[0].strip()
 FINALFILE           = 'results.txt'
 GRAPH_DIR           = ' ~/Graphs/FeatureDiscovery/'
 PYTHON_PATH          = ' /usr/bin/python'
@@ -43,22 +44,22 @@ def logKeyOLD(log):
     if not temp1:
         return sys.maxint
     else:
-        temp1 = temp1.group(0)[2:] 
-        
+        temp1 = temp1.group(0)[2:]
+
     [h1,m1,s1] = re.split(':+',temp1)
-    if len(h1.lstrip('0')) > 0: h1 = h1.lstrip('0') 
+    if len(h1.lstrip('0')) > 0: h1 = h1.lstrip('0')
     if len(m1.lstrip('0')) > 0: m1 = m1.lstrip('0')
     if len(s1.lstrip('0')) > 0: s1 = s1.lstrip('0')
 #    print h1, m1, s1
     try:
-        h1 = eval(h1)    
-        m1 = eval(m1)    
-        s1 = eval(s1)    
+        h1 = eval(h1)
+        m1 = eval(m1)
+        s1 = eval(s1)
     except:
         print h1,m1,s1
         print log
         s1 = m1 = h1 = 10000000
-        
+
     return h1*10000+m1*100+s1
 def logKey(log):
     if 'Return=' in log:
@@ -72,7 +73,7 @@ def sortLog(logs):
     return sorted(logs,key=logKey)
 
 if __name__ == '__main__':
-    print('************** Sort Log Test **********************');    
+    print('************** Sort Log Test **********************');
     logs = ['633: E[0:00:01]-R[0:00:07]: Return=-1.01, Steps=12, Features = 10',
             '1283: E[0:00:02]-R[0:00:06]: Return=-1.01, Steps=16, Features = 10',
             '2582: E[0:00:04]-R[0:00:04]: Return=-0.04, Steps=40, Features = 10',
@@ -80,10 +81,10 @@ if __name__ == '__main__':
             '3892: E[0:00:06]-R[0:00:02]: Return=-0.04, Steps=40, Features = 10',
             '3227: E[0:00:05]-R[0:00:03]: Return=-0.04, Steps=40, Features = 10',
             '4548: E[0:00:07]-R[0:00:01]: Return=-0.04, Steps=40, Features = 10']
-    
+
     for log in logs:
         print "%s" % log
-        
+
     logs = sortLog(logs);
     print "after sort:"
     for log in logs:
@@ -95,23 +96,23 @@ if __name__ == '__main__':
 class FileHelper(object):
 	file	= None
 	fileName= ''
-    
+
 	def __init__(self, fileName = None):
 		self.fileName = fileName
-	
+
 	def open(self,readType):
 		if not self.file:
 			self.file = open(self.fileName,readType)
-	
+
 	def close(self):
 		if self.file:
 			self.file.close()
-	
+
 	# Returns a line without \n at end, or None if line is None.
 	def myReadLine(self):
 		if not self.file:
 			print 'You need to open the file first! No action taken.'
-		
+
 		line = self.file.readline()
 		if not line:
 			return None
@@ -120,21 +121,21 @@ class FileHelper(object):
 				line = line[:-1] # Omit the \n
 			else: return ' ' # This line is ONLY a "\n"
 		return line
-	   	
+
 	def log(self,str):
     # Print something both in output and in a file
 	   	print str
 	   	self.file.write(str +'\n')
-		
+
 	def line(self):
 		self.log(SEP_LINE)
 
 def getUniqueLines(allLines):
-	return set(allLines)	
+	return set(allLines)
 
 def getAllLines(fileName):
     myFile = FileHelper(fileName)
-    myFile.open('r') 
+    myFile.open('r')
     allLines = []
     while True:
             line = myFile.myReadLine()
@@ -143,12 +144,55 @@ def getAllLines(fileName):
     myFile.close()
     return allLines
 
+
+def running_jobs_user(username):
+    """
+    returns info on submitted jobs for given user
+    as a list of dictionaries
+    """
+    output = subprocess.Popen(['condor_q', username],
+                              stdout=subprocess.PIPE).communicate()[0]
+    lines = output.splitlines()[4:]
+    jobs = []
+    for l in lines:
+        split = l.split()
+
+        if len(split) < 8 or split[1] != username:
+            # mismatch, not a job line
+            continue
+        if len(split) > 10:
+            run_id = split[10]
+        job_id, array_id = split[0].split(".")
+
+        jobs.append(dict(job_id=job_id, array_id=array_id, submit_date=split[2],
+                         submit_time=split[3], runtime=split[4],
+                         status=split[5], priority=split[6],
+                         size=split[7],
+                         command=" ".join(split[8:]),
+                         run_id=run_id))
+    return jobs
+
+
+def get_job_id(idir, run_id):
+    """ returns the job id of a submitted job as a string """
+    
+    log_file_name = os.path.join("CondorOutput", "log", "{0}.log".format(run_id))
+    if not os.path.exists(log_file_name):
+        return None
+    with open(log_file_name, 'r') as f:
+        first_line = f.readline()
+    try:
+        id = re.findall("\((.*)\..*\..*\)", first_line)[0]
+    except Exception:
+        return None
+    return id
+
 def addText(fileName,text, fileOpFlag = 'a'): # default append text
 	myFile = FileHelper(fileName)
 	myFile.open(fileOpFlag)
 	myFile.log(text)
 	myFile.close()
-		
+
 def isPackageInstalled(packageName):
     try:
         __import__(packageName) # __import__('X') is identical to import X
@@ -167,4 +211,4 @@ def getIPAddress():
 
 def getHostName():
 	return socket.gethostname()
-    
+

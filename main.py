@@ -89,7 +89,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NOISE               = .3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 6     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
-    DISCRITIZATION              = 40 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
+    DISCRITIZATION              = 10 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
     RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
     iFDDOnlineThreshold         = 1e7 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10}
     BatchDiscoveryThreshold     = .1 #if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature
@@ -153,10 +153,10 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
 
     #representation  =  initial_rep
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)

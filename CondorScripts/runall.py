@@ -14,15 +14,15 @@
 # under the RL-Results directory, and that RLPy is in the same parent folder as RL-Results.
 # Modify below as necessary if this is not the case.
 
-import os, sys, time, re, string
+import os
+import sys
+import re
 #Add all paths
 from Script_Tools import *
 RL_PYTHON_ROOT = findRLRoot()
 sys.path.insert(0, RL_PYTHON_ROOT)
 
 TEST = False # This value is used to avoid actually doing anything, so we can check the program
-USERNAME='rhklein'
-FINALFILE='result'
 RESULTS_PATH='.' # Currently want results path to be in directory of the main file
 #RESULTS_PATH = RL_PYTHON_ROOT+'../RL-Results/RLPy/13ICML-BatchiFDD/
 MAKE_EXP_NAME = 0      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
@@ -32,7 +32,7 @@ if os.path.exists(RL_PYTHON_ROOT+'/CondorScripts/setting.py'):
     from setting import *
 
 
-def submit(id): 
+def submit(id):
     #Submit one task to condor using id
     if id > 0:
         condrun='mkdir -p CondorOutput;' + \
@@ -61,13 +61,13 @@ def submit(id):
 #                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
 #                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
 #                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
- 
 
         sysCall(condrun)
-     
+
+
 def searchNSubmit(idir,exp_num,answered,respawnjobs):
         print idir
-        #See if this directory is a potential experiment 
+        #See if this directory is a potential experiment
         if not os.path.exists(idir+'/main.py') or os.path.exists(idir+'/Domains'):
             #print ' (!) ' + idir + '  not an experiment.'
             for folder in os.listdir(idir):
@@ -75,60 +75,74 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
                 if os.path.isdir(newdir):
                     [answered,respawnjobs] = searchNSubmit(newdir,exp_num,answered,respawnjobs)
             return [answered,respawnjobs]
-        
+
 #        if PURGEJOBS:
 #        	sysCall("rm -rf " +idir+'/CondorOutput')
 
         if idir != '.':
             print "========================="
             print 'Experiment: '+ idir
-                            
+
         total           = 0
         completed       = 0
         running         = 0
         respawned       = 0
-        
+
         #Going inside directory
         currentdir = os.getcwd()
-        os.chdir(idir) 
+        os.chdir(idir)
 
-        
+
         allouts             = glob.glob('*-out.txt')
         ran_num             = len(allouts)
         completed_results   = glob.glob('*-results.txt')
         completed           = len(completed_results)
-        for out in allouts: 
-            
+
+        # gather info for running jobs to see if we need to respawn or not
+        running_jobs = running_jobs_user(USERNAME)
+        running_jobs_by_id = dict()
+        for job in running_jobs:
+            running_jobs_by_id[job["job_id"]] = job
+
+        for out in allouts:
+
             #Break if we have enough runs
             if completed+respawned+running >= exp_num:
-            	   # We have extra jobs than exp_num => Remove those without results
-		       continue
-            
-            id,_,_ = out.rpartition('-')
-            if not os.path.exists(str(id)+'-results.txt'):                        
-                while not answered:
-                    answer=raw_input('(!) Respawn Jobs ? => (Y/N)')
-                    if answer.lower() == 'y':
-                        respawnjobs  = True
-                        answered    = True
+                # We have extra jobs than exp_num => Remove those without results
+                continue
 
-                    if answer.lower() == 'n':
-                        respawnjobs  = False
-                        answered    = True
-                            
-                if respawnjobs:
-                    #Show content
-                        command           = "tail -n 1 " + out
-                        sysCommandHandle  = os.popen(command)
-                        for line in sysCommandHandle:
-                            print "Job #" + id + ": " + line,
-                        submit(eval(id))
-                        print RESUMING_COLOR+">>> Respawned Job #"+id+NOCOLOR
-                        respawned = respawned + 1
+            id,_,_ = out.rpartition('-')
+            if not os.path.exists(str(id)+'-results.txt'):
+                job_id = get_job_id(idir, id)
+                if job_id in running_jobs_by_id.keys():
+                    # dont respawn jobs that are still running
+                    print "Run #{0} has still a job running with id {1} and status {2}".format(id, job["job_id"], job["status"])
+                    running += 1
                 else:
-                    running = running + 1
-                        
-        	
+                    # asks for jobs that are not running anymore
+                    while not answered:
+                        answer=raw_input('(!) Respawn Jobs ? => (Y/N)')
+                        if answer.lower() == 'y':
+                            respawnjobs  = True
+                            answered    = True
+
+                        if answer.lower() == 'n':
+                            respawnjobs  = False
+                            answered    = True
+
+                    if respawnjobs:
+                        #Show content
+                            command           = "tail -n 1 " + out
+                            sysCommandHandle  = os.popen(command)
+                            for line in sysCommandHandle:
+                                print "Job #" + id + ": " + line,
+                            submit(eval(id))
+                            print RESUMING_COLOR+">>> Respawned Job #"+id+NOCOLOR
+                            respawned = respawned + 1
+                    else:
+                        running = running + 1
+
+
         # Submit extra jobs as needed
         # Here there is no more jobs to respawn so we have to create new ones
         extraNeed       = exp_num-completed-respawned-running
@@ -138,12 +152,12 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
             if os.path.exists('%d-out.txt'%jobid):
                 jobid = jobid + 1
                 continue
-            
+
             newSubmission = newSubmission + 1
             submit(jobid)
-            print YELLOW+">>> Submitted Job #"+str(jobid)+NOCOLOR 
+            print YELLOW+">>> Submitted Job #"+str(jobid)+NOCOLOR
             jobid += 1
-                
+
         print "---------------------"
         print "Completed:\t%d" % completed
         print "Running:\t%d" % (running)
@@ -153,15 +167,17 @@ def searchNSubmit(idir,exp_num,answered,respawnjobs):
         #Return to the directory we started at
         os.chdir(currentdir)
         return [answered, respawnjobs]
-    
+
 def sysCall(cmd):
     if TEST:
         print cmd
     else:
         os.popen(cmd)
 
+
+
 def rerun(idir,exp_num):
-        
+        """
         # Check queue by running condor_q and extracting jobs
         command     = 'condor_q ' + USERNAME
         result      = os.popen(command)
@@ -178,47 +194,47 @@ def rerun(idir,exp_num):
         
         if runningJobs > 0:
             print ">>> Found running jobs ("+str(runningJobs)+") For user " + USERNAME + "."
-        
+
             gotanswer1 = False or force
             while not gotanswer1:
                 answer=raw_input('(!) (K)ill / (I)gnore / (Q)uit ?')
-                
+
                 if answer.lower() == 'q':
                     sys.exit(0);
-                
+
                 if answer.lower() == 'k':
-                    print "Killing all jobs..." 
+                    print "Killing all jobs..."
                     command   = 'condor_rm ' + USERNAME
                     result    = sysCall(command)
                     gotanswer1 = True;
-                    
+
                 if answer.lower() == 'i':
                     print "Ignoring all running jobs..."
                     gotanswer1 = True;
         else:
             respawnjobs  = True #If no task is running try to respawn jobs
             print ">>> No job found for user " + USERNAME + "."
-        
+        """
         #Start Searching and Purging
         searchNSubmit(idir,exp_num,False,False)
-    
+
 if __name__ == '__main__':
-    
+
     os.system('clear');
 
     force = False
     runs = 30
-    
+
     if len(sys.argv) > 1:
     	runs = eval(sys.argv[1])
-    
+
     if len(sys.argv) > 2:
         force = True
 
-    print('*****************************************************');    
-    print('******************* Run %d experiments **************' % (runs));    
-    print('*****************************************************');     
+    print('*****************************************************');
+    print('******************* Run %d experiments **************' % (runs));
+    print('*****************************************************');
     if force: print ('>>> FORCED MODE: Ignoring all warnings! <<<')
-    
-    rerun('.',runs)   
-    
+
+    rerun('.',runs)
+
