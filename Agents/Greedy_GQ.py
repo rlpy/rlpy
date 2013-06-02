@@ -79,11 +79,18 @@ class Greedy_GQ(Agent):
         discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
             expanded = self.representation.discover(phi_s,td_error)
-            # Correct the size of self.GQWeight
+            
+            #Assuming one expansion for one interaction.
             if expanded:
-                self.GQWeight      = addNewElementForAllActions(self.GQWeight,self.domain.actions_num)
-        
+                # Correct the size of self.GQWeight
+                self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num)
+                if self.lambda_:
+                    # Correct the size of eligibility traces (pad with zeros for new features)
+                    self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num)
+                    self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1)
+                    
         # Set eligibility Traces to zero if it is end of the episode
-        if self.lambda_: self.eligibility_trace = zeros(self.representation.features_num*self.domain.actions_num) 
-        # Else there are no nonzero elements, halt update.
+        if self.lambda_: 
+            self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num) 
+            self.eligibility_trace_s = zeros(self.representation.features_num) 
  
