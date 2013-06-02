@@ -413,14 +413,21 @@ if __name__ == '__main__':
         rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,sparsify = sparsify)
         rep.theta   = arange(rep.features_num*domain.actions_num)*10
         print 'Initial [0,1] => ',
-        print rep.findFinalActiveFeatures([0,1])
+        ANSWER = rep.findFinalActiveFeatures([0,1])
+        print ANSWER
+        assert array_equal(ANSWER, array([0,1]))
         rep.show()
+        
         print rep.inspectPair(0,1, discovery_threshold+1)
         rep.show()
-        print 'Initial [0,1] => ',
-        print rep.findFinalActiveFeatures([0,1])
+        ANSWER = rep.findFinalActiveFeatures([0,1])
+        print ANSWER
+        assert array_equal(ANSWER, array([21]))
+
         print 'Initial [2,3] => ',
-        print rep.findFinalActiveFeatures([2,3])
+        ANSWER = rep.findFinalActiveFeatures([2,3])
+        print ANSWER
+        assert array_equal(ANSWER, array([2,3]))
         rep.showCache()
     #    print 'discover 0,20'
     #    phi_s = zeros(rep.features_num)
@@ -431,24 +438,39 @@ if __name__ == '__main__':
         rep.showFeatures()
         rep.showCache()
         print 'Initial [0,20] => ',
-        print rep.findFinalActiveFeatures([0,20])
+        ANSWER = rep.findFinalActiveFeatures([0,20])
+        print ANSWER
+        assert array_equal(ANSWER, array([0,20]))
+
         print 'Initial [0,1,20] => ',
-        print rep.findFinalActiveFeatures([0,1,20])
+        ANSWER = rep.findFinalActiveFeatures([0,1,20])
+        print ANSWER
+        assert array_equal(ANSWER, array([21,20]))
         rep.showCache()
         # Change the weight for new feature 40
         rep.theta[40] = -100
         print 'Initial [0,20] => ',
-        print rep.findFinalActiveFeatures([0,20])
+        ANSWER = rep.findFinalActiveFeatures([0,20])
+        print ANSWER
+        assert array_equal(ANSWER, array([0,20]))
+
         print 'discover 0,1,20'
-        rep.inspectPair(1,rep.features_num-1, discovery_threshold+1)
+        rep.inspectPair(20,rep.features_num-1, discovery_threshold+1)
         rep.showFeatures()
         rep.showCache()
         print 'Initial [0,1,20] => ',
-        print rep.findFinalActiveFeatures([0,1,20])
+        ANSWER = rep.findFinalActiveFeatures([0,1,20])
+        print ANSWER
+        assert array_equal(ANSWER, array([22]))
+
         rep.showCache()
         print 'Initial [0,1,2,3,4,5,6,7,8,20] => ',
         print rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
+        ANSWER = rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
+        print ANSWER
+        assert array_equal(ANSWER, array([22,8,7,6,5,4,3,2]))
         rep.showCache()
+        print "Passed the checks!"
     else:
         #Random Test
         TRIALS      = 200
