@@ -43,6 +43,12 @@ class Acrobot(Domain):
 
     for details see R. Sutton: Generalization in Reinforcement Learning:
         Successful Examples Using Sparse Coarse Coding (NIPS 1996)
+
+    or
+
+    Sutton, Richard S., and Andrew G. Barto:
+        Reinforcement learning: An introduction.
+        Cambridge: MIT press, 1998.
     """
 
     episodeCap = 1000
@@ -50,9 +56,9 @@ class Acrobot(Domain):
     continuous_dims = np.arange(4)
     gamma = 1.
 
-    LINK_LENGTH_1 = 1.  # [m] length of the inner link
-    LINK_LENGTH_2 = 1.  # [m]length of the outer link
-    LINK_MASS_1 = 1.  # [kg] mass of the inner link
+    LINK_LENGTH_1 = 1.  # [m]
+    LINK_LENGTH_2 = 1.  # [m]
+    LINK_MASS_1 = 1.  # [kg]
     LINK_MASS_2 = 1.  # [kg]
     LINK_COM_POS_1 = 0.5  # [m] position of the center of mass of the links
     LINK_COM_POS_2 = 0.5  # [m] position of the center of mass of the links
@@ -64,10 +70,12 @@ class Acrobot(Domain):
     AVAIL_TORQUE = [-1., 0., +1]
 
     torque_noise_max = 0.
-    statespace_limits = np.array([[-np.pi, np.pi]] * 2 \
-                                 + [[-MAX_VEL_1, MAX_VEL_1]] \
+    statespace_limits = np.array([[-np.pi, np.pi]] * 2
+                                 + [[-MAX_VEL_1, MAX_VEL_1]]
                                  + [[-MAX_VEL_2, MAX_VEL_2]])
 
+    # use dynamics equations from the nips paper or the book
+    book_or_nips = "book"
     action_arrow = None
     domain_fig = None
     actions_num = 3
@@ -113,29 +121,34 @@ class Acrobot(Domain):
         lc2 = self.LINK_COM_POS_2
         I1 = self.LINK_MOI
         I2 = self.LINK_MOI
-        g = 9.81
+        g = 9.8
         a = s_augmented[-1]
         s = s_augmented[:-1]
-        d1 = m1*lc1**2 + m2*(l1**2 + lc2**2 + 2*l1*lc2*np.cos(s[1])) + I1 + I2
-        d2 = m2 * (lc2**2 + l1*lc2*np.cos(s[1])) + I2
-        phi2 = m2*lc2*g*np.cos(s[0]+s[1]-np.pi/2.)
-        phi1 = - m2*l1*lc2*s[3]**2*np.sin(s[1]) - 2*m2*l1*lc2*s[3]*s[2]*np.sin(s[1])  \
-                +(m1*lc1+m2*l1)*g*np.cos(s[0] - np.pi/2) + phi2
-        # the following line is consistent with the description in the paper
-        #ddtheta2 = (a + d2/d1*phi1 - phi2) / (m2*lc2**2 + I2 - d2**2/d1)
-
-        # the following line is consistent with the java implementation and the
-        # book
-        ddtheta2 = (a + d2/d1*phi1 - m2*l1*lc2*s[2]**2*np.sin(s[1]) - phi2) \
-                / (m2*lc2**2 + I2 - d2**2/d1)
-        ddtheta1 = -(d2*ddtheta2 + phi1) / d1
-        return (s[2], s[3], ddtheta1, ddtheta2, 0.)
+        theta1 = s[0]
+        theta2 = s[1]
+        dtheta1 = s[2]
+        dtheta2 = s[3]
+        d1 = m1*lc1**2 + m2*(l1**2 + lc2**2 + 2*l1*lc2*np.cos(theta2)) + I1 + I2
+        d2 = m2 * (lc2**2 + l1*lc2*np.cos(theta2)) + I2
+        phi2 = m2 * lc2 * g * np.cos(theta1 + theta2 - np.pi/2.)
+        phi1 = - m2 * l1 * lc2 * dtheta2**2 * np.sin(theta2) \
+               - 2 * m2 * l1 * lc2 * dtheta2 * dtheta1 *np.sin(theta2)  \
+                + (m1 * lc1 + m2 * l1) * g * np.cos(theta1 - np.pi / 2) + phi2
+        if self.book_or_nips == "nips":
+            # the following line is consistent with the description in the paper
+            ddtheta2 = (a + d2/d1*phi1 - phi2) / (m2*lc2**2 + I2 - d2**2/d1)
+        else:
+            # the following line is consistent with the java implementation and the
+            # book
+            ddtheta2 = (a + d2 / d1 * phi1 - m2 * l1 * lc2 * dtheta1**2 * np.sin(theta2) - phi2) \
+                       / (m2 * lc2**2 + I2 - d2**2 / d1)
+        ddtheta1 = -(d2 * ddtheta2 + phi1) / d1
+        return (dtheta1, dtheta2, ddtheta1, ddtheta2, 0.)
 
     def showDomain(self, s, a=0):
         """
-        Plot the 2 links
+        Plot the 2 links + action arrows
         """
-        #TODO plot the action
 
         if self.domain_fig is None:  # Need to initialize the figure
             self.domain_fig = plt.gcf()
@@ -192,6 +205,7 @@ class AcrobotLegacy(Acrobot):
 
     """
 
+    book_or_nips = "nips"
     def step(self, s, a):
 
         torque = self.AVAIL_TORQUE[a]
@@ -204,10 +218,17 @@ class AcrobotLegacy(Acrobot):
         for i in range(4):
             s_dot = np.array(self._dsdt(s_augmented, 0))
             s_augmented += s_dot * self.dt / 4.
+
+            # make sure that we don't have 2 free pendulums but a "gymnast"
+            #for k in range(2):
+            #    if np.abs(s_augmented[k]) > np.pi:
+            #        s_augmented[k] = np.sign(s_augmented[k]) * np.pi
+            #        s_augmented[k + 2] = 0.
             s_augmented[0] = wrap(s_augmented[0], -np.pi, np.pi)
             s_augmented[1] = wrap(s_augmented[1], -np.pi, np.pi)
             s_augmented[2] = bound(s_augmented[2], -self.MAX_VEL_1, self.MAX_VEL_1)
             s_augmented[3] = bound(s_augmented[3], -self.MAX_VEL_2, self.MAX_VEL_2)
+
         ns = s_augmented[:4]  # omit action
         terminal = self.isTerminal(ns)
         reward = -1. if not terminal else 0.

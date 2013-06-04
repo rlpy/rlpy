@@ -1902,7 +1902,7 @@ import sys
 req_version = (2,7)
 cur_version = sys.version_info
 if cur_version >= req_version:
-    _import_module('_transformations')
+    _import_module('_transformations', package="Tools")
 
 if __name__ == "__main__":
     import doctest

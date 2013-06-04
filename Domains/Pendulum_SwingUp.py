@@ -59,6 +59,8 @@ class Pendulum_SwingUp(Pendulum):
     AVAIL_FORCE         = array([-50,0,50]) 
 	## kilograms, kg - Mass of the pendulum arm
     MASS_PEND           = 2.0   
+	## kilograms, kg - Mass of cart
+    MASS_CART           = 8.0   
 	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
     LENGTH              = 1.0   
 	## m/s^2 - gravitational constant

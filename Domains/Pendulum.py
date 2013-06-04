@@ -74,6 +74,8 @@ class Pendulum(Domain):
     AVAIL_FORCE         = None 
 	## kilograms, kg - Mass of the pendulum arm
     MASS_PEND           = None 
+	## kilograms, kg - Mass of cart
+    MASS_CART           = None 
 	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
     LENGTH              = None 
 	## m/s^2 - gravitational constant
@@ -134,7 +136,7 @@ class Pendulum(Domain):
         self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT]
         
         self.MOMENT_ARM         = self.LENGTH / 2.0
-        self._ALPHA_MASS        = 1.0 / (self.MASS_PEND)
+        self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         
         self.xTicks         = linspace(0,self.Theta_discretization-1,5)
         self.xTicksLabels   = around(linspace(self.statespace_limits[0,0]*180/pi,self.statespace_limits[0,1]*180/pi,5)).astype(int)

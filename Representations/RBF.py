@@ -61,7 +61,7 @@ class RBF(Representation):
             #id = 2 # Best Performing.
             self.features_num   = rbfs+1 # adds a constant 1 to each feature vector
             id                  = 1    # Temporarily use this number as the 26th set of rbf performed the best in PST. For blocksworld non of the tried rbf worked.
-            self.rbfFile        = '{}-{}-rbfs.npz'.format(id, domain.__class__.__name__) # used to save or load RBFs
+            self.rbfFile        = '{}-{}-{}-rbfs.npz'.format(id, domain.__class__.__name__, self.features_num) # used to save or load RBFs
             if state_dimensions is not None:
                 dims = len(state_dimensions)
             else:
