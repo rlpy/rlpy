@@ -86,7 +86,7 @@ class RCCar(Domain):
         nx          = x + speed*cos(heading)*self.delta_t
         ny          = y + speed*sin(heading)*self.delta_t
         nspeed      = speed + acc*self.ACCELERATION*self.delta_t    
-        nheading    = heading + speed/self.CAR_LENGTH*tan(turn*self.TURN_ANGLE)
+        nheading    = heading + speed/self.CAR_LENGTH*tan(turn*self.TURN_ANGLE) * self.delta_t
         
         #Bound values
         nx          = bound(nx,self.XMIN,self.XMAX)
