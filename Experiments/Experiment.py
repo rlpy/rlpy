@@ -153,7 +153,10 @@ class Experiment(object):
         if self.show_performance:
             self.domain.showDomain(s, a)
         self.agent.policy.turnOnExploration()
+        # This hidden state is for domains (such as the noise in the helicopter domain) that include unobservable elements that are evolving over time
+        # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP
         self.domain.hidden_state_ = hidden_state
+
         np.random.set_state(random_state)
         return eps_return, eps_length, eps_term
         # [performanceRun code]

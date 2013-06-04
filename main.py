@@ -56,7 +56,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
     RUN_IN_BATCH        = jobID != -1
     SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
+    SHOW_PERFORMANCE    = 0 and not RUN_IN_BATCH
     PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
     LOG_INTERVAL        = 1 if not RUN_IN_BATCH else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size
     JOB_ID              = 1 if jobID == -1 else jobID
@@ -106,7 +106,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = 1.
-    boyan_N0                = 100.
+    boyan_N0                = 100
     BetaCoef                = 1e-6# In the Greedy_GQ Algorithm the second learning rate, Beta, is assumed to be Alpha * THIS CONSTANT
     LAMBDA                  = 0
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
