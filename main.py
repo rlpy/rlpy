@@ -188,9 +188,9 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #                           forgetting_rate=.8, min_steps_between_updates=500,
     #                           max_steps_between_updates=2000,
     #                           lam=LAMBDA, alpha=0.1)
-    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
-    agent           = Greedy_GQ(representation, policy, domain,logger, initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0, BetaCoef)
+    #agent           = Greedy_GQ(representation, policy, domain,logger, initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0, BetaCoef)
     #agent           = LSPI(representation,policy,domain,logger,LEARNING_STEPS, LEARNING_STEPS/PERFORMANCE_CHECKS, LSPI_iterations, epsilon = LSPI_WEIGHT_DIFF_TOL, return_best_policy = LSPI_return_best_policy,re_iterations = RE_LSPI_iterations, use_sparse = LSPI_use_sparse)
     #agent           = LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           = PolicyEvaluation(representation,policy,domain,logger,LEARNING_STEPS, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations); PERFORMANCE_CHECKS  = 1 # Because policy evaluation in one run, create the whole state matrix, having multiple checks make the program confused.
