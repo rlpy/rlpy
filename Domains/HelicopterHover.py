@@ -86,7 +86,7 @@ class HelicopterHoverExtended(Domain):
     WIND_MAX = 5.
     MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.)  # ??
 
-    wind = np.array([1., .5, 0.])  # wind in neutral orientation
+    wind = np.array([.0, .0, 0.])  # wind in neutral orientation
     gamma = 0.9  # discout factor
     gust_memory = 0.8
     domain_fig = None
@@ -99,7 +99,7 @@ class HelicopterHoverExtended(Domain):
     tail_rotor_side_thrust = -0.54
 
     dt = 0.01  # length of one timestep
-    continuous_dims = np.arange(18)
+    continuous_dims = np.arange(20)
     statespace_limits_full = np.array([[-MAX_POS, MAX_POS]] * 3
                                  + [[-MAX_VEL, MAX_VEL]] * 3
                                  + [[-MAX_ANG_RATE, MAX_ANG_RATE]] * 3
@@ -111,7 +111,7 @@ class HelicopterHoverExtended(Domain):
     def _make_slice(l, u, n):
         return slice(l, u + float(u - l) / (n - 1) / 2., float(u - l) / (n - 1))
 
-    _action_bounds = np.array([[-.2, .2]] * 4)  # maximum action: 2
+    _action_bounds = np.array([[-1.3, 1.3]] * 4)  # maximum action: 2
     _action_slices = [3] * 4  # 3 actions per dimension
     _action_slices = [_make_slice(
         b[0], b[1], n) for b, n in zip(_action_bounds, _action_slices)]
