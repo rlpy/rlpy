@@ -140,7 +140,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = Acrobot(logger = logger)
     domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    #domain          = Pendulum_SwingUp(logger = logger)
+    #domain      clear    = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
     #domain          = CartPole_SwingUpHeight(logger = logger)
     #domain          = FiftyChain(logger = logger)
