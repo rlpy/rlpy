@@ -69,7 +69,7 @@ class Greedy_GQ(Agent):
         Delta_theta                 = td_error*self.eligibility_trace - gamma*td_error_estimate_now*phi_prime
         theta                       += self.alpha*Delta_theta
         Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
-        self.secondLearningRateCoef = 0 
+        #self.secondLearningRateCoef = 0 
         self.GQWeight               = self.GQWeight + self.alpha*self.alpha*self.secondLearningRateCoef*Delta_GQWeight
         
         #
@@ -90,7 +90,7 @@ class Greedy_GQ(Agent):
                     self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1)
                     
         # Set eligibility Traces to zero if it is end of the episode
-        if self.lambda_: 
+        if terminal and self.lambda_: 
             self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num) 
             self.eligibility_trace_s = zeros(self.representation.features_num) 
  
