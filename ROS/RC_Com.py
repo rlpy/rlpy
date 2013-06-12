@@ -14,8 +14,8 @@ from geometry_msgs.msg import *
 from car_sim.srv import *
 from car_sim.msg import *
 
-# This class assumes that you have both ROS properly installed AND Mark Cutter's car simulator. 
-# If the internal flag is True, the script will call the proper command to initialize a car simulation in Mark's simulator in a seperate process. 
+# This class assumes that you have both ROS properly installed AND Mark Cutter's car simulator.
+# If the internal flag is True, the script will call the proper command to initialize a car simulation in Mark's simulator in a seperate process.
 #    Note that this proccess does not terminate correctly and will still be running even if the Framework is killed. I do not adive using it
 # If you want to initialize this simulation seperately use the command "roslaunch car_control control.launch veh:=RC num:=01 sim:=true"
 #
@@ -35,9 +35,9 @@ class RC_Com():
 	self.YMAX = 2/2.0
 	self.YMIN =  -2/2.0
 	if internal:
-		subprocess.Popen("roslaunch car_control control.launch veh:=RC num:=01 sim:=true", shell=True) 
+		subprocess.Popen("roslaunch car_control control.launch veh:=RC num:=01 sim:=true", shell=True)
 
-    def Step(self, s,a,visualize=False):
+    def Step(self, s,a,visualize=True):
         rospy.wait_for_service('RC01/run_step')
         try:
             step = rospy.ServiceProxy('RC01/run_step', RunStep)
