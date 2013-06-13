@@ -71,7 +71,7 @@ class Greedy_GQ(Agent):
         theta                       += self.alpha*Delta_theta
         Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
         #self.secondLearningRateCoef = 0 
-        self.GQWeight               = self.GQWeight + self.alpha*self.alpha*self.secondLearningRateCoef*Delta_GQWeight
+        self.GQWeight               += self.alpha*self.secondLearningRateCoef*Delta_GQWeight
         
         #
         #theta               += self.alpha * TDError * self.eligibility_trace
