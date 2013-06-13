@@ -28,10 +28,11 @@ class Greedy_GQ(Agent):
         self.eligibility_trace_s= zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_
         super(Greedy_GQ,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
-        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
-        self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
         self.GQWeight = copy(self.representation.theta)
         self.secondLearningRateCoef = BetaCoef  # The beta in the GQ algorithm is assumed to be alpha * THIS CONSTANT
+        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
+        self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
+        self.logger.log("Beta:\t\t"+str(BetaCoef))
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):
         super(Greedy_GQ, self).learn(s,a,r,ns,na,terminal) # increment episode count
