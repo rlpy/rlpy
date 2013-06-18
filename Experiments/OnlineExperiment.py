@@ -2,6 +2,7 @@
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 ######################################################
 from Experiment import *
+
 class OnlineExperiment (Experiment):
     # Statistics are saved as : 
     # STEP            = 0 
@@ -42,7 +43,7 @@ class OnlineExperiment (Experiment):
                 # Hash new state for the tabular case
                 if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(s)
                 # Output the current status if certain amount of time has been pased
-                if deltaT(start_log_time) > self.LOG_INTERVAL:
+                if deltaT(start_log_time) > self.LOG_INTERVAL and total_steps != 1:
                     start_log_time  = time()
                     elapsedTime     = deltaT(start_time) 
                     print '%d: E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num)
@@ -62,7 +63,9 @@ class OnlineExperiment (Experiment):
             eps_steps   += 1
             eps_return  += r
             s,a          = ns,na
-
+            #print s,a,ns
+            #raw_input()
+            
             #Check Performance
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
                 performance_return, performance_steps, performance_term = self.performanceRun(total_steps)

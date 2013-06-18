@@ -2,7 +2,6 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
-from __future__ import division # This will cause "/" to always return float!
 from operator import *
 from numpy  import *
 #import matplotlib
@@ -17,6 +16,8 @@ from scipy import misc
 from time import *
 from hashlib import sha1
 import datetime
+from string import *
+
 # Tips:
 # array.astype(float) => convert elements
 # matlibplot initializes the maping from the values to 
@@ -36,10 +37,20 @@ def randSet(x):
     #Returns a random element of a list uniformly.
     i = random.random_integers(0,size(x)-1)
     return x[i]
-def closestDiscretization(x, buckets, limits):
-    #Return the closest point to x based on the discretization defined by the number of buckets and limits
+def closestDiscretization(x, bins, limits):
+    #Return the closest point to x based on the discretization defined by the number of bins and limits
     width = limits[1]-limits[0]
-    return round(float(x-limits[0])*buckets/width) / buckets * width + limits[0]
+    return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
+def binNumber(s,bins,limits):
+    # return the bin number corresponding to s given Given a state it returns a vector with the same dimensionality of s
+    # each element of the returned valued is the zero-indexed bin number corresponding to s
+    # note that s can be continuous.  
+    # 1D examples: 
+    # s = 0, limits = [-1,5], bins = 6 => 1
+    # s = .001, limits = [-1,5], bins = 6 => 1
+    # s = .4, limits = [-.5,.5], bins = 3 => 2
+    width = limits[1]-limits[0]
+    return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
     return time()-start_time
 def hhmmss(t):
@@ -94,7 +105,7 @@ def make_colormap(colors):
     n = len(z)
     z1 = min(z)
     zn = max(z)
-    x0 = (z - z1) / (zn - z1)
+    x0 = (z - z1) / ((zn - z1)*1.)
     
     CC = ColorConverter()
     R = []
@@ -184,7 +195,7 @@ def linearMap(x,a,b,A=0,B=1):
     if a == b:
         res = B
     else:
-        res = (x-a)/(b-a)*(B-A)+A
+        res = (x-a)/(1.*(b-a))*(B-A)+A
     if res < A: res = A
     if res > B: res = B
     return res
@@ -272,7 +283,7 @@ def id2vec(_id,limits):
     prods = cumprod(limits)
     s = [0] * len(limits)
     for d in arange(len(prods)-1,0,-1):
-        s[d] = int(_id / prods[d-1])
+        s[d] = _id / prods[d-1]
         _id %= prods[d-1]
     s[0] = _id
     return s
