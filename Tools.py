@@ -276,7 +276,9 @@ def id2vec(_id,limits):
         _id %= prods[d-1]
     s[0] = _id
     return s
-
+def bound(x,m,M):
+    # bound x between min (m) and Max (M)
+    return min(max(x,m),M)
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
