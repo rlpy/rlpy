@@ -3,5 +3,8 @@ from Representations import *
 from Domains import *
 import timeit
 
-
-print binNumber(3,3,[0,3])
+x = array([1,2,3,4,5,6])
+x = x.reshape(2,-1)
+x = hstack((x,zeros((2,1))))
+x = x.reshape(1,-1).flatten()
+print x

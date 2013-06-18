@@ -49,7 +49,7 @@ class Representation(object):
         if len(self.theta) > 0: 
             return dot(self.phi_sa(s,a),self.theta)
         else:
-            return 0
+            return 0.0
     def fastPhi(self,s):
         #Returns the feature corresponding to the state s using the hash
         # Check bounds
@@ -74,6 +74,7 @@ class Representation(object):
         x               = self.theta.reshape(self.domain.actions_num,-1) # -1 means figure the other dimension yourself
         x               = hstack((x,zeros((self.domain.actions_num,1))))
         self.theta      = x.reshape(1,-1).flatten()
+        self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def hashState(self,s,):
         #returns a unique idea by calculating the enumerated number corresponding to a state
         # it first translate the state into a binState (bin number corresponding to each dimension)
@@ -109,7 +110,7 @@ class Representation(object):
                 print 'Action %d, Q = %0.5f' % (A[i], Qs[i])
             print '======================================='
             print 'Best:', A[ind], 'MAX:', Qs.max()
-            raw_input()
+            #raw_input()
         return A[ind]
 
 #    def discretized(self,s):

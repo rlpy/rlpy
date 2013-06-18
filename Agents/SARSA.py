@@ -9,7 +9,6 @@ class SARSA(OnlineAgent):
     def learn(self,s,a,r,ns,na):
         phi                 = self.representation.phi_sa(s,a)
         phi_prime           = self.representation.phi_sa(ns,na)
-        #print 'AGENT', phi, phi_prime
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
         alpha               = self.alpha
