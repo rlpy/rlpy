@@ -1,0 +1,10 @@
+FILES
+elliottTesting.py
+Doxygen/Doxyfile
+Doxygen/GenerateZip.py
+notes.txt
+Doxygen/scp.exe
+
+DIRECTORIES
+CondorScripts
+Doxygen/Files

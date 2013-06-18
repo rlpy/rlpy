@@ -1,0 +1,51 @@
+000 (17984.000.000) 01/30 17:34:16 Job submitted from host: <128.30.112.18:46685>
+...
+001 (17984.000.000) 01/30 17:34:28 Job executing on host: <128.30.108.58:44982>
+...
+006 (17984.000.000) 01/30 17:34:28 Image size of job updated: 81628
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (17984.000.000) 01/30 17:34:29 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...
+000 (18664.000.000) 01/31 03:40:27 Job submitted from host: <128.30.112.18:46685>
+...
+001 (18664.000.000) 01/31 03:40:34 Job executing on host: <128.30.113.70:43643>
+...
+006 (18664.000.000) 01/31 03:40:34 Image size of job updated: 81140
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (18664.000.000) 01/31 03:40:35 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...
+000 (113594.000.000) 02/04 15:06:28 Job submitted from host: <128.30.112.22:46741>
+...
+009 (113594.000.000) 02/04 15:33:14 Job was aborted by the user.
+	via condor_rm (by user rhklein)
+...

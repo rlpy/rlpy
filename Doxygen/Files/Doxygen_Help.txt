@@ -1,0 +1,218 @@
+Doxygen Advice by Elliott Williams 5/14/13
+
+#####################################################################
+### Advice                                                       ####
+#####################################################################
+
+So Doxygen can take a while to get used to. Seeing as you are manipulating
+what is essentially a compiler for a website, things that may feel very
+complicated can be done quite easily while things that may seam easy to 
+solve might take hours of googling and reading to understand what exactly
+you need to do (if you even can). Here are some things I have learnt that may 
+seem obvious but should help you figure out how to do what you want faster.
+
+1. Use the Doxywizard. 
+The Doxywizard simply edits the doxygen config file (called the Doxyfile).
+However, unlike doing this by hand, the doxywizard has complete descriptions
+of what each parameter does in the bottom left box if you hover your cursor over the parameter. 
+How helpful these descriptions are is a bit iffy, but they are better then searching the documentation
+for hours. If you want to do anything of signifigance, you should be in the expert tab.
+
+2. Read Doxygen output.
+Doxygen is a compiller and like all good compilers it prints out warnings and errors.
+This is a great way of discovering whether or not you formated a command properly
+or if you didn't completely comment what you should have. You can alter what types
+of warning Doxygen creates by altering the Messages topic in the Expert tag.
+
+3. READ THE WEBSITE CAREFULLY
+Sometimes the website can be a bit confusing/overly wordy. However, you will find that
+if you read through sections carefully, you might find the solution you are looking for.
+This is especially useful when considering the fact that stackoverflow and similar sites 
+will simply point you to a page on the documentation website. 
+
+4. Test one parameter at a time.
+If you are trying to see what some parameters do to the output, try them
+one at a time. This way you will have a much better idea how EACH one works.
+This might seem really obvious but it will save you a headache.
+
+#####################################################################
+### Links                                                        ####
+#####################################################################
+
+Here are some helpful links and descriptions that should be of use.
+
+Quick Reference Guide:
+http://www.digilife.be/quickreferences/QRC/Doxygen%20Quick%20Reference.pdf
+
+Complete Manual:
+http://www.stack.nl/~dimitri/doxygen/manual/index.html
+
+This page in particular is very helpful if you want to do something more 
+complicated such as major formating changes like changing the sidebar. 
+READ IT CAREFULLY ALL THE WAY THROUGH.
+http://www.stack.nl/~dimitri/doxygen/manual/customize.html
+
+
+#####################################################################
+### Doxygen and RLPy                                             ####
+#####################################################################
+
+The rest of these sections are dedicated to specific configurations of 
+doxygen and comments with respect to the RLPy framework. If you are looking to
+do something fancy, the solution should be below (unless i forget to mention it).
+
+#####################################################################
+### Quickies                                                     ####
+#####################################################################
+
+--------- LINKS ------------------
+To link to a file:
+\ref NAMESPACE.DIRECTORY.CLASS "NAME YOU WANT" 
+
+ex) to link to the agent superclass with the phrase James Bond as the link:
+\ref Agents.Agent.Agent "James Bond"
+
+This format holds for all insite links, to link to the big picture with phrase Hello:
+\ref big_pic "Hello"
+
+
+#####################################################################
+### General Comment Format                                       ####
+#####################################################################
+
+In python, doxygen comment blocks are started by a double pound '##' 
+and continued by a single pound '#'. Note that an empty space will end
+a comment block. Thus a description of anything should proceed what is
+being commented and look like this.
+
+## Overviwe sentence
+#
+# A paragraph describing the function
+#
+# @param param_name A SENCENCE DESRIBING THE INPUT
+# @return A SENTENCE DESCRIBING THE OUTPUTS
+
+def FUNCTION_BEING_DESCRIBED
+
+There are a couple things that should be noted.
+1. \ and @ do the same thing w/r to python
+2. Periods in the overview sentence will push everything after the period into the summary paragraph 
+   This is important to keep in mind if you want to write a one line class variable description (dont use a period)
+3. Any sequential doxygen comment blocks without any code between them will be combined into the same description.
+   THIS IS IMPORTANT. If you comment out a function in the code, its doxygen comment block will collide with the comment block
+   below the commented out function, rendering the proceeding function's description very confusing. The best solution to this 
+   problem is to CHANGE THE INITIAL '##' TO A '#' WHENEVER UNCOMMENTING OR REMOVING FUNCTIONS.
+
+#####################################################################
+### Adding a link to a code section                              ####
+#####################################################################
+
+If you add a new function and want to add its code to the 'code' section, you must follow the following steps.
+See Representation.py and Doxygen/Files/Code Page Files/Representations/Representation/Representation.txt for examples.
+
+Place the following line BEFORE and AFTER what you want to include on the page. 
+
+# [FUNTION_NAME Code ]
+
+Anything in between these two lines will be put on the site; they act as tags for the \snippet command.
+Then navigate to the proper code file (or add one as described in the section below) and add the following lines.
+
+    \subsection FILENAME_FUNCTION_NAME TITLE_OF_SECTION     (I recomend title being a nicely formated version of the function name, ie, FUNCTION_NAME -> Function Name)
+	\snippet FILE_NAME.py FUNCTION_NAME code
+    
+The top line creates a section to be referenced by links (see quickies above) and the bottom line pulls in the code.
+This section can be referenced by the line:
+# \ref FILENAME_FUNCTION_NAME "link"
+
+NEXT you need to update the sidetree to include a link to your new code section.
+To do this, open up Doxygen/Files/DoxygenLayout.xml.
+
+This file looks a bit complicated if you don't know xml, but it is pretty easy to edit.
+Simply find the line that looks like this one (with agent superclass replaced by whatever code file you are editing).
+<tab type="usergroup" url="@ref Agent" title="Agent Superclass">
+Below this line should be code that looks like this.
+    <tab type="user" url="@ref Agent_init" title="Initialization"/>
+Simply copy and edit this line to look like the example below and add it to the indent block. (Note that the order of the xml tabs is the same that ends up in the tree, make it reflect that of the code page).
+    <tab type="user" url="@ref FILENAME_FUNCTION_NAME" title="TITLE_OF_SECTION"/>
+You should recognize that the bolded sections are the same as thouse from the above line:
+\subsection FILENAME_FUNCTION_NAME TITLE_OF_SECTION
+This is not a coincidence, the xml code simply adds a link to that specific section. 
+
+If this is confusing, see the BREAKING DOWN THE XML section down below.
+
+#####################################################################
+### Adding a new page                                            ####
+#####################################################################
+
+To add a new page, create a text file and make sure doxygen is pointed to it as an input (it should be if the file is saved in Doxygen/Files).
+Add the following. (the \\ is just ## for not-python files)
+
+// \file FILENAME.txt
+/*!
+    \page PAGENAME PAGE_TITLE (nicely formated)
+    PAGE CONTENTS GO HERE
+*/
+
+Then just add the contents you want in the indicated area.
+
+NEXT you need to update the sidetree to include a link to your new page.
+To do this, open up Doxygen/Files/DoxygenLayout.xml.
+
+Simply navigate to the desired section in the tree higharchy and add the lines below.
+<tab type="usergroup" url="@ref PAGENAME" title="PAGE_TITLE">
+</tab>
+
+You will probably want to add section links withen this two lines as described in the bottom of the Adding a link to a code section
+
+If this is confusing, see the BREAKING DOWN THE XML section down below.
+
+#####################################################################
+### BREAKING DOWN THE XML                                        ####
+#####################################################################
+
+The Xml section is pretty confusing at first, but it is actually quite simple.
+
+The top section is all you care about, that is, between <navindex> and </navindex>. 
+You can probably change a LOT more stuff if you edit the other sections, but I never tried messing around with this.
+
+Anywho, the <tab ... >s build the tree of the left side. 
+Tabs of type "usergroup" are branches and can contain other usergroups and section links. The code looks like this:
+<tab type="usergroup" title="BRANCH_TITLE" url = "@ref SECTION_YOU_WOULD_LIKE_CLICKING_THE_BRANCH_TO_LINK_TO">
+They should be followed by an end tab line
+</tab>
+
+Tabs of the type "user" are just leaves of the tree and serve as links to specific sections. They look like this.
+<tab type="user" url="@ref SECTION_TO_BE_LINKED_TO" title="TITLE"/>
+
+Note that the tabs appear in tree in the same order in which they appear on in this file. Order withen the <> doesn't matter
+Thus the xml code below will create two main branches, one that has only has one leaf while the other has another two branches with two leaves each.
+
+    <tab type="usergroup" title="Branch A" url = "@ref bA">
+      <tab type="usergroup" url="@ref bAi" title="Branch Ai">
+		<tab type="user" url="@ref bAi1" title="Branch Ai Leaf 1"/>
+		<tab type="user" url="@ref bAi2" title="Branch Ai Leaf 2"/>
+	  </tab>
+      <tab type="usergroup" url="@ref bAii" title="Branch Aii">
+		<tab type="user" url="@ref bAii1" title="Branch Aii Leaf 1"/>
+		<tab type="user" url="@ref bAii2" title="Branch Aii Leaf 2"/>
+	  </tab>
+	</tab>
+    <tab type="usergroup" title="Branch B" url = "@ref bB">
+      <tab type="user" url="@ref bBl" title="Branch B Leaf"/>
+	</tab>
+    
+In order to add any new sections or pages to the tree, this process must be done. These lines must also be removed if the pages are removed.
+
+#####################################################################
+### Contact                                                      ####
+#####################################################################
+
+I just listed any issues I could think of. If you happen to have any 
+other questions or just want to pick my brain on Doxygen, feel free to 
+email me whenever at gadgy@mit.edu
+
+Good luck!
+Elliott
+
+
+

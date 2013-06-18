@@ -1,0 +1,56 @@
+============================================================
+Domain:		Pendulum_InvertedBalance
+Dimensions:	2
+|S|:		inf
+|A|:		3
+|S|x|A|:		inf
+Episode Cap:	3000
+Gamma:		0.9
+============================================================
+Representation:		IncrementalTabular
+Discretization:		20
+Starting Features:	0
+Aggregated States:	400
+============================================================
+Agent:		SARSA
+Policy:		eGreedy
+Alpha_0:		0.10
+============================================================
+Experiment:		OnlineExperiment
+Output:			Results/Example_Project/Pendulum_InvertedBalance-SARSA-IncrementalTabular/9-9-results.txt
+Max Steps: 		20000
+Performance Checks:	10
+728: E[0:00:01]-R[0:00:27]: Return=-1.00, Steps=14, Features = 84
+1439: E[0:00:02]-R[0:00:26]: Return=-1.00, Steps=10, Features = 101
+2000 >>> E[0:00:03]-R[0:00:25]: Return=-1.00, Steps=24, Features = 110
+2714: E[0:00:04]-R[0:00:24]: Return=-1.00, Steps=16, Features = 120
+3384: E[0:00:05]-R[0:00:24]: Return=-1.00, Steps=44, Features = 124
+4000 >>> E[0:00:06]-R[0:00:23]: Return=-1.00, Steps=31, Features = 125
+4728: E[0:00:07]-R[0:00:22]: Return=-1.00, Steps=111, Features = 131
+5512: E[0:00:08]-R[0:00:21]: Return=-1.00, Steps=82, Features = 133
+6000 >>> E[0:00:09]-R[0:00:20]: Return=-1.00, Steps=32, Features = 134
+6692: E[0:00:10]-R[0:00:19]: Return=-1.00, Steps=29, Features = 136
+7414: E[0:00:11]-R[0:00:18]: Return=-1.00, Steps=43, Features = 138
+8000 >>> E[0:00:11]-R[0:00:17]: Return=-1.00, Steps=43, Features = 141
+8724: E[0:00:12]-R[0:00:16]: Return=-1.00, Steps=140, Features = 144
+9464: E[0:00:14]-R[0:00:15]: Return=-1.00, Steps=86, Features = 144
+10000 >>> E[0:00:14]-R[0:00:14]: Return=-1.00, Steps=55, Features = 145
+10706: E[0:00:15]-R[0:00:13]: Return=-1.00, Steps=68, Features = 146
+11489: E[0:00:17]-R[0:00:12]: Return=-1.00, Steps=135, Features = 147
+12000 >>> E[0:00:20]-R[0:00:13]: Return=0.00, Steps=3000, Features = 147
+12720: E[0:00:21]-R[0:00:12]: Return=-1.00, Steps=89, Features = 148
+13436: E[0:00:22]-R[0:00:11]: Return=-1.00, Steps=110, Features = 148
+14000 >>> E[0:00:23]-R[0:00:10]: Return=-1.00, Steps=89, Features = 148
+14766: E[0:00:24]-R[0:00:09]: Return=-1.00, Steps=55, Features = 148
+15495: E[0:00:25]-R[0:00:07]: Return=-1.00, Steps=29, Features = 148
+16000 >>> E[0:00:26]-R[0:00:07]: Return=-1.00, Steps=95, Features = 150
+16726: E[0:00:27]-R[0:00:05]: Return=-1.00, Steps=62, Features = 150
+17464: E[0:00:28]-R[0:00:04]: Return=-1.00, Steps=116, Features = 151
+18000 >>> E[0:00:29]-R[0:00:03]: Return=-1.00, Steps=363, Features = 151
+18783: E[0:00:30]-R[0:00:02]: Return=-1.00, Steps=89, Features = 151
+19519: E[0:00:31]-R[0:00:01]: Return=-1.00, Steps=65, Features = 151
+20000 >>> E[0:00:35]-R[0:00:00]: Return=0.00, Steps=3000, Features = 151
+============================================================
+Took 0:00:35
+Results	=> Results/Example_Project/Pendulum_InvertedBalance-SARSA-IncrementalTabular/9-results.txt
+Log	=> Results/Example_Project/Pendulum_InvertedBalance-SARSA-IncrementalTabular/9-out.txt

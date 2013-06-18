@@ -1,0 +1,97 @@
+000 (17775.000.000) 01/30 17:29:15 Job submitted from host: <128.30.112.18:46685>
+...
+001 (17775.000.000) 01/30 17:29:20 Job executing on host: <128.30.108.58:44982>
+...
+006 (17775.000.000) 01/30 17:29:20 Image size of job updated: 84688
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (17775.000.000) 01/30 17:29:20 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...
+000 (17935.000.000) 01/30 17:34:12 Job submitted from host: <128.30.112.18:46685>
+...
+001 (17935.000.000) 01/30 17:34:18 Job executing on host: <128.30.108.58:44982>
+...
+006 (17935.000.000) 01/30 17:34:19 Image size of job updated: 2750
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (17935.000.000) 01/30 17:34:19 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...
+000 (18615.000.000) 01/31 03:40:20 Job submitted from host: <128.30.112.18:46685>
+...
+001 (18615.000.000) 01/31 03:40:32 Job executing on host: <128.30.113.79:57434>
+...
+006 (18615.000.000) 01/31 03:40:32 Image size of job updated: 58524
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (18615.000.000) 01/31 03:40:33 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...
+000 (113545.000.000) 02/04 15:06:17 Job submitted from host: <128.30.112.22:46741>
+...
+009 (113545.000.000) 02/04 15:33:23 Job was aborted by the user.
+	via condor_rm (by user rhklein)
+...
+000 (113745.000.000) 02/04 15:34:20 Job submitted from host: <128.30.112.22:46741>
+...
+001 (113745.000.000) 02/04 15:34:20 Job executing on host: <128.30.113.80:48391>
+...
+006 (113745.000.000) 02/04 15:34:21 Image size of job updated: 2750
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (113745.000.000) 02/04 15:34:21 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :     2750     2750          
+	   Memory (MB)          :        0        0          
+...

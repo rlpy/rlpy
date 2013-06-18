@@ -1,177 +1,339 @@
-#NOT FINISHED YET
-#NOT FINISHED YET
-#NOT FINISHED YET
-#NOT FINISHED YET
-#NOT FINISHED YET
+#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
+#All rights reserved.
+
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#Locate RLPy
+#================
 import sys, os
-#Add all paths
-sys.path.insert(0, os.path.abspath('..'))
+RL_PYTHON_ROOT = '.'
+while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+    print 'Error: Could not locate RLPy directory.' 
+    print 'Please make sure the package directory is named RLPy.'
+    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
+    sys.exit(1)
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
+sys.path.insert(0, RL_PYTHON_ROOT)
+
 from Tools import *
 from Domain import *
+
+#from scipy import integrate # for integration of state
+
+#########################################################
+# \author Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012
+#########################################################
+#
+# State: [theta, thetaDot, x, xDot].
+# Actions: [-50, 0, 50]
+#
+# theta    = Angular position of pendulum
+# (relative to straight up at 0 rad),and positive clockwise. \n
+# thetaDot = Angular rate of pendulum \n
+# x        = Linear position of the cart on its track (positive right). \n
+# xDot     = Linear velocity of the cart on its track.
+#
+# Actions take the form of force applied to cart; \n
+# [-50, 0, 50] N force are the default available actions. \n
+# Positive force acts to the right on the cart.
+#
+# Uniformly distributed noise is added with magnitude 10 N.
+#
+# Per Lagoudakis and Parr 2003, derived from Wang 1996.
+# (See "1Link" implementation by L & P.)
+# Dynamics in x, xdot derived from CartPole implementation
+# of rl-community.org, from Sutton and Barto's Pole-balancing
+# task in <Reinforcement Learning: An Introduction> (1998)
+# (See CartPole implementation in the RL Community,
+# http://library.rl-community.org/wiki/CartPole)
 ######################################################
-# Developed by Alborz Geramiard Oct 25th 2012 at MIT #
-######################################################
-#State is x,y, Actions are 4 way directional with fixed noise
-#each grid cell is:
-# 0: empty
-# 1: blocked
-# 2: start
-# 3: goal
-# 4: pit
-# The task is to reach the goal from the start while avoiding the pits
-######################################################
-class PitMaze(Domain):
-    #Rewards
-    BALANCED_REWARD = 0
-    UNBALANCED_REWARD = -1
-    episodeCap  = 3000              # Set by the domain = min(100,rows*cols)
-    NOISE = 0                       # Movement Noise
-    MAX_RETURN  = 0                 # Used for graphical normalization
-    MIN_RETURN  = -1                # Used for graphical normalization
-    TORQUE      = 20                #Torque value applied
-    actions_num        = 3
-    state_space_dims   = 2
-    #Constants in the map
-    ACTIONS = array([TORQUE,0,TORQUE])
-    def __init__(self, noise = .1):
-        path                    = os.getcwd() + mapname
-        self.map                = loadtxt(path, dtype = uint8)
-        self.start              = argwhere(self.map==self.START)[0]
-        self.ROWS,self.COLS     = shape(self.map)
-        self.states_num         = self.ROWS * self.COLS
-        self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])
-        self.NOISE              = noise
-        self.episodeCap         = min(self.ROWS*self.COLS,100)
-        #reduce(mul,x,1)
-    def showDomain(self,s,a):
-       #Draw the environment
-       if self.domain_fig is None:
-           pl.subplot(1,2,1)
-           self.domain_fig = pl.imshow(self.map, cmap='GridWorld',interpolation='nearest',vmin=0,vmax=5)
-           pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
-           pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
-           pl.tight_layout()
-           pl.show(block=False)
-       mapcopy = copy(self.map) 
-       mapcopy[s[0],s[1]] = self.AGENT
-       self.domain_fig.set_data(mapcopy)
-       pl.draw()   
+
+
+## @todo: can eliminate an entire dimension of the state space, xdot.
+# However, must internally keep track of it for use in dynamics.
+# RL_Glue and RL Community use the full 4-state system.
+class CartPole(Domain):
+
+    # Domain constants per RL Community / RL_Glue CartPole implementation.
+    # (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+	## Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    AVAIL_FORCE         = array([-10,0,10])
+	## kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = 0.1
+	## kilograms, kg - Mass of cart
+    MASS_CART           = 1.0
+	## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = 1.0
+	## m/s^2 - gravitational constant
+    ACCEL_G             = 9.8
+	## Time between steps
+    dt                  = 0.02
+	## Newtons, N - Maximum noise possible, uniformly distributed
+    force_noise_max     = 1
+
+	## Limits on pendulum rate [per RL Community CartPole]
+    ANGULAR_RATE_LIMITS = [-6.0, 6.0]
+	## Reward received on each step the pendulum is in the goal region
+    GOAL_REWARD         = 1
+	## m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+	## m/s - Limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]
+
+    # Domain constants
+
+	## Max number of steps per trajectory
+    episodeCap          = 3000
+	## Set to non-zero to enable print statements
+    DEBUG               = 0
+
+    ## Domain constants computed in __init__. \n
+	# m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+    MOMENT_ARM          = 0
+                            # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
+	## 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    _ALPHA_MASS         = 0
+
+#    cur_action = 0 # Current action, stored so that it can be accessed by methods whose headers are fixed in python
+#    cur_force_noise = 0 # Randomly generated noise for this timestep, stored here for the same reasons as cur_action
+
+
+    # Plotting variables
+    pendulumArm = None
+    cartBox = None
+    actionArrow = None
+    ACTION_ARROW_LENGTH = 0.4
+    domainFig = None
+    circle_radius = 0.05
+    PENDULUM_PIVOT_Y = 0 # Y position of pendulum pivot
+    RECT_WIDTH = 0.5
+    RECT_HEIGHT = .4
+    BLOB_WIDTH = RECT_HEIGHT/2.0
+    PEND_WIDTH = 2
+    GROUND_WIDTH = 2
+    GROUND_HEIGHT = 1
+    # vertices for the ground:
+
+    # are constrained by the format expected by ode functions.
+    def __init__(self, logger = None):
+        # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+#        self.states_num = inf       # Number of states
+        self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
+        self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
+
+        self.MOMENT_ARM         = self.LENGTH / 2.0
+        self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
+        self.DimNames           = ['Theta','Thetadot','X','Xdot']
+
+#        if self.RECT_HEIGHT == 0: # No rectangle height specified
+#            self.RECT_HEIGHT = self.MASS_CART / 20 # Arbitrary number, reasonable visualization
+#        if self.PEND_WIDTH == 0: # No rectangle height specified
+#            self.PEND_WIDTH = int(self.MASS_PEND / self.LENGTH)+1 # Arbitrary number, reasonable visualization
+
+        if self.logger:
+            self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
+            self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
+        self._assignGroundVerts()
+        super(CartPole,self).__init__(logger)
+
+    def showDomain(self,s,a = 0):
+        ## Plot the pendulum and its angle, along with an arc-arrow indicating the
+        # direction of torque applied (not including noise!)
+        # Pendulum rotation is centered at origin
+
+        if self.domainFig == None: # Need to initialize the figure
+            self.domainFig = pl.gcf()
+            ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
+            self.pendulumArm = lines.Line2D([],[], linewidth = self.PEND_WIDTH, color='black')
+            self.cartBox    = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT/2.0], self.RECT_WIDTH, self.RECT_HEIGHT,alpha=.4)
+            self.cartBlob   = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.BLOB_WIDTH/2.0], self.BLOB_WIDTH, self.BLOB_WIDTH,alpha=.4)
+            ax.add_patch(self.cartBox)
+            ax.add_line(self.pendulumArm)
+            ax.add_patch(self.cartBlob)
+            #Draw Ground
+            path    = mpath.Path(self.GROUND_VERTS)
+            patch   = mpatches.PathPatch(path,hatch="//")
+            ax.add_patch(patch)
+
+            # Allow room for pendulum to swing without getting cut off on graph
+            viewableDistance = self.LENGTH + self.circle_radius + 0.5
+            ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
+            ax.set_ylim(-viewableDistance, viewableDistance)
+            #ax.set_aspect('equal')
+
+            pl.show()
+
+        forceAction = self.AVAIL_FORCE[a]
+        curX = s[StateIndex.X]
+        curXDot = s[StateIndex.X_DOT]
+        curTheta = s[StateIndex.THETA]
+
+        pendulumBobX = curX + self.LENGTH  * sin(curTheta)
+        pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * cos(curTheta)
+
+        if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
+
+        # update pendulum arm on figure
+        self.pendulumArm.set_data([curX, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])
+        self.cartBox.set_x(curX - self.RECT_WIDTH/2.0)
+        self.cartBlob.set_x(curX - self.BLOB_WIDTH/2.0)
+
+
+        if self.actionArrow is not None:
+            self.actionArrow.remove()
+            self.actionArrow = None
+
+        if forceAction == 0: pass # no force
+        else: # cw or ccw torque
+            if forceAction > 0: # rightward force
+                self.actionArrow = fromAtoB(
+                                                  curX - self.ACTION_ARROW_LENGTH - self.RECT_WIDTH/2.0, 0,
+                                                  curX - self.RECT_WIDTH/2.0,  0,
+                                                  'k',"arc3,rad=0",
+                                                  0,0, 'simple'
+                                                  )
+            else:# leftward force
+                self.actionArrow = fromAtoB(
+                                                  curX + self.ACTION_ARROW_LENGTH + self.RECT_WIDTH/2.0, 0,
+                                                  curX + self.RECT_WIDTH/2.0, 0,
+                                                  'r',"arc3,rad=0",
+                                                  0,0,'simple'
+                                                  )
+
+        pl.draw()
+#        sleep(self.dt)
+
     def showLearning(self,representation):
-        if self.valueFunction_fig is None:
-            pl.subplot(1,2,2)
-            self.valueFunction_fig   = pl.imshow(self.map, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN) 
-            pl.xticks(arange(self.COLS), fontsize=12)
-            pl.yticks(arange(self.ROWS), fontsize=12)
-           #Create quivers for each action. 4 in total
-            X   = arange(self.ROWS)-self.SHIFT
-            Y   = arange(self.COLS)
-            X,Y = pl.meshgrid(X,Y) 
-            DX = DY = ones(X.shape)
-            C = zeros(X.shape); C[0,0] = 1 # Making sure C has both 0 and 1             
-            self.upArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')#, headwidth=1.5, headlength = 2.5, headaxislength = 2.25)
-            X   = arange(self.ROWS)+self.SHIFT
-            Y   = arange(self.COLS)
-            X,Y = pl.meshgrid(X,Y) 
-            self.downArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
-            X   = arange(self.ROWS)
-            Y   = arange(self.COLS)-self.SHIFT
-            X,Y = pl.meshgrid(X,Y) 
-            self.leftArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
-            X   = arange(self.ROWS)
-            Y   = arange(self.COLS)+self.SHIFT
-            X,Y = pl.meshgrid(X,Y) 
-            self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions')
-            f = pl.gcf()
-#            f.set_size_inches(10,20)
-            pl.show(block=False)
-            pl.tight_layout()
-        V            = zeros((self.ROWS,self.COLS))
-        Mask         = ones((self.COLS,self.ROWS,self.actions_num), dtype='bool') #Boolean 3 dimensional array. The third array highlights the action. Thie mask is used to see in which cells what actions should exist
-        arrowSize    = zeros((self.COLS,self.ROWS,self.actions_num))
-        arrowColors  = zeros((self.COLS,self.ROWS,self.actions_num),dtype= 'uint8') # 0 = suboptimal action, 1 = optimal action
-        for r in arange(self.ROWS):
-            for c in arange(self.COLS):
-                if self.map[r,c] == self.BLOCKED: V[r,c] = 0 
-                if self.map[r,c] == self.GOAL: V[r,c] = self.MAX_RETURN  
-                if self.map[r,c] == self.PIT: V[r,c] =self.MIN_RETURN 
-                if self.map[r,c] == self.EMPTY or self.map[r,c] == self.START:
-                    s        = [r,c]
-                    Qs,As    = representation.Qs(s)
-                    bestA    = representation.bestActions(s)
-                    V[r,c]   = max(Qs)
-                    Mask[c,r,As]             = False
-                    arrowColors[c,r,bestA]   = 1
-#                    print r,c,Qs
-                    arrowSize[c,r,As]        = vectorize(linearMap)(Qs,self.MIN_RETURN,self.MAX_RETURN,.4,2) #Vectorize creates a function that can be applied to matrixes
-#                    print vectorize(linearMap)(Qs,min(Qs),max(Qs),.4,2)
-        #Show Value Function
-        self.valueFunction_fig.set_data(V)
-        #Show Policy Up Arrows
-        DX = arrowSize[:,:,0]
-        DY = zeros((self.ROWS,self.COLS))  
-        DX = ma.masked_array(DX, mask=Mask[:,:,0])
-        DY = ma.masked_array(DY, mask=Mask[:,:,0])
-        C  = ma.masked_array(arrowColors[:,:,0], mask=Mask[:,:,0])
-        self.upArrows_fig.set_UVC(DY,DX,C)
-        #Show Policy Down Arrows
-        DX = -arrowSize[:,:,1]
-        DY = zeros((self.ROWS,self.COLS))  
-        DX = ma.masked_array(DX, mask=Mask[:,:,1])
-        DY = ma.masked_array(DY, mask=Mask[:,:,1])
-        C  = ma.masked_array(arrowColors[:,:,1], mask=Mask[:,:,1])
-        self.downArrows_fig.set_UVC(DY,DX,C)
-        #Show Policy Left Arrows
-        DX = zeros((self.ROWS,self.COLS))  
-        DY = -arrowSize[:,:,2]
-        DX = ma.masked_array(DX, mask=Mask[:,:,2])
-        DY = ma.masked_array(DY, mask=Mask[:,:,2])       
-        C  = ma.masked_array(arrowColors[:,:,2], mask=Mask[:,:,2])
-        self.leftArrows_fig.set_UVC(DY,DX,C)
-        #Show Policy Right Arrows
-        DX = zeros((self.ROWS,self.COLS))  
-        DY = arrowSize[:,:,3]
-        DX = ma.masked_array(DX, mask=Mask[:,:,3])
-        DY = ma.masked_array(DY, mask=Mask[:,:,3])
-        C  = ma.masked_array(arrowColors[:,:,3], mask=Mask[:,:,3])
-        self.rightArrows_fig.set_UVC(DY,DX,C)
-        pl.draw()   
-    def step(self,s,a):
-        terminal    = self.NOT_TERMINATED
-        r           = self.STEP_REWARD
-        ns          = s
-        if random.random_sample() < self.NOISE:
-            #Random Move  
-            a = randSet(self.possibleActions(s))
-        ns = s + self.ACTIONS[a]
-        
-        if (ns[0] < 0 or ns[0] == self.ROWS or
-            ns[1] < 0 or ns[1] == self.COLS or
-            self.map[ns[0],ns[1]] == self.BLOCKED):
-                ns = s
-        if self.map[ns[0],ns[1]] == self.GOAL:
-                r = self.GOAL_REWARD
-                terminal = self.NOMINAL_TERMINATION
-        if self.map[ns[0],ns[1]] == self.PIT:
-                r = self.PIT_REWARD
-                terminal = self.CRITICAL_TERMINATION
-        return r,ns,terminal
+        pass
+
     def s0(self):
-        return self.start
-    def possibleActions(self,s):
-        possibleA = array([],uint8)
-        for a in arange(self.actions_num):
-            ns = s + self.ACTIONS[a]
-            if (
-                ns[0] < 0 or ns[0] == self.ROWS or
-                ns[1] < 0 or ns[1] == self.COLS or
-                self.map[ns[0],ns[1]] == self.BLOCKED):
-                continue
-            possibleA = append(possibleA,[a])
-        return possibleA
-         
+        # Defined by children
+        abstract
+
+    def possibleActions(self,s): # Return list of all indices corresponding to actions available
+        return arange(self.actions_num)
+
+    def step(self,s,a):
+        # Simulate one step of the CartPole after taking action a
+        # Note that at present, this is almost identical to the step for the Pendulum.
+
+        forceAction = self.AVAIL_FORCE[a]
+
+        # Add noise to the force action
+        if self.force_noise_max > 0:
+            forceAction += random.uniform(-self.force_noise_max, self.force_noise_max)
+        else: forceNoise = 0
+
+        # Now, augment the state with our force action so it can be passed to _dsdt
+        s_augmented = append(s, forceAction)
+
+        # Decomment the line below to use inbuilt runge-kutta method.
+        ns = rk4(self._dsdt, s_augmented, [0, self.dt])
+        ns = ns[-1] # only care about final timestep of integration returned by integrator
+        ns = ns[0:4] # [theta, thetadot, x, xDot]
+        # ODEINT IS TOO SLOW!
+        # ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
+        #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
+
+        theta                   = wrap(ns[StateIndex.THETA],-pi,pi)
+        ns[StateIndex.THETA]    = bound(theta,self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
+        ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
+        ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
+        ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
+        terminal                    = self.isTerminal(ns)
+        reward                      = self._getReward(ns,a)
+        return reward, ns, terminal
+
+    ## From CartPole implementation described in class definition, from rlcommunity.org
+    # (http://library.rl-community.org/wiki/CartPole)
+    # Used by odeint to numerically integrate the differential equation
+    def _dsdt(self, s_augmented, t):
+        # This function is needed for ode integration.  It calculates and returns the
+        # derivatives at a given state, s.  The last element of s_augmented is the
+        # force action taken, required to compute these derivatives.
+        #
+        # ThetaDotDot =
+        #
+        #     g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
+        #     -----------------------------------------------------------------------
+        #                           4l/3  -  (alpha)ml*cos^2(theta)
+        #
+        #         g sin(theta) - w cos(theta)
+        #   =     ---------------------------
+        #         4l/3 - (alpha)ml*cos^2(theta)
+        #
+        # where w = (alpha)u + (alpha)ml*(tdot)^2*sin(theta)
+        # Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
+        #
+        # xDotDot = w - (alpha)ml * thetaDotDot * cos(theta)
+
+#        force = self.cur_action + self.cur_force_noise
+        g = self.ACCEL_G
+        l = self.MOMENT_ARM
+        m_pendAlphaTimesL = self.MASS_PEND * self._ALPHA_MASS * l
+        theta       = s_augmented[StateIndex.THETA]
+        thetaDot    = s_augmented[StateIndex.THETA_DOT]
+        xDot        = s_augmented[StateIndex.X_DOT]
+        force       = s_augmented[StateIndex.FORCE]
+
+        sinTheta = sin(theta)
+        cosTheta = cos(theta)
+        thetaDotSq = thetaDot ** 2
+
+        term1 = force*self._ALPHA_MASS + m_pendAlphaTimesL * thetaDotSq * sinTheta
+        numer = g * sinTheta - cosTheta * term1
+        denom = 4.0 * l / 3.0  -  m_pendAlphaTimesL * (cosTheta ** 2)
+        # g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
+        # -----------------------------------------------------------------------
+        #                     4l/3  -  (alpha)ml*cos^2(theta)
+        thetaDotDot = numer / denom
+
+        xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
+        return (thetaDot, thetaDotDot, xDot, xDotDot, 0) # final cell corresponds to action passed in
+
+    ## @param s: state
+    #  @param a: action
+    ## @return: Reward earned for this state-action pair.
+    def _getReward(self, s, a):
+        # Return the reward earned for this state-action pair
+        abstract
+
+    ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
+    def _assignGroundVerts(self):
+        minPosition = self.POSITON_LIMITS[0]-self.RECT_WIDTH/2.0
+        maxPosition = self.POSITON_LIMITS[1]+self.RECT_WIDTH/2.0
+        self.GROUND_VERTS = array([
+                          (minPosition,-self.RECT_HEIGHT/2.0),
+                          (minPosition,self.RECT_HEIGHT/2.0),
+                          (minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
+                          (minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
+                          (maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
+                          (maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
+                          (maxPosition, self.RECT_HEIGHT/2.0),
+                          (maxPosition, -self.RECT_HEIGHT/2.0),
+                          ])
+
+## \cond DEV
+
+# Flexible way to index states in the CartPole Domain.
+#
+# This class enumerates the different indices used when indexing the state. \n
+# e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
+class StateIndex:
+    THETA, THETA_DOT = 0,1
+    X, X_DOT = 2,3
+    FORCE = 4
+## \endcond
+
 if __name__ == '__main__':
-    #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
-    p = PitMaze('/PitMazeMaps/4by5.txt');
-    p.test(1000)
-    
-    
+    print 'Please run one of my children: Swingup, InvertedBalanced'

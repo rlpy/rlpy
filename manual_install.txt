@@ -1,0 +1,59 @@
+You should only use this page for reference if you are running
+on an unsupported system, or wish to install packages
+manually.
+Otherwise please refer to install.txt.
+
+===============================================================
+1. numpy
+(Has 1,2,3 together for OS Lion) http://fonnesbeck.github.com/ScipySuperpack/
+http://penandpants.com/2012/02/24/install-python/
+http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/
+===============================================================
+2. matlibplot  
+http://wolfpaulus.com/journal/mac/installing_python_osx
+
+Helped partially but I kept receiving errors for core.multiarray
+http://sourceforge.net/projects/matplotlib/files/matplotlib/ 
+For Lion: sudo easy_install -N -Z https://dl.dropbox.com/u/233041/matplotlib-1.2.x-py2.7-macosx-10.8-intel.egg
+===============================================================
+3. Scipy
+http://fonnesbeck.github.com/ScipySuperpack/
+* If you have mac os lion (10.7) do not install matplotlib 10.8 from the above!
+* If you did, delete it from the directory where the error during python execution refers to
+===============================================================
+4. networkx (for NetworkAdmin domain)
+http://networkx.lanl.gov/
+===============================================================
+5. graphvis
+http://www.graphviz.org/Download.php
+
+You need to run the following from the RL-Python Directory command line:
+===============================================================
+Nothing at the moment!
+
+
+Optional:
+scikit-learn
+http://scikit-learn.org/stable/install.html
+=================
+SymPy 
+git clone git://github.com/sympy/sympy.git
+cd sympy
+sudo python setup.py install 
+===============================================================
+Pydev for Eclipse
+Eclipse > 
+http://pydev.org/updates
+===============================================================
+Visual Python
+http://www.vpython.org/index.html
+=================
+dvipng
+sudo apt-get install dvipng
+
+
+glumly 
+sudo easy_install glumpy
+
+PyOpenGL
+sudo easy_install PyOpenGL
