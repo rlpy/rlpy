@@ -3,6 +3,8 @@ from Tools import *
 from Representations import *
 from Domains import *
 createColorMaps()
+from scipy import *
 
-from visual import *
-mybox = box(pos=(x0,y0,z0), length=L, height=H, width=W)
+a = array([1,2])
+b = array([3,4])
+print a+b

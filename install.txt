@@ -6,14 +6,16 @@ http://penandpants.com/2012/02/24/install-python/
 http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/
 ===============================================================
 2. matlibplot  
-My man!
 http://wolfpaulus.com/journal/mac/installing_python_osx
 
 Helped partially but I kept receiving errors for core.multiarray
 http://sourceforge.net/projects/matplotlib/files/matplotlib/ 
 For Lion: sudo easy_install -N -Z https://dl.dropbox.com/u/233041/matplotlib-1.2.x-py2.7-macosx-10.8-intel.egg
 ===============================================================
-===============================================================
+3. Scipy
+http://fonnesbeck.github.com/ScipySuperpack/
+* If you have mac os lion (10.7) do not install matplotlib 10.8 from the above!
+* If you did, delete it from the directory where the error during python execution refers to
 
 Optional:
 
