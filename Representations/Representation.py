@@ -82,7 +82,7 @@ class Representation(object):
              if d in domain.continous_dims:
                  self.bins_per_dim[d] = discretization
              else:
-                 self.bins_per_dim[d] = domain.statespace_limits[d,1] - self.domain.statespace_limits[d,0]
+                 self.bins_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]
     def binState(self,s):
         # Given a state it returns a vector with the same dimensionality of s
         # each element of the returned valued is the zero-indexed bin number corresponding to s
@@ -120,5 +120,11 @@ class Representation(object):
 #        for dim in self.domain.continous_dims:
 #                ds[dim] = closestDiscretization(ds[dim],self.discretization,self.domain.statespace_limits[dim][:]) 
 #        return ds
+    def activeInitialFeatures(self,s):
+        #return the index of active initial features based on bins on each dimensions
+        bs          = self.binState(s)
+        shifts      = hstack((0, cumsum(self.bins_per_dim)[:-1]))
+        index       = bs+shifts
+        return      index.astype('uint32')
     
     
