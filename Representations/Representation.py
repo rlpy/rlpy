@@ -18,16 +18,10 @@ class Representation(object):
         for v in ['features_num']:
             if getattr(self,v) == None:
                 raise Exception('Missed domain initialization of '+ v)
+        self.setBinsPerDimension(domain,discretization)
         self.domain = domain
-        self.theta  = zeros(self.features_num*self.domain.actions_num) 
         self.discretization = discretization
-        #Calculate bins per Dimension
-        self.bins_per_dim = zeros(self.domain.state_space_dims,uint8)
-        for d in arange(self.domain.state_space_dims):
-             if d in self.domain.continous_dims:
-                 self.bins_per_dim[d] = self.discretization
-             else:
-                 self.bins_per_dim[d] = self.domain.statespace_limits[d,1] - self.domain.statespace_limits[d,0]
+        self.theta  = zeros(self.features_num*self.domain.actions_num) 
         self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
         print join(["-"]*30)
         print "Representation:\t\t", className(self)
@@ -81,6 +75,14 @@ class Representation(object):
         # it then map the binstate to a an integer
         ds = self.binState(s)
         return vec2id(s,self.bins_per_dim)
+    def setBinsPerDimension(self,domain,discretization):
+        # Set the number of bins for each dimension of the domain (continous spaces will be slices using the discritization parameter)
+        self.bins_per_dim = zeros(domain.state_space_dims,uint16)
+        for d in arange(domain.state_space_dims):
+             if d in domain.continous_dims:
+                 self.bins_per_dim[d] = discretization
+             else:
+                 self.bins_per_dim[d] = domain.statespace_limits[d,1] - self.domain.statespace_limits[d,0]
     def binState(self,s):
         # Given a state it returns a vector with the same dimensionality of s
         # each element of the returned valued is the zero-indexed bin number corresponding to s
