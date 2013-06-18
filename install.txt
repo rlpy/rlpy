@@ -1,0 +1,44 @@
+You need the following packages:
+===============================================================
+1. scipy, numpy
+http://fonnesbeck.github.com/ScipySuperpack/
+http://penandpants.com/2012/02/24/install-python/
+http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/
+===============================================================
+2. matlibplot  
+My man!
+http://wolfpaulus.com/journal/mac/installing_python_osx
+
+Helped partially but I kept receiving errors for core.multiarray
+http://sourceforge.net/projects/matplotlib/files/matplotlib/ 
+For Lion: sudo easy_install -N -Z https://dl.dropbox.com/u/233041/matplotlib-1.2.x-py2.7-macosx-10.8-intel.egg
+===============================================================
+===============================================================
+
+Optional:
+
+=================
+3. SymPy 
+git clone git://github.com/sympy/sympy.git
+cd sympy
+sudo python setup.py install 
+===============================================================
+4. Visual Python
+http://www.vpython.org/index.html
+=================
+
+glumly 
+sudo easy_install glumpy
+
+PyOpenGL
+sudo easy_install PyOpenGL
+
+
+FAQ: Error/Solutions
+===============================================================
+E: ImportError: numpy.core.multiarray failed to import
+S1: Dont import pylab directly. Use Matplotlib.pylab
+S2: sudo easy_install -U numpy
+===============================================================
+E: In eclipse sty is out of synch with the file system
+S: Refresh (F5)
