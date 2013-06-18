@@ -18,14 +18,17 @@ http://fonnesbeck.github.com/ScipySuperpack/
 * If you did, delete it from the directory where the error during python execution refers to
 
 Optional:
-
 =================
-3. SymPy 
+SymPy 
 git clone git://github.com/sympy/sympy.git
 cd sympy
 sudo python setup.py install 
 ===============================================================
-4. Visual Python
+Pydev for Eclipse
+Eclipse > 
+http://pydev.org/updates
+===============================================================
+Visual Python
 http://www.vpython.org/index.html
 =================
 
