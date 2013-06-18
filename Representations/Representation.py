@@ -58,11 +58,14 @@ class Representation(object):
         abstract
     def phi_sa(self,s,a):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
-        F_s         = self.fastPhi(s)
+        F_s = self.fastPhi(s)
+        return self.phi_saFromphi_s(F_s,a)
+    def phi_saFromphi_s(self,F_s,a):
+        #Given phi_s make phi_sa by copying it into the proper location
         F_sa        = zeros(self.features_num*self.domain.actions_num)  
         ind_a       = range(a*self.features_num,(a+1)*self.features_num)
         F_sa[ind_a] = F_s
-        return F_sa
+        return F_sa        
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.
         self.theta      = addNewElementForAllActions(self.theta,self.domain.actions_num)
@@ -115,6 +118,14 @@ class Representation(object):
 #        for dim in self.domain.continous_dims:
 #                ds[dim] = closestDiscretization(ds[dim],self.discretization,self.domain.statespace_limits[dim][:]) 
 #        return ds
+    def bestAction(self,s):
+        # return an action among the best actions uniformly randomly:
+        bestA = self.bestActions(s)
+        if len(bestA) > 1:
+            return randSet(bestA)
+        else:
+            return bestA[0]
+
     def activeInitialFeatures(self,s):
         #return the index of active initial features based on bins on each dimensions
         bs          = self.binState(s)

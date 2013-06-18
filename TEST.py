@@ -1,9 +1,9 @@
 from Tools import *
 from Representations import *
 from Domains import *
-import timeit
-from sets import ImmutableSet
-from test.test_set import powerset
 
-x = array([1,2,3,4])
-print addNewElementForAllActions(x,2)    
+a = array([[0,0],[2,4]])
+b  = array([5,6])
+aa = a + .1*eye(2)
+print linalg.solve(aa,b)
+print slinalg.lsmr(a,b)

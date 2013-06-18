@@ -40,6 +40,7 @@ class PitMaze(Domain):
     def __init__(self,mapname='/Domains/PitMazeMaps/ACC2011.txt', noise = .1):
         path                    = os.getcwd() + mapname
         self.map                = loadtxt(path, dtype = uint8)
+        if self.map.ndim == 1: self.map = self.map[newaxis,:]
         self.start              = argwhere(self.map==self.START)[0]
         self.ROWS,self.COLS     = shape(self.map)
         self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])

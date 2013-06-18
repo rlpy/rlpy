@@ -12,6 +12,8 @@ import matplotlib.colors as col
 import matplotlib.cm as cm
 from scipy import stats
 from scipy import misc
+from scipy import linalg
+from scipy.sparse import linalg as slinalg
 from time import *
 from hashlib import sha1
 import datetime
@@ -31,6 +33,7 @@ from copy import deepcopy
 # [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
 # apply function foo to all elements of array A: vectorize(foo)(A) (The operation may be unstable! Care!
 # Set a property of a class:  vars(self)['prop'] = 2
+# dont use a=b=zeros((2,3)) because a and b will point to the same array!
 
 # Todo:
 # Replace vstack and hstack with the trick mentioned here:

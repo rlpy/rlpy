@@ -11,15 +11,16 @@ from Experiments import *
 # Etc
 #----------------------
 DEBUG               = 0
-SHOW_ALL            = 1
-SHOW_PERFORMANCE    = 0
+SHOW_ALL            = 0
+SHOW_PERFORMANCE    = 1
 LOG_INTERVAL        = 1 
 PERFORMANCE_CHECKS  = 10
-LEARNING_STEPS      = 20000
+LEARNING_STEPS      = 10000
 RESULT_FILE         = 'result.txt'
 # Domain
 #----------------------
-MAZE                = '/Domains/PitMazeMaps/4by5.txt'
+#MAZE                = '/Domains/PitMazeMaps/4by5.txt'
+MAZE                = '/Domains/PitMazeMaps/1by3.txt'
 NOISE               = 0
 # Representation
 #----------------------
@@ -31,17 +32,21 @@ EPSILON             = .1 # EGreedy
 #Agent
 #----------------------
 initial_alpha       = .1
+LAMBDA              = 0
+LSPI_iterations     = 5
+LSPI_windowSize     = 100
 
 domain          = PitMaze(MAZE, noise = NOISE)
 #domain          = BlocksWorld(blocks=3,noise = NOISE)
 #domain          = MountainCar(noise = NOISE)
-#representation  = Tabular(domain)
+representation  = Tabular(domain)
 #representation  = IncrementalTabular(domain)
-representation  = iFDD(domain,Discovery_Threshold)
+#representation  = iFDD(domain,Discovery_Threshold)
 #representation  = IndependentDiscretization(domain)
 #representation  = RBF(domain, rbfs = RBFS)
 policy          = eGreedy(representation, epsilon = EPSILON)
-agent           = SARSA(representation,policy,domain,initial_alpha)
+agent           = LSPI(representation,policy,domain,LSPI_iterations,LSPI_windowSize)
+#agent           = SARSA(representation,policy,domain,initial_alpha,LAMBDA)
 experiment      = OnlineExperiment(agent,domain,max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)
 
 if DEBUG:

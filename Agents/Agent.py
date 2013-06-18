@@ -14,7 +14,7 @@ class Agent(object):
         print join(["-"]*30)
         print "Agent:\t", className(self)
         print "Policy:\t", className(self.policy)
-    def learn(self,s,a,r,ns,na):
+    def learn(self,s,a,r,ns,na,terminal):
         abstract
     def printAll(self):
         printClass(self)
