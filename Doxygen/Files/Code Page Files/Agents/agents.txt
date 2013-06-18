@@ -1,5 +1,0 @@
-// \file agents.txt
-/*! 
-	\page Agents
-	\subpage Agent "Agent Superclass"
-*/
