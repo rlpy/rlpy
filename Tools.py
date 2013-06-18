@@ -310,7 +310,9 @@ def printClass(obj):
         print '======================================='
         for property, value in vars(obj).iteritems():
             print property, ": ", value
-
+def normalize(x):
+    # normalize numpy array x
+    return x/sum([e**2 for e in x])
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})
