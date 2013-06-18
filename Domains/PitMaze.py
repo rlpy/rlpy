@@ -92,7 +92,7 @@ class PitMaze(Domain):
             pl.tight_layout()
         V            = zeros((self.ROWS,self.COLS))
         Mask         = ones((self.COLS,self.ROWS,self.actions_num), dtype='bool') #Boolean 3 dimensional array. The third array highlights the action. Thie mask is used to see in which cells what actions should exist
-        arrowSize    = zeros((self.COLS,self.ROWS,self.actions_num))
+        arrowSize    = zeros((self.COLS,self.ROWS,self.actions_num), dtype ='float')
         arrowColors  = zeros((self.COLS,self.ROWS,self.actions_num),dtype= 'uint8') # 0 = suboptimal action, 1 = optimal action
         for r in arange(self.ROWS):
             for c in arange(self.COLS):
@@ -108,11 +108,13 @@ class PitMaze(Domain):
                     arrowColors[c,r,bestA]   = 1
 #                    print r,c,Qs
                     
-                    arrowSize[c,r,As]        = vectorize(linearMap)(Qs,self.MIN_RETURN,self.MAX_RETURN,.4,2) #Vectorize creates a function that can be applied to matrixes
-#                    print vectorize(linearMap)(Qs,min(Qs),max(Qs),.4,2)
+                    for i in range(len(As)):
+                        a = As[i]
+                        Q = Qs[i]
+                        value = linearMap(Q,self.MIN_RETURN,self.MAX_RETURN,.4,2)
+                        arrowSize[c,r,a] = value                        
                     if r == 2 and c == 1:
-                        print linearMap(Qs[1],self.MIN_RETURN,self.MAX_RETURN,.4,2)
-                        print Qs, As, arrowSize[c,r] 
+                        print Qs[1], linearMap(Qs[1],self.MIN_RETURN,self.MAX_RETURN,.4,2), arrowSize[c,r,2]
         #Show Value Function
         self.valueFunction_fig.set_data(V)
         #Show Policy Up Arrows
