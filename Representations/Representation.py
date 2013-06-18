@@ -95,6 +95,7 @@ class Representation(object):
         # s = 0, limits = [-1,5], bins = 6 => 1
         # s = .001, limits = [-1,5], bins = 6 => 1
         # s = .4, limits = [-.5,.5], bins = 3 => 2
+        if isinstance(s,int): return s 
         bs  = empty(len(s),'uint16')
         for d in arange(self.domain.state_space_dims):
             bs[d] = binNumber(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])

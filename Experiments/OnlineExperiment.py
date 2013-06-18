@@ -38,6 +38,7 @@ class OnlineExperiment (Experiment):
         if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps <= self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap: 
+                if self.show_all and total_steps != 1: self.domain.show(s,a, self.agent.representation)
                 s           = self.domain.s0() 
                 a           = self.agent.policy.pi(s)
                 # Hash new state for the tabular case
@@ -82,10 +83,8 @@ class OnlineExperiment (Experiment):
             #raw_input()
 
         #Visual
-        if self.show_all: 
-            self.domain.show(s,a, self.agent.representation)
-        if self.show_all or self.show_performance:
-            self.result_fig.savefig('snapshot.pdf', transparent=True, bbox_inches='tight', pad_inches=0)
+        if self.show_all: self.domain.show(s,a, self.agent.representation)
+        if self.show_all or self.show_performance: self.result_fig.savefig('snapshot.pdf', transparent=True, pad_inches=0)
     def save(self,filename):
         super(OnlineExperiment,self).save(filename)
         f = open(filename,'a')
