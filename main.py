@@ -19,7 +19,8 @@ SHOW_PERFORMANCE    = 1
 MAZE                = '/Domains/PitMazeMaps/4by5.txt'
     
 domain          = PitMaze(MAZE, noise = NOISE)
-representation  = Tabular(domain)
+#representation  = Tabular(domain)
+representation  = IndependentDiscretization(domain)
 policy          = eGreedy(representation, epsilon = EPSILON)
 agent           = SARSA(representation,policy,domain,initial_alpha)
 experiment      = OnlineExperiment(agent,domain,max_steps = learn_step,show_all= SHOW_ALL, show_performance = SHOW_PERFORMANCE)

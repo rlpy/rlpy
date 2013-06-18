@@ -25,7 +25,6 @@ class Tabular(Representation):
             self.hash[hash_id] = id
             #Add a new element to weight theta
             self.addNewWeight()
-            
 
          
         
