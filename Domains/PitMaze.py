@@ -55,13 +55,13 @@ class PitMaze(Domain):
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            pl.tight_layout()
-           self.agent_fig = self.agent_fig.plot(s[1],s[0],'ko',markersize=30.0)
+           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=30.0)
            pl.show(block=False)
        #mapcopy = copy(self.map) 
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
        self.agent_fig.pop(0).remove()
-       self.agent_fig = pl.plot(s[1],s[0],'ko',markersize=30.0)
+       self.agent_fig = pl.plot(s[1],s[0],'k>',markersize=30.0) # Instead of '>' you can use 'D', 'o'
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
