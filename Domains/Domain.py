@@ -21,7 +21,7 @@ class Domain(object):
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)
-    def showDomain(self,s,a):
+    def showDomain(self,s,a = 0):
         abstract
     def showLearning(self,representation):
         abstract

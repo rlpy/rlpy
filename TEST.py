@@ -2,4 +2,7 @@ from Tools import *
 from Representations import *
 from Domains import *
 
-print normpdf([1,1],[1,1],[.1,.1])
+#print factorial(4)
+D = BlocksWorld()
+D.showDomain(D.s0())
+pl.show()

@@ -12,6 +12,7 @@ from matplotlib import mpl
 import matplotlib.colors as col
 import matplotlib.cm as cm
 from scipy import stats
+from scipy import misc
 from time import *
 from hashlib import sha1
 import datetime
@@ -56,6 +57,9 @@ def scale(x,m,M):
 def createColorMaps():
     #Make Grid World ColorMap
     mycmap = col.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
+    #Make Blocks World ColorMap
+    cm.register_cmap(cmap=mycmap)
+    mycmap = col.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
     mycmap = col.ListedColormap(['.6','k'], 'Actions')
     cm.register_cmap(cmap=mycmap)
@@ -136,6 +140,7 @@ def schlieren_colormap(color=[0,0,0]):
     if color=='r': color = [1,0,0]
     if color=='b': color = [0,0,1]
     if color=='g': color = [0,0.5,0]
+    if color=='y': color = [1,1,0]
     color = array([1,1,1]) - array(color)
     s  = linspace(0,1,20)
     colors = {}
@@ -199,10 +204,13 @@ def generalDot(x,y):
     else:
         return dot(x,y)
 def normpdf(x, mu, sigma):
-    #X, mu, sigam must have all the same size
-    #u = (x-mu)/abs(sigma)
-    #y = (1/(sqrt(2*pi)*abs(sigma)))*exp(-u*u/2)
-    #return y
     return stats.norm.pdf(x,mu,sigma)
-
+def factorial(x):
+    return misc.factorial(x)
+def nchoosek(n,k):
+    return misc.comb(n,k)
+def findElem(x,A):
+    # Find the index of element x in array A
+    res = where(A==x)
+    return res[0].flatten(), res[1].flatten()
 createColorMaps()
