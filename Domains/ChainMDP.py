@@ -13,7 +13,9 @@ from Domain import *
 # optimal policy is always to go right
 ######################################################
 class ChainMDP(Domain):
-    GOAL_REWARD = +1
+    GOAL_REWARD = 0
+    STEP_REWARD = -1
+    gamma       = 1
     episodeCap  = 0             # Set by the domain = min(100,rows*cols)
     MAX_RETURN  = 1             # Used for graphical normalization
     MIN_RETURN  = 0             # Used for graphical normalization
@@ -59,7 +61,7 @@ class ChainMDP(Domain):
         if a == 1:
             ns = min(self.chainSize-1,s+1)
         terminal = self.isTerminal(ns)
-        r = self.GOAL_REWARD if terminal else 0
+        r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
     def s0(self):
         return 0

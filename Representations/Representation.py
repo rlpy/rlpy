@@ -31,7 +31,7 @@ class Representation(object):
     def V(self,s):
         #Returns the value of a state
         AllQs   = self.Qs(s)
-        V       = max(allQs)
+        V       = max(AllQs)
     def Qs(self,s):
     #Returns two arrays
     # Q: array of Q(s,a)
