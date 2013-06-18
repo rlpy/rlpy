@@ -9,6 +9,7 @@ from numpy  import *
 #matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end. < Maybe faster but I dont have the package yet
 from matplotlib import pylab as pl
 from matplotlib import mpl
+from matplotlib import rc
 import matplotlib.colors as col
 import matplotlib.cm as cm
 from scipy import stats
@@ -16,7 +17,6 @@ from scipy import misc
 from time import *
 from hashlib import sha1
 import datetime
-
 # Tips:
 # array.astype(float) => convert elements
 # matlibplot initializes the maping from the values to 
@@ -28,7 +28,6 @@ import datetime
 # [[1,2],[1,2],[1,2]] = array([[1,2],]*3)
 # apply function foo to all elements of array A: vectorize(foo)(A) (The operation may be unstable! Care!
 # Set a property of a class:  vars(self)['prop'] = 2
-FONTSIZE = 12
 
 def prod(x):
     #Returns the multiplications of the elements of a set
@@ -277,5 +276,13 @@ def id2vec(_id,limits):
         _id %= prods[d-1]
     s[0] = _id
     return s
+
 createColorMaps()
+FONTSIZE = 12
+rc('font',**{'family':'serif','sans-serif':['Helvetica']})
+mpl.rcParams['font.size'] = 12.
+mpl.rcParams['font.weight'] = 'bold'
+mpl.rcParams['axes.labelsize'] = 12.
+mpl.rcParams['xtick.labelsize'] = 12.
+mpl.rcParams['ytick.labelsize'] = 12.
 

@@ -20,6 +20,9 @@ class Domain(object):
             if getattr(self,v) == None:
                 raise Exception('Missed domain initialization of '+ v)
         self.state_space_dims = len(self.statespace_limits)
+        self.states_num = prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]+1)
+        print "States: ", self.states_num
+        print "Actions: ", self.actions_num
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)

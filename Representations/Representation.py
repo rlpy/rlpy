@@ -9,12 +9,16 @@ class Representation(object):
     domain          = None  #Link to the domain object 
     hashed_s        = None  #Always remember the s corresponding to the last state
     hashed_phi      = None  #Always remember the phi corresponding to the last state
-    features_num    = 0     #Number of features
+    features_num    = None  #Number of features
     discretization  = 0     #Number of buckets used for discretization for each continuous dimension  
     buckets_per_dim = None  #Number of possible states per dimension [1-by-dim] 
     def __init__(self,domain,discretization = 20):
+        # See if the child has set important attributes  
+        for v in ['features_num']:
+            if getattr(self,v) == None:
+                raise Exception('Missed domain initialization of '+ v)
         self.domain = domain
-        self.theta = array([])
+        self.theta  = zeros(self.features_num*self.domain.actions_num) 
         self.discretization = discretization
         #Calculate Buckets per Dimension
         self.buckets_per_dim = zeros(self.domain.state_space_dims,uint8)
@@ -91,4 +95,3 @@ class Representation(object):
             print 'Best:', A[ind], 'MAX:', Qs.max()
             raw_input()
         return A[ind]
- 

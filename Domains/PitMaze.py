@@ -42,11 +42,10 @@ class PitMaze(Domain):
         self.map                = loadtxt(path, dtype = uint8)
         self.start              = argwhere(self.map==self.START)[0]
         self.ROWS,self.COLS     = shape(self.map)
-        self.states_num         = self.ROWS * self.COLS
         self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])
         self.NOISE              = noise
         self.episodeCap         = min(self.ROWS*self.COLS,100)
-        super(BlocksWorld,self).__init__()
+        super(PitMaze,self).__init__()
     def showDomain(self,s,a = 0):
        #Draw the environment
        if self.domain_fig is None:

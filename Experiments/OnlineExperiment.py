@@ -27,7 +27,7 @@ class OnlineExperiment (Experiment):
         super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance)
     def run(self):
     # Run the online experiment and collect statistics
-        self.result         = zeros((self.performanceChecks,self.STATS_NUM))
+        self.result         = zeros((self.STATS_NUM,self.performanceChecks))
         terminal            = True
         total_steps         = 1
         eps_steps           = 1
@@ -40,7 +40,7 @@ class OnlineExperiment (Experiment):
                 s           = self.domain.s0() 
                 a           = self.agent.policy.pi(s)
                 # Hash new state for the tabular case
-                if isinstance(self.agent.representation,Tabular): self.agent.representation.addState(s)
+                if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(s)
                 # Output the current status if certain amount of time has been pased
                 if deltaT(start_log_time) > self.LOG_INTERVAL:
                     start_log_time  = time()
@@ -55,7 +55,7 @@ class OnlineExperiment (Experiment):
             r,ns,terminal   = self.domain.step(s, a)
             na              = self.agent.policy.pi(s)
             # Hash new state for the tabular case
-            if isinstance(self.agent.representation,Tabular): self.agent.representation.addState(ns)
+            if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(ns)
             self.agent.learn(s,a,r,ns,na)            
             
             total_steps += 1
@@ -67,7 +67,7 @@ class OnlineExperiment (Experiment):
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
                 performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
                 elapsedTime                 = deltaT(start_time) 
-                self.result[performance_tick,:] = [total_steps, 
+                self.result[:,performance_tick] = [total_steps, 
                                                    performance_return, 
                                                    elapsedTime, 
                                                    self.agent.representation.features_num,
@@ -88,3 +88,12 @@ class OnlineExperiment (Experiment):
         f.write('# Column Info:\n')
         f.write('#1. Test Step\n#2. Return\n#3. Time(s)\n#4. Features\n#5. Traj-Steps\n#6. Terminal\n')
         f.close()
+        #Plot Performance
+        performance_fig = pl.figure(2)
+        pl.plot(self.result[0,:],self.result[1,:],'-bo',lw=3,markersize=10)
+        pl.xlim(0,self.result[0,-1])
+        m = min(self.result[1,:])
+        M = max(self.result[1,:])
+        pl.ylim(m-.1*abs(M),M+.1*abs(M))
+        performance_fig.savefig('performance.pdf', transparent=True, pad_inches=.1)
+        

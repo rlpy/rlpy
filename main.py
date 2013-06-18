@@ -12,8 +12,8 @@ from Experiments import *
 #----------------------
 DEBUG               = 0
 SHOW_ALL            = 0
-SHOW_PERFORMANCE    = 1
-LOG_INTERVAL        = 1 
+SHOW_PERFORMANCE    = 0
+LOG_INTERVAL        = 10 
 RESULT_FILE         = 'result.txt'
 # Domain
 #----------------------
@@ -30,11 +30,12 @@ EPSILON             = .1 # EGreedy
 initial_alpha       = .1
 learn_step          = 10000
 
-#domain          = PitMaze(MAZE, noise = NOISE)
-domain          = BlocksWorld(blocks=3,noise = NOISE)
+domain          = PitMaze(MAZE, noise = NOISE)
+#domain          = BlocksWorld(blocks=3,noise = NOISE)
 #representation  = Tabular(domain)
-representation  = IndependentDiscretization(domain)
-# srepresentation  = RBF(domain, rbfs = RBFS)
+representation  = IncrementalTabular(domain)
+#representation  = IndependentDiscretization(domain)
+#representation  = RBF(domain, rbfs = RBFS)
 policy          = eGreedy(representation, epsilon = EPSILON)
 agent           = SARSA(representation,policy,domain,initial_alpha)
 experiment      = OnlineExperiment(agent,domain,max_steps = learn_step,show_all= SHOW_ALL, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL)

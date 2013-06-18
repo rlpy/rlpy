@@ -4,10 +4,16 @@
 from Representation import *
 class IndependentDiscretization(Representation):
     def __init__(self,domain,discretization = 20):
+
+        # Find buckets per dimension
+        self.buckets_per_dim = empty(domain.state_space_dims)
+        for d in arange(domain.state_space_dims):
+             if d in domain.continous_dims:
+                 self.buckets_per_dim[d] = discretization
+             else:
+                 self.buckets_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]+1
+        self.features_num   = int(sum(self.buckets_per_dim))
         super(IndependentDiscretization,self).__init__(domain,discretization)
-        phi_s_size          = sum(self.buckets_per_dim)
-        self.theta          = zeros(phi_s_size*self.domain.actions_num)
-        self.features_num   = int(phi_s_size)
     def phi(self,s):
         ds          = self.discretized(s)
         F_s         = zeros(sum(self.buckets_per_dim),'uint8')
