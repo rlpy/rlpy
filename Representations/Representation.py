@@ -65,9 +65,7 @@ class Representation(object):
         return F_sa
     def addNewWeight(self):
         # Add a new 0 weight corresponding to the new added feature for all actions.
-        x               = self.theta.reshape(self.domain.actions_num,-1) # -1 means figure the other dimension yourself
-        x               = hstack((x,zeros((self.domain.actions_num,1))))
-        self.theta      = x.reshape(1,-1).flatten()
+        self.theta      = addNewElementForAllActions(self.theta,self.domain.actions_num)
         self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
     def hashState(self,s,):
         #returns a unique idea by calculating the enumerated number corresponding to a state
