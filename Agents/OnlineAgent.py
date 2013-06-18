@@ -14,4 +14,9 @@ class OnlineAgent(Agent):
         #Adjust Alpha based on a rule
         self.alpha = min(self.alpha,self.candid_alpha)
         #TODO: Add Boyan     
+    def generalUpdates(self,s,td_error):
+        # Call all necessary functions such as iFDD update
+        # This function is often called at the end of <child>.learn()
+        if isinstance(self.representation,iFDD):
+            self.representation.discover(s,td_error)
         

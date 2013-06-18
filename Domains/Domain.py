@@ -67,10 +67,7 @@ class Domain(object):
             r,s,terminal = self.step(s, a)
             steps += 1
     def printAll(self):
-        print className(self)
-        print '======================================='
-        for property, value in vars(self).iteritems():
-            print property, ": ", value
+        printClass(self)
     def extendDiscreteDimensions(self):
         self.statespace_limits = self.statespace_limits.astype('float')
         for d in arange(self.state_space_dims):

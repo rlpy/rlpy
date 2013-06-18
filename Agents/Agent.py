@@ -17,9 +17,6 @@ class Agent(object):
     def learn(self,s,a,r,ns,na):
         abstract
     def printAll(self):
-        print className(self)
-        print '======================================='
-        for property, value in vars(self).iteritems():
-            print property, ": ", value
+        printClass(self)
 
         

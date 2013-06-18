@@ -15,7 +15,7 @@ SHOW_ALL            = 0
 SHOW_PERFORMANCE    = 0
 LOG_INTERVAL        = 1 
 PERFORMANCE_CHECKS  = 10
-LEARNING_STEPS      = 10000
+LEARNING_STEPS      = 20000
 RESULT_FILE         = 'result.txt'
 # Domain
 #----------------------
@@ -23,7 +23,8 @@ MAZE                = '/Domains/PitMazeMaps/4by5.txt'
 NOISE               = 0
 # Representation
 #----------------------
-RBFS = 9
+RBFS                = 9
+Discovery_Threshold = 1
 # Policy
 #----------------------
 EPSILON             = .1 # EGreedy
@@ -31,11 +32,12 @@ EPSILON             = .1 # EGreedy
 #----------------------
 initial_alpha       = .1
 
-domain          = PitMaze(MAZE, noise = NOISE)
-#domain          = BlocksWorld(blocks=3,noise = NOISE)
+#domain          = PitMaze(MAZE, noise = NOISE)
+domain          = BlocksWorld(blocks=3,noise = NOISE)
 #domain          = MountainCar(noise = NOISE)
 #representation  = Tabular(domain)
-representation  = IncrementalTabular(domain)
+#representation  = IncrementalTabular(domain)
+representation  = iFDD(domain,Discovery_Threshold)
 #representation  = IndependentDiscretization(domain)
 #representation  = RBF(domain, rbfs = RBFS)
 policy          = eGreedy(representation, epsilon = EPSILON)
@@ -50,6 +52,6 @@ if DEBUG:
 
 experiment.run()
 experiment.save(RESULT_FILE)
-#pl.show()
+pl.show()
 
  

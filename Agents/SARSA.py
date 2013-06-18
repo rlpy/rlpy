@@ -20,4 +20,4 @@ class SARSA(OnlineAgent):
         #use this if you want to divide by the number of active features 
         #nnz                 = count_nonzero(phi)    #Number of non-zero elements
         #theta               += alpha * td_error * phi / (1.*nnz)  
-          
+        super(SARSA,self).generalUpdates(s,td_error)
