@@ -12,7 +12,6 @@ class OnlineExperiment (Experiment):
     # TERMINAL        = 5       # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
-    result              = None  # All data is saved in the result array: stats_num-by-performanceChecks
     STATS_NUM           = 6     # Number of statistics to be saved
     LOG_INTERVAL        = 1     # Number of seconds between log prints
     def __init__(self,agent,domain,
@@ -26,7 +25,7 @@ class OnlineExperiment (Experiment):
         super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance)
     def run(self):
     # Run the online experiment and collect statistics
-        result              = zeros((self.performanceChecks,self.STATS_NUM))
+        self.result         = zeros((self.performanceChecks,self.STATS_NUM))
         terminal            = True
         total_steps         = 0
         eps_steps           = 0
@@ -65,11 +64,11 @@ class OnlineExperiment (Experiment):
             if  total_steps % (self.max_steps/self.performanceChecks) == 0:
                 performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
                 elapsedTime                 = deltaT(start_time) 
-                result[performance_tick,:] = [total_steps, 
-                                               performance_return, 
-                                               elapsedTime, 
-                                               self.agent.representation.features_num,
-                                               performance_steps,
+                self.result[performance_tick,:] = [total_steps, 
+                                                   performance_return, 
+                                                   elapsedTime, 
+                                                   self.agent.representation.features_num,
+                                                   performance_steps,
                                                performance_term]
                 print '%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num)
                 start_log_time  = time()
@@ -80,4 +79,9 @@ class OnlineExperiment (Experiment):
             self.domain.show(s,a, self.agent.representation)
         if self.show_all or self.show_performance:
             self.result_fig.savefig('snapshot.pdf', transparent=True, bbox_inches='tight', pad_inches=0)
-
+    def save(self,filename):
+        super(OnlineExperiment,self).save(filename)
+        f = open(filename,'a')
+        f.write('# Column Info:\n')
+        f.write('#1. Test Step\n#2. Return\n#3. Time(s)\n#4. Features\n#5. Traj-Steps\n#6. Terminal\n')
+        f.close()

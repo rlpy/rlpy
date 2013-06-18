@@ -8,19 +8,31 @@ from Representations import *
 from Policies import *
 from Experiments import *
 
-#Parameters
+# Etc
+#----------------------
 DEBUG               = 0
-learn_step          = 10000
-initial_alpha       = .1
-NOISE               = 0
-EPSILON             = .1 # EGreedy
 SHOW_ALL            = 0
-SHOW_PERFORMANCE    = 1 
+SHOW_PERFORMANCE    = 0 
+RESULT_FILE         = 'result.txt'
+# Domain
+#----------------------
 MAZE                = '/Domains/PitMazeMaps/4by5.txt'
-    
+NOISE               = 0
+# Representation
+#----------------------
+RBFS = 9
+# Policy
+#----------------------
+EPSILON             = .1 # EGreedy
+#Agent
+#----------------------
+initial_alpha       = .1
+learn_step          = 10000
+
 domain          = PitMaze(MAZE, noise = NOISE)
-#representation  = Tabular(domain)
-representation  = IndependentDiscretization(domain)
+representation  = Tabular(domain)
+#representation  = IndependentDiscretization(domain)
+# srepresentation  = RBF(domain, rbfs = RBFS)
 policy          = eGreedy(representation, epsilon = EPSILON)
 agent           = SARSA(representation,policy,domain,initial_alpha)
 experiment      = OnlineExperiment(agent,domain,max_steps = learn_step,show_all= SHOW_ALL, show_performance = SHOW_PERFORMANCE)
@@ -32,6 +44,7 @@ if DEBUG:
     agent.printAll() 
 
 experiment.run()
+experiment.save(RESULT_FILE)
 pl.show()
 #domain = Domains.PitMaze.PitMaze()
 #domain = PitMaze()

@@ -113,8 +113,6 @@ class PitMaze(Domain):
                         Q = Qs[i]
                         value = linearMap(Q,self.MIN_RETURN,self.MAX_RETURN,.4,2)
                         arrowSize[c,r,a] = value                        
-                    if r == 2 and c == 1:
-                        print Qs[1], linearMap(Qs[1],self.MIN_RETURN,self.MAX_RETURN,.4,2), arrowSize[c,r,2]
         #Show Value Function
         self.valueFunction_fig.set_data(V)
         #Show Policy Up Arrows
