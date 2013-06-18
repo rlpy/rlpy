@@ -13,7 +13,9 @@ class SARSA(OnlineAgent):
         theta               = self.representation.theta
         alpha               = self.alpha
         td_error            = r + dot(gamma*phi_prime - phi, theta)
-        self.candidAlpha    = 1/dot(abs(phi-gamma*phi_prime),phi) #[Dabney W. 2012]
+        #Automatic learning rate: [Dabney W. 2012]
+        self.candidAlpha    = dot(abs(phi-gamma*phi_prime),phi)
+        self.candidAlpha    = 1/self.candidAlpha if self.candidAlpha != 0 else inf 
         theta               += alpha * td_error * phi
         #use this if you want to divide by the number of active features 
         #nnz                 = count_nonzero(phi)    #Number of non-zero elements

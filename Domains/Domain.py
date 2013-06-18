@@ -3,21 +3,23 @@
 ######################################################
 from Tools import *
 class Domain(object):
-    name = ''               # Name of the Domain
     gamma = .90             # Discount factor default = .9
     states_num = None       # Number of states
     actions_num = None      # Number of Actions
-    statespace_limits = []  # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-    state_space_dims = 0    # Number of dimensions of the state space
+    statespace_limits = None# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+    state_space_dims = None # Number of dimensions of the state space
     continous_dims = []     # List of continuous dimensions of the domain, default = None
-    episodeCap = 0          # The cap used to bound each episode (return to s0 after)
+    episodeCap = None       # The cap used to bound each episode (return to s0 after)
     #Termination Signals of Episodes
     NOT_TERMINATED          = 0
     NOMINAL_TERMINATION     = 1
     CRITICAL_TERMINATION    = 2
 
     def __init__(self):
-        pass
+        for v in ['statespace_limits','actions_num','episodeCap']:
+            if getattr(self,v) == None:
+                raise Exception('Missed domain initialization of '+ v)
+        self.state_space_dims = len(self.statespace_limits)
     def show(self,s,a, representation):     
         self.showDomain(s,a)
         self.showLearning(representation)

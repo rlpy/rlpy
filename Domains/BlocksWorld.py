@@ -20,18 +20,19 @@ class BlocksWorld(Domain):
     GOAL_REWARD             = 1
     blocks                  = 0    # Total number of blocks
     towersize               = 0    # Goal tower size   
-    episodeCap              = 1000
-    GOAL_STATE              = hstack(([0],arange(0,blocks-1))) # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
+    episodeCap              = 100
     domain_fig              = None  #Used to plot the domain
-    def __init__(self, blocks = 6, towerSize = 6, noise = .1):
+    def __init__(self, blocks = 6, towerSize = 6, noise = .3):
         self.blocks             = blocks    
         self.towerSize          = towerSize    
         self.noise              = noise 
         self.TABLE              = blocks+1
         self.actions_num        = blocks*blocks
         self.gamma              = 1
-        self.statespace_limits  = array([0,blocks-1]* (blocks)) #Block i is on top of what? if block i is on top of block i => block i is on top of table
+        self.statespace_limits  = tile([0,blocks-1],(blocks,1)) #Block i is on top of what? if block i is on top of block i => block i is on top of table
         self.states_num         = sum([nchoosek(blocks,i)*factorial(blocks-i)*pow(i,blocks-i) for i in range(blocks)])
+        self.GOAL_STATE         = hstack(([0],arange(0,blocks-1))) # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
+        super(BlocksWorld,self).__init__()
     def showDomain(self,s,a =0):
         #Draw the environment
         world           = zeros((self.blocks,self.blocks),'uint8')
@@ -44,16 +45,14 @@ class BlocksWorld(Domain):
                 world[0,A] = A+1 #0 is white thats why!
             else:
                 # See if B is already drawn
-                i,j = findElem(B,world)
+                i,j = findElemArray2D(B+1,world)
                 if len(i):
-                    world[j+1,i] = A+1 #0 is white thats why!
+                    world[i+1,j] = A+1 #0 is white thats why!
                 else:
                     # Put it in the back of the list
                     undrawn_blocks = hstack((undrawn_blocks,[A]))
-        print world
         if self.domain_fig == None:
-            pl.imshow(world, cmap='BlocksWorld', origin='lower', interpolation='nearest')#,vmin=0,vmax=self.blocks)
-            self.domain_fig = pl.figure(1,figsize=(14, 10))
+            self.domain_fig = pl.imshow(world, cmap='BlocksWorld', origin='lower', interpolation='nearest')#,vmin=0,vmax=self.blocks)
             pl.xticks(arange(self.blocks), fontsize= FONTSIZE)
             pl.yticks(arange(self.blocks), fontsize= FONTSIZE)
             #pl.tight_layout()
@@ -65,43 +64,47 @@ class BlocksWorld(Domain):
     def showLearning(self,representation):
         pass #cant show 6 dimensional value function
     def step(self,s,a):
+        [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
+        #print s
+        #print a,':',A,'=>',B
         terminal    = self.NOT_TERMINATED
-        r           = self.STEP_REWARD
         ns          = s
-        if random.random_sample() < self.NOISE:
-            #Random Move  
-            a = randSet(self.possibleActions(s))
-        ns = s + self.ACTIONS[a]
+        if random.random_sample() < self.noise:
+            B = A #Drop on Table
         
-        if (ns[0] < 0 or ns[0] == self.ROWS or
-            ns[1] < 0 or ns[1] == self.COLS or
-            self.map[ns[0],ns[1]] == self.BLOCKED):
-                ns = s
-        if self.map[ns[0],ns[1]] == self.GOAL:
-                r = self.GOAL_REWARD
-                terminal = self.NOMINAL_TERMINATION
-        if self.map[ns[0],ns[1]] == self.PIT:
-                r = self.PIT_REWARD
-                terminal = self.CRITICAL_TERMINATION
+        if self.validAction(s,A,B):
+            ns[A] = B # A is on top of B now.
+        
+        terminal    = 1 if array_equal(s,self.GOAL_STATE) else 0
+        r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
+         
+        #print ns
         return r,ns,terminal
     def s0(self):
         # all blocks on table
         return arange(self.blocks)
     def possibleActions(self,s):
-        possibleA = array([],uint8)
-        for a in arange(self.actions_num):
-            ns = s + self.ACTIONS[a]
-            if (
-                ns[0] < 0 or ns[0] == self.ROWS or
-                ns[1] < 0 or ns[1] == self.COLS or
-                self.map[ns[0],ns[1]] == self.BLOCKED):
-                continue
-            possibleA = append(possibleA,[a])
-        return possibleA
-         
+        # return the id of possible actions
+        # find empty blocks (nothing on top)
+        empty_blocks    = [b for b in arange(self.blocks) if (
+                                                              (s[b] == b and len(findElemArray1D(b,s)) == 1) or #sitting alone on the table
+                                                              len(findElemArray1D(b,s)) == 0) # nothing is on it
+                           ]
+        #print "Empty Blocks", empty_blocks
+        empty_num       = len(empty_blocks)
+        actions         = [[a,b] for a in empty_blocks for b in empty_blocks if s[a] != b]
+        return array([vec2id(x,[self.blocks, self.blocks]) for x in actions])
+    def validAction(self,s,A,B):
+        #Returns true if B can be put on A
+        position = findElemArray1D(B,s)
+        return (A==B or # Destination is Table
+                 len(position) == 0 or #Nothing is on block B
+                 position == B # Only B is on B => B is on table
+                 )
 if __name__ == '__main__':
     #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
-    p = PitMaze('/PitMazeMaps/4by5.txt');
+    random.seed(0)
+    p = BlocksWorld(noise=0);
     p.test(1000)
     
     

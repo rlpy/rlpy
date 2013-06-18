@@ -13,23 +13,26 @@ class OnlineExperiment (Experiment):
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
     STATS_NUM           = 6     # Number of statistics to be saved
-    LOG_INTERVAL        = 1     # Number of seconds between log prints
+    LOG_INTERVAL        = 0     # Number of seconds between log prints
     def __init__(self,agent,domain,
                  id = 1,
                  max_steps = 10000, 
                  performanceChecks = 10,
                  show_all   = False, 
-                 show_performance = False):
+                 show_performance = False,
+                 log_interval = 1):
         self.max_steps          = max_steps
         self.performanceChecks  = performanceChecks
+        self.LOG_INTERVAL       = log_interval
         super(OnlineExperiment,self).__init__(id,agent,domain, show_all, show_performance)
     def run(self):
     # Run the online experiment and collect statistics
         self.result         = zeros((self.performanceChecks,self.STATS_NUM))
         terminal            = True
-        total_steps         = 0
-        eps_steps           = 0
+        total_steps         = 1
+        eps_steps           = 1
         performance_tick    = 0
+        eps_return          = 0
         start_log_time      = start_time = time()
         if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps < self.max_steps:

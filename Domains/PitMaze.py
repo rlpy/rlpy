@@ -30,7 +30,6 @@ class PitMaze(Domain):
     SHIFT       = .1                # Used for graphical shifting of arrows
 
     actions_num        = 4
-    state_space_dims   = 2
     #Constants in the map
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = range(6)
     ACTIONS = array([[-1,0], #Up
@@ -47,7 +46,7 @@ class PitMaze(Domain):
         self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])
         self.NOISE              = noise
         self.episodeCap         = min(self.ROWS*self.COLS,100)
-        #reduce(mul,x,1)
+        super(BlocksWorld,self).__init__()
     def showDomain(self,s,a = 0):
        #Draw the environment
        if self.domain_fig is None:

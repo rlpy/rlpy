@@ -71,11 +71,7 @@ class Representation(object):
     def hashState(self,s,):
         #returns a unique idea by calculating the enumerated number corresponding to a state
         # I use a recursive calculation to save time by looping once backward on the array = O(n)
-        id = 0
-        for d in arange(len(s)-1,-1,-1):
-            id *= self.buckets_per_dim[d]
-            id += s[d]
-        return id
+        return vec2id(s,self.buckets_per_dim)
     def printAll(self):
         print className(self)
         print '======================================='
@@ -85,7 +81,7 @@ class Representation(object):
     # Given a state returns the best action possibles at that state
         Qs, A = self.Qs(s)
         # Find the index of best actions
-        ind   = where(Qs == Qs.max())
+        ind   = findElemArray1D(Qs,Qs.max())
         if self.DEBUG:
             print 'State:',s
             print '======================================='
