@@ -36,7 +36,7 @@ class OnlineExperiment (Experiment):
         eps_return          = 0
         start_log_time      = start_time = time()
         if self.show_all: self.domain.showLearning(self.agent.representation)
-        while total_steps < self.max_steps:
+        while total_steps <= self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap: 
                 s           = self.domain.s0() 
                 a           = self.agent.policy.pi(s)
@@ -58,7 +58,21 @@ class OnlineExperiment (Experiment):
             # Hash new state for the tabular case
             if isinstance(self.agent.representation,IncrementalTabular): self.agent.representation.addState(ns)
             self.agent.learn(s,a,r,ns,na,terminal)            
-            
+                        
+            #Check Performance
+            if  total_steps % (self.max_steps/self.performanceChecks) == 0:
+                performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
+                elapsedTime                     = deltaT(start_time) 
+                self.result[:,performance_tick] = [total_steps, # index = 0 
+                                                   performance_return, # index = 1 
+                                                   elapsedTime, # index = 2
+                                                   self.agent.representation.features_num, # index = 3
+                                                   performance_steps,# index = 4
+                                                   performance_term] # index = 5
+                print '%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num)
+                start_log_time      = time()
+                performance_tick    += 1
+
             total_steps += 1
             eps_steps   += 1
             eps_return  += r
@@ -66,20 +80,6 @@ class OnlineExperiment (Experiment):
             #shout(self)
             #print total_steps,":",s,a,ns
             #raw_input()
-            
-            #Check Performance
-            if  total_steps % (self.max_steps/self.performanceChecks) == 0:
-                performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
-                elapsedTime                 = deltaT(start_time) 
-                self.result[:,performance_tick] = [total_steps, 
-                                                   performance_return, 
-                                                   elapsedTime, 
-                                                   self.agent.representation.features_num,
-                                                   performance_steps,
-                                               performance_term]
-                print '%d >>> E[%s]-R[%s]: Return=%0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num)
-                start_log_time  = time()
-                performance_tick += 1
 
         #Visual
         if self.show_all: 

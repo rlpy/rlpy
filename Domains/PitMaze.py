@@ -147,7 +147,6 @@ class PitMaze(Domain):
         self.rightArrows_fig.set_UVC(DY,DX,C)
         pl.draw()   
     def step(self,s,a):
-        terminal    = self.NOT_TERMINATED
         r           = self.STEP_REWARD
         ns          = s
         if random.random_sample() < self.NOISE:
@@ -161,10 +160,9 @@ class PitMaze(Domain):
                 ns = s
         if self.map[ns[0],ns[1]] == self.GOAL:
                 r = self.GOAL_REWARD
-                terminal = self.NOMINAL_TERMINATION
         if self.map[ns[0],ns[1]] == self.PIT:
                 r = self.PIT_REWARD
-                terminal = self.CRITICAL_TERMINATION
+        terminal = self.isTerminal(ns)
         return r,ns,terminal
     def s0(self):
         return self.start
@@ -179,7 +177,12 @@ class PitMaze(Domain):
                 continue
             possibleA = append(possibleA,[a])
         return possibleA
-         
+    def isTerminal(self,s):
+        if self.map[s[0],s[1]] == self.GOAL:
+                return self.NOMINAL_TERMINATION
+        if self.map[s[0],s[1]] == self.PIT:
+                return self.CRITICAL_TERMINATION
+        return self.NOT_TERMINATED
 if __name__ == '__main__':
     #p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
     p = PitMaze('/PitMazeMaps/4by5.txt');

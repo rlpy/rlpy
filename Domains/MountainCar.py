@@ -42,7 +42,7 @@ class MountainCar(Domain):
         position += velocity 
         position = bound(position, self.XMIN, self.XMAX)
         if position < self.XMIN and velocity < 0: velocity = 0  # Bump into wall
-        terminal = position > self.GOAL
+        terminal = self.isTerminal(s)
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         ns = array([position, velocity])        
         return r, ns, terminal 
@@ -50,6 +50,8 @@ class MountainCar(Domain):
         return self.INIT_STATE
     def showDomain(self, s, a):
         print s, a
+    def isTerminal(self,s):
+        return s[0] > self.GOAL
 if __name__ == '__main__':
     # p = PitMaze('/Domains/PitMazeMaps/ACC2011.txt');
     p = MountainCar();

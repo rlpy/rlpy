@@ -51,7 +51,7 @@ class iFDD(Representation):
         self.features_num = int(sum(self.bins_per_dim))
         self.add_initialFeatures()
         super(iFDD,self).__init__(domain,discretization)
-    def phi(self,s): #refer to Algorithm 2 in [Geramifard et al. 2011 ICML]
+    def phi_nonTerminal(self,s): #refer to Algorithm 2 in [Geramifard et al. 2011 ICML]
         F_s                     = zeros(sum(self.features_num),'bool')
         activeIndecies          = ImmutableSet(self.activeInitialFeatures(s))
         for candidate in powerset(activeIndecies,ascending=0):
@@ -94,8 +94,8 @@ class iFDD(Representation):
                     p1_index = self.iFDD_features[feature.p1].index
                     p2_index = self.iFDD_features[feature.p2].index
                     self.updateWeight(p1_index,p2_index)
-                    #print "New Feature:", list(f)
-                    #self.show()
+                     # print "New Feature:", list(f)
+                     # self.show()
     def show(self):
         print "Features:"
         print join(["-"]*30)

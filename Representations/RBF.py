@@ -19,7 +19,7 @@ class RBF(Representation):
 #        pl.show()
 #        raw_input()
         super(RBF,self).__init__(domain)
-    def phi(self,s):
+    def phi_nonTerminal(self,s):
         F_s         = ones(self.features_num)
         for i in range(0,self.features_num-1):
             F_s[i] = prod(normpdf(s,self.rbfs_mu[i,:], self.rbfs_sigma[i,:]))

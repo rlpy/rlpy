@@ -7,7 +7,7 @@ class Tabular(Representation):
         self.setBinsPerDimension(domain,discretization)
         self.features_num = int(prod(self.bins_per_dim))
         super(Tabular,self).__init__(domain,discretization)
-    def phi(self,s):
+    def phi_nonTerminal(self,s):
         id      = self.hashState(s)
         F_s     = zeros(self.agg_states_num,'bool')
         F_s[id] = 1

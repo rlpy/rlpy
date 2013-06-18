@@ -74,3 +74,6 @@ class Domain(object):
              if not d in self.continous_dims:
                  self.statespace_limits[d,0] += -.5 
                  self.statespace_limits[d,1] += .5 
+    def isTerminal(self,s):
+        # Returns true if state s is terminal
+        abstract
