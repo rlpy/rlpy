@@ -34,7 +34,7 @@ from copy import deepcopy
 # apply function foo to all elements of array A: vectorize(foo)(A) (The operation may be unstable! Care!
 # Set a property of a class:  vars(self)['prop'] = 2
 # dont use a=b=zeros((2,3)) because a and b will point to the same array!
-
+# b = A[:,1] does NOT create a new matrix. It is simply a pointer to that row! so if you change b you change A
 # Todo:
 # Replace vstack and hstack with the trick mentioned here:
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
@@ -331,6 +331,24 @@ def addNewElementForAllActions(x,a,newElem = None):
         x   = hstack((x,newElem))
         x   = x.reshape(1,-1).flatten()
         return x
+def solveLinear(A,b):
+    # Solve the linear equation Ax=b.
+    x,res,rank_A,singular_values = linalg.lstsq(A,b)
+    return x
+def rows(A):
+    # return the rows of matrix A
+    r, c = A.shape
+    return r
+def cols(A):
+    # return the rows of matrix A
+    r, c = A.shape
+    return c
+def rank(A, eps=1e-12):
+    u, s, v = linalg.svd(A)
+    return len([x for x in s if abs(x) > eps])
+def easy2read(A, _precision=3):
+    # returns an array easy to read (used for debugging mainly. _precision is the number of decimal digits
+    return array_repr(A, precision=_precision, suppress_small=True)
 createColorMaps()
 FONTSIZE = 12
 rc('font',**{'family':'serif','sans-serif':['Helvetica']})

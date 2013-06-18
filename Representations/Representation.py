@@ -59,8 +59,8 @@ class Representation(object):
     def phi_sa(self,s,a):
         #Returns the feature vector corresponding to s,a (we use copy paste technique (Lagoudakis & Parr 2003)
         F_s = self.fastPhi(s)
-        return self.phi_saFromphi_s(F_s,a)
-    def phi_saFromphi_s(self,F_s,a):
+        return self.phi_sa_from_phi_s(F_s,a)
+    def phi_sa_from_phi_s(self,F_s,a):
         #Given phi_s make phi_sa by copying it into the proper location
         F_sa        = zeros(self.features_num*self.domain.actions_num)  
         ind_a       = range(a*self.features_num,(a+1)*self.features_num)
