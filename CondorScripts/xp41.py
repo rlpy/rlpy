@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Alborz Geramifard March 4th 2013 MIT
 # This script prepares directories and main files for various parameters in one shot
 # It also copies the multipleRuns.py

@@ -144,6 +144,34 @@ def getAllLines(fileName):
     myFile.close()
     return allLines
 
+def submitted_jobs_user(username, path=None):
+    """
+    returns info on submitted jobs for given user
+    as a list of dictionaries
+    """
+    output = subprocess.Popen(['condor_q', username, "-long"],
+                              stdout=subprocess.PIPE).communicate()[0]
+    jobs = output.strip().split("\n\n")
+    joblist = []
+    for job in jobs:
+        j = re.findall("ClusterId = (.*)\n", job)
+        if len(j) == 0 and len(jobs) <= 1:
+            return []
+        job_id = j[0]
+        directory = re.findall('Iwd = "(.*)"\n', job)[0]
+        run_id = int(re.findall('UserLog = ".*/([0-9]*).log"\n', job)[0])
+        status = int(re.findall('\nJobStatus = ([0-9]*)\n', job)[0])
+        if path is not None and not directory.startswith(path):
+            continue
+        joblist.append(dict(job_id=job_id, directory=directory, run_id=run_id, status=status))
+    return joblist
+
+def filter_jobs(jobinfo, path):
+    ji = []
+    for job in jobinfo:
+        if os.path.abspath(job["directory"]) == os.path.abspath(path):
+            ji.append(job)
+    return ji
 
 def running_jobs_user(username):
     """

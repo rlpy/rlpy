@@ -1,0 +1,6 @@
+Results/*
+*.so
+*.pyc
+Config.py
+.ropeproject
+.nfs*

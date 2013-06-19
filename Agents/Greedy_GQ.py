@@ -42,29 +42,29 @@ class Greedy_GQ(Agent):
         phi_prime_s         = self.representation.phi(ns)
         na                  = self.representation.bestAction(ns,phi_prime_s) #Switch na to the best possible action
         phi_prime           = self.representation.phi_sa(ns,na,phi_prime_s)
-        
+
         nnz                 = count_nonzero(phi_s)    #Number of non-zero elements
         if nnz == 0: # Phi has some nonzero elements, proceed with update
             return
-        
+
         #Set eligibility traces:
         if self.lambda_:
             self.eligibility_trace   *= gamma*self.lambda_
             self.eligibility_trace   += phi
-            
+
             self.eligibility_trace_s  *= gamma*self.lambda_
             self.eligibility_trace_s += phi_s
-            
+
             #Set max to 1
             self.eligibility_trace[self.eligibility_trace>1] = 1
             self.eligibility_trace_s[self.eligibility_trace_s>1] = 1
         else:
             self.eligibility_trace    = phi
             self.eligibility_trace_s  = phi_s
-        
-        td_error                     = r + dot(gamma*phi_prime - phi, theta)        
+
+        td_error                     = r + dot(gamma*phi_prime - phi, theta)
         self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
-        
+
         td_error_estimate_now       = dot(phi,self.GQWeight)
         Delta_theta                 = td_error*self.eligibility_trace - gamma*td_error_estimate_now*phi_prime
         theta                       += self.alpha*Delta_theta

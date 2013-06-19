@@ -100,10 +100,22 @@ class TileCoding(Representation):
             size = 1
         else:
             size = 0
+
         self.check_data = -np.ones((self.features_num, size), dtype=np.int)
         self.counts = np.zeros((self.features_num), dtype=np.long)
         self.collisions = 0
         self.R = np.random.RandomState(seed).randint(self.BIG_INT / 4  ,size=self.features_num)
+
+        if safety != "super":
+            try:
+                import _hashing as h
+                f = lambda self, A: h.physical_addr(A, self.R, self.check_data, self.counts)[0]
+                self._physical_addr = type(TileCoding._physical_addr)(f, self, TileCoding)
+                print "Use cython extension for TileCoding hashing trick"
+            except Exception, e:
+                print e
+                print "Cython extension for TileCoding hashing trick not available"
+                pass
 
     def phi_nonTerminal(self, s):
 
@@ -141,7 +153,7 @@ class TileCoding(Representation):
             check_val = A
         else:
             # use second hash
-            check_val = self._bash(A, increment = 457, max = self.BIG_INT)
+            check_val = self._hash(A, increment = 457, max = self.BIG_INT)
 
         if self.counts[h1] == 0:
             # first time, set up data
@@ -188,4 +200,5 @@ if __name__ == "__main__":
         a = np.nonzero(t.phi_nonTerminal(np.array([np.pi*i,0.,0.,0.])))[0]
         sort(a)
         print a
+
 

@@ -39,7 +39,10 @@ from Representations import *
 from Policies import *
 from Experiments import *
 from MDPSolvers import *
-
+try:
+    from ROS.ROS_RCCar import ROS_RCCar
+except Exception:
+    pass
 #from pandas.tests.test_series import CheckNameIntegration
 
 def main(jobID=-1,              # Used as an indicator for each run of the algorithm
@@ -136,6 +139,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = ROS_RCCar(logger=logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = Acrobot(logger = logger)
     #domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)

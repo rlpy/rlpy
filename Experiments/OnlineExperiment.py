@@ -125,7 +125,7 @@ class OnlineExperiment (Experiment):
 
         #Visual
         if self.show_all: self.domain.show(s,a, self.agent.representation)
-        if self.show_all or self.show_performance:
+        if self.show_all or self.show_performance and self.result_fig is not None:
             self.result_fig.savefig(self.full_path+'/lastSnapShot.pdf', transparent=True, pad_inches=0)
 
     def save(self):

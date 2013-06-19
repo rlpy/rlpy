@@ -140,15 +140,15 @@ class Merger(object):
             return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
         else:
             return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
-    def showLast(self,Y_axis = None):
+    def showLast(self,Y_axis = None, index=-1):
         # Prints the last performance of all experiments
         if Y_axis == None:
             if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
             elif self.ResultType == 'Dynamic Means': Y_axis = 'L2 Observed Transition Errors'
             else: Y_axis = 'Return'
         y_ind = self.AXES.index(Y_axis)
-        M = array([M[y_ind,-1] for M in self.means])
-        V = array([V[y_ind,-1] for V in self.std_errs])
+        M = array([M[y_ind, index] for M in self.means])
+        V = array([V[y_ind, index] for V in self.std_errs])
         #os.system('clear');
         print "=========================="
         print "Last Performance+std_errs"

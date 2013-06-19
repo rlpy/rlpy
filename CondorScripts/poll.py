@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Functions used to poll the outputs of parallel runs on clusters
 # Alborz Geramifard 2009 MIT
 # Assumes linux machine just for clear screen! Why do you want to run it on something else anyway?
@@ -11,13 +11,15 @@ import os, sys, time, re
 
 from Script_Tools import *
 
-def pollOne(idir, count, detailed = False, fulldetailed = False):
+def pollOne(idir, count, detailed = False, fulldetailed = False, jobinfo=None):
+        if jobinfo is None:
+            jobinfo = submitted_jobs_user(USERNAME, os.path.abspath(idir)) 
         if not os.path.exists(idir+'/main.py'):
             #Not a task directory
             for folder in sorted(os.listdir(idir)):
                 count += 1
                 if os.path.isdir(idir+'/'+folder) and folder[0] != '.':
-                    pollOne(idir+'/'+folder,count,detailed,fulldetailed)
+                    pollOne(idir+'/'+folder,count,detailed,fulldetailed, jobinfo=jobinfo)
         else:                
             jobids      = set()
             #Add jobs based on CondorOutput/out/x.out
@@ -32,7 +34,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
                 _,_,jobname = job.rpartition('/')
                 jobid,_,_ = jobname.rpartition('-')
                 jobids.add(eval(jobid))
-
+            running_jobs = filter_jobs(jobinfo, os.path.abspath(idir))
             total       = len(jobids)
             completed   = 0;
             #print jobids
@@ -71,7 +73,7 @@ def pollOne(idir, count, detailed = False, fulldetailed = False):
             running = total - completed
             #print detailed, completed, total
             if running:
-                print"%s: %s%d%s/%s%d%s"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,TOTAL_COLOR,total,nc)
+                print"%s: %s%d%s/%d/%s%d%s"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,len(running_jobs),TOTAL_COLOR,total,nc)
 
                 if not fulldetailed: logs = sortLog(logs)
                 for log in logs:
@@ -90,5 +92,6 @@ if __name__ == '__main__':
     print('*********************************************************');    
     detailed = len(sys.argv) > 1
     fulldetailed = detailed and sys.argv[1].find('+') != -1
+    
     pollOne('.',0, detailed,fulldetailed)   
     

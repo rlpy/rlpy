@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Functions used to poll the outputs of parallel runs on clusters
 # Alborz Geramifard 2009 MIT
 # Assumes linux machine just for clear screen! Why do you want to run it on something else anyway?

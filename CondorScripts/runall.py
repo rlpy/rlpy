@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Functions used to remove all unfinished jobs and rerun them.
 # The prerequisit is to not have any jobs running on the server
 # Alborz Geramifard 2009 MIT

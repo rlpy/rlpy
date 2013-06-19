@@ -26,6 +26,10 @@ class eGreedy(Policy):
         self.epsilon = epsilon
         self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
         super(eGreedy,self).__init__(representation,logger)
+        if self.logger:
+            self.logger.log("=" * 60)
+            self.logger.log("Policy: eGreedy")
+            self.logger.log("Epsilon\t\t{0}".format(self.epsilon))
     def pi(self,s):
         coin = random.rand()
         #print "coin=",coin

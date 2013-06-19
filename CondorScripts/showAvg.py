@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 ######################################################
 # Developed by Alborz Geramiard March 21th 2013 at MIT #
 ######################################################
@@ -29,7 +29,9 @@ if __name__ == '__main__':
 #    else:
 #        searchNShowAvg('.',sys.argv[1])
     merger = Merger(['.'],showSplash=False)
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
+        merger.showLast(sys.argv[1], index=sys.argv[2])
+    elif len(sys.argv) > 1:
         merger.showLast(sys.argv[1])
     else:
         merger.showLast()

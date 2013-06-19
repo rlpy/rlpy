@@ -30,6 +30,10 @@ def module_exists(module_name):
 from multiprocessing import Pool
 from operator import *
 from numpy  import *
+import sys
+import numpy
+#print "Numpy version:", numpy.__version__
+#print "Python version:", sys.version_info
 try:
     from Config import *
 except ImportError:
@@ -117,6 +121,57 @@ def matrix_mult(A,B):
         return None
     else:
         return A.dot(B)
+
+def cartesian(arrays, out=None):
+    """
+    Generate a cartesian product of input arrays.
+
+    Parameters
+    ----------
+    arrays : list of array-like
+        1-D arrays to form the cartesian product of.
+    out : ndarray
+        Array to place the cartesian product in.
+
+    Returns
+    -------
+    out : ndarray
+        2-D array of shape (M, len(arrays)) containing cartesian products
+        formed of input arrays.
+
+    Examples
+    --------
+    >>> cartesian(([1, 2, 3], [4, 5], [6, 7]))
+    array([[1, 4, 6],
+           [1, 4, 7],
+           [1, 5, 6],
+           [1, 5, 7],
+           [2, 4, 6],
+           [2, 4, 7],
+           [2, 5, 6],
+           [2, 5, 7],
+           [3, 4, 6],
+           [3, 4, 7],
+           [3, 5, 6],
+           [3, 5, 7]])
+
+    """
+
+    arrays = [numpy.asarray(x) for x in arrays]
+    dtype = arrays[0].dtype
+
+    n = prod([x.size for x in arrays])
+    if out is None:
+        out = zeros([n, len(arrays)], dtype=dtype)
+
+    m = n / arrays[0].size
+    out[:,0] = numpy.repeat(arrays[0], m)
+    if arrays[1:]:
+        cartesian(arrays[1:], out=out[0:m,1:])
+        for j in xrange(1, arrays[0].size):
+            out[j*m:(j+1)*m,1:] = out[0:m,1:]
+    return out
+
 #if numpy.version.version < '2.6.0': # Missing count_nonzero
 def count_nonzero(arr):
     # NOTE that the count_nonzero function below moves recursively through any sublists,
@@ -138,7 +193,8 @@ def count_nonzero(arr):
         return nnz
 
     if isinstance(arr,ndarray):
-        return sum([1 for x in arr.ravel() if x != 0])
+        #return sum([1 for x in arr.ravel() if x != 0])
+        return numpy.count_nonzero(arr.ravel())
 
     if isinstance(arr,list):
         for el in arr:

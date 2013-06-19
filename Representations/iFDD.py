@@ -81,20 +81,20 @@ class iFDD_potential(object):
     def show(self):
         printClass(self)
 class iFDD(Representation):
-    PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity. 
+    PRINT_MAX_RELEVANCE     = False # It is a good starting point to see how relevances grow if threshold is set to infinity.
     discovery_threshold     = None  # psi in the paper
     sparsify                = None  # boolean specifying the use of the trick mentioned in the paper so that features are getting sparser with more feature discoveries (i.e. use greedy algorithm for feature activation)
-    iFDD_features           = None    # dictionary mapping initial feature sets to iFDD_feature 
+    iFDD_features           = None    # dictionary mapping initial feature sets to iFDD_feature
     iFDD_potentials         = None    # dictionary mapping initial feature sets to iFDD_potential
     featureIndex2feature    = None    # dictionary mapping each feature index (ID) to its feature object
     debug                   = 0     # Print more stuff
     cache                   = None    # dictionary mapping  initial active feature set phi_0(s) to its corresponding active features at phi(s). Based on Tuna's Trick to speed up iFDD
     useCache                = 0     # this should only increase speed. If results are different something is wrong
     maxBatchDicovery        = 0     # Number of features to be expanded in the batch setting
-    batchThreshold          = 0     # Minimum value of feature relevance for the batch setting 
-    iFDDPlus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)    
+    batchThreshold          = 0     # Minimum value of feature relevance for the batch setting
+    iFDDPlus                = 0     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses the abs(sum(TD-Error))/sqrt(potential feature presence count)
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, it is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
-    initial_representation  = None  # A Representation that provides the initial set of features for iFDD 
+    initial_representation  = None  # A Representation that provides the initial set of features for iFDD
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.iFDD_features          = {}
@@ -130,7 +130,7 @@ class iFDD(Representation):
         activeIndices           = where(F_s_0 != 0)[0]
         if self.useCache:
             finalActiveIndices     = self.cache.get(frozenset(activeIndices))
-            if finalActiveIndices is None:        
+            if finalActiveIndices is None:
                 # run regular and update the cache
                 finalActiveIndices     = self.findFinalActiveFeatures(activeIndices)
         else:
@@ -147,18 +147,18 @@ class iFDD(Representation):
         initialSet          = set(intialActiveFeatures)
         if 2**k <= self.features_num:
             # k can be big which can cause this part to be very slow
-            # if k is large then find active features by enumerating on the 
-            # discovered features.  
+            # if k is large then find active features by enumerating on the
+            # discovered features.
             for candidate in powerset(initialSet,ascending=0):
                 if len(initialSet) == 0:
                     break # No more initial features to be mapped to extended ones
-                
+
                 if initialSet.issuperset(set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
                     feature = self.iFDD_features.get(frozenset(candidate))
                     if feature != None:
                         finalActiveFeatures.append(feature.index)
                         if self.sparsify:
-                            #print "Sets:", initialSet, feature.f_set 
+                            #print "Sets:", initialSet, feature.f_set
                             initialSet   = initialSet - feature.f_set
                             #print "Remaining Set:", initialSet
         else:
@@ -168,17 +168,17 @@ class iFDD(Representation):
                 if len(initialSet) == 0:
                     break # No more initial features to be mapped to extended ones
 
-                if initialSet.issuperset(set(feature.f_set)): 
+                if initialSet.issuperset(set(feature.f_set)):
                     finalActiveFeatures.append(feature.index)
                     if self.sparsify:
-                        #print "Sets:", initialSet, feature.f_set 
+                        #print "Sets:", initialSet, feature.f_set
                         initialSet   = initialSet - feature.f_set
                         #print "Remaining Set:", initialSet
-            
+
         if self.useCache:
             self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
-        return finalActiveFeatures     
-    def discover(self,phi_s,td_error):            
+        return finalActiveFeatures
+    def discover(self,phi_s,td_error):
         # Returns true if any feature is added
         activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
         discovered = False
@@ -186,15 +186,15 @@ class iFDD(Representation):
             discovered = self.inspectPair(g_index,h_index,td_error) or discovered
         return discovered
     def inspectPair(self,g_index,h_index,td_error):
-        # Inspect feature f = g union h where g_index and h_index are the indices of features g and h        
+        # Inspect feature f = g union h where g_index and h_index are the indices of features g and h
         # If the relevance is > Threshold add it to the list of features
         # Returns True if a new feature is added
-        g  = self.featureIndex2feature[g_index].f_set 
+        g  = self.featureIndex2feature[g_index].f_set
         h  = self.featureIndex2feature[h_index].f_set
         f           = g.union(h)
         feature     = self.iFDD_features.get(f)
         if not self.iFDDPlus: td_error = abs(td_error)
-        
+
         if feature is not None:
             #Already exists
             return False
@@ -209,7 +209,7 @@ class iFDD(Representation):
             potential.relevance += td_error
             potential.count     += 1
         # Check for discovery
-        relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count)) 
+        relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count))
         if relevance >= self.discovery_threshold:
             self.maxRelevance = -inf
             self.addFeature(potential)
@@ -227,7 +227,7 @@ class iFDD(Representation):
         a = self.domain.actions_num
         f = self.features_num-1 # Number of feature before adding the new one
         if self.sparsify:
-            newElem = (self.theta[p1_index::f] + self.theta[p2_index::f]).reshape((-1,1)) 
+            newElem = (self.theta[p1_index::f] + self.theta[p2_index::f]).reshape((-1,1))
         else:
             newElem =  None
         self.theta      = addNewElementForAllActions(self.theta,a,newElem)
@@ -255,7 +255,7 @@ class iFDD(Representation):
         priority = 1/(len(potential.f_set)*1.) # priority is 1/number of initial features corresponding to the feature
         self.sortediFDDFeatures.push(priority,feature)
 
-        #If you use cache, you should invalidate entries that their initial set contains the set corresponding to the new feature 
+        #If you use cache, you should invalidate entries that their initial set contains the set corresponding to the new feature
         if self.useCache:
             for initialActiveFeatures in self.cache.keys():
                 if initialActiveFeatures.issuperset(feature.f_set):
@@ -263,14 +263,14 @@ class iFDD(Representation):
                         self.cache.pop(initialActiveFeatures)
                     else:
                         # If sparsification is not used, simply add the new feature id to all cached values that have feature set which is a super set of the features corresponding to the new discovered feature
-                        self.cache[initialActiveFeatures].append(feature.index) 
+                        self.cache[initialActiveFeatures].append(feature.index)
         if self.debug: self.show()
     def batchDiscover(self,td_errors, phi, states):
         # Discovers features using iFDD in batch setting.
         # TD_Error: p-by-1 (How much error observed for each sample)
         # phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
         # self.batchThreshold is the minimum relevance value for the feature to be expanded
-        SHOW_PLOT       = 0      #Shows the histogram of relevances 
+        SHOW_PLOT       = 0      #Shows the histogram of relevances
         max_excitement  = 0
         maxDiscovery    = self.maxBatchDicovery
         n               = self.features_num #number of features
@@ -297,7 +297,7 @@ class iFDD(Representation):
         relevances          = relevances[F1,F2]
         if len(relevances) == 0:
             # No feature to add
-            self.logger.log("iFDD Batch: Max Relevance = 0") 
+            self.logger.log("iFDD Batch: Max Relevance = 0")
             return False
 
         if SHOW_PLOT:
@@ -312,7 +312,7 @@ class iFDD(Representation):
         sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
         max_relevance   = relevances[sortedIndices[0]];
         #Add top <maxDiscovery> features
-        self.logger.log("iFDD Batch: Max Relevance = %0.3f" % max_relevance)
+        self.logger.log("iFDD Batch: Max Relevance = {0:g}".format(max_relevance))
         added_feature = False
         new_features = 0
         for j in arange(len(relevances)):
@@ -349,9 +349,9 @@ class iFDD(Representation):
         for _,potential in self.iFDD_potentials.iteritems():
             print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index,str(sort(list(potential.f_set))),potential.relevance,potential.count,potential.p1,potential.p2)
     def showCache(self):
-        if self.useCache: 
+        if self.useCache:
             print "Cache:"
-            if len(self.cache) == 0: 
+            if len(self.cache) == 0:
                 print 'EMPTY!'
                 return
             print join(["-"]*30)
@@ -363,20 +363,22 @@ class iFDD(Representation):
         # Update a global max relevance and outputs it if it is updated
         if self.maxRelevance < newRelevance:
             self.maxRelevance = newRelevance
-            if self.PRINT_MAX_RELEVANCE: self.logger.log('iFDD: New Max Relevance: %0.3f' % newRelevance)
+            if self.PRINT_MAX_RELEVANCE:
+                self.logger.log("iFDD Batch: Max Relevance = {0:g}".format(newRelevance))
+
     def getFeature(self,f_id):
         #returns a feature given a feature id
         if f_id in self.featureIndex2feature.keys():
             return self.featureIndex2feature[f_id]
         else:
-            print "F_id %d is not valid" % f_id 
+            print "F_id %d is not valid" % f_id
             return None
     def getStrFeatureSet(self,f_id):
         #returns a string that corresponds to the set of features specified by the given feature_id
         if f_id in self.featureIndex2feature.keys():
             return str(sorted(list(self.featureIndex2feature[f_id].f_set)))
         else:
-            print "F_id %d is not valid" % f_id 
+            print "F_id %d is not valid" % f_id
             return None
     def featureType(self):
         return bool
@@ -390,7 +392,7 @@ class iFDD(Representation):
         for s,p in self.iFDD_potentials.items():
             new_s = deepcopy(s)
             new_p = deepcopy(p)
-            ifdd.iFDD_potentials[new_s] = deepcopy(new_p) 
+            ifdd.iFDD_potentials[new_s] = deepcopy(new_p)
         ifdd.cache = deepcopy(self.cache)
         ifdd.sortediFDDFeatures = deepcopy(self.sortediFDDFeatures)
         ifdd.features_num = self.features_num
@@ -406,7 +408,7 @@ if __name__ == '__main__':
     sparsify            = True
     discovery_threshold = 1
     #domain      = MountainCar()
-    
+
     if not RANDOM_TEST:
         domain      = SystemAdministrator('../Domains/SystemAdministratorMaps/20MachTutorial.txt')
         initialRep  = IndependentDiscretizationCompactBinary(domain,logger)

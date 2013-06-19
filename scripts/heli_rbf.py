@@ -27,14 +27,14 @@ from Tools import Logger
 
 # Etc
 #----------------------
-PERFORMANCE_CHECKS  = 15
-LEARNING_STEPS      = 5000 # Max number of learning steps
+PERFORMANCE_CHECKS  = 40
+LEARNING_STEPS      = 1000000 # Max number of learning steps
 EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold']
 PROJECT_PATH="Results/Temp"
 jobID=-1
 SHOW_ALL            = False
 SHOW_PERFORMANCE    = True
-PLOT_PERFORMANCE    = True
+PLOT_PERFORMANCE    = False
 LOG_INTERVAL        = 1  # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size
 JOB_ID              = 1
 PROJECT_PATH        = '.'
@@ -43,14 +43,14 @@ MAX_ITERATIONS      = 10
 
 #Agent ----------------------
 alpha_decay_mode        = 'Boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
-initial_alpha           = 1
+initial_alpha           = .2
 boyan_N0                = 1000
 LAMBDA                  = 0.5
 
 
 domain          = HelicopterHover(logger=logger)
-representation  = RBF(domain, logger, rbfs=200, id=JOB_ID)
-policy          = eGreedy(representation, logger, epsilon=0.05)
+representation  = RBF(domain, logger, rbfs=1000, id=JOB_ID)
+policy          = eGreedy(representation, logger, epsilon=0.1)
 
 agent           = SARSA(representation, policy, domain, logger, initial_alpha,
                         LAMBDA, alpha_decay_mode, boyan_N0)

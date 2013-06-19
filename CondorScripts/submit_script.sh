@@ -2,7 +2,7 @@
 #executable =  /afs/csail.mit.edu/system/common/matlab/2010a/bin/matlab
 #executable =  /afs/csail.mit.edu/common/matlab/2010a/bin/matlab
 #executable =  /data/zfs-scratch/matlab-2012a/bin/matlab
-executable = /usr/bin/python
+executable = /data/scratch/cdann/anaconda/bin/python
 universe = vanilla
 priority = 0
 Notification = Never
@@ -10,7 +10,8 @@ Notification = Never
 
 # 4GB MEMORY REQUIREMENT
 #requirements = OpSys == "LINUX" && Memory >= 4096
-requirements = OpSys == "LINUX"
+#requirements = OpSys == "LINUX" && OpSysAndVer != "Debian6"
+requirements = OpSys == "LINUX" && ARCH == "X86_64"
 
 #Requirements = Machine != "yodel7.csail.mit.edu" && Machine != "yodel4.csail.mit.edu" && Machine != "yodel2.csail.mit.edu" && Machine !=
 #Requirements = isPublic && \

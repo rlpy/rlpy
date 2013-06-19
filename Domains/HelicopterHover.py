@@ -113,8 +113,7 @@ class HelicopterHoverExtended(Domain):
     #def _make_slice(l, u, n):
     #    return slice(l, u + float(u - l) / (n - 1) / 2., float(u - l) / (n - 1))
     _action_bounds = np.array([[-2., 2.]] * 4)
-    _actions_dim = np.array([[-.2, -0.05, 0.05, 0.2]] * 3 +
-                            [[-.4, -.1, 1., .4]])  # maximum action: 2
+    _actions_dim = np.array([[-.2, -0.05, 0.05, 0.2]] * 3 + [[0., 0.15, 0.3, 0.5]])  # maximum action: 2
     #_action_slices = [3]*3+[4]  # 3 actions per dimension
     #_action_slices = [_make_slice(
     #    b[0], b[1], n) for b, n in zip(_action_bounds, _action_slices)]
@@ -123,9 +122,14 @@ class HelicopterHoverExtended(Domain):
     actions = cartesian(list(_actions_dim))
     actions_num = np.prod(actions.shape[0])
 
-    def __init__(self, logger=None, noise_level=1.):
+    def __init__(self, logger=None, noise_level=1., gamma=0.95):
         self.noise_level = noise_level
+        self.gamma = gamma
         super(HelicopterHoverExtended, self).__init__(logger)
+        if self.logger:
+            self.logger.log("Actions\n{0}".format(self._actions_dim))
+            self.logger.log("Noise level:\t{0}".format(self.noise_level))
+            self.logger.log("Wind:\t\t\t{0},{0}".format(self.wind[0], self.wind[1]))
 
     def s0(self):
         s = np.zeros((20))
@@ -146,7 +150,7 @@ class HelicopterHoverExtended(Domain):
     def _get_reward(self, s):
         if self.isTerminal(s):
             r = -np.sum(self.statespace_limits[:9, 1] ** 2)
-            r -= np.sum(self.statespace_limits[10:12, 1] ** 2)
+            #r -= np.sum(self.statespace_limits[10:12, 1] ** 2)
             r -= (1. - self.MIN_QW_BEFORE_HITTING_TERMINAL_STATE ** 2)
             return r * (self.episodeCap - s[-1])
         else:
