@@ -679,11 +679,6 @@ def checkNCreateDirectory(fullfilename):
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.makedirs(path)
-def hasattr(object,propertyName):
-    if getattr(object, propertyName, None):
-        return True
-    else:
-        return False
 def hasFunction(object,methodname):
     method = getattr(object, methodname, None)
     return callable(method)

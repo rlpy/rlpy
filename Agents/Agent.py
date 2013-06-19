@@ -279,7 +279,7 @@ class Agent(object):
 		
 		#Update the eligibility traces if they exist:
 		# Set eligibility Traces to zero if it is end of the episode
-		if hasProperty(self,'eligibility_trace'):
+		if hasattr(self,'eligibility_trace'):
 			if self.lambda_: 
 				self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num) 
 				self.eligibility_trace_s = zeros(self.representation.features_num) 
