@@ -130,7 +130,7 @@ class Agent(object):
                 self.alpha          = min(self.alpha,self.candid_alpha)
             # else we take no action
         elif self.alpha_decay_mode == 'boyan':
-            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1)
+            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
             self.alpha /= nnz # divide by number of nonzero features; note that this method is only called if nnz > 0
         elif self.alpha_decay_mode == "const":
             self.alpha = self.initial_alpha
