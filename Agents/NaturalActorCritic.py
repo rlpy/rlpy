@@ -121,8 +121,8 @@ class NaturalActorCritic(Agent):
                 self.b *= 1. - self.forgetting_rate
                 self.steps_between_updates = 0
 
-
-
+        if terminal: 
+            self.episodeTerminated()
     def _gradient_sane(self, w):
         """
         checks the natural gradient estimate w for sanity

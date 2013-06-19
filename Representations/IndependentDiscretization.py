@@ -33,7 +33,7 @@ class IndependentDiscretization(Representation):
         dim     = searchsorted(self.maxFeatureIDperDimension,f) 
         return dim
     def getFeatureName(self,id):
-        if hasProperty(self.domain, 'DimNames'):
+        if hasattr(self.domain, 'DimNames'):
             dim     = searchsorted(self.maxFeatureIDperDimension,id)
             #Find the index of the feature in the corresponding dimension
             index_in_dim = id

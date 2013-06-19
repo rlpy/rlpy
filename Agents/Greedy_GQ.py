@@ -35,7 +35,6 @@ class Greedy_GQ(Agent):
         self.logger.log("Beta:\t\t"+str(BetaCoef))
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):
-        super(Greedy_GQ, self).learn(s,a,r,ns,na,terminal) # increment episode count
         gamma               = self.representation.domain.gamma
         theta               = self.representation.theta
         phi_s               = self.representation.phi(s)
@@ -90,8 +89,5 @@ class Greedy_GQ(Agent):
                     self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num)
                     self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1)
                     
-        # Set eligibility Traces to zero if it is end of the episode
-        if terminal and self.lambda_: 
-            self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num) 
-            self.eligibility_trace_s = zeros(self.representation.features_num) 
- 
+        if terminal: 
+            self.episodeTerminated() 

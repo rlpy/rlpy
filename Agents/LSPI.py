@@ -120,6 +120,8 @@ class LSPI(Agent):
         self.process(s,a,r,ns,na,terminal)
         if (self.samples_count) % self.steps_between_LSPI == 0: 
             self.representationExpansionLSPI()
+        if terminal: 
+            self.episodeTerminated()
     def policyIteration(self):
         # Update the policy by recalculating A based on new na
         # Returns the TD error for each sample based on the latest weights and next actions

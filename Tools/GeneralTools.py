@@ -679,7 +679,7 @@ def checkNCreateDirectory(fullfilename):
     path,char,filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.makedirs(path)
-def hasProperty(object,propertyName):
+def hasattr(object,propertyName):
     if getattr(object, propertyName, None):
         return True
     else:

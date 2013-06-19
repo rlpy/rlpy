@@ -29,5 +29,7 @@ class LSPI_SARSA(Agent):
         self.LSPI.process(s,a,r,ns,na,terminal)        
         if self.LSPI.samples_count+1 % self.LSPI.steps_between_LSPI == 0:
             self.LSPI.representationExpansionLSPI()
+            if terminal:
+                self.episodeTerminated()
         else:
             self.SARSA.learn(s,a,r,ns,na,terminal)

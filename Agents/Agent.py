@@ -97,8 +97,8 @@ class Agent(object):
 
     ## \b ABSTRACT \b METHOD: Defined by child class
     def learn(self,s,a,r,ns,na,terminal):
-        if terminal: self.episode_count += 1
-        # ABSTRACT
+       pass
+       # ABSTRACT
 
 
     ## Computes a new alpha for the agent based on self.alpha_decay_mode.
@@ -158,7 +158,6 @@ class Agent(object):
         eps_term    = 0
         self.policy.turnOffExploration()
         s           = self.domain.s0()
-        terminal    = False
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a               = self.policy.pi(s)
@@ -196,7 +195,6 @@ class Agent(object):
         eps_term                = 0
         if s is None: s = self.domain.s0()
         if a is None: a = self.policy.pi(s)
-        terminal    = False
         while not eps_term and eps_length < self.domain.episodeCap:
             r,ns,eps_term       = self.domain.step(s, a)
             s                   = ns
@@ -270,3 +268,20 @@ class Agent(object):
         save(output_file, DATA)
         return DATA
 		# [eval code]
+	
+	## This function adjusts all necessary elements of the agent at the end of the episodes.
+	# Note: Every agent must call this function at the end of the learning if the transition led to terminal state
+
+	# [episodeTerminated code]
+    def episodeTerminated(self):
+		#Increase the number of episodes
+		self.episode_count += 1
+		
+		#Update the eligibility traces if they exist:
+		# Set eligibility Traces to zero if it is end of the episode
+		if hasProperty(self,'eligibility_trace'):
+			if self.lambda_: 
+				self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num) 
+				self.eligibility_trace_s = zeros(self.representation.features_num) 
+		
+	# [episodeTerminated code]

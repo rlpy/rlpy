@@ -69,6 +69,8 @@ class PolicyEvaluation(LSPI):
                 self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
                 added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s, self.data_s)
             self.STATS = array(STATS).T # Experiment will save this later
+        if terminal: 
+            self.episodeTerminated()
     def evaluatePolicy(self):
             #Calculate the Q for all samples using the new theta from LSTD
             #1. newTheta = LSTD
