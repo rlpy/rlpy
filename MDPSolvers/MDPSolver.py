@@ -58,7 +58,7 @@ class MDPSolver(object):
         self.convergence_threshold = convergence_threshold
         # Set random seed for this job id
         random.seed(self.mainSeed)
-        self.randomSeeds = alborzrandint(1,self.mainSeed,self.maxRuns,1)
+        self.randomSeeds = randint(1,self.mainSeed,self.maxRuns,1)
         random.seed(self.randomSeeds[self.id-1,0])
         self.logger.setOutput("%s/%d-out.txt" % (self.project_path, self.id))
         if self.logger:

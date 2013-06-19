@@ -484,7 +484,7 @@ if __name__ == '__main__':
         for i in arange(TRIALS):
             phi         = zeros(n,'bool')
             for j in arange(K):
-                ind = alborzrandint(0,n-1)
+                ind = randint(0,n-1)
                 phi[ind] = 1
                 threshold = random.rand()*2-1
             print '%d: %0.2f >> %s' % (i+1, threshold, str(phi.nonzero()[0]))

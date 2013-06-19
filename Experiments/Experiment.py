@@ -96,7 +96,7 @@ class Experiment(object):
         # Find the corresponding random seed for the experiment id
         assert id > 0
         random.seed(self.mainSeed)
-        self.randomSeeds = alborzrandint(1, self.mainSeed, self.maxRuns, 1)
+        self.randomSeeds = randint(1, self.mainSeed, self.maxRuns, 1)
         # for x in self.randomSeeds:
         #    print('%d'%x)
         random.seed(self.randomSeeds[self.id - 1, 0])

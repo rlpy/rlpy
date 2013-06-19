@@ -169,20 +169,12 @@ def count_nonzero(arr):
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
 # if undo redo does not work in eclipse, you may have an uninfinished process. Kill all
 
-def alborzrandint(low,high,m=1,n=1):
-    # Use random.rand_int instead unless you want to debug and would like to generate same random numbers as matlab
-    # Generates a random integer matrix m-by-n where elements are in [low,high]
-    res = zeros((m,n),'int64')
-    d = high - low
-    for i in arange(m):
-        for j in range(n):
-            coin = random.rand()
-            res[i,j] = round(coin*d)+low
-    return res
+def randint(low,high,m=1,n=1):
+    return random.randint(low,high+1,size=(m,n))
 def randSet(x):
     #Returns a random element of a list uniformly.
     #i = random.random_integers(0,size(x)-1)
-    i = alborzrandint(0,size(x)-1)[0,0]
+    i = randint(0,size(x)-1)[0,0]
 #    print x
 #    print('in randSet: %d' % i)
     return x[i]
