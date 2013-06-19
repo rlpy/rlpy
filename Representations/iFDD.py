@@ -183,7 +183,7 @@ class iFDD(Representation):
         activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
         discovered = False
         for g_index,h_index in combinations(activeFeatures,2):
-            discovered = discovered or self.inspectPair(g_index,h_index,td_error)
+            discovered = self.inspectPair(g_index,h_index,td_error) or discovered
         return discovered
     def inspectPair(self,g_index,h_index,td_error):
         # Inspect feature f = g union h where g_index and h_index are the indices of features g and h        
