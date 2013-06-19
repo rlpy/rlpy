@@ -94,8 +94,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Representation ----------------------
     DISCRITIZATION              = 20 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
     RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
-    iFDDOnlineThreshold         = .2 #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10}
-    BatchDiscoveryThreshold     = .1 #if not 'BatchDiscoveryThreshold' in globals() else BatchDiscoveryThreshold  # Minimum relevance required for representation expansion techniques to add a feature
+    iFDDOnlineThreshold =	0.05 # Edited by makexp.py script
+    BatchDiscoveryThreshold =	0.05 # Edited by makexp.py script
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
@@ -103,15 +103,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     FourierOrder                = 3     #
     iFDD_Sparsify               = 1     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
     iFDD_Plus                   = 1     # True: relevance = abs(TD_Error)/norm(feature), False: relevance = sum(abs(TD_error)) [ICML 11]
-    OMPTD_BAG_SIZE              = 100
+    OMPTD_BAG_SIZE              = 0
     # Policy ----------------------
     EPSILON                 = 0.1 # EGreedy Often is .1 CHANGE ME if I am not .1<<<
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
-    initial_alpha           = 1.
-    boyan_N0                = 1000
+    initial_alpha =	.1 # Edited by makexp.py script
+    boyan_N0 =	100 # Edited by makexp.py script
     BetaCoef                = 1e-6# In the Greedy_GQ Algorithm the second learning rate, Beta, is assumed to be Alpha * THIS CONSTANT
-    LAMBDA                  = 0
+    LAMBDA                  = 0.
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
     LSPI_windowSize         = LEARNING_STEPS/PERFORMANCE_CHECKS
     LSPI_WEIGHT_DIFF_TOL    = 1e-3 # Minimum Weight Difference required to keep the LSPI loop going
@@ -135,16 +135,16 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = ChainMDP(10, logger = logger)
     #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = HelicopterHover(logger=logger)
-    #domain          = AcrobotLegacy(logger=logger)
-    domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = Acrobot(logger=logger)
+    #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = ROS_RCCar(logger=logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = Acrobot(logger = logger)
     #domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
-    #domain      clear    = Pendulum_SwingUp(logger = logger)
+    #domain          = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
     #domain          = CartPole_SwingUpHeight(logger = logger)
     #domain          = FiftyChain(logger = logger)
@@ -166,13 +166,13 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
     #tile_matrix = array(mat("""
-    #72 72 84 84;
+    #72 72 84 84             ;
     #1 18 18 18; 18 1 18 18; 18 18 1 18; 18 18 18 1;
     #1 1 12 12; 1 12 12 1; 1 12 1 12; 12 1 1 12; 12 1 12 1; 12 12 1 1;
     #1 1 1 18; 1 1 18 1; 1 18 1 1; 18 1 1 1"""), dtype="float")
     #tile_matrix[tile_matrix == 1] = 0.5
     #representation = TileCoding(logger=logger, domain=domain,
-    #        resolution_matrix=tile_matrix,
+    #        resolution_matrix=tile_matrix, safety="none",
     #        num_tilings=[12, 3, 3, 3, 3]+[2]*6+[3]*4
     #                            ,memory=15000)
 
@@ -190,7 +190,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     #agent = NaturalActorCritic(representation, policy, domain, logger,
     #                           forgetting_rate=.8, min_steps_between_updates=500,
-    #                           max_steps_between_updates=2000,
+    #                           max_steps_between_updates=5000,
     #                           lam=LAMBDA, alpha=0.1)
     #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
