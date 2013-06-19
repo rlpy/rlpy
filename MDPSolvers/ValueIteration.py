@@ -23,7 +23,7 @@ from MDPSolver import *
 class ValueIteration(MDPSolver):
     def solve(self):
         self.result = []
-        self.start_time     = time() # Used to show the total time took the process
+        self.start_time     = clock() # Used to show the total time took the process
         # Check for Tabular Representation
         rep  = self.representation
         if className(rep) != 'Tabular':

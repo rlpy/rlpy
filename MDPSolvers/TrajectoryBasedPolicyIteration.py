@@ -40,7 +40,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         self.logger.log('Max PE Iterations:\t%d' % self.max_PE_iterations)
     def solve(self):
         self.result         = []
-        self.start_time     = time() # Used to show the total time took the process
+        self.start_time     = clock() # Used to show the total time took the process
         bellmanUpdates      = 0
         converged           = False
         PI_iteration        = 0
@@ -141,7 +141,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         self.policy         = eGreedy(self.representation,self.logger, epsilon = self.epsilon)
         self.samples_num     = 1000 # Number of samples to be used for each policy evaluation phase. L1 in the Geramifard et. al. FTML 2012 paper
         self.result         = []
-        self.start_time     = time() # Used to show the total time took the process
+        self.start_time     = clock() # Used to show the total time took the process
         samples             = 0
         converged           = False
         iteration           = 0

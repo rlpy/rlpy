@@ -1,27 +1,28 @@
-BEFORE PUBLIC RELEASE:
-- Determine hosting / version control
-- Choose logo, maybe feature cartpole or blocks as part of image
-
 Tasks:
-- Make Config.py (perhaps use global variable)
+- Bring PacMan world into domains See info below
 - Make the assumption that actions are discrete very visible (both code and website)
-- Eliminate BatchExperiment and fues the onlineExperiment with experiment
+- Eliminate BatchExperiment and fuse the onlineExperiment with experiment
 - Make representation usable with policy and other stuff. Take the value function dependency out
+
+- Continuous Actions for domains
+- Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
+- Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
+- Config File For Experiments
 - Improve iFDD Speed
 - Optimization
 - Feature Names
 - bestAction in matrix form (how about breaking ties randomly)
-- Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
-- Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
-- Config File For Experiments
 (Elliot) - Fix the issue with legend not being shown during the run
 - TBPI has problem with graphics due to deepcopy use.
-- Bring Pacman world into domains See info below
+- Make Config.py (perhaps use global variable)
 Misc:
 - Formatting change of license? Long lines with gaps between.
 - Change "Bob Klein" to "Robert H Klein"
 - 
 
+BEFORE PUBLIC RELEASE:
+- Determine hosting / version control
+- Choose logo, maybe feature cartpole or blocks as part of image
 
 PacMan
 ================

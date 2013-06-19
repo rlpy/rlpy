@@ -1,10 +1,10 @@
 from GeneralTools import *
 
 class Merger(object):
-    CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes'] #,'Discounted Return']
-    PE_AXES         = ['Iterations','Features','Error','Time(s)']
-    MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time']
-    DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE (Observed)', 'MSE (Truth)','Time(s)', 'Number of Clusters','Objective']
+    CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes'] #,'Discounted Return'] #7
+    PE_AXES         = ['Iterations','Features','Error','Time(s)'] #4
+    MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time'] #9
+    DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE (Observed)', 'MSE (Truth)','Time(s)', 'Number of Clusters','Objective'] #8
     
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0,showSplash=True):
@@ -191,7 +191,7 @@ class Merger(object):
                 X_axis = 'Time(s)'
             elif self.ResultType == 'Dynamic Means': X_axis = 'Outer Iterations'
             else:
-                X_axis = 'Iterations'
+                X_axis = 'Iterations'            
 
         if not isOnCluster() and self.showSplash: self.fig.clear()
         min_ = +inf
@@ -250,6 +250,11 @@ class Merger(object):
             Y_axis_label = r'$\|A\theta - b\|$' if Y_axis == 'Error' else Y_axis
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
+            
+            # Steps to be shown in scientific format
+            #if X_axis == 'Learning Steps':
+                #pl.ticklabel_format(style='sci', axis='x', useLocale = True, scilimits=(0,0))
+                #ticker.ScalarFormatter(useMathText=True)
         self.save(Y_axis,X_axis,Xs,Ys,Errs)
         #if not isOnCluster and self.legend:
         #        # This is a hack so we can see it correctly during the runtime

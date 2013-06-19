@@ -50,7 +50,7 @@ class PolicyEvaluation(LSPI):
         self.process(s,a,r,ns,na,terminal)
         if self.samples_count == self.max_window:
             STATS               = [] 
-            start_time          = time()
+            start_time          = clock()
             re_iteration        = 0 # Representation expansion iteration. Only used if the representation can be expanded 
             added_feature       = True
             while added_feature and re_iteration < self.re_iterations:
@@ -82,7 +82,7 @@ class PolicyEvaluation(LSPI):
             PE_error  = linalg.norm(td_errors)
             
             # Start Calculating the Policy Evaluation Error
-#            PE_error_time_start = time()
+#            PE_error_time_start = clock()
 #            p                   = self.S.shape[0]
 #            n                   = self.representation.features_num
 #            test_phi_s          = empty((p,n),dtype=self.representation.featureType())

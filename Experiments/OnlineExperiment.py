@@ -64,8 +64,8 @@ class OnlineExperiment (Experiment):
         performance_tick    = 0
         eps_return          = 0
         episode_number      = 0
-        start_log_time      = time() # Used to bound the number of logs in the file
-        self.start_time     = time() # Used to show the total time took the process
+        start_log_time      = clock() # Used to bound the number of logs in the file
+        self.start_time     = clock() # Used to show the total time took the process
         if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
@@ -90,7 +90,7 @@ class OnlineExperiment (Experiment):
 
             #Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
-                start_log_time  = time()
+                start_log_time  = clock()
                 elapsedTime     = deltaT(self.start_time)
                 self.logger.log('%d: E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), eps_return, eps_steps, self.agent.representation.features_num))
 
@@ -119,7 +119,7 @@ class OnlineExperiment (Experiment):
                                                        episode_number] # index = 6
 
                     self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
-                    start_log_time      = time()
+                    start_log_time      = clock()
                     performance_tick    += 1
 
         #Visual

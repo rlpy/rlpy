@@ -124,7 +124,7 @@ class LSPI(Agent):
         # Update the policy by recalculating A based on new na
         # Returns the TD error for each sample based on the latest weights and next actions
 
-        start_time      = time()
+        start_time      = clock()
         weight_diff     = self.epsilon + 1 # So that the loop starts
         lspi_iteration  = 0
         self.best_performance = -inf
@@ -141,7 +141,7 @@ class LSPI(Agent):
             
             #Find the best action for each state given the current value function
             #Notice if actions have the same value the first action is selected in the batch mode
-            iteration_start_time = time()
+            iteration_start_time = clock()
             bestAction, self.all_phi_ns_new_na,action_mask = self.representation.batchBestAction(self.data_ns[:self.samples_count,:],self.all_phi_ns,action_mask,self.use_sparse)
             
             #Recalculate A matrix (b remains the same)
@@ -198,7 +198,7 @@ class LSPI(Agent):
             self.representation.theta = old_theta #Return to previous theta
         return eps_return, eps_length
     def LSTD(self): 
-        start_time = time()
+        start_time = clock()
         #self.logger.log('Running LSTD:')
 
         if not self.fixedRep:

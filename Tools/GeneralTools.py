@@ -52,6 +52,7 @@ os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
+    import matplotlib.ticker as ticker
     from matplotlib import mpl,rc,colors
     import matplotlib.patches as mpatches
     import matplotlib.path as mpath
@@ -217,7 +218,7 @@ def state2bin(s,bins,limits):
         s = limits[0]
     return int((s-limits[0])*bins/(width*1.))
 def deltaT(start_time):
-    return time()-start_time
+    return clock()-start_time
 def hhmmss(t):
     #Return a string of hhmmss
     return str(datetime.timedelta(seconds=round(t)))
@@ -555,7 +556,7 @@ def solveLinear(A,b):
     error = inf # just to be safe, initialize error variable here
     if sp.issparse(A):
         #print 'sparse', type(A)
-        start_log_time = time()
+        start_log_time = clock()
         result  = slinalg.spsolve(A,b)
         solve_time = deltaT(start_log_time)
         error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
@@ -566,7 +567,7 @@ def solveLinear(A,b):
             A = A.todense()
         # Regularize A
         #result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
-        start_log_time = time()
+        start_log_time = clock()
         result = linalg.solve(A,b)
         solve_time = deltaT(start_log_time)
 

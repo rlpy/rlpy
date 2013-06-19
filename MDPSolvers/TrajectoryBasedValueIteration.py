@@ -36,7 +36,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
         self.logger.log('# Trajectories used for convergance: %d' % self.MIN_CONVERGED_TRAJECTORIES)
     def solve(self):
         self.result = []
-        self.start_time     = time() # Used to show the total time took the process
+        self.start_time     = clock() # Used to show the total time took the process
         bellmanUpdates      = 0
         converged           = False
         iteration           = 0
