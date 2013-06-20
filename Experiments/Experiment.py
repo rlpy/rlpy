@@ -130,12 +130,15 @@ class Experiment(object):
         eps_return          = 0
         eps_discount_return = 0 
         eps_term            = 0
-        random_state = np.random.get_state()
+        random_state = random.get_state()
 
         self.agent.policy.turnOffExploration()
+        
+        #hidden states are non Markovian variables that can exist in some problems such as the time dependent noise in the helicopter. 
         hidden_state = self.domain.hidden_state_
         if isinstance(hidden_state, ndarray):
             hidden_state = hidden_state.copy()
+        
         s = self.domain.s0()
         if self.show_performance:
             self.domain.showLearning(self.agent.representation)
@@ -159,7 +162,7 @@ class Experiment(object):
         # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP
         self.domain.hidden_state_ = hidden_state
 
-        np.random.set_state(random_state)
+        random.set_state(random_state)
         return eps_return, eps_length, eps_term, eps_discount_return
         # [performanceRun code]
 
