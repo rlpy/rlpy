@@ -5,7 +5,6 @@ Tasks:
 - Make representation usable with policy and other stuff. Take the value function dependency out
 
 - Put a note that timing is CPU time for unix based but clock time for windows!
-- Adjust weights should work with more than one feature expansion.
 - Continuous Actions for domains
 - Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.

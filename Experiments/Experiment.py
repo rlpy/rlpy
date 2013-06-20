@@ -126,9 +126,10 @@ class Experiment(object):
         # [performanceRun code]
     def performanceRun(self, total_steps):
         # Set Exploration to zero and sample one episode from the domain
-        eps_length = 0
-        eps_return = 0
-        eps_term = 0
+        eps_length          = 0
+        eps_return          = 0
+        eps_discount_return = 0 
+        eps_term            = 0
         random_state = np.random.get_state()
 
         self.agent.policy.turnOffExploration()
@@ -148,8 +149,9 @@ class Experiment(object):
             r, ns, eps_term = self.domain.step(s, a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
-            eps_return += r
-            eps_length += 1
+            eps_return          += r
+            eps_discount_return += self.domain.gamma**eps_length * r
+            eps_length          += 1
         if self.show_performance:
             self.domain.showDomain(s, a)
         self.agent.policy.turnOnExploration()
@@ -158,7 +160,7 @@ class Experiment(object):
         self.domain.hidden_state_ = hidden_state
 
         np.random.set_state(random_state)
-        return eps_return, eps_length, eps_term
+        return eps_return, eps_length, eps_term, eps_discount_return
         # [performanceRun code]
 
         # Prints class info. See code

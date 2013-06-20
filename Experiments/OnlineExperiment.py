@@ -20,15 +20,16 @@ from Experiment import *
 
 class OnlineExperiment (Experiment):
     # Statistics are saved as :
-    DEBUG           = 0         # Show s,a,r,s'
-    STEP            = 0         # Learning Steps
-    RETURN          = 1         # Sum of Rewards
-    CLOCK_TIME      = 2         # Time in seconds so far
-    FEATURE_SIZE    = 3         # Number of features used for value function representation
-    EPISODE_LENGTH  = 4
-    TERMINAL        = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
-    EPISODE_NUMBER  = 6
-    STATS_NUM       = 7         # Number of statistics to be saved
+    DEBUG               = 0         # Show s,a,r,s'
+    STEP                = 0         # Learning Steps
+    RETURN              = 1         # Sum of Rewards
+    CLOCK_TIME          = 2         # Time in seconds so far
+    FEATURE_SIZE        = 3         # Number of features used for value function representation
+    EPISODE_LENGTH      = 4
+    TERMINAL            = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
+    EPISODE_NUMBER      = 6
+    DISCOUNTED_RETURN   = 7 
+    STATS_NUM           = 8         # Number of statistics to be saved
 
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
@@ -82,12 +83,11 @@ class OnlineExperiment (Experiment):
 
             #Act,Learn,Step
             r,ns,terminal   = self.domain.step(s, a)
-            terminal        = terminal or eps_steps >= self.domain.episodeCap
             na              = self.agent.policy.pi(ns)
-
-            total_steps += 1
-            eps_steps   += 1
-            eps_return  += r
+            total_steps     += 1
+            eps_steps       += 1
+            eps_return      += r
+            terminal        = terminal or eps_steps >= self.domain.episodeCap
 
             #Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
@@ -109,7 +109,7 @@ class OnlineExperiment (Experiment):
                     self.result = self.agent.STATS
                 else:
                     #Control Case
-                    performance_return, performance_steps, performance_term = self.performanceRun(total_steps)
+                    performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(total_steps)
                     elapsedTime                     = deltaT(self.start_time)
                     self.result[:,performance_tick] = [total_steps, # index = 0
                                                        performance_return, # index = 1
@@ -117,7 +117,8 @@ class OnlineExperiment (Experiment):
                                                        self.agent.representation.features_num, # index = 3
                                                        performance_steps,# index = 4
                                                        performance_term, # index = 5
-                                                       episode_number] # index = 6
+                                                       episode_number, # index = 6
+                                                       performance_discounted_return] # index = 7 
 
                     self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
                     start_log_time      = clock()
