@@ -457,19 +457,19 @@ if __name__ == '__main__':
         rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,sparsify = sparsify)
         rep.theta   = arange(rep.features_num*domain.actions_num)*10
         print 'Initial [0,1] => ',
-        ANSWER = rep.findFinalActiveFeatures([0,1])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,1]))
         print ANSWER
         assert array_equal(ANSWER, array([0,1]))
         rep.show()
         
         print rep.inspectPair(0,1, discovery_threshold+1)
         rep.show()
-        ANSWER = rep.findFinalActiveFeatures([0,1])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,1]))
         print ANSWER
         assert array_equal(ANSWER, array([21]))
 
         print 'Initial [2,3] => ',
-        ANSWER = rep.findFinalActiveFeatures([2,3])
+        ANSWER = sort(rep.findFinalActiveFeatures([2,3]))
         print ANSWER
         assert array_equal(ANSWER, array([2,3]))
         rep.showCache()
@@ -482,19 +482,19 @@ if __name__ == '__main__':
         rep.showFeatures()
         rep.showCache()
         print 'Initial [0,20] => ',
-        ANSWER = rep.findFinalActiveFeatures([0,20])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,20]))
         print ANSWER
         assert array_equal(ANSWER, array([0,20]))
 
         print 'Initial [0,1,20] => ',
-        ANSWER = rep.findFinalActiveFeatures([0,1,20])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,1,20]))
         print ANSWER
-        assert array_equal(ANSWER, array([21,20]))
+        assert array_equal(ANSWER, array([20,21]))
         rep.showCache()
         # Change the weight for new feature 40
         rep.theta[40] = -100
         print 'Initial [0,20] => ',
-        ANSWER = rep.findFinalActiveFeatures([0,20])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,20]))
         print ANSWER
         assert array_equal(ANSWER, array([0,20]))
 
@@ -503,16 +503,15 @@ if __name__ == '__main__':
         rep.showFeatures()
         rep.showCache()
         print 'Initial [0,1,20] => ',
-        ANSWER = rep.findFinalActiveFeatures([0,1,20])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,1,20]))
         print ANSWER
         assert array_equal(ANSWER, array([22]))
 
         rep.showCache()
         print 'Initial [0,1,2,3,4,5,6,7,8,20] => ',
-        print rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
-        ANSWER = rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
+        ANSWER = sort(rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20]))
         print ANSWER
-        assert array_equal(ANSWER, array([22,8,7,6,5,4,3,2]))
+        assert array_equal(ANSWER, array([2,3,4,5,6,7,8,22]))
         rep.showCache()
         print "Passed the checks!"
     else:
