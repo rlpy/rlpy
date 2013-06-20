@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Functions used to remove all unfinished jobs
 # Be careful if jobs are running on the server you should not run this command on the corresponding directory
 # Alborz Geramifard 2009 MIT

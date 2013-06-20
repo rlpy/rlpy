@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 ######################################################
 # Developed by Alborz Geramiard March 20th 2013 at MIT #
 ######################################################
