@@ -207,11 +207,13 @@ class iFDD(Representation):
         return finalActiveFeatures
 
     def discover(self,phi_s,td_error):
-        # Returns true if any feature is added
+        """
+        returns the number of added features
+        """
         activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
-        discovered = False
+        discovered = 0
         for g_index,h_index in combinations(activeFeatures,2):
-            discovered = self.inspectPair(g_index,h_index,td_error) or discovered
+            discovered += self.inspectPair(g_index,h_index,td_error)
         return discovered
 
     def inspectPair(self,g_index,h_index,td_error):
@@ -461,7 +463,7 @@ if __name__ == '__main__':
         print ANSWER
         assert array_equal(ANSWER, array([0,1]))
         rep.show()
-        
+
         print rep.inspectPair(0,1, discovery_threshold+1)
         rep.show()
         ANSWER = sort(rep.findFinalActiveFeatures([0,1]))
@@ -533,5 +535,5 @@ if __name__ == '__main__':
             print '%d: %0.2f >> %s' % (i+1, threshold, str(phi.nonzero()[0]))
             rep.discover(phi,threshold)
         rep.show()
-    
-    
+
+

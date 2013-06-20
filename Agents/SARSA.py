@@ -28,7 +28,7 @@ class SARSA(Agent):
         super(SARSA,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
         self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
         self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
-        
+
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
     def learn(self,s,a,r,ns,na,terminal):
         gamma               = self.representation.domain.gamma
@@ -37,28 +37,28 @@ class SARSA(Agent):
         phi_prime_s         = self.representation.phi(ns)
         phi                 = self.representation.phi_sa(s,a,phi_s)
         phi_prime           = self.representation.phi_sa(ns,na,phi_prime_s)
-        
+
         nnz                 = count_nonzero(phi_s)    #Number of non-zero elements
         if nnz == 0: # Phi has some nonzero elements, proceed with update
             return
-        
+
         #Set eligibility traces:
         if self.lambda_:
             self.eligibility_trace   *= gamma*self.lambda_
             self.eligibility_trace   += phi
-            
+
             self.eligibility_trace_s  *= gamma*self.lambda_
             self.eligibility_trace_s += phi_s
-            
+
             #Set max to 1
             self.eligibility_trace[self.eligibility_trace>1] = 1
             self.eligibility_trace_s[self.eligibility_trace_s>1] = 1
         else:
             self.eligibility_trace    = phi
             self.eligibility_trace_s  = phi_s
-        
+
         td_error            = r + dot(gamma*phi_prime - phi, theta)
-        
+
         self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
         theta               += self.alpha * td_error * self.eligibility_trace
 
@@ -66,12 +66,12 @@ class SARSA(Agent):
         discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
             expanded = self.representation.discover(phi_s,td_error)
-        
+
             #Assuming one expansion for one interaction.
             if expanded and self.lambda_:
                     # Correct the size of eligibility traces (pad with zeros for new features)
-                    self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num)
-                    self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1)
-		
-        if terminal: 
+                    self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num, zeros((self.domain.actions_num, expanded)))
+                    self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, zeros((1, expanded)))
+
+        if terminal:
             self.episodeTerminated()

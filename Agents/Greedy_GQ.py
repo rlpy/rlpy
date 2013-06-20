@@ -69,9 +69,8 @@ class Greedy_GQ(Agent):
         Delta_theta                 = td_error*self.eligibility_trace - gamma*td_error_estimate_now*phi_prime
         theta                       += self.alpha*Delta_theta
         Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
-        #self.secondLearningRateCoef = 0 
         self.GQWeight               += self.alpha*self.secondLearningRateCoef*Delta_GQWeight
-        
+
         #
         #theta               += self.alpha * TDError * self.eligibility_trace
         #print max(theta)
@@ -79,15 +78,16 @@ class Greedy_GQ(Agent):
         discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
             expanded = self.representation.discover(phi_s,td_error)
-            
+
             #Assuming one expansion for one interaction.
             if expanded:
+                new_elem = zeros((self.domain.actions_num, expanded))
                 # Correct the size of self.GQWeight
-                self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num)
+                self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num, new_elem)
                 if self.lambda_:
                     # Correct the size of eligibility traces (pad with zeros for new features)
-                    self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num)
-                    self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1)
-                    
-        if terminal: 
-            self.episodeTerminated() 
+                    self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num, new_elem)
+                    self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, zeros((1, expanded)))
+
+        if terminal:
+            self.episodeTerminated()
