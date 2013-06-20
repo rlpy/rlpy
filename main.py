@@ -210,6 +210,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
         if 'MDPsolver' in locals().keys():
             print "You set both agent and MDPsolver. Please remove one as initializing both of them can mess with the logger."
         experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
+        #print randint(1,10,10,1)
         experiment.run()
         experiment.save()
     else:
