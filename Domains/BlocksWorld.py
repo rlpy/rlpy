@@ -18,7 +18,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -36,24 +36,24 @@ from Domain import *
 # Episodic \n
 # State is a vector of length blocks. Each dimension can have 'blocks' number of possibilities. \n
 # If the value of dimension d is d it means d is on the table (trick to save space) \n
-# [0 1 2 3 4 0] => means all blocks on table except block 5 which is on top of block 0 
+# [0 1 2 3 4 0] => means all blocks on table except block 5 which is on top of block 0
 ######################################################
 class BlocksWorld(Domain):
     STEP_REWARD             = -.001
     GOAL_REWARD             = 1
     gamma                   = 1
 	## Total number of blocks
-    blocks                  = 0    
-	## Goal tower size 
+    blocks                  = 0
+	## Goal tower size
     towerSize               = 0
 	## 1000 in Tutorial
-    episodeCap              = 1000 
+    episodeCap              = 1000
 	## Used to plot the domain
-    domain_fig              = None  
+    domain_fig              = None
     def __init__(self, blocks = 6, towerSize = 6, noise = .3, logger = None):
-        self.blocks             = blocks    
-        self.towerSize          = towerSize    
-        self.noise              = noise 
+        self.blocks             = blocks
+        self.towerSize          = towerSize
+        self.noise              = noise
         self.TABLE              = blocks+1
         self.actions_num        = blocks*blocks
         self.gamma              = 1
@@ -96,7 +96,7 @@ class BlocksWorld(Domain):
             pl.show()
         else:
             self.domain_fig.set_data(world)
-            pl.draw()   
+            pl.draw()
     def showLearning(self,representation):
         pass #cant show 6 dimensional value function
     def step(self,s,a):
@@ -188,7 +188,7 @@ class BlocksWorld(Domain):
         else:
             # consider dropping the block
             ns2         = s.copy()
-            ns2[A]      = A # Drop on table 
+            ns2[A]      = A # Drop on table
             terminal2   = self.isTerminal(ns2)
             r2          = self.GOAL_REWARD if terminal2 else self.STEP_REWARD
             p   = array([1-self.noise, self.noise]).reshape((2,1))
@@ -200,5 +200,5 @@ if __name__ == '__main__':
     random.seed(0)
     p = BlocksWorld(blocks=6,noise=0);
     p.test(1000)
-    
-    
+
+

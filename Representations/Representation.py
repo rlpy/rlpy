@@ -115,6 +115,8 @@ class Representation(object):
 
         A = self.domain.possibleActions(s)
         if phi_s is None: phi_s   = self.phi(s)
+        if len(phi_s) == 0:
+            return zeros((len(A))), A
         theta_prime = self.theta.reshape(-1, self.features_num)
         if self._phi_sa_cache.shape != (self.domain.actions_num, self.features_num):
             self._phi_sa_cache =  empty((self.domain.actions_num, self.features_num))
@@ -172,7 +174,7 @@ class Representation(object):
         if snippet is True:
             return phi_s, a*self.features_num, (a+1) * self.features_num
 
-        phi_sa = zeros(self.features_num*self.domain.actions_num, dtype=phi_s.dtype)
+        phi_sa = zeros((self.features_num*self.domain.actions_num), dtype=phi_s.dtype)
         if len(self._arange_cache) != self.features_num:
             self._arange_cache = arange(a * self.features_num, (a+1) * self.features_num)
         else:

@@ -28,7 +28,7 @@ class OnlineExperiment (Experiment):
     EPISODE_LENGTH      = 4
     TERMINAL            = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
     EPISODE_NUMBER      = 6
-    DISCOUNTED_RETURN   = 7 
+    DISCOUNTED_RETURN   = 7
     STATS_NUM           = 8         # Number of statistics to be saved
 
     max_steps           = 0     # Total number of interactions
@@ -118,7 +118,7 @@ class OnlineExperiment (Experiment):
                                                        performance_steps,# index = 4
                                                        performance_term, # index = 5
                                                        episode_number, # index = 6
-                                                       performance_discounted_return] # index = 7 
+                                                       performance_discounted_return] # index = 7
 
                     self.logger.log('%d >>> E[%s]-R[%s]: Return=%+0.2f, Steps=%d, Features = %d' % (total_steps, hhmmss(elapsedTime), hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps), performance_return, performance_steps, self.agent.representation.features_num))
                     start_log_time      = clock()

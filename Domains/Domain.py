@@ -17,8 +17,7 @@
 ######################################################
 
 from Tools import *
-from pydoc import classname
-
+import numpy as np
 ## The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
 #
 # The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations
@@ -41,182 +40,183 @@ from pydoc import classname
 # value, if a dimension is not marked as 'continuous'
 # then it is assumed to be integer.
 
+
 class Domain(object):
-	## The discount factor by which rewards are reduced
+    ## The discount factor by which rewards are reduced
     gamma = .9
-	## The number of possible states in the domain
-    states_num = 0 # was None
-	## The number of Actions the agent can perform
-    actions_num = 0 # was None
-	## Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-    statespace_limits = [] # was None
-	## Limits of each dimension of a discrete state space. This is the same as statespace_limits, without the extra -.5, +.5 added to each dimension
-    discrete_statespace_limits = [] # was None
-	## Number of dimensions of the state space
-    state_space_dims = 0 # was None
-	## List of the continuous dimensions of the domain
+    ## The number of possible states in the domain
+    states_num = 0  # was None
+    ## The number of Actions the agent can perform
+    actions_num = 0  # was None
+    ## Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+    statespace_limits = []  # was None
+    ## Limits of each dimension of a discrete state space. This is the same as statespace_limits, without the extra -.5, +.5 added to each dimension
+    discrete_statespace_limits = []  # was None
+    ## Number of dimensions of the state space
+    state_space_dims = 0  # was None
+    ## List of the continuous dimensions of the domain
     continuous_dims = []
-	## The cap used to bound each episode (return to state 0 after)
+    ## The cap used to bound each episode (return to state 0 after)
     episodeCap = None
-	## A simple object that records the prints in a file
+    ## A simple object that records the prints in a file
     logger = None
     ## Termination Signal of Episode: episode is not over
-    NOT_TERMINATED          = 0
-	## Termination Signal of Episode: episode is over, neither goal or fail state reached
-    NOMINAL_TERMINATION     = 1
-	## Termination Signal of Episode: episode is over, goal or fail state reached
-    CRITICAL_TERMINATION    = 2
+    NOT_TERMINATED = 0
+    ## Termination Signal of Episode: episode is over, neither goal or fail state reached
+    NOMINAL_TERMINATION = 1
+    ## Termination Signal of Episode: episode is over, goal or fail state reached
+    CRITICAL_TERMINATION = 2
 
     ## some domains may have a hidden state which is saved in this variable
     hidden_state_ = None
 
-	## Initializes the \c %Domain object. See code
-	# \ref Domain_init "Here".
+    ## Initializes the \c %Domain object. See code
+    # \ref Domain_init "Here".
 
-	# [init code]
-    def __init__(self,logger):
+    # [init code]
+    def __init__(self, logger):
         self.logger = logger
-        for v in ['statespace_limits','actions_num','episodeCap']:
-            if getattr(self,v) == None:
-                raise Exception('Missed domain initialization of '+ v)
+        for v in ['statespace_limits', 'actions_num', 'episodeCap']:
+            if getattr(self, v) is None:
+                raise Exception('Missed domain initialization of ' + v)
         self.state_space_dims = len(self.statespace_limits)
-        self.gamma = self.gamma * 1.0 # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
+        self.gamma = float(self.gamma)  # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
         # The original limits will be saved in self.discrete_statespace_limits
         self.extendDiscreteDimensions()
         if self.continuous_dims == []:
-            self.states_num = int(prod(self.statespace_limits[:,1]-self.statespace_limits[:,0]))
+            self.states_num = int(prod(self.statespace_limits[:, 1]
+                                       - self.statespace_limits[:, 0]))
         else:
             self.states_num = inf
         if logger:
             self.logger.line()
-            self.logger.log("Domain:\t\t"+str(className(self)))
-            self.logger.log("Dimensions:\t"+str(self.state_space_dims))
-            self.logger.log("|S|:\t\t"+str(self.states_num))
-            self.logger.log("|A|:\t\t"+str(self.actions_num))
-            self.logger.log("|S|x|A|:\t\t"+str(self.actions_num*self.states_num))
-            self.logger.log("Episode Cap:\t"+str(self.episodeCap))
-            self.logger.log("Gamma:\t\t"+str(self.gamma))
-	# [init code]
+            self.logger.log("Domain:\t\t" + str(className(self)))
+            self.logger.log("Dimensions:\t" + str(self.state_space_dims))
+            self.logger.log("|S|:\t\t" + str(self.states_num))
+            self.logger.log("|A|:\t\t" + str(self.actions_num))
+            self.logger.log("|S|x|A|:\t\t" + str(self.actions_num * self.states_num))
+            self.logger.log("Episode Cap:\t" + str(self.episodeCap))
+            self.logger.log("Gamma:\t\t" + str(self.gamma))
 
+        # a new stream of random numbers for each domain
+        self.rand_state = np.random.RandomState()
+    # [init code]
 
-	## Shows a visualization of the current state of the domain and that of learning. See code
-	# \ref Domain_show "Here".
-	# @param s
-	# The state that the domain is in
-	# @param a
-	# The action being performed
-	# @param representation
-	# The representation to show
+    ## Shows a visualization of the current state of the domain and that of learning. See code
+    # \ref Domain_show "Here".
+    # @param s
+    # The state that the domain is in
+    # @param a
+    # The action being performed
+    # @param representation
+    # The representation to show
 
-	# [show code]
-    def show(self,s,a, representation):
-        self.showDomain(s,a)
+    # [show code]
+    def show(self, s, a, representation):
+        self.showDomain(s, a)
         self.showLearning(representation)
-	# [show code]
-
+    # [show code]
 
     ## \b ABSTRACT \b METHOD: Shows a visualization of the current state of the domain. See code
-	# \ref Domain_showDomain "Here".
-	# @param s
-	# The state that the domain is in
-	# @param a
-	# The action being performed
+    # \ref Domain_showDomain "Here".
+    # @param s
+    # The state that the domain is in
+    # @param a
+    # The action being performed
 
-	# [showDomain code]
-    def showDomain(self,s,a = 0):
+    # [showDomain code]
+    def showDomain(self, s, a=0):
         pass
-	# [showDomain code]
-
+    # [showDomain code]
 
     ## \b ABSTRACT \b METHOD: Shows a visualization of the current learning. This visualization is usually in the form
     # of a value gridded value function and policy. It is thus really only possible for 1 or 2-state domains. See code
-	# \ref Domain_showLearning "Here".
-	# @param representation
-	# The representation to show
+    # \ref Domain_showLearning "Here".
+    # @param representation
+    # The representation to show
 
-	# [showLearning code]
-    def showLearning(self,representation):
+    # [showLearning code]
+    def showLearning(self, representation):
         pass
-	# [showLearning code]
-
+    # [showLearning code]
 
     ## Returns the initial state of the %Domain
-	# @return
-	# A numpy array that defines the initial state of the %Domain. See code
-	# \ref Domain_s0 "Here".
+    # @return
+    # A numpy array that defines the initial state of the %Domain. See code
+    # \ref Domain_s0 "Here".
 
-	# [s0 code]
+    # [s0 code]
     def s0(self):
         abstract
-	# [s0 code]
+    # [s0 code]
 
 
     ## Returns all actions in the domain.
-	# The default version returns all actions [0, 1, 2...].
+    # The default version returns all actions [0, 1, 2...].
     # You may want to change this method in your domain if all actions are not available at all times. See code
-	# \ref Domain_possActions "Here".
-	# @return
-	# A numpy array that contains a list of every action in the domain.
+    # \ref Domain_possActions "Here".
+    # @return
+    # A numpy array that contains a list of every action in the domain.
 
-	# [possActions code]
+    # [possActions code]
     def possibleActions(self,s):
         return arange(self.actions_num)
-	# [possActions code]
+    # [possActions code]
 
 
     ## \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
-	# This function should return a reward that the agent acheives for the action, the next state that the domain/agent should be in,
-	# and a boolean determining whether a goal or fail state has been reached. See code
-	# \ref Domain_step "Here".
-	# @param s
-	# The state in which the action is to be performed
-	# @param a
-	# The action to perform
+    # This function should return a reward that the agent acheives for the action, the next state that the domain/agent should be in,
+    # and a boolean determining whether a goal or fail state has been reached. See code
+    # \ref Domain_step "Here".
+    # @param s
+    # The state in which the action is to be performed
+    # @param a
+    # The action to perform
     # @return [r,ns,t] => Reward (int), next state (state), isTerminal (bool)
 
-	# [step code]
+    # [step code]
     def step(self,s,a):
         abstract
-	# [step code]
+    # [step code]
 
 
-	# \b ABSTRACT \b METHOD: Each row of output corresponds to a possible result from taking action a while in state s.
+    # \b ABSTRACT \b METHOD: Each row of output corresponds to a possible result from taking action a while in state s.
     # e.g. s,a -> r[i], ns[i], t[i] with probability p[i]. See code
-	# \ref Domain_exStep "Here".
-	# @param s
-	# The given state
-	# @param a
-	# The given Action
+    # \ref Domain_exStep "Here".
+    # @param s
+    # The given state
+    # @param a
+    # The given Action
     # @return p, r, ns, t. Probability of transition (float), Reward (int), next state (state), isTerminal (bool)
 
-	# [exStep code]
+    # [exStep code]
     #def expectedStep(self,s,a):
-    #			abstract
-	# [exStep code]
+    #           abstract
+    # [exStep code]
 
 
 
     ## Determines whether the stats s is a terminal state.
-	# The default definition does not terminate. Override this function to specify otherwise. See code
-	# \ref Domain_isTerminal "Here".
-	# @param s
-	# The state to be examined
-	# @return
-	# True if the state is a terminal state, False otherwise.
+    # The default definition does not terminate. Override this function to specify otherwise. See code
+    # \ref Domain_isTerminal "Here".
+    # @param s
+    # The state to be examined
+    # @return
+    # True if the state is a terminal state, False otherwise.
 
-	# [isTerminal code]
+    # [isTerminal code]
     def isTerminal(self,s):
         return False
-	# [isTerminal code]
+    # [isTerminal code]
 
 
-	## Run the environment by performing random actions for T steps. See code
-	# \ref Domain_test "Here".
-	# @param T
-	# The desired number of steps
+    ## Run the environment by performing random actions for T steps. See code
+    # \ref Domain_test "Here".
+    # @param T
+    # The desired number of steps
 
-	# [test code]
+    # [test code]
     def test(self,T):
         terminal    = True
         steps       = 0
@@ -230,22 +230,22 @@ class Domain(object):
             self.showDomain(s,a)
             r,s,terminal = self.step(s, a)
             steps += 1
-	# [test code]
+    # [test code]
 
 
-	## Prints the class data. See code
-	# \ref Domain_test "Here".
+    ## Prints the class data. See code
+    # \ref Domain_test "Here".
 
-	# [printAll code]
+    # [printAll code]
     def printAll(self):
         printClass(self)
-	# [printAll code]
+    # [printAll code]
 
 
-	## Offsets discrete dimensions by 0.5 so that binning works properly. See code
-	# \ref Domain_extendDiscreteDimensions "Here".
+    ## Offsets discrete dimensions by 0.5 so that binning works properly. See code
+    # \ref Domain_extendDiscreteDimensions "Here".
 
-	# [extendDiscreteDimensions code]
+    # [extendDiscreteDimensions code]
     def extendDiscreteDimensions(self):
         # Store the original limits for other types of calculations
         self.discrete_statespace_limits = self.statespace_limits
@@ -255,21 +255,21 @@ class Domain(object):
                  self.statespace_limits[d,0] += -.5
                  self.statespace_limits[d,1] += +.5
 
-	# [extendDiscreteDimensions code]
+    # [extendDiscreteDimensions code]
 
 
-	## Sample a set number of next states and rewards from the domain. See code
-	# \ref sampleStep "Here".
-	# @param s
-	# The given state
-	# @param a
-	# The given action
-	# @param no_samples
-	# The number of next states and rewards to be sampled.
-	# @return
-	# [S,A] => S is an array of next states, A is an array of rewards for those states
+    ## Sample a set number of next states and rewards from the domain. See code
+    # \ref sampleStep "Here".
+    # @param s
+    # The given state
+    # @param a
+    # The given action
+    # @param no_samples
+    # The number of next states and rewards to be sampled.
+    # @return
+    # [S,A] => S is an array of next states, A is an array of rewards for those states
 
-	# [sampleStep code]
+    # [sampleStep code]
     def sampleStep(self,s,a,no_samples):
 
         next_states = []
@@ -283,15 +283,15 @@ class Domain(object):
             rewards.append(r)
 
         return array(next_states),array(rewards)
-	# [sampleStep code]
+    # [sampleStep code]
 
 
-	## Returns a state sampled uniformely from the state space. See code
-	# \ref Domain_s0uniform "Here".
-	# @return
-	# The state
+    ## Returns a state sampled uniformely from the state space. See code
+    # \ref Domain_s0uniform "Here".
+    # @return
+    # The state
 
-	# [s0uniform code]
+    # [s0uniform code]
     def s0uniform(self):
         if className(self) == 'BlocksWorld':
             print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)
@@ -307,19 +307,19 @@ class Domain(object):
                 s[d] = int(s[d])
         if len(s) == 1: s = s[0]
         return s
-	# [s0uniform code]
+    # [s0uniform code]
 
 
-	## Caps each element of the state space to lie within the allowed state limits.
-	#This function is used for cases when state vector has elements outside of its limits. See code
-	# \ref Domain_saturateState "Here".
-	# @param s
-	# A given state
-	# @return
-	# If s lies within statespace limits, return s unchanged; otherwise return the statespace_limit closest to s
-	# e.g. discrete_statespace_limits = [0, 10] and s = [12], return [10].
+    ## Caps each element of the state space to lie within the allowed state limits.
+    #This function is used for cases when state vector has elements outside of its limits. See code
+    # \ref Domain_saturateState "Here".
+    # @param s
+    # A given state
+    # @return
+    # If s lies within statespace limits, return s unchanged; otherwise return the statespace_limit closest to s
+    # e.g. discrete_statespace_limits = [0, 10] and s = [12], return [10].
 
-	# [saturateState code]
+    # [saturateState code]
     def saturateState(self,s):
         return bound_vec(s,self.discrete_statespace_limits)
-	# [saturateState code]
+    # [saturateState code]

@@ -130,7 +130,7 @@ class Experiment(object):
         eps_return          = 0
         eps_discount_return = 0 
         eps_term            = 0
-        random_state = random.get_state()
+        random_state = np.random.get_state()
 
         self.agent.policy.turnOffExploration()
         
