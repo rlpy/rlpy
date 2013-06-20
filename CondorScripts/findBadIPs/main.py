@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # See http://threebean.wordpress.com/2011/06/06/installing-from-pip-inside-python-or-a-simple-pip-api/
 
 # This script identifies if the current machine it is running on is

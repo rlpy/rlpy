@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Developed by D. Elliott Williams on May 3rd, 2013 at MIT
 

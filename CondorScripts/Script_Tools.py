@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import os, sys, time, re, string, pprint, re, glob, socket
 import subprocess
 

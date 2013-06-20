@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # !!!!!!!!!!!!!!!!!! NOTE !!!!!!!!!!!!!!!!!!!!!
 # Currently slots are not being removed from machine names, since on a given
