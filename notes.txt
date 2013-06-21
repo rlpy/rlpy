@@ -4,6 +4,7 @@ Tasks:
 - Eliminate BatchExperiment and fuse the onlineExperiment with experiment
 - Make representation usable with policy and other stuff. Take the value function dependency out
 
+- Eligibility Traces has to be set to zero when we finish an episode due to the episode cap
 - Put a note that timing is CPU time for unix based but clock time for windows!
 - Continuous Actions for domains
 - Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.

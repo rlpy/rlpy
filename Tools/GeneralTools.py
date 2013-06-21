@@ -228,14 +228,14 @@ def count_nonzero(arr):
 def randint(low,high,m=1,n=1):
     # Use random.rand_int instead unless you want to debug and would like to generate same random numbers as matlab
     # Generates a random integer matrix m-by-n where elements are in [low,high]
-    res = zeros((m,n),'int64')
-    d = high - low
-    for i in arange(m):
-        for j in range(n):
-            coin = random.rand()
-            res[i,j] = round(coin*d)+low
-    return res
-    #return random.randint(low,high+1,size=(m,n))
+#    res = zeros((m,n),'int64')
+#    d = high - low
+#    for i in arange(m):
+#        for j in range(n):
+#            coin = random.rand()
+#            res[i,j] = round(coin*d)+low
+#    return res
+    return random.randint(low,high+1,size=(m,n))
 def randSet(x):
     #Returns a random element of a list uniformly.
     #i = random.random_integers(0,size(x)-1)

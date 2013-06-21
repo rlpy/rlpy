@@ -69,7 +69,7 @@ class OnlineExperiment (Experiment):
         self.start_time     = clock() # Used to show the total time took the process
         if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps < self.max_steps:
-            if terminal:
+            if terminal or eps_steps >= self.domain.episodeCap:
                 s           = self.domain.s0()
                 a           = self.agent.policy.pi(s)
                 #Visual
@@ -87,7 +87,6 @@ class OnlineExperiment (Experiment):
             total_steps     += 1
             eps_steps       += 1
             eps_return      += r
-            terminal        = terminal or eps_steps >= self.domain.episodeCap
 
             #Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.LOG_INTERVAL:
