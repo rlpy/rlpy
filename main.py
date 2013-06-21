@@ -94,7 +94,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # Representation ----------------------
     DISCRITIZATION              = 20 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
     RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
-    iFDDOnlineThreshold         =	0.05 # Edited by makexp.py script
+    iFDDOnlineThreshold         =	150# Edited by makexp.py script
     BatchDiscoveryThreshold     =	0.05 # Edited by makexp.py script
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
@@ -138,11 +138,11 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #domain          = Acrobot(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = ROS_RCCar(logger=logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = Acrobot(logger = logger)
-    #domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
+    domain          = PST(NUM_UAV = 3, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)

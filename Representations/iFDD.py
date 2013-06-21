@@ -103,7 +103,7 @@ class iFDD(Representation):
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, it is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
-    use_chirstoph_ordered_features = False # As Christoph mentioned adding new features may affect the phi for all states. This idea was to make sure both conditions for generating active features generate the same result. The current code yields worse results in the blocksworld using SARSA
+    use_chirstoph_ordered_features = True # As Christoph mentioned adding new features may affect the phi for all states. This idea was to make sure both conditions for generating active features generate the same result. 
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.iFDD_features          = {}
         self.iFDD_potentials        = {}
