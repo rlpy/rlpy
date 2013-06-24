@@ -21,7 +21,7 @@ import numpy as np
 ## The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
 #
 # The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations
-# about its surroundings. Based on that information, the Agent informs the %Domain what action it wants to perform.
+# about its surroundings. Based on that information, the Agent informs the %Domain what indexed action it wants to perform.
 # The %Domain then calculates the effects this action has on the environment and returns the new state, a reward/penalty, and whether or not the episode is over or not (thus resetting the agent to its initial state).
 # This process repeats until the %Domain determines that the Agent has either completed its goal or
 # failed. The \ref Experiments.Experiment.Experiment "Experiment" controls this cycle.
