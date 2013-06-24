@@ -101,7 +101,7 @@ class Representation(object):
     # [V code]
 
 
-    ## Returns an array of actions available at a state and their associated values.
+    ## Returns an array of actions (assumed to be discrete) available at a state and their associated values.
     # If phi_s is given, the function uses it to speed up the process. See code
     # \ref Representation_Qs "Here".
     # @param s The state to examine.
@@ -265,7 +265,7 @@ class Representation(object):
     # [printAll code]
 
 
-    ## Returns a list of the best actions at a given state.
+    ## Returns a list of the best actions (assumed to be discrete) at a given state.
     # If phi_s [the feature vector at state (s)]is given, it is used to speed up code by preventing re-computation. See code
     # \ref Representation_bestActions "Here".
     # @param s The given state
