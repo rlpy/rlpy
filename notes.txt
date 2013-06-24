@@ -4,6 +4,12 @@ Tasks:
 - Eliminate BatchExperiment and fuse the onlineExperiment with experiment
 - Make representation usable with policy and other stuff. Take the value function dependency out
 
+- Update doc to describe exactly what script is doing (some people correctly
+don't like giving root access to a random script)
+- Update doc to allow users to run these commands themselves if desired.
+- Update doc to specifically describe ``contract'' between each funcional component.
+    e.g. not allowed to modify state 's', what is datatype of 's', and 'a', etc.
+
 - Eligibility Traces has to be set to zero when we finish an episode due to the episode cap
 - Put a note that timing is CPU time for unix based but clock time for windows!
 - Continuous Actions for domains
@@ -17,10 +23,34 @@ Tasks:
 (Elliot) - Fix the issue with legend not being shown during the run
 - TBPI has problem with graphics due to deepcopy use.
 - Make Config.py (perhaps use global variable)
+
+
 Misc:
-- Formatting change of license? Long lines with gaps between.
 - Change "Bob Klein" to "Robert H Klein"
-- 
+
+- Formatting change of license? Long lines with gaps between. <--- why don't we follow format of
+RL-Glue:
+# 
+# Copyright (C) 2009, Brian Tanner
+# 
+#http://rl-glue-ext.googlecode.com/
+#
+# Licensed under the Apache License, Version 2.0 (the "License")
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#  $Revision: 999 $
+#  $Date: 2009-02-09 09:39:12 -0700 (Mon, 09 Feb 2009) $
+#  $Author: brian@tannerpages.com $
+#  $HeadURL: http://rl-library.googlecode.com/svn/trunk/projects/packages/examples/mines-sarsa-python/sample_mines_environment.py $
 
 BEFORE PUBLIC RELEASE:
 - Determine hosting / version control
@@ -28,16 +58,5 @@ BEFORE PUBLIC RELEASE:
 
 PacMan
 ================
-Bobby:
-I just looked it over quickly, but it obviously still has to perform all the same functions are our domains-
-generateSuccessor() --> step
-getLegalActions()
-etc.
-
-I think it would be really cool to add, and would definitely be a domain to advertise on the website to garner interest.  Pacman > GridWorld.
-This would have to go on the backburner for me, next to the almost-forgotten RL-Glue helicopter domain and logo creation.
-
-I'd be happy to implement it, but if you'd like it any sooner than a couple weeks from now, it might not be a bad idea to mention this to Elliot.
-
 Alborz:
 https://www.edx.org/static/content-berkeley-cs188x~2013_Spring/projects/reinforcement/reinforcement.zip
