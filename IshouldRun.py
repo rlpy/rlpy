@@ -69,7 +69,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     MAZE                = '/Domains/GridWorldMaps/4x5.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the GridWorld
     # Representation ----------------------
-    DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
+    DISCRITIZATION              = 20    # Number of bins used to discretize each continuous dimension. Used for some representations 
     # Policy ----------------------
     EPSILON                 = .2 # EGreedy Often is .1 CHANGE ME <<<
     #Agent ----------------------

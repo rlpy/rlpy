@@ -92,7 +92,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NOISE               = .3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 6     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
-    DISCRITIZATION              = 20 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
+    DISCRITIZATION              = 20 # CHANGE ME TO 20 # Number of bins used to discretize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
     RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
     iFDDOnlineThreshold         =	0.05 # Edited by makexp.py script
     BatchDiscoveryThreshold     =	0.05 # Edited by makexp.py script

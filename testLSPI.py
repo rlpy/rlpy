@@ -77,7 +77,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 4     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
-    DISCRITIZATION              = 20    # Number of bins used to discritize each continuous dimension. Used for some representations 
+    DISCRITIZATION              = 20    # Number of bins used to discretize each continuous dimension. Used for some representations 
     RBFS                        = {'GridWorld':10, 'CartPole':20, 'BlocksWorld':100,
                                 'SystemAdministrator':500, 'PST':1000, 'Pendulum_InvertedBalance': 9 } # Values used in tutorial
     iFDDOnlineThreshold         = inf #{'Pendulum':.001, 'BlocksWorld':.05, 'SystemAdministrator':10} 

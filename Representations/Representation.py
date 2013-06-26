@@ -531,7 +531,7 @@ class Representation(object):
             cacheHit     = self.expectedStepCached.get(key)
             if cacheHit is None:
 #               # Not found in cache => Calculate and store in cache
-                # If continuous domain, sample <continuous_state_starting_samples> points within each discritized grid and sample <ns_samples>/<continuous_state_starting_samples> for each starting state.
+                # If continuous domain, sample <continuous_state_starting_samples> points within each discretized grid and sample <ns_samples>/<continuous_state_starting_samples> for each starting state.
                 # Otherwise take <ns_samples> for the state.
 
                 #First put s in the middle of the grid:

@@ -172,7 +172,7 @@ class Domain(object):
     # @param s
     # The state in which the action is to be performed
     # @param a
-    # The action to perform
+    # The action to perform. Note that each action outside of the domain corresponds to the index of the action. This index will be interpreted within the domain.  
     # @return [r,ns,t] => Reward (int), next state (state), isTerminal (bool)
 
     # [step code]
