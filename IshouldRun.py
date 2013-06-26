@@ -94,8 +94,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     
-    experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
-    
+    experiment      = Experiment(agent, domain, logger, exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS, show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE,log_interval = LOG_INTERVAL, project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
+
 #    for x in range(10):
 #        print('%0.10f'%random.rand()) 
     
