@@ -1,2 +1,0 @@
-/data/scratch/rhklein/RL-Python/CondorScripts/Script_Tools.py:3: DeprecationWarning: the sets module is deprecated
-  from sets import Set
