@@ -1,5 +1,6 @@
 from Domain import Domain
 #from HelicopterHover import HelicopterHover, HelicopterHoverExtended
+from PuddleWorld import PuddleWorld
 from GridWorld import GridWorld
 from BlocksWorld import BlocksWorld
 from MountainCar import MountainCar
