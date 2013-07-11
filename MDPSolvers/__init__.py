@@ -2,3 +2,4 @@ from ValueIteration import ValueIteration
 from PolicyIteration import PolicyIteration
 from TrajectoryBasedValueIteration import TrajectoryBasedValueIteration
 from TrajectoryBasedPolicyIteration import TrajectoryBasedPolicyIteration
+from KWIK_TBVI import KWIK_TBVI
