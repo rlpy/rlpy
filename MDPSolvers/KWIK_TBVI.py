@@ -22,7 +22,7 @@
 # The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
 # Based on the KWIK Learning paper of Tom Walsh UAI 2009
 
-from MDPSolver import *
+from TrajectoryBasedValueIteration import *
 class KWIK_TBVI(TrajectoryBasedValueIteration):
     DEBUG           = True
     KWIK_Q          = None

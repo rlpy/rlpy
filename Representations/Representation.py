@@ -609,7 +609,7 @@ class Representation(object):
     # [V_oneStepLookAhead code]
 
     ## Returns the state vector correponding to a state_id
-    # If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins)
+    # If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discretized using a parameter into a set of bins)
     # @param s_id The id of the state, often calculated using the state2bin function
 
     # [stateID2state code]

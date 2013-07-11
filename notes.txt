@@ -1,34 +1,27 @@
 Tasks:
 - Bring PacMan world into domains See info below
-- Make the assumption that actions are discrete very visible (both code and website)
-- Eliminate BatchExperiment and fuse the onlineExperiment with experiment
 - Make representation usable with policy and other stuff. Take the value function dependency out
 
-- Update doc to describe exactly what script is doing (some people correctly
-don't like giving root access to a random script)
+- Bring Pinball: https://github.com/pierrelux/pypinball
 - Update doc to allow users to run these commands themselves if desired.
 - Update doc to specifically describe ``contract'' between each funcional component.
     e.g. not allowed to modify state 's', what is datatype of 's', and 'a', etc.
 
+- Merger should have data structure to store both type of the experiment and data. 
+(Bobby) - Formatting change of license? Long lines with gaps between. <--- why don't we follow format of
+- TBPI has problem with graphics due to deepcopy use.
+- Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
 - Eligibility Traces has to be set to zero when we finish an episode due to the episode cap
 - Put a note that timing is CPU time for unix based but clock time for windows!
 - Continuous Actions for domains
-- Blending parameters between planning and learning. Make both of them uniform. Currently the output directory of the planner is hardcoded.
 - Everything in dot format rather than * or outer. All items has to be ndarray rather than array.
-- Config File For Experiments
 - Improve iFDD Speed
 - Optimization
 - Feature Names
 - bestAction in matrix form (how about breaking ties randomly)
 (Elliot) - Fix the issue with legend not being shown during the run
-- TBPI has problem with graphics due to deepcopy use.
-- Make Config.py (perhaps use global variable)
 
 
-Misc:
-- Change "Bob Klein" to "Robert H Klein"
-
-- Formatting change of license? Long lines with gaps between. <--- why don't we follow format of
 RL-Glue:
 # 
 # Copyright (C) 2009, Brian Tanner

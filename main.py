@@ -133,12 +133,12 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = HelicopterHover(logger=logger)
     #domain          = Acrobot(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
-    domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
+    #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = ROS_RCCar(logger=logger)
     #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
     #domain          = Acrobot(logger = logger)
@@ -159,8 +159,8 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
     #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    representation  = IncrementalTabular(domain,logger)
+    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
@@ -192,7 +192,7 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #                           forgetting_rate=.8, min_steps_between_updates=500,
     #                           max_steps_between_updates=5000,
     #                           lam=LAMBDA, alpha=0.1)
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    #agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     #agent           = Greedy_GQ(representation, policy, domain,logger, initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0, BetaCoef)
     #agent           = LSPI(representation,policy,domain,logger,LEARNING_STEPS, LEARNING_STEPS/PERFORMANCE_CHECKS, LSPI_iterations, epsilon = LSPI_WEIGHT_DIFF_TOL, return_best_policy = LSPI_return_best_policy,re_iterations = RE_LSPI_iterations, use_sparse = LSPI_use_sparse)
@@ -202,14 +202,15 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     #================
     #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME)
     #MDPsolver = PolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME, max_PE_iterations = MAX_PE_ITERATIONS)
-    #MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME)
+    MDPsolver = TrajectoryBasedValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME)
     #MDPsolver = TrajectoryBasedPolicyIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = SHOW_PERFORMANCE, convergence_threshold = CONVERGENCE_THRESHOLD, epsilon = EPSILON, planning_time = PLANNING_TIME, max_PE_iterations = MAX_PE_ITERATIONS)
 
     # If agent is defined run the agent. Otherwise run the MDP Solver:
     if 'agent' in locals().keys():
         if 'MDPsolver' in locals().keys():
             print "You set both agent and MDPsolver. Please remove one as initializing both of them can mess with the logger."
-        experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
+        #experiment      = OnlineExperiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
+        experiment      = Experiment(agent,domain,logger,exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS,show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE, log_interval = LOG_INTERVAL,project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
         #print randint(1,10,10,1)
         experiment.run()
         experiment.save()

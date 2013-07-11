@@ -179,7 +179,8 @@ class TileCoding(Representation):
             self.logger.log("Tile memory too small")
             return h1
 
-
+    def featureType(self):
+        return bool
 
 
 if __name__ == "__main__":
