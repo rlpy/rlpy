@@ -1,15 +1,6 @@
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Copyright (c) 2013
+# Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
+# Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
 
 ## \file Domain.py
 ######################################################
@@ -18,30 +9,32 @@
 
 from Tools import *
 import numpy as np
-## The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
-#
-# The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations
-# about its surroundings. Based on that information, the Agent informs the %Domain what indexed action it wants to perform.
-# The %Domain then calculates the effects this action has on the environment and returns the new state, a reward/penalty, and whether or not the episode is over or not (thus resetting the agent to its initial state).
-# This process repeats until the %Domain determines that the Agent has either completed its goal or
-# failed. The \ref Experiments.Experiment.Experiment "Experiment" controls this cycle.
-#
-# Because Agents are designed to be agnostic to the %Domain that they are acting within and the problem they are trying to solve,
-# the %Domain needs to completely describe everything related to the task. Therefore, the %Domain must not only define the observations
-# that the Agent receives, but also the states it can be in, the actions that it can perform, and the relationships between the three.
-# Note that because RL-Agents are designed around obtaining a reward, observations that the %Domain returns should include a reward.
-#
-# The \c %Domain class is a superclass that provides the basic framework for all Domains. It provides the methods and attributes
-# that allow child classes to interact with the \c %Agent and \c Experiment classes within the RLPy library.
-# %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
-# All new domain implementations should inherit from \c %Domain.
-#
-# \note Though the state s can take on almost any
-# value, if a dimension is not marked as 'continuous'
-# then it is assumed to be integer.
-
 
 class Domain(object):
+    """
+    The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
+    
+    The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations
+    about its surroundings. Based on that information, the Agent informs the %Domain what indexed action it wants to perform.
+    # The %Domain then calculates the effects this action has on the environment and returns the new state, a reward/penalty, and whether or not the episode is over or not (thus resetting the agent to its initial state).
+    # This process repeats until the %Domain determines that the Agent has either completed its goal or
+    # failed. The \ref Experiments.Experiment.Experiment "Experiment" controls this cycle.
+    #
+    # Because Agents are designed to be agnostic to the %Domain that they are acting within and the problem they are trying to solve,
+    # the %Domain needs to completely describe everything related to the task. Therefore, the %Domain must not only define the observations
+    # that the Agent receives, but also the states it can be in, the actions that it can perform, and the relationships between the three.
+    # Note that because RL-Agents are designed around obtaining a reward, observations that the %Domain returns should include a reward.
+    #
+    # The \c %Domain class is a superclass that provides the basic framework for all Domains. It provides the methods and attributes
+    # that allow child classes to interact with the \c %Agent and \c Experiment classes within the RLPy library.
+    # %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
+    # All new domain implementations should inherit from \c %Domain.
+    #
+    # \note Though the state s can take on almost any
+    # value, if a dimension is not marked as 'continuous'
+    # then it is assumed to be integer.
+    
+    """
     ## The discount factor by which rewards are reduced
     gamma = .9
     ## The number of possible states in the domain
