@@ -198,7 +198,8 @@ class SystemAdministrator(Domain):
  # Optional                     else ns[computer_id] = self.BROKEN
         if (self.IS_RING and s[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
 #        print s,ns,sum(s)+totalRebootReward
-        return sum(s)+totalRebootReward,ns,self.NOT_TERMINATED
+        terminal = False
+        return sum(s)+totalRebootReward,ns,terminal
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
     def s0(self):
         return array([self.RUNNING for dummy in arange(0,self.state_space_dims)]) # Omits final index

@@ -271,10 +271,10 @@ class AircraftStorm(Domain):
         return possibleA
     def isTerminal(self,s):
         if self.map[s[1],s[2]] == self.GOAL:
-                return self.NOMINAL_TERMINATION
+                return True
         if self.map[s[1],s[2]] == self.PIT:
-                return self.CRITICAL_TERMINATION
-        return self.NOT_TERMINATED
+                return True
+        return False
     def expectedStep(self,s,a):
         #Returns k possible outcomes
         #  p: k-by-1    probability of each transition

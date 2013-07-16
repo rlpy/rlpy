@@ -220,10 +220,10 @@ class GridWorld(Domain):
         return possibleA
     def isTerminal(self,s):
         if self.map[s[0],s[1]] == self.GOAL:
-                return self.NOMINAL_TERMINATION
+                return True
         if self.map[s[0],s[1]] == self.PIT:
-                return self.CRITICAL_TERMINATION
-        return self.NOT_TERMINATED
+                return True
+        return False
     def expectedStep(self,s,a):
         #Returns k possible outcomes
         #  p: k-by-1    probability of each transition
