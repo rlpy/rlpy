@@ -17,8 +17,6 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
-tmp_directory = r"/home/bob/mpl_tmp"
-
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -34,25 +32,23 @@ import sys
 import numpy
 #print "Numpy version:", numpy.__version__
 #print "Python version:", sys.version_info
-try:
-    from Config import *
-except ImportError:
-    print 'Could not locate Config.py - please re-run installer.'
-    print 'Continuing assuming a readable/writeable directory for tmp files'
-    print 'located at ', tmp_directory
-    print 'If this is not the case, and you cannot use the installer scripts,'
-    print 'please edit the variable tmp_directory in GeneralTools.py accordingly'
-    print 'with the absolute path to any readable/writeable directory.'
-    HOME_DIR = tmp_directory
-    CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
+
+# Decomment these two lines if experience matplotlib errors;
+# set tmp_directory to any location where you have write priveleges.
+# matplotlib needs a location to dump its tmp files.
+
+# tmp_directory = r"/home/bob/mpl_tmp"
+# HOME_DIR = tmp_directory # 
+
+#For condor use
+# os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+# os.environ['MPLCONFIGDIR'] = os.environ['HOME']
+
+CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
 import itertools
 import platform
 import pdb
 import os
-
-#For condor use
-os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
