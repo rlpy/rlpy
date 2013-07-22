@@ -319,12 +319,12 @@ class Experiment(object):
             if len([x for x in ['self.domain', 'self.agent', 'self.agent.policy', 'self.agent.representation'] if x == lower(v)]):
                 exp_name += eval('className(%s)' % v)
                 exp_name += '-'
-            else:
+            else: # We want to use the actual value instead, not the className()
                 try:
                     eval('%s' % v)
                     exp_name += str(eval('%s' % v))
                     exp_name += '-'
                 except:
-                    pass
+                    print 'Couldnt parse the command in exp_naming %s' % exp_name
         return exp_name[:-1]
         # [makeExperimentName code]
