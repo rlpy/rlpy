@@ -19,24 +19,118 @@
 # This object encodes fixed policies for some of the domains.
 # 1. InvertedPendulum
 from Policy import *
+
+#from GridWorldPolicies import *
+
 class FixedPolicy(Policy):
-    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring','SystemAdministrator','MountainCar','PST']
+    
+    policyName  = '' # The name of the desired policy, where applicable. Otherwise ignored.
+    tableOfValues = None
+    
+    gridWorldPolicyNames = ['cw_circle', 'ccw_circle']
+    aircraftStormPolicyNames = ['L_TO_R','random_policy']
+    
+    def __init__(self, representation, logger, policyName = 'MISSINGNO', tableOfValues=None):
+        self.policyName = policyName
+        self.tableOfValues = tableOfValues
+        super(FixedPolicy, self).__init__(representation,logger)
+    
+    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring',\
+                        'SystemAdministrator','MountainCar','PST','GridWorld',\
+                        'AircraftStorm']
     def pi(self,s):
-        if not className(self.representation.domain) in self.supportedDomains:
-            print "ERROR: There is no fixed policy defined for %s" % className(self.representation.domain)
+        if self.tableOfValues:
+            return self.tableOfValues[(s)]
+        return self.pi2(s)
+    
+    def pi2(self,s):
+        domain = self.representation.domain
+        if not className(domain) in self.supportedDomains:
+            print "ERROR: There is no fixed policy defined for %s" % className(domain)
             return None
-        if className(self.representation.domain) == 'Pendulum_InvertedBalance':
+
+        if className(domain) == 'AircraftStorm':
+            if not self.policyName in self.aircraftStormPolicyNames:
+                print "Error: There is no AircraftStorm policy with name %s" % self.policyName
+                return None
+            
+            if self.policyName == 'L_TO_R':
+                return 3        # Right action, always
+        
+            if self.policyName == 'random_policy':
+                return randSet(domain.possibleActions(s))
+            
+            
+            
+                
+        if className(domain) == 'GridWorld':
+            # Actions are Up, Down, Left, Right
+            if not self.policyName in self.gridWorldPolicyNames:
+                print "Error: There is no GridWorld policy with name %s" % self.policyName
+                return None
+            
+            if self.policyName == 'cw_circle':
+                # Cycle through actions, starting with 0, causing agent to go in loop
+                if not hasattr(self, "curAction"):
+                    self.curAction = 0  # it doesn't exist yet, so initialize it [immediately incremented]
+                while (not(self.curAction in domain.possibleActions(s))):
+                    # We can't do something simple because of the order in which actions are defined
+                    # must do switch statement
+                    if self.curAction == 0: #up
+                        self.curAction = 3
+                    elif self.curAction == 3: #right
+                        self.curAction = 1
+                    elif self.curAction == 1: #down
+                        self.curAction = 2
+                    elif self.curAction == 2: # left
+                        self.curAction = 0
+                    else: print 'Something terrible happened...got an invalid action on GridWorld Fixed Policy'
+    #                 self.curAction = self.curAction % domain.actions_num
+            elif self.policyName == 'ccw_circle':
+                # Cycle through actions, starting with 0, causing agent to go in loop
+                if not hasattr(self, "curAction"):
+                    self.curAction = 1  # it doesn't exist yet, so initialize it
+                while (not(self.curAction in domain.possibleActions(s))):
+                    # We can't do something simple because of the order in which actions are defined
+                    # must do switch statement
+                    if self.curAction == 3: #right
+                        self.curAction = 0
+                    elif self.curAction == 0: #up
+                        self.curAction = 2
+                    elif self.curAction == 2: #left
+                        self.curAction = 1
+                    elif self.curAction == 1: # down
+                        self.curAction = 3
+                    else: print 'Something terrible happened...got an invalid action on GridWorld Fixed Policy'
+    #                 self.curAction = self.curAction % domain.actions_num
+            
+            else:
+                print "Error: No policy defined with name %s, but listed in gridWorldPolicyNames" % self.policyName
+                print "You need to create a switch statement for the policy name above, or remove it from gridWorldPolicyNames"
+                return None
+            return self.curAction
+            
+#             # Cycle through actions, starting with 0, causing agent to go in other direction
+#             if not hasattr(pi, "curAction"):
+#                 pi.curAction = domain.actions_num-1  # it doesn't exist yet, so initialize it
+#             if not(pi.curAction in domain.possibleActions(s)):
+#                 pi.curAction -= 1
+#                 if pi.curAction < 0: pi.curAction = domain.actions_num-1
+                    
+            
+            
+            
+        if className(domain) == 'Pendulum_InvertedBalance':
             # Fixed policy rotate the pendulum in the opposite direction of the thetadot
             theta, thetadot = s
             if thetadot > 0:
                 return 2
             else:
                 return 0
-        if className(self.representation.domain) == 'BlocksWorld':
+        if className(domain) == 'BlocksWorld':
             # Fixed policy rotate the blocksworld = Optimal Policy (Always pick the next piece of the tower and move it to the tower
             # Policy: Identify the top of the tower.
             # move the next piece on the tower with 95% chance 5% take a random action
-            domain = self.representation.domain
             
             #Random Action with some probability
             if random.rand() < .3 or domain.isTerminal(s):
@@ -85,12 +179,11 @@ class FixedPolicy(Policy):
                         return domain.getActionPutAonTable(block)
                     else:
                         return domain.getActionPutAonB(block,block-1)
-        if className(self.representation.domain) == 'IntruderMonitoring':
+        if className(domain) == 'IntruderMonitoring':
             # Each UAV assign themselves to a target
             # Each UAV finds the closest danger zone to its target and go towards there. 
             # If UAVs_num > Target, the rest will hold position
             #Move all agents based on the taken action
-            domain  = self.representation.domain
             agents  = array(s[:domain.NUMBER_OF_AGENTS*2].reshape(-1,2))
             targets = array(s[domain.NUMBER_OF_AGENTS*2:].reshape(-1,2))
             zones   = domain.danger_zone_locations
@@ -119,14 +212,14 @@ class FixedPolicy(Policy):
 #                print "Action", a
 #                print '============'
             return vec2id(actions,ones(len(agents),dtype=integer)*5)
-        if className(self.representation.domain) == 'SystemAdministrator':
+        if className(domain) == 'SystemAdministrator':
             # Select a broken computer and reset it
             brokenComputers = where(s==0)[0]
             if len(brokenComputers):
                 return randSet(brokenComputers)
             else:
-                return self.representation.domain.computers_num
-        if className(self.representation.domain) == 'MountainCar':
+                return domain.computers_num
+        if className(domain) == 'MountainCar':
             # Accelerate in the direction of the valley
             # WORK IN PROGRESS
             x,xdot = s
@@ -134,9 +227,8 @@ class FixedPolicy(Policy):
                 return 2
             else:
                 return 0
-        if className(self.representation.domain) == 'PST':
+        if className(domain) == 'PST':
             # One stays at comm, n-1 stay at target area. Whenever fuel is lower than reaching the base the move back
-            domain = self.representation.domain
             print s
             s       = domain.state2Struct(s)
             uavs    = domain.NUM_UAV
