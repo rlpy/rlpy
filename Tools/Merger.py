@@ -1,18 +1,28 @@
 from GeneralTools import *
 
 class Merger(object):
-    CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return'] #8
-    PE_AXES         = ['Iterations','Features','Error','Time(s)'] #4
-    MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time'] #9
-    #DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE (Observed)', 'MSE (Truth)','Time(s)', 'Number of Clusters','Objective', 'TEMP'] #8
-    DYNMEANS_AXES   = []
+    CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes'] #,'Discounted Return']
+    PE_AXES         = ['Iterations','Features','Error','Time(s)']
+    MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time']
+#     DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE (Observed)', 'MSE','Time(s)', 'Number of Clusters','Objective']
+    DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE', 'Time(s)', 'Number of Clusters','Objective','Cluster Accuracy', 'Batch Number']
+
     
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
-    def __init__(self,paths, labels = None, output_path = None, colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'], styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'], markersize = 5, bars=1, legend = False, maxSamples = inf, minSamples = 1, getMAX = 0,showSplash=True):
+    def __init__(self,paths, labels = None, output_path = None,
+                 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'],
+                 styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'],
+                 markersize = 5, xbars=1, ybars=1, legend = False, maxSamples = inf, minSamples = 1,
+                 getMAX = 0,showSplash=True, numLabelSuffixes=2, token_split_char='-'):
+        
+        self.plot_batch_lines       = False # Whether or not to plot vertical lines separating data batches
+        
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []
-        self.bars                   = bars  #Draw bars?
+        self.ybars                  = ybars  #Draw error bars?
+        self.xbars                  = xbars
+        self.xbar_interval          = 1     # Only plot x error bars in this interval (eg every 5 datapoints)
         self.colors                 = colors
         self.styles                 = styles
         self.markersize             = markersize
@@ -25,6 +35,15 @@ class Merger(object):
         self.output_path            = output_path
         self.labels                 = labels
         self.showSplash             = showSplash  # No figures just txt output
+        self.num_label_suffixes     = numLabelSuffixes # Number of string tokens to include between token_split_char characters (eg '_') when producing legend
+        self.token_split_char       = token_split_char # Character to use when splitting string token names
+        
+        self.has_batch_num          = []     # If we have batch number associated with an experiment
+                                            # which must later be matched together for valid comparison
+        self.numBatches             = []     # Number of batches of data (computed later as required)
+        
+        self.legend_handles         = []    # Selectively add plotted items to legend
+        
         #Extract experiment paths by finding all subdirectories in all given paths that contain experiment.
         self.extractExperimentPaths(paths)
         #Setup the output path if it has not been defined:
@@ -32,27 +51,30 @@ class Merger(object):
             self.output_path = '.' if len(paths) > 1 else paths[0]
 
         #Setup Labels if not defined
-        if labels == None or labels == []: self.labels = [self.extractLabel(p) for p in self.exp_paths]
+        if labels == None or labels == []: self.labels = [self.extractLabel(p, self.token_split_char) for p in self.exp_paths]
         #print "Experiment Labels: ", self.labels
 
         self.exp_num                = len(self.exp_paths)
-        self.means                  = []
+        self.means                  = [] # Matrix with rows = metrics, cols = datapoints
         self.std_errs               = []
         self.time_95_mean           = []
         self.time_95_std_errs       = []
         if not isOnCluster() and self.showSplash:
             self.fig                    = pl.figure(1)
-        self.datapoints_per_graph   = None # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
+        self.datapoints_per_graph   = [] # Number of datapoints to be shown for each graph (often this value is 10 corresponding to 10 performance checks)
+        
+        
         if len(self.exp_paths) == 0:
             print "No directory found with at least %d result files at %s." % (self.minSamples, paths)
             return
-        for exp in self.exp_paths:
-            means, std_errs, samples, time_95_mean, time_95_std_errs = self.parseExperiment(exp)
+        for expInd, exp in enumerate(self.exp_paths):
+            means, std_errs, samples, time_95_mean, time_95_std_errs,dataPoints = self.parseExperiment(exp)
             self.means.append(means)
             self.std_errs.append(std_errs)
             self.samples.append(samples)
             self.time_95_mean.append(time_95_mean)
             self.time_95_std_errs.append(time_95_std_errs)
+            self.datapoints_per_graph.append(dataPoints)
     def extractExperimentPaths(self,paths):
         self.exp_paths = []
         for path in paths:
@@ -62,13 +84,20 @@ class Merger(object):
                    self.exp_paths.append(dirname)
         if self.labels == None:
             self.exp_paths  = sorted(self.exp_paths)
-    def extractLabel(self,p):
+    def extractLabel(self,p, token_split_char):
         # Given an experiment directoryname it extracts a reasonable label
-        tokens = p.split('_')
-        if len(tokens) > 1:
-            return tokens[-2]+'-'+tokens[-1]
-        else:
-            return tokens[-1]
+        tokens = p.split(token_split_char)
+        firstTokenInd = len(tokens) - self.num_label_suffixes
+        if firstTokenInd < 0: print 'ERROR: attempted to print more experiment labels than exist.'
+        expName = ''
+        for ind in range(firstTokenInd, len(tokens)-1):
+            expName += tokens[ind] + '-'
+        expName += tokens[-1]
+        return expName
+#         if len(tokens) > 1:
+#             return tokens[-self.num_label_suffixes]+'-'+tokens[-1]
+#         else:
+#             return tokens[-1]
     def parseExperiment(self,path):
         # Parses all the files in form of <number>-results.txt and return
         # two matrices corresponding to mean and std_err
@@ -87,43 +116,62 @@ class Merger(object):
         else:
             print "%d Samples <= %s" % (samples_num, fringeDirName)
             
-        #read the first file to initialize the matricies
+        # Loop over all files to find max number of columns = x-axis datapoints (performance checks)
+        maxCols = 0
+        for file in files:
+            tmpMatr = readMatrixFromFile(file)
+            maxCols = max(maxCols, tmpMatr.shape[1])
+            
+        # Determine number of rows, used to determine experiment type
         matrix      = readMatrixFromFile(files[0])
-        rows, cols  = matrix.shape
+        num_metrics, _  = matrix.shape
         
-        if rows == len(self.DYNMEANS_AXES):
+        if num_metrics == len(self.DYNMEANS_AXES):
             self.ResultType = 'Dynamic Means'
             self.AXES = self.DYNMEANS_AXES
-        elif rows == len(self.PE_AXES):
+        elif num_metrics == len(self.PE_AXES):
             self.ResultType = 'Policy Evaluation'
             self.AXES = self.PE_AXES
-        elif rows == len(self.CONTROL_AXES):
+        elif num_metrics == len(self.CONTROL_AXES):
             self.ResultType = 'RL-Control'
             self.AXES = self.CONTROL_AXES
         else:
             self.ResultType = 'MDPSolver'
             self.AXES = self.MDPSOLVER_AXES
+
+        # Allocate mask for results (padding mask with ones where samples do not exist)
+        # Third dimension is # of results.txt files in experiment directory
+        mask = ones((num_metrics, maxCols, samples_num))
             
         #Extract time to get to 95% of performance
         
+        dataLengths = zeros(samples_num)
+        
         if not self.useLastDataPoint:
-            samples     = zeros((rows,cols,samples_num))
+            samples     = zeros((num_metrics,maxCols,samples_num))
             times_95    = zeros(samples_num)
-            for i,f in enumerate(files):
-                if i == samples_num: break
-                M = readMatrixFromFile(files[i])
+
+            for resultInd,f in enumerate(files):
+                if resultInd == samples_num: break
+                M = readMatrixFromFile(files[resultInd])
+                
+                _, tmpCols = M.shape
+                dataLengths[resultInd] = tmpCols
                 #print M.shape
                 try:
-                    samples[:,:cols,i] = M
+                    samples[:,:tmpCols,resultInd] = M
+                    mask[:,:tmpCols,resultInd] = 0
                     if('Return') in self.AXES:
-                        times_95[i] = self.extract_time_95(M)
+                        times_95[resultInd] = self.extract_time_95(M)
+
                 except:
-                    print "Unmatched number of points along X axis: %d != %d" % (cols,M.shape[1])
-                    print "Switching to last data point mode for all experiments"
+                    print "Unmatched number of points along X axis: %d != %d" % (maxCols,M.shape[1])
                     self.useLastDataPoint = True
                     break
         if self.useLastDataPoint:
-            samples     = zeros((rows,1,samples_num))
+            print 'WARNING: self.useLastDataPoint not yet supported'
+            # TODO FIXME - incorporate mask above
+            samples     = zeros((num_metrics,1,samples_num))
             times_95    = zeros(samples_num)
             for i,f in enumerate(files):
                 if i == samples_num: break
@@ -135,21 +183,41 @@ class Merger(object):
                     print 'No \'Return\' field in axes: ', self.AXES
                 samples[:,:,i] = M[:,-1].reshape((-1,1)) # Get the last column of the matrix
 
-        _,datapoints_per_graph_tmp,_ = samples.shape
-        if datapoints_per_graph_tmp > self.datapoints_per_graph: self.datapoints_per_graph = datapoints_per_graph_tmp
+        
+        masked_samples = ma.masked_array(samples, mask=mask)
+
+        
+#         print '#### std ', masked_samples.std(axis=2)
+#         print '#### sqrts ', sqrt(dataLengths)
+#         print '#### newvals ', masked_samples.std(axis=2) / sqrt(dataLengths)
+     
+        # Give stderr instead of std deviation by using masked stats (mstats) method "sem"
+        # Note that the stats method stats.sem ignores the mask, need stats.mstats.
         if self.getMAX:
-            return amax(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
+#             return ma.max(masked_samples,axis=2),masked_samples.std(axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
+            return ma.max(masked_samples,axis=2),stats.mstats.sem(masked_samples, axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
+
         else:
-            return mean(samples,axis=2),std(samples,axis=2)/sqrt(samples_num), samples_num, mean(times_95), std(times_95)/sqrt(samples_num)
-    def showLast(self,Y_axis = None, index=-1):
+            meanVals = masked_samples.mean(axis=2)
+            stdErrVals = stats.mstats.sem(masked_samples, axis=2)
+            
+            # Anywhere have masked value, unmask and set zero.
+            stdErrVals[stdErrVals.mask==True] = 0
+            stdErrVals.mask[stdErrVals.mask==True] = False
+#            print 'means,stdd',meanVals,stdErrVals
+            
+#             return masked_samples.mean(axis=2),masked_samples.std(axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
+            return meanVals, stdErrVals, samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
+
+    def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
         if Y_axis == None:
             if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
             elif self.ResultType == 'Dynamic Means': Y_axis = 'L2 Observed Transition Errors'
             else: Y_axis = 'Return'
         y_ind = self.AXES.index(Y_axis)
-        M = array([M[y_ind, index] for M in self.means])
-        V = array([V[y_ind, index] for V in self.std_errs])
+        M = array([M[y_ind,-1] for M in self.means])
+        V = array([V[y_ind,-1] for V in self.std_errs])
         #os.system('clear');
         print "=========================="
         print "Last Performance+std_errs"
@@ -192,7 +260,7 @@ class Merger(object):
                 X_axis = 'Time(s)'
             elif self.ResultType == 'Dynamic Means': X_axis = 'Outer Iterations'
             else:
-                X_axis = 'Iterations'            
+                X_axis = 'Iterations'
 
         if not isOnCluster() and self.showSplash: self.fig.clear()
         min_ = +inf
@@ -212,51 +280,81 @@ class Merger(object):
             print 'Allowed values:'
             print self.AXES
 
-        Xs      = zeros((self.exp_num,self.datapoints_per_graph))
-        Ys      = zeros((self.exp_num,self.datapoints_per_graph))
-        Errs    = zeros((self.exp_num,self.datapoints_per_graph))
+        Xs      = zeros((self.exp_num,max(self.datapoints_per_graph)))
+        Ys      = zeros((self.exp_num,max(self.datapoints_per_graph)))
+        X_Errs  = zeros((self.exp_num,max(self.datapoints_per_graph)))
+        Y_Errs  = zeros((self.exp_num,max(self.datapoints_per_graph)))
 
         for i in arange(self.exp_num):
-            X   = self.means[i][x_ind,:]
+            X   = self.means[i][x_ind,:] # Look at parameters setting i, metric x_ind, for all datapoints
             Y   = self.means[i][y_ind,:]
-            Err = self.std_errs[i][y_ind,:]
+            X_Err = self.std_errs[i][x_ind,:] # For x-error bars, if desired
+            Y_Err = self.std_errs[i][y_ind,:]
+
+#            X = masked_X
+#            Y = masked_Y
+#            X_Err = masked_X_Err
+#            Y_Err = masked_Y_Err
+                
+
             if not isOnCluster() and self.showSplash:
-                if len(X) == 1 and self.bars:
-                    pl.errorbar(X, Y, yerr=Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
-                    max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
+                if len(X) == 1 and self.ybars:
+                    if self.xbars:
+                        pl.errorbar(X, Y, xerr=X_Err, yerr=Y_Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    else: pl.errorbar(X, Y, yerr=Y_Err, marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                    max_ = max(max(Y+Y_Err),max_); min_ = min(min(Y-Y_Err),min_)
                 else:
-                    pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
-                    if self.bars:
-                        pl.fill_between(X, Y-Err, Y+Err,alpha=.1, color = self.colors[i%len(self.colors)])
-                        max_ = max(max(Y+Err),max_); min_ = min(min(Y-Err),min_)
+                    if self.xbars:
+#                         pl.errorbar(X, Y, xerr=X_Err, marker = self.styles[i%len(self.styles)], linewidth = 1,alpha=.7, color=self.colors[i%len(self.colors)], ecolor='k',
+#                                     markersize = self.markersize, label = self.labels[i])
+                        numBarsToPlot = ceil(len(X_Err) / self.xbar_interval)
+                        if self.xbar_interval > 1:
+                            for j in arange(numBarsToPlot):
+                                plottedInd = j*self.xbar_interval
+                                X_Err[plottedInd+1:plottedInd+self.xbar_interval] = zeros(self.xbar_interval-1)
+                        # Else we're plotting all error bars, make no changes
+                        pl.errorbar(X, Y, xerr=X_Err, linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7, color=self.colors[i%len(self.colors)], ecolor='k',
+                                    markersize = self.markersize, label = self.labels[i])
+                    else:
+                        h = pl.plot(X,Y,linestyle ='-', marker = self.styles[i%len(self.styles)], linewidth = 2,alpha=.7,color = self.colors[i%len(self.colors)],markersize = self.markersize, label = self.labels[i])
+                        self.legend_handles.append(h) # add to legend
+                    if self.ybars:
+                        pl.fill_between(X, Y-Y_Err, Y+Y_Err,alpha=.3, color = self.colors[i%len(self.colors)])
+                        max_ = max(max(Y+Y_Err),max_); min_ = min(min(Y-Y_Err),min_)
                     else:
                         max_ = max(Y.max(),max_); min_ = min(Y.min(),min_)
+        
+#            print 'X',X
+#            print 'Y',Y
+#            print 'Y_Err',Y_Err
             
             if(len(X) < len(Xs[i,:])):
                 X = self.padFinalValue(X, len(Xs[i,:]))
                 Y = self.padFinalValue(Y, len(Ys[i,:]))
-                Err = self.padFinalValue(Err, len(Errs[i,:]))
+                X_Err = self.padFinalValue(X_Err, len(X_Errs[i,:]))
+                Y_Err = self.padFinalValue(Y_Err, len(Y_Errs[i,:]))
             Xs[i,:]     = X
             Ys[i,:]     = Y
-            Errs[i,:]   = Err
-
+            X_Errs[i,:]   = X_Err
+            Y_Errs[i,:]   = Y_Err
+                    
+        xLims = [0,max(Xs[:,-1])*1.02]
+        yLims = [min_-.1*abs(max_-min_),max_+.1*abs(max_-min_)]
+        
         if not isOnCluster() and self.showSplash:
             if self.legend:
                 #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
                 self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+                
                 #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
-            pl.xlim(0,max(Xs[:,-1])*1.02)
-            if min_ != max_: pl.ylim(min_-.1*abs(max_-min_),max_+.1*abs(max_-min_))
+            pl.xlim(xLims)
+            if min_ != max_: pl.ylim(yLims)
             X_axis_label = r'$\|A\theta - b\|$' if X_axis == 'Error' else X_axis
             Y_axis_label = r'$\|A\theta - b\|$' if Y_axis == 'Error' else Y_axis
+                    
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
-            
-            # Steps to be shown in scientific format
-            #if X_axis == 'Learning Steps':
-                #pl.ticklabel_format(style='sci', axis='x', useLocale = True, scilimits=(0,0))
-                #ticker.ScalarFormatter(useMathText=True)
-        self.save(Y_axis,X_axis,Xs,Ys,Errs)
+        self.save(Y_axis,X_axis,Xs,Ys,X_Errs, Y_Errs)
         #if not isOnCluster and self.legend:
         #        # This is a hack so we can see it correctly during the runtime
         #        pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')
@@ -270,7 +368,7 @@ class Merger(object):
             return paddedArr
         else: return arr
     
-    def save(self,Y_axis,X_axis,Xs,Ys,Errs):
+    def save(self,Y_axis,X_axis,Xs,Ys,X_Errs,Y_Errs):
         fullfilename = self.output_path + '/' +Y_axis+'-by-'+X_axis
         checkNCreateDirectory(fullfilename)
         # Store the numbers in a txt file
@@ -282,18 +380,21 @@ class Merger(object):
             print "======================"
             print X_axis +': ' + pretty(Xs[i,:],'%0.0f')
             print Y_axis +': ' + pretty(Ys[i,:])
-            print 'Standard-Error: ' + pretty(Errs[i,:])
+            print 'X Standard-Error:' + pretty(X_Errs[i,:])
+            print 'Y Standard-Error: ' + pretty(Y_Errs[i,:])
             if self.prettyText:
                 f.write("======================\n")
                 f.write("Algorithm: " + self.labels[i] +"\n")
                 f.write("======================\n")
                 f.write(X_axis +': ' + pretty(Xs[i,:])+'\n')
                 f.write(Y_axis +': ' + pretty(Ys[i,:])+'\n')
-                f.write('Standard-Error: ' + pretty(Errs[i,:])+'\n')
+                f.write('X Standard-Error: ' + pretty(X_Errs[i,:])+'\n')
+                f.write('Y Standard-Error: ' + pretty(Y_Errs[i,:])+'\n')
             else:
                 savetxt(f,Xs[i,:], fmt='%0.4f', delimiter='\t')
                 savetxt(f,Ys[i,:], fmt='%0.4f', delimiter='\t')
-                savetxt(f,Errs[i,:], fmt='%0.4f', delimiter='\t')
+                savetxt(f,X_Errs[i,:], fmt='%0.4f', delimiter='\t')
+                savetxt(f,Y_Errs[i,:], fmt='%0.4f', delimiter='\t')
         f.close()
         # Save the figure as pdf
         if not isOnCluster() and self.showSplash:
