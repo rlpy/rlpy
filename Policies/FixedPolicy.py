@@ -28,7 +28,6 @@ class FixedPolicy(Policy):
     tableOfValues = None
     
     gridWorldPolicyNames = ['cw_circle', 'ccw_circle']
-    aircraftStormPolicyNames = ['L_TO_R','random_policy']
     
     def __init__(self, representation, logger, policyName = 'MISSINGNO', tableOfValues=None):
         self.policyName = policyName
@@ -37,7 +36,7 @@ class FixedPolicy(Policy):
     
     supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring',\
                         'SystemAdministrator','MountainCar','PST','GridWorld',\
-                        'AircraftStorm']
+                        ]
     def pi(self,s):
         if self.tableOfValues:
             return self.tableOfValues[(s)]
@@ -48,21 +47,7 @@ class FixedPolicy(Policy):
         if not className(domain) in self.supportedDomains:
             print "ERROR: There is no fixed policy defined for %s" % className(domain)
             return None
-
-        if className(domain) == 'AircraftStorm':
-            if not self.policyName in self.aircraftStormPolicyNames:
-                print "Error: There is no AircraftStorm policy with name %s" % self.policyName
-                return None
-            
-            if self.policyName == 'L_TO_R':
-                return 3        # Right action, always
-        
-            if self.policyName == 'random_policy':
-                return randSet(domain.possibleActions(s))
-            
-            
-            
-                
+  
         if className(domain) == 'GridWorld':
             # Actions are Up, Down, Left, Right
             if not self.policyName in self.gridWorldPolicyNames:
