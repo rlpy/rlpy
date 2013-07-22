@@ -14,9 +14,7 @@ class Merger(object):
                  styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'],
                  markersize = 5, xbars=1, ybars=1, legend = False, maxSamples = inf, minSamples = 1,
                  getMAX = 0,showSplash=True, numLabelSuffixes=2, token_split_char='-'):
-        
-        self.plot_batch_lines       = False # Whether or not to plot vertical lines separating data batches
-        
+             
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []
@@ -37,11 +35,7 @@ class Merger(object):
         self.showSplash             = showSplash  # No figures just txt output
         self.num_label_suffixes     = numLabelSuffixes # Number of string tokens to include between token_split_char characters (eg '_') when producing legend
         self.token_split_char       = token_split_char # Character to use when splitting string token names
-        
-        self.has_batch_num          = []     # If we have batch number associated with an experiment
-                                            # which must later be matched together for valid comparison
-        self.numBatches             = []     # Number of batches of data (computed later as required)
-        
+      
         self.legend_handles         = []    # Selectively add plotted items to legend
         
         #Extract experiment paths by finding all subdirectories in all given paths that contain experiment.
@@ -195,7 +189,7 @@ class Merger(object):
         # Note that the stats method stats.sem ignores the mask, need stats.mstats.
         if self.getMAX:
 #             return ma.max(masked_samples,axis=2),masked_samples.std(axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
-            return ma.max(masked_samples,axis=2),stats.mstats.sem(masked_samples, axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
+            return ma.max(masked_samples,axis=2),stats.mstats.sem(masked_samples, axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols
 
         else:
             meanVals = masked_samples.mean(axis=2)
@@ -207,7 +201,7 @@ class Merger(object):
 #            print 'means,stdd',meanVals,stdErrVals
             
 #             return masked_samples.mean(axis=2),masked_samples.std(axis=2), samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
-            return meanVals, stdErrVals, samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols, batchMeans, batchStds
+            return meanVals, stdErrVals, samples_num, mean(times_95), std(times_95)/sqrt(samples_num), maxCols
 
     def showLast(self,Y_axis = None):
         # Prints the last performance of all experiments
