@@ -28,8 +28,9 @@ def module_exists(module_name):
 from multiprocessing import Pool
 from operator import *
 from numpy  import *
+import numpy.random as nprand # To avoid clashes with inbuilt random type
 import sys
-import numpy
+
 #print "Numpy version:", numpy.__version__
 #print "Python version:", sys.version_info
 
@@ -45,6 +46,7 @@ import numpy
 # os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 
 CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
+
 import itertools
 import platform
 import pdb
@@ -786,7 +788,37 @@ def padZeros(X,L):
         return new_X
     else:
         return X
+           
+def expectedPhiNS(p_vec, ns_vec, representation):
+    # Primarily for use with domain.expectedStep()
+    # Takes p_vec, probability of each state outcome in ns_vec,
+    # Returns a vector of length features_num which is the expectation
+    # over all possible outcomes.
+    expPhiNS = zeros(representation.features_num)
+    for i, ns in enumerate(ns_vec):
+        expPhiNS += p_vec[i] * representation.phi_nonTerminal(ns)
+    return expPhiNS
+    #  p: k-by-1    probability of each transition
+    #  r: k-by-1    rewards
+    # ns: k-by-|s|  next state
+    #  t: k-by-1    terminal values
 
+
+def allExpectedPhiNS(domain, representation, policy, allStates = None):
+    # Returns Phi' matrix with dimensions n x k,
+    # n: number of possible states, and
+    # k: number of features
+    if allStates == None:
+        allStates = domain.allStates()
+    allExpPhiNS = zeros((len(allStates), representation.features_num))
+    for i,s in enumerate(allStates):
+#         print s
+#         print policy.pi(s)
+#         print 'looping',i, policy.pi(s)
+#         print policy.pi(s)
+        p_vec, r_vec, ns_vec, t_vec = domain.expectedStep(s, policy.pi(s))
+        allExpPhiNS[i][:] = expectedPhiNS(p_vec, ns_vec, representation)
+    return allExpPhiNS
 
 # Setup the latdex path
 #if sys.platform == 'darwin':
