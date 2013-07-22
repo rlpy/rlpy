@@ -142,7 +142,7 @@ class GridWorld(Domain):
                 if self.map[r,c] == self.GOAL: V[r,c] = self.MAX_RETURN  
                 if self.map[r,c] == self.PIT: V[r,c] =self.MIN_RETURN 
                 if self.map[r,c] == self.EMPTY or self.map[r,c] == self.START:
-                    s        = [r,c]
+                    s        = array([r,c])
                     Qs,As    = representation.Qs(s)
                     bestA    = representation.bestActions(s)
                     V[r,c]   = max(Qs)
@@ -258,6 +258,14 @@ class GridWorld(Domain):
 #        print"terminals", t
 #        raw_input()
         return p,r,ns,t
+    
+    def allStates(self):
+        allStates = []
+        if self.continuous_dims == []:
+            # Recall that discrete dimensions are assumed to be integer
+            return perms(self.discrete_statespace_limits[:,1]-self.discrete_statespace_limits[:,0] + 1) + self.discrete_statespace_limits[:,0]
+            
+#         return super(GridWorld, self).allStates()
         
 if __name__ == '__main__':
     p = GridWorld(mapname='GridWorldMaps/4x5.txt');

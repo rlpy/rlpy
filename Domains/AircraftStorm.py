@@ -24,32 +24,30 @@ sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
 from Domain import *
-import random as tmprandom
+import numpy.random as tmprandom
 from random import choice # To select a random element from a list/array
 
-tmprandom.seed(0)
 ##########################################################################
 # \author Robert H Klein May 24, 2013
 #########################################################################
 # This domain is a generalization of GridWorld to allow for a noise parameter
 # which varies with space, and also with different agent 'type', see below.
 # We also allow for a randomized starting location.
-# In this gridworld variant, agents are described # as aircraft subject to
-# spacially-varying wind, which act as noise on their motions.
+# In this Gridworld variant, the agent is described as an aircraft subject to
+# spacially-varying wind, which acts as noise on its motion.
 # State is "type,x,y" (type refers to kind of aircraft).
 # Actions are 4 way directional under a fixed policy;
 # Noise is dependent both on location and 'type' above.
-# Each type has an associated, pre-defined map of noises, take random action
-# with that probability.
+# In addition to taking a standard Gridworld map (compatible with Gridworld.py),
+# each aircraft type has an associated, pre-defined map of noises.
+# Take a random action with probability associated with current cell.
 # 
 # This differs from GridWorld in that there is no fixed
 # start; we select a random start from a set of
 # possibilities.
-# There is also no longer a single map, but one corresponding
-# to each aircraft type.
 #
 # Providing a single wind_map with equal values everywhere
-# corresponds exactly to the gridworld domain.
+# corresponds exactly to the gridworld domain with a given noise parameter.
 
 ######################################################
 class AircraftStorm(Domain):
@@ -80,9 +78,11 @@ class AircraftStorm(Domain):
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
 	## Up, Down, Left, Right
     # Note that we prepend a zero so we don't affect the 'type' of aircraft
-    ACTIONS = array([[0, -1,0], [0, +1,0], [0, 0,-1], [0, 0,+1] ])
+    ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
     
-    aircraft_type
+    aircraft_type = 0       # Hidden aircraft parameter currently associated with domain.
+                    # Note we assume that only one aircraft will be calliing step()
+                    # at one time (assume this parameter associated with a single aircraft)
     
     # Below are assigned in __init__
     
@@ -90,18 +90,17 @@ class AircraftStorm(Domain):
     # automatically selected randomly 
     def __init__(self,mapname = '/AircraftStormMaps/5x5small.txt',
                  windMapNames=['/AircraftStormMaps/5x5small.txt'],
-                 aircraftType = None, episodeCap = None, logger = None):
+                 episodeCap = None, logger = None):
+        tmprandom.seed(0)
         self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         self.ROWS,self.COLS     = shape(self.map)
         
         self.num_aircraft_types = len(windMapNames)
-        self.aircraft_type      = aircraftType# Optionally pass an 'aircraftType' parameter,
-                                        # so that one is not automatically selected randomly 
         
 #         self.statespace_limits  = array([[0,self.num_aircraft_types],[0,self.ROWS-1],[0,self.COLS-1]])
         # The first dimension is really hidden...gets kind of klugey
-        self.statespace_limits  = array([[0,0],[0,self.ROWS-1],[0,self.COLS-1]])
+        self.statespace_limits  = array([[0,self.ROWS-1],[0,self.COLS-1]])
         self.DimNames           = ['Row','Col']
         
         # Windmaps is an array of matrices, one matrix for each aircraft type.
@@ -127,19 +126,19 @@ class AircraftStorm(Domain):
        if self.domain_fig is None:
            self.agent_fig = pl.subplot(1,2,1)
            tmpmap = copy(self.map)
-           windmap = self.wind_maps[1]
+           windmap = self.wind_maps[0]
            tmpmap[windmap != 0] = 3
            self.domain_fig = pl.imshow(tmpmap, cmap='GridWorld',interpolation='nearest',vmin=0,vmax=5)
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            #pl.tight_layout()
-           self.agent_fig = self.agent_fig.plot(s[2],s[1],'kd',markersize=20.0-self.COLS)
+           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=20.0-self.COLS)
            pl.show()
        #mapcopy = copy(self.map) 
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
        self.agent_fig.pop(0).remove()
-       self.agent_fig = pl.subplot(1,2,1).plot(s[2],s[1],'k>',markersize=20.0-self.COLS) # Instead of '>' you can use 'D', 'o'
+       self.agent_fig = pl.subplot(1,2,1).plot(s[1],s[0],'k>',markersize=20.0-self.COLS) # Instead of '>' you can use 'D', 'o'
        pl.draw()   
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
@@ -188,7 +187,7 @@ class AircraftStorm(Domain):
                 if self.map[r,c] == self.PIT: V[r,c] =self.MIN_RETURN 
                 if self.map[r,c] == self.EMPTY or self.map[r,c] == self.START:
                     # TODO FIXME: Currently in showLearning, only show for aircraft type 0.
-                    s        = array([0,r,c])
+                    s        = array([r,c])
                     Qs,As    = representation.Qs(s)
                     bestA    = representation.bestActions(s)
                     V[r,c]   = max(Qs)
@@ -237,42 +236,41 @@ class AircraftStorm(Domain):
         r           = self.STEP_REWARD
         ns          = s.copy()
         # Must convert s to tuple to index ndArray
-        if random.random_sample() < self.wind_maps[tuple(s)]:
+        if tmprandom.random_sample() < self.wind_maps[(self.aircraft_type, s[0], s[1])]:
             #Random Move  
             ns = s + self.ACTIONS[a] + self.ACTIONS[0] # Move up (in addition to previous action)
         else: ns = s + self.ACTIONS[a]
         
-        if (ns[1] < 0 or ns[1] == self.ROWS or
-            ns[2] < 0 or ns[2] == self.COLS or
-            self.map[ns[1],ns[2]] == self.BLOCKED):
+        if (ns[0] < 0 or ns[0] == self.ROWS or
+            ns[1] < 0 or ns[1] == self.COLS or
+            self.map[ns[0],ns[1]] == self.BLOCKED):
                 ns = s
-        if self.map[ns[1],ns[2]] == self.GOAL:
+        if self.map[ns[0],ns[1]] == self.GOAL:
                 r = self.GOAL_REWARD
-        if self.map[ns[1],ns[2]] == self.PIT:
+        if self.map[ns[0],ns[1]] == self.PIT:
                 r = self.PIT_REWARD
         terminal = self.isTerminal(ns)
         return r,ns,terminal
     def s0(self):
-        if not self.aircraft_type:
-            aircraftType = array([random.randint(self.num_aircraft_types)])
-        else: aircraftType = self.aircraft_type
+        
+        self.aircraft_type = array([tmprandom.randint(self.num_aircraft_types)])
         startState = array(choice(self.start_locs), dtype = 'int32') # Random start location among possibilities
-        return append(aircraftType, startState)
+        return startState
     def possibleActions(self,s):
         possibleA = array([],uint8)
         for a in arange(self.actions_num):
             ns = s + self.ACTIONS[a]
             if (
-                ns[1] < 0 or ns[1] == self.ROWS or
-                ns[2] < 0 or ns[2] == self.COLS or
-                self.map[ns[1],ns[2]] == self.BLOCKED):
+                ns[0] < 0 or ns[0] == self.ROWS or
+                ns[1] < 0 or ns[1] == self.COLS or
+                self.map[ns[0],ns[1]] == self.BLOCKED):
                 continue
             possibleA = append(possibleA,[a])
         return possibleA
     def isTerminal(self,s):
-        if self.map[s[1],s[2]] == self.GOAL:
+        if self.map[s[0],s[1]] == self.GOAL:
                 return True
-        if self.map[s[1],s[2]] == self.PIT:
+        if self.map[s[0],s[1]] == self.PIT:
                 return True
         return False
     def expectedStep(self,s,a):
@@ -287,7 +285,7 @@ class AircraftStorm(Domain):
         k       = len(actions)
         #Make Probabilities
         intended_action_index = findElemArray1D(a,actions) 
-        noise   = self.wind_maps[tuple(s)]
+        noise   = self.wind_maps[(self.aircraft_type, s[0], s[1])]
         p       = ones((k,1))*noise/(k*1.)
         p[intended_action_index,0] += 1-noise 
 #       print "Probabilities:", p
@@ -298,8 +296,8 @@ class AircraftStorm(Domain):
 #        print "next states:", ns
         #Make rewards
         r       = ones((k,1))*self.STEP_REWARD
-        goal    = self.map[ns[:,1], ns[:,2]] == self.GOAL   # coordinates of goal
-        pit     = self.map[ns[:,1], ns[:,2]] == self.PIT    # coordinates of pit
+        goal    = self.map[ns[:,0], ns[:,1]] == self.GOAL   # coordinates of goal
+        pit     = self.map[ns[:,0], ns[:,1]] == self.PIT    # coordinates of pit
         r[goal] = self.GOAL_REWARD
         r[pit]  = self.PIT_REWARD
 #        print"rewards", r
@@ -319,13 +317,13 @@ class AircraftStorm(Domain):
         
         ns = s + self.ACTIONS[a]
         
-        if (ns[1] < 0 or ns[1] == self.ROWS or
-            ns[2] < 0 or ns[2] == self.COLS or
-            self.map[ns[1],ns[2]] == self.BLOCKED):
+        if (ns[0] < 0 or ns[0] == self.ROWS or
+            ns[1] < 0 or ns[1] == self.COLS or
+            self.map[ns[0],ns[1]] == self.BLOCKED):
                 ns = s
-        if self.map[ns[1],ns[2]] == self.GOAL:
+        if self.map[ns[0],ns[1]] == self.GOAL:
                 r = self.GOAL_REWARD
-        if self.map[ns[1],ns[2]] == self.PIT:
+        if self.map[ns[0],ns[1]] == self.PIT:
                 r = self.PIT_REWARD
         terminal = self.isTerminal(ns)
         return r,ns,terminal
@@ -342,8 +340,18 @@ class AircraftStorm(Domain):
             # Recall that discrete dimensions are assumed to be integer
             return perms(self.discrete_statespace_limits[:,1]-self.discrete_statespace_limits[:,0] + 1) + self.discrete_statespace_limits[:,0]
             
-    def getFunctionVal(self,s):
-        return self.wind_maps[tuple(s)]
+    def getFunctionVal(self,s, aircraftType=None):
+        if not aircraftType:
+            aircraftType = self.aircraft_type
+        
+        # For single map case, must index first.
+        # If not single map, throws error, falls through to next case.
+        try:
+            return self.wind_maps[(aircraftType, s[0], s[1])][0]
+        except: return self.wind_maps[(aircraftType, s[0], s[1])]
+    
+    def getHiddenStates(self):
+        return array([self.aircraft_type])
         
 if __name__ == '__main__':
     p = AircraftStorm(mapname='GridWorldMaps/11x11-open.txt', windMapNames=['AircraftStormMaps/11x11light.txt']);
