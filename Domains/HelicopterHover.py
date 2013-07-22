@@ -1,29 +1,8 @@
-"""
-WORK IN PROGRESS
-"""
-#See http://acl.mit.edu/RLPy for documentation and future code updates
+# Copyright (c) 2013
+# Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
+# Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
 
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-__author__ = "Christoph Dann"
-
-import sys
-import os
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT + '/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
+__author__ = "Christoph Dann <cdann@cdann.de>"
 
 from Domain import Domain
 import numpy as np
@@ -56,9 +35,10 @@ class HelicopterHoverExtended(Domain):
     regime close to hover.
 
     See
-    Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
-    with application to modeling helicopters.
-    Advances in Neural Information Systems (2006).
+
+        Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
+        with application to modeling helicopters.
+        Advances in Neural Information Systems (2006).
 
     Adapted from the Java Implementation documented at
     http://library.rl-community.org/wiki/Helicopter_(Java)
@@ -80,26 +60,27 @@ class HelicopterHoverExtended(Domain):
     19: t number of timesteps in current episode
     """
 
-    MAX_POS = 20.  # m
-    MAX_VEL = 10.  # m/s
-    MAX_ANG_RATE = 4 * np.pi
+    MAX_POS = 20.  #: [m]  maximum deviation in position in each dimension
+    MAX_VEL = 10.  #: [m/s] maximum velocity in each dimension
+    MAX_ANG_RATE = 4 * np.pi #: maximum angular velocity
     MAX_ANG = 1.
-    WIND_MAX = 5.
+    WIND_MAX = 5. #: maximum gust indensity
     MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.)
 
-    wind = np.array([.0, .0, 0.])  # wind in neutral orientation
-    gamma = 0.9  # discout factor
+    wind = np.array([.0, .0, 0.])  #: wind in neutral orientation
+    gamma = 0.95  #: discout factor
     gust_memory = 0.8
     domain_fig = None
 
     episodeCap = 6000
+    # model specific parameters from the learned model
     noise_std = np.array([0.1941, 0.2975, 0.6058, 0.1508, 0.2492, 0.0734])
     drag_vel_body = np.array([.18, .43, .49])
     drag_ang_rate = np.array([12.78, 10.12, 8.16])
     u_coeffs = np.array([-33.04, -33.32, 70.54, -42.15])
     tail_rotor_side_thrust = -0.54
 
-    dt = 0.01  # length of one timestep
+    dt = 0.01  #: length of one timestep
     continuous_dims = np.arange(20)
     statespace_limits_full = np.array([[-MAX_POS, MAX_POS]] * 3
                                  + [[-MAX_VEL, MAX_VEL]] * 3
@@ -108,18 +89,11 @@ class HelicopterHoverExtended(Domain):
                                  + [[-2., 2.]] * 6
                                  + [[0, episodeCap]])
     statespace_limits = statespace_limits_full
-    # create all combinations of possible actions
 
-    #def _make_slice(l, u, n):
-    #    return slice(l, u + float(u - l) / (n - 1) / 2., float(u - l) / (n - 1))
+    # create all combinations of possible actions
     _action_bounds = np.array([[-2., 2.]] * 4)
     _actions_dim = np.array([[-.2, -0.05, 0.05, 0.2]] * 3 + [[0., 0.15, 0.3, 0.5]])  # maximum action: 2
-    #_action_slices = [3]*3+[4]  # 3 actions per dimension
-    #_action_slices = [_make_slice(
-    #    b[0], b[1], n) for b, n in zip(_action_bounds, _action_slices)]
-    #actions = np.mgrid[_action_slices[0], _action_slices[1],
-    #                   _action_slices[2], _action_slices[3]]
-    actions = cartesian(list(_actions_dim))
+    actions = cartesian(list(_actions_dim))  #: all possible actions
     actions_num = np.prod(actions.shape[0])
 
     def __init__(self, logger=None, noise_level=1., gamma=0.95):
@@ -159,13 +133,6 @@ class HelicopterHoverExtended(Domain):
     def possibleActions(self, s):
         return np.arange(self.actions_num)
 
-    """    def test(self):
-        a = np.array([0., 0.2, 0., 0.2])
-        s = np.zeros(19)
-        s[9:13] = [np.sqrt(1-(.1**2 + .2**2 + .3**2)), -0.1, 0.2, 0.3]
-        for i in range(3):
-            r,s,t = self.step(s, a)
-    """
     def step(self, s, a):
         a = self.actions[a]
         # make sure the actions are not beyond their limits
@@ -218,7 +185,11 @@ class HelicopterHoverExtended(Domain):
 
     def _state_in_world(self, s):
         """
-        angular rate still in body frame!
+        transforms state from body coordinates in world coordinates
+        .. warning::
+
+            angular rate still in body frame!
+
         """
         pos_body = s[:3]
         vel_body = s[3:6]
@@ -247,18 +218,6 @@ class HelicopterHoverExtended(Domain):
         """
         return self._in_body_coord(p, trans.quaternion_conjugate(q))
 
-    def test(self):
-        s = self.s0()
-        a = np.zeros((4))
-        a[0] = .0
-        a[1] = 0.
-        a[2] = 0.
-        a[3] = .3
-        for i in range(20):
-            r, s, t = self.step(s, a)
-            self.showDomain(s, a)
-            import time
-            time.sleep(.5)
     def showDomain(self, s, a=None):
         if a is not None:
             a = self.actions[a].copy() * 3 # amplify for visualization
@@ -383,12 +342,14 @@ class HelicopterHoverExtended(Domain):
 
 class HelicopterHover(HelicopterHoverExtended):
     """
-    WARNING: This domain has an internal hidden state, as it actually is
-    a POMDP. Besides the 12-dimensional observable state, there is an internal
-    state saved as self.hidden_state_ (time and long-term noise which
-    simulated gusts of wind).
-    be aware of this state if you use this class to produce samples which are
-    not in order
+    .. warning::
+
+        This domain has an internal hidden state, as it actually is
+        a POMDP. Besides the 12-dimensional observable state, there is an internal
+        state saved as self.hidden_state_ (time and long-term noise which
+        simulated gusts of wind).
+        be aware of this state if you use this class to produce samples which are
+        not in order
 
     Implementation of a simulator that models one of the Stanford
     autonomous helicopters (an XCell Tempest helicopter) in the flight
@@ -401,9 +362,6 @@ class HelicopterHover(HelicopterHoverExtended):
 
     Adapted from the Java Implementation documented at
     http://library.rl-community.org/wiki/Helicopter_(Java)
-    However: adapted to be a true MDP; on termination a constant negative
-    reward is given, not dependent on the remaining simulation time and
-    the gusts are simulated by gaussian noise for each time-step
 
     The state of the helicopter is described by a 12-dimensional vector
     with the following entries:

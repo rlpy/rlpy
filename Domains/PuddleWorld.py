@@ -42,6 +42,7 @@ class PuddleWorld(Domain):
     gamma = 1.  # discout factor
     domain_fig = None
     valfun_fig = None
+    polfun_fig = None
 
     episodeCap = 1000
     puddles = np.array([[[0.1, .75], [.45, .75]], [[.45, .4], [.45, .8]]])
@@ -57,6 +58,7 @@ class PuddleWorld(Domain):
         super(PuddleWorld, self).__init__(logger)
         self.reward_map = np.zeros((100, 100))
         self.val_map = np.zeros((100, 100))
+        self.pi_map = np.zeros((100, 100))
         a = np.zeros((2))
         for i, x in enumerate(np.linspace(0, 1, 100)):
             for j, y in enumerate(np.linspace(0, 1, 100)):
@@ -122,19 +124,30 @@ class PuddleWorld(Domain):
                 a[0] = x
                 a[1] = y
                 self.val_map[j, i] = representation.V(a)
+                self.pi_map[j, i] = representation.bestAction(a)
+
         if self.valfun_fig is None:
             self.valfun_fig = plt.figure("Value Function")
             plt.clf()
             self.val_im = plt.imshow(self.val_map, extent=(0, 1, 0, 1),
                                      origin="lower")
             plt.colorbar()
-            plt.draw()
         else:
             self.valfun_fig = plt.figure("Value Function")
             self.val_im.set_data(self.val_map)
             self.val_im.autoscale()
-        #    #import ipdb; ipdb.set_trace()
-            plt.draw()
+        plt.draw()
+
+        if self.polfun_fig is None:
+            self.polfun_fig = plt.figure("Policy")
+            plt.clf()
+            self.pol_im = plt.imshow(self.pi_map, extent=(0, 1, 0, 1),
+                                     origin="lower", cmap="4Actions")
+        else:
+            self.polfun_fig = plt.figure("Policy")
+            self.pol_im.set_data(self.pi_map)
+            self.pol_im.autoscale()
+        plt.draw()
 
 if __name__ == "__main__":
     h = PuddleWorld()

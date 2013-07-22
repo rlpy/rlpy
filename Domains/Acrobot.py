@@ -1,30 +1,6 @@
-"""
-WORK IN PROGRESS
-"""
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-import sys
-import os
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT + '/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
+# Copyright (c) 2013
+# Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
+# Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
 
 from Tools import *
 from Domain import *
@@ -32,16 +8,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+__author__ = "Christoph Dann <cdann@cdann.de>"
 class Acrobot(Domain):
     """
     Acrobot is a 2-link pendulum with only the second joint actuated
     Intitially, both links point downwards. The goal is to swing the
     end-effector at a height at least the length of one link above the base.
 
-    The state consists of the two rotational joint angles and their velocities
-    [theta1 theta2 thetaDot1 thetaDot2]
+    Both links can swing freely and can pass by each other, i.e., they don't
+    collide when they have the same angle.
 
-    for details see R. Sutton: Generalization in Reinforcement Learning:
+    The state consists of the two rotational joint angles and their velocities
+    [theta1 theta2 thetaDot1 thetaDot2]. An angle of 0 corresponds to corresponds
+    to the respective link pointing downwards (angle are in world coordinates).
+
+    The action is either either applying +1, 0 or -1 torque on the joint between
+    the two pendulum links.
+
+    for details see
+        R. Sutton: Generalization in Reinforcement Learning:
         Successful Examples Using Sparse Coarse Coding (NIPS 1996)
 
     or
@@ -49,6 +34,23 @@ class Acrobot(Domain):
     Sutton, Richard S., and Andrew G. Barto:
         Reinforcement learning: An introduction.
         Cambridge: MIT press, 1998.
+
+    .. note::
+
+        The dynamics equations were missing some terms in the NIPS paper which
+        are present in the book. R. Sutton confirmed in personal correspondance
+        that the experimental results shown in the paper and the book were
+        generated with the equations shown in the book.
+
+        However, there is the option to run the domain with the paper equations
+        by setting book_or_nips = 'nips'
+
+    .. warning::
+
+        This version of the domain uses the Runge-Kutta method for integrating
+        the system dynamics and is more realistic, but also considerably harder
+        than the original version which employs Euler integration,
+        see the AcrobotLegacy class.
     """
 
     episodeCap = 1000
@@ -58,11 +60,11 @@ class Acrobot(Domain):
 
     LINK_LENGTH_1 = 1.  # [m]
     LINK_LENGTH_2 = 1.  # [m]
-    LINK_MASS_1 = 1.  # [kg]
-    LINK_MASS_2 = 1.  # [kg]
-    LINK_COM_POS_1 = 0.5  # [m] position of the center of mass of the links
-    LINK_COM_POS_2 = 0.5  # [m] position of the center of mass of the links
-    LINK_MOI = 1.  # moments of inertia
+    LINK_MASS_1 = 1.  #: [kg] mass of link 1
+    LINK_MASS_2 = 1.  #: [kg] mass of link 2
+    LINK_COM_POS_1 = 0.5  #: [m] position of the center of mass of link 1
+    LINK_COM_POS_2 = 0.5  #: [m] position of the center of mass of link 2
+    LINK_MOI = 1.  #: moments of inertia for both links
 
     MAX_VEL_1 = 4 * np.pi
     MAX_VEL_2 = 9 * np.pi
@@ -74,7 +76,7 @@ class Acrobot(Domain):
                                  + [[-MAX_VEL_1, MAX_VEL_1]]
                                  + [[-MAX_VEL_2, MAX_VEL_2]])
 
-    # use dynamics equations from the nips paper or the book
+    #: use dynamics equations from the nips paper or the book
     book_or_nips = "book"
     action_arrow = None
     domain_fig = None
@@ -98,25 +100,24 @@ class Acrobot(Domain):
         s_augmented = np.append(s, torque)
 
         ns = rk4(self._dsdt, s_augmented, [0, self.dt])
-        ns = ns[-1] # only care about final timestep of integration returned by integrator
-        ns = ns[:4] # omit action
+        ns = ns[-1]  # only care about final timestep of integration returned by integrator
+        ns = ns[:4]  # omit action
         # ODEINT IS TOO SLOW!
         # ns_continuous = integrate.odeint(self._dsdt, self.s_continuous, [0, self.dt])
         #self.s_continuous = ns_continuous[-1] # We only care about the state at the ''final timestep'', self.dt
 
-        ns[0] = wrap(ns[0],-np.pi,np.pi)
-        ns[1] = wrap(ns[1],-np.pi,np.pi)
-        ns[2] = bound(ns[2],-self.MAX_VEL_1, self.MAX_VEL_1)
-        ns[3] = bound(ns[3],-self.MAX_VEL_2, self.MAX_VEL_2)
-        terminal                    = self.isTerminal(ns)
-        reward                      = -1. if not terminal else 0.
+        ns[0] = wrap(ns[0], -np.pi, np.pi)
+        ns[1] = wrap(ns[1], -np.pi, np.pi)
+        ns[2] = bound(ns[2], -self.MAX_VEL_1, self.MAX_VEL_1)
+        ns[3] = bound(ns[3], -self.MAX_VEL_2, self.MAX_VEL_2)
+        terminal = self.isTerminal(ns)
+        reward = -1. if not terminal else 0.
         return reward, ns, terminal
 
     def _dsdt(self, s_augmented, t):
         m1 = self.LINK_MASS_1
         m2 = self.LINK_MASS_2
         l1 = self.LINK_LENGTH_1
-        l2 = self.LINK_LENGTH_2
         lc1 = self.LINK_COM_POS_1
         lc2 = self.LINK_COM_POS_2
         I1 = self.LINK_MOI
@@ -199,13 +200,43 @@ class Acrobot(Domain):
 
 class AcrobotLegacy(Acrobot):
     """
-    Legacy version of the Acrobot domain which uses Euler integration for
-    updating the state instead of the more precise Runge-Kutta 4 method.
-    This approach is consistent with the experiments in
+    Acrobot is a 2-link pendulum with only the second joint actuated
+    Intitially, both links point downwards. The goal is to swing the
+    end-effector at a height at least the length of one link above the base.
+
+    Both links can swing freely and can pass by each other, i.e., they don't
+    collide when they have the same angle.
+
+    The state consists of the two rotational joint angles and their velocities
+    [theta1 theta2 thetaDot1 thetaDot2]. An angle of 0 corresponds to corresponds
+    to the respective link pointing downwards (angle are in world coordinates).
+
+    The action is either either applying +1, 0 or -1 torque on the joint between
+    the two pendulum links.
+
+    for details see
+        R. Sutton: Generalization in Reinforcement Learning:
+        Successful Examples Using Sparse Coarse Coding (NIPS 1996)
+
+    or
+
+    Sutton, Richard S., and Andrew G. Barto:
+        Reinforcement learning: An introduction.
+        Cambridge: MIT press, 1998.
+
+    .. note::
+
+        The dynamics equations were missing some terms in the NIPS paper which
+        are present in the book. R. Sutton confirmed in personal correspondance
+        that the experimental results shown in the paper and the book were
+        generated with the equations shown in the book.
+
+        However, there is the option to run the domain with the paper equations
+        by setting book_or_nips = 'nips'
 
     """
 
-    book_or_nips = "nips"
+    book_or_nips = "book"
     def step(self, s, a):
 
         torque = self.AVAIL_TORQUE[a]
@@ -234,7 +265,3 @@ class AcrobotLegacy(Acrobot):
         reward = -1. if not terminal else 0.
         return reward, ns, terminal
 
-
-if __name__ == "__main__":
-    h = Acrobot(None)
-    h.test(1000)

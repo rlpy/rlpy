@@ -1,0 +1,22 @@
+class: "ApproximateQLearningTest"
+
+# GridWorld specification
+#    _ is empty space
+#    numbers are terminal states with that value
+#    # is a wall
+#    S is a start state
+#
+grid: """
+  -10
+    S
+   10
+"""
+discount: "0.5"
+noise: "0.0"
+livingReward: "0.0"
+epsilon: "0.5"
+learningRate: "0.1"
+numExperiences: "100"
+valueIterations: "100"
+iterations: "10000"
+

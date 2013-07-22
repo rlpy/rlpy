@@ -1,0 +1,29 @@
+class: "GridPolicyTest"
+
+# Function in module in analysis that returns (discount, noise)
+parameterFn: "question2"
+question2: "true"
+
+# GridWorld specification
+#    _ is empty space
+#    numbers are terminal states with that value
+#    # is a wall
+#    S is a start state
+#
+grid: """
+   # -100 -100 -100 -100 -100    #
+   1    S    _    _    _    _    10
+   # -100 -100 -100 -100 -100    #   
+"""
+gridName: "bridgeGrid"
+
+# Policy specification
+#    _ 			policy choice not checked
+#    N, E, S, W policy action must be north, east, south, west
+#
+policy: """
+   _    _    _    _    _    _    _
+   _    E    _    _    _    _    _
+   _    _    _    _    _    _    _
+"""
+

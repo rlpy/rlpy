@@ -7,6 +7,7 @@ from MountainCar import MountainCar
 from ChainMDP import ChainMDP
 from SystemAdministrator import SystemAdministrator
 from PST import PST
+from Pacman import Pacman
 from IntruderMonitoring import IntruderMonitoring
 from CartPole import CartPole
 from Pendulum import Pendulum

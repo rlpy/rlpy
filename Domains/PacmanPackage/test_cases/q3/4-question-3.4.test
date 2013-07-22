@@ -1,0 +1,36 @@
+class: "GridPolicyTest"
+
+# Function in module in analysis that returns (discount, noise)
+parameterFn: "question3d"
+
+# GridWorld specification
+#    _ is empty space
+#    numbers are terminal states with that value
+#    # is a wall
+#    S is a start state
+#
+grid: """
+   _    _    _    _    _  
+   _    #    _    _    _
+   _    #    1    #   10
+   S    _    _    _    _
+ -10  -10  -10  -10  -10
+"""
+gridName: "discountGrid"
+
+# Policy specification
+#    _ 			policy choice not checked
+#    N, E, S, W policy action must be north, east, south, west
+#
+policy: """
+   _    _    _    _    _  
+   _    _    _    _    _  
+   _    _    _    _    _  
+   N    _    _    _    _  
+   _    _    _    _    _  
+"""
+
+# State the most probable path must visit
+#    (x,y) for a particular location; (0,0) is bottom left
+#    TERMINAL_STATE for the terminal state
+pathVisits: "(4,2)"
