@@ -148,13 +148,13 @@ class iFDD(Representation):
         F_s[finalActiveIndices] = 1
         return F_s
 
-    def findFinalActiveFeatures(self,intialActiveFeatures):
+    def findFinalActiveFeatures(self,initialActiveFeatures):
         """
         Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
         """
         finalActiveFeatures = []
-        k = len(intialActiveFeatures)
-        initialSet          = set(intialActiveFeatures)
+        k = len(initialActiveFeatures)
+        initialSet          = set(initialActiveFeatures)
 
 
         if 2**k <= self.features_num:
@@ -219,7 +219,7 @@ class iFDD(Representation):
                         #print "Remaining Set:", initialSet
 
         if self.useCache:
-            self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
+            self.cache[frozenset(initialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures
 
     def discover(self,phi_s,td_error):
