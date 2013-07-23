@@ -25,7 +25,7 @@ class Logger(object):
         checkNCreateDirectory(filename)
         f = open(self.filename,'w')
         f.close()
-    def log(self,str, printToScreen = False):
+    def log(self,str, printToScreen = True):
     # Print something both in output and in a file
         if printToScreen: print 'log: ',str
         self.buffer += str +'\n'

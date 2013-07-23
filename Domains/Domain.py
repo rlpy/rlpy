@@ -99,9 +99,8 @@ class Domain(object):
         The action being performed
         @param representation
         The representation to show
-        self.showDomain(s, a)
-        
         """
+        self.showDomain(s, a)
         self.showLearning(representation)
     # [show code]
 

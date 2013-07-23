@@ -1,3 +1,15 @@
+import sys, os
+RL_PYTHON_ROOT = '.'
+while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+    print 'Error: Could not locate RLPy directory.'
+    print 'Please make sure the package directory is named RLPy.'
+    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
+    sys.exit(1)
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
+sys.path.insert(0, RL_PYTHON_ROOT)
+
 from Domain import Domain
 from .PacmanPackage import layout, pacman, game, ghostAgents
 from .PacmanPackage import graphicsDisplay
@@ -257,7 +269,9 @@ class Pacman(Domain):
             reverse = game.Actions.reverseDirection(self.state.data.agentStates[i].configuration.direction)
             if reverse in ghostOptions and len( ghostOptions ) > 1:
                 ghostOptions.remove(reverse)
-            randomAction = np.random.choice(ghostOptions)
+            
+            randomAction_ind = np.random.randint(len(ghostOptions))
+            randomAction = ghostOptions[randomAction_ind]
             pacman.GhostRules.applyAction(self.state,randomAction,i)
             pacman.GhostRules.decrementTimer(self.state.data.agentStates[i])
             pacman.GhostRules.checkDeath(self.state, i)
@@ -271,7 +285,7 @@ class Pacman(Domain):
         #r -= 1 #optional time step negative reward
         self.state.data.score += r
         terminal = self.isTerminal(s)
-        if terminal != 0:
+        if terminal != False:
             self.state.data.score = 0
         #self.mapToState updates state_array for RLPy use
         return r, self.rlpy_array, terminal
@@ -318,27 +332,27 @@ class Pacman(Domain):
                     if ghost.scaredTimer == 0:
                         self.state.data.scoreChange -= 500
                         state = self.s0()
-                        return self.NOMINAL_TERMINATION
+                        return True
             self.prevGhosts = []
             self.prevGhosts.append(ghost.getPosition())
             #checks if pacman and ghost are in the same place
             if ghost.getPosition() == pacman:
                 if ghost.scaredTimer == 0:
                     self.state.data.scoreChange -= 500
-                    return self.NOMINAL_TERMINATION
+                    return True
         #checks if pacman has eaten everything, checks that every food indicator variable is zero
         if 1 not in self.rlpy_array[2*len(self.state.data.agentStates):]:
             self.state.data.scoreChange += 500
-            return self.CRITICAL_TERMINATION
+            return True
         #checks internal winning mechanism if something escapes above tests
         if self.state.data._win is True:
             self.state.data.scoreChange += 500
-            return self.CRITICAL_TERMINATION
+            return True
         if self.state.data._lose is True:
             self.state.data.scoreChange -= 500
-            return self.NOMINAL_TERMINATION
+            return True
         self.prevPacman = pacman
-        return self.NOT_TERMINATED
+        return False
 
     def defaultSettings(self):
         self.ghostNum = 2
