@@ -269,7 +269,6 @@ class Pacman(Domain):
             reverse = game.Actions.reverseDirection(self.state.data.agentStates[i].configuration.direction)
             if reverse in ghostOptions and len( ghostOptions ) > 1:
                 ghostOptions.remove(reverse)
-            
             randomAction_ind = np.random.randint(len(ghostOptions))
             randomAction = ghostOptions[randomAction_ind]
             pacman.GhostRules.applyAction(self.state,randomAction,i)

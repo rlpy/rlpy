@@ -8,27 +8,27 @@ import numpy as np
 class Domain(object):
     """
     The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
-    
+
     The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations
     about its surroundings. Based on that information, the Agent informs the %Domain what indexed action it wants to perform.
     The %Domain then calculates the effects this action has on the environment and returns the new state, a reward/penalty, and whether or not the episode is over or not (thus resetting the agent to its initial state).
     This process repeats until the %Domain determines that the Agent has either completed its goal or
     failed. The \ref Experiments.Experiment.Experiment "Experiment" controls this cycle.
-    
+
     Because Agents are designed to be agnostic to the %Domain that they are acting within and the problem they are trying to solve,
     the %Domain needs to completely describe everything related to the task. Therefore, the %Domain must not only define the observations
     that the Agent receives, but also the states it can be in, the actions that it can perform, and the relationships between the three.
     Note that because RL-Agents are designed around obtaining a reward, observations that the %Domain returns should include a reward.
-    
+
     The \c %Domain class is a superclass that provides the basic framework for all Domains. It provides the methods and attributes
     that allow child classes to interact with the \c %Agent and \c Experiment classes within the RLPy library.
     %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
     All new domain implementations should inherit from \c %Domain.
-    
+
     \note Though the state s can take on almost any
     value, if a dimension is not marked as 'continuous'
     then it is assumed to be integer.
-    
+
     """
     ## The discount factor by which rewards are reduced
     gamma = .9
@@ -56,7 +56,7 @@ class Domain(object):
         """
         Initializes the \c %Domain object. See code
         \ref Domain_init "Here".
-        
+
         """
         self.logger = logger
         for v in ['statespace_limits', 'actions_num', 'episodeCap']:
@@ -86,7 +86,7 @@ class Domain(object):
         self.rand_state = np.random.RandomState()
     # [init code]
 
-    
+
 
     # [show code]
     def show(self, s, a, representation):
@@ -113,7 +113,7 @@ class Domain(object):
         The state that the domain is in
         @param a
         The action being performed
-        
+
         """
         pass
     # [showDomain code]
@@ -126,7 +126,7 @@ class Domain(object):
         \ref Domain_showLearning "Here".
         @param representation
         The representation to show
-        
+
         """
         pass
     # [showLearning code]
@@ -138,7 +138,7 @@ class Domain(object):
         @return
         A numpy array that defines the initial state of the %Domain. See code
         \ref Domain_s0 "Here".
-        
+
         """
         abstract
     # [s0 code]
@@ -152,7 +152,7 @@ class Domain(object):
         \ref Domain_possActions "Here".
         @return
         A numpy array that contains a list of every action in the domain.
-        
+
         """
         return arange(self.actions_num)
     # [possActions code]
@@ -167,13 +167,13 @@ class Domain(object):
         @param s
         The state in which the action is to be performed
         @param a
-        The action to perform. Note that each action outside of the domain corresponds to the index of the action. This index will be interpreted within the domain.  
+        The action to perform. Note that each action outside of the domain corresponds to the index of the action. This index will be interpreted within the domain.
         @return [r,ns,t] => Reward (int), next state (state), isTerminal (bool)
 
         """
         abstract
     # [step code]
-    
+
     # [exStep code]
     #def expectedStep(self,s,a):
 #        """
@@ -214,7 +214,7 @@ class Domain(object):
         \ref Domain_test "Here".
         @param T
         The desired number of steps
-        
+
         """
         terminal    = True
         steps       = 0
@@ -236,7 +236,7 @@ class Domain(object):
         """
         Prints the class data. See code
         \ref Domain_test "Here".
-    
+
         """
         printClass(self)
     # [printAll code]
@@ -293,7 +293,7 @@ class Domain(object):
         \ref Domain_s0uniform "Here".
         @return
         The state
-        
+
         """
         if className(self) == 'BlocksWorld':
             print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)
@@ -310,7 +310,7 @@ class Domain(object):
         if len(s) == 1: s = s[0]
         return s
     # [s0uniform code]
-    
+
     # [saturateState code]
     def saturateState(self,s):
         """

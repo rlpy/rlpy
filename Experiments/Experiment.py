@@ -86,7 +86,7 @@ class Experiment(object):
     output_filename = ''
         # A simple object that records the prints in a file
     logger = None
-    
+
     max_steps           = 0     # Total number of interactions
     performanceChecks   = 0     # Number of Performance Checks uniformly scattered along the trajectory
     LOG_INTERVAL        = 0     # Number of seconds between log prints
@@ -147,17 +147,17 @@ class Experiment(object):
         # Set Exploration to zero and sample one episode from the domain
         eps_length          = 0
         eps_return          = 0
-        eps_discount_return = 0 
+        eps_discount_return = 0
         eps_term            = 0
         random_state = np.random.get_state()
 
         self.agent.policy.turnOffExploration()
-        
-        #hidden states are non Markovian variables that can exist in some problems such as the time dependent noise in the helicopter. 
+
+        #hidden states are non Markovian variables that can exist in some problems such as the time dependent noise in the helicopter.
         hidden_state = self.domain.hidden_state_
         if isinstance(hidden_state, ndarray):
             hidden_state = hidden_state.copy()
-        
+
         s = self.domain.s0()
         if self.show_performance:
             self.domain.showLearning(self.agent.representation)
@@ -206,7 +206,7 @@ class Experiment(object):
         episode_number      = 0
         start_log_time      = clock() # Used to bound the number of logs in the file
         self.start_time     = clock() # Used to show the total time took the process
-        
+
         #if self.show_all: self.domain.showLearning(self.agent.representation)
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
@@ -302,7 +302,7 @@ class Experiment(object):
             pl.ioff()
             pl.show()
 
-            
+
     def makeExperimentName(self, variables):
         exp_name = ''
 
