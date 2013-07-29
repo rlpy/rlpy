@@ -241,7 +241,8 @@ class Merger(object):
             best = max(S)
             best_index = argmax(S)
         return self.exp_paths[best_index], best
-    def plot(self,Y_axis = None, X_axis = None):
+
+    def plot(self,Y_axis = None, X_axis = None, save=False):
         #Setting default values based on the Policy Evaluation or control
         if Y_axis == None:
             if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
@@ -348,7 +349,8 @@ class Merger(object):
                     
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
-        self.save(Y_axis,X_axis,Xs,Ys,X_Errs, Y_Errs)
+		if save:
+            self.save(Y_axis,X_axis,Xs,Ys,X_Errs, Y_Errs)
         #if not isOnCluster and self.legend:
         #        # This is a hack so we can see it correctly during the runtime
         #        pl.legend(loc='lower right',fancybox=True,shadow=True, ncol=1, mode='')

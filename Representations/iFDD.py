@@ -103,7 +103,7 @@ class iFDD(Representation):
     sortediFDDFeatures      = None  # This is a priority queue based on the size of the features (Largest -> Smallest). For same size features, it is also sorted based on the newest -> oldest. Each element is the pointer to feature object.
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
-    use_chirstoph_ordered_features = True # As Christoph mentioned adding new features may affect the phi for all states. This idea was to make sure both conditions for generating active features generate the same result. 
+    use_chirstoph_ordered_features = True # As Christoph mentioned adding new features may affect the phi for all states. This idea was to make sure both conditions for generating active features generate the same result.
     def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.iFDD_features          = {}
         self.iFDD_potentials        = {}
@@ -121,7 +121,6 @@ class iFDD(Representation):
         self.initial_representation = initial_representation
         self.iFDDPlus               = iFDDPlus
         self.isDynamic              = True
-        
         self.addInitialFeatures()
         super(iFDD,self).__init__(domain,logger,discretization)
         if self.logger:
@@ -148,13 +147,13 @@ class iFDD(Representation):
         F_s[finalActiveIndices] = 1
         return F_s
 
-    def findFinalActiveFeatures(self,initialActiveFeatures):
+    def findFinalActiveFeatures(self,intialActiveFeatures):
         """
         Given the active indices of phi_0(s) find the final active indices of phi(s) based on discovered features
         """
         finalActiveFeatures = []
-        k = len(initialActiveFeatures)
-        initialSet          = set(initialActiveFeatures)
+        k = len(intialActiveFeatures)
+        initialSet          = set(intialActiveFeatures)
 
 
         if 2**k <= self.features_num:
@@ -178,10 +177,10 @@ class iFDD(Representation):
                         #if idx > 0:
                         #    assert(idx > cur_idx)
                         #idx = cur_idx
-    
+
                         if len(initialSet) == 0:
                             break # No more initial features to be mapped to extended ones
-    
+
                         if initialSet.issuperset(set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
                             feature = self.iFDD_features.get(frozenset(candidate))
                             if feature != None:
@@ -194,7 +193,7 @@ class iFDD(Representation):
                 for candidate in powerset(initialSet,ascending=0):
                     if len(initialSet) == 0:
                         break # No more initial features to be mapped to extended ones
-    
+
                     if initialSet.issuperset(set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
                         feature = self.iFDD_features.get(frozenset(candidate))
                         if feature != None:
@@ -203,7 +202,6 @@ class iFDD(Representation):
                                 #print "Sets:", initialSet, feature.f_set
                                 initialSet   = initialSet - feature.f_set
                                 #print "Remaining Set:", initialSet
-
         else:
             #print "********** Using Alternative: %d > %d" % (2**k, self.features_num)
             # Loop on all features sorted on their size and then novelty and activate features
@@ -219,10 +217,10 @@ class iFDD(Representation):
                         #print "Remaining Set:", initialSet
 
         if self.useCache:
-            self.cache[frozenset(initialActiveFeatures)] = finalActiveFeatures
+            self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures
 
-    def discover(self,phi_s,td_error):
+    def discover(self, s, a, td_error, phi_s):
         """
         returns the number of added features
         """

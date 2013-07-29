@@ -13,39 +13,57 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from GeneralTools import *
-class PriorityQueueWithNovelty():
-    # This is a priority queue where it is sorted based on priority and then then novelty of elements
-    # First Order: The Lower the priority the better
-    # Second Order: The newer the item the better
-    # Example:
-    # put (1,<O1>)
-    # put (2,<O2>)
-    # put (1,<O3>)
-    # put (10,<O4>)
-    # => multiple get() : O3,O1,O2,O4
-    # Adopted from http://stackoverflow.com/questions/9289614/how-to-put-items-into-priority-queues
+from heapq import heappush, heappop
+from Tools import deepcopy
+
+
+class PriorityQueueWithNovelty(object):
+    """This is a priority queue where it is sorted based on priority and then then novelty of elements
+    First Order: The Lower the priority the better
+    Second Order: The newer the item the better
+    Example:
+    >>> H = PriorityQueueWithNovelty()
+    >>> H.put(1,"Q1")
+    >>> H.put(2,"O2")
+    >>> H.put(1,"O3")
+    >>> H.put (10,"O4")
+    >>> H.toList()
+    ["O3", "O1", "O2", "O4"]
+
+    Adopted from http://stackoverflow.com/questions/9289614/how-to-put-items-into-priority-queues
+    """
     def __init__(self):
-        self.h = []
+        self._h = []
         self.counter = 0
+        self.cache = None
+
     def push(self, priority, item):
-        heappush(self.h,(priority, self.counter, item))
+        heappush(self._h, (priority, self.counter, item))
         self.counter -= 1
+        self.cache = None
+
     def pop(self):
-        _, _, item = heappop(self.h)
+        _, _, item = heappop(self._h)
+        self.cache = None
         return item
+
     def empty(self):
-        return len(self.h) == 0
+        return len(self._h) == 0
+
     def toList(self):
-        temp = list(self.h)
-        return [heappop(temp)[2] for i in range(len(temp))]
+        if self.cache is None:
+            temp = list(self._h)
+            self.cache = [heappop(temp)[2] for i in range(len(temp))]
+        return self.cache
+
     def show(self):
-        temp = list(self.h)
+        temp = list(self._h)
         for i in range(len(temp)):
-            p,c,x = heappop(temp)
-            print "Priotiry = %d, Novelty = %d, Obj = %s" % (p,c,str(x))
-    def __deepcopy__(self,memo):
-        new_q           = PriorityQueueWithNovelty()
-        new_q.h         = deepcopy(self.h)
-        new_q.counter   = self.counter
+            p, c, x = heappop(temp)
+            print "Priority = %d, Novelty = %d, Obj = %s" % (p, c, str(x))
+
+    def __deepcopy__(self, memo):
+        new_q = PriorityQueueWithNovelty()
+        new_q._h = deepcopy(self._h)
+        new_q.counter = self.counter
         return new_q

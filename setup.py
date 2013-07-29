@@ -6,13 +6,15 @@ python setup.py build_ext --inplace
 """
 
 from distutils.core import setup, Extension
-#from Cython.Distutils import build_ext
+from Cython.Distutils import build_ext
 import numpy
 setup(name="_transformations",
-      #cmdclass = {"build_ext": build_ext},
+      cmdclass = {"build_ext": build_ext},
       ext_modules=[
-          #Extension("Representations._hashing",
-          #                   ["Representations/_hashing.pyx"]),
+          Extension("Domains.HIVTreatment_dynamics",
+                             ["Domains/HIVTreatment_dynamics.pyx"]),
+          Extension("Representations.kernels",
+                             ["Representations/kernels.pyx"]),
           Extension("Tools._transformations",
                              ["Tools/transformations.c"],
                              include_dirs=[numpy.get_include()])])

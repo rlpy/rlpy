@@ -101,7 +101,7 @@ class Representation(object):
     # [V code]
 
 
-    ## Returns an array of actions (assumed to be discrete) available at a state and their associated values.
+    ## Returns an array of actions available at a state and their associated values.
     # If phi_s is given, the function uses it to speed up the process. See code
     # \ref Representation_Qs "Here".
     # @param s The state to examine.
@@ -111,18 +111,24 @@ class Representation(object):
     # \b A: the corresponding array of action numbers
 
     # [Qs code]
-    def Qs(self,s, phi_s = None):
+    def Qs(self,s, phi_s = None, all_actions=False):
 
         A = self.domain.possibleActions(s)
         if phi_s is None: phi_s   = self.phi(s)
         if len(phi_s) == 0:
-            return zeros((len(A))), A
+            if all_actions:
+                return zeros((self.domain.actions_num))
+            else:
+                return zeros((len(A))), A
         theta_prime = self.theta.reshape(-1, self.features_num)
         if self._phi_sa_cache.shape != (self.domain.actions_num, self.features_num):
             self._phi_sa_cache =  empty((self.domain.actions_num, self.features_num))
         Q = multiply(theta_prime, phi_s, out=self._phi_sa_cache).sum(axis=1) # stacks phi_s in cache
         #Q = dot(theta_prime, self._phi_sa_cache)
-        return Q[A].copy(), A
+        if all_actions:
+            return Q
+        else:
+            return Q[A].copy(), A
     # [Qs code]
 
 
@@ -175,6 +181,8 @@ class Representation(object):
             return phi_s, a*self.features_num, (a+1) * self.features_num
 
         phi_sa = zeros((self.features_num*self.domain.actions_num), dtype=phi_s.dtype)
+        if self.features_num == 0:
+            return phi_sa
         if len(self._arange_cache) != self.features_num:
             self._arange_cache = arange(a * self.features_num, (a+1) * self.features_num)
         else:
@@ -265,7 +273,7 @@ class Representation(object):
     # [printAll code]
 
 
-    ## Returns a list of the best actions (assumed to be discrete) at a given state.
+    ## Returns a list of the best actions at a given state.
     # If phi_s [the feature vector at state (s)]is given, it is used to speed up code by preventing re-computation. See code
     # \ref Representation_bestActions "Here".
     # @param s The given state
@@ -531,7 +539,7 @@ class Representation(object):
             cacheHit     = self.expectedStepCached.get(key)
             if cacheHit is None:
 #               # Not found in cache => Calculate and store in cache
-                # If continuous domain, sample <continuous_state_starting_samples> points within each discretized grid and sample <ns_samples>/<continuous_state_starting_samples> for each starting state.
+                # If continuous domain, sample <continuous_state_starting_samples> points within each discritized grid and sample <ns_samples>/<continuous_state_starting_samples> for each starting state.
                 # Otherwise take <ns_samples> for the state.
 
                 #First put s in the middle of the grid:
@@ -609,7 +617,7 @@ class Representation(object):
     # [V_oneStepLookAhead code]
 
     ## Returns the state vector correponding to a state_id
-    # If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discretized using a parameter into a set of bins)
+    # If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins)
     # @param s_id The id of the state, often calculated using the state2bin function
 
     # [stateID2state code]

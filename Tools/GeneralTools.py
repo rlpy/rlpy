@@ -17,6 +17,7 @@
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
 
+
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -28,29 +29,15 @@ def module_exists(module_name):
 from multiprocessing import Pool
 from operator import *
 from numpy  import *
-import numpy.random as nprand # To avoid clashes with inbuilt random type
 import sys
-
+import numpy
 #print "Numpy version:", numpy.__version__
 #print "Python version:", sys.version_info
-
-# Decomment these two lines if experience matplotlib errors;
-# set tmp_directory to any location where you have write priveleges.
-# matplotlib needs a location to dump its tmp files.
-
-# tmp_directory = r"/home/bob/mpl_tmp"
-# HOME_DIR = tmp_directory # 
-
-#For condor use
-# os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-# os.environ['MPLCONFIGDIR'] = os.environ['HOME']
-
-CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
-
 import itertools
 import platform
 import pdb
 import os
+
 
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
@@ -98,9 +85,20 @@ from os import path
 from decimal import Decimal
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
-
+from select import select
 # BELOW we have opted to always use the custom count_nonzero function; see comments
 #
+
+def input_wait(timeout):
+    """reads from the command line for timeout seconds. If nothing was entered,
+    None is returned
+    """
+    rlist, _, _ = select([sys.stdin], [], [], timeout)
+    if rlist:
+        s = sys.stdin.readline()
+        return s
+    else:
+        return None
 
 def discrete_sample(p):
     cp = numpy.cumsum(p)
@@ -224,15 +222,6 @@ def count_nonzero(arr):
 # if undo redo does not work in eclipse, you may have an uninfinished process. Kill all
 
 def randint(low,high,m=1,n=1):
-    # Use random.rand_int instead unless you want to debug and would like to generate same random numbers as matlab
-    # Generates a random integer matrix m-by-n where elements are in [low,high]
-#    res = zeros((m,n),'int64')
-#    d = high - low
-#    for i in arange(m):
-#        for j in range(n):
-#            coin = random.rand()
-#            res[i,j] = round(coin*d)+low
-#    return res
     return random.randint(low,high+1,size=(m,n))
 def randSet(x):
     #Returns a random element of a list uniformly.
@@ -314,6 +303,8 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap)
 
     mycmap = colors.ListedColormap(['r','w','k'], 'MountainCarActions')
+    cm.register_cmap(cmap=mycmap)
+    mycmap = colors.ListedColormap(['r','w','k','b'], '4Actions')
     cm.register_cmap(cmap=mycmap)
 #    Some useful Colormaps
 #    red_yellow_blue = make_colormap({0.:'r', 0.5:'#ffff00', 1.:'b'})
@@ -771,11 +762,14 @@ def printMatrix(A,type='int'):
     print array(A,dtype=type)
 def incrementalAverageUpdate(avg,sample,sample_number):
     return avg+(sample-avg)/(sample_number*1.)
+
 def isOnCluster():
-    # detect if running on condor cluster
-    if os.path.abspath('.')[0:len(CONDOR_CLUSTER_PREFIX)] == CONDOR_CLUSTER_PREFIX: # arbitrary number of digits
-        return True
+    """
+    .. warning::
+        deprecated
+    """
     return False
+
 def rootMeanSquareError(X):
     return sqrt(mean(X**2))
 def padZeros(X,L):

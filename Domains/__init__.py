@@ -1,5 +1,6 @@
 from Domain import Domain
-#from HelicopterHover import HelicopterHover, HelicopterHoverExtended
+from HelicopterHover import HelicopterHover, HelicopterHoverExtended
+from HIVTreatment import HIVTreatment
 from PuddleWorld import PuddleWorld
 from GridWorld import GridWorld
 from BlocksWorld import BlocksWorld
@@ -9,10 +10,10 @@ from SystemAdministrator import SystemAdministrator
 from PST import PST
 from Pacman import Pacman
 from IntruderMonitoring import IntruderMonitoring
-from CartPole import CartPole
+from CartPole import CartPole, CartPoleBalanceOriginal
 from Pendulum import Pendulum
 from CartPole_InvertedBalance import CartPole_InvertedBalance
-from CartPole_SwingUp import CartPole_SwingUp, CartPole_SwingUpHeight
+from CartPole_SwingUp import CartPole_SwingUp, CartPole_SwingUpReal
 from Pendulum_InvertedBalance import Pendulum_InvertedBalance
 from Pendulum_SwingUp import Pendulum_SwingUp
 from FiftyChain import FiftyChain

@@ -86,7 +86,7 @@ class Domain(object):
         self.rand_state = np.random.RandomState()
     # [init code]
 
-
+    
 
     # [show code]
     def show(self, s, a, representation):

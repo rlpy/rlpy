@@ -47,20 +47,6 @@ def submit(id):
                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''
-#                RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
-
-#        condrun='mkdir -p CondorOutput;' + \
-#                'cd CondorOutput;' + \
-#                'mkdir -p log;' +\
-#                'mkdir -p err;' +\
-#                'mkdir -p out;' +\
-#                'cd ..;' +\
-#                'condor_submit'+\
-#                 ' -a arguments = main('+str(id)+')' + RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh' +\
-#                 ' -a \'Error = CondorOutput/err/'+str(id)+'.err\''+\
-#                 ' -a \'Log = CondorOutput/log/'+str(id)+'.log\''+\
-#                 ' -a \'Output = CondorOutput/out/'+str(id)+'.out\''+\
-#                 RL_PYTHON_ROOT+'/CondorScripts/submit_script.sh'
 
         sysCall(condrun)
 
@@ -191,7 +177,7 @@ def rerun(idir,exp_num):
                 end_index   = jobstr.find(' ')
                 jobstr      = jobstr[:end_index]
                 runningJobs = eval(jobstr)
-        
+
         if runningJobs > 0:
             print ">>> Found running jobs ("+str(runningJobs)+") For user " + USERNAME + "."
 

@@ -34,6 +34,10 @@ class Logger(object):
             f.write(self.buffer)
             f.close()
             self.buffer = ''
+
+    def debug(self, str):
+        return #self.log(str)
+
     def line(self):
         self.log(SEP_LINE)
         

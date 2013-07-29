@@ -18,7 +18,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -60,21 +60,26 @@ from CartPole import *
 
 # @author: Robert H. Klein
 class CartPole_InvertedBalance(CartPole):
-    ANGLE_LIMITS        = [-pi/15, pi/15] # rad - Limits on pendulum angle per RL Community CartPole (NOTE we wrap the angle at 2*pi)
-    
+	## Limit on theta (Note that this may affect your representation's discretization)
+    ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
+	## Based on Parr 2003 and ICML 11 (RL-Matlab)
+    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    gamma               = .999
+
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
+        self.state_space_dims = len(self.statespace_limits)
         super(CartPole_InvertedBalance,self).__init__(logger)
-    def s0(self):    
+    def s0(self):
         # Returns the initial state, pendulum vertical
-        return array([0,0,0,0])
-    
+        return zeros(4)
+
     ## Return the reward earned for this state-action pair
     # On this domain, reward of 1 is given for each step spent within goal region.
     # There is no specific penalty for failure.
     def _getReward(self, s, a):
         return self.GOAL_REWARD if -pi/15 < s[StateIndex.THETA] < pi/15 else 0
-    
+
     def isTerminal(self,s):
         return (not (-pi/15 < s[StateIndex.THETA] < pi/15) or \
                 not (-2.4    < s[StateIndex.X]     < 2.4))
@@ -84,4 +89,4 @@ if __name__ == '__main__':
     random.seed(0)
     p = CartPole_InvertedBalance();
     p.test(1000)
-    
+
