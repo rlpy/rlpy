@@ -57,7 +57,7 @@ class Agent(object):
 	## Decay modes with an implementation.
 	# At the moment the choice is either 'boyan' or 'dabney'. Please use all lowercase letters to properly select a mode. \n
 	# The decay mode 'dabney' is an automatic rate described by Dabney. [Dabney W. 2012]
-    valid_decay_modes   = ['dabney','boyan','const']
+    valid_decay_modes   = ['dabney','boyan','const','boyan_const']
 	##	The N0 parameter for boyan learning rate decay
     boyan_N0            = 1000
 
@@ -131,7 +131,9 @@ class Agent(object):
             # else we take no action
         elif self.alpha_decay_mode == 'boyan':
             self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
-            self.alpha /= nnz # divide by number of nonzero features; note that this method is only called if nnz > 0
+            self.alpha /= sum(abs(phi_s)) # divide by l1 of the features; note that this method is only called if phi_s != 0
+        elif self.alpha_decay_mode == 'boyan_const':
+            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
         elif self.alpha_decay_mode == "const":
             self.alpha = self.initial_alpha
         else:
@@ -268,7 +270,7 @@ class Agent(object):
         save(output_file, DATA)
         return DATA
 		# [eval code]
-	
+
 	## This function adjusts all necessary elements of the agent at the end of the episodes.
 	# Note: Every agent must call this function at the end of the learning if the transition led to terminal state
 
@@ -276,12 +278,12 @@ class Agent(object):
     def episodeTerminated(self):
 		#Increase the number of episodes
 		self.episode_count += 1
-		
+
 		#Update the eligibility traces if they exist:
 		# Set eligibility Traces to zero if it is end of the episode
 		if hasattr(self,'eligibility_trace'):
-			if self.lambda_: 
-				self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num) 
-				self.eligibility_trace_s = zeros(self.representation.features_num) 
-		
+			if self.lambda_:
+				self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num)
+				self.eligibility_trace_s = zeros(self.representation.features_num)
+
 	# [episodeTerminated code]
