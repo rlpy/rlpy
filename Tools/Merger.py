@@ -349,7 +349,7 @@ class Merger(object):
                     
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
-		if save:
+        if save:
             self.save(Y_axis,X_axis,Xs,Ys,X_Errs, Y_Errs)
         #if not isOnCluster and self.legend:
         #        # This is a hack so we can see it correctly during the runtime

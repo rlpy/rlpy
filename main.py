@@ -170,6 +170,7 @@ def make_experiment(id=1, path="./Results/Temp"):
         return MDPsolver
     experiment = Experiment(**locals())
     return experiment
+#===============================================================
 if __name__ == '__main__':
     something = make_experiment(1) #use ID 1 by default
     if isinstance(something, Experiment):
@@ -179,10 +180,11 @@ if __name__ == '__main__':
         experiment = make_experiment(1)
         experiment.run(visualize_steps=visualize_steps, 
                        visualize_learning=visualize_learning,
-                       visualize_performance_visualize_performance)
+                       visualize_performance=visualize_performance)
         experiment.plot()
         experiment.save()
     else:
+        # MDP Solver
         something.solve()
         if visualize_performance:
             pl.ioff()
