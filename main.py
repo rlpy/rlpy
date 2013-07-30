@@ -10,6 +10,21 @@ try:
 except Exception:
     pass
 
+#Locate RLPy
+#================
+import sys, os
+RL_PYTHON_ROOT = '.'
+while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT
++ '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+   RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
+if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
+   print 'Error: Could not locate RLPy directory.'
+   print 'Please make sure the package directory is named RLPy.'
+   print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
+   sys.exit(1)
+RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
+sys.path.insert(0, RL_PYTHON_ROOT)
+
 visualize_steps = False # show each steps
 visualize_learning = False # show visualizations of the learning progress, e.g. value function
 visualize_performance = False # show performance runs
