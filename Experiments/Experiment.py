@@ -159,7 +159,7 @@ class Experiment(object):
             eps_discount_return += self.domain.gamma ** eps_length * r
             eps_length += 1
         if visualize:
-            self.domain.showDomain(s, a, t = eps_length, r=r)
+            self.domain.showDomain(s, a)
         self.agent.policy.turnOnExploration()
         # This hidden state is for domains (such as the noise in the helicopter domain) that include unobservable elements that are evolving over time
         # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP

@@ -148,7 +148,7 @@ class CartPole(Domain):
         self._assignGroundVerts()
         super(CartPole, self).__init__(logger)
 
-    def showDomain(self, s, a=0, t=None, r=None):
+    def showDomain(self, s, a=0):
         ## Plot the pendulum and its angle, along with an arc-arrow indicating the
         # direction of torque applied (not including noise!)
         # Pendulum rotation is centered at origin
@@ -184,10 +184,10 @@ class CartPole(Domain):
         pendulumBobX = curX + self.LENGTH  * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
 
-        if t is not None:
+        if self.isTerminal(s):
             self.timeText.set_text("{0:.2f}s".format(t * self.dt, pendulumBobX, pendulumBobY))
-        if r is not None:
-            self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
+        r = self._getReward(s, a)
+        self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
 
         # update pendulum arm on figure
