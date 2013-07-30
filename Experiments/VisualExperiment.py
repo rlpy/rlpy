@@ -18,7 +18,7 @@ class VisualExperiment(Experiment):
     def save(self):
         pass
 
-    def run(self):
+    def run(self, visualize_steps=False, **kwargs):
         """
         Run the online experiment and collect statistics
         """
@@ -38,7 +38,7 @@ class VisualExperiment(Experiment):
                 s           = self.domain.s0()
                 a           = self.agent.policy.pi(s)
                 #Visual
-                if self.show_all: self.domain.show(s,a, self.agent.representation)
+                if visualize_steps: self.domain.show(s,a, self.agent.representation)
                 # Hash new state for the tabular case
                 # Output the current status if certain amount of time has been passed
                 eps_return      = 0

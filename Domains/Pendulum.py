@@ -226,6 +226,9 @@ class Pendulum(Domain):
         pl.draw()
     def showLearning(self,representation):
         granularity = 10.
+        self.xTicks         = linspace(0,granularity * self.Theta_discretization - 1, 5)
+        self.yTicks         = linspace(0,granularity * self.Theta_discretization - 1, 5)
+
         pi      = zeros((self.Theta_discretization*granularity, self.ThetaDot_discretization*granularity),'uint8')
         V       = zeros((self.Theta_discretization*granularity,self.ThetaDot_discretization*granularity))
 
@@ -298,23 +301,23 @@ class Pendulum(Domain):
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = append(s, forceAction)
 
-    #-------------------------------------------------------------------------#
-    # There are several ways of integrating the nonlinear dynamics equations. #
-    # For consistency with prior results, we include the custom integration   #
-    # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
-    # Balance task, despite its slightly poorer performance in execution time #
-    # and accuracy of result.                                                 #
-    # For our own experiments we use rk4 from mlab.                           #
-    #                                                                         #
-    # Integration method         Sample runtime  Error with scipy.integrate   #
-    #                                              (most accurate method)     #
-    #  rk4 (mlab)                  3min 15sec            < 0.01%              #
-    #  pendulum_ode45 (L&P '03)    7min 15sec            ~ 2.00%              #
-    #  integrate.odeint (scipy)    9min 30sec            -------              #
-    #                                                                         #
-    # Use of any of these methods is supported by selectively commenting      #
-    # sections below.                                                         #
-    #-------------------------------------------------------------------------#
+        #-------------------------------------------------------------------------#
+        # There are several ways of integrating the nonlinear dynamics equations. #
+        # For consistency with prior results, we include the custom integration   #
+        # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
+        # Balance task, despite its slightly poorer performance in execution time #
+        # and accuracy of result.                                                 #
+        # For our own experiments we use rk4 from mlab.                           #
+        #                                                                         #
+        # Integration method         Sample runtime  Error with scipy.integrate   #
+        #                                              (most accurate method)     #
+        #  rk4 (mlab)                  3min 15sec            < 0.01%              #
+        #  pendulum_ode45 (L&P '03)    7min 15sec            ~ 2.00%              #
+        #  integrate.odeint (scipy)    9min 30sec            -------              #
+        #                                                                         #
+        # Use of any of these methods is supported by selectively commenting      #
+        # sections below.                                                         #
+        #-------------------------------------------------------------------------#
 
         # Decomment the 3 lines below to use mlab rk4 method.
         ns = rk4(self._dsdt, s_augmented, [0, self.dt])
@@ -386,72 +389,47 @@ class Pendulum(Domain):
         thetaDotDot = numer / denom
         return (thetaDot, thetaDotDot, 0) # final cell corresponds to action passed in
 
-#    def _dsdt(self, s_augmented, t):
-#        # NOTE These dynamics correspond to a true pendulum, pinned at its base.
-#        # Accepts TORQUE as input, not force.
-#        # This function is needed for ode integration.  It calculates and returns the
-#        # derivatives at a given state, s.  The last element of s_augmented is the
-#        # force action taken, required to compute these derivatives.
-#        #
-#        # ThetaDotDot =
-#        #
-#        #         mlg sin(theta) + T
-#        #         -------------------
-#        #                4l^2/3
-#        #
-#        # where T is the applied torque
-#
-#
-#        g = self.ACCEL_G
-#        l = self.MOMENT_ARM # NOTE that 'length' in these computations is actually the length of the center of mass
-#        theta       = s_augmented[StateIndex.THETA]
-#        torque       = s_augmented[StateIndex.TORQUE]
-#
-#        thetaDotDot = (self.MASS_PEND *l * g * sin(theta) + torque) / (4.0/3.0 * l**2)
-#
-#        return (s_augmented[StateIndex.THETA_DOT], thetaDotDot, 0) # final cell corresponds to action passed in
-
     ## \note \b CURRENTLY \b NOT \b IN \b USE - scipy.integrate functions preferred.
     def pendulum_ode45(self, t0, tfinal, y0, tol):
-    # ODE function from "1Link" inverted pendulum implementation,
-    # Lagoudakis & Parr 2003.
-    #
-    # Identical to L & P, with the change that only the
-    # final state is outputted.  This improves performance, since
-    # the output array does not need to be extended on each timestep.
-    # An alternative would be to preallocate and limit the output to a finite size.
-    #-------------------------------------------------------------------------------
-    #
-    # ode45_us customized for the pendulum
-    #
-    #ODE45  Integrate a system of ordinary differential equations using
-    #       4th and 5th order Runge-Kutta formulas.  See also ODE23 and
-    #       ODEDEMO.M.
-    #       [T,Y] = ODE45('yprime', T0, Tfinal, Y0, ...
-    #                A, B1, B2, C, OBsq ) integrates the system
-    #       of ordinary differential equations described by the M-file
-    #       YPRIME.M over the interval T0 to Tfinal and using initial
-    #       conditions Y0.
-    #       [T, Y] = ODE45(F, T0, Tfinal, Y0, TOL, 1) uses tolerance TOL
-    #       and displays status while the integration proceeds.
-    #
-    # INPUT:
-    # t0    - Initial value of t.
-    # tfinal- Final value of t.
-    # y0    - Initial value column-vector.
-    # tol   - The desired accuracy. (Default: tol = 1.e-6).
-    #
-    # OUTPUT:
-    # T  - Returned integration time points (row-vector).
-    # Y  - Returned solution, one solution column-vector per tout-value.
-    #
-    # The result can be displayed by: plot(tout, yout).
+        # ODE function from "1Link" inverted pendulum implementation,
+        # Lagoudakis & Parr 2003.
+        #
+        # Identical to L & P, with the change that only the
+        # final state is outputted.  This improves performance, since
+        # the output array does not need to be extended on each timestep.
+        # An alternative would be to preallocate and limit the output to a finite size.
+        #-------------------------------------------------------------------------------
+        #
+        # ode45_us customized for the pendulum
+        #
+        #ODE45  Integrate a system of ordinary differential equations using
+        #       4th and 5th order Runge-Kutta formulas.  See also ODE23 and
+        #       ODEDEMO.M.
+        #       [T,Y] = ODE45('yprime', T0, Tfinal, Y0, ...
+        #                A, B1, B2, C, OBsq ) integrates the system
+        #       of ordinary differential equations described by the M-file
+        #       YPRIME.M over the interval T0 to Tfinal and using initial
+        #       conditions Y0.
+        #       [T, Y] = ODE45(F, T0, Tfinal, Y0, TOL, 1) uses tolerance TOL
+        #       and displays status while the integration proceeds.
+        #
+        # INPUT:
+        # t0    - Initial value of t.
+        # tfinal- Final value of t.
+        # y0    - Initial value column-vector.
+        # tol   - The desired accuracy. (Default: tol = 1.e-6).
+        #
+        # OUTPUT:
+        # T  - Returned integration time points (row-vector).
+        # Y  - Returned solution, one solution column-vector per tout-value.
+        #
+        # The result can be displayed by: plot(tout, yout).
 
-    #   C.B. Moler, 3-25-87.
-    #   Copyright (c) 1987 by the MathWorks, Inc.
-    #   All rights reserved.
+        #   C.B. Moler, 3-25-87.
+        #   Copyright (c) 1987 by the MathWorks, Inc.
+        #   All rights reserved.
 
-    # TODO - an option would be to pre-allocate
+        # TODO - an option would be to pre-allocate
         t = t0;
 
         hmax = (tfinal - t)

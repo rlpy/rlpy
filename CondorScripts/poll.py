@@ -70,10 +70,25 @@ def pollOne(idir, count, detailed = False, fulldetailed = False, jobinfo=None):
                             logs.append(log)
 
             nc      = NOCOLOR
-            running = total - completed
+            missing = total - completed
             #print detailed, completed, total
-            if running:
-                print"%s: %s%d%s/%d/%s%d%s"  % (idir.replace('./',''),RUNNING_COLOR,completed,nc,len(running_jobs),TOTAL_COLOR,total,nc)
+            num_run = len([job["run_id"] for job in running_jobs if job["status"] ==2])
+            num_idle = len([job["run_id"] for job in running_jobs if job["status"] ==1])
+            num_held = len([job["run_id"] for job in running_jobs if job["status"] ==5])
+            if len(running_jobs) or missing:
+                template = "{path}: {cc}{numc}{nd}/{rc}{numr}{nd}/{ni}{numi}{nd}/{ca}{numa}{nd}"
+                print template.format(path=idir.replace('./',''),
+                                      cc=COMPLETED_COLOR,
+                                      numc=completed,
+                                      nd=nc,
+                                      rc=RUNNING_COLOR,
+                                      numr=num_run,
+                                      numi=num_idle,
+                                      ca=TOTAL_COLOR,
+                                      numa=total,
+                                      ni=RESUMING_COLOR)
+                if num_held:
+                    print "WARNING: HELD JOBS!!"
 
                 if not fulldetailed: logs = sortLog(logs)
                 for log in logs:
