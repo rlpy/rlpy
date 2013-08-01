@@ -20,3 +20,4 @@ from FiftyChain import FiftyChain
 from FlipBoard import FlipBoard
 from RCCar import RCCar
 from Acrobot import Acrobot, AcrobotLegacy
+from Pinball import Pinball
