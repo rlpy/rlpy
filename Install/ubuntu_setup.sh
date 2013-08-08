@@ -21,18 +21,6 @@ else
     echo -e "\nPython version valid.\n"
 fi
 
-
-# No longer require latex fonts, matplotlib is capable of displaying equations.
-#
-#echo "Do you wish to install latex fonts as well, required for some visualizations?"
-#select yes_no in "Yes" "No";
-#do
-#    case $yes_no in
-#        Yes ) sudo apt-get install texlive-latex-extra texlive-fonts-recommended; echo -e #"\nInstallation of Tex fonts Complete.\n"; break;;
-#        No ) echo -e "\nUser opted to ignore addons.\n"; break;;
-#    esac
-#done
-
 echo -e "\nBeginning installation of required packages.\n\n"
 sudo apt-get install python-dev python-setuptools python-numpy python-scipy python-matplotlib python-networkx graphviz
 INVALID_INPUT="1" # Start with improper directory
@@ -80,8 +68,8 @@ VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
     # Set the environment variable RL_PYTHON_ROOT
-    echo -e "We need to set an environment variable for the location of the RLPy"
-    echo -e "project directory.\nIt appears to be located in:\n"
+    echo -e "We need the location of the RLPy project directory.\n"
+    echo -e "It appears to be located in:\n"
     cd ..
     pwd
     cd - > /dev/null
@@ -118,68 +106,13 @@ do
 done
 echo ""
 cd $INSTALL_PATH
-#echo "Creating file RLPy_setup.bash in directory $INSTALL_PATH"
-# sudo echo 'export RL_Python_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RLPy_setup.bash
+
+echo -e "Now configuring cython in setup.py"
+python setup.py build_ext --inplace
 
 # Make a backup of the .bashrc and environment files before editing!
 cd
 HOMEDIR=`pwd`
-
-sudo cp .bashrc .bashrc_RLPy_BACKUP
-sudo cp /etc/environment /etc/environment_RLPy_BACKUP
-
-# Determine if .bashrc already sources this file in some way
-ALREADY_EXPORTED=`find $HOMEDIR -name '.bashrc' -exec grep RLPy_setup.bash {} +`
-
-# A file is already sourced from bashrc
-if [ "$?" -eq 0 ]; then
-    echo -e "Your .bashrc file already appears to source RLPy_setup.bash;"
-    echo -e "this line will be overwritten with the newly created one based on"
-    echo -e "your answer above."
-    # Delete the line(s) containing 'RLPy_setup.bash'
-    sudo sed -i '/RLPy_setup.bash/d' .bashrc > /dev/null
-fi
-
-# Determine if /etc/environment already sources this file in some way
-ALREADY_EXPORTED=`sudo find /etc -name 'environment' -exec grep RLPy_setup.bash {} +`
-
-# A file is already sourced from environment
-if [ "$?" -eq 0 ]; then
-    cd /etc
-    echo -e "Your /etc/environment file already appears to source RLPy_setup.bash;"
-    echo -e "this line will be overwritten with the newly created one based on"
-    echo -e "your answer above."
-    # Delete the line(s) containing 'RLPy_setup.bash'
-    sudo sed -i '/RLPy_setup.bash/d' environment > /dev/null
-fi
-
-echo -e "\nAdding source of RLPy_setup.bash to environment ..."
-
-cd /etc
-
-# Note we must use sudo su (or execute as root directly) in order to modify
-# the /etc/environment file [apparently... sudo echo etc. does not work].
-# Thus the crazy syntax below.
-
-#if [ "$?" -eq 0 ]; then
-    sudo -u root -H sh -c "echo '# Automatically added RLPy_setup.bash below by ubuntu_setup.sh script for RLPy' >> /etc/environment"
-    sudo -u root -H sh -c "echo 'source $INSTALL_PATH/RLPy_setup.bash' >> /etc/environment"
-    echo -e "Successfully modified environment.\n"
-
-echo -e "Adding source of RLPy_setup.bash to .bashrc ..."
-
-cd $HOMEDIR
-#if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RLPy_setup.bash below by ubuntu_setup.sh script for RLPy" >> .bashrc
-    sudo echo "source $INSTALL_PATH/RLPy_setup.bash" >> .bashrc
-    echo -e "Successfully modified .bashrc\n"
-#else
-#    echo -e "There was a problem creating a backup of .bashrc.  You will need \n"
-#    echo -e "to manually 'source' the file RLPy_setup.bash for your shell\n"
-#    echo -e "environment; we recommend adding it to whatever startup script\n"
-#    echo -e "is used on your machine.\n"
-#fi
-
 
 # Finally, create the config.py file which we can use to add other environment
 # variables to our project.
@@ -225,20 +158,6 @@ do
     fi
 done
 echo ""
-
-# Now create the config.py file
-cd $INSTALL_PATH
-(
-echo "# *****************************************************************************"
-echo "# *** WARNING: CHANGES TO THIS FILE WILL BE OVERWRITTEN BY INSTALLER SCRIPT ***"
-echo "# *****************************************************************************"
-echo ""
-echo "HOME_DIR = r\"$TMP_PATH\" # Where to store tempfiles for matplotlib"
-echo "CONDOR_CLUSTER_PREFIX = '/data' # not used anywhere as part of path,"
-echo "# only as unique identifier distinguishing cluster from normal local machine."
-echo "# See isOnCluster()."
-) > Config.py
-
 
 INVALID_INPUT="1" # Start with improper directory
 while [ "$INVALID_INPUT" -ne 0 ]
@@ -293,15 +212,7 @@ do
         esac
     done
 done
-echo ""
-
-# This may not propagate changes to parent terminal window when installer
-# exits; recommend user does this.
-source ~/.bashrc
-
-echo -e "We recommend you *** RESTART YOUR COMPUTER *** for environmental"
-echo -e "variable changes to take effect."
-
+echo -e "\n"
 
 echo -e "\n"
 read -p "Installation script complete, press [Enter] to exit."

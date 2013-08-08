@@ -104,7 +104,8 @@ if [ $EXIT_CODE -eq 0 ]; then
 fi
 
 sudo pip install matplotlib
-sudo pip install networkx
+sudo pip install cython # For HIV Domain
+sudo pip install networkx # For System Administrator domain
 
 # TODO: Scikit learn also requires setuptools, some sites say no further update req'd.
 # Must test below on fresh system. 
@@ -141,8 +142,8 @@ VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
 do
     # Set the environment variable RLPy_ROOT
-    echo -e "We need to set an environment variable for the location of the RLPy"
-    echo -e "project directory.\nIt appears to be located in:\n"
+    echo -e "We need the absolute location of the RLPy project directory.\n"
+    echo -e "It appears to be located in:\n"
     cd ..
     pwd
     cd - > /dev/null
@@ -182,49 +183,9 @@ do
 done
 echo ""
 cd $INSTALL_PATH
-#echo "Creating file RLPy_setup.bash in directory $INSTALL_PATH"
-# sudo echo 'export RLPy_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" ' > RLPy_setup.bash
 
-# Make a backup of the .launchd.conf file before editing!
-cd ~
-HOMEDIR=`pwd`
-
-# Only copy the .launchd.conf file if it exists (to prevent throwing an error)
-if [ -f .launchd.conf  ]; then
-    sudo cp .launchd.conf .launchd.conf_RLPy_BACKUP
-fi
-# Determine if .launchd.conf already sources the RLPy_setup file in some way
-ALREADY_EXPORTED=`find $HOMEDIR -name '.launchd.conf' -maxdepth 1 -exec grep RLPy_setup.bash {} +`
-
-# A file is already sourced from .launchd.conf
-if [ "$?" -eq 0 ]; then
-    echo -e "Your .launchd.conf file already appears to source RLPy_setup.bash;"
-    echo -e "this line will be overwritten with the newly created one based on"
-    echo -e "your answer above."
-    # Delete the line(s) containing 'RLPy_setup.bash'
-    # NOTE THE DIFFERENT SYNTAX for 'sed' on OSX, need to explicitly include backup
-    # extension for the file, .BAK - see 
-    # https://sites.google.com/site/randomprogrammingnotes/macosxsed
-    sudo sed -i .BAK '/RLPy_setup.bash/d' .launchd.conf > /dev/null
-fi
-
-echo -e "\nAdding source of RLPy_setup.bash to .launchd.conf\n"
-
-#if [ "$?" -eq 0 ]; then
-    sudo echo "# Automatically added RLPy_setup.bash below by OSX_setup.sh script for RLPy" >> .launchd.conf
-    sudo echo "source $INSTALL_PATH/RLPy_setup.bash" >> .launchd.conf
-    echo -e "Successfully modified .launchd.conf\n"
-#else
-#    echo -e "There was a problem creating a backup of .launchd.conf.  You will need \n"
-#    echo -e "to manually 'source' the file RLPy_setup.bash for your shell\n"
-#    echo -e "environment; we recommend adding it to whatever startup script\n"
-#    echo -e "is used on your machine.\n"
-#fi
-
-
-
-# Finally, create the config.py file which we can use to add other environment
-# variables to our project.
+echo -e "Now configuring cython in setup.py"
+python setup.py build_ext --inplace
 
 VALID_DIRECTORY_ZERO="1" # Start with improper directory
 while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
@@ -266,33 +227,6 @@ do
         yes_no="2"
     fi
 done
-echo ""
-
-# Now create the config.py file
-cd $INSTALL_PATH
-(
-echo "# *****************************************************************************"
-echo "# *** WARNING: CHANGES TO THIS FILE WILL BE OVERWRITTEN BY INSTALLER SCRIPT ***"
-echo "# *****************************************************************************"
-echo ""
-echo "HOME_DIR = r\"$TMP_PATH\" # Where to store tempfiles for matplotlib"
-echo "CONDOR_CLUSTER_PREFIX = '/data' # not used anywhere as part of path,"
-echo "# only as unique identifier distinguishing cluster from normal local machine."
-echo "# See isOnCluster()."
-) > Config.py
-
-# No need to create desktop shortcut to source files, .launchd.conf automatically
-# adds variables on user login to all programs launched by user.
-
-# Below removed per agf request, but it remains a true statement :)
-# As of this writing, we just aren't relying on environment variables at all.
-# TODO - Suggest exporting the variable at end of script, in addition to writing
-# config file, to eliminate need for restart.
-
-
-#echo -e "You must *** RESTART YOUR COMPUTER *** for environmental"
-#echo -e "variable changes to take effect."
-
-
+echo -e "\n"
 echo -e "\n"
 read -p "Installation script complete, press [Enter] to exit."
