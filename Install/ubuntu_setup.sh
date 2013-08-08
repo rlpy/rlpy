@@ -22,7 +22,9 @@ else
 fi
 
 echo -e "\nBeginning installation of required packages.\n\n"
-sudo apt-get install python-dev python-setuptools python-numpy python-scipy python-matplotlib python-networkx graphviz
+sudo apt-get install python-dev python-setuptools python-numpy python-scipy python-matplotlib python-networkx graphviz python-pip
+sudo pip install cython # For HIV Domain
+
 INVALID_INPUT="1" # Start with improper directory
 while [ "$INVALID_INPUT" -ne 0 ]
 do
