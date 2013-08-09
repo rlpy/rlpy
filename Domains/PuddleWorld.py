@@ -69,10 +69,10 @@ class PuddleWorld(Domain):
             self.logger.log("Noise level:\t{0}".format(self.noise_level))
 
     def s0(self):
-        s = self.rand_state.rand(2)
-        while self.isTerminal(s):
-            s = self.rand_state.rand(2)
-        return s
+        self.state = self.rand_state.rand(2)
+        while self.isTerminal(self.state):
+            self.state = self.rand_state.rand(2)
+        return self.state.copy()
 
     def isTerminal(self, s):
         return s.sum() > 0.95 * 2
@@ -80,12 +80,13 @@ class PuddleWorld(Domain):
     def possibleActions(self, s):
         return np.arange(self.actions_num)
 
-    def step(self, s, a):
+    def step(self, a):
         a = self.actions[a]
-        ns = s + a + self.rand_state.randn() * self.noise_level
+        ns = self.state + a + self.rand_state.randn() * self.noise_level
         # make sure we stay inside the [0,1]^2 region
         ns = np.minimum(ns, 1.)
         ns = np.maximum(ns, 0.)
+        self.state = ns.copy()
         return (self.reward(ns), ns, self.isTerminal(ns))
 
     def reward(self, s):

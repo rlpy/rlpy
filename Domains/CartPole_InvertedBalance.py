@@ -70,9 +70,11 @@ class CartPole_InvertedBalance(CartPole):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         self.state_space_dims = len(self.statespace_limits)
         super(CartPole_InvertedBalance,self).__init__(logger)
+
     def s0(self):
         # Returns the initial state, pendulum vertical
-        return zeros(4)
+        self.state = zeros(4)
+        return self.state.copy()
 
     ## Return the reward earned for this state-action pair
     # On this domain, reward of 1 is given for each step spent within goal region.

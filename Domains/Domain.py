@@ -86,7 +86,7 @@ class Domain(object):
         self.rand_state = np.random.RandomState()
     # [init code]
 
-    
+
 
     # [show code]
     def show(self, s, a, representation):
@@ -134,7 +134,7 @@ class Domain(object):
     # [s0 code]
     def s0(self):
         """
-        Returns the initial state of the %Domain
+        Begins a new episode and returns the initial state of the %Domain
         @return
         A numpy array that defines the initial state of the %Domain. See code
         \ref Domain_s0 "Here".
@@ -158,14 +158,12 @@ class Domain(object):
     # [possActions code]
 
     # [step code]
-    def step(self,s,a):
+    def step(self,a):
         """
         \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
         This function should return a reward that the agent acheives for the action, the next state that the domain/agent should be in,
         and a boolean determining whether a goal or fail state has been reached. See code
         \ref Domain_step "Here".
-        @param s
-        The state in which the action is to be performed
         @param a
         The action to perform. Note that each action outside of the domain corresponds to the index of the action. This index will be interpreted within the domain.
         @return [r,ns,t] => Reward (int), next state (state), isTerminal (bool)

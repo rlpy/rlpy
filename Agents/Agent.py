@@ -163,7 +163,7 @@ class Agent(object):
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a               = self.policy.pi(s)
-            r,ns,eps_term   = self.domain.step(s, a)
+            r,ns,eps_term   = self.domain.step(a)
             s               = ns
             eps_return     += r
             eps_length     += 1
@@ -198,7 +198,7 @@ class Agent(object):
         if s is None: s = self.domain.s0()
         if a is None: a = self.policy.pi(s)
         while not eps_term and eps_length < self.domain.episodeCap:
-            r,ns,eps_term       = self.domain.step(s, a)
+            r,ns,eps_term       = self.domain.step(a)
             s                   = ns
             eps_return          += r
             eps_discounted_return += self.representation.domain.gamma**eps_length * r
@@ -262,7 +262,7 @@ class Agent(object):
             #Store the corresponding Q
             Q = self.Q_MC(s,a,MC_samples, tolerance)
             DATA[steps,:] = hstack((s,[a, Q]))
-            r,s,terminal = self.domain.step(s, a)
+            r,s,terminal = self.domain.step(a)
             steps += 1
 
             self.logger.log("Sample "+ str(steps)+":"+ str(s)+" "+str(a)+" "+str(Q))

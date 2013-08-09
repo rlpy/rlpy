@@ -185,6 +185,7 @@ class CartPole(Domain):
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
 
         if self.isTerminal(s):
+            t = 1.
             self.timeText.set_text("{0:.2f}s".format(t * self.dt, pendulumBobX, pendulumBobY))
         r = self._getReward(s, a)
         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
@@ -228,7 +229,7 @@ class CartPole(Domain):
     def possibleActions(self,s): # Return list of all indices corresponding to actions available
         return np.arange(self.actions_num)
 
-    def step(self,s,a):
+    def step(self, a):
         # Simulate one step of the CartPole after taking action a
         # Note that at present, this is almost identical to the step for the Pendulum.
 
@@ -239,7 +240,7 @@ class CartPole(Domain):
             forceAction += np.random.uniform(-self.force_noise_max, self.force_noise_max)
 
         # Now, augment the state with our force action so it can be passed to _dsdt
-        s_augmented = np.append(s, forceAction)
+        s_augmented = np.append(self.state, forceAction)
         if self.int_type == "euler":
             int_fun = self.euler_int
         elif self.int_type == "odeint":
@@ -261,6 +262,7 @@ class CartPole(Domain):
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
         terminal                    = self.isTerminal(ns)
         reward                      = self._getReward(ns, a)
+        self.state = ns.copy()
         return reward, ns, terminal
 
     def euler_int(self, df, x0, times):

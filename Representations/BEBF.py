@@ -40,7 +40,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -74,14 +74,14 @@ class BEBF(Representation):
         self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
         self.logger.log("Norm Threshold:\t\t%0.3f"% self.batchThreshold)
         self.isDynamic  = True
-        ## @return: a function object corresponding to the 
+        ## @return: a function object corresponding to the
     def getFunctionApproximation(self,X,y):
         #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = 0.0005) # support vector regression
                                                  # C = penalty parameter of error term, default 1
         bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = self.svm_epsilon)
         bebfApprox.fit(X,y)
         return bebfApprox
-    
+
 #    def getFunctionApproximation(self,X,y):
         #return Rbf(X,y,function='multiquadric') # function = gaussian
         #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
@@ -91,8 +91,8 @@ class BEBF(Representation):
 #        return gp
 #        bebfApprox.fit(X,y)
 #        return bebfApprox
-    
-    
+
+
     def addInitialFeatures(self):
 #        numDims = 1
 #        numSamples = 100
@@ -109,7 +109,7 @@ class BEBF(Representation):
 #        print 's,F_s',s,F_s
 #        shout('F_s:',F_s)
         return F_s
-    
+
     ## Adds new features based on the Bellman Error in batch setting.
     # @param td_errors: p-by-1 (How much error observed for each sample)
     # @param all_phi_s: n-by-p features corresponding to all samples (each column corresponds to one sample)
@@ -134,7 +134,7 @@ class BEBF(Representation):
                 addedFeature        = True
                 self.features_num   += 1
                 self.logger.log('Added feature. \t %d total feats' % self.features_num)
-            else: 
+            else:
                 break
         return addedFeature
     def featureType(self):
@@ -155,8 +155,7 @@ if __name__ == '__main__':
     s           = domain.s0()
     a           = domain.possibleActions(s)
     a = a[0]
-    r,ns,terminal   = domain.step(s, a)
+    r,ns,terminal   = domain.step(a)
     print 'step 2 r,ns',r,ns
-    
-    
-    
+
+

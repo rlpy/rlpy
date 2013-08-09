@@ -18,7 +18,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -31,7 +31,7 @@ from Domain import *
 # \author Developed by Alborz Geramiard Nov 20th 2012 at MIT #
 ######################################################
 # A simple Chain MDP \n
-# s0 <-> s1 <-> ... <-> sn \n  
+# s0 <-> s1 <-> ... <-> sn \n
 # Actions are left [0] and right [1] \n
 # The task is to reach sn from s0.
 # Optimal policy is always to go right
@@ -40,21 +40,21 @@ class ChainMDP(Domain):
     GOAL_REWARD = 0
     STEP_REWARD = -1
 	## Set by the domain = min(100,rows*cols)
-    episodeCap  = 0             
+    episodeCap  = 0
 	## Used for graphical normalization
-    MAX_RETURN  = 1             
+    MAX_RETURN  = 1
 	## Used for graphical normalization
-    MIN_RETURN  = 0             
+    MIN_RETURN  = 0
 	## Used for graphical shifting of arrows
-    SHIFT       = .3            
+    SHIFT       = .3
 	## Used for graphical radius of states
-    RADIUS      = .5            
-	## Stores the graphical pathes for states so that we can later change their colors 
-    circles     = None          
+    RADIUS      = .5
+	## Stores the graphical pathes for states so that we can later change their colors
+    circles     = None
 	## Number of states in the chain
-    chainSize   = 0             
+    chainSize   = 0
 	## Y values used for drawing circles
-    Y           = 1             
+    Y           = 1
     actions_num = 2
     #Constants in the map
     def __init__(self, chainSize=2,logger = None):
@@ -83,22 +83,27 @@ class ChainMDP(Domain):
                     if i != self.chainSize-2: fromAtoB(1+2*(i+1)-self.SHIFT,self.Y-self.SHIFT,1+2*i+self.SHIFT, self.Y-self.SHIFT, 'r')
                fromAtoB(.75,self.Y-1.5*self.SHIFT,.75,self.Y+1.5*self.SHIFT,'r',connectionstyle='arc3,rad=-1.2')
                pl.show()
-            
+
         [p.set_facecolor('w') for p in self.circles]
         self.circles[s].set_facecolor('k')
         pl.draw()
-    def step(self,s,a):
-        s = s[0]
+
+    def step(self,a):
+        s = self.state
         if a == 0: #left
             ns = max(0,s-1)
         if a == 1:
             ns = min(self.chainSize-1,s+1)
+        self.state = ns
         ns = array([ns])
         terminal = self.isTerminal(ns)
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
+
     def s0(self):
-        return array([0])
+        self.state = 0
+        return array([self.state])
+
     def isTerminal(self,s):
         return (s[0] == self.chainSize - 1)
 
@@ -106,5 +111,4 @@ if __name__ == '__main__':
     #p = GridWorld('/Domains/GridWorldMaps/ACC2011.txt');
     p = ChainMDP(5);
     p.test(1000)
-    
-    
+

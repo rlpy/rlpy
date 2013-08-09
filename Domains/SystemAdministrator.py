@@ -42,7 +42,7 @@ from Domain import *
 # Penalty -0.75 for taking a reboot action. \n
 # State is the vector of binary computer statuses: \n
 # RUNNING = 1 for working computers, BROKEN = 0 otherwise. \n
-# Example: 
+# Example:
 # [1 1 0 1] -> computers 0,1,3 are RUNNING,
 # computer 2 is BROKEN.
 #
@@ -63,37 +63,37 @@ class SystemAdministrator(Domain):
 
     NEIGHBORS       = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
     UNIQUE_EDGES    = [] # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
-    
+
     P_SELF_REPAIR   = 0.04
     P_REBOOT_REPAIR = 1.0
-    
+
     IS_RING         = False # For ring structures, Parr enforces assymetry by having one machine get extra reward for being up.
-    
+
     REBOOT_REWARD   = -0.75
-    # Computer "up" reward implicitly 1; tune other rewards relative to this.   
-     
+    # Computer "up" reward implicitly 1; tune other rewards relative to this.
+
     episodeCap      = 200        # 200 used in tutorial
     gamma           = .95        # Based on IJCAI01 Paper
-    
+
     # Plotting Variables
     networkGraph    = None     # Graph of network used for visualization
     networkPos  = None       # Position of network graph
-    
+
     # Possible values for each computer
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2         # Number of values possible for each state, must be hand-coded to match number defined above
-            
+
     # Note that you must pass a network map name as well as its format type.
     # @see SystemAdministrator(Domain)
     def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
         path                    = networkmapname
         self.IS_RING            = "ring.txt" in networkmapname.lower()
-        self.loadNetwork(path)   
+        self.loadNetwork(path)
         # TODO Need a check here for degenerate
         self.actions_num            = self.computers_num + 1     # Number of Actions, including no-op
         self.statespace_limits      = tile([0,self._NUM_VALUES-1],(self.computers_num,1))# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         super(SystemAdministrator,self).__init__(logger)
-        if self.logger: 
+        if self.logger:
             self.logger.log('Computers:\t%d' % self.computers_num)
             self.logger.log('Edges:\t\t%s' % str(self.UNIQUE_EDGES))
             self.logger.log('Neighbors:')
@@ -110,7 +110,7 @@ class SystemAdministrator(Domain):
     # @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
     # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
     # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
-	
+
 	# @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/mapname.txt'
 	# @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
     # containing the neighbors of computer node i at index i, and _Edges is a list
@@ -168,12 +168,12 @@ class SystemAdministrator(Domain):
             if redEdges:    nx.draw_networkx_edges(self.networkGraph, self.networkPos, edgelist=redEdges, edge_color="k",width=2,style='dotted')
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
         pl.draw()
-    def step(self,s,a):
+    def step(self,a):
         #ns = s[:] # make copy of state so as not to affect original mid-step
-        ns = s.copy()
+        ns = self.state.copy()
        # print 'action selected',a,s
         totalRebootReward = 0
-        for computer_id, compstatus in enumerate(s):
+        for computer_id, compstatus in enumerate(self.state):
             if(a == computer_id): #Reboot action on this computer
                 totalRebootReward += self.REBOOT_REWARD
                 # NOTE can break up if-statement below to separate cases
@@ -185,7 +185,7 @@ class SystemAdministrator(Domain):
             else: # Transition to new state probabilistically
                 if (compstatus == self.RUNNING):
                     # take neighbors of computer_id and sum over each of their current values
-                    sumOfNeighbors = sum([s[i] for i in self.NEIGHBORS[computer_id]])
+                    sumOfNeighbors = sum([self.state[i] for i in self.NEIGHBORS[computer_id]])
                     # TODO this expression should be a function, or something
                     p_broken = 1.0 - (0.45 + 0.5 * (1+sumOfNeighbors) / (1+len(self.NEIGHBORS[computer_id])))
 #                    print "P_broken",p_broken
@@ -199,19 +199,23 @@ class SystemAdministrator(Domain):
         if (self.IS_RING and s[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
 #        print s,ns,sum(s)+totalRebootReward
         terminal = False
-        return sum(s)+totalRebootReward,ns,terminal
+        self.state = ns.copy()
+        return sum(self.state)+totalRebootReward,ns,terminal
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+
     def s0(self):
-        return array([self.RUNNING for dummy in arange(0,self.state_space_dims)]) # Omits final index
+        self.state = array([self.RUNNING for dummy in arange(0,self.state_space_dims)]) # Omits final index
+        return self.state.copy()
 #        return array([self.BROKEN]* self.state_space_dims)
         #arrTmp = array([self.BROKEN]* self.state_space_dims)
         #arrTmp[arange(10)] = self.RUNNING
         #return arrTmp
+
     def possibleActions(self,s):
         possibleActs = [computer_id for computer_id,compstatus in enumerate(s) if compstatus == self.BROKEN]
         possibleActs.append(self.computers_num) # append the no-op action
         return array(possibleActs)
-        
+
     # @param neighborsList: each element at index i is a list of nodes connected to the node at i.
     # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def setUniqueEdges(self, neighborsList):
@@ -250,4 +254,3 @@ if __name__ == '__main__':
         p = SystemAdministrator(networkmapname='SystemAdministratorMaps/16-5Branches.txt');
         #p = SystemAdministrator(networkmapname='SystemAdministratorMaps/20MachTutorial.txt');
         p.test(1000)
-     

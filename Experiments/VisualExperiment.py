@@ -46,7 +46,7 @@ class VisualExperiment(Experiment):
                 episode_number += 1
 
             #Act,Learn,Step
-            r,ns,terminal   = self.domain.step(s, a)
+            r,ns,terminal   = self.domain.step(a)
             na              = self.agent.policy.pi(ns)
             total_steps     += 1
             eps_steps       += 1

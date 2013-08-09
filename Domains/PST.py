@@ -30,7 +30,7 @@ sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
 from Domain import *
-# See [[]] for domain detailed domain description. 
+# See [[]] for domain detailed domain description.
 
 ########################################################
 # \author Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT
@@ -213,12 +213,12 @@ class PST(Domain):
         [self.subplot_axes.add_patch(self.location_rect_vis[i]) for i in range(4)]
         self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
         self.comms_line.append(lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2, crashLocationX],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False))
-        
+
         # Create location text below rectangles
         locText = ["Base","Refuel","Communication","Surveillance"]
         self.location_rect_txt = [pl.text(0.5 + self.dist_between_locations*i + 0.5*self.LOCATION_WIDTH,-0.3,locText[i], ha = 'center') for i in range(UAVLocation.SIZE-1)]
         self.location_rect_txt.append(pl.text(crashLocationX + 0.5*self.LOCATION_WIDTH,-0.3,locText[UAVLocation.SIZE-1], ha = 'center'))
-        
+
         # Initialize list of circle objects
 
         uav_x = self.location_coord[UAVLocation.BASE]
@@ -273,7 +273,7 @@ class PST(Domain):
             self.subplot_axes.add_patch(self.uav_circ_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
-		
+
         numHealthySurveil = sum(logical_and(sStruct.locations == UAVLocation.SURVEIL, sStruct.sensor))
         if (any(sStruct.locations == UAVLocation.COMMS)): # We have comms coverage: draw a line between comms states to show this
             [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
@@ -291,10 +291,11 @@ class PST(Domain):
 #===============================================================================
     def showLearning(self,representation):
         pass
-    def step(self,s,a):
+
+    def step(self,a):
         # Note below that we pass the structure by reference to save time; ie, components of sStruct refer directly to s
-        ns = s.copy()
-        sStruct = self.state2Struct(s)
+        ns = self.state.copy()
+        sStruct = self.state2Struct(self.state)
         nsStruct = self.state2Struct(ns)
         # Subtract 1 below to give -1,0,1, easily sum actions
         actionVector = array(id2vec(a,self.LIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
@@ -342,8 +343,10 @@ class PST(Domain):
         if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
 #debug        print totalStepReward,ns,self.isTerminal(ns)
+        self.state = ns.copy()
         return totalStepReward,ns,self.isTerminal(ns)
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+
     def s0(self):
         self.resetLocalVariables()
         locations   = ones(self.NUM_UAV, dtype='int') * UAVLocation.BASE
@@ -351,7 +354,8 @@ class PST(Domain):
         actuator    = ones(self.NUM_UAV, dtype='int') * ActuatorState.RUNNING
         sensor      = ones(self.NUM_UAV, dtype='int') * SensorState.RUNNING
 
-        return self.properties2StateVec(locations, fuel, actuator, sensor)
+        self.state = self.properties2StateVec(locations, fuel, actuator, sensor)
+        return self.state.copy()
 
     # @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):
@@ -436,7 +440,7 @@ class PST(Domain):
         sStruct = self.state2Struct(s)
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 
-# \cond DEV		
+# \cond DEV
 class UAVLocation:
     BASE = 0
     REFUEL      = 1

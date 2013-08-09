@@ -283,12 +283,15 @@ class Pendulum(Domain):
         self.policy_fig.set_data(pi)
         pl.draw()
 #        sleep(self.dt)
+
     def s0(self):
         # Defined by children
         abstract
+
     def possibleActions(self,s): # Return list of all indices corresponding to actions available
         return arange(self.actions_num)
-    def step(self,s,a):
+
+    def step(self,a):
     # Simulate one step of the pendulum after taking force action a
 
         forceAction = self.AVAIL_FORCE[a]
@@ -299,7 +302,7 @@ class Pendulum(Domain):
         else: forceNoise = 0
 
         # Now, augment the state with our force action so it can be passed to _dsdt
-        s_augmented = append(s, forceAction)
+        s_augmented = append(self.state, forceAction)
 
         #-------------------------------------------------------------------------#
         # There are several ways of integrating the nonlinear dynamics equations. #
@@ -338,6 +341,7 @@ class Pendulum(Domain):
         ns[StateIndex.THETA_DOT]    = bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         terminal                    = self.isTerminal(ns)
         reward                      = self._getReward(ns,a)
+        self.state = ns.copy()
         return reward, ns, terminal
 
     #

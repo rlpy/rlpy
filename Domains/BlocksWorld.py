@@ -99,7 +99,9 @@ class BlocksWorld(Domain):
             pl.draw()
     def showLearning(self,representation):
         pass #cant show 6 dimensional value function
-    def step(self,s,a):
+
+    def step(self,a):
+        s = self.state
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
         #print 'taking action %d->%d' % (A,B)
         if not self.validAction(s,A,B):
@@ -112,10 +114,14 @@ class BlocksWorld(Domain):
         ns[A]       = B # A is on top of B now.
         terminal    = self.isTerminal(ns)
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
+        self.state = ns.copy()
         return r,ns,terminal
+
     def s0(self):
         # all blocks on table
-        return arange(self.blocks)
+        self.state = arange(self.blocks)
+        return self.state.copy()
+
     def possibleActions(self,s):
         # return the id of possible actions
         # find empty blocks (nothing on top)

@@ -246,14 +246,15 @@ class Pacman(Domain):
             self.gameDisplay.update( s.data )
 
 
-    def step(self, s, a):
+    def step(self, a):
         """
         Applies actions from outside the Pacman domain to the given state.
         Internal states accounted for along with scoring and terminal checking.
         Returns a tuple of form (reward, state vector, terminal)
         """
         #matches internal states with given s vector
-        self.state = self.sToObject(s)
+        #self.state = self.sToObject(s)
+        s = self.mapToState()
         if np.random.random_sample() < self.NOISE:
             #Random Move
             a = randSet(self.possibleActions(s))
@@ -275,7 +276,6 @@ class Pacman(Domain):
             pacman.GhostRules.decrementTimer(self.state.data.agentStates[i])
             pacman.GhostRules.checkDeath(self.state, i)
             self.ghostDict['ghost'+str(i)] = (self.state.data.agentStates[i].configuration.pos[0],self.state.data.agentStates[i].configuration.pos[1], self.state.data.agentStates[i].scaredTimer)
-        s = self.mapToState()
         #scoring in pacman
         r = self.state.data.scoreChange
         if len(self.state.data.agentStates) > 1:
@@ -286,8 +286,8 @@ class Pacman(Domain):
         terminal = self.isTerminal(s)
         if terminal != False:
             self.state.data.score = 0
-        #self.mapToState updates state_array for RLPy use
-        return r, self.rlpy_array, terminal
+        #self.mapToState updates state_array for RLPy use (but it also returns it, so lets use that)
+        return r, self.mapToState(), terminal
 
     def s0(self):
         #re-initializes internal states when an episode starts, returns a s vector

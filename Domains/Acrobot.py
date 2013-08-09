@@ -83,13 +83,14 @@ class Acrobot(Domain):
     actions_num = 3
 
     def s0(self):
+        self.state = np.zeros((4))
         return np.zeros((4))
 
     def isTerminal(self, s):
         return -np.cos(s[0]) - np.cos(s[1] + s[0]) > 1.
 
-    def step(self, s, a):
-
+    def step(self, a):
+        s = self.state
         torque = self.AVAIL_TORQUE[a]
 
         # Add noise to the force action
@@ -112,6 +113,7 @@ class Acrobot(Domain):
         ns[3] = bound(ns[3], -self.MAX_VEL_2, self.MAX_VEL_2)
         terminal = self.isTerminal(ns)
         reward = -1. if not terminal else 0.
+        self.state = ns.copy()
         return reward, ns, terminal
 
     def _dsdt(self, s_augmented, t):
@@ -237,9 +239,10 @@ class AcrobotLegacy(Acrobot):
     """
 
     book_or_nips = "book"
-    def step(self, s, a):
+    def step(self, a):
 
         torque = self.AVAIL_TORQUE[a]
+        s = self.state
 
         # Add noise to the force action
         if self.torque_noise_max > 0:
@@ -263,5 +266,6 @@ class AcrobotLegacy(Acrobot):
         ns = s_augmented[:4]  # omit action
         terminal = self.isTerminal(ns)
         reward = -1. if not terminal else 0.
+        self.state = ns.copy()
         return reward, ns, terminal
 

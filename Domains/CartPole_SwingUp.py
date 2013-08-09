@@ -60,8 +60,8 @@ class CartPole_SwingUp(CartPole):
 
     def s0(self):
         # Returns the initial state, pendulum vertical
-        return array([pi,0,0,0])
-
+        self.state = array([pi,0,0,0])
+        return self.state.copy()
 
     ## Return the reward earned for this state-action pair
     # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2

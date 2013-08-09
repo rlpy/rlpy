@@ -138,12 +138,6 @@ class Experiment(object):
 
         self.agent.policy.turnOffExploration()
 
-        # hidden states are non Markovian variables that can exist in some
-        # problems such as the time dependent noise in HelicopterHover.
-        hidden_state = self.domain.hidden_state_
-        if isinstance(hidden_state, ndarray):
-            hidden_state = hidden_state.copy()
-
         s = self.domain.s0()
 
         while not eps_term and eps_length < self.domain.episodeCap:
@@ -152,7 +146,7 @@ class Experiment(object):
                 self.domain.showDomain(s, a)
                 pl.title('After ' + str(total_steps) + ' Steps')
 
-            r, ns, eps_term = self.domain.step(s, a)
+            r, ns, eps_term = self.domain.step(a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
@@ -163,7 +157,6 @@ class Experiment(object):
         self.agent.policy.turnOnExploration()
         # This hidden state is for domains (such as the noise in the helicopter domain) that include unobservable elements that are evolving over time
         # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP
-        self.domain.hidden_state_ = hidden_state
 
         return eps_return, eps_length, eps_term, eps_discount_return
 
@@ -234,7 +227,7 @@ class Experiment(object):
             #    timed_ipshell(1)
 
             # Act,Step
-            r, ns, terminal   = self.domain.step(s, a)
+            r, ns, terminal   = self.domain.step(a)
             na              = self.agent.policy.pi(ns)
             total_steps     += 1
             eps_steps       += 1

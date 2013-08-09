@@ -80,8 +80,9 @@ class MountainCar(Domain):
         self.MAX_RETURN     = 0
         self.DimNames       = ['X','Xdot']
         super(MountainCar,self).__init__(logger)
-    def step(self, s, a):
-        position, velocity = s
+
+    def step(self, a):
+        position, velocity = self.state
         noise = 2 * self.accelerationFactor * self.noise * (random.rand() - .5)
         velocity += (noise +
                                 self.actions[a] * self.accelerationFactor +
@@ -90,14 +91,19 @@ class MountainCar(Domain):
         position += velocity
         position = bound(position, self.XMIN, self.XMAX)
         if position < self.XMIN and velocity < 0: velocity = 0  # Bump into wall
-        terminal = self.isTerminal(s)
+        terminal = self.isTerminal(self.state)
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         ns = array([position, velocity])
+        self.state = ns.copy()
         return r, ns, terminal
+
     def s0(self):
-        return self.INIT_STATE
+        self.state = self.INIT_STATE.copy()
+        return self.state.copy()
+
     def isTerminal(self,s):
         return s[0] > self.GOAL
+
     def showDomain(self, s, a):
         # Plot the car and an arrow indicating the direction of accelaration
         # Parts of this code was adopted from Jose Antonio Martin H. <jamartinh@fdi.ucm.es> online source code
