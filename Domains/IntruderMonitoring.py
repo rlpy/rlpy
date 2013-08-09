@@ -68,7 +68,7 @@ class IntruderMonitoring(Domain):
     ally_fig        = None
     intruder_fig    = None
 
-    def __init__(self, mapname, logger = None):
+    def __init__(self, mapname = './Domains/IntruderMonitoringMaps/4x4_2A_3I.txt', logger = None):
 
         self.setupMap(mapname)
         self.state_space_dims                   = 2*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)

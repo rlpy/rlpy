@@ -67,7 +67,7 @@ class GridWorld(Domain):
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
 	## Up, Down, Left, Right
     ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
-    def __init__(self,mapname='/GridWorldMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
+    def __init__(self,mapname='./Domains/GridWorldMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
         self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         self.start_state              = argwhere(self.map==self.START)[0]
