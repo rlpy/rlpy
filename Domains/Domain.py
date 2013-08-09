@@ -62,9 +62,6 @@ class Domain(object):
         if logger is None:
             logger = Tools.Logger()
         self.logger = logger
-        for v in ['statespace_limits', 'actions_num', 'episodeCap']:
-            if getattr(self, v) is None:
-                raise Exception('Missed domain initialization of ' + v)
         self.state_space_dims = len(self.statespace_limits)
         self.gamma = float(self.gamma)  # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
@@ -137,7 +134,7 @@ class Domain(object):
     # [s0 code]
     def s0(self):
         """
-        Begins a new episode and returns the initial state of the %Domain
+        Begins a new episode and returns the initial observed state of the %Domain
         @return
         A numpy array that defines the initial state of the %Domain. See code
         \ref Domain_s0 "Here".
@@ -164,34 +161,16 @@ class Domain(object):
     def step(self,a):
         """
         \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
-        This function should return a reward that the agent acheives for the action, the next state that the domain/agent should be in,
+        This function should return a reward that the agent acheives for the action, the next observed state that the domain/agent should be in,
         and a boolean determining whether a goal or fail state has been reached. See code
         \ref Domain_step "Here".
         @param a
         The action to perform. Note that each action outside of the domain corresponds to the index of the action. This index will be interpreted within the domain.
-        @return [r,ns,t] => Reward (int), next state (state), isTerminal (bool)
+        @return [r,ns,t] => Reward (number), next observed state (state), isTerminal (bool)
 
         """
         abstract
     # [step code]
-
-    # [exStep code]
-    #def expectedStep(self,s,a):
-#        """
-#        \b ABSTRACT \b METHOD: Each row of output corresponds to a possible result from taking action a while in state s.
-#        e.g. s,a -> r[i], ns[i], t[i] with probability p[i]. See code
-#        \ref Domain_exStep "Here".
-#        @param s
-#        The given state
-#        @param a
-#        The given Action
-#        @return p, r, ns, t. Probability of transition (float), Reward (int), next state (state), isTerminal (bool)
-#
-#        """
-    #           abstract
-    # [exStep code]
-
-
 
     # [isTerminal code]
     def isTerminal(self,s):
@@ -206,10 +185,6 @@ class Domain(object):
         """
         return False
     # [isTerminal code]
-
-
-
-
 
     # [printAll code]
     def printAll(self):
