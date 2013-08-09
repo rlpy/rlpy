@@ -4,6 +4,7 @@
 
 from Tools import *
 import numpy as np
+import Tools
 
 class Domain(object):
     """
@@ -52,12 +53,14 @@ class Domain(object):
     hidden_state_ = None
 
     # [init code]
-    def __init__(self, logger):
+    def __init__(self, logger=None):
         """
         Initializes the \c %Domain object. See code
         \ref Domain_init "Here".
 
         """
+        if logger is None:
+            logger = Tools.Logger()
         self.logger = logger
         for v in ['statespace_limits', 'actions_num', 'episodeCap']:
             if getattr(self, v) is None:
@@ -205,28 +208,7 @@ class Domain(object):
     # [isTerminal code]
 
 
-    # [test code]
-    def test(self,T):
-        """
-        Run the environment by performing random actions for T steps. See code
-        \ref Domain_test "Here".
-        @param T
-        The desired number of steps
 
-        """
-        terminal    = True
-        steps       = 0
-        while steps < T:
-            if terminal:
-                if steps != 0: self.showDomain(s,a)
-                s = self.s0()
-            elif steps % self.episodeCap == 0:
-                s = self.s0()
-            a = randSet(self.possibleActions(s))
-            self.showDomain(s,a)
-            r,s,terminal = self.step(s, a)
-            steps += 1
-    # [test code]
 
 
     # [printAll code]
