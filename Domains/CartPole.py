@@ -425,7 +425,8 @@ class CartPoleBalanceOriginal(CartPole):
         super(CartPoleBalanceOriginal, self).__init__(logger)
 
     def s0(self):
-        return np.zeros(4)
+        self.state = np.zeros(4)
+        return self.state.copy()
 
     def _getReward(self, s, a):
         return self.good_reward if not self.isTerminal(s) else -1.
@@ -454,7 +455,8 @@ class CartPoleBalanceModern(CartPole):
         super(CartPoleBalanceModern, self).__init__(logger)
 
     def s0(self):
-        return np.array([np.random.randn()*0.01, 0., 0., 0.])
+        self.state = np.array([np.random.randn()*0.01, 0., 0., 0.])
+        return self.state.copy()
 
     def _getReward(self, s, a):
         return 0. if not self.isTerminal(s) else -1.

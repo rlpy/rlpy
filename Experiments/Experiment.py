@@ -3,7 +3,7 @@ from Agents import *
 from Domains import *
 from Representations import *
 import numpy as np
-from copy import copy
+from copy import copy, deepcopy
 import re
 import Tools.ipshell
 
@@ -115,6 +115,8 @@ class Experiment(object):
         """
         random.seed(self.randomSeeds[self.id - 1])
         self.domain.rand_state = random.RandomState(self.randomSeeds[self.id - 1])
+        # make sure the performance_domain has a different seed
+        self.performance_domain.rand_state = random.RandomState(self.randomSeeds[self.id + 20])
 
     def performanceRun(self, total_steps, visualize=False):
         """
@@ -138,22 +140,22 @@ class Experiment(object):
 
         self.agent.policy.turnOffExploration()
 
-        s = self.domain.s0()
+        s = self.performance_domain.s0()
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a = self.agent.policy.pi(s)
             if visualize:
-                self.domain.showDomain(s, a)
+                self.performance_domain.showDomain(a)
                 pl.title('After ' + str(total_steps) + ' Steps')
 
-            r, ns, eps_term = self.domain.step(a)
+            r, ns, eps_term = self.performance_domain.step(a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
-            eps_discount_return += self.domain.gamma ** eps_length * r
+            eps_discount_return += self.performance_domain.gamma ** eps_length * r
             eps_length += 1
         if visualize:
-            self.domain.showDomain(s, a)
+            self.performance_domain.showDomain(a)
         self.agent.policy.turnOnExploration()
         # This hidden state is for domains (such as the noise in the helicopter domain) that include unobservable elements that are evolving over time
         # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP
@@ -195,7 +197,9 @@ class Experiment(object):
         """
         if debug_on_sigurg:
             Tools.ipshell.ipdb_on_SIGURG()
+        self.performance_domain = deepcopy(self.domain)
         self.seed_components()
+
         self.result = zeros((self.STATS_NUM, self.num_policy_checks))
         terminal            = True
         total_steps         = 0
@@ -206,6 +210,7 @@ class Experiment(object):
         self.start_time     = clock()  # Used to show the total time took the process
         self.total_eval_time = 0.
         self.performance_tick = 0
+        s = self.domain.s0()
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
                 s           = self.domain.s0()
@@ -222,9 +227,6 @@ class Experiment(object):
                 eps_return      = 0
                 eps_steps       = 0
                 episode_number += 1
-
-            #if total_steps % 10000 == 1:
-            #    timed_ipshell(1)
 
             # Act,Step
             r, ns, terminal   = self.domain.step(a)
@@ -292,7 +294,6 @@ class Experiment(object):
 
         random_state = np.random.get_state()
         random_state_domain = copy(self.domain.rand_state)
-
         elapsedTime = deltaT(self.start_time)
         performance_return = 0.
         performance_steps = 0.
