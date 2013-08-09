@@ -85,7 +85,7 @@ class SystemAdministrator(Domain):
 
     # Note that you must pass a network map name as well as its format type.
     # @see SystemAdministrator(Domain)
-    def __init__(self, networkmapname='/Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
+    def __init__(self, networkmapname='./Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
         path                    = networkmapname
         self.IS_RING            = "ring.txt" in networkmapname.lower()
         self.loadNetwork(path)

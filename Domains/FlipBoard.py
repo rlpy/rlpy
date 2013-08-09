@@ -18,7 +18,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -43,18 +43,18 @@ from Domain import *
 ######################################################
 class FlipBoard(Domain):
     gamma = 1
-    BOARD_SIZE  = 4 
+    BOARD_SIZE  = 4
     STEP_REWARD = -1
     episodeCap  = 100               # Set by the domain = min(100,rows*cols)
     actions_num = BOARD_SIZE**2
     statespace_limits = tile([0,1],(BOARD_SIZE**2,1))
-    
+
     #Visual Stuff
     domain_fig = None
     move_fig = None
     def __init__(self,logger = None):
         super(FlipBoard,self).__init__(logger)
-        if logger: 
+        if logger:
             self.logger.log("Board Size:\t\t%dx%d" %(self.BOARD_SIZE,self.BOARD_SIZE))
     def showDomain(self,s,a = 0):
        #Draw the environment
@@ -74,18 +74,19 @@ class FlipBoard(Domain):
        self.move_fig = pl.plot(a_col,a_row,'kx',markersize=30.0) # Instead of '>' you can use 'D', 'o'
        s = s.reshape((self.BOARD_SIZE,self.BOARD_SIZE))
        self.domain_fig.set_data(s)
-       pl.draw()   
+       pl.draw()
        #raw_input()
-    def step(self,s,a):
-        ns          = s.copy()
+
+    def step(self, a):
+        ns          = self.state.copy()
         ns          = reshape(ns,(self.BOARD_SIZE,-1))
         a_row,a_col = id2vec(a,[self.BOARD_SIZE, self.BOARD_SIZE])
         #print a_row, a_col
         #print ns
         ns[a_row,:] =  logical_not(ns[a_row,:])
         ns[:,a_col] =  logical_not(ns[:,a_col])
-        ns[a_row,a_col] = not ns[a_row,a_col] 
-        if self.isTerminal(s):
+        ns[a_row,a_col] = not ns[a_row,a_col]
+        if self.isTerminal(self.state):
             terminal = True
             r        = 0
         else:
@@ -93,16 +94,20 @@ class FlipBoard(Domain):
             r           = self.STEP_REWARD
         #sleep(1)
         ns = ns.flatten()
+        self.state = ns.copy()
         return r,ns,terminal
+
     def s0(self):
-        s = array([ [1, 0, 0, 0],
+        self.state = array([ [1, 0, 0, 0],
                     [0, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0]
                       ], dtype='bool')
-        return s.flatten()
+        return self.state.flatten()
+
     def isTerminal(self,s):
-        return count_nonzero(s) == self.BOARD_SIZE**2 
+        return count_nonzero(s) == self.BOARD_SIZE**2
+
 if __name__ == '__main__':
     p = FlipBoard();
     p.test(1000)
