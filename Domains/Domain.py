@@ -100,7 +100,7 @@ class Domain(object):
         @param representation
         The representation to show
         """
-        self.showDomain(s, a)
+        self.showDomain(a)
         self.showLearning(representation)
     # [show code]
 

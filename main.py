@@ -25,7 +25,7 @@ if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
 sys.path.insert(0, RL_PYTHON_ROOT)
 
-visualize_steps = False # show each steps
+visualize_steps = True # show each steps
 visualize_learning = True # show visualizations of the learning progress, e.g. value function
 visualize_performance = True # show performance runs
 
@@ -104,7 +104,8 @@ def make_experiment(id=1, path="./Results/Temp"):
     #=================
     #domain          = ChainMDP(10, logger = logger)
     #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    #domain          = Pacman(noise = .1, episodeCap = None, logger = logger, timeout=30, prevState = None, layoutFile = RL_PYTHON_ROOT+'/Domains/PacmanPackage/layouts/smallGrid.lay', numGhostAgents=1000)
+    domain          = Pacman(noise = .1, logger = logger, timeout=30,
+                             layoutFile = RL_PYTHON_ROOT+'/Domains/PacmanPackage/layouts/contestClassic.lay', numGhostAgents=1000)
     #domain          = HelicopterHover(logger=logger)
     #domain          = Acrobot(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
@@ -122,7 +123,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     #domain          = FiftyChain(logger = logger)
     #domain          = RCCar(logger = logger)
 
-    
+
     # REPRESENTATION
     #================
     initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
@@ -131,9 +132,9 @@ def make_experiment(id=1, path="./Results/Temp"):
     #representation  =  initial_rep
     #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
     #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
     #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
@@ -171,7 +172,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     #agent           = LSPI(representation,policy,domain,logger,LEARNING_STEPS, LEARNING_STEPS/PERFORMANCE_CHECKS, LSPI_iterations, epsilon = LSPI_WEIGHT_DIFF_TOL, return_best_policy = LSPI_return_best_policy,re_iterations = RE_LSPI_iterations, use_sparse = LSPI_use_sparse)
     #agent           = LSPI_SARSA(representation,policy,domain,logger,LSPI_iterations,LSPI_windowSize,LSPI_WEIGHT_DIFF_TOL,RE_LSPI_iterations,initial_alpha,LAMBDA,alpha_decay_mode, boyan_N0)
     #agent           = PolicyEvaluation(representation,policy,domain,logger,LEARNING_STEPS, PolicyEvaluation_test_samples,PolicyEvaluation_MC_samples,PolicyEvaluation_LOAD_PATH, re_iterations = RE_LSPI_iterations); PERFORMANCE_CHECKS  = 1 # Because policy evaluation in one run, create the whole state matrix, having multiple checks make the program confused.
-    
+
     # MDP_Solver
     #================
     #MDPsolver = ValueIteration(JOB_ID,representation,domain,logger, ns_samples= NS_SAMPLES, project_path = PROJECT_PATH, show = visualize_learning, convergence_threshold = CONVERGENCE_THRESHOLD, planning_time = PLANNING_TIME)
@@ -192,7 +193,7 @@ if __name__ == '__main__':
         #from Tools.run import run_profiled
         #run_profiled(make_experiment)
         experiment = make_experiment(1)
-        experiment.run(visualize_steps=visualize_steps, 
+        experiment.run(visualize_steps=visualize_steps,
                        visualize_learning=visualize_learning,
                        visualize_performance=visualize_performance)
         experiment.plot()

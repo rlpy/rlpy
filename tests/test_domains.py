@@ -21,6 +21,7 @@ def check_random_trajectory(domain_class):
     run the domain 1000 steps with random actions
     Just make sure no error occurs
     """
+    np.random.seed(1)
     domain = domain_class()
     terminal    = True
     steps       = 0

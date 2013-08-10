@@ -9,6 +9,7 @@
 import os
 from Tools import *
 from Domains import *
+from Domains.Pendulum import Pendulum
 from Representation import Representation
 import numpy as np
 
