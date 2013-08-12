@@ -7,7 +7,7 @@ import os
 ######################################################
 # \author Developed by Austin Hays June 18th 2013 at MIT
 # The original code in PacmanPackage was taken from
-#  http://inst.eecs.berkeley.edu/~cs188/fa09/projects/reinforcement/reinforcement.html
+#TODO
 ######################################################
 
 
@@ -33,7 +33,7 @@ class Pacman(Domain):
         #Specifies which Pacman world you want
         self.layoutFile = layoutFile
         #Puts the file in line stripped format
-        layout_file_content = self.tryToLoad(self.layoutFile)
+        layout_file_content = self._tryToLoad(self.layoutFile)
         self.layout = layout.Layout(layout_file_content)
         #Number of ghosts
         self.numGhostAgents = numGhostAgents
@@ -43,7 +43,7 @@ class Pacman(Domain):
         self.game_state.data.initialize(self.layout, self.numGhostAgents)
         self.num_total_food = len(self.layout.food.asList())
         self.num_total_capsules = len(self.layout.capsules)
-        self.defaultSettings()
+        self._defaultSettings()
         self.restartGraphics = None
         self.timerswitch = False
         self.savedtimer = None
@@ -192,7 +192,9 @@ class Pacman(Domain):
         return r, self._get_state(), terminal
 
     def s0(self):
-        #re-initializes internal states when an episode starts, returns a s vector
+        """
+        re-initializes internal states when an episode starts, returns a s vector
+        """
         self.game_state = pacman.GameState()
         self.game_rules = pacman.ClassicGameRules(timeout=30)
         self.game = self.game_rules.newGame(self.layout, pacman, self.ghosts, DummyGraphics(), self.beQuiet, catchExceptions=False)
@@ -219,7 +221,7 @@ class Pacman(Domain):
             possibleActions.append(self.actions.index(a))
         return np.array(possibleActions)
 
-    def _is_terminal(self):
+    def isTerminal(self):
         """
         Checks whether the game should terminate at the given state.
         If game should terminate, returns the proper indication to step function.
@@ -227,29 +229,12 @@ class Pacman(Domain):
         """
         return self.game_state.data._lose or self.game_state.data._win
 
-    def defaultSettings(self):
+    def _defaultSettings(self):
         self.ghostNum = 2
         self.ghosts = [ghostAgents.RandomGhost(game.Agent) for i in range(self.ghostNum)]
         self.beQuiet = False
 
-    def getLayout(self, name, back=2):
-        #loads the layout from the given file ending in .lay
-        if name.endswith('.lay'):
-            layout = self.tryToLoad('Domains/PacmanPackage/layouts/' + name)
-            if layout is None:
-                layout = self.tryToLoad('Domains/PacmanPackage/layouts/' + name)
-        else:
-            layout = self.tryToLoad('Domains/PacmanPackage/layouts/' + name + '.lay')
-            if layout is None:
-                layout = self.tryToLoad(name + '.lay')
-        if layout is None and back >= 0:
-            curdir = os.path.abspath('.')
-            os.chdir('..')
-            layout = self.getLayout(name, back - 1)
-            os.chdir(curdir)
-        return layout
-
-    def tryToLoad(self, fullname):
+    def _tryToLoad(self, fullname):
         #used in getLayout function
         f = open(fullname)
         grid = [line.strip() for line in f]
