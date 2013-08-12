@@ -91,7 +91,7 @@ class MountainCar(Domain):
         position += velocity
         position = bound(position, self.XMIN, self.XMAX)
         if position < self.XMIN and velocity < 0: velocity = 0  # Bump into wall
-        terminal = self.isTerminal(self.state)
+        terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         ns = array([position, velocity])
         self.state = ns.copy()
@@ -101,10 +101,11 @@ class MountainCar(Domain):
         self.state = self.INIT_STATE.copy()
         return self.state.copy()
 
-    def isTerminal(self,s):
-        return s[0] > self.GOAL
+    def isTerminal(self):
+        return self.state[0] > self.GOAL
 
-    def showDomain(self, s, a):
+    def showDomain(self, a):
+        s = self.state
         # Plot the car and an arrow indicating the direction of accelaration
         # Parts of this code was adopted from Jose Antonio Martin H. <jamartinh@fdi.ucm.es> online source code
         pos,vel = s

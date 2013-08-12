@@ -126,7 +126,8 @@ class SystemAdministrator(Domain):
             self.computers_num = max(max(row)+1,self.computers_num)
         self.setUniqueEdges(_Neighbors)
         self.setNeighbors()
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a=0):
+        s = self.state
         if self.networkGraph is None: #or self.networkPos is None:
             self.networkGraph = nx.Graph()
             # enumerate all computer_ids, simulatenously iterating through neighbors list and compstatus

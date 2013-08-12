@@ -172,7 +172,8 @@ class Pendulum(Domain):
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
         super(Pendulum,self).__init__(logger)
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a=0):
+        s = self.state
         # Plot the pendulum and its angle, along with an arc-arrow indicating the
         # direction of torque applied (not including noise!)
         if self.domain_fig == None: # Need to initialize the figure
@@ -339,9 +340,9 @@ class Pendulum(Domain):
          # wrap angle between -pi and pi (or whatever values assigned to ANGLE_LIMITS)
         ns[StateIndex.THETA]        = bound(wrap(ns[StateIndex.THETA],-pi, pi), self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         ns[StateIndex.THETA_DOT]    = bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
-        terminal                    = self.isTerminal(ns)
-        reward                      = self._getReward(ns,a)
         self.state = ns.copy()
+        terminal                    = self.isTerminal()
+        reward                      = self._getReward(a)
         return reward, ns, terminal
 
     #

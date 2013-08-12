@@ -100,19 +100,20 @@ class RCCar(Domain):
             nspeed  = 0
 
         ns = array([nx,ny,nspeed,nheading])
-        terminal = self.isTerminal(ns)
-        r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         self.state = ns.copy()
+        terminal = self.isTerminal()
+        r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r, ns, terminal
 
     def s0(self):
         self.state = self.INIT_STATE.copy()
         return self.state.copy()
 
-    def isTerminal(self,s):
-        return linalg.norm(s[0:2]-self.GOAL) < self.GOAL_RADIUS
+    def isTerminal(self):
+        return linalg.norm(self.state[0:2]-self.GOAL) < self.GOAL_RADIUS
 
-    def showDomain(self, s, a):
+    def showDomain(self, a):
+        s = self.state
         # Plot the car
         x,y,speed,heading = s
         car_xmin = x-self.REAR_WHEEL_RELATIVE_LOC

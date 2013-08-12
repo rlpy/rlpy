@@ -182,7 +182,8 @@ class PST(Domain):
         self.numCrashed = 0 # Number of crashed UAVs [n_c]
 
 
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a=0):
+        s = self.state
         if self.domain_fig is None:
             self.domain_fig = pl.figure(1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
             pl.show()
@@ -336,16 +337,14 @@ class PST(Domain):
         totalStepReward = 0
 
         ns = self.struct2State(nsStruct)
+        self.state = ns.copy()
 
         ##### Compute reward #####
-        if(self.isCommStatesCovered == True):
+        if self.isCommStatesCovered:
             totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
-        if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
+        if self.isTerminal(): totalStepReward += self.CRASH_REWARD
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
-#debug        print totalStepReward,ns,self.isTerminal(ns)
-        self.state = ns.copy()
-        return totalStepReward,ns,self.isTerminal(ns)
-        # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+        return totalStepReward,ns,self.isTerminal()
 
     def s0(self):
         self.resetLocalVariables()
@@ -436,8 +435,8 @@ class PST(Domain):
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
-    def isTerminal(self,s):
-        sStruct = self.state2Struct(s)
+    def isTerminal(self):
+        sStruct = self.state2Struct(self.state)
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 
 # \cond DEV

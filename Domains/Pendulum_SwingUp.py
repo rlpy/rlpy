@@ -93,11 +93,11 @@ class Pendulum_SwingUp(Pendulum):
         self.state = array([pi,0])
         return self.state.copy()
 
-    def _getReward(self, s, a):
+    def _getReward(self, a):
         """Return the reward earned for this state-action pair.
         On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6"""
         return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
-    def isTerminal(self,s):
+    def isTerminal(self):
         return False
 
 if __name__ == '__main__':

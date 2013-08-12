@@ -83,13 +83,8 @@ class MultiTrack(Domain):
         super(MultiTrack,self).__init__(logger)
         #if self.logger: self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
 
-    def showDomain(self,s,a = 0):
-        pass
-
-    def showLearning(self,representation):
-        pass
-
-    def step(self,s,a):
+    def step(self, a):
+        s = self.state
         #return reward, terminalness, etc
         ss = self.state2Struct(s)
         nss = ss
@@ -148,7 +143,8 @@ class MultiTrack(Domain):
             #otherwise, targetavail is left alone (still equal to the previous state's target avail
 
         ns = self.struct2State(nss)
-        return rwd,ns,self.isTerminal(ns)
+        self.state = ns.copy()
+        return rwd,ns,self.isTerminal()
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
 
     def s0(self):
@@ -230,8 +226,8 @@ class MultiTrack(Domain):
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
-    def isTerminal(self,s):
-        ss = self.state2Struct(s)
+    def isTerminal(self):
+        ss = self.state2Struct(self.state)
         return all([True if x == 0 else False for x in ss.targetavail])
 
 ## \cond DEV
@@ -262,47 +258,3 @@ if __name__ == '__main__':
         random.seed(0)
         p = MultiTrack(GRID = 10, TSTEP = 1, ASTEP = 2, NUM_AGENTS = 1, NUM_TARGETS = 1)
         p.test(1000)
-
-        # Code below was used to test output of this domain for various actions,
-        # confirmed alignment with MATLAB version (see bobtest there)
-
-#        allA = arange(27)
-#
-#        s = p.s0()
-#        for i in arange(20): # Number of steps desired for test
-#            a = 17 - i
-#            print 'pythontest: original action ',a
-##            print 'pythontest: vector action ', array(id2vec(a,p.ALIMITS))
-#            (r, s, isT) = p.step(s,a)
-#            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions(s)
-#
-#        actionVectors = [array(id2vec(a,p.ALIMITS)) for a in allA]
-#
-#        a_aVect_tups = zip(allA, actionVectors)
-#        for a_aVect_tup in a_aVect_tups:
-#            print a_aVect_tup
-
-
-
-#        x = array([[1,2,0],[1,2],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-#        x = array([[1,2,0],[1],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-#        x = array([[1,2,0],[2],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-#        x = array([[1,2,0],[2,1],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-
-
-
-
-
-

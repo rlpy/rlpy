@@ -131,7 +131,7 @@ class IntruderMonitoring(Domain):
         # Put all info in one big vector
         ns              = hstack((agents.ravel(),intruders.ravel()))
         #Saturate states so that if actions forced agents to move out of the grid world they bound back
-        ns              = self.saturateState(ns)
+        ns              =bound_vec(ns,self.discrete_statespace_limits)
         # Find agents and intruders after saturation
         agents          = ns[:self.NUMBER_OF_AGENTS*2].reshape(-1,2)
         intruders       = ns[self.NUMBER_OF_AGENTS*2:].reshape(-1,2)
@@ -151,15 +151,6 @@ class IntruderMonitoring(Domain):
         self.state = hstack([self.agents_initial_locations.ravel(), self.intruders_initial_locations.ravel()])
         return self.state.copy()
 
-#    def possibleActions(self,s):
-#
-#       possibleA = array([],uint8)
-#
-#       for a in arange(self.actions_num):
-#               possibleA = append(possibleA,[a])
-#
-#
-#       return possibleA
     def possibleActionsPerAgent(self,s):
         # 1. tile the [R,C] for all actions
         # 2. add all actions to the results
@@ -190,7 +181,8 @@ class IntruderMonitoring(Domain):
         print 'Reward ',r
     def IntruderPolicy(self,s_i):
          return randSet(self.possibleActionsPerAgent(s_i))
-    def showDomain(self,s,a):
+    def showDomain(self, a):
+       s = self.state
        #Draw the environment
        if self.domain_fig is None:
            self.domain_fig  = pl.imshow(self.map, cmap='IntruderMonitoring',interpolation='nearest',vmin=0,vmax=3)

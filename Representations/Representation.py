@@ -158,9 +158,13 @@ class Representation(object):
 
     # [phi code]
     def phi(self,s):
+        old_state = self.domain.state
+        self.domain.state = s
         if self.domain.isTerminal(s) or self.features_num == 0:
+            self.domain.state = old_state
             return zeros(self.features_num,'bool')
         else:
+            self.domain.state = old_state
             return self.phi_nonTerminal(s)
     # [phi code]
 

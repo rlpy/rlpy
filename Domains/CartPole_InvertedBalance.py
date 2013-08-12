@@ -82,7 +82,8 @@ class CartPole_InvertedBalance(CartPole):
     def _getReward(self, s, a):
         return self.GOAL_REWARD if -pi/15 < s[StateIndex.THETA] < pi/15 else 0
 
-    def isTerminal(self,s):
+    def isTerminal(self):
+        s = self.state
         return (not (-pi/15 < s[StateIndex.THETA] < pi/15) or \
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 

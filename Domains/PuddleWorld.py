@@ -70,12 +70,12 @@ class PuddleWorld(Domain):
 
     def s0(self):
         self.state = self.rand_state.rand(2)
-        while self.isTerminal(self.state):
+        while self.isTerminal():
             self.state = self.rand_state.rand(2)
         return self.state.copy()
 
-    def isTerminal(self, s):
-        return s.sum() > 0.95 * 2
+    def isTerminal(self):
+        return self.state.sum() > 0.95 * 2
 
     def possibleActions(self, s):
         return np.arange(self.actions_num)
@@ -87,10 +87,11 @@ class PuddleWorld(Domain):
         ns = np.minimum(ns, 1.)
         ns = np.maximum(ns, 0.)
         self.state = ns.copy()
-        return (self.reward(ns), ns, self.isTerminal(ns))
+        return (self._reward(), ns, self.isTerminal())
 
-    def reward(self, s):
-        if self.isTerminal(s):
+    def _reward(self):
+        self.state = s
+        if self.isTerminal():
             return 0  # goal state reached
         reward = -1
         # compute puddle influence
@@ -105,7 +106,8 @@ class PuddleWorld(Domain):
             reward -= 400 * (0.1 - dists[dists < 0.1]).max()
         return reward
 
-    def showDomain(self, s, a=None):
+    def showDomain(self, a=None):
+        s = self.state
         #Draw the environment
         if self.domain_fig is None:
             self.domain_fig = plt.figure("Domain")

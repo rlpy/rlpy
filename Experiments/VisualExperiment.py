@@ -38,7 +38,7 @@ class VisualExperiment(Experiment):
                 s           = self.domain.s0()
                 a           = self.agent.policy.pi(s)
                 #Visual
-                if visualize_steps: self.domain.show(s,a, self.agent.representation)
+                if visualize_steps: self.domain.show(a, self.agent.representation)
                 # Hash new state for the tabular case
                 # Output the current status if certain amount of time has been passed
                 eps_return      = 0

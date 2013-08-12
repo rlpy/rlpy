@@ -110,7 +110,8 @@ class HelicopterHoverExtended(Domain):
         self.state[9] = 1.
         return self.state.copy()
 
-    def isTerminal(self, s):
+    def isTerminal(self):
+        s = self.state
         if np.any(self.statespace_limits_full[:9, 0] > s[:9]) or np.any(self.statespace_limits_full[:9, 1] < s[:9]):
             return True
 
@@ -121,8 +122,9 @@ class HelicopterHoverExtended(Domain):
 
         return np.abs(w) < self.MIN_QW_BEFORE_HITTING_TERMINAL_STATE
 
-    def _get_reward(self, s):
-        if self.isTerminal(s):
+    def _get_reward(self):
+        s = self.state
+        if self.isTerminal():
             r = -np.sum(self.statespace_limits[:9, 1] ** 2)
             #r -= np.sum(self.statespace_limits[10:12, 1] ** 2)
             r -= (1. - self.MIN_QW_BEFORE_HITTING_TERMINAL_STATE ** 2)
@@ -130,7 +132,7 @@ class HelicopterHoverExtended(Domain):
         else:
             return -np.sum(s[:9] ** 2) - np.sum(s[10:12] ** 2)
 
-    def possibleActions(self, s):
+    def possibleActions(self, s=None):
         return np.arange(self.actions_num)
 
     def step(self, a):
@@ -182,7 +184,7 @@ class HelicopterHoverExtended(Domain):
         st[13:19] = gust_noise
         st[-1] = t + 1
         self.state = st.copy()
-        return (self._get_reward(s=st), st, self.isTerminal(st))
+        return (self._get_reward(), st, self.isTerminal())
 
     def _state_in_world(self, s):
         """
@@ -219,7 +221,8 @@ class HelicopterHoverExtended(Domain):
         """
         return self._in_body_coord(p, trans.quaternion_conjugate(q))
 
-    def showDomain(self, s, a=None):
+    def showDomain(self, a=None):
+        s = self.state
         if a is not None:
             a = self.actions[a].copy() * 3 # amplify for visualization
         pos, vel, ang_rate, ori_bases, _ = self._state_in_world(s)
@@ -400,14 +403,6 @@ class HelicopterHover(HelicopterHoverExtended):
         s,_  = self._split_state(super(HelicopterHover, self).s0())
         return s
 
-    # def _augment_state(self, s):
-    #     s_extended = self.full_state_
-    #     s_extended[:9] = s[:9]
-    #     s_extended[9] = self.hidden_state_[0]
-    #     s_extended[10:13] = s[9:12]
-    #     s_extended[13:] = self.hidden_state_[1:]
-    #     return s_extended
-
     def _split_state(self, s):
         s_observable = np.zeros((12))
         s_observable[:9] = s[:9]
@@ -422,11 +417,3 @@ class HelicopterHover(HelicopterHoverExtended):
         r, st, term = super(HelicopterHover, self).step(a)
         st,_  = self._split_state(st)
         return (r, st, term)
-
-    def showDomain(self, s, a=None):
-        s_extended = self.state # Ignoring the passed s
-        super(HelicopterHover, self).showDomain(s_extended, a)
-
-if __name__ == "__main__":
-    h = HelicopterHoverExtended(logger=None, noise_level=0.)
-    h.test()

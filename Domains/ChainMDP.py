@@ -64,8 +64,9 @@ class ChainMDP(Domain):
         self.statespace_limits  = array([[0,chainSize-1]])
         self.episodeCap         = 2*chainSize
         super(ChainMDP,self).__init__(logger)
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a = 0):
         #Draw the environment
+        s = self.state
         s = s[0]
         if self.circles is None:
            fig = pl.figure(1, (self.chainSize*2, 2))
@@ -94,9 +95,9 @@ class ChainMDP(Domain):
             ns = max(0,s-1)
         if a == 1:
             ns = min(self.chainSize-1,s+1)
-        self.state = ns
-        ns = array([ns])
-        terminal = self.isTerminal(ns)
+        self.state = array([ns])
+
+        terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
 
@@ -104,7 +105,8 @@ class ChainMDP(Domain):
         self.state = 0
         return array([self.state])
 
-    def isTerminal(self,s):
+    def isTerminal(self):
+        s = self.state
         return (s[0] == self.chainSize - 1)
 
 if __name__ == '__main__':

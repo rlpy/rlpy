@@ -2,7 +2,6 @@ from Domain import Domain
 from .PacmanPackage import layout, pacman, game, ghostAgents
 from .PacmanPackage import graphicsDisplay
 import numpy as np
-import os
 
 ######################################################
 # \author Developed by Austin Hays June 18th 2013 at MIT
@@ -186,7 +185,7 @@ class Pacman(Domain):
         r = self.game_state.data.scoreChange
         #r -= 1 #optional time step negative reward
         self.game_state.data.score += r
-        terminal = self._is_terminal()
+        terminal = self.isTerminal()
         if terminal:
             self.game_state.data.score = 0
         return r, self._get_state(), terminal
@@ -210,7 +209,7 @@ class Pacman(Domain):
     def possibleActions(self, s=None):
         # beware: s is ignored
 
-        if self._is_terminal():
+        if self.isTerminal():
             # somewhat hacky, but should not matter anyway, maybe clean up in
             # the future
             return np.array([0])

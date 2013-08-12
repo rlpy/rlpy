@@ -69,8 +69,9 @@ class BlocksWorld(Domain):
             self.logger.log("noise\t\t%0.1f" % self.noise)
             self.logger.log("blocks\t\t%d" % self.blocks)
 
-    def showDomain(self,s,a =0):
+    def showDomain(self, a=0):
         #Draw the environment
+        s = self.state
         world           = zeros((self.blocks,self.blocks),'uint8')
         undrawn_blocks  = arange(self.blocks)
         while len(undrawn_blocks):
@@ -100,7 +101,7 @@ class BlocksWorld(Domain):
     def showLearning(self,representation):
         pass #cant show 6 dimensional value function
 
-    def step(self,a):
+    def step(self, a):
         s = self.state
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
         #print 'taking action %d->%d' % (A,B)
@@ -112,9 +113,9 @@ class BlocksWorld(Domain):
         if random.random_sample() < self.noise: B = A #Drop on Table
         ns          = s.copy()
         ns[A]       = B # A is on top of B now.
-        terminal    = self.isTerminal(ns)
-        r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
         self.state = ns.copy()
+        terminal    = self.isTerminal()
+        r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r,ns,terminal
 
     def s0(self):
@@ -122,22 +123,22 @@ class BlocksWorld(Domain):
         self.state = arange(self.blocks)
         return self.state.copy()
 
-    def possibleActions(self,s):
+    def possibleActions(self):
+        s.self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
         empty_blocks    = [b for b in arange(self.blocks) if self.clear(b,s)]
         empty_num       = len(empty_blocks)
         actions         = [[a,b] for a in empty_blocks for b in empty_blocks if not self.destination_is_table(a,b) or not self.on_table(a,s)] #condition means if A sits on the table you can not pick it and put it on the table
-        #print 'state',s
-        #print "Empty Blocks", empty_blocks
-        #print actions
-        #raw_input()
         return array([vec2id(x,[self.blocks, self.blocks]) for x in actions])
+
     def validAction(self,s,A,B):
         #Returns true if B and A are both empty.
         return (self.clear(A,s) and (self.destination_is_table(A,B) or self.clear(B,s)))
-    def isTerminal(self,s):
-        return array_equal(s,self.GOAL_STATE)
+
+    def isTerminal(self):
+        return array_equal(self.state,self.GOAL_STATE)
+
     def top(self,A,s):
         #returns the block on top of block A. Return [] if nothing is on top of A
         on_A = findElemArray1D(A,s)

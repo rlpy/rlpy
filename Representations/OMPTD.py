@@ -35,19 +35,19 @@ class OMPTD(Representation):
         self.iFDD_ONLINETHRESHOLD   = 1 # This is dummy since omptd will not use ifdd in the online fashion
         self.maxBatchDicovery       = maxBatchDicovery
         self.batchThreshold         = batchThreshold
-        self.initial_representation = initial_representation                   
+        self.initial_representation = initial_representation
         self.iFDD                   = iFDD(domain,logger,self.iFDD_ONLINETHRESHOLD, initial_representation, sparsify = 0, discretization = discretization, useCache = 1)
         self.bagSize                = bagSize
         self.features_num           = self.initial_representation.features_num
         self.isDynamic              = True
 
         super(OMPTD,self).__init__(domain,logger,discretization)
-        
+
         self.fillBag()
         self.totalFeatureSize       = self.bagSize
         self.selectedFeatures       = range(self.initial_representation.features_num) #Add initial features to the selected list
         self.remainingFeatures      = arange(self.features_num,self.bagSize) # Array of indicies of features that have not been selected
-        self.show()            
+        self.show()
         if self.logger:
             self.logger.log("Initial Representation:\t%s"% className(self.initial_representation))
             self.logger.log("Bag Size:\t\t%d"% self.bagSize)
@@ -70,15 +70,17 @@ class OMPTD(Representation):
         # TO BE FILLED
         p = len(states)
         self.fullphi = empty((p,self.totalFeatureSize))
+        o_s = self.domain.state
         for i,s in enumerate(states):
+            self.domain.state = s
             if not self.domain.isTerminal(s):
                 self.fullphi[i,:] = self.iFDD.phi_nonTerminal(s)
-
+        self.domain.state = o_s
         #Normalize features
         for f in arange(self.totalFeatureSize):
             phi_f               = self.fullphi[:,f]
             norm_phi_f          = linalg.norm(phi_f)    # L2-Norm of phi_f
-            if norm_phi_f == 0: norm_phi_f = 1          # This helps to avoid divide by zero 
+            if norm_phi_f == 0: norm_phi_f = 1          # This helps to avoid divide by zero
             self.fullphi[:,f]   =  phi_f/norm_phi_f
     def batchDiscover(self,td_errors, phi, states):
         # Discovers features using OMPTD
@@ -93,22 +95,22 @@ class OMPTD(Representation):
         #--------------------
         # OUTOUT: Boolean indicating expansion of features
         #--------------------
-        
+
         if len(self.remainingFeatures) == 0:
             # No More features to Expand
             return False
 
-        SHOW_RELEVANCES = 0      # Plot the relevances 
+        SHOW_RELEVANCES = 0      # Plot the relevances
         max_excitement  = -inf
         n               = self.features_num  #number of features
         p               = len(td_errors)     #Number of samples
         self.calculateFullPhiNormalized(states)
-        
+
         relevances = zeros(len(self.remainingFeatures))
         for i,f in enumerate(self.remainingFeatures):
             phi_f           = self.fullphi[:,f]
             relevances[i]   = abs(dot(phi_f,td_errors))
-        
+
         if SHOW_RELEVANCES:
             e_vec  = relevances.flatten()
             e_vec  = e_vec[e_vec != 0]
@@ -121,11 +123,11 @@ class OMPTD(Representation):
         #Sort based on relevances
         sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
         max_relevance   = relevances[sortedIndices[0]];
-        
+
         #Add top <maxDiscovery> features
         self.logger.log("OMPTD Batch: Max Relevance = %0.3f" % max_relevance)
         added_feature           = False
-        to_be_deleted = [] # Record the indices of items to be removed 
+        to_be_deleted = [] # Record the indices of items to be removed
         for j in arange(min(self.maxBatchDicovery,len(relevances))):
             max_index   = sortedIndices[j]
             f           = self.remainingFeatures[max_index]
@@ -170,7 +172,7 @@ class OMPTD(Representation):
                         if added_new_feature:
                             #print '%d: [%s,%s]' % (new_id, str(f),str(g))
                             next_features.append(new_id)
-                            next_features_dim[new_id] = g_dims + f_dim 
+                            next_features_dim[new_id] = g_dims + f_dim
                             new_id += 1
                             added += 1
                             if new_id == self.bagSize:
@@ -227,7 +229,7 @@ if __name__ == '__main__':
     print 'Initial [0,1,2,3,4,5,6,7,8,20] => ',
     print rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
     rep.showCache()
-    
-    
-    
-    
+
+
+
+

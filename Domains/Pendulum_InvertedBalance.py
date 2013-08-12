@@ -13,19 +13,6 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
 from Domain import *
@@ -93,15 +80,10 @@ class Pendulum_InvertedBalance(Pendulum):
         self.state = (random.rand(2)*2-1)*0.2
         return self.state.copy()
 
-    def _getReward(self, s, a):
+    def _getReward(self, a):
         # Return the reward earned for this state-action pair
         # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
-        return self.FELL_REWARD if self.isTerminal(s) else 0
+        return self.FELL_REWARD if self.isTerminal() else 0
 
-    def isTerminal(self,s):
-        return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0) # per L & P 2003
-
-if __name__ == '__main__':
-    random.seed(0)
-    p = Pendulum_InvertedBalance();
-    p.test(1000)
+    def isTerminal(self):
+        return not (-pi/2.0 < self.state[StateIndex.THETA] < pi/2.0) # per L & P 2003

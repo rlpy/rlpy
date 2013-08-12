@@ -22,7 +22,7 @@ from itertools import *
 
 
 class Pinball(Domain):
-    
+
     ACC_X = 0
     ACC_Y = 1
     DEC_X = 2
@@ -48,8 +48,9 @@ class Pinball(Domain):
         self.statespace_limits  = np.array([[0.0, 1.0], [0.0, 1.0], [-2.0, 2.0], [-2.0, 2.0]])
         self.continuous_dims    = [4]
         super(Pinball,self).__init__(self.logger)
-    
-    def showDomain(self, s, a):
+
+    def showDomain(self, a):
+        s = self.state
         self.DARK_GRAY = [64, 64, 64]
         self.DARK_BLUE = [0, 0, 128]
         self.LIGHT_GRAY = [232, 232, 232]
@@ -63,8 +64,9 @@ class Pinball(Domain):
             self.background_surface = pygame.Surface(self.screen.get_size())
             self.background_surface.fill(self.LIGHT_GRAY)
         self.environment_view.blit()
-    
-    def step(self, s, a):
+
+    def step(self, a):
+        s = self.state
         [self.environment.ball.position[0], self.environment.ball.position[1], self.environment.ball.xdot, self.environment.ball.ydot] = s
         if np.random.random_sample() < self.NOISE:
             #Random Move
@@ -72,21 +74,22 @@ class Pinball(Domain):
         reward = self.environment.take_action(a)
         self.environment._check_bounds()
         state = self.environment.get_state()
-        terminal = self.isTerminal(s)
+        terminal = self.isTerminal()
         if terminal:
             self.environment.ball.position[0], self.environment.ball.position[1] = self.start_pos
-            self.environment.ball.xdot, self.environment.ball.ydot = 0.0, 0.0  
+            self.environment.ball.xdot, self.environment.ball.ydot = 0.0, 0.0
+        self.state = state.copy()
         return reward, state, terminal
-    
+
     def s0(self):
         self.environment.ball.position[0], self.environment.ball.position[1] = self.start_pos
         self.environment.ball.xdot, self.environment.ball.ydot = 0.0, 0.0
         return [self.environment.ball.position[0], self.environment.ball.position[1], self.environment.ball.xdot, self.environment.ball.ydot]
-    
+
     def possibleActions(self,s):
         return np.array(self.actions)
-    
-    def isTerminal(self, state):
+
+    def isTerminal(self):
         return self.environment.episode_ended()
 
 class BallModel:
@@ -464,7 +467,7 @@ class PinballView:
         #self.background_surface = pygame.display.set_mode(screen.get_size())
         self.background_surface = pygame.Surface(screen.get_size())
         self.background_surface.fill(self.LIGHT_GRAY)
-        
+
         for obs in model.obstacles:
             pygame.draw.polygon(self.background_surface, self.DARK_BLUE, map(self._to_pixels, obs.points), 0)
             pygame.display.update()

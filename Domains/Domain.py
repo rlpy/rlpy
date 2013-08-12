@@ -2,9 +2,9 @@
 # Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
 # Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
 
-from Tools import *
 import numpy as np
 import Tools
+
 
 class Domain(object):
     """
@@ -49,8 +49,6 @@ class Domain(object):
     episodeCap = None
     ## A simple object that records the prints in a file
     logger = None
-    ## some domains may have a hidden state which is saved in this variable
-    hidden_state_ = None
 
     # [init code]
     def __init__(self, logger=None):
@@ -68,33 +66,31 @@ class Domain(object):
         # The original limits will be saved in self.discrete_statespace_limits
         self.extendDiscreteDimensions()
         if self.continuous_dims == []:
-            self.states_num = int(prod(self.statespace_limits[:, 1]
-                                       - self.statespace_limits[:, 0]))
+            self.states_num = int(np.prod(self.statespace_limits[:, 1]
+                                  - self.statespace_limits[:, 0]))
         else:
-            self.states_num = inf
-        if logger:
-            self.logger.line()
-            self.logger.log("Domain:\t\t" + str(className(self)))
-            self.logger.log("Dimensions:\t" + str(self.state_space_dims))
-            self.logger.log("|S|:\t\t" + str(self.states_num))
-            self.logger.log("|A|:\t\t" + str(self.actions_num))
-            self.logger.log("|S|x|A|:\t\t" + str(self.actions_num * self.states_num))
-            self.logger.log("Episode Cap:\t" + str(self.episodeCap))
-            self.logger.log("Gamma:\t\t" + str(self.gamma))
+            self.states_num = np.inf
 
         # a new stream of random numbers for each domain
         self.rand_state = np.random.RandomState()
     # [init code]
 
-
+    def __str__(self):
+        res = """{self.__class__}:
+------------
+Dimensions: {self.state_space_dims}
+|S|:        {self.states_num}
+|A|:        {self.actions_num}
+Episode Cap:{self.episodeCap}
+Gamma:      {self.gamma}
+""".format(self=self)
+        return res
 
     # [show code]
-    def show(self, s, a, representation):
+    def show(self, a=None, representation=None):
         """
         Shows a visualization of the current state of the domain and that of learning. See code
         \ref Domain_show "Here".
-        @param s
-        The state that the domain is in
         @param a
         The action being performed
         @param representation
@@ -105,12 +101,10 @@ class Domain(object):
     # [show code]
 
     # [showDomain code]
-    def showDomain(self, s, a=0):
+    def showDomain(self, a=0):
         """
         \b ABSTRACT \b METHOD: Shows a visualization of the current state of the domain. See code
         \ref Domain_showDomain "Here".
-        @param s
-        The state that the domain is in
         @param a
         The action being performed
 
@@ -140,11 +134,11 @@ class Domain(object):
         \ref Domain_s0 "Here".
 
         """
-        abstract
+        raise NotImplementedError("Children need to implement this method")
     # [s0 code]
 
     # [possActions code]
-    def possibleActions(self,s):
+    def possibleActions(self):
         """
         Returns all actions in the domain.
         The default version returns all actions [0, 1, 2...].
@@ -154,11 +148,11 @@ class Domain(object):
         A numpy array that contains a list of every action in the domain.
 
         """
-        return arange(self.actions_num)
+        return np.arange(self.actions_num)
     # [possActions code]
 
     # [step code]
-    def step(self,a):
+    def step(self, a):
         """
         \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
         This function should return a reward that the agent acheives for the action, the next observed state that the domain/agent should be in,
@@ -169,32 +163,20 @@ class Domain(object):
         @return [r,ns,t] => Reward (number), next observed state (state), isTerminal (bool)
 
         """
-        abstract
+        raise NotImplementedError("Each domain needs to implement this method")
     # [step code]
 
     # [isTerminal code]
-    def isTerminal(self,s):
+    def isTerminal(self):
         """
         Determines whether the stats s is a terminal state.
         The default definition does not terminate. Override this function to specify otherwise. See code
         \ref Domain_isTerminal "Here".
-        @param s
-        The state to be examined
         @return
         True if the state is a terminal state, False otherwise.
         """
         return False
     # [isTerminal code]
-
-    # [printAll code]
-    def printAll(self):
-        """
-        Prints the class data. See code
-        \ref Domain_test "Here".
-
-        """
-        printClass(self)
-    # [printAll code]
 
     # [extendDiscreteDimensions code]
     def extendDiscreteDimensions(self):
@@ -206,15 +188,15 @@ class Domain(object):
         # Store the original limits for other types of calculations
         self.discrete_statespace_limits = self.statespace_limits
         self.statespace_limits = self.statespace_limits.astype('float')
-        for d in arange(self.state_space_dims):
-             if not d in self.continuous_dims:
-                 self.statespace_limits[d,0] += -.5
-                 self.statespace_limits[d,1] += +.5
+        for d in xrange(self.state_space_dims):
+            if d not in self.continuous_dims:
+                self.statespace_limits[d, 0] += -.5
+                self.statespace_limits[d, 1] += +.5
 
     # [extendDiscreteDimensions code]
 
     # [sampleStep code]
-    def sampleStep(self,s,a,no_samples):
+    def sampleStep(self, a, num_samples):
         """
         Sample a set number of next states and rewards from the domain. See code
         \ref sampleStep "Here".
@@ -222,7 +204,7 @@ class Domain(object):
         The given state
         @param a
         The given action
-        @param no_samples
+        @param num_samples
         The number of next states and rewards to be sampled.
         @return
         [S,A] => S is an array of next states, A is an array of rewards for those states
@@ -230,54 +212,11 @@ class Domain(object):
         """
         next_states = []
         rewards = []
-
-        for i in arange(0,no_samples):
-
-            r,ns,terminal = self.step(s, a)
-
+        s = self.state.copy()
+        for i in xrange(num_samples):
+            r, ns, terminal = self.step(a)
+            self.state = s.copy()
             next_states.append(ns)
             rewards.append(r)
 
-        return array(next_states),array(rewards)
-    # [sampleStep code]
-
-    # [s0uniform code]
-    def s0uniform(self):
-        """
-        Returns a state sampled uniformely from the state space. See code
-        \ref Domain_s0uniform "Here".
-        @return
-        The state
-
-        """
-        if className(self) == 'BlocksWorld':
-            print "s0uniform is not supported by %s.\nFurther implementation is needed to filter impossible states." % className(self)
-        if self.continuous_dims == []:
-            s = empty(self.state_space_dims, dtype = integer)
-        else:
-            s = empty(self.state_space_dims)
-
-        for d in arange(self.state_space_dims):
-            a,b = self.statespace_limits[d]
-            s[d] = random.rand()*(b-a)+a
-            if not d in self.continuous_dims:
-                s[d] = int(s[d])
-        if len(s) == 1: s = s[0]
-        return s
-    # [s0uniform code]
-
-    # [saturateState code]
-    def saturateState(self,s):
-        """
-        Caps each element of the state space to lie within the allowed state limits.
-        This function is used for cases when state vector has elements outside of its limits. See code
-        \ref Domain_saturateState "Here".
-        @param s
-        A given state
-        @return
-        If s lies within statespace limits, return s unchanged; otherwise return the statespace_limit closest to s
-        e.g. discrete_statespace_limits = [0, 10] and s = [12], return [10].
-
-        """
-        return bound_vec(s,self.discrete_statespace_limits)
-    # [saturateState code]
+        return np.array(next_states), np.array(rewards)

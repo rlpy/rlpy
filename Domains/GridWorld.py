@@ -81,7 +81,8 @@ class GridWorld(Domain):
             self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
             self.logger.log("Movement Noise:\t%0.0f%%" %(self.NOISE*100))
 
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a=0):
+       s = self.state
        #Draw the environment
        if self.domain_fig is None:
            self.agent_fig = pl.subplot(1,2,1)
@@ -214,7 +215,8 @@ class GridWorld(Domain):
                 r = self.GOAL_REWARD
         if self.map[ns[0],ns[1]] == self.PIT:
                 r = self.PIT_REWARD
-        terminal = self.isTerminal(ns)
+
+        terminal = self.isTerminal()
         return r,ns,terminal
 
     def s0(self):
@@ -222,7 +224,8 @@ class GridWorld(Domain):
         return self.state
 
 
-    def isTerminal(self,s):
+    def isTerminal(self):
+        s = self.state
         if self.map[s[0],s[1]] == self.GOAL:
                 return True
         if self.map[s[0],s[1]] == self.PIT:

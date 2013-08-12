@@ -68,7 +68,8 @@ class CartPole_SwingUp(CartPole):
     def _getReward(self, s, a):
         return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
 
-    def isTerminal(self,s):
+    def isTerminal(self):
+        s = self.state
         return not (-2.4 < s[StateIndex.X] < 2.4)
 
 class CartPole_SwingUpReal(CartPole_SwingUp):

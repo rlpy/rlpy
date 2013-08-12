@@ -101,17 +101,11 @@ class MDPSolver(object):
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a               = self.representation.bestAction(s)
-            #if self.show_performance:
-                #self.domain.showDomain(s,a)
-             #   pl.title('After '+str(total_steps)+' Steps')
-
             r,ns,eps_term    = self.domain.step(a)
             s               = ns
             eps_discounted_return += self.domain.gamma**eps_length*r
             eps_return     += r
             eps_length     += 1
-        #if self.show_performance: self.domain.showDomain(s,a)
-        #self.agent.policy.turnOnExploration()
         return eps_return, eps_length, eps_term, eps_discounted_return
     def saveStats(self):
         checkNCreateDirectory(self.project_path+'/')

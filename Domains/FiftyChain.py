@@ -84,6 +84,7 @@ class FiftyChain(Domain):
         self.optimal_policy = array( [-1 for dummy in range(0, self.chainSize)]) # To catch errors
         self.storeOptimalPolicy()
         self.gamma = 0.8 # Set gamma to be 0.8 for this domain per L & P 2007
+
     def storeOptimalPolicy(self):
         self.optimal_policy[arange(self.GOAL_STATES[0])] = self.RIGHT
         goalStateIndices = arange(1,len(self.GOAL_STATES))
@@ -94,7 +95,9 @@ class FiftyChain(Domain):
             self.optimal_policy[arange(goalState1, averageState)] = self.LEFT
             self.optimal_policy[arange(averageState, goalState2)] = self.RIGHT
         self.optimal_policy[arange(self.GOAL_STATES[-1], self.chainSize)] = self.LEFT
-    def showDomain(self,s,a = 0):
+
+    def showDomain(self,a = 0):
+        s = self.state
         #Draw the environment
         if self.circles is None:
            self.domain_fig = pl.subplot(3,1,1)
@@ -154,20 +157,22 @@ class FiftyChain(Domain):
             ns = max(0,self.state-1)
         elif a == self.RIGHT or (a == self.LEFT and actionFailure):
             ns = min(self.chainSize-1,self.state+1)
-        terminal = self.isTerminal(ns)
-        r = self.GOAL_REWARD if self.state in self.GOAL_STATES else 0
         self.state = ns
+        terminal = self.isTerminal()
+        r = self.GOAL_REWARD if self.state in self.GOAL_STATES else 0
         return r,ns,terminal
 
     def s0(self):
         self.state = random.randint(0,self.chainSize)
         return self.state
 
-    def isTerminal(self,s):
-        return False # s == [[]]
+    def isTerminal(self):
+        return False
+
     def possibleActions(self,s):
         if self.using_optimal_policy: return array([self.optimal_policy[s]])
         else: return arange(self.actions_num)
+
     def L_inf_distance_to_V_star(self, representation):
             V   = array([representation.V(s) for s in arange(self.chainSize)])
             return linalg.norm(V-self.V_star,inf)

@@ -175,7 +175,7 @@ class Experiment(object):
 
         **Parameters**
 
-        visualize_performance (boolean):
+        visualize_performance (boolean)
             show a visualization of the steps taken in performance runs
         visualize_learning (boolean):
             show some visualization of the learning status before each
@@ -217,7 +217,7 @@ class Experiment(object):
                 a           = self.agent.policy.pi(s)
                 # Visual
                 if visualize_steps:
-                    self.domain.show(s, a, self.agent.representation)
+                    self.domain.show(a, self.agent.representation)
 
                 # TODO get rid of this hack!
                 # Hash new state for the tabular case
@@ -256,7 +256,7 @@ class Experiment(object):
             s, a          = ns, na
             # Visual
             if visualize_steps:
-                self.domain.show(s, a, self.agent.representation)
+                self.domain.show(a, self.agent.representation)
 
             # Check Performance
             if total_steps % (self.max_steps / self.num_policy_checks) == 0:
@@ -272,7 +272,7 @@ class Experiment(object):
 
         # Visual
         if visualize_steps:
-            self.domain.show(s, a, self.agent.representation)
+            self.domain.show(a, self.agent.representation)
 
     def evaluate(self, total_steps, episode_number, visualize=False):
         """

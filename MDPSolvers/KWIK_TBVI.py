@@ -16,23 +16,31 @@
 ######################################################
 # Developed by A. Geramifard March 14th 2013 at MIT #
 ######################################################
-# Trajectory Based Value Iteration. This algorithm is different from Value iteration in 2 senses:
-# 1. It works with any Linear Function approximator
-# 2. Samples are gathered using the e-greedy policy
-# The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
-# Based on the KWIK Learning paper of Tom Walsh UAI 2009
+
 
 from TrajectoryBasedValueIteration import *
 class KWIK_TBVI(TrajectoryBasedValueIteration):
+    """Trajectory Based Value Iteration. This algorithm is different from Value iteration in 2 senses:
+    1. It works with any Linear Function approximator
+    2. Samples are gathered using the e-greedy policy
+
+    The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
+    Based on the KWIK Learning paper of Tom Walsh UAI 2009
+    """
+
     DEBUG           = True
     KWIK_Q          = None
     KWIK_threshold  = None
-    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False, epsilon = .1, KWIK_threshold = .1):
+
+    def __init__(self,job_id, representation,domain,logger, planning_time = inf,
+                 convergence_threshold = .005, ns_samples = 100, project_path = '.',
+                 log_interval = 500, show = False, epsilon = .1, KWIK_threshold = .1):
         super(KWIK_TBVI,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
         self.KWIK_threshold = KWIK_threshold
         self.KWIK_Q = identity(self.representation.features_num)
         self.epsilon = epsilon
         self.logger.log('KWIK Threhsold:\t\t\t%0.2f' % self.KWIK_threshold)
+
     def solve(self):
         self.result = []
         self.start_time     = clock() # Used to show the total time took the process
@@ -69,7 +77,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
                 max_Bellman_Error = max(max_Bellman_Error,abs(bellman_error))
                 #Simulate new state and action on trajectory
                 _,s,terminal    = self.domain.step(a)
-                a               = self.representation.bestAction(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s))
+                a               = self.representation.bestAction() if random.rand() > self.epsilon else randSet(self.domain.possibleActions())
 
             #check for convergence
             iteration += 1
@@ -80,7 +88,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             converged = converged_trajectories >= self.MIN_CONVERGED_TRAJECTORIES
             self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f, Return=%0.4f, Steps=%d, Features=%d' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, max_Bellman_Error, performance_return,performance_steps,self.representation.features_num))
-            if self.show:  self.domain.show(s,a,self.representation)
+            if self.show:  self.domain.show(a,self.representation)
 
             # store stats
             self.result.append([bellmanUpdates, # index = 0

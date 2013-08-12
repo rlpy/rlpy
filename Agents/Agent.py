@@ -142,15 +142,6 @@ class Agent(object):
     # [updateAlpha code]
 
 
-	## Prints all of the class information. See code
-	# \ref Agent_printAll "Here".
-
-	# [printAll code]
-    def printAll(self):
-        printClass(self)
-	# [printAll code]
-
-
 	## \cond DEV
     def checkPerformance(self):
         # This function should not be here. This is just for debugging and getting insight into the performance evolution

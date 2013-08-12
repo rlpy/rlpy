@@ -148,11 +148,11 @@ class CartPole(Domain):
         self._assignGroundVerts()
         super(CartPole, self).__init__(logger)
 
-    def showDomain(self, s, a=0):
+    def showDomain(self, a=0):
         ## Plot the pendulum and its angle, along with an arc-arrow indicating the
         # direction of torque applied (not including noise!)
         # Pendulum rotation is centered at origin
-
+        s = self.state
         if self.domainFig is None:  # Need to initialize the figure
             self.domainFig = pl.figure("Domain")
             ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
@@ -184,9 +184,6 @@ class CartPole(Domain):
         pendulumBobX = curX + self.LENGTH  * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
 
-        if self.isTerminal(s):
-            t = 1.
-            self.timeText.set_text("{0:.2f}s".format(t * self.dt, pendulumBobX, pendulumBobY))
         r = self._getReward(s, a)
         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
@@ -260,9 +257,9 @@ class CartPole(Domain):
         ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
-        terminal                    = self.isTerminal(ns)
-        reward                      = self._getReward(ns, a)
         self.state = ns.copy()
+        terminal                    = self.isTerminal()
+        reward                      = self._getReward(a)
         return reward, ns, terminal
 
     def euler_int(self, df, x0, times):
@@ -327,7 +324,7 @@ class CartPole(Domain):
     ## @param s: state
     #  @param a: action
     ## @return: Reward earned for this state-action pair.
-    def _getReward(self, s, a):
+    def _getReward(self, a):
         # Return the reward earned for this state-action pair
         abstract
 
@@ -428,10 +425,11 @@ class CartPoleBalanceOriginal(CartPole):
         self.state = np.zeros(4)
         return self.state.copy()
 
-    def _getReward(self, s, a):
-        return self.good_reward if not self.isTerminal(s) else -1.
+    def _getReward(self, a):
+        return self.good_reward if not self.isTerminal() else -1.
 
-    def isTerminal(self, s):
+    def isTerminal(self):
+        s = self.state
         return (not (-np.pi/15 < s[StateIndex.THETA] < np.pi/15) or
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 
@@ -458,9 +456,10 @@ class CartPoleBalanceModern(CartPole):
         self.state = np.array([np.random.randn()*0.01, 0., 0., 0.])
         return self.state.copy()
 
-    def _getReward(self, s, a):
-        return 0. if not self.isTerminal(s) else -1.
+    def _getReward(self, a):
+        return 0. if not self.isTerminal() else -1.
 
-    def isTerminal(self, s):
+    def isTerminal(self):
+        s = self.state
         return (not (-np.pi/15 < s[StateIndex.THETA] < np.pi/15) or
                 not (-2.4    < s[StateIndex.X]     < 2.4))

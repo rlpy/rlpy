@@ -56,7 +56,8 @@ class FlipBoard(Domain):
         super(FlipBoard,self).__init__(logger)
         if logger:
             self.logger.log("Board Size:\t\t%dx%d" %(self.BOARD_SIZE,self.BOARD_SIZE))
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a = 0):
+       s = self.state
        #Draw the environment
        if self.domain_fig is None:
            self.move_fig  = pl.subplot(111)
@@ -86,7 +87,7 @@ class FlipBoard(Domain):
         ns[a_row,:] =  logical_not(ns[a_row,:])
         ns[:,a_col] =  logical_not(ns[:,a_col])
         ns[a_row,a_col] = not ns[a_row,a_col]
-        if self.isTerminal(self.state):
+        if self.isTerminal():
             terminal = True
             r        = 0
         else:
@@ -105,8 +106,8 @@ class FlipBoard(Domain):
                       ], dtype='bool')
         return self.state.flatten()
 
-    def isTerminal(self,s):
-        return count_nonzero(s) == self.BOARD_SIZE**2
+    def isTerminal(self):
+        return count_nonzero(self.state) == self.BOARD_SIZE**2
 
 if __name__ == '__main__':
     p = FlipBoard();
