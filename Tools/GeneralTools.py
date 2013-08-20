@@ -16,8 +16,6 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 26th 2012 at MIT #
 ######################################################
-
-
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -38,8 +36,16 @@ import platform
 import pdb
 import os
 
+matplotlib_backend = 'TkAgg' # 'WX' 'QTAgg' 'QT4Agg'
+
+#For condor use
+CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
+# os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
+# os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 
 if module_exists('matplotlib'):
+    import matplotlib
+    matplotlib.use(matplotlib_backend)
     from matplotlib import pylab as pl
     import matplotlib.ticker as ticker
     from matplotlib import mpl,rc,colors
@@ -430,7 +436,7 @@ def linearMap(x,a,b,A=0,B=1):
     if res > B: res = B
     return res
 def generalDot(x,y):
-    if isSparse(x):
+    if sp.issparse(x):
         #active_indices = x.nonzero()[0].flatten()
         return x.multiply(y).sum()
     else:

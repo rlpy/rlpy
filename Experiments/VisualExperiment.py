@@ -65,3 +65,4 @@ class VisualExperiment(Experiment):
                 self.agent.representation.plot_2d_feature_centers()
                 self.domain.showLearning(self.agent.representation)
 
+        if visualize_steps: self.domain.show(s,a, self.agent.representation)    

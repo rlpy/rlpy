@@ -4,7 +4,7 @@ Tasks:
 
 - Bring Pinball: https://github.com/pierrelux/pypinball
 - Update doc to allow users to run these commands themselves if desired.
-- Update doc to specifically describe ``contract'' between each funcional component.
+- Update doc to specifically describe ``contract'' between each functional component.
     e.g. not allowed to modify state 's', what is datatype of 's', and 'a', etc.
 
 - Merger should have data structure to store both type of the experiment and data. 

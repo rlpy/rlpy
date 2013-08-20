@@ -38,22 +38,23 @@ The final plot likely shows enormous variance in reward obtained on performance 
 You can adjust the noise parameter "NOISE" at the top of IShouldRun.py; just be aware that the agent does not explore (epsilon=0) during performance runs, so with 0 noise and a bad initial policy, you may have to sit and watch the agent execute a (likely oscillatory) deterministic policy for all 1000 steps of an episode!\n
 
     \section Analyzing_Data Analyzing Data
-The variable PROJECT_PATH in IShouldRun.py determines the directory in which all results are stored; IShouldRun.py defaults to ./Results/IShouldRun.  A folder for a particular experiment is automatically generated in that directory based on its parameters; here, "GridWorld-Tabular-2000" for the GridWorld domain, Tabular representation, with 2,000 steps total. \n
+The variable "path" in IShouldRun.py determines the directory in which all results are stored; IShouldRun.py defaults to ./Results/I-Should-Run.  A folder for a particular experiment is automatically generated in that directory as necessary based on its parameters; here, "GridWorld-Tabular-2000" for the GridWorld domain, Tabular representation, with 2,000 steps total. \n
 The data logged to the console is stored in a file "#-out.txt", where "#" is the ID of the experiment, here "1".  Open this "1-out.txt" and verify this. \n
 Data is stored in a more compact form in "#-results.txt", described below. \n
 \n
-Now open the file "IShouldMerge.py" and run it.  (If you get an error which includes "No directory including result was found at ['Results/IShouldRun']", make sure you allow IShouldRun.py to run to completion, when the second figure window appears, approximately 30 seconds). \n
-You should now see several figures which demonstrate various performance measures of the experiment, such as return vs. number of steps.  The "paths" variable in this file specifies a directory to recursively search to generate these figures (and where to store them); if multiple results directories are found, they are plotted simultaneously against each other on the same figure.  If multiple results files are found in the same directory (e.g. 1-results.txt, 2-results.txt, etc., generated using multipleRuns.py) the mean curve is drawn with variance around it. \n
+Now open the file "IShouldMerge.py" and run it.  (If you get an error which includes "No directory including result was found at ['Results/IShouldRun']", make sure you allow IShouldRun.py to run to completion, when the second figure window appears, approximately 30 seconds; ensure you close both figures). \n
+You should now see several figures which demonstrate various performance measures of the experiment, such as return vs. number of steps.  The "paths" variable in this file specifies a directory to recursively search to generate these figures (and where to store them); if multiple results directories are found, they are plotted simultaneously against each other on the same figure.  If multiple results files are found in the same directory (e.g. 1-results.txt, 2-results.txt, etc., generated using multipleRuns.py) the mean curve is drawn with variance around it.\n
+You can experiment with this by re-running "IShouldRun.py", passing experiment id "2" instead of "1" to make_experiment() on lines 78 and 83. The seed to the random number generator is determined by this experiment id, so that results are reproducible.\n
 \n
     \section Inv_Pend A Slightly More Challenging Domain: Inverted Pendulum
 The small GridWorld domain is easy to understand, but does not produce meaningful final plots because the optimal policy is learned so quickly.  We will now run an experiment on the Inverted Pendulum Domain, where the goal is to prevent the pendulum from falling below the horizontal by applying clockwise (red) or counterclockwise (black) torque.  No reward is received for balancing and there is no control penalty; a penalty is only applied if the pendulum falls, after which the episode terminates.\n
 \n
 Return to IShouldRun.py, and:\n
-1) Near the top (line 33), change the following two variables to allow more steps for learning the domain: \n
-    PERFORMANCE_CHECKS  = 5 \n
-    LEARNING_STEPS      = 8000 \n
+1) Near the top (line 34), change the following two variables to allow more steps for learning the domain: \n
+    performanceChecks   = 5 \n
+    max_steps           = 8000 \n
 \n
-2) Scroll to the "Domain" section (line 77), comment the line corresponding to GridWorld and decomment the line corresponding to Pendulum_InvertedBalance. \n
+2) Scroll to the "Domain" section (line 58), comment the line corresponding to GridWorld and decomment the line corresponding to Pendulum_InvertedBalance. \n
 Now, run IShouldRun.py and observe the new domain.  Initially, the agent fails to balance the pendulum, but after approximately 6000 steps, can do so reliably up to the maximum number of steps allowed for an episode, 300. \n
 
 \image html pendulum_learning.png "Pendulum Visualization, Value Function, and Policy after 8000 steps (IShouldRun.py)"
@@ -63,9 +64,11 @@ The policy (right) initially appears random, but converges to the shape shown, w
 
 \n
 To allow the experiment to run more quickly, without visualization: \n
-1) Assign SHOW_PERFORMANCE    = 0 (surpresses visualization) \n
-2) Assign PERFORMANCE_CHECKS  = 10 \n
-3) Assign LEARNING_STEPS      = 20000 \n
+1) Assign visualize_steps     = False (surpresses visualization) \n
+          visualize_learning  = False\n
+        visualize_performance = False\n
+2) Assign performanceChecks   = 10 \n
+3) Assign max_steps           = 20000 \n
 4) Assign domain = Pendulum_InvertedBalance(episodeCap = 3000, logger = logger); \n
 (Step 4 extends the maximum number of steps per episode from 300 to 3000 to make the task slightly more challenging.)
 \n

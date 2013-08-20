@@ -1,22 +1,14 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 #!/usr/bin/env python
 ######################################################
-# Developed by Alborz Geramiard Oct 25th 2012 at MIT #
-######################################################
+# Robert H Klein, Aug. 14, 2013                      #
+######################################################  
+
+from Tools import *
+from Domains import *
+from Agents import *
+from Representations import *
+from Policies import *
+from Experiments import *
 
 #Locate RLPy
 #================
@@ -31,75 +23,44 @@ if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     sys.exit(1)
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
 sys.path.insert(0, RL_PYTHON_ROOT)
-  
 
-from Tools import *
-from Domains import *
-from Agents import *
-from Representations import *
-from Policies import *
-from Experiments import *
-#from pandas.tests.test_series import CheckNameIntegration
+visualize_steps = False # show each steps
+visualize_learning = True # show visualizations of the learning progress, e.g. value function
+visualize_performance = True # show performance runs
 
-def main(jobID=-1,              # Used as an indicator for each run of the algorithm
-         PROJECT_PATH = '.',    # Path to store the results. Notice that a directory is automatically generated within this directory based on the EXPERIMENT_NAMING 
-         SHOW_FINAL_PLOT = 0,   # Draw the final plot when the run is finished? Automatically set to False if jobID == -1
-         MAKE_EXP_NAME = 1      # This flag should be set 0 if the job is submitted through the condor cluster so no extra directory is built. Basically all the results are stored in the directory where the main file is.
-         ):
-
-    # Etc
-    #----------------------
-    PERFORMANCE_CHECKS  = 10
-    LEARNING_STEPS      = 2000
-    #EXPERIMENT_NAMING   = ['domain','agent','representation']
-    EXPERIMENT_NAMING   = ['domain','representation','max_steps','representation.batchThreshold'] 
-    EXPERIMENT_NAMING   = [] if not MAKE_EXP_NAME else EXPERIMENT_NAMING
-    RUN_IN_BATCH        = jobID != -1
-    SHOW_ALL            = 0 and not RUN_IN_BATCH
-    SHOW_PERFORMANCE    = 1 and not RUN_IN_BATCH
-    PLOT_PERFORMANCE    = 1 and not RUN_IN_BATCH
-    LOG_INTERVAL        = 1 if not RUN_IN_BATCH else 60 # if make_exp_name = false then we assume the job is running on the cluster hence increase the intervals between logs to reduce output txt size 
-    JOB_ID              = 1 if jobID == -1 else jobID
-    PROJECT_PATH        = '.' if PROJECT_PATH == None else PROJECT_PATH
-    DEBUG               = 0
+def make_experiment(id=1, path="./Results/Temp"):
     logger              = Logger()
-    MAX_ITERATIONS      = 10
-    # Domain ----------------------
+    MAX_ITERATIONS = 10
+    max_steps = 2000
+    performanceChecks = 10
+    vis_learning_freq = 200
+    checks_per_policy = 1
+    
+    # Domain Arguments----------------------
     #MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     MAZE                = '/Domains/GridWorldMaps/4x5.txt'
     NOISE               = 0.3   # Noise parameters used for some of the domains such as the GridWorld
+    
     # Representation ----------------------
     DISCRITIZATION              = 20    # Number of bins used to discretize each continuous dimension. Used for some representations 
+    
     # Policy ----------------------
     EPSILON                 = .2 # EGreedy Often is .1 CHANGE ME <<<
+    
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Decay rate parameter; See Agent.py initialization for more information
     initial_alpha           = .1
     boyan_N0                = 100
     LAMBDA                  = 0
+    
     # DOMAIN
     #=================
-    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = Pendulum_InvertedBalance(episodeCap = 300, logger = logger);
-    domain          = Pacman(noise = .1, episodeCap = None, logger = logger, timeout=30, prevState = None, layoutFile = RL_PYTHON_ROOT+'/Domains/PacmanPackage/layouts/smallGrid.lay', numGhostAgents=1000)
     
     # REPRESENTATION
-    DISCRITIZATION              = 20 # CHANGE ME TO 20 # Number of bins used to discretize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
-    RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
-    iFDDOnlineThreshold         =    0.05 # Edited by makexp.py script
-    BatchDiscoveryThreshold     =    0.05 # Edited by makexp.py script
-    #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
-    iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
-    Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
-    BEBF_svm_epsilon            = .1 #{'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
-    FourierOrder                = 3     #
-    iFDD_Sparsify               = 1     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
-    iFDD_Plus                   = 1     # True: relevance = abs(TD_Error)/norm(feature), False: relevance = sum(abs(TD_error)) [ICML 11]
-    OMPTD_BAG_SIZE              = 0
     #================
-    initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    representation  = representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
     
     # POLICY
     #================
@@ -107,18 +68,27 @@ def main(jobID=-1,              # Used as an indicator for each run of the algor
     
     # LEARNING AGENT
     #================
-    agent           = SARSA(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
+    agent           = Q_LEARNING(representation,policy,domain,logger,initial_alpha,LAMBDA, alpha_decay_mode, boyan_N0)
     
-    experiment      = Experiment(agent, domain, logger, exp_naming = EXPERIMENT_NAMING, id = JOB_ID, max_steps = LEARNING_STEPS, show_all= SHOW_ALL, performanceChecks = PERFORMANCE_CHECKS, show_performance = SHOW_PERFORMANCE,log_interval = LOG_INTERVAL, project_path = PROJECT_PATH, plot_performance =  PLOT_PERFORMANCE)
-
-#    for x in range(10):
-#        print('%0.10f'%random.rand()) 
-    
-    experiment.run()
-    experiment.save()
+    experiment = Experiment(**locals())
+    return experiment
     
 if __name__ == '__main__':
-     if len(sys.argv) == 1: #Single Run
-         main(jobID = -1,PROJECT_PATH = 'Results/IShouldRun', MAKE_EXP_NAME = 1)
-     else: # Batch Mode through command line
-         main(int(sys.argv[1]),sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+    path = './Results/I-Should-Run'
+    something = make_experiment(1, path=path) #use ID 1 by default
+    if isinstance(something, Experiment):
+        experiment = something
+        #from Tools.run import run_profiled
+        #run_profiled(make_experiment)
+        experiment = make_experiment(1, path=path)
+        experiment.run(visualize_steps=visualize_steps, 
+                       visualize_learning=visualize_learning,
+                       visualize_performance=visualize_performance)
+        experiment.plot()
+        experiment.save()
+    else:
+        # MDP Solver
+        something.solve()
+        if visualize_performance:
+            pl.ioff()
+            pl.show()

@@ -11,18 +11,28 @@ RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
 sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Domain import Domain
-from .PacmanPackage import layout, pacman, game, ghostAgents
-from .PacmanPackage import graphicsDisplay
+from PacmanPackage import layout, pacman, game, ghostAgents, keyboardAgents
+from PacmanPackage import graphicsDisplay
 import numpy as np
 from Tools import randSet
 import os
-######################################################
-# \author Developed by Austin Hays June 18th 2013 at MIT
-# give the berkeley guys some credit somehow... see their code
-######################################################
-# State is
-#
-######################################################
+####################################################################################
+# \author Developed by Austin Hays and Christoph Dann August 2013 at MIT
+# Existing Pacman code in PacmanPackage developed for CS188 at Berkeley
+# by John DeNero, Dan Klein, Brad Miller, Nick Hay, and Pieter Abbeel.
+# For more information visit:
+# http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
+# This is a wrapper class for the original Pacman domain developed by Berkeley for edX CS-188x and introduced to us by
+# Pieter Abbeel:
+# https://www.edx.org/static/content-berkeley-cs188x~2013_Spring/projects/reinforcement/reinforcement.zip
+####################################################################################
+# State dimensions are:
+# x,y for Pacman
+# x,y,scared-timer for each Ghost (number of time steps for which the ghost is scared)
+# binary for each location (food).   
+####################################################################################
+
+
 
 
 class Pacman(Domain):
@@ -30,51 +40,52 @@ class Pacman(Domain):
 
     """
 
-    def __init__(self, noise = .1, episodeCap = None, logger = None, timeout=30,
-                 prevState=None, layoutFile='./Domains/PacmanPackage/layouts/trickyClassic.lay',
+    def __init__(self, episodeCap = None, logger = None, timeout=30,
+                 prevState=None, layoutFile='./PacmanPackage/layouts/capsuleClassic.lay',
                  numGhostAgents=1000):
-        self.ACTIONS = {'Stop': 0, 'North': 1, 'East': 2, 'South': 3, 'West': 4,
-                        0: 'Stop', 1: 'North', 2: 'East', 3: 'South', 4: 'West'}
-        self.NOISE = noise
-        self.pacmanLoc = None
-        self.prevGhosts = []
-        self.prevPacman = None
-        self.prevpelletLocations = {}
-        self.prevfoodLocations = {}
-        self.ghostDict = {}
-        self.episodeCap = 1000
-        self.logger = logger
+        self.ACTIONS                = {'Stop': 0, 'North': 1, 'East': 2, 'South': 3, 'West': 4,
+                                       0: 'Stop', 1: 'North', 2: 'East', 3: 'South', 4: 'West'}
+        self.pacmanLoc              = None
+        self.prevGhosts             = []
+        self.prevPacman             = None
+        self.prevpelletLocations    = {}
+        self.prevfoodLocations      = {}
+        self.ghostList              = []
+        self.episodeCap             = 1000
+        self.logger                 = logger
         #Specifies which Pacman world you want
         self.layoutFile = layoutFile
-        #Puts the file in line stripped format
         self.layouttext = self.tryToLoad(self.layoutFile)
-        #initializes this layout (pacman world)
-        self.layout = layout.Layout(self.layouttext)
-        self.layout_init = layout.Layout(self.layouttext)
-        #Number of ghosts
-        self.numGhostAgents = numGhostAgents
+        self.layout                 = layout.Layout(self.layouttext)
+        self.layout_init            = layout.Layout(self.layouttext)
+
+        self.numGhostAgents = numGhostAgents #Number of ghosts
+        
         #Intitializes Pacman game
-        self.state = pacman.GameState()
-        self.rules = pacman.ClassicGameRules(timeout)
-        self.restartGraphics = None
+        self.state                  = pacman.GameState()
+        self.rules                  = pacman.ClassicGameRules(timeout)
+        self.restartGraphics        = None
+        
         self.state.data.initialize(self.layout, self.numGhostAgents)
+        
         #defaultSettings() initializes visualization and Pacman rules
         self.defaultSettings()
-        self.startingIndex = 0
-        self.map = self.convertToInts(self.layouttext)
-        self.ROWS, self.COLS = self.map.shape
-        self.statespace_limits  = self.makeStateSpace_Limits()
-        self.state_space_dims = len(self.statespace_limits)
-        self.actions_num = 5
-        self.timerswitch = False
-        self.savedtimer = None
-        self.state_array = None
-        self.rlpy_array = None
-        self.gameDisplay = None
+        
+        self.startingIndex          = 0
+        self.map                    = self.convertToInts(self.layouttext)
+        self.ROWS, self.COLS        = self.map.shape
+        self.statespace_limits      = self.makeStateSpace_Limits()
+        self.state_space_dims       = len(self.statespace_limits)
+        self.actions_num            = 5
+        self.timerswitch            = False
+        self.savedtimer             = None
+        self.state_array            = None
+        self.rlpy_array             = None
+        self.gameDisplay        = None
+        
         super(Pacman, self).__init__(self.logger)
         if logger:
             self.logger.log("Dims:\t\t%dx%d" % (self.ROWS, self.COLS))
-            self.logger.log("Movement Noise:\t%0.0f%%" % (self.NOISE * 100))
 
     def makeStateSpace_Limits(self):
         #### Makes an array of limits for each dimension in the state vector.
@@ -114,6 +125,7 @@ class Pacman(Domain):
         #changes ghost positions to as specified by s
         for i in range(1, len(copy.data.agentStates[1:])+1):
             copy.data.agentStates[i].configuration.pos = ( s[(3*i)-1:][0] , s[(3*i)-1:][1])
+            #copy.data.agentStates[i].configuration.pos = ( s[(3*i)-1:][0]/2 , s[(3*i)-1:][1]/2 )
             copy.data.agentStates[i].scaredTimer = s[(3*i)-1:][2]
         #updates prevfoodLocations library to values specified by s
         foodvals = s[-len(self.prevfoodLocations):]
@@ -168,7 +180,7 @@ class Pacman(Domain):
         #add info to state array in correct order
         for i in self.pacmanLoc:
             state_array.append(i)
-        if self.ghostDict.keys() == []:
+        if self.ghostList == []:
             for coord in ghostLocations:
                 i=1
                 for a in coord:
@@ -176,11 +188,11 @@ class Pacman(Domain):
                 state_array.append(self.state.data.agentStates[i].scaredTimer)
                 i+=1
         else:
-            for i in self.ghostDict.keys():
-                x,y,scaredTimer = self.ghostDict[i]
-                x,y = int(x+0.5), int(y+0.5) #rounds to nearest integer
-                state_array.append(x)
-                state_array.append(y)
+            for i in self.ghostList:
+                x,y,scaredTimer = i
+                #x,y = int(x+0.5), int(y+0.5) #rounds to nearest integer
+                state_array.append(x/2)
+                state_array.append(y/2)
                 state_array.append(scaredTimer)
         for loc in self.prevfoodLocations.keys():
             i,j = loc[0], loc[1]
@@ -244,8 +256,14 @@ class Pacman(Domain):
         for agent in range(len(s.data.agentStates)):
             s.data._agentMoved = agent
             self.gameDisplay.update( s.data )
-
-
+            
+        if self.cleanupGraphics:
+            self.gameDisplay.removeAllFood()
+            self.gameDisplay.removeAllCapsules()
+            self.gameDisplay.food = self.gameDisplay.drawFood(self.gameDisplay.layout.food)
+            self.gameDisplay.capsules = self.gameDisplay.drawCapsules(self.gameDisplay.layout.capsules)
+            self.cleanupGraphics = False
+        
     def step(self, s, a):
         """
         Applies actions from outside the Pacman domain to the given state.
@@ -254,53 +272,57 @@ class Pacman(Domain):
         """
         #matches internal states with given s vector
         self.state = self.sToObject(s)
-        if np.random.random_sample() < self.NOISE:
-            #Random Move
-            a = randSet(self.possibleActions(s))
         a = self.ACTIONS[a]
         #pacman performs action "a" in current state object
         pacman.PacmanRules.applyAction( self.state, a )
         s = self.mapToState()
-        terminal = self.isTerminal(s)
-        #the ghosts move randomly
+        #the ghosts move according to PacmanPackage
         for i in range(len(self.state.data.agentStates))[1:]:
-            ghostOptions = pacman.GhostRules.getLegalActions(self.state,i)
-            #direction = self.state.data.agentStates[i].configuration.direction
-            reverse = game.Actions.reverseDirection(self.state.data.agentStates[i].configuration.direction)
-            if reverse in ghostOptions and len( ghostOptions ) > 1:
-                ghostOptions.remove(reverse)
+            conf = self.state.getGhostState( i ).configuration
+            if len(self.ghostList) == len(self.state.data.agentStates)-1:
+                conf.pos = self.ghostList[i-1][0]/2.0, self.ghostList[i-1][1]/2.0
+            ghostOptions = pacman.GhostRules.getLegalActions(self.state ,i)
             randomAction_ind = np.random.randint(len(ghostOptions))
             randomAction = ghostOptions[randomAction_ind]
             pacman.GhostRules.applyAction(self.state,randomAction,i)
             pacman.GhostRules.decrementTimer(self.state.data.agentStates[i])
             pacman.GhostRules.checkDeath(self.state, i)
-            self.ghostDict['ghost'+str(i)] = (self.state.data.agentStates[i].configuration.pos[0],self.state.data.agentStates[i].configuration.pos[1], self.state.data.agentStates[i].scaredTimer)
+            # KEEP ghostList THE SAME, it ensures the ghosts' speed is correct
+            if len(self.ghostList) < i:
+                self.ghostList.append((self.state.data.agentStates[i].configuration.pos[0]*2,self.state.data.agentStates[i].configuration.pos[1]*2, self.state.data.agentStates[i].scaredTimer))
+            self.ghostList[i-1] = (self.state.data.agentStates[i].configuration.pos[0]*2,self.state.data.agentStates[i].configuration.pos[1]*2, self.state.data.agentStates[i].scaredTimer)
         s = self.mapToState()
         #scoring in pacman
         r = self.state.data.scoreChange
         if len(self.state.data.agentStates) > 1:
             if self.state.data.agentStates[1].scaredTimer == 39:
                 r+=50
-        #r -= 1 #optional time step negative reward
+        r -= 1 #optional time step negative reward
         self.state.data.score += r
         terminal = self.isTerminal(s)
-        if terminal != False:
-            self.state.data.score = 0
+        
         #self.mapToState updates state_array for RLPy use
         return r, self.rlpy_array, terminal
+    
+        
 
     def s0(self):
         #re-initializes internal states when an episode starts, returns a s vector
         self.ghostDict = {}
+        self.state.data.score = 0
+        self.cleanupGraphics = True
+        self.ghostDict = {}
+        self.ghostList = []
         self.state = pacman.GameState()
         self.rules = pacman.ClassicGameRules(timeout=30)
         self.game = self.rules.newGame(self.layout, pacman, self.ghosts, DummyGraphics(), self.beQuiet, catchExceptions=False)
         self.state.data.initialize(self.layout, self.numGhostAgents)
-        if self.gameDisplay is not None:
-            self.gameDisplay.removeAllFood()
-            self.gameDisplay.removeAllCapsules()
-            self.gameDisplay.food = self.gameDisplay.drawFood(self.gameDisplay.layout.food)
-            self.gameDisplay.capsules = self.gameDisplay.drawCapsules(self.gameDisplay.layout.capsules)
+
+#        if self.gameDisplay is not None:
+#            self.gameDisplay.removeAllFood()
+#            self.gameDisplay.removeAllCapsules()
+#            self.gameDisplay.food = self.gameDisplay.drawFood(self.gameDisplay.layout.food)
+#            self.gameDisplay.capsules = self.gameDisplay.drawCapsules(self.gameDisplay.layout.capsules)
 
         return self.mapToState()
 
@@ -322,27 +344,27 @@ class Pacman(Domain):
         If game should terminate, returns the proper indication to step function.
         Accounts for scoring changes in terminal states.
         """
-        #pacman and a ghost are in the same place --> pacman dies, game is over
-        pacman = self.state.data.agentStates[0].getPosition()
-        for ghost in self.state.data.agentStates[1:]:
-            #checks to see if they crossed each other in previous step
-            if ghost.getPosition() == self.prevPacman:
-                if pacman in self.prevGhosts:
-                    if ghost.scaredTimer == 0:
-                        self.state.data.scoreChange -= 500
-                        state = self.s0()
-                        return True
-            self.prevGhosts = []
-            self.prevGhosts.append(ghost.getPosition())
-            #checks if pacman and ghost are in the same place
-            if ghost.getPosition() == pacman:
-                if ghost.scaredTimer == 0:
-                    self.state.data.scoreChange -= 500
-                    return True
-        #checks if pacman has eaten everything, checks that every food indicator variable is zero
-        if 1 not in self.rlpy_array[2*len(self.state.data.agentStates):]:
-            self.state.data.scoreChange += 500
-            return True
+#        #pacman and a ghost are in the same place --> pacman dies, game is over
+#        pacman = self.state.data.agentStates[0].getPosition()
+#        for ghost in self.state.data.agentStates[1:]:
+#            #checks to see if they crossed each other in previous step
+#            if ghost.getPosition() == self.prevPacman:
+#                if pacman in self.prevGhosts:
+#                    if ghost.scaredTimer == 0:
+#                        self.state.data.scoreChange -= 500
+#                        state = self.s0()
+#                        return True
+#            self.prevGhosts = []
+#            self.prevGhosts.append(ghost.getPosition())
+#            #checks if pacman and ghost are in the same place
+#            if ghost.getPosition() == pacman:
+#                if ghost.scaredTimer == 0:
+#                    self.state.data.scoreChange -= 500
+#                    return True
+#        #checks if pacman has eaten everything, checks that every food indicator variable is zero
+#        if 1 not in self.rlpy_array[2*len(self.state.data.agentStates):]:
+#            self.state.data.scoreChange += 500
+#            return True
         #checks internal winning mechanism if something escapes above tests
         if self.state.data._win is True:
             self.state.data.scoreChange += 500
@@ -395,6 +417,20 @@ class DummyGraphics(object):
     def finalize(self, *arg, **kwargs):
         pass
 
+
 if __name__ == "__main__":
+    #runs interactive game with whatever layout is initialized in the Domain subclass
     p = Pacman()
-    p.test(200)
+    p.test(1000)
+    
+    os.chdir(RL_PYTHON_ROOT+'/Domains/PacmanPackage/')
+    args = {}
+    args['layout'] = layout.getLayout(p.layoutFile.split('/')[-1])
+    args['ghosts'] = [ghostAgents.RandomGhost(i) for i in range(len(p.state.data.agentStates))[1:]]
+    args['numGames'] = 1
+    args['pacman'] = keyboardAgents.KeyboardAgent(0)
+    args['catchExceptions'] = False
+    args['record'] = False
+    args['timeout'] = 30
+    args['display'] = graphicsDisplay.PacmanGraphics(1.0, 0.1)
+    pacman.runGames( **args )

@@ -111,6 +111,8 @@ sudo pip install networkx # For System Administrator domain
 # Must test below on fresh system. 
 sudo pip install -U scikit-learn
 
+# sudo pip install tkinter-pypy
+
 echo -e "A list of all installed packages is shown below.\n"
 pip freeze
 
@@ -173,7 +175,8 @@ do
              ;;
     esac
     if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
-        echo -e "\nValid directory specified. "
+#        echo -e "\nValid directory specified. "
+        echo -e "\n"
 #        echo -e "The file RLPy_setup.bash will be created.\n"
     else
         echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
@@ -187,46 +190,6 @@ cd $INSTALL_PATH
 echo -e "Now configuring cython in setup.py"
 python setup.py build_ext --inplace
 
-VALID_DIRECTORY_ZERO="1" # Start with improper directory
-while [ "$VALID_DIRECTORY_ZERO" -ne 0 ]
-do
-    echo -e "\n"
-    echo -e "Final step:"
-    echo -e "Please enter a directory in which to store matplotlib temporary"
-    echo -e "files; the only constraint is that you have read/write priveleges to"
-    echo -e "this directory."
-    echo -e ""
-
-    echo -e "May we suggest: $HOMEDIR/mpl_tmp ."
-    echo -e "Is this ok? [Enter 1 or 2]"
-    echo -e "1) Yes"
-    echo -e "2) No"
-    read yes_no
-    TMP_PATH=""
-    case $yes_no in
-        1) TMP_PATH="$HOMEDIR/mpl_tmp"
-             ;;
-        2)  echo -e "Please enter the absolute path to a temporary directory of choice: "
-            # Change to root directory in case a sneaky user tries to specify
-            # a relative path
-             cd /
-             read TMP_PATH
-             ;;
-         *)  echo -e "Unrecognized Input: Please enter [0 or 1].\n\n\n"
-             continue
-             ;;
-    esac
-    #-p option makes directories only as needed.
-    mkdir -p $TMP_PATH
-    VALID_DIRECTORY_ZERO="$?"
-    if [ $VALID_DIRECTORY_ZERO -eq 0 ]; then
-        echo -e "\nValid directory specified. This may take some time."
-    else
-        echo -e "\nYou specified an invalid directory; maybe you haven't created it yet?\n"
-        # Automatically force entry of python path in loop above
-        yes_no="2"
-    fi
-done
 echo -e "\n"
 echo -e "\n"
 read -p "Installation script complete, press [Enter] to exit."

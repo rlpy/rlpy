@@ -1,0 +1,255 @@
+// \file install.txt
+/*! 
+  \page install.txt Installation
+  \anchor the_install_page
+  <B> --- VERSION 1.1 RELEASED Aug. 19, 2013 --- </B>
+
+  \section Download Download
+Download RLPy 1.1 <a href="http://acl.mit.edu/RLPy/RLPy.zip">Here</a> \n
+\n
+Please direct any questions or bug reports to\n
+rlpy[at]mit[dot]edu\n
+\n
+\section changelog Changelog
+-- -- -- -- <B>New in Version 1.1:</B> -- -- -- --\n
+\n
+<B>Agents:</B>\n
+-- Consolidated Q-Learning and SARSA into TDControlAgent\n
+\n
+<B>Domains:</B>\n
+-- Added HIV-Treatment\n
+-- Added Pinball\n
+-- Added Helicopter\n
+-- Added PuddleWorld\n
+-- Added Acrobot\n
+\n
+<B>Tools:</B>\n
+-- Added hypersearch.py (support for hyperopt parameter optimization package)\n
+\n
+<B>Misc. Changes:</B>\n
+-- Removed requirement for "Config.py" file, no longer set environment variables  => Easier install\n
+-- Changed structure of main.py; experiments now returned as objects\n
+-- Updates to documentation, code speed improvements\n
+-- Matplotlib backend defaults to TKinter for faster visualization\n
+\n
+<B>News:</B>\n
+-- William Dabney from University of Massachusetts Amherst joined the core RLPy team.\n
+\n
+<B>Planned for release 1.2:</B>\n
+-- State variables "owned" by domain (and not agent), so that agent queries domain for its state.\n
+-- Integration with RL-Glue, compatibility with RL-Glue agents and environments.\n
+-- Repository transition from svn to git\n
+\n
+-- -- -- -- <B>Version 1.0:</B> -- -- -- --\n
+       INITIAL RELEASE\n
+\n
+
+  \section Citations Citations
+Alborz Geramifard and Robert H Klein and Christoph Dann and William Dabney and Jonathan P How, RLPy: The Reinforcement Learning Library for Education and Research, 2013. http://acl.mit.edu/RLPy, April, 2013 
+\n
+\n
+<B> Bibtex </B>\n
+\@ONLINE{RLPy, \n
+author = {Alborz Geramifard, Robert H Klein, Christoph Dann, William Dabney, Jonathan P How}, \n
+title = {{RLPy: The Reinforcement Learning Library for Education and Research}}, \n
+month = April, \n
+year = {2013}, \n
+howpublished = {\\url{http://acl.mit.edu/RLPy}}, \n
+} \n
+  \section Prerequisites Prerequisites
+The only requirements to run and contribute to RLPy are
+a working Python 2.7 environment and the required package dependencies,
+which can be installed automatically by the provided scripts.\n
+Detailed installation instructions are shown below.\n
+Installation FAQ available at bottom, general FAQ available on the FAQ page
+or in the file FAQ.txt located in the RLPy folder.\n
+\n
+Recommended Operating Systems:\n
+a) <B>Windows 32-bit</B>\n
+b) <B>Ubuntu Linux 32/64-bit</B>\n
+c) <B>Mac OSX</B> \n
+\n
+If your setup does not match those recommended above, you must download the packages manually, described in manual_install.txt.\n
+\n
+\n
+    \section installation INSTALLATION: As easy as 1,2,3 (+4 to run)
+===============================================================\n
+===============================================================\n
+1. Python 2.7\n
+\n
+Check to see if python is already installed by opening a terminal in any
+OS and typing:\n
+> python --version\n
+\n
+If you do not see the output "Python 2.7.3", download and install python,
+for example, from ( http://www.python.org/getit/ )\n
+\n
+===============================================================\n
+===============================================================\n
+2. An IDE capable of development in Python\n
+\n
+Install a development environment of choice with Python support.\n
+We recommend Eclipse Classic.  Note that eclipse requires the Java SDK.\n
+To obtain Eclipse, download and follow the instructions:\n
+i) Download+Install Eclipse Classic ( http://www.eclipse.org/downloads/ )\n
+ii) Install Pydev for Eclipse ( http://pydev.org/manual_101_install.html )\n
+\n
+See FAQ if eclipse fails to run.\n
+\n
+===============================================================\n
+===============================================================\n
+2.5. pip\n
+a) Windows 32/64-bit\n
+Install per instructions here:
+http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows\n
+\n
+b) Ubuntu Linux - automated in script\n
+c) Mac OSX - automated in script\n
+\n
+===============================================================\n
+===============================================================\n
+3. Run the dependency installer script\n
+\n
+FIRST ensure the RLPy directory is located in the workspace folder of your
+IDE, or whatever final location you intend it to be.\n
+NEXT Extract the relevant installer zip file (RLPy-*.zip, where '*'
+is Windows, Ubuntu, or MacOS) into the 'Installation' folder in the RLPy directory.\n
+\n
+THEN:\n
+\n
+a) <B>Windows 32-bit</B>\n
+a.i) Open a command prompt window with administrative privileges:\n
+     Windows 8:          WindowsKey-X, select "Command Prompt Admin"\n
+     Windows 7,Vista: type 'cmd' in the start menu, right click and open 
+with admin privileges\n
+     Windows XP:      Start-->Run cmd.exe\n
+a.ii) Navigate to the Install directory and run the .bat script.\n
+\n
+\n
+\n
+b) <B>Ubuntu</B> - Open a terminal window, navigate to the Installation 
+folder,
+and enter 'chmod u+x ubuntu_setup.sh'\n
+Then run the provided script with ./ubuntu_setup.sh\n
+\n
+\n
+\n
+c) <B> Mac OSX </B> \n
+c.i) The Command Line Tools (CLT) and/or XCode are required to use the 
+script.
+If you are unsure of your setup, type " xcode-select --version " at a 
+terminal.\n
+If you don't see a valid version number appear, follow the instructions 
+here to
+setup your environment: ( 
+http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac/ 
+)\n
+\n
+c.ii) Open a terminal window, navigate to the Installation folder,
+and enter 'chmod u+x OSX_setup.sh'\n
+Then run the provided script with ./OSX_setup.sh\n
+\n
+---------------------------------------------------------------\n
+** Note that the script requests administrative privileges to perform package installs.  If you are not comfortable with these privileges, you may install the following packages yourself:\n
+numpy, scipy, matplotlib, networkx, graphviz, cython, scikit-learn\n
+\n
+Using ubuntu, this can be accomplished with the commands:\n
+sudo apt-get install python-numpy python-scipy python-matplotlib python-networkx graphviz python-pip libatlas-dev gfortran\n
+sudo pip install cython\n
+sudo pip install -U scikit-learn\n
+\n
+===============================================================\n
+===============================================================\n
+Installation of RLPy is now complete!\n
+\n
+4. Now open the framework in your IDE of choice.\n
+\n
+If using Eclipse:\n
+i) Go to file -> switch workspace -> other\n
+And navigate to the folder containing RLPy (NOT the RLPy folder itself.)\n
+\n
+ii) Go to file -> import -> general -> existing projects into workspace
+And select 'Browse.'  Navigate into the RLPy directory and select 'Next.'\n
+You should now see the RLPy directory structure in the left pane.\n
+\n
+===============================================================\n
+===============================================================\n
+\n
+That's it!\n
+\n
+Now take a look at the \ref First_Run Getting Started Tutorial page,
+and (as part of the tutorial) test the installation by running IshouldRun.py.\n
+Finally, start experimenting with RLPy yourself!\n
+\n
+If you encountered errors in the installation, see the FAQ section at bottom\n
+(and an extended FAQ located in the FAQ.txt file).\n
+\n
+\n
+\n
+
+
+\section install_faq Insallation FAQ: Error/Solutions
+U = Ubuntu, W = Windows, X = OSX\n
+===============================================================\n
+If you are having trouble installing on OSX, see the following:\n
+http://www.thisisthegreenroom.com/2011/installing-python-numpy-scipy-matplotlib-and-ipython-on-lion/#numpy\n
+\n
+===============================================================\n
+E: Generic messages on Mac OSX with "Canopy":\n
+X: https://support.enthought.com/entries/23707811-TKinter-was-broken-on-Canopy-OS-X-1-0-1-fixed-in-1-0-3\n
+\n
+===============================================================\n
+E: Eclipse Errors regarding missing packages e.g. 'Failed to import package numpy'
+U,W,X: This likely indicates that eclipse is pointing to a previous version of python.\n
+Go into Eclipse -> Preferences -> Pydev -> "Interpreter-Python", and at the very top, remove the existing entry and replace it with the version of python installed by RLPy, which is likely the directory you get when you type 'which python' at a terminal.\n
+If prompted, allow Pydev to "Autoconfig."
+\n
+===============================================================\n
+E: Generic messages about missing functions or 'module does not contain function xxx'\n
+S: Ensure you have the latest version of scipy (0.11 as of this writing):\n
+import scipy\n
+scipy.version.version\n
+S-U: if you don't have the correct version, run the following commands\n
+sudo apt-get install libatlas-base-dev gfortran python-pip\n
+sudo pip install scipy --upgrade\n
+===============================================================\n
+E: Generic error messages regarding pylab, matplotlib, or TkAgg\n
+S: The default matplotlib backend is set to TkAgg; this can be modified in GeneralTools.py.  If you do not have TKinter installed, remove the offending line and allow matplotlib to choose its own backend; this may cause artifacts in domain visualizations.\n
+===============================================================\n
+E: ImportError: numpy.core.multiarray failed to import\n
+S1: Dont import pylab directly. Use Matplotlib.pylab\n
+S2: sudo easy_install -U numpy\n
+===============================================================\n
+E: In eclipse sty is out of synch with the file system\n
+S: Refresh (F5)\n
+===============================================================\n
+E: In Windows: Python does not appear to be installed (Eclipse
+fails to locate python, or running 'python' in a command prompt gives
+'python' is not recognized as an internal or external command, operable
+program or batch file."\n
+S-W: Set the path variables for python as described in: ( http://docs.python.org/2/faq/windows.html )\n
+===============================================================\n
+\n
+\n
+
+  \section Copyright Copyright (BSD License)
+  
+\verbatim
+Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+\endverbatim
+
+Please direct additional questions or bug reports to\n
+rlpy[at]mit[dot]edu\n
+
+*/
