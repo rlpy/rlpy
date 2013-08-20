@@ -392,7 +392,8 @@ class PacmanGraphics:
         moveCircle(eyes[1],(screen_x+self.gridSize*GHOST_SIZE*(0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2)
         moveCircle(eyes[2],(screen_x+self.gridSize*GHOST_SIZE*(-0.3+dx), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy)), self.gridSize*GHOST_SIZE*0.08)
         moveCircle(eyes[3],(screen_x+self.gridSize*GHOST_SIZE*(0.3+dx), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy)), self.gridSize*GHOST_SIZE*0.08)
-
+        for i in eyes:
+            raiseImage(i)
 
     def moveGhost(self, ghost, ghostIndex, prevGhost, ghostImageParts):
         old_x, old_y = self.to_screen(self.getPosition(prevGhost))
@@ -417,6 +418,8 @@ class PacmanGraphics:
         else:
             color = formatColor(.9,0,0) #GHOST_COLORS[ghostIndex]
         edit(ghostImageParts[0], ('fill', color), ('outline', color))
+
+        raiseImage(ghostImageParts[0])
         #self.moveEyes(self.getPosition(prevGhost), self.getDirection(ghost), ghostImageParts[-4:])
         self.moveEyes(updatedposition, self.getDirection(ghost), ghostImageParts[-4:])
         refresh()
@@ -561,6 +564,7 @@ class PacmanGraphics:
                                   FOOD_SIZE * self.gridSize,
                                   outlineColor = color, fillColor = color,
                                   width = 1)
+
                     imageRow.append(dot)
                 else:
                     imageRow.append(None)
