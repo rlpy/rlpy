@@ -108,7 +108,7 @@ class HelicopterHoverExtended(Domain):
     def s0(self):
         self.state = np.zeros((20))
         self.state[9] = 1.
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
         s = self.state
@@ -184,7 +184,7 @@ class HelicopterHoverExtended(Domain):
         st[13:19] = gust_noise
         st[-1] = t + 1
         self.state = st.copy()
-        return (self._get_reward(), st, self.isTerminal())
+        return self._get_reward(), st, self.isTerminal(), self.possibleActions()
 
     def _state_in_world(self, s):
         """
@@ -400,8 +400,9 @@ class HelicopterHover(HelicopterHoverExtended):
     def s0(self):
         #self.hidden_state_ = np.zeros((8))
         #self.hidden_state_[0] = 1.
-        s,_  = self._split_state(super(HelicopterHover, self).s0())
-        return s
+        s_full, term, p_actions = super(HelicopterHover, self).s0()
+        s,_  = self._split_state(s_full)
+        return s, term, p_actions
 
     def _split_state(self, s):
         s_observable = np.zeros((12))
@@ -414,6 +415,6 @@ class HelicopterHover(HelicopterHoverExtended):
 
     def step(self, a):
         #s_extended = self._augment_state(s)
-        r, st, term = super(HelicopterHover, self).step(a)
+        r, st, term, p_actions = super(HelicopterHover, self).step(a)
         st,_  = self._split_state(st)
-        return (r, st, term)
+        return (r, st, term, p_actions)

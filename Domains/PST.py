@@ -15,21 +15,12 @@
 
 # NEEDS VISUALIZATION UPDATE
 
-import sys, os
 import copy
-
 import csv
 
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
-from Domain import *
+from Domain import Domain
 # See [[]] for domain detailed domain description.
 
 ########################################################
@@ -344,7 +335,7 @@ class PST(Domain):
             totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
         if self.isTerminal(): totalStepReward += self.CRASH_REWARD
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
-        return totalStepReward,ns,self.isTerminal()
+        return totalStepReward,ns,self.isTerminal(), self.possibleActions()
 
     def s0(self):
         self.resetLocalVariables()
@@ -354,7 +345,7 @@ class PST(Domain):
         sensor      = ones(self.NUM_UAV, dtype='int') * SensorState.RUNNING
 
         self.state = self.properties2StateVec(locations, fuel, actuator, sensor)
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     # @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):
@@ -375,7 +366,8 @@ class PST(Domain):
     def struct2State(self,sState):
         return hstack([sState.locations, sState.fuel, sState.actuator, sState.sensor])
 
-    def possibleActions(self,s):
+    def possibleActions(self):
+        s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
         validActions = [] # Contains a list of uav_actions lists, e.g. [[0,1,2],[0,1],[1,2]] with the index corresponding to a uav.
@@ -487,8 +479,8 @@ if __name__ == '__main__':
             a = 17 - i
             print 'pythontest: original action ',a
 #            print 'pythontest: vector action ', array(id2vec(a,p.LIMITS))
-            (r, s, isT) = p.step(s,a)
-            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions(s)
+            (r, s, isT) = p.step(a)
+            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions()
 
 #        actionVectors = [array(id2vec(a,p.LIMITS)) for a in allA]
 #

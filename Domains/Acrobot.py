@@ -84,7 +84,7 @@ class Acrobot(Domain):
 
     def s0(self):
         self.state = np.zeros((4))
-        return np.zeros((4))
+        return np.zeros((4)), self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
         s = self.state
@@ -115,7 +115,7 @@ class Acrobot(Domain):
         self.state = ns.copy()
         terminal = self.isTerminal()
         reward = -1. if not terminal else 0.
-        return reward, ns, terminal
+        return reward, ns, terminal, self.possibleActions()
 
     def _dsdt(self, s_augmented, t):
         m1 = self.LINK_MASS_1
@@ -268,5 +268,5 @@ class AcrobotLegacy(Acrobot):
         self.state = ns.copy()
         terminal = self.isTerminal()
         reward = -1. if not terminal else 0.
-        return reward, ns, terminal
+        return reward, ns, terminal, self.possibleActions()
 

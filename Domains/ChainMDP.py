@@ -11,22 +11,9 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Tools import *
-from Domain import *
+from Domain import Domain
+import numpy as np
 ######################################################
 # \author Developed by Alborz Geramiard Nov 20th 2012 at MIT #
 ######################################################
@@ -90,7 +77,7 @@ class ChainMDP(Domain):
         pl.draw()
 
     def step(self,a):
-        s = self.state
+        s = self.state[0]
         if a == 0: #left
             ns = max(0,s-1)
         if a == 1:
@@ -99,18 +86,12 @@ class ChainMDP(Domain):
 
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
-        return r,ns,terminal
+        return r, ns, terminal, self.possibleActions()
 
     def s0(self):
-        self.state = 0
-        return array([self.state])
+        self.state = np.array([0])
+        return self.state, self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
         s = self.state
         return (s[0] == self.chainSize - 1)
-
-if __name__ == '__main__':
-    #p = GridWorld('/Domains/GridWorldMaps/ACC2011.txt');
-    p = ChainMDP(5);
-    p.test(1000)
-

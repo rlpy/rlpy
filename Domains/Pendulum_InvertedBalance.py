@@ -15,8 +15,7 @@
 
 
 from Tools import *
-from Domain import *
-from Pendulum import *
+from Pendulum import Pendulum, StateIndex
 
 #####################################################################
 # \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
@@ -78,7 +77,7 @@ class Pendulum_InvertedBalance(Pendulum):
         # Returns the initial state, pendulum vertical
         # Initial state is uniformly randomed between [-.2,.2] for both dimensions
         self.state = (random.rand(2)*2-1)*0.2
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a):
         # Return the reward earned for this state-action pair

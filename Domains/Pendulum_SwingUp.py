@@ -13,23 +13,8 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Tools import *
-from Domain import *
-from Pendulum import *
+from Pendulum import Pendulum, StateIndex
 
 #####################################################################
 # \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
@@ -84,6 +69,7 @@ class Pendulum_SwingUp(Pendulum):
     MAX_RETURN = episodeCap*GOAL_REWARD
     MIN_RETURN = 0
     gamma               = .9   #
+
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(Pendulum_SwingUp,self).__init__(logger)
@@ -91,16 +77,14 @@ class Pendulum_SwingUp(Pendulum):
     def s0(self):
         #Returns the initial state: pendulum straight up and unmoving.
         self.state = array([pi,0])
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a):
+        s  = self.state
         """Return the reward earned for this state-action pair.
         On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6"""
         return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
+
     def isTerminal(self):
         return False
 
-if __name__ == '__main__':
-    random.seed(0)
-    p = Pendulum_SwingUp();
-    p.test(1000)

@@ -11,20 +11,6 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Tools import *
 from Domain import *
 ######################################################
@@ -160,24 +146,20 @@ class FiftyChain(Domain):
         self.state = ns
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if self.state in self.GOAL_STATES else 0
-        return r,ns,terminal
+        return r,ns,terminal, self.possibleActions()
 
     def s0(self):
         self.state = random.randint(0,self.chainSize)
-        return self.state
+        return self.state, self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
         return False
 
-    def possibleActions(self,s):
+    def possibleActions(self):
+        s = self.state
         if self.using_optimal_policy: return array([self.optimal_policy[s]])
         else: return arange(self.actions_num)
 
     def L_inf_distance_to_V_star(self, representation):
             V   = array([representation.V(s) for s in arange(self.chainSize)])
             return linalg.norm(V-self.V_star,inf)
-
-if __name__ == '__main__':
-    p = FiftyChain();
-    p.test(1000)
-

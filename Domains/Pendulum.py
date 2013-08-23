@@ -13,20 +13,6 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Tools import *
 from Domain import *
 
@@ -172,6 +158,7 @@ class Pendulum(Domain):
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
         super(Pendulum,self).__init__(logger)
+
     def showDomain(self, a=0):
         s = self.state
         # Plot the pendulum and its angle, along with an arc-arrow indicating the
@@ -225,6 +212,7 @@ class Pendulum(Domain):
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
         self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
+
     def showLearning(self,representation):
         granularity = 10.
         self.xTicks         = linspace(0,granularity * self.Theta_discretization - 1, 5)
@@ -289,7 +277,7 @@ class Pendulum(Domain):
         # Defined by children
         abstract
 
-    def possibleActions(self,s): # Return list of all indices corresponding to actions available
+    def possibleActions(self, s=None): # Return list of all indices corresponding to actions available
         return arange(self.actions_num)
 
     def step(self,a):
@@ -343,7 +331,7 @@ class Pendulum(Domain):
         self.state = ns.copy()
         terminal                    = self.isTerminal()
         reward                      = self._getReward(a)
-        return reward, ns, terminal
+        return reward, ns, terminal, self.possibleActions()
 
     #
     # @param s_augmented: {The state at which to compute derivatives, augmented with the current action.
@@ -483,10 +471,9 @@ class Pendulum(Domain):
         return yout # Optionally also return tout here.
 
 
-    ## @param s: state
     #  @param a: action
     #  @return: Reward earned for this state-action pair.
-    def _getReward(self, s, a):
+    def _getReward(self, a):
         # Return the reward earned for this state-action pair
         abstract
 

@@ -172,7 +172,8 @@ class MultiTrack(Domain):
     def worldContains(self, x, y):
         return True if 0 <= x and x < self.GRID and 0 <= y and y < self.GRID  else False
 
-    def possibleActions(self,s):
+    def possibleActions(self):
+        s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
         validActions = [] # Contains a list of uav_actions lists, e.g. [[0,1,2],[0,1],[1,2]] with the index corresponding to a uav.

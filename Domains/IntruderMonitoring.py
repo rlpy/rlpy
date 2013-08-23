@@ -13,19 +13,9 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys, os
-
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from numpy.ma.core import logical_or
 from Tools import *
-from Domain import *
+from Domain import Domain
 ######################################################
 # \author Developed by N. Kemal Ure Dec 3rd 2012 at MIT
 # \author Edited by Alborz Geramifard on Feb 20 2013
@@ -81,15 +71,6 @@ class IntruderMonitoring(Domain):
         self.ACTION_LIMITS      = [5]*self.NUMBER_OF_AGENTS
         self.DimNames           = []
 
-        '''
-        print 'Initialization Finished'
-        print 'Number of Agents', self.NUMBER_OF_AGENTS
-        print 'Number of Intruders', self.NUMBER_OF_INTRUDERS
-        print 'Initial State',self.s0()
-        print 'Possible Actions',self.possibleActions(self.s0())
-        print 'limits', self.statespace_limits
-        '''
-
         super(IntruderMonitoring,self).__init__(logger)
         if self.logger:
             _,_,shortmapname = mapname.rpartition('/')
@@ -142,14 +123,14 @@ class IntruderMonitoring(Domain):
         map[agents[:,0],agents[:,1]] = False
         intrusion_counter = count_nonzero(map[self.danger_zone_locations[:,0],self.danger_zone_locations[:,1]])
         r = intrusion_counter*self.INTRUSION_PENALTY
-        self.saturateState(ns)
+        ns              =bound_vec(ns,self.discrete_statespace_limits)
         #print s, id2vec(a,self.ACTION_LIMITS), ns
         self.state = ns.copy()
-        return r,ns,False
+        return r,ns,False, self.possibleActions()
 
     def s0(self):
         self.state = hstack([self.agents_initial_locations.ravel(), self.intruders_initial_locations.ravel()])
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def possibleActionsPerAgent(self,s):
         # 1. tile the [R,C] for all actions
@@ -200,7 +181,6 @@ class IntruderMonitoring(Domain):
        pl.draw()
        #pl.gcf().savefig('domain.pdf', transparent=True, pad_inches=.1)
 if __name__ == '__main__':
-
     #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/1x3_1A_1I.txt')
     #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/2x3_2A_1I.txt')
     #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/4x4_1A_2I.txt')

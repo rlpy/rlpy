@@ -58,9 +58,9 @@ class HIVTreatment(Domain):
         self.state = ns.copy()
         if self.logspace:
             ns = np.log10(ns)
-        return reward, ns, False
+        return reward, ns, False, self.possibleActions()
 
-    def possibleActions(self, s):
+    def possibleActions(self):
         return np.arange(4)
 
     def s0(self):
@@ -68,8 +68,8 @@ class HIVTreatment(Domain):
         s = np.array([163573., 5., 11945., 46., 63919., 24.])
         self.state = s.copy()
         if self.logspace:
-            return np.log10(s)
-        return s
+            return np.log10(s), self.isTerminal(), self.possibleActions()
+        return s, self.isTerminal(), self.possibleActions()
 
 
 def dsdt(s, t, eps1, eps2):
@@ -121,11 +121,3 @@ try:
 except Exception, e:
     print e
     print "Cython extension for HIVTreatment dynamics not available, expect slow runtime"
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    domain = HIVTreatment(logger=None)
-    s = domain.s0()
-    for i in range(200):
-        r, s, _ = domain.step(3)
-        print s, r

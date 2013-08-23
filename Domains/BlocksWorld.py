@@ -10,23 +10,8 @@
 #Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
+from Domain import Domain
 from Tools import *
-from Domain import *
 ######################################################
 # \author Developed by Alborz Geramiard Nov 12th 2012 at MIT
 ######################################################
@@ -98,6 +83,7 @@ class BlocksWorld(Domain):
         else:
             self.domain_fig.set_data(world)
             pl.draw()
+
     def showLearning(self,representation):
         pass #cant show 6 dimensional value function
 
@@ -107,8 +93,8 @@ class BlocksWorld(Domain):
         #print 'taking action %d->%d' % (A,B)
         if not self.validAction(s,A,B):
             print 'State:%s, Invalid move from %d to %d' % (str(s),A,B)
-            print self.possibleActions(s)
-            print id2vec(self.possibleActions(s),[self.blocks, self.blocks])
+            print self.possibleActions()
+            print id2vec(self.possibleActions(),[self.blocks, self.blocks])
 
         if random.random_sample() < self.noise: B = A #Drop on Table
         ns          = s.copy()
@@ -116,15 +102,15 @@ class BlocksWorld(Domain):
         self.state = ns.copy()
         terminal    = self.isTerminal()
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
-        return r,ns,terminal
+        return r,ns,terminal, self.possibleActions()
 
     def s0(self):
         # all blocks on table
         self.state = arange(self.blocks)
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def possibleActions(self):
-        s.self.state
+        s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
         empty_blocks    = [b for b in arange(self.blocks) if self.clear(b,s)]
@@ -203,9 +189,5 @@ class BlocksWorld(Domain):
             ns  = array([[ns1],[ns2]]).reshape((2,-1))
             t   = array([terminal1, terminal2]).reshape((2,-1))
             return p,r,ns,t
-if __name__ == '__main__':
-    random.seed(0)
-    p = BlocksWorld(blocks=6,noise=0);
-    p.test(1000)
 
 

@@ -1,4 +1,4 @@
-from Domain import Domain
+#from Domain import Domain
 from HelicopterHover import HelicopterHover, HelicopterHoverExtended
 from HIVTreatment import HIVTreatment
 from PuddleWorld import PuddleWorld

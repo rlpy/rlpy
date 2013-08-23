@@ -223,7 +223,7 @@ class CartPole(Domain):
         # Defined by children
         pass
 
-    def possibleActions(self,s): # Return list of all indices corresponding to actions available
+    def possibleActions(self): # Return list of all indices corresponding to actions available
         return np.arange(self.actions_num)
 
     def step(self, a):
@@ -260,7 +260,7 @@ class CartPole(Domain):
         self.state = ns.copy()
         terminal                    = self.isTerminal()
         reward                      = self._getReward(a)
-        return reward, ns, terminal
+        return reward, ns, terminal, self.possibleActions()
 
     def euler_int(self, df, x0, times):
         """
@@ -423,7 +423,7 @@ class CartPoleBalanceOriginal(CartPole):
 
     def s0(self):
         self.state = np.zeros(4)
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a):
         return self.good_reward if not self.isTerminal() else -1.
@@ -454,7 +454,7 @@ class CartPoleBalanceModern(CartPole):
 
     def s0(self):
         self.state = np.array([np.random.randn()*0.01, 0., 0., 0.])
-        return self.state.copy()
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a):
         return 0. if not self.isTerminal() else -1.

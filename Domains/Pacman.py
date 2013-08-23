@@ -188,7 +188,7 @@ class Pacman(Domain):
         terminal = self.isTerminal()
         if terminal:
             self.game_state.data.score = 0
-        return r, self._get_state(), terminal
+        return r, self._get_state(), terminal, self.possibleActions()
 
     def s0(self):
         """
@@ -204,10 +204,9 @@ class Pacman(Domain):
             self.gameDisplay.food = self.gameDisplay.drawFood(self.gameDisplay.layout.food)
             self.gameDisplay.capsules = self.gameDisplay.drawCapsules(self.gameDisplay.layout.capsules)
 
-        return self.state
+        return self.state, self.isTerminal(), self.possibleActions()
 
-    def possibleActions(self, s=None):
-        # beware: s is ignored
+    def possibleActions(self):
 
         if self.isTerminal():
             # somewhat hacky, but should not matter anyway, maybe clean up in
