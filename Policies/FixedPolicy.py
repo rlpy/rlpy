@@ -37,12 +37,12 @@ class FixedPolicy(Policy):
     supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring',\
                         'SystemAdministrator','MountainCar','PST','GridWorld',\
                         ]
-    def pi(self,s):
+    def pi(self,s, terminal, p_actions):
         if self.tableOfValues:
             return self.tableOfValues[(s)]
         return self.pi2(s)
 
-    def pi2(self,s):
+    def pi2(self,s, terminal, p_actions):
         domain = self.representation.domain
         if not className(domain) in self.supportedDomains:
             print "ERROR: There is no fixed policy defined for %s" % className(domain)

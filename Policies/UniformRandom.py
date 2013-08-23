@@ -18,10 +18,9 @@
 ######################################################
 from Policy import *
 class UniformRandom(Policy):
-    def pi(self,s):
-        A = self.representation.domain.possibleActions(s)
-        return randSet(A)
-         
-        
-        
-        
+    def pi(self,s, terminal, p_actions):
+        return randSet(p_actions)
+
+
+
+

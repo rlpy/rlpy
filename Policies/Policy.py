@@ -52,7 +52,7 @@ class Policy(object):
 	# \ref Policy_pi "Here".
 
 	# [pi code]
-    def pi(self,s):
+    def pi(self,s, terminal, p_actions):
        abstract
 	# [pi code]
 

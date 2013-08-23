@@ -140,15 +140,15 @@ class Experiment(object):
 
         self.agent.policy.turnOffExploration()
 
-        s = self.performance_domain.s0()
+        s, eps_term, p_actions = self.performance_domain.s0()
 
         while not eps_term and eps_length < self.domain.episodeCap:
-            a = self.agent.policy.pi(s)
+            a = self.agent.policy.pi(s, eps_term, p_actions)
             if visualize:
                 self.performance_domain.showDomain(a)
                 pl.title('After ' + str(total_steps) + ' Steps')
 
-            r, ns, eps_term = self.performance_domain.step(a)
+            r, ns, eps_term, p_actions = self.performance_domain.step(a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
@@ -201,7 +201,6 @@ class Experiment(object):
         self.seed_components()
 
         self.result = zeros((self.STATS_NUM, self.num_policy_checks))
-        terminal            = True
         total_steps         = 0
         eps_steps           = 0
         eps_return          = 0
@@ -210,11 +209,11 @@ class Experiment(object):
         self.start_time     = clock()  # Used to show the total time took the process
         self.total_eval_time = 0.
         self.performance_tick = 0
-        s = self.domain.s0()
+        s, terminal, p_actions = self.domain.s0()
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
-                s           = self.domain.s0()
-                a           = self.agent.policy.pi(s)
+                s, terminal, p_actions = self.domain.s0()
+                a           = self.agent.policy.pi(s, terminal, p_actions)
                 # Visual
                 if visualize_steps:
                     self.domain.show(a, self.agent.representation)
@@ -229,8 +228,8 @@ class Experiment(object):
                 episode_number += 1
 
             # Act,Step
-            r, ns, terminal   = self.domain.step(a)
-            na              = self.agent.policy.pi(ns)
+            r, ns, terminal, p_actions   = self.domain.step(a)
+            na              = self.agent.policy.pi(ns, terminal, p_actions)
             total_steps     += 1
             eps_steps       += 1
             eps_return      += r
@@ -252,7 +251,7 @@ class Experiment(object):
                 self.agent.representation.addState(ns)
 
             # learning
-            self.agent.learn(s, a, r, ns, na, terminal)
+            self.agent.learn(s, r, ns, na, terminal)
             s, a          = ns, na
             # Visual
             if visualize_steps:
