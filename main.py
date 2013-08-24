@@ -8,6 +8,7 @@ from MDPSolvers import *
 try:
     from ROS.ROS_RCCar import ROS_RCCar
 except Exception:
+    print "ROS is not installed => ROS_RCCar can not be used."
     pass
 
 #Locate RLPy
@@ -27,7 +28,7 @@ sys.path.insert(0, RL_PYTHON_ROOT)
 
 visualize_steps = False # show each steps
 visualize_learning = True # show visualizations of the learning progress, e.g. value function
-visualize_performance = True # show performance runs
+visualize_performance = False # show performance runs
 
 def make_experiment(id=1, path="./Results/Temp"):
     logger              = Logger()
@@ -37,7 +38,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     vis_learning_freq = 5000
     checks_per_policy = 1
 
-    # Domain ----------------------
+    # Domain Arguments----------------------
     #MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     #MAZE                = '/Domains/GridWorldMaps/2x3.txt'
     #MAZE                = '/Domains/GridWorldMaps/4x5.txt'
@@ -62,9 +63,9 @@ def make_experiment(id=1, path="./Results/Temp"):
     NOISE               = .3   # Noise parameters used for some of the domains such as the GridWorld
     BLOCKS              = 6     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
-    DISCRITIZATION              = 20 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
+    DISCRITIZATION              = 9 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
     RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
-    iFDDOnlineThreshold         =	500 # Edited by makexp.py script
+    iFDDOnlineThreshold         =	1e7 # Edited by makexp.py script
     BatchDiscoveryThreshold     =	0.05 # Edited by makexp.py script
     #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
@@ -78,8 +79,8 @@ def make_experiment(id=1, path="./Results/Temp"):
     EPSILON                 = 0.1 # EGreedy Often is .1 CHANGE ME if I am not .1<<<
     #Agent ----------------------
     alpha_decay_mode        = 'boyan' # Boyan works better than dabney in some large domains such as pst. Decay rate parameter; See Agent.py initialization for more information
-    initial_alpha =	1. # Edited by makexp.py script
-    boyan_N0 =	100 # Edited by makexp.py script
+    initial_alpha           =	.1 # Edited by makexp.py script
+    boyan_N0                =	100000 # Edited by makexp.py script
     BetaCoef                = 1e-6# In the Greedy_GQ Algorithm the second learning rate, Beta, is assumed to be Alpha * THIS CONSTANT
     LAMBDA                  = 0.
     LSPI_iterations         = 5 if not 'LSPI_iterations' in globals() else LSPI_iterations  #Maximum Number of LSPI Iterations
@@ -103,8 +104,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    #domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
-    #domain          = Pacman(noise = .1, episodeCap = None, logger = logger, timeout=30, prevState = None, layoutFile = RL_PYTHON_ROOT+'/Domains/PacmanPackage/layouts/smallGrid.lay', numGhostAgents=1000)
+    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
     #domain          = HelicopterHover(logger=logger)
     #domain          = Acrobot(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
@@ -121,7 +121,8 @@ def make_experiment(id=1, path="./Results/Temp"):
     #domain          = CartPole_SwingUp(logger = logger)
     #domain          = FiftyChain(logger = logger)
     #domain          = RCCar(logger = logger)
-
+    #domain           = Pinball(logger, 500, width=500, height=500, configuration='/Domains/PinballConfigs/pinball_medium.cfg')
+    #domain           = HIVTreatment(logger=logger)
     
     # REPRESENTATION
     #================
@@ -138,6 +139,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     #representation  = Fourier(domain,logger,order=FourierOrder)
     #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
     #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
+
     #tile_matrix = array(mat("""
     #72 72 84 84             ;
     #1 18 18 18; 18 1 18 18; 18 18 1 18; 18 18 18 1;

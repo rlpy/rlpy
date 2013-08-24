@@ -19,7 +19,7 @@ try:
     
     USER_NAME = 'acl'
     DOMAIN_NAME = 'acl.mit.edu'
-    DEST_FOLDER = '/var/www/acl.mit.edu/htdocs/'
+    DEST_FOLDER = '/var/www/acl.mit.edu/htdocs'
     #OPTIONS = '-rvq' VERBOS
     OPTIONS = '-rq'
     
@@ -69,9 +69,15 @@ try:
                 file_list += [item]	
     os.chdir('.//..//..//')
     for f in file_list:
-        os.remove(f)
+    	try:
+        	os.remove(f)
+        except:
+        	print 'WARNING: could not remove file',f,', ignoring.'
     for dir in dir_list:
-        shutil.rmtree(dir)
+    	try:
+        	shutil.rmtree(dir)
+        except:
+        	print 'WARNING; could not remove directory',dir,', ignoring.'
         
     #---------------- Create Zip --------------------------#
     print "Zipping"

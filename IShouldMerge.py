@@ -52,7 +52,7 @@ sys.path.insert(0, RL_PYTHON_ROOT)
 from Tools import *
 
 #paths = ['.']
-paths = ['Results/IShouldRun']
+paths = ['Results/I-Should-Run']
 #paths = ['Results/IShouldRun/Pendulum_InvertedBalance-Tabular-20000']
 
 labels              = []
@@ -61,9 +61,11 @@ styles              = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>
 MarkerSize          = 7    
 Legend              = True  # Draw legends?
 maxSamples          = inf   # Maximum number of samples to be loaded from the directory. If set inf it will use all of them
- 
-merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples)
+minSamples          = 1     # Minimum number of samples required to include a directory for plotting 
+
+merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples, minSamples = minSamples)
 pl.ioff()
+
 #print mergedData.means[0].shape
 #merger.plot('Return')
 #merger.plot('Return','Features')
@@ -85,7 +87,6 @@ merger.plot('Steps','Learning Steps')
  
 merger.plot() #Works both with control and PE plotting the most common output
 
-if not isOnCluster():
-    pl.show()
+pl.show()
 
 

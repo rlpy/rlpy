@@ -5,6 +5,7 @@
 	<tab type="mainpage" visible="yes" title=""/>
 	<tab type="usergroup" title="Installation" url = "@ref the_install_page">
 		<tab type="user" title="Download" url = "@ref Download"/>
+        <tab type="user" title="Changelog" url = "@ref changelog"/>
         <tab type="user" title="Citations" url = "@ref Citations"/>
 		<tab type="user" title="Prerequisites" url = "@ref Prerequisites"/>
 		<tab type="user" title="Installation" url = "@ref installation"/>

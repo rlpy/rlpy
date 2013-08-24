@@ -57,8 +57,15 @@ MarkerSize          = 7
 Legend              = True  # Draw legends?
 maxSamples          = inf   # Maximum number of samples to be loaded from the directory. If set inf it will use all of them
 minSamples          = 1     # Minimum number of samples required to include a directory for plotting 
-merger = Merger(paths,labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples, minSamples = minSamples)
+useLastDatapoint    = False # IF true, only uses the result obtained at the final iteration/timestep [
+
+merger = Merger(paths, labels=labels, colors = colors, styles= styles, markersize = MarkerSize, legend = Legend, maxSamples = maxSamples, minSamples = minSamples)
 pl.ioff()
+
+#Extract experiment paths by finding all subdirectories in all given paths that contain experiment.
+# merger.extractExperimentPaths(paths)
+# merger.computeStatistics()
+
 # FOR Control
 #######################
 #merger.plot('Return')
@@ -83,7 +90,7 @@ pl.ioff()
 #merger.plot('Return')
 #merger.plot('Return','Features')
 #merger.plot('Return','Time(s)')
- 
+
 merger.plot() #Plot the default Y-Axis and X-Axis 
 
 if not isOnCluster():

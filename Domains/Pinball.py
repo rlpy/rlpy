@@ -10,27 +10,38 @@ if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
 sys.path.insert(0, RL_PYTHON_ROOT)
 
+"""
+.. module:: pinball
+   :platform: Unix, Windows
+   :synopsis: Pinball domain for reinforcement learning
+
+.. moduleauthor:: Pierre-Luc Bacon <pierrelucbacon@gmail.com>
+
+"""
+
+##########################################################################################
+# Modified with Permission for RLPy use by Austin Hays <ahays@mit.edu> August 2013 at MIT
+# Original author is Pierre-Luc Bacon <pierrelucbacon@gmail.com>
+##########################################################################################
 
 from Domain import Domain
 import numpy as np
 from Tools import randSet
-#must use 32-bit version of pygame for Mac OS X
-import pygame
 import argparse
 import random
 from itertools import *
+import itertools
+from Tkinter import *
 
 
 class Pinball(Domain):
     
-    ACC_X = 0
-    ACC_Y = 1
-    DEC_X = 2
-    DEC_Y = 3
-    ACC_NONE = 4
+    """
+    Pinball Subclass of RLPy Domain Class created entirely by Austin Hays
+    """
 
 
-    def __init__(self, noise = .1, episodeCap = 1000, logger = None, width=500, height=500, configuration='/Domains/PinballConfigs/pinball_empty.cfg'):
+    def __init__(self, noise = .1, episodeCap = 1000, logger = None, width=500, height=500, configuration='/Domains/PinballConfigs/pinball_simple_single.cfg'):
         self.NOISE              = noise
         self.logger             = logger
         self.configuration      = RL_PYTHON_ROOT + configuration
@@ -56,13 +67,16 @@ class Pinball(Domain):
         self.BALL_COLOR = [0, 0, 255]
         self.TARGET_COLOR = [255, 0, 0]
         if self.screen == None:
-            pygame.init()
-            pygame.display.set_caption('RLPy Pinball')
-            self.screen = pygame.display.set_mode([self.width, self.height])
-            self.environment_view = PinballView(self.screen, self.environment)
-            self.background_surface = pygame.Surface(self.screen.get_size())
-            self.background_surface.fill(self.LIGHT_GRAY)
+                master = Tk()
+                master.title('RLPY Pinball')
+                self.screen = Canvas(master, width=500.0, height=500.0)
+                self.screen.configure(background = 'LightGray')
+                self.screen.pack()
+                self.environment_view = PinballView(self.screen, 500.0, 500.0, self.environment)
         self.environment_view.blit()
+        self.screen.pack()
+        self.screen.update()
+        
     
     def step(self, s, a):
         [self.environment.ball.position[0], self.environment.ball.position[1], self.environment.ball.xdot, self.environment.ball.ydot] = s
@@ -441,36 +455,43 @@ class PinballView:
     This class is used in conjunction with the :func:`run_pinballview`
     function, acting as a *controller*.
 
-    We use `pygame <http://www.pygame.org/>` to draw the environment.
-
     """
-    def __init__(self, screen, model):
+    def __init__(self, screen, width, height, model):
         """
-        :param screen: a pygame surface
-        :type screen: :class:`pygame.Surface`
-        :param model: an instance of a :class:`PinballModel`
-        :type model: :class:`PinballModel`
+           Changed from original PyGame implementation to work
+           with Tkinter visualization.
         """
         self.screen = screen
+        self.width = 500.0
+        self.height = 500.0
         self.model = model
 
+        self.x, self.y = self._to_pixels(self.model.ball.position)
+        self.rad = int(self.model.ball.radius*self.width)
+        
         self.DARK_GRAY = [64, 64, 64]
         self.DARK_BLUE = [0, 0, 128]
         self.LIGHT_GRAY = [232, 232, 232]
         self.BALL_COLOR = [0, 0, 255]
         self.TARGET_COLOR = [255, 0, 0]
-
-        # Draw the background
-        #self.background_surface = pygame.display.set_mode(screen.get_size())
-        self.background_surface = pygame.Surface(screen.get_size())
-        self.background_surface.fill(self.LIGHT_GRAY)
+    
         
         for obs in model.obstacles:
-            pygame.draw.polygon(self.background_surface, self.DARK_BLUE, map(self._to_pixels, obs.points), 0)
-            pygame.display.update()
-        pygame.draw.circle(
-            self.background_surface, self.TARGET_COLOR, self._to_pixels(self.model.target_pos), int(self.model.target_rad*self.screen.get_width()))
-        pygame.display.update()
+            coords_list = map(self._to_pixels, obs.points)
+            chain = itertools.chain(*coords_list)
+            coords = list(chain)
+            self.screen.create_polygon(coords, fill='blue')
+        self.screen.pack()
+        
+        
+        self.target_x, self.target_y = self._to_pixels(self.model.target_pos)
+        self.target_rad = int(self.model.target_rad*self.width)
+        target_id = self.drawcircle(self.screen, self.target_x, self.target_y, self.target_rad, 'red')
+        self.ball_id = self.drawcircle(self.screen, self.x, self.y, self.rad, 'black')
+        self.screen.pack()
+        
+    def drawcircle(self, canv, x ,y ,rad, color):
+        return canv.create_oval(x-rad,y-rad,x+rad,y+rad,width=0,fill=color)
 
     def _to_pixels(self, pt):
         """ Converts from real units in the 0-1 range to pixel units
@@ -481,57 +502,48 @@ class PinballView:
         :rtype: list
 
         """
-        return [int(pt[0] * self.screen.get_width()), int(pt[1] * self.screen.get_height())]
+        return [int(pt[0] * self.width), int(pt[1] * self.height)]
 
     def blit(self):
         """ Blit the ball onto the background surface """
-        self.screen.blit(self.background_surface, (0, 0))
-        pygame.draw.circle(self.screen, self.BALL_COLOR,
-                           self._to_pixels(self.model.ball.position), int(self.model.ball.radius*self.screen.get_width()))
-        pygame.display.update()
+        self.screen.coords(self.ball_id, self.x-self.rad,self.y-self.rad,self.x+self.rad,self.y+self.rad)
+        self.x, self.y = self._to_pixels(self.model.ball.position)
+        self.screen.pack()
 
 def run_pinballview(width, height, configuration):
-    """ Controller function for a :class:`PinballView`
-
-    :param width: The desired screen width in pixels
-    :type widht: int
-    :param height: The desired screen height in pixels
-    :type height: int
-    :param configuration: The path to a configuration file for a :class:`PinballModel`
-    :type configuration: str
+    """ 
+    
+        Changed from original Will Dabney implementation to reflect
+        the visualization changes in the PinballView Class.
 
     """
-    # Launch interactive pygame
-    pygame.init()
-    pygame.display.set_caption('RLPy Pinball')
-    screen = pygame.display.set_mode([width, height])
+    width, height = float(width), float(height)
+    master = Tk()
+    master.title('RLPY Pinball')
+    screen = Canvas(master, width=500.0, height=500.0)
+    screen.configure(background = 'LightGray')
+    screen.pack()
 
     environment = PinballModel(configuration)
-    environment_view = PinballView(screen, environment)
+    environment_view = PinballView(screen, width, height, environment)
 
-    actions = {pygame.K_RIGHT:PinballModel.ACC_X, pygame.K_UP:PinballModel.DEC_Y, pygame.K_LEFT:PinballModel.DEC_X, pygame.K_DOWN:PinballModel.ACC_Y}
+    actions = [PinballModel.ACC_X, PinballModel.DEC_Y, PinballModel.DEC_X, PinballModel.ACC_Y, PinballModel.ACC_NONE]
     done = False
     while not done:
-        pygame.time.wait(50)
-        user_action_ind = random.choice(actions.keys()) #PinballModel.ACC_NONE
-        user_action = actions[user_action_ind]
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            if event.type == pygame.KEYUP or event.type == pygame.KEYDOWN:
-                user_action = actions.get(event.key, PinballModel.ACC_NONE)
+        user_action = random.choice(actions)
         environment_view.blit()
         if environment.episode_ended():
             done = True
-    if environment.take_action(user_action) == environment.END_EPISODE:
-        done = True
+        if environment.take_action(user_action) == environment.END_EPISODE:
+         done = True
 
         environment_view.blit()
+        screen.update()
 
-    pygame.quit()
+
 
 if __name__ == "__main__":
     #run_pinballview(500, 500, RL_PYTHON_ROOT + '/Domains/PinballConfigs/pinball_simple_single.cfg')
     pin = Pinball()
-    pin.test(100)
+    pin.test(2500)
 
