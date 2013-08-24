@@ -37,7 +37,7 @@ import itertools
 import platform
 import pdb
 import os
-
+import numpy as np
 
 if module_exists('matplotlib'):
     from matplotlib import pylab as pl
@@ -101,8 +101,8 @@ def input_wait(timeout):
         return None
 
 def discrete_sample(p):
-    cp = numpy.cumsum(p)
-    return numpy.sum(cp <= numpy.random.rand(1))
+    cp = np.cumsum(p)
+    return np.sum(cp <= np.random.rand(1))
 def matrix_mult(A,B):
     # TO BE COMPLETED!
     # This function is defined due to many frustration with the dot, * operators that behave differently based on the input values: sparse.matrix, matrix, ndarray and array

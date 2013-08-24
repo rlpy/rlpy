@@ -209,7 +209,7 @@ class Experiment(object):
         self.start_time     = clock()  # Used to show the total time took the process
         self.total_eval_time = 0.
         self.performance_tick = 0
-        s, terminal, p_actions = self.domain.s0()
+        terminal = True
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
                 s, terminal, p_actions = self.domain.s0()
@@ -228,7 +228,7 @@ class Experiment(object):
                 episode_number += 1
 
             # Act,Step
-            r, ns, terminal, p_actions   = self.domain.step(a)
+            r, ns, terminal, np_actions   = self.domain.step(a)
             na              = self.agent.policy.pi(ns, terminal, p_actions)
             total_steps     += 1
             eps_steps       += 1
@@ -251,8 +251,8 @@ class Experiment(object):
                 self.agent.representation.addState(ns)
 
             # learning
-            self.agent.learn(s, r, ns, na, terminal)
-            s, a          = ns, na
+            self.agent.learn(s, p_actions, a, r, ns, np_actions, na, terminal)
+            s, a, p_actions          = ns, na, np_actions
             # Visual
             if visualize_steps:
                 self.domain.show(a, self.agent.representation)

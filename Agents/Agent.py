@@ -19,7 +19,6 @@
 ######################################################
 
 from Tools import *
-from Representations import *
 
 ## The Agent receives observations from the \ref Domains.Domain.Domain "Domain" and performs actions to obtain some goal.
 #
@@ -96,7 +95,7 @@ class Agent(object):
 
 
     ## \b ABSTRACT \b METHOD: Defined by child class
-    def learn(self,s,a,r,ns,na,terminal):
+    def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
        pass
        # ABSTRACT
 
@@ -140,28 +139,6 @@ class Agent(object):
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")
     # [updateAlpha code]
-
-
-	## \cond DEV
-    def checkPerformance(self):
-        # This function should not be here. This is just for debugging and getting insight into the performance evolution
-        # Set Exploration to zero and sample one episode from the domain
-        eps_length  = 0
-        eps_return  = 0
-        eps_term    = 0
-        self.policy.turnOffExploration()
-        s           = self.domain.s0()
-
-        while not eps_term and eps_length < self.domain.episodeCap:
-            a               = self.policy.pi(s)
-            r,ns,eps_term   = self.domain.step(a)
-            s               = ns
-            eps_return     += r
-            eps_length     += 1
-        self.policy.turnOnExploration()
-        return eps_return, eps_length, eps_term
-	## \endcond
-
 
 	## Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent.
 	# See code \ref Agent_MC_episode "Here".

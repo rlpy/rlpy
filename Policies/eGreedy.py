@@ -40,7 +40,7 @@ class eGreedy(Policy):
             if self.forcedDeterministicAmongBestActions:
                 return p_actions[0]
             else:
-                return randSet(A)
+                return randSet(p_actions)
     def turnOffExploration(self):
         self.old_epsilon = self.epsilon
         self.epsilon = 0

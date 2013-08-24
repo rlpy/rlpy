@@ -1,4 +1,12 @@
 from GeneralTools import *
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+
+def thousands(x, pos):
+    'The two args are the value and tick position'
+    return '%1.0fk' % (x*1e-3)
+
+formatter = FuncFormatter(thousands)
 
 class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
@@ -242,7 +250,7 @@ class Merger(object):
             best_index = argmax(S)
         return self.exp_paths[best_index], best
 
-    def plot(self,Y_axis = None, X_axis = None, save=False):
+    def plot(self,Y_axis = None, X_axis = None, save=False, thousands=False):
         #Setting default values based on the Policy Evaluation or control
         if Y_axis == None:
             if self.ResultType == 'Policy Evaluation': Y_axis = 'Error'
@@ -349,6 +357,8 @@ class Merger(object):
 
             pl.xlabel(X_axis_label,fontsize=16)
             pl.ylabel(Y_axis_label,fontsize=16)
+        if thousands:
+            plt.gca().xaxis.set_major_formatter(formatter)
         if save:
             self.save(Y_axis,X_axis,Xs,Ys,X_Errs, Y_Errs)
         #if not isOnCluster and self.legend:

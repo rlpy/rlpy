@@ -22,7 +22,7 @@
 # rather it looks through a predefined set of features
 # iFDD initially will expand all the features in the bag
 # The set of features used by OMPTD aside from the initial_features are represented by self.expandedFeatures
-from Representation import *
+from Representation import Representation
 from iFDD import *
 
 class OMPTD(Representation):

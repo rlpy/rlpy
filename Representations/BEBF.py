@@ -33,24 +33,8 @@
 # recently added basis function has norm <= batchThreshold, which
 # Parr et al. used as 10^-5.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
-
 #from scipy.interpolate import Rbf
 from Tools import *
-from Domains import GridWorld
 from Representation import *
 
 
@@ -82,24 +66,11 @@ class BEBF(Representation):
         bebfApprox.fit(X,y)
         return bebfApprox
 
-#    def getFunctionApproximation(self,X,y):
-        #return Rbf(X,y,function='multiquadric') # function = gaussian
-        #bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0) # support vector regression
-                                                # C = penalty parameter of error term, default 1
-#        gp = GaussianProcess(theta0=0.1, thetaL=.001, thetaU=1.)
-#        gp.fit(X, y)
-#        return gp
-#        bebfApprox.fit(X,y)
-#        return bebfApprox
 
 
     def addInitialFeatures(self):
-#        numDims = 1
-#        numSamples = 100
-#        y = random.randn(numSamples)
-#        X = random.randn(numSamples,numDims)
-#        self.features = array([self.getFunctionApproximation(X, y)])
         pass
+
     def phi_nonTerminal(self,s):
         F_s = zeros(self.features_num)
         F_s[self.activeInitialFeatures(s)]  = 1 # From IndependentDiscretization
@@ -147,6 +118,7 @@ if __name__ == '__main__':
 #    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
     logger              = Logger()
     discovery_threshold = 1
+    from Domains import GridWorld
     domain      = GridWorld()
     rep         = BEBF(domain,logger,debug=1,batchThreshold = 10 ** -5)
     rep.theta   = arange(rep.features_num*domain.actions_num)*10
