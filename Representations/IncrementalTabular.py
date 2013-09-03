@@ -17,7 +17,7 @@
 # Developed by Alborz Geramiard Oct 30th 2012 at MIT #
 ######################################################
 from Representation import Representation
-
+import numpy as np
 
 class IncrementalTabular(Representation):
     hash = None
@@ -29,7 +29,7 @@ class IncrementalTabular(Representation):
     def phi_nonTerminal(self,s):
         hash_id = self.hashState(s)
         id  = self.hash.get(hash_id)
-        F_s = zeros(self.features_num,bool)
+        F_s = np.zeros(self.features_num,bool)
         if id is not None:
             F_s[id] = 1
         return F_s

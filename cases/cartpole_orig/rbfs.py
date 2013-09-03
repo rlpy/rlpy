@@ -20,7 +20,7 @@ param_space = {"num_rbfs": hp.qloguniform("num_rbfs", np.log(1e1), np.log(1e4), 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
                     boyan_N0=2120,
                     initial_alpha=.26,
-                    lambda_=lambda_,
+                    lambda_=0.9,
                     resolution=8, num_rbfs=4958):
     logger = Logger()
     max_steps = 30000

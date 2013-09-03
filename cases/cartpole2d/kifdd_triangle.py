@@ -7,7 +7,7 @@ from Domains import Pendulum_InvertedBalance
 from Agents import SARSA, Q_LEARNING
 from Representations import *
 from Policies import eGreedy
-from Experiments import Experiment, VisualExperiment
+from Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 

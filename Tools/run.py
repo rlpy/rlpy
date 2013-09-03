@@ -96,6 +96,20 @@ def get_finished_ids(path):
     return l
 
 
+def read_setting_content(filename):
+    """reads the file content without the __main__ section"""
+    setting_content = ""
+    with open(filename) as f:
+        lines = f.readlines()
+        for l in lines:
+            if "if __name__ ==" in l:
+                # beware: we assume that the __main__ execution block is the
+                # last one in the file
+                break
+            setting_content += l
+    return setting_content
+
+
 def prepare_directory(setting, path, **hyperparam):
     """creates a directory in path with a file for executing a given
     setting. The function returns the executable python script file
@@ -112,15 +126,7 @@ def prepare_directory(setting, path, **hyperparam):
     if not os.path.exists(final_path):
         os.makedirs(final_path)
     fn = os.path.join(final_path, "main.py")
-    setting_content = ""
-    with open(setting) as f:
-        lines = f.readlines()
-        for l in lines:
-            if "if __name__ ==" in l:
-                # beware: we assume that the __main__ execution block is the
-                # last one in the file
-                break
-            setting_content += l
+    setting_content = read_setting_content(setting)
     with open(fn, "w") as f:
         f.write(template.format(setting=setting,
                                 variables=variables,

@@ -257,12 +257,12 @@ class KernelizediFDD(Representation):
         return out
 
     #@profile
-    def discover(self, s, a, td_error, phi_s=None):
+    def discover(self, s, terminal, a, td_error, phi_s=None):
         if phi_s is None:
-            phi_s = self.phi(s)
-        phi_s_unnorm = self.phi_raw(s)
+            phi_s = self.phi(s, terminal)
+        phi_s_unnorm = self.phi_raw(s, terminal)
         discovered = 0
-        Q = self.Qs(s, phi_s=phi_s, all_actions=True).reshape(-1, 1)
+        Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
         # indices of active features
         active_indices = list(np.where(phi_s_unnorm > self.active_threshold)[0])
         # "active indices", active_indices
@@ -449,9 +449,9 @@ class FastKiFDD(Representation, FastCythonKiFDD):
     def phi_nonTerminal(self, s):
         return FastCythonKiFDD.phi_nonTerminal(self, s)
 
-    def discover(self, s, a, td_error, phi_s):
+    def discover(self, s, terminal, a, td_error, phi_s):
 
-        Q = self.Qs(s, phi_s=phi_s, all_actions=True).reshape(-1, 1)
+        Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
         discovered =  FastCythonKiFDD.discover(self, s, a, td_error, phi_s)
         self.features_num += discovered
         if discovered > 0:
