@@ -15,13 +15,13 @@
 
 ## \file Policy.py
 ######################################################
-# \author Developed by Alborz Geramiard Oct 30th 2012 at MIT 
+# \author Developed by Alborz Geramiard Oct 30th 2012 at MIT
 ######################################################
 from Tools import *
 from Representations import *
 
 ## The Policy determines the discrete action that an \ref Agents.Agent.Agent "Agent" will take given its \ref Representations.Representation.Representation "Representation".
-# 
+#
 # The Agent learns about the \ref Domains.Domain.Domain "Domain" as the two interact. Each step, the Agent passes information about its current state and information
 # relevant to that state to the %Policy. The %Policy uses this information to decide what discrete action the Agent should perform next. \n
 #
@@ -31,53 +31,53 @@ from Representations import *
 
 class Policy(object):
 	## The \ref Representations.Representation.Representation "Representation" to be associated with
-    representation = None 
+    representation = None
 	## \cond DEV
     DEBUG          = False
 	# \endcond
-	
-	
+
+
 	## Initializes the \c %Policy object. See code
 	# \ref Policy_init "Here".
-	
+
 	# [init code]
     def __init__(self,representation,logger):
         self.representation = representation
 		## An object to record the print outs in a file
         self.logger         = logger
 	# [init code]
-	
-	
+
+
 	## \b ABSTRACT \b METHOD: Select an action given a state. See code
 	# \ref Policy_pi "Here".
-	
+
 	# [pi code]
-    def pi(self,s):
-       abstract 
+    def pi(self,s, terminal, p_actions):
+       abstract
 	# [pi code]
-	
-	
+
+
 	## \b ABSTRACT \b METHOD: Turn exploration off. See code
 	# \ref Policy_turnOffExploration "Here".
-	
+
 	# [turnOffExploration code]
     def turnOffExploration(self):
         pass
 	# [turnOffExploration code]
-	
-	
+
+
 	## \b ABSTRACT \b METHOD: Turn exploration on. See code
 	# \ref Policy_turnOnExploration "Here".
-	
+
 	# [turnOnExploration code]
     def turnOnExploration(self):
         pass
 	# [turnOnExploration code]
-	
-	
+
+
 	## Prints class information. See code
 	# \ref Policy_printAll "Here".
-	
+
     # [printAll code]
     def printAll(self):
         print className(self)
@@ -93,7 +93,7 @@ class Policy(object):
 		NS	= S.copy()
 		T 	= A.copy()
 		R 	= empty((samples,1))
-    		
+
     		sample 		= 0
     		eps_length 	= 0
     		terminal 	= True # So the first sample forces initialization of s and a
@@ -101,25 +101,25 @@ class Policy(object):
 			if terminal or eps_length > self.representation.domain.episodeCap:
 				s = domain.s0()
 				a = self.pi(s)
-			
+
 			#Transition
-			r,ns,terminal = domain.step(s,a)
+			r,ns,terminal = domain.step(a)
 			#Collect Samples
 			S[sample] 	= s
 			A[sample] 	= a
 			NS[sample]	= ns
 			T[sample]	= terminal
 			R[sample]	= r
-			
+
 			sample += 1
 			eps_length += 1
 			s = ns
 			a = self.pi(s)
-			
+
 		return S,A,NS,R,T
-    			
-    			
-    	
-    	
-    	
-    	
+
+
+
+
+
+

@@ -16,23 +16,31 @@
 ######################################################
 # Developed by A. Geramifard March 14th 2013 at MIT #
 ######################################################
-# Trajectory Based Value Iteration. This algorithm is different from Value iteration in 2 senses:
-# 1. It works with any Linear Function approximator
-# 2. Samples are gathered using the e-greedy policy
-# The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
-# Based on the KWIK Learning paper of Tom Walsh UAI 2009
+
 
 from TrajectoryBasedValueIteration import *
 class KWIK_TBVI(TrajectoryBasedValueIteration):
+    """Trajectory Based Value Iteration. This algorithm is different from Value iteration in 2 senses:
+    1. It works with any Linear Function approximator
+    2. Samples are gathered using the e-greedy policy
+
+    The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
+    Based on the KWIK Learning paper of Tom Walsh UAI 2009
+    """
+
     DEBUG           = True
     KWIK_Q          = None
     KWIK_threshold  = None
-    def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 500, show = False, epsilon = .1, KWIK_threshold = .1):
+
+    def __init__(self,job_id, representation,domain,logger, planning_time = inf,
+                 convergence_threshold = .005, ns_samples = 100, project_path = '.',
+                 log_interval = 500, show = False, epsilon = .1, KWIK_threshold = .1):
         super(KWIK_TBVI,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
         self.KWIK_threshold = KWIK_threshold
-        self.KWIK_Q = identity(self.representation.features_num) 
+        self.KWIK_Q = identity(self.representation.features_num)
         self.epsilon = epsilon
         self.logger.log('KWIK Threhsold:\t\t\t%0.2f' % self.KWIK_threshold)
+
     def solve(self):
         self.result = []
         self.start_time     = clock() # Used to show the total time took the process
@@ -41,7 +49,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
         iteration           = 0
         converged_trajectories  = 0 # Track the number of consequent trajectories with very small observed BellmanError
         while self.hasTime() and not converged:
-            
+
             # Generate a new episode e-greedy with the current values
             max_Bellman_Error       = 0
             step                    = 0
@@ -60,7 +68,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
                 self.KWIK_update(s, a, new_Q)
                 bellmanUpdates              += 1
                 step                        += 1
-                
+
                 #Discover features if the representation has the discover method
                 discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
                 if discover_func and callable(discover_func):
@@ -68,9 +76,9 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
 
                 max_Bellman_Error = max(max_Bellman_Error,abs(bellman_error))
                 #Simulate new state and action on trajectory
-                _,s,terminal    = self.domain.step(s,a)
-                a               = self.representation.bestAction(s) if random.rand() > self.epsilon else randSet(self.domain.possibleActions(s)) 
-            
+                _,s,terminal    = self.domain.step(a)
+                a               = self.representation.bestAction() if random.rand() > self.epsilon else randSet(self.domain.possibleActions())
+
             #check for convergence
             iteration += 1
             if max_Bellman_Error < self.convergence_threshold:
@@ -78,29 +86,29 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
             else:
                 converged_trajectories = 0
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
-            converged = converged_trajectories >= self.MIN_CONVERGED_TRAJECTORIES      
+            converged = converged_trajectories >= self.MIN_CONVERGED_TRAJECTORIES
             self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f, Return=%0.4f, Steps=%d, Features=%d' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, max_Bellman_Error, performance_return,performance_steps,self.representation.features_num))
-            if self.show:  self.domain.show(s,a,self.representation)
-            
+            if self.show:  self.domain.show(a,self.representation)
+
             # store stats
-            self.result.append([bellmanUpdates, # index = 0 
-                               performance_return, # index = 1 
+            self.result.append([bellmanUpdates, # index = 0
+                               performance_return, # index = 1
                                deltaT(self.start_time), # index = 2
                                self.representation.features_num, # index = 3
                                performance_steps,# index = 4
                                performance_term, # index = 5
                                performance_discounted_return, # index = 6
-                               iteration #index = 7 
+                               iteration #index = 7
                             ])
-                
+
         if converged: self.logger.log('Converged!')
         super(TrajectoryBasedValueIteration,self).solve()
     def bestKWIKAction(self,s):
         # Return the best action based on the kwik learner. If the state-action is not known it will be among the pool of the best actions because it has V_max value
-        phi_s                   = self.representation.phi(s) 
+        phi_s                   = self.representation.phi(s)
         Qs, A                   = self.representation.Qs(s,phi_s)
         for a,i in enumerate(A):
-                if self.KWIK_predict(s,a) is None: 
+                if self.KWIK_predict(s,a) is None:
                     Qs[i] = self.domain.RMAX / (1-self.domain.gamma)
 
         max_ind = findElemArray1D(Qs,Qs.max())
@@ -118,7 +126,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
             final_A = randSet(bestA)
         else:
             final_A = bestA[0]
-        
+
         return bestQ[0], final_A
     def KWIK_V(self,s):
         return self.bestKWIKAction(s)[0]
@@ -177,7 +185,6 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
         pass
     def KWIK_predict(self,s,a):
         #return the value of a state-action pair. If it is not known then it will return None
-        pass 
-    
-    
-    
+        pass
+
+

@@ -16,7 +16,9 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 30th 2012 at MIT #
 ######################################################
-from Representation import *
+from Representation import Representation
+
+
 class IncrementalTabular(Representation):
     hash = None
     def __init__(self,domain,logger,discretization = 20):
@@ -48,6 +50,3 @@ class IncrementalTabular(Representation):
         return new_copy
     def featureType(self):
         return bool
-
-         
-        

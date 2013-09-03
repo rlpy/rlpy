@@ -27,7 +27,7 @@ class Logger(object):
         f.close()
     def log(self,str, printToScreen = True):
     # Print something both in output and in a file
-        if printToScreen: print 'log: ',str
+        if printToScreen: print str
         self.buffer += str +'\n'
         if self.filename != '':
             f = open(self.filename,'a')
@@ -40,4 +40,3 @@ class Logger(object):
 
     def line(self):
         self.log(SEP_LINE)
-        

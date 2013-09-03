@@ -15,22 +15,13 @@
 
 # NEEDS VISUALIZATION UPDATE
 
-import sys, os
 import copy
-
 import csv
 
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
 
 from Tools import *
-from Domain import *
-# See [[]] for domain detailed domain description. 
+from Domain import Domain
+# See [[]] for domain detailed domain description.
 
 ########################################################
 # \author Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT
@@ -182,7 +173,8 @@ class PST(Domain):
         self.numCrashed = 0 # Number of crashed UAVs [n_c]
 
 
-    def showDomain(self,s,a = 0):
+    def showDomain(self, a=0):
+        s = self.state
         if self.domain_fig is None:
             self.domain_fig = pl.figure(1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
             pl.show()
@@ -213,12 +205,12 @@ class PST(Domain):
         [self.subplot_axes.add_patch(self.location_rect_vis[i]) for i in range(4)]
         self.comms_line = [lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i, 0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*i + self.RECT_GAP],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False) for i in range(UAVLocation.SIZE-2)]
         self.comms_line.append(lines.Line2D([0.5 + self.LOCATION_WIDTH + (self.dist_between_locations)*2, crashLocationX],[self.NUM_UAV*0.5 + 0.5, self.NUM_UAV * 0.5 + 0.5], linewidth = 3, color='black', visible=False))
-        
+
         # Create location text below rectangles
         locText = ["Base","Refuel","Communication","Surveillance"]
         self.location_rect_txt = [pl.text(0.5 + self.dist_between_locations*i + 0.5*self.LOCATION_WIDTH,-0.3,locText[i], ha = 'center') for i in range(UAVLocation.SIZE-1)]
         self.location_rect_txt.append(pl.text(crashLocationX + 0.5*self.LOCATION_WIDTH,-0.3,locText[UAVLocation.SIZE-1], ha = 'center'))
-        
+
         # Initialize list of circle objects
 
         uav_x = self.location_coord[UAVLocation.BASE]
@@ -273,7 +265,7 @@ class PST(Domain):
             self.subplot_axes.add_patch(self.uav_circ_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_sensor_vis[uav_id])
             self.subplot_axes.add_patch(self.uav_actuator_vis[uav_id])
-		
+
         numHealthySurveil = sum(logical_and(sStruct.locations == UAVLocation.SURVEIL, sStruct.sensor))
         if (any(sStruct.locations == UAVLocation.COMMS)): # We have comms coverage: draw a line between comms states to show this
             [self.comms_line[i].set_visible(True) for i in range(len(self.comms_line))]
@@ -291,10 +283,11 @@ class PST(Domain):
 #===============================================================================
     def showLearning(self,representation):
         pass
-    def step(self,s,a):
+
+    def step(self,a):
         # Note below that we pass the structure by reference to save time; ie, components of sStruct refer directly to s
-        ns = s.copy()
-        sStruct = self.state2Struct(s)
+        ns = self.state.copy()
+        sStruct = self.state2Struct(self.state)
         nsStruct = self.state2Struct(ns)
         # Subtract 1 below to give -1,0,1, easily sum actions
         actionVector = array(id2vec(a,self.LIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
@@ -335,15 +328,15 @@ class PST(Domain):
         totalStepReward = 0
 
         ns = self.struct2State(nsStruct)
+        self.state = ns.copy()
 
         ##### Compute reward #####
-        if(self.isCommStatesCovered == True):
+        if self.isCommStatesCovered:
             totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
-        if self.isTerminal(ns): totalStepReward += self.CRASH_REWARD
+        if self.isTerminal(): totalStepReward += self.CRASH_REWARD
         totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
-#debug        print totalStepReward,ns,self.isTerminal(ns)
-        return totalStepReward,ns,self.isTerminal(ns)
-        # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
+        return totalStepReward,ns,self.isTerminal(), self.possibleActions()
+
     def s0(self):
         self.resetLocalVariables()
         locations   = ones(self.NUM_UAV, dtype='int') * UAVLocation.BASE
@@ -351,7 +344,8 @@ class PST(Domain):
         actuator    = ones(self.NUM_UAV, dtype='int') * ActuatorState.RUNNING
         sensor      = ones(self.NUM_UAV, dtype='int') * SensorState.RUNNING
 
-        return self.properties2StateVec(locations, fuel, actuator, sensor)
+        self.state = self.properties2StateVec(locations, fuel, actuator, sensor)
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     # @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):
@@ -372,7 +366,8 @@ class PST(Domain):
     def struct2State(self,sState):
         return hstack([sState.locations, sState.fuel, sState.actuator, sState.sensor])
 
-    def possibleActions(self,s):
+    def possibleActions(self):
+        s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
         validActions = [] # Contains a list of uav_actions lists, e.g. [[0,1,2],[0,1],[1,2]] with the index corresponding to a uav.
@@ -432,11 +427,11 @@ class PST(Domain):
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 #        return actionIDs
-    def isTerminal(self,s):
-        sStruct = self.state2Struct(s)
+    def isTerminal(self):
+        sStruct = self.state2Struct(self.state)
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 
-# \cond DEV		
+# \cond DEV
 class UAVLocation:
     BASE = 0
     REFUEL      = 1
@@ -484,8 +479,8 @@ if __name__ == '__main__':
             a = 17 - i
             print 'pythontest: original action ',a
 #            print 'pythontest: vector action ', array(id2vec(a,p.LIMITS))
-            (r, s, isT) = p.step(s,a)
-            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions(s)
+            (r, s, isT) = p.step(a)
+            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions()
 
 #        actionVectors = [array(id2vec(a,p.LIMITS)) for a in allA]
 #

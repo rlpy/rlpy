@@ -13,20 +13,6 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Tools import *
 from Domain import *
 
@@ -172,7 +158,9 @@ class Pendulum(Domain):
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
         super(Pendulum,self).__init__(logger)
-    def showDomain(self,s,a = 0):
+
+    def showDomain(self, a=0):
+        s = self.state
         # Plot the pendulum and its angle, along with an arc-arrow indicating the
         # direction of torque applied (not including noise!)
         if self.domain_fig == None: # Need to initialize the figure
@@ -224,6 +212,7 @@ class Pendulum(Domain):
         self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
         self.domain_fig.add_patch(self.pendulumBob)
         pl.draw()
+
     def showLearning(self,representation):
         granularity = 10.
         self.xTicks         = linspace(0,granularity * self.Theta_discretization - 1, 5)
@@ -283,12 +272,15 @@ class Pendulum(Domain):
         self.policy_fig.set_data(pi)
         pl.draw()
 #        sleep(self.dt)
+
     def s0(self):
         # Defined by children
         abstract
-    def possibleActions(self,s): # Return list of all indices corresponding to actions available
+
+    def possibleActions(self, s=None): # Return list of all indices corresponding to actions available
         return arange(self.actions_num)
-    def step(self,s,a):
+
+    def step(self,a):
     # Simulate one step of the pendulum after taking force action a
 
         forceAction = self.AVAIL_FORCE[a]
@@ -299,7 +291,7 @@ class Pendulum(Domain):
         else: forceNoise = 0
 
         # Now, augment the state with our force action so it can be passed to _dsdt
-        s_augmented = append(s, forceAction)
+        s_augmented = append(self.state, forceAction)
 
         #-------------------------------------------------------------------------#
         # There are several ways of integrating the nonlinear dynamics equations. #
@@ -336,9 +328,10 @@ class Pendulum(Domain):
          # wrap angle between -pi and pi (or whatever values assigned to ANGLE_LIMITS)
         ns[StateIndex.THETA]        = bound(wrap(ns[StateIndex.THETA],-pi, pi), self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
         ns[StateIndex.THETA_DOT]    = bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
-        terminal                    = self.isTerminal(ns)
-        reward                      = self._getReward(ns,a)
-        return reward, ns, terminal
+        self.state = ns.copy()
+        terminal                    = self.isTerminal()
+        reward                      = self._getReward(a)
+        return reward, ns, terminal, self.possibleActions()
 
     #
     # @param s_augmented: {The state at which to compute derivatives, augmented with the current action.
@@ -478,10 +471,9 @@ class Pendulum(Domain):
         return yout # Optionally also return tout here.
 
 
-    ## @param s: state
     #  @param a: action
     #  @return: Reward earned for this state-action pair.
-    def _getReward(self, s, a):
+    def _getReward(self, a):
         # Return the reward earned for this state-action pair
         abstract
 

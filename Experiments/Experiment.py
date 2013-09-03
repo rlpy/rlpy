@@ -3,7 +3,7 @@ from Agents import *
 from Domains import *
 from Representations import *
 import numpy as np
-from copy import copy
+from copy import copy, deepcopy
 import re
 import Tools.ipshell
 
@@ -115,6 +115,8 @@ class Experiment(object):
         """
         random.seed(self.randomSeeds[self.id - 1])
         self.domain.rand_state = random.RandomState(self.randomSeeds[self.id - 1])
+        # make sure the performance_domain has a different seed
+        self.performance_domain.rand_state = random.RandomState(self.randomSeeds[self.id + 20])
 
     def performanceRun(self, total_steps, visualize=False):
         """
@@ -138,32 +140,25 @@ class Experiment(object):
 
         self.agent.policy.turnOffExploration()
 
-        # hidden states are non Markovian variables that can exist in some
-        # problems such as the time dependent noise in HelicopterHover.
-        hidden_state = self.domain.hidden_state_
-        if isinstance(hidden_state, ndarray):
-            hidden_state = hidden_state.copy()
-
-        s = self.domain.s0()
+        s, eps_term, p_actions = self.performance_domain.s0()
 
         while not eps_term and eps_length < self.domain.episodeCap:
-            a = self.agent.policy.pi(s)
+            a = self.agent.policy.pi(s, eps_term, p_actions)
             if visualize:
-                self.domain.showDomain(s, a)
+                self.performance_domain.showDomain(a)
                 pl.title('After ' + str(total_steps) + ' Steps')
 
-            r, ns, eps_term = self.domain.step(s, a)
+            r, ns, eps_term, p_actions = self.performance_domain.step(a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
-            eps_discount_return += self.domain.gamma ** eps_length * r
+            eps_discount_return += self.performance_domain.gamma ** eps_length * r
             eps_length += 1
         if visualize:
-            self.domain.showDomain(s, a)
+            self.performance_domain.showDomain(a)
         self.agent.policy.turnOnExploration()
         # This hidden state is for domains (such as the noise in the helicopter domain) that include unobservable elements that are evolving over time
         # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP
-        self.domain.hidden_state_ = hidden_state
 
         return eps_return, eps_length, eps_term, eps_discount_return
 
@@ -180,7 +175,7 @@ class Experiment(object):
 
         **Parameters**
 
-        visualize_performance (boolean):
+        visualize_performance (boolean)
             show a visualization of the steps taken in performance runs
         visualize_learning (boolean):
             show some visualization of the learning status before each
@@ -202,9 +197,10 @@ class Experiment(object):
         """
         if debug_on_sigurg:
             Tools.ipshell.ipdb_on_SIGURG()
+        self.performance_domain = deepcopy(self.domain)
         self.seed_components()
+
         self.result = zeros((self.STATS_NUM, self.num_policy_checks))
-        terminal            = True
         total_steps         = 0
         eps_steps           = 0
         eps_return          = 0
@@ -213,13 +209,14 @@ class Experiment(object):
         self.start_time     = clock()  # Used to show the total time took the process
         self.total_eval_time = 0.
         self.performance_tick = 0
+        terminal = True
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
-                s           = self.domain.s0()
-                a           = self.agent.policy.pi(s)
+                s, terminal, p_actions = self.domain.s0()
+                a           = self.agent.policy.pi(s, terminal, p_actions)
                 # Visual
                 if visualize_steps:
-                    self.domain.show(s, a, self.agent.representation)
+                    self.domain.show(a, self.agent.representation)
 
                 # TODO get rid of this hack!
                 # Hash new state for the tabular case
@@ -230,12 +227,9 @@ class Experiment(object):
                 eps_steps       = 0
                 episode_number += 1
 
-            #if total_steps % 10000 == 1:
-            #    timed_ipshell(1)
-
             # Act,Step
-            r, ns, terminal   = self.domain.step(s, a)
-            na              = self.agent.policy.pi(ns)
+            r, ns, terminal, np_actions   = self.domain.step(a)
+            na              = self.agent.policy.pi(ns, terminal, p_actions)
             total_steps     += 1
             eps_steps       += 1
             eps_return      += r
@@ -257,11 +251,11 @@ class Experiment(object):
                 self.agent.representation.addState(ns)
 
             # learning
-            self.agent.learn(s, a, r, ns, na, terminal)
-            s, a          = ns, na
+            self.agent.learn(s, p_actions, a, r, ns, np_actions, na, terminal)
+            s, a, p_actions          = ns, na, np_actions
             # Visual
             if visualize_steps:
-                self.domain.show(s, a, self.agent.representation)
+                self.domain.show(a, self.agent.representation)
 
             # Check Performance
             if total_steps % (self.max_steps / self.num_policy_checks) == 0:
@@ -277,7 +271,7 @@ class Experiment(object):
 
         # Visual
         if visualize_steps:
-            self.domain.show(s, a, self.agent.representation)
+            self.domain.show(a, self.agent.representation)
 
     def evaluate(self, total_steps, episode_number, visualize=False):
         """
@@ -299,7 +293,6 @@ class Experiment(object):
 
         random_state = np.random.get_state()
         random_state_domain = copy(self.domain.rand_state)
-
         elapsedTime = deltaT(self.start_time)
         performance_return = 0.
         performance_steps = 0.

@@ -10,23 +10,8 @@
 #Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
+from Domain import Domain
 from Tools import *
-from Domain import *
 ######################################################
 # \author Developed by Alborz Geramiard Nov 12th 2012 at MIT
 ######################################################
@@ -69,8 +54,9 @@ class BlocksWorld(Domain):
             self.logger.log("noise\t\t%0.1f" % self.noise)
             self.logger.log("blocks\t\t%d" % self.blocks)
 
-    def showDomain(self,s,a =0):
+    def showDomain(self, a=0):
         #Draw the environment
+        s = self.state
         world           = zeros((self.blocks,self.blocks),'uint8')
         undrawn_blocks  = arange(self.blocks)
         while len(undrawn_blocks):
@@ -97,41 +83,48 @@ class BlocksWorld(Domain):
         else:
             self.domain_fig.set_data(world)
             pl.draw()
+
     def showLearning(self,representation):
         pass #cant show 6 dimensional value function
-    def step(self,s,a):
+
+    def step(self, a):
+        s = self.state
         [A,B] = id2vec(a,[self.blocks, self.blocks]) #move block A on top of B
         #print 'taking action %d->%d' % (A,B)
         if not self.validAction(s,A,B):
             print 'State:%s, Invalid move from %d to %d' % (str(s),A,B)
-            print self.possibleActions(s)
-            print id2vec(self.possibleActions(s),[self.blocks, self.blocks])
+            print self.possibleActions()
+            print id2vec(self.possibleActions(),[self.blocks, self.blocks])
 
         if random.random_sample() < self.noise: B = A #Drop on Table
         ns          = s.copy()
         ns[A]       = B # A is on top of B now.
-        terminal    = self.isTerminal(ns)
+        self.state = ns.copy()
+        terminal    = self.isTerminal()
         r           = self.GOAL_REWARD if terminal else self.STEP_REWARD
-        return r,ns,terminal
+        return r,ns,terminal, self.possibleActions()
+
     def s0(self):
         # all blocks on table
-        return arange(self.blocks)
-    def possibleActions(self,s):
+        self.state = arange(self.blocks)
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
+
+    def possibleActions(self):
+        s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
         empty_blocks    = [b for b in arange(self.blocks) if self.clear(b,s)]
         empty_num       = len(empty_blocks)
         actions         = [[a,b] for a in empty_blocks for b in empty_blocks if not self.destination_is_table(a,b) or not self.on_table(a,s)] #condition means if A sits on the table you can not pick it and put it on the table
-        #print 'state',s
-        #print "Empty Blocks", empty_blocks
-        #print actions
-        #raw_input()
         return array([vec2id(x,[self.blocks, self.blocks]) for x in actions])
+
     def validAction(self,s,A,B):
         #Returns true if B and A are both empty.
         return (self.clear(A,s) and (self.destination_is_table(A,B) or self.clear(B,s)))
-    def isTerminal(self,s):
-        return array_equal(s,self.GOAL_STATE)
+
+    def isTerminal(self):
+        return array_equal(self.state,self.GOAL_STATE)
+
     def top(self,A,s):
         #returns the block on top of block A. Return [] if nothing is on top of A
         on_A = findElemArray1D(A,s)
@@ -196,9 +189,5 @@ class BlocksWorld(Domain):
             ns  = array([[ns1],[ns2]]).reshape((2,-1))
             t   = array([terminal1, terminal2]).reshape((2,-1))
             return p,r,ns,t
-if __name__ == '__main__':
-    random.seed(0)
-    p = BlocksWorld(blocks=6,noise=0);
-    p.test(1000)
 
 
