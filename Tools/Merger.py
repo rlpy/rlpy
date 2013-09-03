@@ -12,10 +12,7 @@ class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
     PE_AXES         = ['Iterations','Features','Error','Time(s)']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time']
-    #DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE (Observed)', 'MSE','Time(s)', 'Number of Clusters','Objective']
-    DYNMEANS_AXES   = ['Outer Iterations', 'Steps','Features', 'MSE', 'Time(s)', 'Number of Clusters','Objective','Cluster Accuracy', 'Batch Number']
-
-
+    
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = None, output_path = None,
                  colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'],
@@ -127,11 +124,8 @@ class Merger(object):
         # Determine number of rows, used to determine experiment type
         matrix      = readMatrixFromFile(files[0])
         num_metrics, _  = matrix.shape
-
-        if num_metrics == len(self.DYNMEANS_AXES):
-            self.ResultType = 'Dynamic Means'
-            self.AXES = self.DYNMEANS_AXES
-        elif num_metrics == len(self.PE_AXES):
+        
+        if num_metrics == len(self.PE_AXES):
             self.ResultType = 'Policy Evaluation'
             self.AXES = self.PE_AXES
         elif num_metrics == len(self.CONTROL_AXES):

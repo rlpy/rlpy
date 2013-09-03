@@ -94,7 +94,7 @@ class GameState:
         # Check that successors exist
         if self.isWin() or self.isLose(): raise Exception('Can\'t generate a successor of a terminal state.')
 
-        # Copy current state --> state is instance of GameState class
+        # Copy current state
         state = GameState(self)
 
         # Let agent's logic deal with its action's effects on the board
@@ -600,7 +600,6 @@ def loadAgent(pacman, nographics):
             if pacman in dir(module):
                 if nographics and modulename == 'keyboardAgents.py':
                     raise Exception('Using the keyboard requires graphics (not text display)')
-                print module, pacman
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
 

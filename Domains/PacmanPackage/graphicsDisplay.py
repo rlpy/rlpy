@@ -4,7 +4,7 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
@@ -182,7 +182,6 @@ class PacmanGraphics:
         self.infoPane = InfoPane(layout, self.gridSize)
         self.currentState = layout
 
-
     def drawDistributions(self, state):
         walls = state.layout.walls
         dist = []
@@ -250,6 +249,7 @@ class PacmanGraphics:
         self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
+
 
     def removeAllFood(self):
         for row in self.food:
@@ -434,12 +434,6 @@ class PacmanGraphics:
 
     def finish(self):
         end_graphics()
-
-    def refresh(self):
-        for agentImage in self.agentImages:
-            print agentImage
-            remove_from_screen(agentImage)
-        refresh()
 
     def to_screen(self, point):
         ( x, y ) = point

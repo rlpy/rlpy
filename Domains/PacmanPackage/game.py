@@ -487,6 +487,7 @@ class GameStateData:
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
+
         self.agentStates = []
         numGhosts = 0
         for isPacman, pos in layout.agentPositions:
