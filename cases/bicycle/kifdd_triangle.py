@@ -1,5 +1,5 @@
 from Tools import Logger
-from Domains.HIVTreatment import HIVTreatment
+from Domains.Bicycle import BicycleBalancing, BicycleRiding
 from Agents import Q_Learning
 from Representations import *
 from Policies import eGreedy
@@ -15,11 +15,11 @@ param_space = {'kernel_resolution': hp.loguniform("kernel_resolution", np.log(5)
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    discover_threshold =  8948708.75,
-                    boyan_N0 = 627.12,
-                    lambda_=0.5433,
-                    initial_alpha = 0.59812,
-                    kernel_resolution=24.340):
+                    discover_threshold =  88044.,
+                    boyan_N0 = 64502,
+                    lambda_=0.43982644088,
+                    initial_alpha = 0.920244401,
+                    kernel_resolution=11.6543336229):
     logger = Logger()
     max_steps = 150000
     num_policy_checks = 30
@@ -28,13 +28,12 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     max_base_feat_sim = 0.5
     sparsify = 1
 
-    domain = HIVTreatment(logger=logger)
-    # domain = CartPoleBalanceModern(logger=logger)
+    domain = BicycleRiding(logger=logger)
     kernel_width = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) \
                    / kernel_resolution
     from Representations.KernelizediFDD import FastKiFDD
     representation = FastKiFDD(domain, sparsify=sparsify,
-                                    kernel=gaussian_kernel,
+                                    kernel=linf_triangle_kernel,
                                     kernel_args=[kernel_width],
                                     active_threshold=active_threshold,
                                     logger=logger,

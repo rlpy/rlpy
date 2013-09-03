@@ -2,7 +2,7 @@
 Cart-pole balancing with independent discretization
 """
 from Tools import Logger
-from Domains import HIVTreatment
+from Domains import PuddleWorld
 from Agents import Q_Learning
 from Representations import *
 from Policies import eGreedy
@@ -10,35 +10,36 @@ from Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 
-param_space = {'discretization': hp.quniform("discretization", 3, 50, 1),
+param_space = {"num_rbfs": hp.qloguniform("num_rbfs", np.log(1e1), np.log(1e4), 1),
+               'resolution': hp.quniform("resolution", 3, 30, 1),
                'lambda_': hp.uniform("lambda_", 0., 1.),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    lambda_=0.9,
-                    boyan_N0=22.36,
-                    initial_alpha=.068,
-                    discretization=9):
+                    boyan_N0=13444.,
+                    initial_alpha=0.6633,
+                    resolution=21.,
+                    num_rbfs=96.,
+                    lambda_=.1953):
     logger = Logger()
-    max_steps = 150000
-    num_policy_checks = 30
-    checks_per_policy = 1
+    max_steps = 40000
+    num_policy_checks = 20
+    checks_per_policy = 100
 
-    domain = HIVTreatment(logger=logger)
-    representation = IndependentDiscretization(domain, discretization=discretization, logger=logger)
+    domain = PuddleWorld(logger=logger)
+    representation = RBF(domain, num_rbfs=int(num_rbfs), logger=logger,
+                          resolution_max=resolution, resolution_min=resolution,
+                          const_feature=False, normalize=True, seed=id)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Q_Learning(representation, policy, domain, logger
-                       ,lambda_=0.9, initial_alpha=initial_alpha,
+                       ,lambda_=lambda_, initial_alpha=initial_alpha,
                        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 
 if __name__ == '__main__':
-    from Tools.run import run_profiled
-    #run_profiled(make_experiment)
     experiment = make_experiment(1)
-    experiment.run(visualize_learning=True)
+    experiment.run()
     experiment.plot()
-    #experiment.save()

@@ -15,11 +15,11 @@ param_space = {'kernel_resolution': hp.loguniform("kernel_resolution", np.log(5)
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    discover_threshold =  8948708.75,
-                    boyan_N0 = 627.12,
-                    lambda_=0.5433,
-                    initial_alpha = 0.59812,
-                    kernel_resolution=24.340):
+                    discover_threshold =  611850.81,
+                    boyan_N0 = 1885.42,
+                    lambda_=0.1879,
+                    initial_alpha = 0.87831,
+                    kernel_resolution=14.7920):
     logger = Logger()
     max_steps = 150000
     num_policy_checks = 30
@@ -29,12 +29,11 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     sparsify = 1
 
     domain = HIVTreatment(logger=logger)
-    # domain = CartPoleBalanceModern(logger=logger)
     kernel_width = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) \
                    / kernel_resolution
     from Representations.KernelizediFDD import FastKiFDD
     representation = FastKiFDD(domain, sparsify=sparsify,
-                                    kernel=gaussian_kernel,
+                                    kernel=linf_triangle_kernel,
                                     kernel_args=[kernel_width],
                                     active_threshold=active_threshold,
                                     logger=logger,

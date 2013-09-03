@@ -3,10 +3,64 @@ from Tools.Merger import Merger
 import Tools.run as rt
 import hyperopt
 import numpy as np
-
+import time
+import pickle
 
 def dummy_f():
     pass
+
+
+def _search_condor_parallel(path, space, trials_per_point, setting,
+                            objective, max_evals,
+                            algo=hyperopt.tpe.suggest,
+                            max_queue_len=10, poll_interval_secs=30):
+    """
+    block_until_done  means that the process blocks until ALL jobs in
+    trials are not in running or new state
+
+    suggest() can pass instance of StopExperiment to break out of
+    enqueuing loop
+    """
+
+    trials = CondorTrials(path=path, ids=range(1, trials_per_point + 1),
+                          setting=setting, objective=objective)
+    domain = hyperopt.Domain(dummy_f, space, rseed=123)
+
+    n_queued = 0
+
+    def get_queue_len():
+        trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW)
+        return trials.update_trials(trials._trials)
+
+    stopped = False
+    while n_queued < max_evals:
+        qlen = get_queue_len()
+        while qlen < max_queue_len and n_queued < max_evals:
+            n_to_enqueue = 1  # min(self.max_queue_len - qlen, N - n_queued)
+            new_ids = trials.new_trial_ids(n_to_enqueue)
+            trials.refresh()
+            new_trials = algo(new_ids, domain, trials)
+            if new_trials is hyperopt.base.StopExperiment:
+                stopped = True
+                break
+            else:
+                assert len(new_ids) >= len(new_trials)
+                if len(new_trials):
+                    trials.insert_trial_docs(new_trials)
+                    trials.refresh()
+                    n_queued += len(new_trials)
+                    qlen = get_queue_len()
+                else:
+                    break
+
+        # -- wait for workers to fill in the trials
+        time.sleep(poll_interval_secs)
+        if stopped:
+            break
+    if get_queue_len() > 0:
+        time.sleep(poll_interval_secs)
+    trials.refresh()
+    return trials
 
 
 class CondorTrials(hyperopt.Trials):
@@ -63,6 +117,7 @@ class CondorTrials(hyperopt.Trials):
         return os.path.join(self.path, "-".join([str(v) for v in hyperparam.values()]))
 
     def update_trials(self, trials):
+        count = 0
         for trial in trials:
             if trial["state"] == hyperopt.JOB_STATE_NEW:
                 if "submitted" not in trial or not trial["submitted"]:
@@ -73,6 +128,8 @@ class CondorTrials(hyperopt.Trials):
                            parallelization="condor", force_rerun=False, block=False,
                            **hyperparam)
                     trial["submitted"] = True
+                else:
+                    count += 1
                 #trial["state"] = hyperopt.JOB_STATE_RUNNING
 
                 #elif trial["state"] == hyperopt.JOB_STATE_RUNNING:
@@ -84,6 +141,8 @@ class CondorTrials(hyperopt.Trials):
                     trial["state"] = hyperopt.JOB_STATE_DONE
                     print trial["tid"], "done"
                     trial["result"] = self.get_results(full_path)
+                    print "Parameters", hyperparam
+        return count
 
     def get_results(self, path):
         # all jobs should be done
@@ -101,12 +160,14 @@ class CondorTrials(hyperopt.Trials):
             print "unknown objective"
         weights = (np.arange(len(val)) + 1) ** 2
         loss = (val * weights).sum() / weights.sum()
-        print "Loss", loss
+        print time.ctime()
+        print "Loss: {:.4g}".format(loss)
         # use #steps/eps at the moment
         return {"loss": loss,
                 "num_trials": m.samples[0],
                 "status": hyperopt.STATUS_OK,
                 "std_last_mean": m.std_errs[0][idx, -1]}
+
 
 def import_param_space(filename):
     """
@@ -124,6 +185,7 @@ def import_param_space(filename):
     vars = {}
     exec(content, vars)
     return vars["param_space"]
+
 
 def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_point=30,
                          parallelization="sequential",
@@ -160,6 +222,8 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
             print "unknown objective"
         weights = (np.arange(len(val)) + 1) ** 2
         loss = (val * weights).sum() / weights.sum()
+        print time.ctime()
+        print "Parameters", hyperparam
         print "Loss", loss
         # use #steps/eps at the moment
         return {"loss": loss,
@@ -180,9 +244,18 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
                                  max_queue_len=1)
         rval.exhaust()
         best = trials.argmin
+    elif parallelization == "condor_full":
+        trials = _search_condor_parallel(path=path, setting=setting,
+                                         objective=objective,
+                                         space=space, max_evals=max_evals,
+                                         trials_per_point=trials_per_point)
+        best = trials.argmin
     else:
         trials = hyperopt.Trials()
         best = hyperopt.fmin(f, space=space, algo=hyperopt.tpe.suggest,
                              max_evals=max_evals, trials=trials)
 
+    with open(os.path.join(path, 'trials.pck'),'w') as f:
+        pickle.dump(trials, f)
+    
     return best, trials
