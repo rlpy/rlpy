@@ -10,9 +10,9 @@
 
 using namespace std;
 
-double gaussian_kernel(const vector<double>& s1, const vector<double>& s2, 
+double gaussian_kernel(const double* s1, const double* s2, 
                     const vector<unsigned int>& dim, 
-                    const vector<double>& widths) {
+                    const double* widths) {
     double exponent = 0;
     for (unsigned int d : dim) {
         exponent += - pow((s1[d] - s2[d]) / widths[d], 2);
@@ -21,9 +21,9 @@ double gaussian_kernel(const vector<double>& s1, const vector<double>& s2,
 
 }
 
-double linf_triangle_kernel(const vector<double>& s1, const vector<double>& s2, 
+double linf_triangle_kernel(const double* s1, const double* s2, 
                     const vector<unsigned int>& dim, 
-                    const vector<double>& widths) {
+                    const double* widths) {
     double res = 1, r;
     for (unsigned int d : dim) {
 

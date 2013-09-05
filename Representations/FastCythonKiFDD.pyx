@@ -4,13 +4,12 @@ from libcpp.string cimport string as stlstring
 from libcpp cimport bool
 from libcpp.set cimport set as sett
 cimport numpy as np
+cimport c_kernels
 import numpy as np
 cimport cython
 ctypedef unsigned int uint
 
 cdef extern from "FastKiFDD.h":
-    cdef double gaussian_kernel(vector[double] s1, vector[double] s2, vector[unsigned int] dim, vector[double] widths)
-    cdef double linf_triangle_kernel(vector[double] s1, vector[double] s2, vector[unsigned int] dim, vector[double] widths)
     cdef cppclass FastKiFDD:
         FastKiFDD(double, double, stlstring, vector[double], int, double, unsigned int)
         vector[double] phi(vector[double])
