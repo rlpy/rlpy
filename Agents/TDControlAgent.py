@@ -2,6 +2,7 @@ from Agent import Agent
 from Tools import addNewElementForAllActions, count_nonzero
 import numpy as np
 
+
 class TDControlAgent(Agent):
     """
     abstract class for the control variants of the classical linear TD-Learning.
@@ -29,6 +30,8 @@ class TDControlAgent(Agent):
         pass
 
     def learn(self,s,p_actions, a, r, ns, np_actions, na,terminal):
+
+        self.representation.pre_discover(s, False, a, ns, terminal)
         gamma           = self.representation.domain.gamma
         theta           = self.representation.theta
         phi_s           = self.representation.phi(s, False)
@@ -69,9 +72,7 @@ class TDControlAgent(Agent):
                 theta = theta_old
                 print "WARNING: TD-Learning diverged, theta reached infinity!"
         #Discover features if the representation has the discover method
-        discover_func = getattr(self.representation, 'discover', None) # None is the default value if the discover is not an attribute
-        if discover_func and callable(discover_func):
-            expanded = self.representation.discover(s, False, a, td_error, phi_s)
+        expanded = self.representation.post_discover(s, False, a, td_error, phi_s)
 
         if terminal:
             self.episodeTerminated()

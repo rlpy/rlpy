@@ -218,10 +218,7 @@ class Experiment(object):
                 if visualize_steps:
                     self.domain.show(a, self.agent.representation)
 
-                # TODO get rid of this hack!
-                # Hash new state for the tabular case
-                if isinstance(self.agent.representation, IncrementalTabular):
-                    self.agent.representation.addState(s)
+
                 # Output the current status if certain amount of time has been passed
                 eps_return      = 0
                 eps_steps       = 0
@@ -244,11 +241,6 @@ class Experiment(object):
                                                          totreturn=eps_return,
                                                          steps=eps_steps,
                                                          num_feat=self.agent.representation.features_num))
-
-            # TODO get rid of this hack!
-            # Hash new state for the tabular case
-            if isinstance(self.agent.representation, IncrementalTabular):
-                self.agent.representation.addState(ns)
 
             # learning
             self.agent.learn(s, p_actions, a, r, ns, np_actions, na, terminal)

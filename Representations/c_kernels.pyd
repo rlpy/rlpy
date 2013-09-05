@@ -1,3 +1,0 @@
-cdef extern from "FastKiFDD.h":
-    cdef double gaussian_kernel(vector[double] s1, vector[double] s2, vector[unsigned int] dim, vector[double] widths)
-    cdef double linf_triangle_kernel(vector[double] s1, vector[double] s2, vector[unsigned int] dim, vector[double] widths)

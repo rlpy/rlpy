@@ -1,3 +1,5 @@
+from LocalBases import RandomLocalBases
+from LocalBases import NonparametricLocalBases
 from Tabular import Tabular
 from IncrementalTabular import IncrementalTabular
 from IndependentDiscretization import IndependentDiscretization

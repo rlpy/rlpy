@@ -220,7 +220,7 @@ class iFDD(Representation):
             self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures
 
-    def discover(self, s, terminal, a, td_error, phi_s):
+    def post_discover(self, s, terminal, a, td_error, phi_s):
         """
         returns the number of added features
         """

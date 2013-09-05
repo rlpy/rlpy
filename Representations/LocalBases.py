@@ -7,16 +7,23 @@ samples)
 from Representation import Representation
 import numpy as np
 from kernels import batch
+from Tools.GeneralTools import addNewElementForAllActions
 
 
 class LocalBases(Representation):
-
-    centers = []
-    widths = []
+    """
+    abstract base class for representations that use local basis functions
+    """
+    #: centers of bases
+    centers = None
+    #: widths of bases
+    widths = None
 
     def __init__(self, domain, logger, kernel, normalization=False, **kwargs):
         self.kernel = batch[kernel.__name__]
         self.normalization = normalization
+        self.centers = np.zeros((0, domain.statespace_limits.shape[0]))
+        self.widths = np.zeros((0, domain.statespace_limits.shape[0]))
         super(LocalBases, self).__init__(domain, logger)
 
     def phi_nonTerminal(self, s):
@@ -25,6 +32,40 @@ class LocalBases(Representation):
             # normalize such that each vector has a l1 norm of 1
             v /= v.sum()
         return v
+
+
+class NonparametricLocalBases(LocalBases):
+    def __init__(self, domain, logger, kernel, max_similarity=0.9, resolution=5, **kwargs):
+        self.max_similarity = max_similarity
+        self.common_width = (domain.statespace_limits[:, 1]
+                             - domain.statespace_limits[:, 0]) / resolution
+        self.features_num = 0
+        super(NonparametricLocalBases, self).__init__(domain, logger, kernel, **kwargs)
+
+    def pre_discover(self, s, terminal, a, sn, terminaln):
+        norm = self.normalization
+        expanded = 0
+        self.normalization = False
+        if not terminal:
+            phi_s = self.phi_nonTerminal(s)
+            if np.all(phi_s < self.max_similarity):
+                self._add_feature(s)
+                expanded += 1
+        if not terminaln:
+            phi_s = self.phi_nonTerminal(sn)
+            if np.all(phi_s < self.max_similarity):
+                self._add_feature(sn)
+                expanded += 1
+        self.normalization = norm
+        return expanded
+
+    def _add_feature(self, center):
+        self.features_num += 1
+        self.centers = np.vstack((self.centers, center))
+        self.widths = np.vstack((self.widths, self.common_width))
+        #TODO if normalized, use Q estimate for center to fill theta
+        new = np.zeros((self.domain.actions_num, 1))
+        self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, new)
 
 
 class RandomLocalBases(LocalBases):
@@ -41,6 +82,6 @@ class RandomLocalBases(LocalBases):
         for i in xrange(num):
             for d in xrange(len(dim_widths)):
                 self.centers[i, d] = rand_stream.uniform(domain.statespace_limits[d, 0],
-                                             domain.statespace_limits[d, 1])
+                                                         domain.statespace_limits[d, 1])
                 self.widths[i, d] = rand_stream.uniform(dim_widths[d] / resolution_max,
-                                             dim_widths[d] / resolution_min)
+                                                        dim_widths[d] / resolution_min)
