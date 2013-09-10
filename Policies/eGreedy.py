@@ -37,10 +37,11 @@ class eGreedy(Policy):
         if coin < self.epsilon:
             return randSet(p_actions)
         else:
+            b_actions = self.representation.bestActions(s, terminal, p_actions)
             if self.forcedDeterministicAmongBestActions:
-                return p_actions[0]
+                return b_actions[0]
             else:
-                return randSet(p_actions)
+                return randSet(b_actions)
     def turnOffExploration(self):
         self.old_epsilon = self.epsilon
         self.epsilon = 0
