@@ -92,7 +92,7 @@ class Representation(object):
 
     # [V code]
     def V(self, s, terminal, p_actions, phi_s = None):
-        if phi_s is None: phi_s = self.phi(s)
+        if phi_s is None: phi_s = self.phi(s, terminal)
         AllQs   = self.Qs(s, terminal, phi_s)
         if len(p_actions):
             return max(AllQs[p_actions])

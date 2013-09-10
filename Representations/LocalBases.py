@@ -8,6 +8,7 @@ from Representation import Representation
 import numpy as np
 from kernels import batch
 from Tools.GeneralTools import addNewElementForAllActions
+import matplotlib.pyplot as plt
 
 
 class LocalBases(Representation):
@@ -32,6 +33,22 @@ class LocalBases(Representation):
             # normalize such that each vector has a l1 norm of 1
             v /= v.sum()
         return v
+
+    def plot_2d_feature_centers(self, d1=None, d2=None):
+        """
+        plot the centers of all features in dimension d1 and d2.
+        If no dimensions are specified, the first two continuous dimensions
+        are shown.
+
+        d1, d2: indices of dimensions to show
+        """
+        if d1 is None and d2 is None:
+            # just take the first two dimensions
+            d1, d2 = self.domain.continuous_dims[:2]
+        plt.figure("Feature Dimensions {} and {}".format(d1, d2))
+        for i in xrange(self.centers.shape[0]):
+            plt.plot([self.centers[i, d1]], [self.centers[i, d2]], "r", marker="x")
+        plt.draw()
 
 
 class NonparametricLocalBases(LocalBases):
