@@ -106,11 +106,12 @@ class HelicopterHoverExtended(Domain):
             self.logger.log("Wind:\t\t\t{0},{0}".format(self.wind[0], self.wind[1]))
 
     def s0(self):
-        s = np.zeros((20))
-        s[9] = 1.
-        return s
+        self.state = np.zeros((20))
+        self.state[9] = 1.
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def isTerminal(self, s):
+    def isTerminal(self):
+        s = self.state
         if np.any(self.statespace_limits_full[:9, 0] > s[:9]) or np.any(self.statespace_limits_full[:9, 1] < s[:9]):
             return True
 
@@ -121,8 +122,9 @@ class HelicopterHoverExtended(Domain):
 
         return np.abs(w) < self.MIN_QW_BEFORE_HITTING_TERMINAL_STATE
 
-    def _get_reward(self, s):
-        if self.isTerminal(s):
+    def _get_reward(self):
+        s = self.state
+        if self.isTerminal():
             r = -np.sum(self.statespace_limits[:9, 1] ** 2)
             #r -= np.sum(self.statespace_limits[10:12, 1] ** 2)
             r -= (1. - self.MIN_QW_BEFORE_HITTING_TERMINAL_STATE ** 2)
@@ -130,18 +132,18 @@ class HelicopterHoverExtended(Domain):
         else:
             return -np.sum(s[:9] ** 2) - np.sum(s[10:12] ** 2)
 
-    def possibleActions(self, s):
+    def possibleActions(self, s=None):
         return np.arange(self.actions_num)
 
-    def step(self, s, a):
+    def step(self, a):
         a = self.actions[a]
         # make sure the actions are not beyond their limits
         a = np.maximum(self._action_bounds[:, 0], np.minimum(a,
                        self._action_bounds[:, 1]))
 
-        pos, vel, ang_rate, ori_bases, q = self._state_in_world(s)
-        t = s[-1]
-        gust_noise = s[13:19]
+        pos, vel, ang_rate, ori_bases, q = self._state_in_world(self.state)
+        t = self.state[-1]
+        gust_noise = self.state[13:19]
         gust_noise = (self.gust_memory * gust_noise
                       + (1. - self.gust_memory) * np.random.randn(6) * self.noise_level * self.noise_std)
         # update noise which simulates gusts
@@ -174,14 +176,15 @@ class HelicopterHoverExtended(Domain):
 
             ang_rate += self.dt * ang_acc
 
-        st = np.zeros_like(s)
+        st = np.zeros_like(self.state)
         st[:3] = -self._in_body_coord(pos, q)
         st[3:6] = self._in_body_coord(vel, q)
         st[6:9] = ang_rate
         st[9:13] = q
         st[13:19] = gust_noise
         st[-1] = t + 1
-        return (self._get_reward(s=st), st, self.isTerminal(st))
+        self.state = st.copy()
+        return self._get_reward(), st, self.isTerminal(), self.possibleActions()
 
     def _state_in_world(self, s):
         """
@@ -218,7 +221,8 @@ class HelicopterHoverExtended(Domain):
         """
         return self._in_body_coord(p, trans.quaternion_conjugate(q))
 
-    def showDomain(self, s, a=None):
+    def showDomain(self, a=None):
+        s = self.state
         if a is not None:
             a = self.actions[a].copy() * 3 # amplify for visualization
         pos, vel, ang_rate, ori_bases, _ = self._state_in_world(s)
@@ -391,21 +395,14 @@ class HelicopterHover(HelicopterHoverExtended):
                                 + [[-MAX_ANG_RATE, MAX_ANG_RATE]] * 3
                                 + [[-MAX_ANG, MAX_ANG]] * 3)
 
-    full_state_ = np.zeros((20))
+    #full_state_ = np.zeros((20))
 
     def s0(self):
-        self.hidden_state_ = np.zeros((8))
-        self.hidden_state_[0] = 1.
-        s = np.zeros((12))
-        return s
-
-    def _augment_state(self, s):
-        s_extended = self.full_state_
-        s_extended[:9] = s[:9]
-        s_extended[9] = self.hidden_state_[0]
-        s_extended[10:13] = s[9:12]
-        s_extended[13:] = self.hidden_state_[1:]
-        return s_extended
+        #self.hidden_state_ = np.zeros((8))
+        #self.hidden_state_[0] = 1.
+        s_full, term, p_actions = super(HelicopterHover, self).s0()
+        s,_  = self._split_state(s_full)
+        return s, term, p_actions
 
     def _split_state(self, s):
         s_observable = np.zeros((12))
@@ -416,16 +413,8 @@ class HelicopterHover(HelicopterHoverExtended):
         s_hidden[1:] = s[13:]
         return s_observable, s_hidden
 
-    def step(self, s, a):
-        s_extended = self._augment_state(s)
-        r, st_extended, term = super(HelicopterHover, self).step(s_extended, a)
-        st, self.hidden_state_[:] = self._split_state(st_extended)
-        return (r, st, term)
-
-    def showDomain(self, s, a=None):
-        s_extended = self._augment_state(s)
-        super(HelicopterHover, self).showDomain(s_extended, a)
-
-if __name__ == "__main__":
-    h = HelicopterHoverExtended(logger=None, noise_level=0.)
-    h.test()
+    def step(self, a):
+        #s_extended = self._augment_state(s)
+        r, st, term, p_actions = super(HelicopterHover, self).step(a)
+        st,_  = self._split_state(st)
+        return (r, st, term, p_actions)

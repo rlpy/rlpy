@@ -1,4 +1,4 @@
-from Domain import Domain
+#from Domain import Domain
 from HelicopterHover import HelicopterHover, HelicopterHoverExtended
 from HIVTreatment import HIVTreatment
 from PuddleWorld import PuddleWorld
@@ -8,9 +8,9 @@ from MountainCar import MountainCar
 from ChainMDP import ChainMDP
 from SystemAdministrator import SystemAdministrator
 from PST import PST
+from Pacman import Pacman
 from IntruderMonitoring import IntruderMonitoring
-from CartPole import CartPole, CartPoleBalanceOriginal
-from Pendulum import Pendulum
+from CartPole import CartPoleBalanceOriginal
 from CartPole_InvertedBalance import CartPole_InvertedBalance
 from CartPole_SwingUp import CartPole_SwingUp, CartPole_SwingUpReal
 from Pendulum_InvertedBalance import Pendulum_InvertedBalance
@@ -19,4 +19,5 @@ from FiftyChain import FiftyChain
 from FlipBoard import FlipBoard
 from RCCar import RCCar
 from Acrobot import Acrobot, AcrobotLegacy
-from Pinball import Pinball
+# don't import by default as long as it requires pygame
+#from Pinball import Pinball

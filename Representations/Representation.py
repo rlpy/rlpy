@@ -91,11 +91,11 @@ class Representation(object):
     # \ref Representation_V "Here".
 
     # [V code]
-    def V(self,s, phi_s = None):
+    def V(self, s, terminal, p_actions, phi_s = None):
         if phi_s is None: phi_s = self.phi(s)
-        AllQs,A   = self.Qs(s,phi_s)
-        if len(A):
-            return max(AllQs)
+        AllQs   = self.Qs(s, terminal, phi_s)
+        if len(p_actions):
+            return max(AllQs[p_actions])
         else:
             return 0 #Return 0 value when no action is possible
     # [V code]
@@ -111,24 +111,16 @@ class Representation(object):
     # \b A: the corresponding array of action numbers
 
     # [Qs code]
-    def Qs(self,s, phi_s = None, all_actions=False):
+    def Qs(self,s, terminal, phi_s = None):
 
-        A = self.domain.possibleActions(s)
-        if phi_s is None: phi_s   = self.phi(s)
+        if phi_s is None: phi_s   = self.phi(s, terminal)
         if len(phi_s) == 0:
-            if all_actions:
-                return zeros((self.domain.actions_num))
-            else:
-                return zeros((len(A))), A
+            return np.zeros((self.domain.actions_num))
         theta_prime = self.theta.reshape(-1, self.features_num)
         if self._phi_sa_cache.shape != (self.domain.actions_num, self.features_num):
             self._phi_sa_cache =  empty((self.domain.actions_num, self.features_num))
         Q = multiply(theta_prime, phi_s, out=self._phi_sa_cache).sum(axis=1) # stacks phi_s in cache
-        #Q = dot(theta_prime, self._phi_sa_cache)
-        if all_actions:
-            return Q
-        else:
-            return Q[A].copy(), A
+        return Q
     # [Qs code]
 
 
@@ -140,10 +132,9 @@ class Representation(object):
     # @return The value of the action in that state.
 
     # [Q code]
-    def Q(self,s,a,phi_s = None):
-
+    def Q(self, s, terminal, a, phi_s = None):
         if len(self.theta) > 0:
-            phi_sa, i, j = self.phi_sa(s,a, phi_s, snippet=True)
+            phi_sa, i, j = self.phi_sa(s, terminal, a, phi_s, snippet=True)
             return dot(phi_sa,self.theta[i:j])
         else:
             return 0.0
@@ -157,10 +148,15 @@ class Representation(object):
     # @returns Phi. Format is [[]].
 
     # [phi code]
-    def phi(self,s):
-        if self.domain.isTerminal(s) or self.features_num == 0:
+    def phi(self,s, terminal):
+        # TODO fix this mess
+        old_state = self.domain.state
+        self.domain.state = s
+        if terminal or self.features_num == 0:
+            self.domain.state = old_state
             return zeros(self.features_num,'bool')
         else:
+            self.domain.state = old_state
             return self.phi_nonTerminal(s)
     # [phi code]
 
@@ -175,8 +171,8 @@ class Representation(object):
     # @return The associated feature vector.
 
     # [phi_sa code]
-    def phi_sa(self,s,a, phi_s = None, snippet=False):
-        if phi_s is None: phi_s = self.phi(s)
+    def phi_sa(self, s, terminal, a, phi_s = None, snippet=False):
+        if phi_s is None: phi_s = self.phi(s, terminal)
         if snippet is True:
             return phi_s, a*self.features_num, (a+1) * self.features_num
 
@@ -263,16 +259,6 @@ class Representation(object):
         return bs
     # [binState code]
 
-
-    ## Prints the class information. See code
-    # \ref Representation_printAll "Here".
-
-    # [printAll code]
-    def printAll(self):
-        printClass(self)
-    # [printAll code]
-
-
     ## Returns a list of the best actions at a given state.
     # If phi_s [the feature vector at state (s)]is given, it is used to speed up code by preventing re-computation. See code
     # \ref Representation_bestActions "Here".
@@ -281,8 +267,9 @@ class Representation(object):
     # @return A list of the best actions at the given state.
 
     # [bestActions code]
-    def bestActions(self,s, phi_s = None):
-        Qs, A = self.Qs(s,phi_s)
+    def bestActions(self,s, terminal, p_actions, phi_s = None):
+        Qs = self.Qs(s, terminal, phi_s)
+        Qs = Qs[p_actions]
         # Find the index of best actions
         ind   = findElemArray1D(Qs,Qs.max())
         if self.DEBUG:
@@ -293,7 +280,7 @@ class Representation(object):
             self.logger.line()
             self.logger.log('Best: %s, Max: %s' % (str(A[ind]),str(Qs.max())))
             #raw_input()
-        return A[ind]
+        return p_actions[ind]
     # [bestActions code]
 
 
@@ -312,8 +299,8 @@ class Representation(object):
     # @return The best action at the given state.
 
     # [bestAction code]
-    def bestAction(self,s, phi_s = None):
-        bestA = self.bestActions(s,phi_s)
+    def bestAction(self,s, terminal, p_actions, phi_s = None):
+        bestA = self.bestActions(s, terminal, p_actions, phi_s)
         if len(bestA) > 1:
             return randSet(bestA)
             #return bestA[0]
@@ -384,87 +371,6 @@ class Representation(object):
             if len(rows): phi_s_a[rows,i*n:(i+1)*n] = all_phi_s[rows,:]
         return phi_s_a
     # [batchPhi_s_a code]
-
-
-        # closed on 2/27/2013: Effort to sparsify things
-        #=====================================================================
-#       if all_phi_s_a == None:
-#           if use_sparse:
-#               all_phi_s_a = sp.kron(eye(a_num,a_num, dtype = uint8),all_phi_s) #all_phi_s_a will be ap-by-an
-#           else:
-#               all_phi_s_a = kron(eye(a_num,a_num, dtype = bool),all_phi_s)         #all_phi_s_a will be ap-by-an
-#
-#       if sp.issparse(all_phi_s_a):
-#               all_phi_s_a = all_phi_s_a.todense()
-#
-#       # Based on Josh's Idea
-#       # set_printoptions(threshold=sys.maxint, precision=2, suppress=True, linewidth=inf)
-#       M = all_phi_s_a
-#       M = M.reshape((a_num,-1))
-#       A = all_actions.T
-#       A = kron(A,ones((1,n*a_num,),dtype=integer))[0] # <<< SPARSIFY if you have time
-#       M = M[A,arange(len(A)),:]
-#       M = M.reshape(-1)
-#       return M.reshape((p,-1))
-
-        # Below is the first matrix attemp which is slightly slower than the above method based on 1 run of PST performance
-#      use_sparse = 1
-#       action_slice    = zeros((a_num,p),dtype= bool)
-#       action_slice[all_actions,xrange(p)] = 1
-        # Build a matrix where 1 appears in each column corresponding to the action number
-        # all_actions = [1 0 1] with 2 actions and 3 samples
-        # build:
-        # 0 1 0
-        # 1 0 1
-        #now expand each 1 into size of the features (i.e. n)
-#       all_phi_s_a = all_phi_s_a.reshape((a_num,-1))
-#
-#       if use_sparse:
-#           action_slice = sp.kron(sp.csr_matrix(action_slice),ones((1,n*a_num)),'coo')
-#           action_slice = action_slice.todense()
-#           phi_s_a = all_phi_s_a.T[action_slice.T==1]
-#       else:
-#           action_slice = kron(action_slice,ones((1,n*a_num)))
-#           phi_s_a = all_phi_s_a.T[action_slice.T==1]
-#
-#       # with n = 2, and a = 2 we will have:
-#       # 0 0 0 0 1 1 1 1 0 0 0 0
-#       # 1 1 1 1 0 0 0 0 1 1 1 1
-#       # now we can select the feature values
-#       #phi_s_a = all_phi_s_a.T[action_slice.todense().T==1]
-#       phi_s_a = phi_s_a.reshape((p,-1))
-#       return phi_s_a
-
-
-    ## Returns the best-action and phi_s_a corresponding to the every state. See code
-    # \ref Representation_batchBestAction "Here". \n \n
-    # Algorithm: \n
-    # 1. Calculate the phi_s_a for all states and their associated actions \n
-    # 2. Multiply theta by the corresponding phi_s_a \n
-    # 3. Rearrange the matrix to have all values corresponding to possible actions in each row \n
-    # 4. Maskout irrelevant actions \n
-    # 5. Find the max index in each row \n
-    # 6. Return the action and corresponding_phi_s_a \n \n
-    #
-    # First: make a mask for the invalid_actions  \n
-    # Second: build a matrix p-by-a where in each row the missing action is 1 \n \n
-    # \b Example: \n
-    # 2 actions, 3 states \n
-    # possibleActions(s1) = 0 \n
-    # possibleActions(s2) = 1 \n
-    # possibleActions(s3) = 0,1 \n
-    # \b Example \b output: \n
-    # 0 1 \n
-    # 1 0 \n
-    # 0 0
-    # @param all_s An array of all of the states. p-by-dim(s)
-    # @param all_phi_s Each row is the feature vector evaluated at a state (s), one row for each state in the batch. [ p-by-|phi(s))| ]
-    # @param action_mask Binary matrix, where each row corresponds to a single
-    # state (s), with a column for each action; '0' elements correspond to allowable actions in the state (as returned by possibleActions(s)
-    # @param useSparse Determines whether or not to use sparse matrix libraries provided with numpy
-    # @return [best_action, phi_s_a] \n
-    # \b best_action: An array of the best actions at every state. p-by-1 \n
-    # \b phi_s_a:  p-by-|phi(s,a)|
 
     # [batchBestAction code]
     def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):

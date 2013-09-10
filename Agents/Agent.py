@@ -19,7 +19,6 @@
 ######################################################
 
 from Tools import *
-from Representations import *
 
 ## The Agent receives observations from the \ref Domains.Domain.Domain "Domain" and performs actions to obtain some goal.
 #
@@ -96,7 +95,7 @@ class Agent(object):
 
 
     ## \b ABSTRACT \b METHOD: Defined by child class
-    def learn(self,s,a,r,ns,na,terminal):
+    def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
        pass
        # ABSTRACT
 
@@ -141,37 +140,6 @@ class Agent(object):
             self.logger.log("Unrecognized decay mode ")
     # [updateAlpha code]
 
-
-	## Prints all of the class information. See code
-	# \ref Agent_printAll "Here".
-
-	# [printAll code]
-    def printAll(self):
-        printClass(self)
-	# [printAll code]
-
-
-	## \cond DEV
-    def checkPerformance(self):
-        # This function should not be here. This is just for debugging and getting insight into the performance evolution
-        # Set Exploration to zero and sample one episode from the domain
-        eps_length  = 0
-        eps_return  = 0
-        eps_term    = 0
-        self.policy.turnOffExploration()
-        s           = self.domain.s0()
-
-        while not eps_term and eps_length < self.domain.episodeCap:
-            a               = self.policy.pi(s)
-            r,ns,eps_term   = self.domain.step(s, a)
-            s               = ns
-            eps_return     += r
-            eps_length     += 1
-        self.policy.turnOnExploration()
-        return eps_return, eps_length, eps_term
-	## \endcond
-
-
 	## Run a single monte-carlo simulation episode from state s with action a following the current policy of the agent.
 	# See code \ref Agent_MC_episode "Here".
 	# @param s
@@ -198,7 +166,7 @@ class Agent(object):
         if s is None: s = self.domain.s0()
         if a is None: a = self.policy.pi(s)
         while not eps_term and eps_length < self.domain.episodeCap:
-            r,ns,eps_term       = self.domain.step(s, a)
+            r,ns,eps_term       = self.domain.step(a)
             s                   = ns
             eps_return          += r
             eps_discounted_return += self.representation.domain.gamma**eps_length * r
@@ -262,7 +230,7 @@ class Agent(object):
             #Store the corresponding Q
             Q = self.Q_MC(s,a,MC_samples, tolerance)
             DATA[steps,:] = hstack((s,[a, Q]))
-            r,s,terminal = self.domain.step(s, a)
+            r,s,terminal = self.domain.step(a)
             steps += 1
 
             self.logger.log("Sample "+ str(steps)+":"+ str(s)+" "+str(a)+" "+str(Q))

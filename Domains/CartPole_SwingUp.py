@@ -11,23 +11,8 @@
 
 #THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Tools import *
-from Domain import *
-from CartPole import *
+from CartPole import CartPole, StateIndex
 
 #####################################################################
 # \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
@@ -60,15 +45,17 @@ class CartPole_SwingUp(CartPole):
 
     def s0(self):
         # Returns the initial state, pendulum vertical
-        return array([pi,0,0,0])
-
+        self.state = array([pi,0,0,0])
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     ## Return the reward earned for this state-action pair
     # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
-    def _getReward(self, s, a):
+    def _getReward(self, a):
+        s = self.state
         return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
 
-    def isTerminal(self,s):
+    def isTerminal(self):
+        s = self.state
         return not (-2.4 < s[StateIndex.X] < 2.4)
 
 class CartPole_SwingUpReal(CartPole_SwingUp):
@@ -92,7 +79,8 @@ class CartPole_SwingUpReal(CartPole_SwingUp):
 
     ## Return the reward earned for this state-action pair
     # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
-    def _getReward(self, s, a):
+    def _getReward(self, a):
+        s = self.state
         if not (-2.4 < s[StateIndex.X] < 2.4):
             return -30
         pen_pos = array([s[StateIndex.X] + self.LENGTH * sin(s[StateIndex.THETA]),
@@ -133,8 +121,3 @@ class CartPole_SwingUpReal(CartPole_SwingUp):
             / (4 * l * (m + M) - 3 * m * l * c3 ** 2)
         ds[3] = s[2]
         return ds
-
-if __name__ == '__main__':
-    random.seed(0)
-    p = CartPole_SwingUp();
-    p.test(1000)

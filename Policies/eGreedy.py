@@ -30,18 +30,17 @@ class eGreedy(Policy):
             self.logger.log("=" * 60)
             self.logger.log("Policy: eGreedy")
             self.logger.log("Epsilon\t\t{0}".format(self.epsilon))
-    def pi(self,s):
+
+    def pi(self,s, terminal, p_actions):
         coin = random.rand()
         #print "coin=",coin
         if coin < self.epsilon:
-            A = self.representation.domain.possibleActions(s)
-            return randSet(A)
+            return randSet(p_actions)
         else:
-            A = self.representation.bestActions(s)
             if self.forcedDeterministicAmongBestActions:
-                return A[0]
+                return p_actions[0]
             else:
-                return randSet(A)
+                return randSet(p_actions)
     def turnOffExploration(self):
         self.old_epsilon = self.epsilon
         self.epsilon = 0

@@ -24,18 +24,18 @@ class TDControlAgent(Agent):
         self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
         self.logger.log("lambda:\t%0.2f" % lambda_)
 
-    def _future_action(self, ns, ns_phi, na):
+    def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """needs to be implemented by children"""
         pass
 
-    def learn(self, s, a, r, ns, na, terminal):
+    def learn(self,s,p_actions, a, r, ns, np_actions, na,terminal):
         gamma           = self.representation.domain.gamma
         theta           = self.representation.theta
-        phi_s           = self.representation.phi(s)
-        phi             = self.representation.phi_sa(s, a, phi_s)
-        phi_prime_s     = self.representation.phi(ns)
-        na              = self._future_action(ns, phi_prime_s, na)  # here comes the difference between SARSA and Q-Learning
-        phi_prime       = self.representation.phi_sa(ns,na,phi_prime_s)
+        phi_s           = self.representation.phi(s, False)
+        phi             = self.representation.phi_sa(s, False, a, phi_s)
+        phi_prime_s     = self.representation.phi(ns, terminal)
+        na              = self._future_action(ns, terminal, np_actions, phi_prime_s, na)  # here comes the difference between SARSA and Q-Learning
+        phi_prime       = self.representation.phi_sa(ns, terminal, na, phi_prime_s)
         nnz             = count_nonzero(phi_s)    # Number of non-zero elements
 
         #Set eligibility traces:
@@ -71,7 +71,7 @@ class TDControlAgent(Agent):
         #Discover features if the representation has the discover method
         discover_func = getattr(self.representation, 'discover', None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
-            expanded = self.representation.discover(s, a, td_error, phi_s)
+            expanded = self.representation.discover(s, False, a, td_error, phi_s)
 
         if terminal:
             self.episodeTerminated()
@@ -82,15 +82,15 @@ class Q_Learning(TDControlAgent):
     The off-policy variant known as Q-Learning
     """
 
-    def _future_action(self, ns, ns_phi, na):
+    def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """Q Learning choses the optimal action"""
-        return self.representation.bestAction(ns, ns_phi)
+        return self.representation.bestAction(ns, terminal, np_actions, ns_phi)
 
 
 class SARSA(TDControlAgent):
     """
     The on-policy variant known as SARSA.
     """
-    def _future_action(self, ns, ns_phi, na):
+    def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """SARS-->A<--, so SARSA simply choses the action the agent will follow"""
         return na

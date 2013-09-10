@@ -34,18 +34,17 @@ class Greedy_GQ(Agent):
         self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
         self.logger.log("Beta:\t\t"+str(BetaCoef))
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
-    def learn(self,s,a,r,ns,na,terminal):
-        gamma               = self.representation.domain.gamma
-        theta               = self.representation.theta
-        phi_s               = self.representation.phi(s)
-        phi                 = self.representation.phi_sa(s,a,phi_s)
-        phi_prime_s         = self.representation.phi(ns)
-        na                  = self.representation.bestAction(ns,phi_prime_s) #Switch na to the best possible action
-        phi_prime           = self.representation.phi_sa(ns,na,phi_prime_s)
 
-        nnz                 = count_nonzero(phi_s)    #Number of non-zero elements
-        if nnz == 0: # Phi has some nonzero elements, proceed with update
-            return
+    def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
+        gamma           = self.representation.domain.gamma
+        theta           = self.representation.theta
+        phi_s           = self.representation.phi(s, False)
+        phi             = self.representation.phi_sa(s, False, a, phi_s)
+        phi_prime_s     = self.representation.phi(ns, terminal)
+        na              = self.representation.bestAction(ns,terminal, np_actions, phi_prime_s) #Switch na to the best possible action
+        phi_prime       = self.representation.phi_sa(ns, terminal, na, phi_prime_s)
+        nnz             = count_nonzero(phi_s)    # Number of non-zero elements
+
 
         #Set eligibility traces:
         if self.lambda_:
@@ -65,19 +64,17 @@ class Greedy_GQ(Agent):
         td_error                     = r + dot(gamma*phi_prime - phi, theta)
         self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
 
-        td_error_estimate_now       = dot(phi,self.GQWeight)
-        Delta_theta                 = td_error*self.eligibility_trace - gamma*td_error_estimate_now*phi_prime
-        theta                       += self.alpha*Delta_theta
-        Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
-        self.GQWeight               += self.alpha*self.secondLearningRateCoef*Delta_GQWeight
+        if nnz > 0: # Phi has some nonzero elements, proceed with update
+            td_error_estimate_now       = dot(phi,self.GQWeight)
+            Delta_theta                 = td_error*self.eligibility_trace - gamma*td_error_estimate_now*phi_prime
+            theta                       += self.alpha*Delta_theta
+            Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
+            self.GQWeight               += self.alpha*self.secondLearningRateCoef*Delta_GQWeight
 
-        #
-        #theta               += self.alpha * TDError * self.eligibility_trace
-        #print max(theta)
         #Discover features if the representation has the discover method
         discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
         if discover_func and callable(discover_func):
-            expanded = self.representation.discover(phi_s,td_error)
+            expanded = self.representation.discover(s, False, a, td_error, phi_s)
 
             #Assuming one expansion for one interaction.
             if expanded:

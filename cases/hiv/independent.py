@@ -10,15 +10,17 @@ from Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 
-param_space = {'discretization': hp.quniform("discretization", 3, 5, 1),
+param_space = {'discretization': hp.quniform("discretization", 3, 50, 1),
+               'lambda_': hp.uniform("lambda_", 0., 1.),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    boyan_N0=235,
-                    initial_alpha=.05,
-                    discretization=5):
+                    lambda_=0.9,
+                    boyan_N0=22.36,
+                    initial_alpha=.068,
+                    discretization=9):
     logger = Logger()
     max_steps = 150000
     num_policy_checks = 30

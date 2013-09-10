@@ -81,16 +81,18 @@ class ROS_RCCar(Domain):
         self.ros = RC_Com()
         super(ROS_RCCar,self).__init__(logger)
 
-    def step(self, s, a):
-        ns = self.ros.Step(s,a)
-        terminal = self.isTerminal(ns)
+    def step(self, a):
+        ns = self.ros.Step(self.state,a)
+        self.state = ns.copy()
+        terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
         return r, ns, terminal
 
     def s0(self):
         self.ros.resetState()
-        return self.INIT_STATE
+        self.state = self.INIT_STATE
+        return self.state.copy()
 
-    def isTerminal(self,s):
-        return linalg.norm(s[0:2]-self.GOAL) < self.GOAL_RADIUS
+    def isTerminal(self):
+        return linalg.norm(self.state[0:2]-self.GOAL) < self.GOAL_RADIUS
 

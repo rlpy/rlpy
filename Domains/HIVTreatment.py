@@ -46,27 +46,30 @@ class HIVTreatment(Domain):
     else:
         statespace_limits = np.array([[0., 1e8]] * 6)
 
-    def step(self, s, a):
-        if self.logspace:
-            s = np.power(10, s)
+    def step(self, a):
+        #if self.logspace:
+        #    s = np.power(10, s)
+
         eps1, eps2 = self.actions[a]
-        ns = odeint(dsdt, s, [0, self.dt], args=(eps1, eps2), mxstep=1000)[-1]
+        ns = odeint(dsdt, self.state, [0, self.dt], args=(eps1, eps2), mxstep=1000)[-1]
         T1, T2, T1s, T2s, V, E = ns
         # the reward function penalizes treatment because of side-effects
         reward = - 0.1 * V - 2e4 * eps1 ** 2 - 2e3 * eps2  ** 2 + 1e3 * E
+        self.state = ns.copy()
         if self.logspace:
             ns = np.log10(ns)
-        return reward, ns, False
+        return reward, ns, False, self.possibleActions()
 
-    def possibleActions(self, s):
+    def possibleActions(self):
         return np.arange(4)
 
     def s0(self):
         # non-healthy stable state of the system
         s = np.array([163573., 5., 11945., 46., 63919., 24.])
+        self.state = s.copy()
         if self.logspace:
-            return np.log10(s)
-        return s
+            return np.log10(s), self.isTerminal(), self.possibleActions()
+        return s, self.isTerminal(), self.possibleActions()
 
 
 def dsdt(s, t, eps1, eps2):
@@ -118,11 +121,3 @@ try:
 except Exception, e:
     print e
     print "Cython extension for HIVTreatment dynamics not available, expect slow runtime"
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    domain = HIVTreatment(logger=None)
-    s = domain.s0()
-    for i in range(200):
-        r, s, _ = domain.step(s, 3)
-        print s, r

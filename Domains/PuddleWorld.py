@@ -12,16 +12,6 @@
 
 __author__ = "Christoph Dann"
 
-import os
-import sys
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT + '/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 from Domain import Domain
 import numpy as np
 import matplotlib.pyplot as plt
@@ -64,31 +54,34 @@ class PuddleWorld(Domain):
             for j, y in enumerate(np.linspace(0, 1, 100)):
                 a[0] = x
                 a[1] = y
-                self.reward_map[j, i] = self.reward(a)
+                self.reward_map[j, i] = self._reward(a)
         if self.logger:
             self.logger.log("Noise level:\t{0}".format(self.noise_level))
 
     def s0(self):
-        s = self.rand_state.rand(2)
-        while self.isTerminal(s):
-            s = self.rand_state.rand(2)
-        return s
+        self.state = self.rand_state.rand(2)
+        while self.isTerminal():
+            self.state = self.rand_state.rand(2)
+        return self.state.copy(), False, self.possibleActions()
 
-    def isTerminal(self, s):
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
         return s.sum() > 0.95 * 2
 
-    def possibleActions(self, s):
+    def possibleActions(self, s=0):
         return np.arange(self.actions_num)
 
-    def step(self, s, a):
+    def step(self, a):
         a = self.actions[a]
-        ns = s + a + self.rand_state.randn() * self.noise_level
+        ns = self.state + a + self.rand_state.randn() * self.noise_level
         # make sure we stay inside the [0,1]^2 region
         ns = np.minimum(ns, 1.)
         ns = np.maximum(ns, 0.)
-        return (self.reward(ns), ns, self.isTerminal(ns))
+        self.state = ns.copy()
+        return self._reward(ns), ns, self.isTerminal(), self.possibleActions()
 
-    def reward(self, s):
+    def _reward(self, s):
         if self.isTerminal(s):
             return 0  # goal state reached
         reward = -1
@@ -104,7 +97,8 @@ class PuddleWorld(Domain):
             reward -= 400 * (0.1 - dists[dists < 0.1]).max()
         return reward
 
-    def showDomain(self, s, a=None):
+    def showDomain(self, a=None):
+        s = self.state
         #Draw the environment
         if self.domain_fig is None:
             self.domain_fig = plt.figure("Domain")
@@ -148,7 +142,3 @@ class PuddleWorld(Domain):
             self.pol_im.set_data(self.pi_map)
             self.pol_im.autoscale()
         plt.draw()
-
-if __name__ == "__main__":
-    h = PuddleWorld()
-    h.test(200)

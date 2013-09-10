@@ -23,7 +23,7 @@ RL_PYTHON_ROOT = '.'
 while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
     RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
 if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.' 
+    print 'Error: Could not locate RLPy directory.'
     print 'Please make sure the package directory is named RLPy.'
     print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
     sys.exit(1)
@@ -34,16 +34,16 @@ from Policies import *
 from Tools import *
 from Representations import *
 class MDPSolver(object):
-    representation      = None          # Link to the representation object 
+    representation      = None          # Link to the representation object
     domain              = None          # Link to the domain object
     logger              = None          # A simple objects that record the prints in a file
     planning_time       = None          # Amount of time in seconds provided for the solver. After this it returns its performance.
     id                  = None          # The job id of this run of the algorithm
     mainSeed            = 999999999     # To make sure all same job ids see the same random sequence
-    maxRuns             = 100           # Maximum number of runs of an algorithm for averaging    
+    maxRuns             = 100           # Maximum number of runs of an algorithm for averaging
     convergence_threshold = None        # Threshold to determine the convergence of the planner
     ns_samples          = None          # Number of samples to be used to generate estimated bellman backup if the domain does not provide explicit probablities though expectedStep function.
-    log_interval        = None          # Number of bellman backups before reporting the performance. (Not all planners may use this) 
+    log_interval        = None          # Number of bellman backups before reporting the performance. (Not all planners may use this)
     show                = None          # Show the learning if possible?
     def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 5000, show = False):
         self.id = job_id
@@ -78,11 +78,11 @@ class MDPSolver(object):
         self.saveStats()
 
     def printAll(self):
-        printClass(self)  
+        printClass(self)
     def BellmanBackup(self,s,a,ns_samples, policy = None):
         # Applied Bellman Backup to state-action pair s,a
         # i.e. Q(s,a) = E[r + gamma * V(s')]
-        # If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]                                     
+        # If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]
         Q                                       = self.representation.Q_oneStepLookAhead(s,a,ns_samples,policy)
         s_index                                 = vec2id(self.representation.binState(s),self.representation.bins_per_dim)
         theta_index                             = self.representation.agg_states_num*a + s_index
@@ -93,29 +93,23 @@ class MDPSolver(object):
         eps_return  = 0
         eps_term    = 0
         eps_discounted_return = 0
-        
+
         s           = self.domain.s0()
         terminal    = False
-        #if self.show_performance: 
+        #if self.show_performance:
         #    self.domain.showLearning(self.representation)
 
         while not eps_term and eps_length < self.domain.episodeCap:
             a               = self.representation.bestAction(s)
-            #if self.show_performance: 
-                #self.domain.showDomain(s,a)
-             #   pl.title('After '+str(total_steps)+' Steps')
-
-            r,ns,eps_term    = self.domain.step(s, a)
+            r,ns,eps_term    = self.domain.step(a)
             s               = ns
             eps_discounted_return += self.domain.gamma**eps_length*r
             eps_return     += r
             eps_length     += 1
-        #if self.show_performance: self.domain.showDomain(s,a)
-        #self.agent.policy.turnOnExploration()
-        return eps_return, eps_length, eps_term, eps_discounted_return   
+        return eps_return, eps_length, eps_term, eps_discounted_return
     def saveStats(self):
         checkNCreateDirectory(self.project_path+'/')
         savetxt('%s/%d-results.txt' % (self.project_path,self.id),self.result, fmt='%.18e', delimiter='\t')
     def hasTime(self):
         #Return a boolean stating if there is time left for planning
-        return deltaT(self.start_time) < self.planning_time           
+        return deltaT(self.start_time) < self.planning_time

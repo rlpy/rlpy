@@ -35,6 +35,7 @@ import itertools
 import platform
 import pdb
 import os
+np = numpy
 
 matplotlib_backend = 'TkAgg' # 'WX' 'QTAgg' 'QT4Agg'
 
@@ -788,7 +789,7 @@ def padZeros(X,L):
         return new_X
     else:
         return X
-           
+
 def expectedPhiNS(p_vec, ns_vec, representation):
     # Primarily for use with domain.expectedStep()
     # Takes p_vec, probability of each state outcome in ns_vec,

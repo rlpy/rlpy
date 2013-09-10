@@ -83,13 +83,15 @@ class Acrobot(Domain):
     actions_num = 3
 
     def s0(self):
-        return np.zeros((4))
+        self.state = np.zeros((4))
+        return np.zeros((4)), self.isTerminal(), self.possibleActions()
 
-    def isTerminal(self, s):
+    def isTerminal(self):
+        s = self.state
         return -np.cos(s[0]) - np.cos(s[1] + s[0]) > 1.
 
-    def step(self, s, a):
-
+    def step(self, a):
+        s = self.state
         torque = self.AVAIL_TORQUE[a]
 
         # Add noise to the force action
@@ -110,9 +112,10 @@ class Acrobot(Domain):
         ns[1] = wrap(ns[1], -np.pi, np.pi)
         ns[2] = bound(ns[2], -self.MAX_VEL_1, self.MAX_VEL_1)
         ns[3] = bound(ns[3], -self.MAX_VEL_2, self.MAX_VEL_2)
-        terminal = self.isTerminal(ns)
+        self.state = ns.copy()
+        terminal = self.isTerminal()
         reward = -1. if not terminal else 0.
-        return reward, ns, terminal
+        return reward, ns, terminal, self.possibleActions()
 
     def _dsdt(self, s_augmented, t):
         m1 = self.LINK_MASS_1
@@ -146,11 +149,11 @@ class Acrobot(Domain):
         ddtheta1 = -(d2 * ddtheta2 + phi1) / d1
         return (dtheta1, dtheta2, ddtheta1, ddtheta2, 0.)
 
-    def showDomain(self, s, a=0):
+    def showDomain(self, a=0):
         """
         Plot the 2 links + action arrows
         """
-
+        s = self.state
         if self.domain_fig is None:  # Need to initialize the figure
             self.domain_fig = plt.gcf()
             self.domain_ax = self.domain_fig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
@@ -237,9 +240,10 @@ class AcrobotLegacy(Acrobot):
     """
 
     book_or_nips = "book"
-    def step(self, s, a):
+    def step(self, a):
 
         torque = self.AVAIL_TORQUE[a]
+        s = self.state
 
         # Add noise to the force action
         if self.torque_noise_max > 0:
@@ -261,7 +265,8 @@ class AcrobotLegacy(Acrobot):
             s_augmented[3] = bound(s_augmented[3], -self.MAX_VEL_2, self.MAX_VEL_2)
 
         ns = s_augmented[:4]  # omit action
-        terminal = self.isTerminal(ns)
+        self.state = ns.copy()
+        terminal = self.isTerminal()
         reward = -1. if not terminal else 0.
-        return reward, ns, terminal
+        return reward, ns, terminal, self.possibleActions()
 

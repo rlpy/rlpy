@@ -257,12 +257,12 @@ class KernelizediFDD(Representation):
         return out
 
     #@profile
-    def discover(self, s, a, td_error, phi_s=None):
+    def discover(self, s, terminal, a, td_error, phi_s=None):
         if phi_s is None:
-            phi_s = self.phi(s)
-        phi_s_unnorm = self.phi_raw(s)
+            phi_s = self.phi(s, terminal)
+        phi_s_unnorm = self.phi_raw(s, terminal)
         discovered = 0
-        Q = self.Qs(s, phi_s=phi_s, all_actions=True).reshape(-1, 1)
+        Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
         # indices of active features
         active_indices = list(np.where(phi_s_unnorm > self.active_threshold)[0])
         # "active indices", active_indices
@@ -319,7 +319,7 @@ class KernelizediFDD(Representation):
         returns the relevance of a potential feature combination
         """
         candidate.td_error_sum += phi_s[index1] * phi_s[index2] * td_error
-        candidate.activation_count += phi_s[index1] * phi_s[index2]
+        candidate.activation_count += phi_s[index1]**2 * phi_s[index2]**2
         if candidate.activation_count == 0.:
             return 0.
         rel = np.abs(candidate.td_error_sum) / np.sqrt(candidate.activation_count)
@@ -432,6 +432,45 @@ except Exception, e:
     print e
     print "Cython extension for kernels not available, expect slow runtime"
 
+
+
+from FastCythonKiFDD import FastCythonKiFDD
+
+class FastKiFDD(Representation, FastCythonKiFDD):
+    def __init__(self, domain, kernel, active_threshold, discover_threshold,
+                 logger=None, kernel_args=[], normalization=True, sparsify=True,
+                 max_active_base_feat=2, max_base_feat_sim=0.7):
+        super(FastKiFDD, self).__init__(domain, logger)
+        self.kernel = kernel
+        assert(normalization)
+        self.normalization = normalization
+        #assert(kernel == gaussian_kernel)
+        logger.log(str(self))
+    def phi_nonTerminal(self, s):
+        return FastCythonKiFDD.phi_nonTerminal(self, s)
+
+    def discover(self, s, terminal, a, td_error, phi_s):
+
+        Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
+        discovered =  FastCythonKiFDD.discover(self, s, a, td_error, phi_s)
+        self.features_num += discovered
+        if discovered > 0:
+            if self.normalization:
+                new = Q * np.ones((self.domain.actions_num, discovered))
+            else:
+                new = np.zeros((self.domain.actions_num, discovered))
+            self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, new)
+        return discovered
+
+    def __str__(self):
+        res = """FastKiFDD (C++ Implementation of kernelized iFDD):
+    kernel: {self.kernel.__name__}
+    normalization:  {self.normalization}
+    sparsification: {self.sparsification}
+    activation threshold: {self.activation_threshold}
+    discovery threshold:  {self.discovery_threshold}
+""".format(self=self)
+        return res
 
 if __name__ == "__main__":
     from Domains import PuddleWorld
