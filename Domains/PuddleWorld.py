@@ -117,8 +117,8 @@ class PuddleWorld(Domain):
             for j, y in enumerate(np.linspace(0, 1, 100)):
                 a[0] = x
                 a[1] = y
-                self.val_map[j, i] = representation.V(a)
-                self.pi_map[j, i] = representation.bestAction(a)
+                self.val_map[j, i] = representation.V(a, self.isTerminal(a), self.possibleActions())
+                self.pi_map[j, i] = representation.bestAction(a, self.isTerminal(a), self.possibleActions())
 
         if self.valfun_fig is None:
             self.valfun_fig = plt.figure("Value Function")

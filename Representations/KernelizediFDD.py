@@ -257,7 +257,7 @@ class KernelizediFDD(Representation):
         return out
 
     #@profile
-    def discover(self, s, terminal, a, td_error, phi_s=None):
+    def post_discover(self, s, terminal, a, td_error, phi_s=None):
         if phi_s is None:
             phi_s = self.phi(s, terminal)
         phi_s_unnorm = self.phi_raw(s, terminal)
@@ -449,7 +449,7 @@ class FastKiFDD(Representation, FastCythonKiFDD):
     def phi_nonTerminal(self, s):
         return FastCythonKiFDD.phi_nonTerminal(self, s)
 
-    def discover(self, s, terminal, a, td_error, phi_s):
+    def post_discover(self, s, terminal, a, td_error, phi_s):
 
         Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
         discovered =  FastCythonKiFDD.discover(self, s, a, td_error, phi_s)

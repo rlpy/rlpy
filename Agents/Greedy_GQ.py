@@ -16,9 +16,11 @@
 ######################################################
 # Developed by Alborz Geramiard Oct 25th 2012 at MIT #
 # Following Maei et al. 2009 Greedy GQ Algorithm
-# Use it with lambda = 0 as Eligibility Trace mode has not been tested!
 ######################################################
-from Agent import *
+from Agent import Agent
+from Tools import addNewElementForAllActions, count_nonzero
+
+
 class Greedy_GQ(Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace   = []
@@ -36,6 +38,7 @@ class Greedy_GQ(Agent):
         if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
 
     def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
+        self.representation.pre_discover(s, False, a, ns, terminal)
         gamma           = self.representation.domain.gamma
         theta           = self.representation.theta
         phi_s           = self.representation.phi(s, False)
@@ -45,7 +48,9 @@ class Greedy_GQ(Agent):
         phi_prime       = self.representation.phi_sa(ns, terminal, na, phi_prime_s)
         nnz             = count_nonzero(phi_s)    # Number of non-zero elements
 
-
+        expanded = (- len(self.GQWeight) + len(phi)) / self.domain.actions_num
+        if expanded:
+            self._expand_vectors(expanded)
         #Set eligibility traces:
         if self.lambda_:
             self.eligibility_trace   *= gamma*self.lambda_
@@ -71,20 +76,22 @@ class Greedy_GQ(Agent):
             Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
             self.GQWeight               += self.alpha*self.secondLearningRateCoef*Delta_GQWeight
 
-        #Discover features if the representation has the discover method
-        discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
-        if discover_func and callable(discover_func):
-            expanded = self.representation.discover(s, False, a, td_error, phi_s)
 
-            #Assuming one expansion for one interaction.
-            if expanded:
-                new_elem = zeros((self.domain.actions_num, expanded))
-                # Correct the size of self.GQWeight
-                self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num, new_elem)
-                if self.lambda_:
-                    # Correct the size of eligibility traces (pad with zeros for new features)
-                    self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num, new_elem)
-                    self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, zeros((1, expanded)))
-
+        expanded = self.representation.post_discover(s, False, a, td_error, phi_s)
+        if expanded:
+            self._expand_vectors(expanded)
         if terminal:
             self.episodeTerminated()
+
+    def _expand_vectors(num_expansions):
+        """
+        correct size of GQ weight and e-traces when new features were expanded
+        """
+        new_elem = zeros((self.domain.actions_num, expanded))
+        self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num, new_elem)
+        if self.lambda_:
+            # Correct the size of eligibility traces (pad with zeros for new features)
+            self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num, new_elem)
+            self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, zeros((1, expanded)))
+
+

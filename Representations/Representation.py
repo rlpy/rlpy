@@ -92,7 +92,7 @@ class Representation(object):
 
     # [V code]
     def V(self, s, terminal, p_actions, phi_s = None):
-        if phi_s is None: phi_s = self.phi(s)
+        if phi_s is None: phi_s = self.phi(s, terminal)
         AllQs   = self.Qs(s, terminal, phi_s)
         if len(p_actions):
             return max(AllQs[p_actions])
@@ -283,12 +283,11 @@ class Representation(object):
         return p_actions[ind]
     # [bestActions code]
 
+    def pre_discover(self, s, terminal, a, sn, terminaln):
+        return 0
 
-#   def discretized(self,s):
-#       ds = s.copy()
-#       for dim in self.domain.continuous_dims:
-#               ds[dim] = closestDiscretization(ds[dim],self.discretization,self.domain.statespace_limits[dim][:])
-#       return ds
+    def post_discover(self, s, terminal, a, td_error, phi_s):
+        return 0
 
 
     ## Returns the best action at a given state.

@@ -12,7 +12,7 @@ class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
     PE_AXES         = ['Iterations','Features','Error','Time(s)']
     MDPSOLVER_AXES  = ['Bellman Updates', 'Return', 'Time(s)', 'Features', 'Steps', 'Terminal', 'Discounted Return', 'Iterations','Iteration Time']
-    
+
     prettyText = 1 #Use only if you want to copy paste from .txt files otherwise leave it to 0 so numpy can read such files.
     def __init__(self,paths, labels = None, output_path = None,
                  colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k','purple'],
@@ -124,7 +124,7 @@ class Merger(object):
         # Determine number of rows, used to determine experiment type
         matrix      = readMatrixFromFile(files[0])
         num_metrics, _  = matrix.shape
-        
+
         if num_metrics == len(self.PE_AXES):
             self.ResultType = 'Policy Evaluation'
             self.AXES = self.PE_AXES
@@ -340,8 +340,14 @@ class Merger(object):
 
         if not isOnCluster() and self.showSplash:
             if self.legend:
+                box = plt.gca().get_position()
+                plt.gca().set_position([box.x0, box.y0 + box.height * 0.2,
+                 box.width, box.height * 0.8])
+                self.legend = pl.legend(loc='upper center',
+                                        bbox_to_anchor=(0.5, -0.1),
+                                        fancybox=True, shadow=True, ncol=2)
                 #pl.legend(loc='lower right',b_to_anchor=(0, 0),fancybox=True,shadow=True, ncol=1, mode='')
-                self.legend = pl.legend(fancybox=True,shadow=True, ncol=1, frameon=True,loc=(1.03,0.2))
+                #self.legend = pl.legend(fancybox=True,shadow=True, ncol=2, frameon=True,loc=(0.5,1.2))
 
                 #pl.axes([0.125,0.2,0.95-0.125,0.95-0.2])
             pl.xlim(xLims)

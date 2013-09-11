@@ -70,9 +70,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
                 step                        += 1
 
                 #Discover features if the representation has the discover method
-                discover_func = getattr(self.representation,'discover',None) # None is the default value if the discover is not an attribute
-                if discover_func and callable(discover_func):
-                    self.representation.discover(phi_s,bellman_error)
+                self.representation.discover(phi_s,bellman_error)
 
                 max_Bellman_Error = max(max_Bellman_Error,abs(bellman_error))
                 #Simulate new state and action on trajectory

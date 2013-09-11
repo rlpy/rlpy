@@ -11,13 +11,13 @@
 #include <stdexcept>
 using namespace std;
 
-double gaussian_kernel(const vector<double>& s1, const vector<double>& s2, 
+double gaussian_kernel(const double* s1, const double* s2, 
                     const vector<unsigned int>& dim, 
-                    const vector<double>& widths);
+                    const double* widths);
 
-double linf_triangle_kernel(const vector<double>& s1, const vector<double>& s2, 
+double linf_triangle_kernel(const double* s1, const double* s2, 
                     const vector<unsigned int>& dim, 
-                    const vector<double>& widths);
+                    const double* widths);
 
 class cmp_dim {
     public:
@@ -128,9 +128,9 @@ class FastKiFDD {
                 int sparsification, double max_neighbor_similarity, 
                 unsigned int max_active_neighbors) {
             if (kernel_spec == "gaussian_kernel") {
-                kernel = [kernel_widths] (vector<double> s1, vector<double> s2, vector<unsigned int> dim) { return gaussian_kernel(s1, s2, dim, kernel_widths); };
+                kernel = [kernel_widths] (vector<double> s1, vector<double> s2, vector<unsigned int> dim) { return gaussian_kernel(&s1[0], &s2[0], dim, &kernel_widths[0]); };
             } else if (kernel_spec == "linf_triangle_kernel") {
-                kernel = [kernel_widths] (vector<double> s1, vector<double> s2, vector<unsigned int> dim) { return linf_triangle_kernel(s1, s2, dim, kernel_widths); };
+                kernel = [kernel_widths] (vector<double> s1, vector<double> s2, vector<unsigned int> dim) { return linf_triangle_kernel(&s1[0], &s2[0], dim, &kernel_widths[0]); };
             } else {
                 throw invalid_argument("No C++ implementation found for this kernel");
             }
