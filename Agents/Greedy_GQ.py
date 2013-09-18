@@ -19,15 +19,16 @@
 ######################################################
 from Agent import Agent
 from Tools import addNewElementForAllActions, count_nonzero
-
+import numpy as np
+from copy import copy
 
 class Greedy_GQ(Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace   = []
     eligibility_trace_s = [] # eligibility trace using state only (no copy-paste), necessary for dabney decay mode
     def __init__(self, representation, policy, domain,logger, initial_alpha =.1, lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000, BetaCoef = 1e-3):
-        self.eligibility_trace  = zeros(representation.features_num*domain.actions_num)
-        self.eligibility_trace_s= zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
+        self.eligibility_trace  = np.zeros(representation.features_num*domain.actions_num)
+        self.eligibility_trace_s= np.zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_
         super(Greedy_GQ,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
         self.GQWeight = copy(self.representation.theta)
@@ -66,11 +67,11 @@ class Greedy_GQ(Agent):
             self.eligibility_trace    = phi
             self.eligibility_trace_s  = phi_s
 
-        td_error                     = r + dot(gamma*phi_prime - phi, theta)
+        td_error                     = r + np.dot(gamma*phi_prime - phi, theta)
         self.updateAlpha(phi_s,phi_prime_s,self.eligibility_trace_s, gamma, nnz, terminal)
 
         if nnz > 0: # Phi has some nonzero elements, proceed with update
-            td_error_estimate_now       = dot(phi,self.GQWeight)
+            td_error_estimate_now       = np.dot(phi,self.GQWeight)
             Delta_theta                 = td_error*self.eligibility_trace - gamma*td_error_estimate_now*phi_prime
             theta                       += self.alpha*Delta_theta
             Delta_GQWeight              = (td_error-td_error_estimate_now)*phi
@@ -87,11 +88,11 @@ class Greedy_GQ(Agent):
         """
         correct size of GQ weight and e-traces when new features were expanded
         """
-        new_elem = zeros((self.domain.actions_num, expanded))
+        new_elem = np.zeros((self.domain.actions_num, expanded))
         self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num, new_elem)
         if self.lambda_:
             # Correct the size of eligibility traces (pad with zeros for new features)
             self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num, new_elem)
-            self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, zeros((1, expanded)))
+            self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, np.zeros((1, expanded)))
 
 

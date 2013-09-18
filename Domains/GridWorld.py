@@ -91,7 +91,7 @@ class GridWorld(Domain):
             self.valueFunction_fig   = pl.imshow(self.map, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
             pl.xticks(arange(self.COLS), fontsize=12)
             pl.yticks(arange(self.ROWS), fontsize=12)
-           #Create quivers for each action. 4 in total
+            #Create quivers for each action. 4 in total
             X   = arange(self.ROWS)-self.SHIFT
             Y   = arange(self.COLS)
             X,Y = pl.meshgrid(X,Y)
@@ -132,13 +132,13 @@ class GridWorld(Domain):
                 if self.map[r,c] == self.PIT: V[r,c] =self.MIN_RETURN
                 if self.map[r,c] == self.EMPTY or self.map[r,c] == self.START:
                     s        = array([r,c])
-                    Qs,As    = representation.Qs(s)
-                    bestA    = representation.bestActions(s)
-                    V[r,c]   = max(Qs)
-                    Mask[c,r,As]             = False
+                    As = self.possibleActions(s)
+                    terminal = self.isTerminal(s)
+                    Qs    = representation.Qs(s, terminal)
+                    bestA    = representation.bestActions(s, terminal, As)
+                    V[r,c]   = max(Qs[As])
+                    Mask[c,r,As] = False
                     arrowColors[c,r,bestA]   = 1
-                    #print r,c, bestA
-                    #print Qs
 
                     for i in arange(len(As)):
                         a = As[i]
@@ -210,16 +210,18 @@ class GridWorld(Domain):
         return self.state, self.isTerminal(), self.possibleActions()
 
 
-    def isTerminal(self):
-        s = self.state
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
         if self.map[s[0],s[1]] == self.GOAL:
                 return True
         if self.map[s[0],s[1]] == self.PIT:
                 return True
         return False
 
-    def possibleActions(self):
-        s = self.state
+    def possibleActions(self, s=None):
+        if s is None:
+            s = self.state
         possibleA = array([],uint8)
         for a in arange(self.actions_num):
             ns = s + self.ACTIONS[a]
