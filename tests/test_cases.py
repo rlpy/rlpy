@@ -7,6 +7,10 @@ def test_all_100_step():
     for fn in glob.glob("cases/**/*.py"):
         yield check_running, fn, 100
 
+def test_main_files():
+    yield check_running, "main.py", 100
+    yield check_running, "IshouldRun.py", 100
+
 def check_running(filename, steps):
     content = read_setting_content(filename)
     local = {}
