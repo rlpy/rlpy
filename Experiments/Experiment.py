@@ -213,7 +213,8 @@ class Experiment(object):
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
                 s, terminal, p_actions = self.domain.s0()
-                a           = self.agent.policy.pi(s, terminal, p_actions)
+                import ipdb; ipdb.set_trace()
+                a = self.agent.policy.pi(s, terminal, p_actions)
                 # Visual
                 if visualize_steps:
                     self.domain.show(a, self.agent.representation)
@@ -223,10 +224,9 @@ class Experiment(object):
                 eps_return      = 0
                 eps_steps       = 0
                 episode_number += 1
-
             # Act,Step
             r, ns, terminal, np_actions   = self.domain.step(a)
-            na              = self.agent.policy.pi(ns, terminal, p_actions)
+            na              = self.agent.policy.pi(ns, terminal, np_actions)
             total_steps     += 1
             eps_steps       += 1
             eps_return      += r

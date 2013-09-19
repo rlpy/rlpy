@@ -18,7 +18,7 @@ class Pacman(Domain):
     _max_scared_time = 39
 
     actions = ["Stop", "North", "East", "South", "West"]
-    num_actions = 5
+    actions_num = 5
     episodeCap = 1000
 
     def __init__(self, noise=.1, logger=None, timeout=30,
@@ -74,7 +74,7 @@ class Pacman(Domain):
 
         #copies most recent state
         data = self.game_state.data
-        agent_states = data.agent_states
+        agent_states = data.agentStates
 
         # set pacman position
         agent_states.configuration.pos = (s[0], s[1])
@@ -116,7 +116,8 @@ class Pacman(Domain):
         s = np.zeros(2 + num_ghosts * 3 + self.num_total_food + self.num_total_capsules)
 
         # get pacman position
-        s[0:1] = agent_states[0].configuration.pos
+        s[:2] = agent_states[0].configuration.pos
+        #import ipdb; ipdb.set_trace()
         # get ghost info
         for i in range(num_ghosts):
             s[2 + i*3: 2 + i*3+2] = agent_states[i + 1].configuration.pos
@@ -148,6 +149,12 @@ class Pacman(Domain):
             self.gameDisplay.startGraphics(self)
             self.gameDisplay.drawStaticObjects(s.data)
             self.gameDisplay.drawAgentObjects(s.data)
+        elif self._cleanup_graphics:
+            self._cleanup_graphics = False
+            self.gameDisplay.removeAllFood()
+            self.gameDisplay.removeAllCapsules()
+            self.gameDisplay.food = self.gameDisplay.drawFood(self.gameDisplay.layout.food)
+            self.gameDisplay.capsules = self.gameDisplay.drawCapsules(self.gameDisplay.layout.capsules)
         #converts s vector in pacman gamestate instance and updates
         #the display every time pacman or a ghost moves.
         #s.data.food is the correct food matrix
@@ -155,7 +162,9 @@ class Pacman(Domain):
         for agent in range(len(s.data.agentStates)):
             s.data._agentMoved = agent
             self.gameDisplay.update(s.data)
-
+            s._foodEaten = None
+            s._capsuleEaten = None
+        from time import sleep; sleep(0.5)
     def step(self, a):
         """
         Applies actions from outside the Pacman domain to the given state.
@@ -166,28 +175,28 @@ class Pacman(Domain):
             #Random Move
             a = np.random.choice(self.possibleActions())
         a = self.actions[a]
+        next_state_p = self.game_state.generateSuccessor(0, a)
+        next_state = next_state_p
         #pacman performs action "a" in current state object
-        pacman.PacmanRules.applyAction(self.game_state, a)
-        pacman.GhostRules.checkDeath(self.game_state, 0)
+        #pacman.PacmanRules.applyAction(self.game_state, a)
+        #pacman.GhostRules.checkDeath(self.game_state, 0)
         #the ghosts move randomly
-        for i in range(len(self.game_state.data.agentStates))[1:]:
-            ghostOptions = pacman.GhostRules.getLegalActions(self.game_state, i)
-            #reverse = game.Actions.reverseDirection(self.game_state.data.agentStates[i].configuration.direction)
-            #if reverse in ghostOptions and len(ghostOptions) > 1:
-            #    ghostOptions.remove(reverse)
+        for i in range(1, len(self.game_state.data.agentStates)):
+            if next_state.isWin() or next_state.isLose():
+                break
+            ghostOptions = pacman.GhostRules.getLegalActions(next_state, i)
+            #TODO: use domain random stream
             randomAction_ind = np.random.randint(len(ghostOptions))
             randomAction = ghostOptions[randomAction_ind]
-            pacman.GhostRules.applyAction(self.game_state, randomAction, i)
-            pacman.GhostRules.decrementTimer(self.game_state.data.agentStates[i])
-            pacman.GhostRules.checkDeath(self.game_state, i)
-
+            next_state = next_state.generateSuccessor(i, randomAction)
+        # keep track of eaten stuff for graphics (original code assumes
+        # graphics are updated after every agent's move)
+        next_state.data._foodEaten = next_state_p.data._foodEaten
+        next_state.data._capsuleEaten = next_state_p.data._capsuleEaten
         #scoring in pacman
-        r = self.game_state.data.scoreChange
-        #r -= 1 #optional time step negative reward
-        self.game_state.data.score += r
+        r = next_state.data.score - self.game_state.data.score
+        self.game_state = next_state
         terminal = self.isTerminal()
-        if terminal:
-            self.game_state.data.score = 0
         return r, self._get_state(), terminal, self.possibleActions()
 
     def s0(self):
@@ -198,11 +207,7 @@ class Pacman(Domain):
         self.game_rules = pacman.ClassicGameRules(timeout=30)
         self.game = self.game_rules.newGame(self.layout, pacman, self.ghosts, DummyGraphics(), self.beQuiet, catchExceptions=False)
         self.game_state.data.initialize(self.layout, self.numGhostAgents)
-        if self.gameDisplay is not None:
-            self.gameDisplay.removeAllFood()
-            self.gameDisplay.removeAllCapsules()
-            self.gameDisplay.food = self.gameDisplay.drawFood(self.gameDisplay.layout.food)
-            self.gameDisplay.capsules = self.gameDisplay.drawCapsules(self.gameDisplay.layout.capsules)
+        self._cleanup_graphics = True
 
         return self.state, self.isTerminal(), self.possibleActions()
 
