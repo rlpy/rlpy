@@ -26,7 +26,9 @@ class Greedy_GQ(Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace   = []
     eligibility_trace_s = [] # eligibility trace using state only (no copy-paste), necessary for dabney decay mode
-    def __init__(self, representation, policy, domain,logger, initial_alpha =.1, lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000, BetaCoef = 1e-3):
+    def __init__(self, representation, policy, domain,logger, initial_alpha =.1,
+                 lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000,
+                 BetaCoef = 1e-3):
         self.eligibility_trace  = np.zeros(representation.features_num*domain.actions_num)
         self.eligibility_trace_s= np.zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_
@@ -84,15 +86,15 @@ class Greedy_GQ(Agent):
         if terminal:
             self.episodeTerminated()
 
-    def _expand_vectors(num_expansions):
+    def _expand_vectors(self, num_expansions):
         """
         correct size of GQ weight and e-traces when new features were expanded
         """
-        new_elem = np.zeros((self.domain.actions_num, expanded))
+        new_elem = np.zeros((self.domain.actions_num, num_expansions))
         self.GQWeight = addNewElementForAllActions(self.GQWeight,self.domain.actions_num, new_elem)
         if self.lambda_:
             # Correct the size of eligibility traces (pad with zeros for new features)
             self.eligibility_trace  = addNewElementForAllActions(self.eligibility_trace,self.domain.actions_num, new_elem)
-            self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, np.zeros((1, expanded)))
+            self.eligibility_trace_s = addNewElementForAllActions(self.eligibility_trace_s,1, np.zeros((1, num_expansions)))
 
 

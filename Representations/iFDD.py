@@ -21,13 +21,7 @@
 import sys, os
 from Queue import PriorityQueue
 from copy import deepcopy
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
+import numpy as np
 
 from Tools import *
 from Domains import *
@@ -73,15 +67,18 @@ class iFDD_potential(object):
     p1        = None     # Parent 1 feature index
     p2        = None     # Parent 2 feature index
     count     = None     # Number of times this feature was visited
-    def __init__(self,f_set,relevance,parent1,parent2):
+    def __init__(self, f_set, parent1, parent2):
         self.f_set      = deepcopy(f_set)
         self.index      = -1 # -1 means it has not been discovered yet
         self.p1         = parent1
         self.p2         = parent2
-        self.relevance  = relevance
+        self.cumtderr   = 0
+        self.cumabstderr= 0
         self.count      = 1
     def __deepcopy__(self,memo):
-        new_p       = iFDD_potential(self.f_set,self.relevance,self.p1,self.p2)
+        new_p       = iFDD_potential(self.f_set,self.p1,self.p2)
+        mew_p.cumtderr = self.cumtderr
+        new_p.cumabstderr = self.cumabstderr
         return new_p
     def show(self):
         printClass(self)
@@ -248,13 +245,19 @@ class iFDD(Representation):
         potential = self.iFDD_potentials.get(f)
         if potential is None:
             # Generate a new potential and put it in the dictionary
-            potential = iFDD_potential(f,td_error,g_index,h_index)
+            potential = iFDD_potential(f, g_index, h_index)
             self.iFDD_potentials[f] = potential
-        else:
-            potential.relevance += td_error
-            potential.count     += 1
+
+        potential.cumtderr += td_error
+        potential.cumabstderr += abs(td_error)
+        potential.count     += 1
         # Check for discovery
-        relevance = potential.relevance if not self.iFDDPlus else abs(potential.relevance/sqrt(potential.count))
+
+        if np.random.rand() < self.iFDDPlus:
+            relevance = abs(potential.cumtderr) / np.sqrt(potential.count)
+        else:
+            relevance = potential.cumabstderr
+
         if relevance >= self.discovery_threshold:
             self.maxRelevance = -inf
             self.addFeature(potential)
