@@ -2,6 +2,7 @@ from Domain import Domain
 from .PacmanPackage import layout, pacman, game, ghostAgents
 from .PacmanPackage import graphicsDisplay
 import numpy as np
+from copy import deepcopy
 
 ######################################################
 # \author Developed by Austin Hays June 18th 2013 at MIT
@@ -39,9 +40,10 @@ class Pacman(Domain):
         #Intitializes Pacman game
         self.game_state = pacman.GameState()
         self.game_rules = pacman.ClassicGameRules(timeout)
-        self.game_state.data.initialize(self.layout, self.numGhostAgents)
-        self.num_total_food = len(self.layout.food.asList())
-        self.num_total_capsules = len(self.layout.capsules)
+        self.layout_copy = deepcopy(self.layout)
+        self.game_state.data.initialize(self.layout_copy, self.numGhostAgents)
+        self.num_total_food = len(self.layout_copy.food.asList())
+        self.num_total_capsules = len(self.layout_copy.capsules)
         self._defaultSettings()
         self.restartGraphics = None
         self.timerswitch = False
@@ -92,12 +94,12 @@ class Pacman(Domain):
         y = 0
         i = 0
         data.capsules = []
-        for char in str(self.layout):
+        for char in str(self.layout_copy):
             if char == ".":
                 data.food[x][y] = bool(s_food[i])
                 i += 1
             elif char == "o":
-                coord = (x, self.layout.height - y)
+                coord = (x, self.layout_copy.height - y)
                 if s_food[i]:
                     data.capsules.append(coord)
                 i += 1
@@ -126,7 +128,7 @@ class Pacman(Domain):
         i = 2 + num_ghosts * 3
         x = 0
         y = 0
-        for char in str(self.layout):
+        for char in str(self.layout_copy):
             if char == ".":
                 s[i] = data.food[x][y]
                 i += 1
@@ -134,7 +136,7 @@ class Pacman(Domain):
                 y += 1
                 x = -1
             elif char == "o":
-                coord = (x, self.layout.height - y)
+                coord = (x, self.layout_copy.height - y)
                 if coord in data.capsules:
                     s[i] = 1.
                 i += 1
@@ -164,7 +166,7 @@ class Pacman(Domain):
             self.gameDisplay.update(s.data)
             s._foodEaten = None
             s._capsuleEaten = None
-        from time import sleep; sleep(0.5)
+        #from time import sleep; sleep(0.3)
     def step(self, a):
         """
         Applies actions from outside the Pacman domain to the given state.
@@ -205,8 +207,9 @@ class Pacman(Domain):
         """
         self.game_state = pacman.GameState()
         self.game_rules = pacman.ClassicGameRules(timeout=30)
-        self.game = self.game_rules.newGame(self.layout, pacman, self.ghosts, DummyGraphics(), self.beQuiet, catchExceptions=False)
-        self.game_state.data.initialize(self.layout, self.numGhostAgents)
+        self.layout_copy = deepcopy(self.layout)
+        self.game = self.game_rules.newGame(self.layout_copy, pacman, self.ghosts, DummyGraphics(), self.beQuiet, catchExceptions=False)
+        self.game_state.data.initialize(self.layout_copy, self.numGhostAgents)
         self._cleanup_graphics = True
 
         return self.state, self.isTerminal(), self.possibleActions()

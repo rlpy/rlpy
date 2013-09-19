@@ -213,7 +213,6 @@ class Experiment(object):
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
                 s, terminal, p_actions = self.domain.s0()
-                import ipdb; ipdb.set_trace()
                 a = self.agent.policy.pi(s, terminal, p_actions)
                 # Visual
                 if visualize_steps:
