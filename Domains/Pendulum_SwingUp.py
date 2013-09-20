@@ -85,6 +85,6 @@ class Pendulum_SwingUp(Pendulum):
         On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6"""
         return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
 
-    def isTerminal(self):
+    def isTerminal(self, s=None):
         return False
 

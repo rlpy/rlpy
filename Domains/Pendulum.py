@@ -252,8 +252,10 @@ class Pendulum(Domain):
         #print theta_dots
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
-                s           = array([theta,thetaDot])
-                Qs,As       = representation.Qs(s)
+                s = np.array([theta,thetaDot])
+                As = self.possibleActions(s)
+                terminal = self.isTerminal(s)
+                Qs = representation.Qs(s, terminal)
                 pi[row,col] = As[argmax(Qs)]
                 V[row,col]  = max(Qs)
         #Update the value function

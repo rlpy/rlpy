@@ -4,9 +4,19 @@ Getting Started
 First Run
 ---------
 
-If you receive errors during any of the steps below, please refer to `install.txt` for solutions to common issues.
+.. tip::
+    If you receive errors during any of the steps below, please refer to `install.txt` for solutions to common issues.
 
-Begin by opening `cases/tutorial.py`.  You will notice a series of parameters at the top of the file, 
+Begin by looking at the file `cases/tutorial/gridworld.py`:
+
+.. literalinclude:: ../cases/tutorial.py
+   :language: python
+   :linenos:
+   
+The most important part is the `make_experiment` function which every file specifying an
+experimental setup in RLPy should contain.
+
+You will notice a series of parameters at the top of the file, 
 followed by assignments to each of the functional components 
 shown in :ref:`The Big Picture <big_picture>`: domain, representation, policy, agent, and experiment.
 Leave these alone for now; just run the file as-is.  You should see something like the following:
@@ -44,7 +54,9 @@ In the console window you should see output similar to the following::
     1000 >>> E[0:00:04]-R[0:00:37]: Return=+0.99, Steps=11, Features = 20
     1810: E[0:00:05]-R[0:00:23]: Return=+0.98, Steps=19, Features = 20
 
-The meaning of each component is shown in the figure.  
+Each part has a specific meaning:  
+.. image:: rlpy_output.png
+
 Note that a *performance run* (indicated by *>>>* in the output window) tests 
 the agent using its latest policy, without any exploration or modifications that 
 might be used during learning (such as the randomization of the episilon-greedy policy). 
@@ -55,9 +67,8 @@ The visualization shows these performance runs.
     is completing the learning before the performance run faster than the console logging rate,
     usually 1 Hz, and does not indicate a problem.
 
-.. image:: rlpy_output.png
 
-After the cutoff of 2,000 steps specified in `cases/tutorial.py`, the experiment is 
+After the cutoff of 2,000 steps specified in `cases/tutorial/gridworld.py`, the experiment is 
 complete, and a second figure window appears, showing the reward earned on each performance run.  
 On this domain, an excellent policy is located almost immediately (reward 0.989).
 

@@ -84,5 +84,7 @@ class Pendulum_InvertedBalance(Pendulum):
         # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
         return self.FELL_REWARD if self.isTerminal() else 0
 
-    def isTerminal(self):
-        return not (-pi/2.0 < self.state[StateIndex.THETA] < pi/2.0) # per L & P 2003
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
+        return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0) # per L & P 2003
