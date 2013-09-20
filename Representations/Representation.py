@@ -246,13 +246,14 @@ class Representation(object):
         @return The desired vector
         """
         s = np.atleast_1d(s)
-        bs  = np.empty(len(s), 'uint16')
         limits = self.domain.statespace_limits
         assert (np.all(s >= limits[:, 0]))
         assert (np.all(s <= limits[:, 1]))
         width = limits[:, 1] - limits[:, 0]
         diff = s - limits[:, 0]
-        bs = diff * self.bins_per_dim / width
+        bs = (diff * self.bins_per_dim / width).astype("uint32")
+        m = bs == self.bins_per_dim
+        bs[m] = self.bins_per_dim[m] - 1
         return bs
 
     ## Returns a list of the best actions at a given state.
