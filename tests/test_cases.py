@@ -9,7 +9,6 @@ def test_all_100_step():
 
 def test_main_files():
     yield check_running, "main.py", 100
-    yield check_running, "IshouldRun.py", 100
 
 def check_running(filename, steps):
     content = read_setting_content(filename)
