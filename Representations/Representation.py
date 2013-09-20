@@ -224,8 +224,8 @@ class Representation(object):
 
     # [setBinsPerDimension code]
     def setBinsPerDimension(self,domain,discretization):
-        self.bins_per_dim      = zeros(domain.state_space_dims,uint16)
-        self.binWidth_per_dim   = zeros(domain.state_space_dims)
+        self.bins_per_dim      = np.zeros(domain.state_space_dims,uint16)
+        self.binWidth_per_dim   = np.zeros(domain.state_space_dims)
         for d in arange(domain.state_space_dims):
              if d in domain.continuous_dims:
                  self.bins_per_dim[d] = discretization
@@ -234,25 +234,26 @@ class Representation(object):
              self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d,0])/(self.bins_per_dim[d]*1.)
     # [setBinsPerDimension code]
 
+    def binState(self, s):
+        """Returns a vector where each element is the zero-indexed bin number corresponding with the given state.
+        Note that this vector will have the same dimensionality of the given state.
+        Each element of the returned vector is the zero-indexed bin number corresponding with the given state.
+        This method is binary compact; the negative case of binary features is excluded from feature activation.
+        For example, if the domain has a light and the light is off, no feature will be added. This is because no
+        features correspont to a light being off. See code \ref Representation_binState "Here".
 
-    ## Returns a vector where each element is the zero-indexed bin number corresponding with the given state.
-    # Note that this vector will have the same dimensionality of the given state.
-    # Each element of the returned vector is the zero-indexed bin number corresponding with the given state.
-    # This method is binary compact; the negative case of binary features is excluded from feature activation.
-    # For example, if the domain has a light and the light is off, no feature will be added. This is because no
-    # features correspont to a light being off. See code \ref Representation_binState "Here".
-    # @param s The given state, can be a scalar value if the dimension is one dimensional.
-    # @return The desired vector
-
-    # [binState code]
-    def binState(self,s):
-        if isinstance(s,int): s = [s]
-        assert(len(s) == len(self.domain.statespace_limits[:,0]))
-        bs  = empty(len(s),'uint16')
-        for d in arange(self.domain.state_space_dims):
-            bs[d] = state2bin(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+        @param s The given state, can be a scalar value if the dimension is one dimensional.
+        @return The desired vector
+        """
+        s = np.atleast_1d(s)
+        bs  = np.empty(len(s), 'uint16')
+        limits = self.domain.statespace_limits
+        assert (np.all(s >= limits[:, 0]))
+        assert (np.all(s <= limits[:, 1]))
+        width = limits[:, 1] - limits[:, 0]
+        diff = s - limits[:, 0]
+        bs = diff * self.bins_per_dim / width
         return bs
-    # [binState code]
 
     ## Returns a list of the best actions at a given state.
     # If phi_s [the feature vector at state (s)]is given, it is used to speed up code by preventing re-computation. See code
