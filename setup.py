@@ -20,7 +20,7 @@ setup(name="_transformations",
                              include_dirs=[numpy.get_include(), "Representations"],
                              # custom options for building to use older glibc
                              # (e.g. to run on a cluster with older libc)
-                             extra_link_args=["-static-libgcc","-static-libstdc++",]# "Tools/libc-2.11.3.so"]
+                             extra_link_args=["-static-libgcc","-static-libstdc++"]# "Tools/libc-2.11.3.so"]
                              ),
           Extension("Domains.HIVTreatment_dynamics",
                              ["Domains/HIVTreatment_dynamics.pyx"],
