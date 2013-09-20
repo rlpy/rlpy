@@ -9,6 +9,13 @@ from distutils.core import setup, Extension
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 import numpy
+
+import sys
+if sys.platform == 'darwin':
+  extra_args = ["-std=c++11", "-stdlib=libc++"]
+else:
+  extra_args = ["-std=c++11"]
+
 setup(name="_transformations",
       cmdclass = {"build_ext": build_ext},
       ext_modules=[Extension("Representations.FastCythonKiFDD",
@@ -16,7 +23,7 @@ setup(name="_transformations",
                               "Representations/c_kernels.pxd",
                               "Representations/FastKiFDD.cc"],
                              language="c++",
-                             extra_compile_args=["-std=c++11", "-stdlib=libc++"],
+                             extra_compile_args=extra_args,
                              include_dirs=[numpy.get_include(), "Representations"],
                              # custom options for building to use older glibc
                              # (e.g. to run on a cluster with older libc)
@@ -30,7 +37,7 @@ setup(name="_transformations",
                                  "Representations/c_kernels.pxd",
                                  "Representations/FastKiFDD.cc"],
                              language="c++",
-                             extra_compile_args=["-std=c++11", "-stdlib=libc++"],
+                             extra_compile_args=extra_args,
                              include_dirs=[numpy.get_include(), "Representations"]),
           Extension("Tools._transformations",
                              ["Tools/transformations.c"],
