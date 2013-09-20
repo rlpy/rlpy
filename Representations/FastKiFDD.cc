@@ -1,17 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <array>
 #include <set>
 #include <map>
 #include <cmath>
 #include <algorithm>
-#include <unordered_map>
 #include "FastKiFDD.h"
 
-using namespace std;
 
 double gaussian_kernel(const double* s1, const double* s2, 
-                    const vector<unsigned int>& dim, 
+                    const std::vector<unsigned int>& dim, 
                     const double* widths) {
     double exponent = 0;
     for (unsigned int d : dim) {
@@ -22,7 +19,7 @@ double gaussian_kernel(const double* s1, const double* s2,
 }
 
 double linf_triangle_kernel(const double* s1, const double* s2, 
-                    const vector<unsigned int>& dim, 
+                    const std::vector<unsigned int>& dim, 
                     const double* widths) {
     double res = 1, r;
     for (unsigned int d : dim) {
@@ -37,10 +34,10 @@ double linf_triangle_kernel(const double* s1, const double* s2,
 
 }
 
-template <typename T1, typename T2> vector<typename map<T1, T2>::iterator> is_subset(set<T1>& sb, map<T1, T2>& ss) {
-    vector<typename map<T1, T2>::iterator> result;
-    typename map<T1, T2>::iterator i = ss.begin();
-    typename set<T1>::iterator j=sb.begin();
+template <typename T1, typename T2> std::vector<typename std::map<T1, T2>::iterator> is_subset(std::set<T1>& sb, std::map<T1, T2>& ss) {
+    std::vector<typename std::map<T1, T2>::iterator> result;
+    typename std::map<T1, T2>::iterator i = ss.begin();
+    typename std::set<T1>::iterator j=sb.begin();
     while( i != ss.end() && j != sb.end()) {
         if (i->first == *j) {
             result.push_back(i);
@@ -64,8 +61,8 @@ void FastKiFDD::increment_id(void) {
 
 }
 
-map<unsigned int, double> FastKiFDD::get_active_base_ids(const vector<double>& s) {
-    map<unsigned int, double> active_ids;
+std::map<unsigned int, double> FastKiFDD::get_active_base_ids(const std::vector<double>& s) {
+    std::map<unsigned int, double> active_ids;
     for (auto i : sorted_dim_ids) {
         if (i.second.size() > 1)
             break;
@@ -74,12 +71,12 @@ map<unsigned int, double> FastKiFDD::get_active_base_ids(const vector<double>& s
     }
     return active_ids;
 }
-map<unsigned int, vector<unsigned int>> FastKiFDD::get_active_base_ids_per_dim(const vector<double>& s) {
-    map<unsigned int, vector<unsigned int>> active_ids;
+std::map<unsigned int, std::vector<unsigned int>> FastKiFDD::get_active_base_ids_per_dim(const std::vector<double>& s) {
+    std::map<unsigned int, std::vector<unsigned int>> active_ids;
     for (auto i : sorted_dim_ids) {
-        //cout << "ID " << i.first << " in " << i.second.size() << " dimension "<< i.second[0]<< " with a value of  " << kernel(centers[i.first], s, dims[i.first]) << endl;
+        //std:: << "ID " << i.first << " in " << i.second.size() << " dimension "<< i.second[0]<< " with a value of  " << kernel(centers[i.first], s, dims[i.first]) << std::endl;
         if (i.second.size() > 1) {
-            //cout << "too many dimensions" << endl;
+            //std:: << "too many dimensions" << std::endl;
             break;
         }
         if (kernel(centers[i.first], s, dims[i.first]) > activation_threshold)
@@ -96,11 +93,11 @@ double FastKiFDD::update_candidate(Candidate& c, double td_error, double phi1, d
 }
 
 
-void FastKiFDD::add_base(const vector<double>& center, unsigned int dim) {
+void FastKiFDD::add_base(const std::vector<double>& center, unsigned int dim) {
     // adds a new 1-dimensional base feature
     dims.push_back({dim });
     centers.push_back(center);
-    set <unsigned int> s = {(unsigned int)features_num };
+    std::set <unsigned int> s = {(unsigned int)features_num };
     base_ids.push_back(s);
     base_ids_to_id[make_pair(s, s)] = features_num;
     increment_id();
@@ -113,14 +110,14 @@ void FastKiFDD::add_base(const vector<double>& center, unsigned int dim) {
         }
     }
     if (verbose)
-        cout << "New base feature " << features_num - 1 << " in dimension " << dim << "; " << candidates.size() << " Candidates in total" << endl;
+        std::cout << "New base feature " << features_num - 1 << " in dimension " << dim << "; " << candidates.size() << " Candidates in total" << std::endl;
 }
 
-vector<double> FastKiFDD::phi(const vector<double>& s) {
-    vector<double> output = vector<double>(features_num, 0);
+std::vector<double> FastKiFDD::phi(const std::vector<double>& s) {
+    std::vector<double> output = std::vector<double>(features_num, 0);
     double out_sum = 0;
     if (sparsification > 0) {
-        map<unsigned int, double> active_ids = get_active_base_ids(s);
+        std::map<unsigned int, double> active_ids = get_active_base_ids(s);
         // iterate from most specific to most general feature
         // O(n*k*k)
         for (auto i : sorted_spec_ids) {
@@ -143,11 +140,11 @@ vector<double> FastKiFDD::phi(const vector<double>& s) {
                         // hacks somewhat smooth sparsification
                         double u = 0.;
                         for (auto p : pos)
-                            u = max(u, p->second);
+                            u = std::max(u, p->second);
                         output[id] = u * value;
                         out_sum += abs(output[id]);
                         for (auto p : pos) {
-                            p->second = min(p->second, output[id]);
+                            p->second = std::min(p->second, output[id]);
                             if (p->second <= 0.)
                                 active_ids.erase(p);
                         }
@@ -193,19 +190,19 @@ bool FastKiFDD::combination_compatible(unsigned int id1, unsigned int id2) {
 
 void FastKiFDD::add_refined(unsigned int idx1, unsigned int idx2, CandidateMap::iterator cit) {
     // adds a combination of existing features
-    vector<unsigned int> new_dim = vector<unsigned int>(dims[idx1].size() + dims[idx2].size());
+    std::vector<unsigned int> new_dim = std::vector<unsigned int>(dims[idx1].size() + dims[idx2].size());
     merge(dims[idx1].cbegin(), dims[idx1].cend(), 
           dims[idx2].cbegin(), dims[idx2].cend(), new_dim.begin());
     dims.push_back(new_dim);
     
-    set<unsigned int> new_ids;
+    std::set<unsigned int> new_ids;
     new_ids.insert(base_ids[idx1].cbegin(), base_ids[idx1].cend());
     new_ids.insert(base_ids[idx2].cbegin(), base_ids[idx2].cend());
     base_ids.push_back(new_ids);
     
     base_ids_to_id[make_pair(base_ids[idx1], base_ids[idx2])] = features_num;
     
-    vector<double> center = vector<double>(centers[idx1]);
+    std::vector<double> center = std::vector<double>(centers[idx1]);
     for (unsigned int i : dims[idx2]) {
         center[i] = centers[idx2][i];
     }
@@ -214,9 +211,9 @@ void FastKiFDD::add_refined(unsigned int idx1, unsigned int idx2, CandidateMap::
     // delete candidate
     candidates.erase(cit);
     if (verbose) {
-        cout << "New refined feature " << features_num - 1 << " as combo of ";
+        std::cout << "New refined feature " << features_num - 1 << " as combo of ";
         for (auto id : new_ids)
-            cout << id << ", "; 
+            std::cout << id << ", "; 
     }
 
 
@@ -237,19 +234,19 @@ void FastKiFDD::add_refined(unsigned int idx1, unsigned int idx2, CandidateMap::
 
     }
     if (verbose)
-        cout << "; " << candidates.size() << " Candidates in total" << endl;
+        std::cout << "; " << candidates.size() << " Candidates in total" << std::endl;
     
 
 }
 
-unsigned int FastKiFDD::discover(const vector<double>& s, unsigned int a, double td_error, 
-                vector<double> previous_phi) {
+unsigned int FastKiFDD::discover(const std::vector<double>& s, unsigned int a, double td_error, 
+                std::vector<double> previous_phi) {
     assert(features_num == sorted_dim_ids.size());
     unsigned int discovered = 0;
-    map<unsigned int, vector<unsigned int>> active_ids = get_active_base_ids_per_dim(s);
+    std::map<unsigned int, std::vector<unsigned int>> active_ids = get_active_base_ids_per_dim(s);
     // add new base features
     for (unsigned int d=0; d < s.size(); d++) {
-        //cout << "Dimension" << d << "; " << active_ids[d].size() << " neighbors of " << max_active_neighbors << endl;
+        //std::cout << "Dimension" << d << "; " << active_ids[d].size() << " neighbors of " << max_active_neighbors << std::endl;
         if (active_ids[d].size() >= max_active_neighbors) {
             continue;
         }

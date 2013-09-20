@@ -10,20 +10,9 @@ from Fourier import Fourier
 from BEBF import BEBF
 from OMPTD import OMPTD
 from TileCoding import TileCoding
-
-
-try:
-	from KernelizediFDD import FastKiFDD, linf_triangle_kernel, gaussian_kernel
-except ImportError, e:
-    print e
-    print "Cython extension for FastKiFDD not available."
-
-try:
-	from LocalBases import RandomLocalBases
-	from LocalBases import NonparametricLocalBases
-except ImportError, e:
-    print e
-    print "Cython extension for FastKiFDD not available."
+from KernelizediFDD import FastKiFDD, linf_triangle_kernel, gaussian_kernel
+from LocalBases import RandomLocalBases
+from LocalBases import NonparametricLocalBases
 
 
 
