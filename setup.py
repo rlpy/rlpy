@@ -16,11 +16,11 @@ setup(name="_transformations",
                               "Representations/c_kernels.pxd",
                               "Representations/FastKiFDD.cc"],
                              language="c++",
-                             extra_compile_args=["-std=c++11", "-stdlib=libc++"],
+                             extra_compile_args=["-std=c++11"],
                              include_dirs=[numpy.get_include(), "Representations"],
                              # custom options for building to use older glibc
                              # (e.g. to run on a cluster with older libc)
-                             extra_link_args=["-static-libstdc++",]# "Tools/libc-2.11.3.so"]
+                             extra_link_args=["-static-libgcc","-static-libstdc++",]# "Tools/libc-2.11.3.so"]
                              ),
           Extension("Domains.HIVTreatment_dynamics",
                              ["Domains/HIVTreatment_dynamics.pyx"],
@@ -30,7 +30,7 @@ setup(name="_transformations",
                                  "Representations/c_kernels.pxd",
                                  "Representations/FastKiFDD.cc"],
                              language="c++",
-                             extra_compile_args=["-std=c++11", "-stdlib=libc++"],
+                             extra_compile_args=["-std=c++11"],
                              include_dirs=[numpy.get_include(), "Representations"]),
           Extension("Tools._transformations",
                              ["Tools/transformations.c"],
