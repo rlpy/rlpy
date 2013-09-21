@@ -22,6 +22,7 @@ shown in :ref:`The Big Picture <big_picture>`: domain, representation, policy, a
 Leave these alone for now; just run the file as-is.  You should see something like the following:
 
 .. image:: gridWorld_learning.png
+   :width: 90 %
 
 This is a visual representation of the domain (here, *GridWorld*) and is useful in quickly judging or
 demonstrating the performance of an experiment.  The objective on this domain is to move the agent (triangle) 
@@ -55,7 +56,10 @@ In the console window you should see output similar to the following::
     1810: E[0:00:05]-R[0:00:23]: Return=+0.98, Steps=19, Features = 20
 
 Each part has a specific meaning:  
+
 .. image:: rlpy_output.png
+   :width: 90 %
+
 
 Note that a *performance run* (indicated by *>>>* in the output window) tests 
 the agent using its latest policy, without any exploration or modifications that 
@@ -134,6 +138,7 @@ but after approximately 6000 steps, can do so reliably up to the maximum number 
 episode, 300.
 
 .. image:: pendulum_learning.png
+   :width: 90 %
 
 The value function (center), which plots pendulum angular rate against its angle, demonstrates 
 the highly undesirable states of a steeply inclined pendulum (near the horizontal) with high 

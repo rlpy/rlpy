@@ -20,6 +20,7 @@ The Big Picture
 ---------------
 
 .. image:: overview.*
+   :width: 85 %
 
 **Reinforcement Learning (RL)** (Refer to the top image)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
