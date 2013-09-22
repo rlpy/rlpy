@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
     
    big_picture
+   install
    tutorial
    faq
    api/index
