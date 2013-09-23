@@ -1,0 +1,16 @@
+{% extends "!layout.html" %}
+
+
+{% block relbar1 %}
+<div style="background-color: white; text-align: left; padding: 10px 10px 25px 15px">
+<a href="{{ pathto('index') }}" style="float:left"><img src="{{
+    pathto("_static/ACL_logo.png", 1) }}" border="0" alt="RLPy"/></a>
+<h1>RLPy</h1>
+<div>The Reinforcement Learning Library for Education and Research</div>
+</div>
+{{ super() }}
+{% endblock %}
+
+{# put the sidebar before the body #}
+{% block sidebar1 %}{{ sidebar() }}{% endblock %}
+{% block sidebar2 %}{% endblock %}

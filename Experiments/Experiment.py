@@ -1,11 +1,14 @@
+"""Standard Experiment for Learning Control in RL"""
 from Tools import *
-from Agents import *
-from Domains import *
-from Representations import *
 import numpy as np
 from copy import copy, deepcopy
 import re
 import Tools.ipshell
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 
 class Experiment(object):
