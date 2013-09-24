@@ -1,96 +1,77 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Bob Klein
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# NEEDS VISUALIZATION UPDATE
-
-import copy
-import csv
-
-
 from Tools import *
 from Domain import Domain
-# See [[]] for domain detailed domain description.
 
-########################################################
-# \author Robert H Klein, Alborz Geramifard Nov 26 2012 at MIT
-########################################################
-# Persistent Search and Track Mission per [MATLAB implementation] \n
-#
-# --------------------DESCRIPTION----------------------- \n
-# Each UAV has 4 states; location, fuel, actuator status, sensor status.
-#
-# There are 4 types of locations a uav can be in; Base,
-# Refuel, Communications, surveillance. \n
-# Loitering for 1 timestep at Refuel assigns fuel of 10 to that UAV.\n
-# Loitering for 1 timestep at Base assigns status 1 to
-# Actuator and Sensor.
-#
-# Goal is to maintain as many UAVS with working sensor in the Surveillance
-# state as there are targets (NUM_TARGETS), while maintaining at least 1 UAV
-# in each communication state. \n
-# Reward of 20 is earned for each UAV in the surveillance state with working
-# sensor, up to the number of targets. \n
-# If no UAV is in the communication state, zero reward earned for surveillance.
-# (No reward is earned for excess UAVs or those with failed sensor)
-#
-# If the actuator fails, the UAV can only take actions leading it back to the
-# refuel or base states, where it may loiter.
-#
-# A penalty is applied for each unit of fuel consumed,
-# which occurs when a UAV moves between locations or when it is loitering
-# above a communications or surveilllance location.
-# (ie, no penalty when loitering at REFUEL or BASE)
-#
-# Finally, if any UAV has fuel 0, the episode terminates with large penalty.
-#
-# --------------------FORMULATION----------------------- \n
-# State vector consists of 4 blocks of states,
-# each corresponding to a property of the UAVs
-# [locations, fuel quantities, actuator statuses, sensor statuses] \n
-# So for example: \n
-# state [1,2,9,3,1,0,1,1] -->
-# [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs:
-# UAV1 in location 1, with 9 fuel units remaining, and
-# sensor + actuator with status 1 (functioning). \n
-# UAV 2 in location 2, 3 fuel units remaining, actuator
-# with status 0 and sensor with status 1.
-#
-# Location transitions, sensor and actuator failures, and
-# fuel consumption are stochastic.
-#
-#
-# --------------------VISUALIZATION----------------------- \n
-# In the current visualization, the 'actuator' which enables communication
-# is represented by a wedge above each UAV circle; a failed actuator is red,
-# functional is black.  Similarly, the 'sensor' which enables surveillance
-# is represented by a wedge in front of the UAV circle, with similar coloring.
-#
-# If each comms location has at least 1 UAV able to perform communications,
-# lines are drawn connecting the surveillance location through each comms
-# location back to base. \n
-# If at least 1 vehicle is actively performing surveillance, this line is black; \n
-# Else If there are no vehicles performing surveillance, this line is red. \n
-# Else if there is no available comms link, no line is drawn. \n
-# Else If it least one capable vehicle is in the surveillance region but no comms
-# link is available, a partial red comms line is drawn with a red vertical
-# line cutting down its center.
-#
-########################################################
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+            "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = ["Robert H. Klein", "Alborz Geramifard"]
+
 
 class PST(Domain):
+    """
+    Persistent Search and Track Mission per [MATLAB implementation] \n
 
+    --------------------DESCRIPTION----------------------- \n
+    Each UAV has 4 states; location, fuel, actuator status, sensor status.
+
+    There are 4 types of locations a uav can be in; Base,
+    Refuel, Communications, surveillance. \n
+    Loitering for 1 timestep at Refuel assigns fuel of 10 to that UAV.\n
+    Loitering for 1 timestep at Base assigns status 1 to
+    Actuator and Sensor.
+
+    Goal is to maintain as many UAVS with working sensor in the Surveillance
+    state as there are targets (NUM_TARGETS), while maintaining at least 1 UAV
+    in each communication state. \n
+    Reward of 20 is earned for each UAV in the surveillance state with working
+    sensor, up to the number of targets. \n
+    If no UAV is in the communication state, zero reward earned for surveillance.
+    (No reward is earned for excess UAVs or those with failed sensor)
+
+    If the actuator fails, the UAV can only take actions leading it back to the
+    refuel or base states, where it may loiter.
+
+    A penalty is applied for each unit of fuel consumed,
+    which occurs when a UAV moves between locations or when it is loitering
+    above a communications or surveilllance location.
+    (ie, no penalty when loitering at REFUEL or BASE)
+
+    Finally, if any UAV has fuel 0, the episode terminates with large penalty.
+
+    --------------------FORMULATION----------------------- \n
+    State vector consists of 4 blocks of states,
+    each corresponding to a property of the UAVs
+    [locations, fuel quantities, actuator statuses, sensor statuses] \n
+    So for example: \n
+    state [1,2,9,3,1,0,1,1] -->
+    [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs:
+    UAV1 in location 1, with 9 fuel units remaining, and
+    sensor + actuator with status 1 (functioning). \n
+    UAV 2 in location 2, 3 fuel units remaining, actuator
+    with status 0 and sensor with status 1.
+
+    Location transitions, sensor and actuator failures, and
+    fuel consumption are stochastic.
+
+
+    --------------------VISUALIZATION----------------------- \n
+    In the current visualization, the 'actuator' which enables communication
+    is represented by a wedge above each UAV circle; a failed actuator is red,
+    functional is black.  Similarly, the 'sensor' which enables surveillance
+    is represented by a wedge in front of the UAV circle, with similar coloring.
+
+    If each comms location has at least 1 UAV able to perform communications,
+    lines are drawn connecting the surveillance location through each comms
+    location back to base. \n
+    If at least 1 vehicle is actively performing surveillance, this line is black; \n
+    Else If there are no vehicles performing surveillance, this line is red. \n
+    Else if there is no available comms link, no line is drawn. \n
+    Else If it least one capable vehicle is in the surveillance region but no comms
+    link is available, a partial red comms line is drawn with a red vertical
+    line cutting down its center.
+
+    """
     episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
     gamma               = 0.9  # 0.9 used in tutorial and matlab
 
@@ -156,11 +137,6 @@ class PST(Domain):
         self.uav_actuator_vis       = None
         self.comms_line             = None
         self.dist_between_locations = self.RECT_GAP + self.LOCATION_WIDTH
-#        self.SENSOR_REL_X = self.UAV_RADIUS - self.SENSOR_LENGTH
-#        self.ACTUATOR_REL_Y = self.UAV_RADIUS - self.ACTUATOR_HEIGHT
-#        state_space_dims = None # Number of dimensions of the state space
-#        episodeCap = None       # The cap used to bound each episode (return to s0 after)
-        # Set the Dimension Names:
         self.DimNames = []
         [self.DimNames.append('UAV%d-loc' % i) for i in arange(NUM_UAV)]
         [self.DimNames.append('UAV%d-fuel' % i) for i in arange(NUM_UAV)]
@@ -182,10 +158,10 @@ class PST(Domain):
          #Draw the environment
          # Allocate horizontal 'lanes' for UAVs to traverse
 
-# Formerly, we checked if this was the first time plotting; wedge shapes cannot be removed from
-# matplotlib environment, nor can their properties be changed, without clearing the figure
-# Thus, we must redraw the figure on each timestep
-#        if self.location_rect_vis is None:
+        # Formerly, we checked if this was the first time plotting; wedge shapes cannot be removed from
+        # matplotlib environment, nor can their properties be changed, without clearing the figure
+        # Thus, we must redraw the figure on each timestep
+        #        if self.location_rect_vis is None:
         # Figure with x width corresponding to number of location states, UAVLocation.SIZE
         # and rows (lanes) set aside in y for each UAV (NUM_UAV total lanes).  Add buffer of 1
         self.subplot_axes = self.domain_fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
@@ -215,19 +191,18 @@ class PST(Domain):
 
         uav_x = self.location_coord[UAVLocation.BASE]
 
-#            self.uav_vis_list = [UAVDispObject(uav_id) for uav_id in range(0,self.NUM_UAV)]
         # Update the member variables storing all the figure objects
         self.uav_circ_vis = [mpatches.Circle((uav_x,1+uav_id), self.UAV_RADIUS, fc="w") for uav_id in range(0,self.NUM_UAV)]
         self.uav_text_vis = [None for uav_id in range(0,self.NUM_UAV)] # fuck
         self.uav_sensor_vis = [mpatches.Wedge((uav_x+self.SENSOR_REL_X, 1+uav_id),self.SENSOR_LENGTH, -30, 30) for uav_id in range(0,self.NUM_UAV)]
         self.uav_actuator_vis =[mpatches.Wedge((uav_x, 1+uav_id + self.ACTUATOR_REL_Y),self.ACTUATOR_HEIGHT, 60, 120) for uav_id in range(0,self.NUM_UAV)]
 
- # The following was executed when we used to check if the environment needed re-drawing: see above.
-         # Remove all UAV circle objects from visualization
-#        else:
-#            [self.uav_circ_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
-#            [self.uav_text_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
-#            [self.uav_sensor_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
+        # The following was executed when we used to check if the environment needed re-drawing: see above.
+                # Remove all UAV circle objects from visualization
+        #        else:
+        #            [self.uav_circ_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
+        #            [self.uav_text_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
+        #            [self.uav_sensor_vis[uav_id].remove() for uav_id in range(0,self.NUM_UAV)]
 
 
         # For each UAV:
@@ -280,7 +255,6 @@ class PST(Domain):
         pl.draw()
         sleep(0.5)
 
-#===============================================================================
     def showLearning(self,representation):
         pass
 
@@ -347,7 +321,6 @@ class PST(Domain):
         self.state = self.properties2StateVec(locations, fuel, actuator, sensor)
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    # @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):
         # Only perform multiplication once to save time
         fuelEndInd      = 2*self.NUM_UAV
@@ -359,7 +332,6 @@ class PST(Domain):
         sensor =    s[actuatorEndInd   :sensorEndInd]
 
         return StateStruct(locations, fuel, actuator, sensor)
-    # @return: the state vector s
     def properties2StateVec(self,locations, fuel, actuator, sensor):
         return hstack([locations, fuel, actuator, sensor])
 
@@ -422,16 +394,13 @@ class PST(Domain):
             partialActionAssignment = curActionList[:]
             partialActionAssignment.append(curAction)
             if(ind == len(x) - 1): # We have reached the final list, assignment is complete
-#                print partialActionAssignment,',,',limits
                 actionIDs.append(vec2id(partialActionAssignment, limits)) # eg [0,1,0,2] and [3,3,3,3]
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
-#        return actionIDs
     def isTerminal(self):
         sStruct = self.state2Struct(self.state)
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 
-# \cond DEV
 class UAVLocation:
     BASE = 0
     REFUEL      = 1
@@ -462,50 +431,6 @@ class UAVAction:
 class UAVIndex:
     LOC, FUEL, ACT_STATUS, SENS_STATUS = 0,1,2,3
     SIZE = 4 # Number of indices required for state of each UAV
-# \endcond
-
-if __name__ == '__main__':
-        random.seed(0)
-        p = PST(NUM_UAV = 3, motionNoise = 0)
-        p.test(1000)
-
-        # Code below was used to test output of this domain for various actions,
-        # confirmed alignment with MATLAB version (see bobtest there)
-
-        allA = arange(27)
-
-        s = p.s0()
-        for i in arange(20): # Number of steps desired for test
-            a = 17 - i
-            print 'pythontest: original action ',a
-#            print 'pythontest: vector action ', array(id2vec(a,p.LIMITS))
-            (r, s, isT) = p.step(a)
-            print 'pythontest: new state, reward, and possible a', s, r, p.possibleActions()
-
-#        actionVectors = [array(id2vec(a,p.LIMITS)) for a in allA]
-#
-#        a_aVect_tups = zip(allA, actionVectors)
-#        for a_aVect_tup in a_aVect_tups:
-#            print a_aVect_tup
-
-
-
-#        x = array([[1,2,0],[1,2],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-#        x = array([[1,2,0],[1],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-#        x = array([[1,2,0],[2],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
-#        x = array([[1,2,0],[2,1],[0,1],[0]])
-#        q = p.vecList2id(x, 3)
-#        print x, q
-#
 
 
 

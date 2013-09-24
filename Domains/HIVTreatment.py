@@ -1,6 +1,14 @@
+"""HIV Treatment domain"""
 from Domain import Domain
 import numpy as np
 from scipy.integrate import odeint
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Christoph Dann"
+
 
 class HIVTreatment(Domain):
     """
@@ -117,7 +125,6 @@ def dsdt(s, t, eps1, eps2):
 
 try:
     from HIVTreatment_dynamics import dsdt
-    print "Use cython extension for HIVTreatment dynamics"
 except Exception, e:
     print e
     print "Cython extension for HIVTreatment dynamics not available, expect slow runtime"

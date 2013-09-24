@@ -11,13 +11,15 @@ from PST import PST
 from Pacman import Pacman
 from IntruderMonitoring import IntruderMonitoring
 from CartPole import CartPoleBalanceOriginal
-from CartPole_InvertedBalance import CartPole_InvertedBalance
-from CartPole_SwingUp import CartPole_SwingUp, CartPole_SwingUpReal
+from CartPole import CartPole_InvertedBalance
+from CartPole import CartPole_SwingUp, CartPole_SwingUpReal
 from Pendulum_InvertedBalance import Pendulum_InvertedBalance
 from Pendulum_SwingUp import Pendulum_SwingUp
 from FiftyChain import FiftyChain
 from FlipBoard import FlipBoard
 from RCCar import RCCar
 from Acrobot import Acrobot, AcrobotLegacy
+from Bicycle import BicycleBalancing
+from Pinball import Pinball
 # don't import by default as long as it requires pygame
 #from Pinball import Pinball

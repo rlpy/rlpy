@@ -176,16 +176,15 @@ class Experiment(object):
         """
         Run the experiment and collect statistics / generate the results
 
-        **Parameters**
 
-        visualize_performance (boolean)
+        visualize_performance (boolean):
             show a visualization of the steps taken in performance runs
         visualize_learning (boolean):
             show some visualization of the learning status before each
             performance evaluation (e.g. Value function)
         visualize_steps (boolean):
             visualize all steps taken during learning
-        ipshell_on_sigurg (boolean):
+        debug_on_sigurg (boolean):
             if true, the ipdb debugger is opened when the python process
             receives a SIGURG signal. This allows to enter a debugger at any
             time, e.g. to view data interactively or actual debugging.

@@ -1,49 +1,44 @@
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+"""Simple Chain MDP domain"""
 from Tools import *
 from Domain import Domain
 import numpy as np
-######################################################
-# \author Developed by Alborz Geramiard Nov 20th 2012 at MIT #
-######################################################
-# A simple Chain MDP \n
-# s0 <-> s1 <-> ... <-> sn \n
-# Actions are left [0] and right [1] \n
-# The task is to reach sn from s0.
-# Optimal policy is always to go right
-######################################################
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Alborz Geramifard"
+
+
 class ChainMDP(Domain):
+    """
+    A simple Chain MDP
+    s0 <-> s1 <-> ... <-> sn
+    Actions are left [0] and right [1]
+    The task is to reach sn from s0.
+    Optimal policy is always to go right
+
+    """
     GOAL_REWARD = 0
     STEP_REWARD = -1
-	## Set by the domain = min(100,rows*cols)
+    #: Set by the domain = min(100,rows*cols)
     episodeCap  = 0
-	## Used for graphical normalization
+    #: Used for graphical normalization
     MAX_RETURN  = 1
-	## Used for graphical normalization
+    #: Used for graphical normalization
     MIN_RETURN  = 0
-	## Used for graphical shifting of arrows
+    #: Used for graphical shifting of arrows
     SHIFT       = .3
-	## Used for graphical radius of states
+    #: Used for graphical radius of states
     RADIUS      = .5
-	## Stores the graphical pathes for states so that we can later change their colors
+    #: Stores the graphical pathes for states so that we can later change their colors
     circles     = None
-	## Number of states in the chain
+    #: Number of states in the chain
     chainSize   = 0
-	## Y values used for drawing circles
+    #: Y values used for drawing circles
     Y           = 1
     actions_num = 2
-    #Constants in the map
+
     def __init__(self, chainSize=2,logger = None):
         self.chainSize          = chainSize
         self.start              = 0
@@ -51,6 +46,7 @@ class ChainMDP(Domain):
         self.statespace_limits  = array([[0,chainSize-1]])
         self.episodeCap         = 2*chainSize
         super(ChainMDP,self).__init__(logger)
+
     def showDomain(self, a = 0):
         #Draw the environment
         s = self.state

@@ -1,57 +1,52 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+"""Gridworld Domain"""
 from Tools import *
 from Domain import Domain
-######################################################
-# \author Developed by Alborz Geramiard Oct 25th 2012 at MIT
-######################################################
-# State is x,y, Actions are 4 way directional with fixed noise. \n
-# Each grid cell is: \n
-# 0: empty \n
-# 1: blocked \n
-# 2: start \n
-# 3: goal \n
-# 4: pit \n
-# The task is to reach the goal from the start while avoiding the pits
-######################################################
+
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Alborz Geramifard"
+
+
 class GridWorld(Domain):
+    """
+    State is x,y, Actions are 4 way directional with fixed noise.
+    Each grid cell is::
+
+        0: empty
+        1: blocked
+        2: start
+        3: goal
+        4: pit
+
+    The task is to reach the goal from the start while avoiding the pits
+    """
     map = start_state = goal              = None
-	## Used for graphics to show the domain
+    #: Used for graphics to show the domain
     agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None
-	## Number of rows and columns of the map
+    #: Number of rows and columns of the map
     ROWS = COLS = 0
     #Rewards
     GOAL_REWARD = +1
     PIT_REWARD = -1
     STEP_REWARD = -.001
-	## Set by the domain = min(100,rows*cols)
+    #: Set by the domain = min(100,rows*cols)
     episodeCap  = None
-	## Movement Noise
+    #: Movement Noise
     NOISE = 0
-	## Used for graphical normalization
+    #: Used for graphical normalization
     MAX_RETURN  = 1
-	## Used for graphical normalization
+    #: Used for graphical normalization
     MIN_RETURN  = -1
-	## Used for graphical shifting of arrows
+    #: Used for graphical shifting of arrows
     SHIFT       = .1
 
     actions_num        = 4
     # Constants in the map
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
-	## Up, Down, Left, Right
+    #: Up, Down, Left, Right
     ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
     def __init__(self,mapname='./Domains/GridWorldMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
         self.map                = loadtxt(mapname, dtype = uint8)
@@ -118,7 +113,6 @@ class GridWorld(Domain):
             self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
             self.rightArrows_fig.set_clim(vmin=0,vmax=1)
             f = pl.gcf()
-#            f.set_size_inches(10,20)
             pl.show()
             #pl.tight_layout()
         V            = zeros((self.ROWS,self.COLS))
@@ -239,33 +233,26 @@ class GridWorld(Domain):
         #  r: k-by-1    rewards
         # ns: k-by-|s|  next state
         #  t: k-by-1    terminal values
-#        print "State:", s
-#        print "Action:", a
         actions = self.possibleActions(s)
         k       = len(actions)
         #Make Probabilities
         intended_action_index = findElemArray1D(a,actions)
         p       = ones((k,1))*self.NOISE/(k*1.)
         p[intended_action_index,0] += 1-self.NOISE
-#       print "Probabilities:", p
         #Make next states
         ns      = tile(s,(k,1)).astype(int)
         actions = self.ACTIONS[actions]
         ns     += actions
-#        print "next states:", ns
         #Make rewards
         r       = ones((k,1))*self.STEP_REWARD
         goal    = self.map[ns[:,0], ns[:,1]] == self.GOAL
         pit     = self.map[ns[:,0], ns[:,1]] == self.PIT
         r[goal] = self.GOAL_REWARD
         r[pit]  = self.PIT_REWARD
-#        print"rewards", r
         #Make terminals
         t       = zeros((k,1),bool)
         t[goal] = True
         t[pit]  = True
-#        print"terminals", t
-#        raw_input()
         return p,r,ns,t
 
     def allStates(self):

@@ -1,14 +1,16 @@
-# Copyright (c) 2013
-# Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
-# Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
-
-from Tools import *
-from Domain import *
+"""classic Acrobot task"""
+from Tools import wrap, bound, lines, fromAtoB, rk4
+from Domain import Domain
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 __author__ = "Christoph Dann <cdann@cdann.de>"
+
+
 class Acrobot(Domain):
     """
     Acrobot is a 2-link pendulum with only the second joint actuated
@@ -96,7 +98,7 @@ class Acrobot(Domain):
 
         # Add noise to the force action
         if self.torque_noise_max > 0:
-            torque += random.uniform(-self.torque_noise_max, self.torque_noise_max)
+            torque += np.random.uniform(-self.torque_noise_max, self.torque_noise_max)
 
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = np.append(s, torque)

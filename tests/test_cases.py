@@ -18,4 +18,5 @@ def check_running(filename, steps):
     exp = make_experiment(id=1, path="./Results/Temp/nosetests")
     exp.max_steps = steps
     exp.num_policy_checks = 2
+    exp.checks_per_policy = 1
     exp.run()

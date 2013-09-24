@@ -1,7 +1,11 @@
-.. _api-index:
+.. _api-index: 
+
 ####################
   The RLPy API
 ####################
+
+Base Classes
+############
 
 .. toctree::
    :maxdepth: 1
@@ -12,3 +16,14 @@
    representation.rst
    mdp_solver.rst
    domain.rst
+
+Domains
+#######
+
+.. toctree::
+    :maxdepth: 1
+
+    acrobot.rst
+    cartpole.rst
+    bicycle.rst
+    domains_misc.rst

@@ -1,9 +1,11 @@
-# Copyright (c) 2013
-# Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
-# Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
-
+"""Domain base class"""
 import numpy as np
 import Tools
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 
 class Domain(object):
@@ -26,31 +28,30 @@ class Domain(object):
     %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
     All new domain implementations should inherit from \c %Domain.
 
-    \note Though the state s can take on almost any
-    value, if a dimension is not marked as 'continuous'
-    then it is assumed to be integer.
+    .. note::
+        Though the state s can take on almost any value, if a dimension is not
+        marked as 'continuous' then it is assumed to be integer.
 
     """
-    ## The discount factor by which rewards are reduced
+    #: The discount factor by which rewards are reduced
     gamma = .9
-    ## The number of possible states in the domain
+    #: The number of possible states in the domain
     states_num = 0  # was None
-    ## The number of Actions the agent can perform
+    #: The number of Actions the agent can perform
     actions_num = 0  # was None
-    ## Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
+    #: Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
     statespace_limits = []  # was None
-    ## Limits of each dimension of a discrete state space. This is the same as statespace_limits, without the extra -.5, +.5 added to each dimension
+    #: Limits of each dimension of a discrete state space. This is the same as statespace_limits, without the extra -.5, +.5 added to each dimension
     discrete_statespace_limits = []  # was None
-    ## Number of dimensions of the state space
+    #: Number of dimensions of the state space
     state_space_dims = 0  # was None
-    ## List of the continuous dimensions of the domain
+    #: List of the continuous dimensions of the domain
     continuous_dims = []
-    ## The cap used to bound each episode (return to state 0 after)
+    #: The cap used to bound each episode (return to state 0 after)
     episodeCap = None
-    ## A simple object that records the prints in a file
+    #: A simple object that records the prints in a file
     logger = None
 
-    # [init code]
     def __init__(self, logger=None):
         """
         Initializes the \c %Domain object. See code
@@ -73,7 +74,6 @@ class Domain(object):
 
         # a new stream of random numbers for each domain
         self.rand_state = np.random.RandomState()
-    # [init code]
 
     def __str__(self):
         res = """{self.__class__}:
@@ -86,7 +86,6 @@ Gamma:      {self.gamma}
 """.format(self=self)
         return res
 
-    # [show code]
     def show(self, a=None, representation=None):
         """
         Shows a visualization of the current state of the domain and that of learning. See code
@@ -98,9 +97,7 @@ Gamma:      {self.gamma}
         """
         self.showDomain(a)
         self.showLearning(representation)
-    # [show code]
 
-    # [showDomain code]
     def showDomain(self, a=0):
         """
         \b ABSTRACT \b METHOD: Shows a visualization of the current state of the domain. See code
@@ -110,9 +107,7 @@ Gamma:      {self.gamma}
 
         """
         pass
-    # [showDomain code]
 
-    # [showLearning code]
     def showLearning(self, representation):
         """
         \b ABSTRACT \b METHOD: Shows a visualization of the current learning. This visualization is usually in the form
@@ -123,9 +118,7 @@ Gamma:      {self.gamma}
 
         """
         pass
-    # [showLearning code]
 
-    # [s0 code]
     def s0(self):
         """
         Begins a new episode and returns the initial observed state of the %Domain
@@ -135,9 +128,7 @@ Gamma:      {self.gamma}
 
         """
         raise NotImplementedError("Children need to implement this method")
-    # [s0 code]
 
-    # [possActions code]
     def possibleActions(self):
         """
         Returns all actions in the domain.
@@ -149,9 +140,7 @@ Gamma:      {self.gamma}
 
         """
         return np.arange(self.actions_num)
-    # [possActions code]
 
-    # [step code]
     def step(self, a):
         """
         \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
@@ -164,9 +153,7 @@ Gamma:      {self.gamma}
 
         """
         raise NotImplementedError("Each domain needs to implement this method")
-    # [step code]
 
-    # [isTerminal code]
     def isTerminal(self):
         """
         Determines whether the stats s is a terminal state.
@@ -176,9 +163,7 @@ Gamma:      {self.gamma}
         True if the state is a terminal state, False otherwise.
         """
         return False
-    # [isTerminal code]
 
-    # [extendDiscreteDimensions code]
     def extendDiscreteDimensions(self):
         """
         Offsets discrete dimensions by 0.5 so that binning works properly. See code
@@ -193,9 +178,7 @@ Gamma:      {self.gamma}
                 self.statespace_limits[d, 0] += -.5
                 self.statespace_limits[d, 1] += +.5
 
-    # [extendDiscreteDimensions code]
 
-    # [sampleStep code]
     def sampleStep(self, a, num_samples):
         """
         Sample a set number of next states and rewards from the domain. See code

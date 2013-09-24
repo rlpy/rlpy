@@ -1,55 +1,49 @@
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+"""Fifty state chain"""
 from Tools import *
-from Domain import *
-######################################################
-# \author Alborz Geramifard, Robert H. Klein at MIT, Dec. 21, 2012
-######################################################
-# 50-state chain described by Lagoudakis & Parr, 2003 \n
-# s0 <-> s1 <-> ... <-> s50   \n
-# Actions are left [0] and right [1]
-# Reward of +1 at states 10 and 41 (indices 0 and 9) \n
-# Actions succeed with probability .9, otherwise execute opposite action.
-######################################################
+from Domain import Domain
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = ["Alborz Geramifard", "Robert H. Klein"]
+
+
 class FiftyChain(Domain):
+    """
+    50-state chain described by Lagoudakis & Parr, 2003
+    s0 <-> s1 <-> ... <-> s50
+    Actions are left [0] and right [1]
+    Reward of +1 at states 10 and 41 (indices 0 and 9)
+    Actions succeed with probability .9, otherwise execute opposite action.
+    """
     GOAL_REWARD = 1
-	## Indices of states with rewards
+    #: Indices of states with rewards
     GOAL_STATES = [9,40]
-	## Set by the domain = min(100,rows*cols)
+    #: Set by the domain = min(100,rows*cols)
     episodeCap  = 50
-	## Used for graphical normalization
+    #: Used for graphical normalization
     MAX_RETURN  = 2.5
-	## Used for graphical normalization
+    #: Used for graphical normalization
     MIN_RETURN  = 0
-	## Used for graphical shifting of arrows
+    #: Used for graphical shifting of arrows
     SHIFT       = .01
-	## Used for graphical radius of states
+    #: Used for graphical radius of states
     RADIUS      = .05
-	## Stores the graphical pathes for states so that we can later change their colors
+    #: Stores the graphical pathes for states so that we can later change their colors
     circles     = None
-	## Number of states in the chain
+    #: Number of states in the chain
     chainSize   = 50
-	## Y values used for drawing circles
+    #: Y values used for drawing circles
     Y           = 1
     actions_num = 2
-	## Probability of taking the other (unselected) action
+    #: Probability of taking the other (unselected) action
     p_action_failure = 0.1
     V_star      = [0.25424059953210576, 0.32237043339365301, 0.41732244995544071, 0.53798770416976416, 0.69467264588670452, 0.91307612341516964, 1.1996067857970858, 1.5914978718669359, 2.1011316163482885, 2.7509878207260079, 2.2007902565808002, 1.7606322052646419, 1.4085057642117096, 1.1268046113693631, 0.90144368909548567, 0.72115495127639073, 0.5769239610211111, 0.46153916881688833, 0.36923133505350991, 0.29538506804280829, 0.23630805443424513, 0.18904644354739669, 0.15123715483791522, 0.12098972387033219, 0.096791779096267572, 0.077433423277011526, 0.064110827579671889, 0.080577201155275072, 0.10271844729124571, 0.13354008685155827, 0.17749076168535796, 0.22641620289304287, 0.29916005826456937, 0.39326998437016564, 0.52325275246999614, 0.67438770340963006, 0.90293435616054674, 1.1704408409975584, 1.5213965403184493, 2.0462009513290296, 2.7423074964894685, 2.1938459971915725, 1.7550767977532584, 1.404061438202612, 1.1232491505620894, 0.89859932044966939, 0.71887945635973116, 0.57510356508778659, 0.46008285207022837, 0.36806628165617972]          # Array of optimal values at each state
 
-	# The optimal policy for this domain
+    # The optimal policy for this domain
     optimalPolicy = None
-	# Should the domain only allow optimal actions
+    # Should the domain only allow optimal actions
     using_optimal_policy = False
 
     #Plotting values

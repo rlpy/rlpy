@@ -4,16 +4,17 @@ from .PacmanPackage import graphicsDisplay
 import numpy as np
 from copy import deepcopy
 
-######################################################
-# \author Developed by Austin Hays June 18th 2013 at MIT
-# The original code in PacmanPackage was taken from
-#TODO
-######################################################
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+            "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Austin Hays"
 
 
 class Pacman(Domain):
     """
-    #TODO fill
+    wrapper for the Pacman implementation from the BerkeleyX/CS188.1x
+    project
     """
 
     _max_scared_time = 39

@@ -135,24 +135,24 @@ class Pendulum(Domain):
             self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
 
-#        if not ((2*pi / dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / dt > -self.ANGULAR_RATE_LIMITS[0])):
-#            print '''
-#            WARNING:
-#            # This has not been observed in practice, but conceivably
-#            # if the bound on angular velocity is large compared with
-#            # the time discretization, seemingly 'optimal' performance
-#            # might result from a stroboscopic-like effect.
-#            # For example, if dt = 1.0 sec, and the angular rate limits
-#            # exceed -2pi or 2pi respectively, then it is possible that
-#            # between consecutive timesteps, the pendulum will have
-#            # the same position, even though it really completed a
-#            # rotation, and thus we will find a solution that commands
-#            # the pendulum to spin with angular rate in multiples of
-#            # 2pi / dt.
-#            '''
-#            print 'Your selection, dt=',self.dt,'and limits',self.ANGULAR_RATE_LIMITS,'Are at risk.'
-#            print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
-#            print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
+        #        if not ((2*pi / dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / dt > -self.ANGULAR_RATE_LIMITS[0])):
+        #            print '''
+        #            WARNING:
+        #            # This has not been observed in practice, but conceivably
+        #            # if the bound on angular velocity is large compared with
+        #            # the time discretization, seemingly 'optimal' performance
+        #            # might result from a stroboscopic-like effect.
+        #            # For example, if dt = 1.0 sec, and the angular rate limits
+        #            # exceed -2pi or 2pi respectively, then it is possible that
+        #            # between consecutive timesteps, the pendulum will have
+        #            # the same position, even though it really completed a
+        #            # rotation, and thus we will find a solution that commands
+        #            # the pendulum to spin with angular rate in multiples of
+        #            # 2pi / dt.
+        #            '''
+        #            print 'Your selection, dt=',self.dt,'and limits',self.ANGULAR_RATE_LIMITS,'Are at risk.'
+        #            print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
+        #            print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
 
         # Transpose the matrices shown above, if they have not been already by another instance of the domain.
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
@@ -237,7 +237,6 @@ class Pendulum(Domain):
             pl.xlabel(r"$\theta$ (degree)")
             pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.title('Policy')
-#            f.set_size_inches(10,20)
             pl.show()
             f = pl.gcf()
             f.subplots_adjust(left=0,wspace=.5)
@@ -273,7 +272,6 @@ class Pendulum(Domain):
         self.valueFunction_fig.set_norm(norm)
         self.policy_fig.set_data(pi)
         pl.draw()
-#        sleep(self.dt)
 
     def s0(self):
         # Defined by children
@@ -317,15 +315,6 @@ class Pendulum(Domain):
         ns = rk4(self._dsdt, s_augmented, [0, self.dt])
         ns = ns[-1] # only care about final timestep of integration returned by integrator
         ns = ns[0:2] # [theta, thetaDot]
-
-        # Decomment the 2 lines below to use L & P's pendulum_ode45 method
-#        ns = self.pendulum_ode45(0, self.dt, s_augmented, self.tol)
-#        ns = ns[0:2] # omit the augmented state with action stored
-
-        # Decomment the 3 lines below to use scipy.integrate.odeint
-#        ns = integrate.odeint(self._dsdt, s_augmented, [0, self.dt], rtol = self.tol)
-#        ns = ns[-1]
-#        ns = ns[0:2]
 
          # wrap angle between -pi and pi (or whatever values assigned to ANGLE_LIMITS)
         ns[StateIndex.THETA]        = bound(wrap(ns[StateIndex.THETA],-pi, pi), self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])

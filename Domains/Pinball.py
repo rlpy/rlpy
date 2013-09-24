@@ -1,58 +1,33 @@
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
+"""Pinball domain for reinforcement learning
 """
-.. module:: pinball
-   :platform: Unix, Windows
-   :synopsis: Pinball domain for reinforcement learning
-
-.. moduleauthor:: Pierre-Luc Bacon <pierrelucbacon@gmail.com>
-
-"""
-
-##########################################################################################
-# Modified with Permission for RLPy use by Austin Hays <ahays@mit.edu> August 2013 at MIT
-# Original author is Pierre-Luc Bacon <pierrelucbacon@gmail.com>
-##########################################################################################
-
 from Domain import Domain
 import numpy as np
 from Tools import randSet
-import argparse
-import random
-from itertools import *
+from itertools import tee, izip
 import itertools
-from Tkinter import *
+from Tkinter import Tk, Canvas
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+            "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = ["Pierre-Luc Bacon",  # author of the original version
+              "Austin Hays"]  # adapted for RLPy and TKinter
 
 
 class Pinball(Domain):
-    
     """
     Pinball Subclass of RLPy Domain Class created entirely by Austin Hays
     """
 
 
-    def __init__(self, noise = .1, episodeCap = 1000, logger = None, width=500, height=500, configuration='/Domains/PinballConfigs/pinball_simple_single.cfg'):
+    def __init__(self, noise = .1, episodeCap = 1000, logger = None,
+                 configuration='./Domains/PinballConfigs/pinball_simple_single.cfg'):
         self.NOISE              = noise
         self.logger             = logger
-        self.configuration      = RL_PYTHON_ROOT + configuration
+        self.configuration      = configuration
         self.environment        = PinballModel(self.configuration)
-        self.start_pos          = self.environment.start_pos
         self.screen             = None
-        self.width              = width
-        self.height             = height
-        self.STEP_PENALTY       = -1
-        self.THRUST_PENALTY     = -5
-        self.END_EPISODE        = 10000
         self.episodeCap         = episodeCap
         self.actions_num        = 5
         self.actions            = [PinballModel.ACC_X, PinballModel.DEC_Y, PinballModel.DEC_X, PinballModel.ACC_Y, PinballModel.ACC_NONE]
@@ -61,13 +36,7 @@ class Pinball(Domain):
         super(Pinball,self).__init__(self.logger)
 
     def showDomain(self, a):
-        s = self.state
-        self.DARK_GRAY = [64, 64, 64]
-        self.DARK_BLUE = [0, 0, 128]
-        self.LIGHT_GRAY = [232, 232, 232]
-        self.BALL_COLOR = [0, 0, 255]
-        self.TARGET_COLOR = [255, 0, 0]
-        if self.screen == None:
+        if self.screen is None:
                 master = Tk()
                 master.title('RLPY Pinball')
                 self.screen = Canvas(master, width=500.0, height=500.0)
@@ -77,27 +46,26 @@ class Pinball(Domain):
         self.environment_view.blit()
         self.screen.pack()
         self.screen.update()
-        
-    
-    def step(self, s, a):
+
+
+    def step(self, a):
+        s = self.state
         [self.environment.ball.position[0], self.environment.ball.position[1], self.environment.ball.xdot, self.environment.ball.ydot] = s
         if np.random.random_sample() < self.NOISE:
             #Random Move
             a = randSet(self.possibleActions())
         reward = self.environment.take_action(a)
         self.environment._check_bounds()
-        state = self.environment.get_state()
-        terminal = self.isTerminal()
-        if terminal:
-            self.environment.ball.position[0], self.environment.ball.position[1] = self.start_pos
-            self.environment.ball.xdot, self.environment.ball.ydot = 0.0, 0.0
+        state = np.array(self.environment.get_state())
         self.state = state.copy()
-        return reward, state, terminal
+        return reward, state, self.isTerminal(), self.possibleActions()
 
     def s0(self):
-        self.environment.ball.position[0], self.environment.ball.position[1] = self.start_pos
+        self.environment.ball.position[0], self.environment.ball.position[1] = self.environment.start_pos
         self.environment.ball.xdot, self.environment.ball.ydot = 0.0, 0.0
-        return [self.environment.ball.position[0], self.environment.ball.position[1], self.environment.ball.xdot, self.environment.ball.ydot]
+        self.state = np.array([self.environment.ball.position[0], self.environment.ball.position[1],
+                         self.environment.ball.xdot, self.environment.ball.ydot])
+        return self.state, self.isTerminal(), self.possibleActions()
 
     def possibleActions(self, s=0):
         return np.array(self.actions)
@@ -354,7 +322,6 @@ class PinballModel:
         """
         self.action_effects = {self.ACC_X:(1, 0), self.ACC_Y:(0, 1), self.DEC_X:(-1, 0), self.DEC_Y:(0, -1), self.ACC_NONE:(0, 0)}
 
-        random.seed()
 
         # Set up the environment according to the configuration
         self.obstacles = []
@@ -379,7 +346,8 @@ class PinballModel:
                 elif tokens[0] == 'ball':
                     ball_rad = float(tokens[1])
         self.start_pos = start_pos[0]
-        self.ball = BallModel(list(random.choice(start_pos)), ball_rad)
+        a = np.random.randint(len(start_pos))
+        self.ball = BallModel(list(start_pos[a]), ball_rad)
 
     def get_state(self):
         """ Access the current 4-dimensional state vector
@@ -470,28 +438,28 @@ class PinballView:
 
         self.x, self.y = self._to_pixels(self.model.ball.position)
         self.rad = int(self.model.ball.radius*self.width)
-        
+
         self.DARK_GRAY = [64, 64, 64]
         self.DARK_BLUE = [0, 0, 128]
         self.LIGHT_GRAY = [232, 232, 232]
         self.BALL_COLOR = [0, 0, 255]
         self.TARGET_COLOR = [255, 0, 0]
-    
-        
+
+
         for obs in model.obstacles:
             coords_list = map(self._to_pixels, obs.points)
             chain = itertools.chain(*coords_list)
             coords = list(chain)
             self.screen.create_polygon(coords, fill='blue')
         self.screen.pack()
-        
-        
+
+
         self.target_x, self.target_y = self._to_pixels(self.model.target_pos)
         self.target_rad = int(self.model.target_rad*self.width)
         target_id = self.drawcircle(self.screen, self.target_x, self.target_y, self.target_rad, 'red')
         self.ball_id = self.drawcircle(self.screen, self.x, self.y, self.rad, 'black')
         self.screen.pack()
-        
+
     def drawcircle(self, canv, x ,y ,rad, color):
         return canv.create_oval(x-rad,y-rad,x+rad,y+rad,width=0,fill=color)
 
@@ -513,8 +481,8 @@ class PinballView:
         self.screen.pack()
 
 def run_pinballview(width, height, configuration):
-    """ 
-    
+    """
+
         Changed from original Will Dabney implementation to reflect
         the visualization changes in the PinballView Class.
 
@@ -532,7 +500,7 @@ def run_pinballview(width, height, configuration):
     actions = [PinballModel.ACC_X, PinballModel.DEC_Y, PinballModel.DEC_X, PinballModel.ACC_Y, PinballModel.ACC_NONE]
     done = False
     while not done:
-        user_action = random.choice(actions)
+        user_action = np.random.choice(actions)
         environment_view.blit()
         if environment.episode_ended():
             done = True
@@ -542,10 +510,4 @@ def run_pinballview(width, height, configuration):
         environment_view.blit()
         screen.update()
 
-
-
-if __name__ == "__main__":
-    #run_pinballview(500, 500, RL_PYTHON_ROOT + '/Domains/PinballConfigs/pinball_simple_single.cfg')
-    pin = Pinball()
-    pin.test(2500)
 

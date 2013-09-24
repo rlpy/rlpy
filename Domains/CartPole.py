@@ -1,74 +1,56 @@
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#Locate RLPy
-#================
+"""Cart with a pole domains"""
 from Domain import Domain
 import numpy as np
 import scipy.integrate
 from Tools import pl, mpatches, mpath, fromAtoB, lines, rk4, wrap, bound, colors
-#from scipy import integrate # for integration of state
 
-#########################################################
-# \author Robert H Klein, Alborz Geramifard at MIT, Dec. 6 2012
-#########################################################
-#
-# State: [theta, thetaDot, x, xDot].
-# Actions: [-50, 0, 50]
-#
-# theta    = Angular position of pendulum
-# (relative to straight up at 0 rad),and positive clockwise. \n
-# thetaDot = Angular rate of pendulum \n
-# x        = Linear position of the cart on its track (positive right). \n
-# xDot     = Linear velocity of the cart on its track.
-#
-# Actions take the form of force applied to cart; \n
-# [-50, 0, 50] N force are the default available actions. \n
-# Positive force acts to the right on the cart.
-#
-# Uniformly distributed noise is added with magnitude 10 N.
-#
-# Per Lagoudakis and Parr 2003, derived from Wang 1996.
-# (See "1Link" implementation by L & P.)
-# Dynamics in x, xdot derived from CartPole implementation
-# of rl-community.org, from Sutton and Barto's Pole-balancing
-# task in <Reinforcement Learning: An Introduction> (1998)
-# (See CartPole implementation in the RL Community,
-# http://library.rl-community.org/wiki/CartPole)
-######################################################
-
-
-## @todo: can eliminate an entire dimension of the state space, xdot.
-# However, must internally keep track of it for use in dynamics.
-# RL_Glue and RL Community use the full 4-state system.
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = ["Robert H. Klein", "Alborz Geramifard"]
+pi = np.pi
 
 class CartPole(Domain):
+    """
+    State: [theta, thetaDot, x, xDot].
+    Actions: [-50, 0, 50]
 
-    # Domain constants per RL Community / RL_Glue CartPole implementation.
-    # (http://code.google.com/p/rl-library/wiki/CartpoleJava)
-    ## Newtons, N - Torque values available as actions [-50,0,50 per DPF]
+    theta    = Angular position of pendulum
+    (relative to straight up at 0 rad),and positive clockwise. \n
+    thetaDot = Angular rate of pendulum \n
+    x        = Linear position of the cart on its track (positive right). \n
+    xDot     = Linear velocity of the cart on its track.
+
+    Actions take the form of force applied to cart; \n
+    [-50, 0, 50] N force are the default available actions. \n
+    Positive force acts to the right on the cart.
+
+    Uniformly distributed noise is added with magnitude 10 N.
+
+    Per Lagoudakis and Parr 2003, derived from Wang 1996.
+    (See "1Link" implementation by L & P.)
+    Dynamics in x, xdot derived from CartPole implementation
+    of rl-community.org, from Sutton and Barto's Pole-balancing
+    task in <Reinforcement Learning: An Introduction> (1998)
+    (See CartPole implementation in the RL Community,
+    http://library.rl-community.org/wiki/CartPole)
+    Domain constants per RL Community / RL_Glue CartPole implementation.
+    (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+    """
+    #: Newtons, N - Torque values available as actions [-50,0,50 per DPF]
     AVAIL_FORCE         = np.array([-10, 10])
-    ## kilograms, kg - Mass of the pendulum arm
+    #: kilograms, kg - Mass of the pendulum arm
     MASS_PEND           = 0.1
-    ## kilograms, kg - Mass of cart
+    #: kilograms, kg - Mass of cart
     MASS_CART           = 1.0
-    ## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
     LENGTH              = 1.0
-    ## m/s^2 - gravitational constant
+    #: m/s^2 - gravitational constant
     ACCEL_G             = 9.8
-    ## Time between steps
+    #: Time between steps
     dt                  = 0.02
-    ## Newtons, N - Maximum noise possible, uniformly distributed
+    #: Newtons, N - Maximum noise possible, uniformly distributed
     force_noise_max     = 0.
 
     #: integration type, can be 'rk4', 'odeint' or 'euler'
@@ -77,28 +59,27 @@ class CartPole(Domain):
     #: number of steps for Euler integration
     num_euler_steps = 1
 
-    ## Limits on pendulum rate [per RL Community CartPole]
+    #: Limits on pendulum rate [per RL Community CartPole]
     ANGULAR_RATE_LIMITS = [-6.0, 6.0]
-    ## Reward received on each step the pendulum is in the goal region
+    #: Reward received on each step the pendulum is in the goal region
     GOAL_REWARD         = 1
-    ## m - Limits on cart position [Per RL Community CartPole]
+    #: m - Limits on cart position [Per RL Community CartPole]
     POSITON_LIMITS      = [-2.4, 2.4]
-    ## m/s - Limits on cart velocity [per RL Community CartPole]
+    #: m/s - Limits on cart velocity [per RL Community CartPole]
     VELOCITY_LIMITS     = [-6.0, 6.0]
 
     # Domain constants
 
-    ## Max number of steps per trajectory
+    #: Max number of steps per trajectory
     episodeCap          = 3000
-    ## Set to non-zero to enable print statements
+    #: Set to non-zero to enable print statements
     DEBUG               = 0
 
-    ## Domain constants computed in __init__. \n
-    # m - Length of the moment-arm to the center of mass, equal to half the pendulum length
-    MOMENT_ARM          = 0
-    # Note that some elsewhere refer to this simply as 'length' somewhat of a misnomer.
-    ## 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
-    _ALPHA_MASS         = 0
+    #: m - Length of the moment-arm to the center of mass, equal to half the pendulum length
+    MOMENT_ARM          = LENGTH / 2.
+    #: 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
+    _ALPHA_MASS         = 1.0 / (MASS_CART + MASS_PEND)
+
 
     # Plotting variables
     pendulumArm = None
@@ -131,15 +112,12 @@ class CartPole(Domain):
     Theta_discretization    = 20  # Used for visualizing the policy and the value function
     ThetaDot_discretization = 20  # Used for visualizing the policy and the value function
 
-    # are constrained by the format expected by ode functions.
     def __init__(self, logger=None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         #        self.states_num = inf       # Number of states
         self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
         self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
 
-        self.MOMENT_ARM         = self.LENGTH / 2.0
-        self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
         self.DimNames           = ['Theta', 'Thetadot', 'X', 'Xdot']
 
         if self.logger:
@@ -149,9 +127,9 @@ class CartPole(Domain):
         super(CartPole, self).__init__(logger)
 
     def showDomain(self, a=0):
-        ## Plot the pendulum and its angle, along with an arc-arrow indicating the
-        # direction of torque applied (not including noise!)
-        # Pendulum rotation is centered at origin
+        """Plot the pendulum and its angle, along with an arc-arrow indicating the
+        direction of torque applied (not including noise!)
+        Pendulum rotation is centered at origin"""
         s = self.state
         if self.domainFig is None:  # Need to initialize the figure
             self.domainFig = pl.figure("Domain")
@@ -216,19 +194,11 @@ class CartPole(Domain):
                 )
 
         pl.draw()
-        #        sleep(self.dt)
-
-
-    def s0(self):
-        # Defined by children
-        pass
 
     def possibleActions(self): # Return list of all indices corresponding to actions available
         return np.arange(self.actions_num)
 
     def step(self, a):
-        # Simulate one step of the CartPole after taking action a
-        # Note that at present, this is almost identical to the step for the Pendulum.
 
         forceAction = self.AVAIL_FORCE[a]
 
@@ -275,29 +245,27 @@ class CartPole(Domain):
         return [ns]
 
 
-    ## From CartPole implementation described in class definition, from rlcommunity.org
-    # (http://library.rl-community.org/wiki/CartPole)
-    # Used by odeint to numerically integrate the differential equation
     def _dsdt(self, s_augmented, t):
-        # This function is needed for ode integration.  It calculates and returns the
-        # derivatives at a given state, s.  The last element of s_augmented is the
-        # force action taken, required to compute these derivatives.
-        #
-        # ThetaDotDot =
-        #
-        #     g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
-        #     -----------------------------------------------------------------------
-        #                           4l/3  -  (alpha)ml*cos^2(theta)
-        #
-        #         g sin(theta) - w cos(theta)
-        #   =     ---------------------------
-        #         4l/3 - (alpha)ml*cos^2(theta)
-        #
-        # where w = (alpha)u + (alpha)ml*(tdot)^2*sin(theta)
-        # Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
-        #
-        # xDotDot = w - (alpha)ml * thetaDotDot * cos(theta)
+        """
+        This function is needed for ode integration.  It calculates and returns the
+        derivatives at a given state, s.  The last element of s_augmented is the
+        force action taken, required to compute these derivatives.
 
+        ThetaDotDot =
+
+            g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
+            -----------------------------------------------------------------------
+                                  4l/3  -  (alpha)ml*cos^2(theta)
+
+                g sin(theta) - w cos(theta)
+          =     ---------------------------
+                4l/3 - (alpha)ml*cos^2(theta)
+
+        where w = (alpha)u + (alpha)ml*(tdot)^2*sin(theta)
+        Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
+
+        xDotDot = w - (alpha)ml * thetaDotDot * cos(theta)
+        """
         g = self.ACCEL_G
         l = self.MOMENT_ARM
         m_pendAlphaTimesL = self.MASS_PEND * self._ALPHA_MASS * l
@@ -321,12 +289,8 @@ class CartPole(Domain):
         xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
         return np.array((thetaDot, thetaDotDot, xDot, xDotDot, 0))  # final cell corresponds to action passed in
 
-    ## @param s: state
-    #  @param a: action
-    ## @return: Reward earned for this state-action pair.
     def _getReward(self, a):
-        # Return the reward earned for this state-action pair
-        abstract
+        return NotImplementedError
 
     ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
     def _assignGroundVerts(self):
@@ -393,14 +357,73 @@ class CartPole(Domain):
         pl.figure("Value Function")
         pl.draw()
 
-# Flexible way to index states in the CartPole Domain.
-#
-# This class enumerates the different indices used when indexing the state. \n
-# e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
 class StateIndex:
+    """
+    Flexible way to index states in the CartPole Domain.
+
+    This class enumerates the different indices used when indexing the state. \n
+    e.g. s[StateIndex.THETA] is guaranteed to return the angle state.
+
+    """
     THETA, THETA_DOT = 0,1
     X, X_DOT = 2,3
     FORCE = 4
+
+
+class CartPole_InvertedBalance(CartPole):
+    """
+    *OBJECTIVE*
+    Reward 1 is received on each timestep spent within the goal region,
+    zero elsewhere.
+    This is also the terminal condition.
+
+    RL Community has the following bounds for failure:
+    theta: [-12, 12] degrees  -->  [-pi/15, pi/15]
+    x: [-2.4, 2.4] meters
+
+    Pendulum starts straight up, theta = 0, with the
+    cart at x = 0.
+    (see CartPole parent class for coordinate definitions).
+
+    Note that the reduction in angle limits affects the resolution
+    of the discretization of the continuous space.
+
+    Note that if unbounded x is desired, set x (and/or xdot) limits to
+    be [float("-inf"), float("inf")]
+
+    .. note::
+        The reward scheme is different from that in Pendulum_InvertedBalance
+
+    (See CartPole implementation in the RL Community,
+    http://library.rl-community.org/wiki/CartPole)
+    """
+    #: Limit on theta (Note that this may affect your representation's discretization)
+    ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
+    #: Based on Parr 2003 and ICML 11 (RL-Matlab)
+    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    gamma               = .999
+
+    def __init__(self, logger = None):
+        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
+        self.state_space_dims = len(self.statespace_limits)
+        super(CartPole_InvertedBalance,self).__init__(logger)
+
+    def s0(self):
+        # Returns the initial state, pendulum vertical
+        self.state = np.zeros(4)
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
+
+
+    def _getReward(self, a):
+        # On this domain, reward of 1 is given for each step spent within goal region.
+        # There is no specific penalty for failure.
+        s = self.state
+        return self.GOAL_REWARD if -pi/15 < s[StateIndex.THETA] < pi/15 else 0
+
+    def isTerminal(self):
+        s = self.state
+        return (not (-pi/15 < s[StateIndex.THETA] < pi/15) or \
+                not (-2.4    < s[StateIndex.X]     < 2.4))
 
 
 class CartPoleBalanceOriginal(CartPole):
@@ -408,6 +431,8 @@ class CartPoleBalanceOriginal(CartPole):
     taken from
     http://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c
     """
+    __author__ = "Christoph Dann"
+
     ANGLE_LIMITS        = [-np.pi/15.0, np.pi/15.0]
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
     gamma               = .95
@@ -463,3 +488,106 @@ class CartPoleBalanceModern(CartPole):
         s = self.state
         return (not (-np.pi/15 < s[StateIndex.THETA] < np.pi/15) or
                 not (-2.4    < s[StateIndex.X]     < 2.4))
+
+
+class CartPole_SwingUp(CartPole):
+    """
+    *OBJECTIVE*
+    Reward is 1 within the goal region, 0 elsewhere.
+    The episode terminates if x leaves its bounds, [-2.4, 2.4]
+
+    Pendulum starts straight down, theta = pi, with the
+    cart at x = 0.
+    (see CartPole parent class for coordinate definitions).
+
+    The objective is to get and then keep the pendulum in the goal
+    region for as long as possible, with +1 reward for
+    each step in which this condition is met; the expected
+    optimum then is to swing the pendulum vertically and
+    hold it there, collapsing the problem to Pendulum_InvertedBalance
+    but with much tighter bounds on the goal region.
+
+    (See CartPole implementation in the RL Community,
+    http://library.rl-community.org/wiki/CartPole)
+
+    """
+    ANGLE_LIMITS        = [-pi, pi]     #: Limit on theta (used for discretization)
+    def __init__(self, logger = None):
+        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
+        super(CartPole_SwingUp,self).__init__(logger)
+
+    def s0(self):
+        # Returns the initial state, pendulum vertical
+        self.state = np.array([pi,0,0,0])
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
+
+    def _getReward(self, a):
+        s = self.state
+        return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
+
+    def isTerminal(self):
+        s = self.state
+        return not (-2.4 < s[StateIndex.X] < 2.4)
+
+
+class CartPole_SwingUpReal(CartPole_SwingUp):
+    #: Limits on pendulum rate [per RL Community CartPole]
+    ANGULAR_RATE_LIMITS = [-3.0, 3.0]
+    #: Reward received on each step the pendulum is in the goal region
+    GOAL_REWARD         = 1
+    #: m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+    #: m/s - Limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-3.0, 3.0]
+
+    MASS_CART = 0.5
+    MASS_PEND = 0.5
+    LENGTH = 0.6
+    A = .5
+    DT = 0.1
+    episodeCap          = 400
+    gamma = 0.95
+    B = 0.1 # Friction between cart and ground
+
+    def _getReward(self, a):
+        s = self.state
+        if not (-2.4 < s[StateIndex.X] < 2.4):
+            return -30
+        pen_pos = np.array([s[StateIndex.X] + self.LENGTH * np.sin(s[StateIndex.THETA]),
+                         self.LENGTH * np.cos(s[StateIndex.THETA])])
+        diff = pen_pos - np.array([0, self.LENGTH])
+        #diff[1] *= 1.5
+        return np.exp(-.5* sum(diff**2) * self.A) - .5
+
+    def _dsdt(self, s_aug, t):
+        s = np.zeros((4))
+        s[0] = s_aug[StateIndex.X]
+        s[1] = s_aug[StateIndex.X_DOT]
+        s[3] = pi - s_aug[StateIndex.THETA]
+        s[2] = - s_aug[StateIndex.THETA_DOT]
+        a = s_aug[4]
+        ds = self._ode(s, t, a, self.MASS_PEND, self.LENGTH, self.MASS_CART, self.B)
+        ds_aug = s_aug.copy()
+        ds_aug[StateIndex.X] = ds[0]
+        ds_aug[StateIndex.X_DOT] = ds[1]
+        ds_aug[StateIndex.THETA_DOT] = ds[2]
+        ds_aug[StateIndex.THETA] = ds[3]
+        return ds_aug
+
+    def _ode(self, s, t, a, m, l, M, b):
+        """
+        [x, dx, dtheta, theta]
+        """
+
+        #cdef double g, c3, s3
+        s3 = np.sin(s[3])
+        c3 = np.cos(s[3])
+        g = 9.81
+        ds = np.zeros(4)
+        ds[0] = s[1]
+        ds[1] = (2 * m * l * s[2] ** 2 * s3 + 3 * m * g * s3 * c3 + 4 * a - 4 * b * s[1])\
+            / (4 * (M + m) - 3 * m * c3 ** 2)
+        ds[2] = (-3 * m * l * s[2] ** 2 * s3*c3 - 6 * (M + m) * g * s3 - 6 * (a - b * s[1]) * c3)\
+            / (4 * l * (m + M) - 3 * m * l * c3 ** 2)
+        ds[3] = s[2]
+        return ds

@@ -1,32 +1,28 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 from Tools import *
 from Domain import Domain
 
 #######################################################################
 # \author Developed by Alborz Geramifard March 14th 2013 at MIT
 #######################################################################
-# This is a simple simulation of Remote Controlled Car in a room with no obstacle \n \n
-# Based on http://planning.cs.uiuc.edu/node658.html. We refer to it as webpage. \n \n
-# State: x,y (center point on the line connecting the back wheels), speed (S on the webpage), heading (theta on the webpage)
-# heading is the angle with respect to the body frame. positive values => Turning right. Negative values => Turning left \n
-# Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right]. The second argument is phi based on the webpage  \n
-# Reward: -1 per step, 100 at goal.
+
+__author__ = "Alborz Geramifard"
 
 class RCCar(Domain):
+    """
+    This is a simple simulation of Remote Controlled Car in a room with no obstacle
+
+    Based on http://planning.cs.uiuc.edu/node658.html. We refer to it as webpage.
+
+    State: x,y (center point on the line connecting the back wheels),
+    speed (S on the webpage), heading (theta on the webpage)
+    heading is the angle with respect to the body frame. positive values => Turning right.
+    Negative values => Turning left
+
+    Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right].
+    The second argument is phi based on the webpage
+
+    Reward: -1 per step, 100 at goal.
+    """
     actions_num = 9
     state_space_dims = 4
     continuous_dims = arange(state_space_dims)

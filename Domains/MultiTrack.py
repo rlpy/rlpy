@@ -1,54 +1,27 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-import sys, os
-import copy
-
-import csv
-#
-
-
-
-#Add all paths
-RL_PYTHON_ROOT = '.'
-while not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-RL_PYTHON_ROOT += '/RLPy'
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT)
-sys.path.insert(0, RL_PYTHON_ROOT)
-
-
+"""Multitrack Mission"""
 from Tools import *
-from Domain import *
+from Domain import Domain
 
-########################################################
-# \author Trevor Campbell Mar 7 2013 at MIT
-########################################################
-# Multiagent Multitarget tracking mission. \n
-# Goal is to try to capture each target
-# (i.e. land on top or beside each target, with
-# capture probability 0.8 and 0.2 respectively). \n
-# Capturing a target provides a reward of 10. \n
-# Once a target is captured, it is removed from
-# the scenario (there is a binary vector denoting
-# availability of targets in the state)
 
-########################################################
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Tevor Campbell"
 
-# @author Trevor Campbell
+
 class MultiTrack(Domain):
+    """
+    Multiagent Multitarget tracking mission.
+    Goal is to try to capture each target
+    (i.e. land on top or beside each target, with
+    capture probability 0.8 and 0.2 respectively).
+    Capturing a target provides a reward of 10.
+    Once a target is captured, it is removed from
+    the scenario (there is a binary vector denoting
+    availability of targets in the state)
+
+    """
 
     episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
     gamma               = 0.9  # 0.9 used in tutorial and matlab
@@ -206,7 +179,9 @@ class MultiTrack(Domain):
             # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
             # ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists, maxValue)
     def vecList2id(self,x,maxValue):
-    #returns a list of unique id's based on possible permutations of this list of lists
+        """
+        returns a list of unique id's based on possible permutations of this list of lists
+        """
         _id = 0
         actionIDs = []
         curActionList = []
@@ -217,21 +192,22 @@ class MultiTrack(Domain):
         return actionIDs
 
     def vecList2idHelper(self,x,actionIDs,ind,curActionList, maxValue,limits):
-    #returns a list of unique id's based on possible permutations of this list of lists.  See vecList2id
+        """
+        returns a list of unique id's based on possible permutations of this list of lists.  See vecList2id
+        """
         for curAction in x[ind]: # x[ind] is one of the lists, e.g [0, 2] or [1,2]
             partialActionAssignment = curActionList[:]
             partialActionAssignment.append(curAction)
             if(ind == len(x) - 1): # We have reached the final list, assignment is complete
-#                print partialActionAssignment,',,',limits
                 actionIDs.append(vec2id(partialActionAssignment, limits)) # eg [0,1,0,2] and [3,3,3,3]
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
-#        return actionIDs
+
     def isTerminal(self):
         ss = self.state2Struct(self.state)
         return all([True if x == 0 else False for x in ss.targetavail])
 
-## \cond DEV
+
 class LocStruct:
     def __init__(self, x, y, idx, GRID):
         if 0 <= idx and idx < GRID*GRID:
@@ -253,9 +229,3 @@ class StateStruct:
         self.agentlocs  = agentlocs
         self.targetlocs = targetlocs
         self.targetavail= targetavail
-# \endcond
-
-if __name__ == '__main__':
-        random.seed(0)
-        p = MultiTrack(GRID = 10, TSTEP = 1, ASTEP = 2, NUM_AGENTS = 1, NUM_TARGETS = 1)
-        p.test(1000)

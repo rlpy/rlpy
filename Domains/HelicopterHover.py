@@ -1,9 +1,3 @@
-# Copyright (c) 2013
-# Alborz Geramifard, Robert H. Klein, Christoph Dann, and Jonathan P. How
-# Licensed under the BSD 3-Clause License (http://www.acl.mit.edu/RLPy)
-
-__author__ = "Christoph Dann <cdann@cdann.de>"
-
 from Domain import Domain
 import numpy as np
 import Tools.transformations as trans
@@ -11,6 +5,12 @@ from Tools.GeneralTools import cartesian
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, Circle, Ellipse
 from mpl_toolkits.mplot3d import proj3d
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Christoph Dann <cdann@cdann.de>"
 
 
 class Arrow3D(FancyArrowPatch):

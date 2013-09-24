@@ -1,56 +1,47 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 from numpy.ma.core import logical_or
 from Tools import *
 from Domain import Domain
-######################################################
-# \author Developed by N. Kemal Ure Dec 3rd 2012 at MIT
-# \author Edited by Alborz Geramifard on Feb 20 2013
-######################################################
-# State is : Location of Agent_1 x ... x Location of Agent n... \n
-# Location of Intruder 1 x ...x Location of Intruder_m \n
-# n is number of agents, m is number of intruders \n
-# Location is 2D position on a grid \n
-# Each agent can move in 4 directions + stay still, there is no noise \n
-# Each intruder moves with a fixed policy (specified by the user) \n
-# By Default, intruder policy is uniform random \n
-# Map of the world contains fixed number of danger zones,
-# Team receives a penalty whenever there is an intruder
-# on a danger zone in the absence of an agent  \n
-# Task is to allocate agents on the map
-# so that intruders do not enter the danger zones without
-# attendance of an agent
-######################################################
+
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+            "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "N. Kemal Ure"
+
+
 class IntruderMonitoring(Domain):
+    """
+    State is : Location of Agent_1 x ... x Location of Agent n...
+    Location of Intruder 1 x ...x Location of Intruder_m
+    n is number of agents, m is number of intruders
+    Location is 2D position on a grid
+    Each agent can move in 4 directions + stay still, there is no noise
+    Each intruder moves with a fixed policy (specified by the user)
+    By Default, intruder policy is uniform random
+    Map of the world contains fixed number of danger zones,
+    Team receives a penalty whenever there is an intruder
+    on a danger zone in the absence of an agent
+    Task is to allocate agents on the map
+    so that intruders do not enter the danger zones without
+    attendance of an agent
+    """
     map = None
-	## Number of rows and columns of the map
+	#: Number of rows and columns of the map
     ROWS = COLS = 0
-	## Number of Cooperating agents
+	#: Number of Cooperating agents
     NUMBER_OF_AGENTS = 0
-	## Number of Intruders
+	#: Number of Intruders
     NUMBER_OF_INTRUDERS = 0
     NUMBER_OF_DANGER_ZONES = 0
     gamma = .8
-    ## Rewards
+    #: Rewards
     INTRUSION_PENALTY = -1.0
     episodeCap  = 1000              # Episode Cap
 
     #Constants in the map
     EMPTY, INTRUDER, AGENT, DANGER = arange(4)
-	## Actions: Up, Down, Left, Right, Null
+	#: Actions: Up, Down, Left, Right, Null
     ACTIONS_PER_AGENT = array([[-1,0], [+1,0], [0,-1], [0,+1], [0,0], ])
 
     #Visual Variables
@@ -179,13 +170,3 @@ class IntruderMonitoring(Domain):
        self.ally_fig        = pl.plot(s_ally[:,1],s_ally[:,0],'bo',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
        self.intruder_fig    = pl.plot(s_intruder[:,1],s_intruder[:,0],'g>',color='gray',markersize=30.0,alpha = .7,markeredgecolor = 'k',markeredgewidth=2)
        pl.draw()
-       #pl.gcf().savefig('domain.pdf', transparent=True, pad_inches=.1)
-if __name__ == '__main__':
-    #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/1x3_1A_1I.txt')
-    #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/2x3_2A_1I.txt')
-    #p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/4x4_1A_2I.txt')
-    random.seed(99)
-    p = IntruderMonitoring(mapname = 'IntruderMonitoringMaps/4x4_2A_3I.txt')
-    p.test(1000)
-
-

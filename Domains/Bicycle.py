@@ -2,6 +2,12 @@ from Domain import Domain
 import numpy as np
 from itertools import product
 
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Christoph Dann"
+
 
 class BicycleBalancing(Domain):
     """
@@ -29,6 +35,9 @@ class BicycleBalancing(Domain):
 
         Ernst, D., Geurts, P. & Wehenkel, L. Tree-Based Batch Mode Reinforcement Learning.
         Journal of Machine Learning Research (2005) Issue 6
+
+    .. warning::
+        This domain is tested only marginally, use with a care.
     """
 
     gamma = 0.98
