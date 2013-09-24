@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Kernel functions used in KiFDD
+Dynamics for the HIVTreatment domain
 """
-__author__ = "Christoph Dann <cdann@cdann.de>"
 import numpy as np
 #cython: boundscheck=False
 #cython: cdivision=True
 
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Christoph Dann <cdann@cdann.de>"
 cimport numpy as np
 cimport cython
 
