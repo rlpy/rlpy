@@ -7,10 +7,10 @@ from Tools import Logger
 from MDPSolvers import TrajectoryBasedValueIteration
 from Representations import Tabular
 from Policies import GibbsPolicy
-from Experiments import Experiment
+from Experiments import MDPSolverExperiment
 
 
-def make_experiment(id=1, path="./Results/Temp"):
+def make_experiment(id=1, path="./Results/Temp", show=False):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -32,12 +32,12 @@ def make_experiment(id=1, path="./Results/Temp"):
     representation  = Tabular(domain, logger, discretization=20)
 
     ## Agent
-    agent = TrajectoryBasedValueIteration(id, representation, domain, logger, project_path=path, show= True)
+    agent = TrajectoryBasedValueIteration(id, representation, domain, logger, project_path=path, show=show)
 
-    return agent
+    return MDPSolverExperiment(agent, domain)
 
 if __name__ == '__main__':
     path = "./Results/Temp/{domain}/{agent}/{representation}/"
     experiment = make_experiment(1, path=path)
-    experiment.solve()
+    experiment.run(show=True)
 
