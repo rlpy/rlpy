@@ -21,6 +21,9 @@
 # Once the errors are bounded, the policy is changed
 
 from MDPSolver import MDPSolver
+from Tools import *
+from Policies import eGreedy
+from Representations import Tabular
 
 class PolicyIteration(MDPSolver):
     """Policy Iteration MDP Solver.

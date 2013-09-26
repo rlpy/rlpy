@@ -235,6 +235,7 @@ class GridWorld(Domain):
         #  r: k-by-1    rewards
         # ns: k-by-|s|  next state
         #  t: k-by-1    terminal values
+        # pa: k-by-??   possible actions for each next state
         actions = self.possibleActions(s)
         k       = len(actions)
         #Make Probabilities
@@ -245,6 +246,8 @@ class GridWorld(Domain):
         ns      = tile(s,(k,1)).astype(int)
         actions = self.ACTIONS[actions]
         ns     += actions
+        #Make next possible actions
+        pa = array([self.possibleActions(sn) for sn in ns])
         #Make rewards
         r       = ones((k,1))*self.STEP_REWARD
         goal    = self.map[ns[:,0], ns[:,1]] == self.GOAL
@@ -255,7 +258,7 @@ class GridWorld(Domain):
         t       = zeros((k,1),bool)
         t[goal] = True
         t[pit]  = True
-        return p,r,ns,t
+        return p,r,ns,t,pa
 
     def allStates(self):
         allStates = []
