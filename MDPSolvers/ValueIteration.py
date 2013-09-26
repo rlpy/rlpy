@@ -19,9 +19,39 @@
 ######################################################
 # Classical Value Iteration
 # Performs full Bellman Backup on a given s,a pair by sweeping through the state space  
-from MDPSolver import *
+
+from MDPSolver import MDPSolver
+from Tools import *
+from Representations import Tabular
+
 class ValueIteration(MDPSolver):
+    """Value Iteration MDP Solver.
+
+    Args:
+        job_id (int):   Job ID number used for running multiple jobs on a cluster.
+
+        representation (Representation):    Representation used for the value function.
+
+        domain (Domain):    Domain (MDP) to solve.
+
+        logger (Logger):    Logger object to log information and debugging.
+
+        planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
+
+        convergence_threshold (float):  Threshold for determining if the value function has converged.
+
+        ns_samples (int):   How many samples of the successor states to take.
+
+        project_path (str): Output path for saving the results of running the MDPSolver on a domain.
+
+        log_interval (int): Minimum number of seconds between displaying logged information.
+
+        show (bool):    Enable visualization?
+    """
+
     def solve(self):
+        """Solve the domain MDP."""
+
         self.result = []
         self.start_time     = clock() # Used to show the total time took the process
         # Check for Tabular Representation
@@ -52,15 +82,13 @@ class ValueIteration(MDPSolver):
                         performance_return, _,_,_  = self.performanceRun()
                         self.logger.log('[%s]: BellmanUpdates=%d, Return=%0.4f' % (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
                 
-                
-                    
             #check for convergence
             iteration += 1
             theta_change = linalg.norm(prev_theta - self.representation.theta,inf)
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
             converged = theta_change < self.convergence_threshold        
             self.logger.log('PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return=%0.4f, Steps=%d' % (iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change, performance_return, performance_steps))
-            if self.show: self.domain.show(s,a,self.representation)
+            if self.show: self.domain.show(a,s=s, representation=self.representation)
             
             # store stats
             self.result.append([bellmanUpdates, # index = 0 

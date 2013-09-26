@@ -19,6 +19,7 @@
 
 
 from TrajectoryBasedValueIteration import *
+
 class KWIK_TBVI(TrajectoryBasedValueIteration):
     """Trajectory Based Value Iteration. This algorithm is different from Value iteration in 2 senses:
     1. It works with any Linear Function approximator
@@ -53,14 +54,15 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
             # Generate a new episode e-greedy with the current values
             max_Bellman_Error       = 0
             step                    = 0
-            terminal                = False
-            s                       = self.domain.s0()
+            s, terminal, p_actions  = self.domain.s0()
+
             # The action is always greedy w.r.t value function unless it is not Known based on KWIK which means it should have Vmax
-            Q,a                     = self.bestKWIKAction(s)
+            Q,a                     = self.bestKWIKAction(s, terminal, p_actions)
+
             while not terminal and step < self.domain.episodeCap and self.hasTime():
-                new_Q           = self.representation.Q_KWIKoneStepLookAhead(s,a, self.ns_samples)
-                phi_s           = self.representation.phi(s)
-                phi_s_a         = self.representation.phi_sa(s,a,phi_s)
+                new_Q           = self.Q_KWIKoneStepLookAhead(s,a, self.ns_samples)
+                phi_s           = self.representation.phi(s, terminal)
+                phi_s_a         = self.representation.phi_sa(s,terminal,a,phi_s=phi_s)
                 old_Q           = dot(phi_s_a,self.representation.theta)
                 bellman_error   = new_Q - old_Q
                 #print s, old_Q, new_Q, bellman_error
@@ -70,12 +72,13 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
                 step                        += 1
 
                 #Discover features if the representation has the discover method
-                self.representation.discover(phi_s,bellman_error)
+                if hasattr(self.representation, "discover"):
+                    self.representation.discover(phi_s,bellman_error)
 
                 max_Bellman_Error = max(max_Bellman_Error,abs(bellman_error))
                 #Simulate new state and action on trajectory
-                _,s,terminal    = self.domain.step(a)
-                a               = self.representation.bestAction() if random.rand() > self.epsilon else randSet(self.domain.possibleActions())
+                _,s,terminal,p_actions    = self.domain.step(a)
+                a               = self.representation.bestAction(s,terminal,p_actions) if random.rand() > self.epsilon else randSet(self.domain.possibleActions())
 
             #check for convergence
             iteration += 1
@@ -101,33 +104,39 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
 
         if converged: self.logger.log('Converged!')
         super(TrajectoryBasedValueIteration,self).solve()
-    def bestKWIKAction(self,s):
+
+    def bestKWIKAction(self,s,terminal,p_actions):
         # Return the best action based on the kwik learner. If the state-action is not known it will be among the pool of the best actions because it has V_max value
-        phi_s                   = self.representation.phi(s)
-        Qs, A                   = self.representation.Qs(s,phi_s)
-        for a,i in enumerate(A):
-                if self.KWIK_predict(s,a) is None:
-                    Qs[i] = self.domain.RMAX / (1-self.domain.gamma)
+        phi_s                   = self.representation.phi(s, terminal)
+        Qs                   = self.representation.Qs(s,terminal,phi_s=phi_s)
+        Qs = Qs[p_actions]
+
+        for i,a in enumerate(p_actions):
+            if self.KWIK_predict(s,a) is None:
+                Qs[i] = self.domain.RMAX / (1-self.domain.gamma)
 
         max_ind = findElemArray1D(Qs,Qs.max())
+
         if self.DEBUG:
             self.logger.log('State:' +str(s))
             self.logger.line()
-            for i in arange(len(A)):
-                self.logger.log('Action %d, Q = %0.3f' % (A[i], Qs[i]))
+            for i in arange(len(p_actions)):
+                self.logger.log('Action %d, Q = %0.3f' % (p_actions[i], Qs[i]))
             self.logger.line()
-            self.logger.log('Best: %s, Max: %s' % (str(A[max_ind]),str(Qs.max())))
+            self.logger.log('Best: %s, Max: %s' % (str(p_actions[max_ind]),str(Qs.max())))
             #raw_input()
-        bestA = A[max_ind]
-        bestQ = Q[max_ind]
+        bestA = p_actions[max_ind]
+        bestQ = Qs[max_ind]
         if len(bestA) > 1:
             final_A = randSet(bestA)
         else:
             final_A = bestA[0]
 
         return bestQ[0], final_A
-    def KWIK_V(self,s):
-        return self.bestKWIKAction(s)[0]
+
+    def KWIK_V(self,s, terminal, p_actions):
+        return self.bestKWIKAction(s, terminal, p_actions)[0]
+
     def Q_KWIKoneStepLookAhead(self,s,a, ns_samples):
         # Hash new state for the incremental tabular case
         self.continuous_state_starting_samples = 10
@@ -135,10 +144,10 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
 
         gamma   = self.domain.gamma
         if hasFunction(self.domain,'expectedStep'):
-            p,r,ns,t    = self.domain.expectedStep(s,a)
+            p,r,ns,t,p_actions    = self.domain.expectedStep(s,a)
             Q           = 0
             for j in arange(len(p)):
-                    Q += p[j,0]*(r[j,0] + gamma*self.KWIK_V(ns[j,:]))
+                    Q += p[j,0]*(r[j,0] + gamma*self.KWIK_V(ns[j,:], t[j,:], p_actions[j]))
         else:
             # See if they are in cache:
             key = tuple(hstack((s,[a])))
@@ -178,9 +187,11 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
                 next_states, rewards = cacheHit
                 Q = mean([rewards[i] + gamma*self.KWIK_V(next_states[i,:]) for i in arange(ns_samples)])
         return Q
+
     def KWIK_update(self,s,a,KWIK_V):
         # The KWIK Learning algorithm here
         pass
+        
     def KWIK_predict(self,s,a):
         #return the value of a state-action pair. If it is not known then it will return None
         pass

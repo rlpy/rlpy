@@ -11,15 +11,15 @@ class GibbsPolicy(Policy):
     a feature vector consists of |A| identical stacked vectors.
     """
 
-    def pi(self, s):
-        p = self.probabilities(s)
+    def pi(self, s, terminal, p_actions):
+        p = self.probabilities(s, terminal)
         return discrete_sample(p)
 
     def dlogpi(self, s, a):
 
-        v = self.probabilities(s)
+        v = self.probabilities(s, False)
         n = self.representation.features_num
-        phi = self.representation.phi(s)
+        phi = self.representation.phi(s, False)
         res = -np.outer(v, phi)
         res.shape = self.representation.theta.shape
         res[a * n:(a + 1) * n] += phi
@@ -31,7 +31,7 @@ class GibbsPolicy(Policy):
         """
         probability of chosing action a given the state s
         """
-        v = self.probabilities(s)
+        v = self.probabilities(s, False)
         return v[a]
 
     @property
@@ -42,9 +42,9 @@ class GibbsPolicy(Policy):
     def theta(self, v):
         self.representation.theta = v
 
-    def probabilities(self, s):
+    def probabilities(self, s, terminal):
 
-        phi = self.representation.phi(s)
+        phi = self.representation.phi(s, terminal)
         n = self.representation.features_num
         v = np.exp(np.dot(self.representation.theta.reshape(-1, n), phi))
         v[v > 1e50] = 1e50

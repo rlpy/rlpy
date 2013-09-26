@@ -49,7 +49,7 @@ class NaturalActorCritic(Agent):
         self.representation = representation
         self.min_steps_between_updates = min_steps_between_updates
         self.max_steps_between_updates = max_steps_between_updates
-        self.lam = lam
+        self.lambda_ = lam
         self.alpha = alpha
 
         self.steps_between_updates = 0
@@ -61,18 +61,18 @@ class NaturalActorCritic(Agent):
         super(NaturalActorCritic, self).__init__(representation, policy,
                                                  domain, logger)
 
-    def learn(self, s, a, r, ns, na, terminal):
+    def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
 
         # compute basis functions
         phi_s = np.zeros((self.n))
         phi_ns = np.zeros((self.n))
         k = self.representation.features_num
-        phi_s[:k] = self.representation.phi(s)
+        phi_s[:k] = self.representation.phi(s, False)
         phi_s[k:] = self.policy.dlogpi(s, a)
-        phi_ns[:k] = self.representation.phi(ns)
+        phi_ns[:k] = self.representation.phi(ns, terminal)
 
         # update statistics
-        self.z *= self.lam
+        self.z *= self.lambda_
         self.z += phi_s
 
         self.A += np.einsum("i,j", self.z, phi_s - self.domain.gamma * phi_ns,

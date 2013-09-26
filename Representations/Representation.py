@@ -424,18 +424,18 @@ class Representation(object):
 
         gamma   = self.domain.gamma
         if hasFunction(self.domain,'expectedStep'):
-            p,r,ns,t    = self.domain.expectedStep(s,a)
+            p,r,ns,t,p_actions    = self.domain.expectedStep(s,a)
             Q       = 0
             for j in arange(len(p)):
                 if policy == None:
-                    Q += p[j,0]*(r[j,0] + gamma*self.V(ns[j,:]))
-                else:
+                    Q += p[j,0]*(r[j,0] + gamma*self.V(ns[j,:], t[j,:], p_actions[j]))
+                else: 
                     # For some domains such as blocks world, you may want to apply bellman backup to impossible states which may not have any possible actions.
                     # This if statement makes sure that there exist at least one action in the next state so the bellman backup with the fixed policy is valid
                     if len(self.domain.possibleActions(ns[j,:])):
-                        na = policy.pi(ns[j,:])
-                        Q += p[j,0]*(r[j,0] + gamma*self.Q(ns[j,:],na))
-        else:
+                        na = policy.pi(ns[j,:], t[j,:], self.domain.possibleActions(ns[j,:]))
+                        Q += p[j,0]*(r[j,0] + gamma*self.Q(ns[j,:],t[j,:], na))
+        else:    
             # See if they are in cache:
             key = tuple(hstack((s,[a])))
             cacheHit     = self.expectedStepCached.get(key)
