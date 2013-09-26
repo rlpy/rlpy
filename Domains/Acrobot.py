@@ -33,7 +33,7 @@ class Acrobot(Domain):
 
     or
 
-    Sutton, Richard S., and Andrew G. Barto:
+        Sutton, Richard S., and Andrew G. Barto:
         Reinforcement learning: An introduction.
         Cambridge: MIT press, 1998.
 
