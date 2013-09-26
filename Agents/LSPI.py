@@ -10,19 +10,39 @@ __author__ = "Alborz Geramifard"
 
 
 class LSPI(Agent):
-    """Least Squares Policy Iteration"""
+    """Least Squares Policy Iteration reinforcement learning agent.
+
+    Args:
+        representation (Representation):    Representation over the state features used by the agent.
+
+        policy (Policy):    Policy used by the agent.
+
+        domain (Domain):    Domain the agent will be acting within. This is used to get the state 
+                            information and discount rate.
+
+        logger (Logger):    Logger class used for outputing information and debugging.
+
+        max_window (int):   Maximum number of steps the agent will be run for, 
+                            which acts as the number of transitions to store.
+
+        steps_between_LSPI (int):   Number of steps between runs of the LSPI algorithm.
+
+        lspi_iterations (int):  Maximum number of iterations to go through for each update with LSPI.
+
+        epsilon (float):    Stopping criteria, threshold, for when LSPI is considered to have converged.
+
+        re_iterations (int):    Number of iterations of representation expansion to run.
+
+        use_sparse (bool):  Use sparse operators for building the matrix of transitions?
+
+    """
+
     use_sparse          = 0         # Use sparse operators for building A?
     lspi_iterations     = 0         # Number of LSPI iterations
     max_window          = 0         # Number of samples to be used to calculate the A and b matrices
     steps_between_LSPI  = 0         # Number of samples between each LSPI run.
     samples_count       = 0         # Number of samples gathered so far
     epsilon             = 0         # Minimum l_2 change required to continue iterations in LSPI
-
-    return_best_policy  = 0        # If this flag is activated, on each iteration of LSPI, the policy is checked with one simulation and in the end the theta w.r.t the best policy is returned. Note that this will require more samples than the intial set of samples provided to LSPI
-    best_performance    = -inf     # In the "return_best_policy", The best perofrmance check is stored here through LSPI iterations
-    best_theta          = None     # In the "return_best_policy", The best theta is stored here through LSPI iterations
-    best_TD_errors      = None     # In the "return_best_policy", The TD_Error corresponding to the best theta is stored here through LSPI iterations
-    extra_samples       = 0        # The number of extra samples used due to extra simulations
 
     #Store Data in separate matrixes
     data_s          = []        #
@@ -34,14 +54,13 @@ class LSPI(Agent):
     #Reprsentation Expansion
     re_iterations   = 0 # Maximum number of iterations over LSPI and Representation expansion
 
-    def __init__(self,representation,policy,domain,logger,max_window, steps_between_LSPI, lspi_iterations = 5, epsilon = 1e-3,return_best_policy = 0, re_iterations = 100, use_sparse = False):
+    def __init__(self,representation,policy,domain,logger,max_window, steps_between_LSPI, lspi_iterations = 5, epsilon = 1e-3, re_iterations = 100, use_sparse = False):
         self.samples_count      = 0
         self.max_window         = max_window
         self.steps_between_LSPI = steps_between_LSPI
         self.epsilon            = epsilon
         self.lspi_iterations    = lspi_iterations
         self.re_iterations      = re_iterations
-        self.return_best_policy = return_best_policy
         self.use_sparse         = use_sparse
 
         #Take memory for stored values
@@ -76,19 +95,33 @@ class LSPI(Agent):
                 self.logger.log('Max Data Size:\t\t%d' % self.max_window)
                 self.logger.log('Steps Between LSPI run:\t%d' % self.steps_between_LSPI)
                 self.logger.log('Weight Difference tol.:\t%0.3f' % self.epsilon)
-                self.logger.log('Track the best policy:\t%d' % self.return_best_policy)
                 self.logger.log('Use Sparse:\t\t%d' % self.use_sparse)
                 if not self.fixedRep: self.logger.log('Max Representation Expansion Iterations:\t%d' % self.re_iterations)
-    def learn(self,s,a,r,ns,na,terminal):
+
+    def learn(self,s,p_actions,a,r,ns,np_actions,na,terminal):
+        """Iterative learning method for the agent. 
+
+        Args:
+            s (ndarray):    The current state features
+            p_actions (ndarray):    The actions available in state s
+            a (int):    The action taken by the agent in state s
+            r (float):  The reward received by the agent for taking action a in state s
+            ns (ndarray):   The next state features
+            np_actions (ndarray): The actions available in state ns
+            na (int):   The action taken by the agent in state ns
+            terminal (bool): Whether or not ns is a terminal state
+        """
         self.process(s,a,r,ns,na,terminal)
         if (self.samples_count) % self.steps_between_LSPI == 0:
             self.representationExpansionLSPI()
         if terminal:
             self.episodeTerminated()
-    def policyIteration(self):
-        # Update the policy by recalculating A based on new na
-        # Returns the TD error for each sample based on the latest weights and next actions
 
+    def policyIteration(self):
+        """Update the policy by recalculating A based on new na.
+
+        Returns the TD error for each sample based on the latest weights and next actions.
+        """
         start_time      = clock()
         weight_diff     = self.epsilon + 1 # So that the loop starts
         lspi_iteration  = 0
@@ -125,44 +158,21 @@ class LSPI(Agent):
             ####################
             td_errors = self.calculateTDErrors()
 
-            #Measure the performance of the current policy
-            #If tracking the best policy update it here
-            if self.return_best_policy:
-                eps_return, eps_length      = self.updateBestPolicy(new_theta,td_errors)
-            else:
-                eps_return, eps_length, _   = self.checkPerformance();
-
             #Calculate the weight difference. If it is big enough update the theta
             weight_diff = linalg.norm(self.representation.theta - new_theta)
             if weight_diff > self.epsilon:
                 self.representation.theta = new_theta
 
-            self.logger.log("%d: %0.0f(s), ||w1-w2|| = %0.4f, Sparsity=%0.1f%%, %+0.3f Return, %d Steps, %d Features" % (lspi_iteration+1,deltaT(iteration_start_time),weight_diff, sparsity(A),eps_return,eps_length,self.representation.features_num))
+            self.logger.log("%d: %0.0f(s), ||w1-w2|| = %0.4f, Sparsity=%0.1f%%, %d Features" % (lspi_iteration+1,deltaT(iteration_start_time),weight_diff, sparsity(A),self.representation.features_num))
             lspi_iteration +=1
 
         self.logger.log('Total Policy Iteration Time = %0.0f(s)' % deltaT(start_time))
-        if self.return_best_policy:
-            self.logger.log("%d Extra Samples So Far." % self.extra_samples)
-            self.representation.theta = self.best_theta
-            return self.best_TD_errors
-        else:
-            return td_errors
-    def updateBestPolicy(self,new_theta,new_td_error):
-        # Check the performance of the policy corresponding to the new_theta
-        # Logs the best found theta, performance, and td_error based on a single run of the  new theta
-        old_theta                   = array(self.representation.theta)
-        self.representation.theta   = new_theta
-        eps_return, eps_length, _   = self.checkPerformance();
-        self.extra_samples          += eps_length
-        performance                 = eps_length if isinstance(self.representation.domain,Pendulum_InvertedBalance) else eps_return
-        if self.best_performance < performance:
-            self.best_performance   = performance
-            self.best_TD_errors     = new_td_error
-            self.best_theta         = array(new_theta)
-            self.logger.log('[Saved]')
-            self.representation.theta = old_theta #Return to previous theta
-        return eps_return, eps_length
+        return td_errors
+
     def LSTD(self):
+        """Run the LSTD algorithm on the collected data, and update the 
+        policy parameters.
+        """
         start_time = clock()
         #self.logger.log('Running LSTD:')
 
@@ -204,8 +214,9 @@ class LSPI(Agent):
             self.logger.log('Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' % (deltaT(start_time), solve_time))
         else:
             self.logger.log('Total LSTD Time = %0.0f(s)' % (deltaT(start_time)))
-    def process(self,s,a,r,ns,na,terminal):
 
+    def process(self,s,a,r,ns,na,terminal):
+        """Process one transition instance."""
         #Save samples
         self.data_s[self.samples_count,:]   = s
         self.data_a[self.samples_count]     = a
@@ -216,8 +227,8 @@ class LSPI(Agent):
         #Update A and b if representation is going to be fix together with all features
         if self.fixedRep:
             if terminal:
-                phi_s       = self.representation.phi(s)
-                phi_s_a     = self.representation.phi_sa(s,a,phi_s)
+                phi_s       = self.representation.phi(s, False)
+                phi_s_a     = self.representation.phi_sa(s, False, a, phi_s=phi_s)
             else:
                 # This is because the current s,a will be the previous ns, na
                 if self.use_sparse:
@@ -228,8 +239,8 @@ class LSPI(Agent):
                     phi_s_a     = self.all_phi_ns_na[self.samples_count-1,:]
 
 
-            phi_ns      = self.representation.phi(ns)
-            phi_ns_na   = self.representation.phi_sa(ns,na,phi_ns)
+            phi_ns      = self.representation.phi(ns, terminal)
+            phi_ns_na   = self.representation.phi_sa(ns, terminal, na, phi_s=phi_ns)
 
             self.all_phi_s[self.samples_count,:] = phi_s
             self.all_phi_ns[self.samples_count,:] = phi_ns
@@ -242,7 +253,11 @@ class LSPI(Agent):
             self.A += outer(phi_s_a,d)
 
         self.samples_count += 1
+
     def calculateTDErrors(self):
+        """Calculate TD errors over the transition instances stored.
+        Returns the TD errors for all transitions with the current parameters.
+        """
         # Calculates the TD-Errors in a matrix format for a set of samples = R + (gamma*F2 - F1) * Theta
         gamma   = self.representation.domain.gamma
         R       = self.data_r[:self.samples_count,:]
@@ -255,6 +270,7 @@ class LSPI(Agent):
             F1 = self.all_phi_s_a[:self.samples_count,:]
             F2 = self.all_phi_ns_na[:self.samples_count,:]
             return R.ravel()+dot(gamma*F2-F1,self.representation.theta)
+
     def representationExpansionLSPI(self):
         re_iteration    = 0
         added_feature   = True
@@ -284,3 +300,14 @@ class LSPI(Agent):
             self.LSTD()
             self.policyIteration()
         self.logger.log("============================")
+
+    def episodeTerminated(self):
+        """This function adjusts all necessary elements of the agent at the end of
+        the episodes.
+        .. note::
+            Every agent must call this function at the end of the learning if the
+            transition led to terminal state.
+        """
+        #Increase the number of episodes
+        self.episode_count += 1
+

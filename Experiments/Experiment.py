@@ -1,5 +1,7 @@
 """Standard Experiment for Learning Control in RL"""
 from Tools import *
+from Agents import PolicyEvaluation
+from Domains import Pendulum_InvertedBalance
 import numpy as np
 from copy import copy, deepcopy
 import re
