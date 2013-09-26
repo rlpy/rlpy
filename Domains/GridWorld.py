@@ -38,6 +38,7 @@ class GridWorld(Domain):
     NOISE = 0
     #: Used for graphical normalization
     MAX_RETURN  = 1
+    RMAX = MAX_RETURN
     #: Used for graphical normalization
     MIN_RETURN  = -1
     #: Used for graphical shifting of arrows
