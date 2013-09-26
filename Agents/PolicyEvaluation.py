@@ -3,17 +3,18 @@ from LSPI import *
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
-__license__ = "BSD 3-Clause"
+__license__ = "BSD 3-Clause" 
 __author__ = "Alborz Geramifard"
 
 
 class PolicyEvaluation(LSPI):
     """presumably an LSTD agent"""
     LOAD_POLICY_FILE = False     # If Q,S,A are read from the file
+
     def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.',re_iterations = 100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' %(target_path,className(domain))
         self.re_iterations  = re_iterations # Number of iterations over LSPI and iFDD
-        super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, max_window = sample_window, steps_between_LSPI = sample_window, re_iterations = re_iterations)
+        super(PolicyEvaluation,self).__init__(representation,policy,domain,logger, max_window = sample_window+1, steps_between_LSPI = sample_window, re_iterations = re_iterations)
         # Load the fixedPolicy Estimation if it does not exist create it
         if self.LOAD_POLICY_FILE:
             if not os.path.exists(self.compare_with_me):
@@ -28,9 +29,10 @@ class PolicyEvaluation(LSPI):
             self.S      = DATA[:,arange(self.domain.state_space_dims)]
             self.A      = DATA[:,self.domain.state_space_dims].astype(uint16)
             self.Q_MC   = DATA[:,self.domain.state_space_dims+1]
-    def learn(self,s,a,r,ns,na,terminal):
+
+    def learn(self,s, p_actions, a, r, ns, np_actions, na, terminal):
         self.process(s,a,r,ns,na,terminal)
-        if self.samples_count == self.max_window:
+        if self.samples_count == self.max_window-1:
             STATS               = []
             start_time          = clock()
             re_iteration        = 0 # Representation expansion iteration. Only used if the representation can be expanded
@@ -51,8 +53,10 @@ class PolicyEvaluation(LSPI):
                 self.logger.log('Representation Expansion iteration #%d\n-----------------' % re_iteration)
                 added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s, self.data_s)
             self.STATS = array(STATS).T # Experiment will save this later
+            self.samples_count = 0
         if terminal:
             self.episodeTerminated()
+
     def evaluatePolicy(self):
             #Calculate the Q for all samples using the new theta from LSTD
             #1. newTheta = LSTD
