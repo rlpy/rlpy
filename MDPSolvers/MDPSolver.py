@@ -34,6 +34,32 @@ from Policies import *
 from Tools import *
 from Representations import *
 class MDPSolver(object):
+    """MDPSolver is the base class for model based reinforcement learning agents and 
+    planners.
+
+    Args:
+        job_id (int):   Job ID number used for running multiple jobs on a cluster.
+
+        representation (Representation):    Representation used for the value function.
+
+        domain (Domain):    Domain (MDP) to solve.
+
+        logger (Logger):    Logger object to log information and debugging.
+
+        planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
+
+        convergence_threshold (float):  Threshold for determining if the value function has converged.
+
+        ns_samples (int):   How many samples of the successor states to take.
+
+        project_path (str): Output path for saving the results of running the MDPSolver on a domain.
+
+        log_interval (int): Minimum number of seconds between displaying logged information.
+
+        show (bool):    Enable visualization?
+
+    """
+
     representation      = None          # Link to the representation object
     domain              = None          # Link to the domain object
     logger              = None          # A simple objects that record the prints in a file
@@ -45,6 +71,7 @@ class MDPSolver(object):
     ns_samples          = None          # Number of samples to be used to generate estimated bellman backup if the domain does not provide explicit probablities though expectedStep function.
     log_interval        = None          # Number of bellman backups before reporting the performance. (Not all planners may use this)
     show                = None          # Show the learning if possible?
+
     def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 5000, show = False):
         self.id = job_id
         self.representation = representation
@@ -56,6 +83,7 @@ class MDPSolver(object):
         self.log_interval = log_interval
         self.show = show
         self.convergence_threshold = convergence_threshold
+
         # Set random seed for this job id
         random.seed(self.mainSeed)
         self.randomSeeds = randint(1,self.mainSeed,self.maxRuns,1)
@@ -71,45 +99,61 @@ class MDPSolver(object):
                 self.logger.log('Next Step Samples:\t%d' % ns_samples)
             self.logger.log('Log Interval:\t\t%d (Backups)' % log_interval)
             self.logger.log('Show Learning:\t\t%d' % show)
+
     def solve(self):
+        """Solve the domain MDP."""
         #Abstract
         self.result = array(self.result).T
-        self.logger.log('Value of S0 is = %0.5f' % self.representation.V(self.domain.s0()))
+        self.logger.log('Value of S0 is = %0.5f' % self.representation.V(*self.domain.s0()))
         self.saveStats()
 
     def printAll(self):
         printClass(self)
+
     def BellmanBackup(self,s,a,ns_samples, policy = None):
-        # Applied Bellman Backup to state-action pair s,a
-        # i.e. Q(s,a) = E[r + gamma * V(s')]
-        # If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]
+        """Applied Bellman Backup to state-action pair s,a
+        i.e. Q(s,a) = E[r + gamma * V(s')]
+        If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]
+
+        Args:
+            s (ndarray):        The current state
+            a (int):            The action taken in state s
+            ns_samples(int):    Number of next state samples to use.
+            policy (Policy):    Policy object to use for sampling actions.
+        """
         Q                                       = self.representation.Q_oneStepLookAhead(s,a,ns_samples,policy)
         s_index                                 = vec2id(self.representation.binState(s),self.representation.bins_per_dim)
         theta_index                             = self.representation.agg_states_num*a + s_index
         self.representation.theta[theta_index]  =  Q
+
     def performanceRun(self):
-        # Set Exploration to zero and sample one episode from the domain
+        """Set Exploration to zero and sample one episode from the domain."""
+
         eps_length  = 0
         eps_return  = 0
-        eps_term    = 0
+        eps_term    = False
         eps_discounted_return = 0
 
-        s           = self.domain.s0()
+        s, eps_term, p_actions           = self.domain.s0()
         terminal    = False
         #if self.show_performance:
         #    self.domain.showLearning(self.representation)
 
         while not eps_term and eps_length < self.domain.episodeCap:
-            a               = self.representation.bestAction(s)
-            r,ns,eps_term    = self.domain.step(a)
+            a               = self.representation.bestAction(s, eps_term, p_actions)
+            r,ns,eps_term, p_actions    = self.domain.step(a)
             s               = ns
             eps_discounted_return += self.domain.gamma**eps_length*r
             eps_return     += r
             eps_length     += 1
         return eps_return, eps_length, eps_term, eps_discounted_return
+
     def saveStats(self):
         checkNCreateDirectory(self.project_path+'/')
         savetxt('%s/%d-results.txt' % (self.project_path,self.id),self.result, fmt='%.18e', delimiter='\t')
+
     def hasTime(self):
-        #Return a boolean stating if there is time left for planning
+        """Return a boolean stating if there is time left for planning."""
         return deltaT(self.start_time) < self.planning_time
+
+

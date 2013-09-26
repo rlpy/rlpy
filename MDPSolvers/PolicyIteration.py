@@ -19,14 +19,43 @@
 # Classical Policy Iteration
 # Performs Bellman Backup on a given s,a pair given a fixed policy by sweeping through the state space
 # Once the errors are bounded, the policy is changed
-from MDPSolver import *
+
+from MDPSolver import MDPSolver
+
 class PolicyIteration(MDPSolver):
+    """Policy Iteration MDP Solver.
+
+    Args:
+        job_id (int):   Job ID number used for running multiple jobs on a cluster.
+
+        representation (Representation):    Representation used for the value function.
+
+        domain (Domain):    Domain (MDP) to solve.
+
+        logger (Logger):    Logger object to log information and debugging.
+
+        planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
+
+        convergence_threshold (float):  Threshold for determining if the value function has converged.
+
+        ns_samples (int):   How many samples of the successor states to take.
+
+        project_path (str): Output path for saving the results of running the MDPSolver on a domain.
+
+        log_interval (int): Minimum number of seconds between displaying logged information.
+
+        show (bool):    Enable visualization?
+
+        max_PE_iterations (int):    Maximum number of Policy evaluation iterations to run.
+    """
 
     def __init__(self,job_id, representation,domain,logger, planning_time = inf, convergence_threshold = .005, ns_samples = 100, project_path = '.', log_interval = 5000, show = False, max_PE_iterations = 10):
         super(PolicyIteration,self).__init__(job_id, representation,domain,logger, planning_time, convergence_threshold, ns_samples, project_path,log_interval, show)
         self.max_PE_iterations = max_PE_iterations
         self.logger.log('Max PE Iterations:\t%d' % self.max_PE_iterations)
+    
     def solve(self):
+        """Solve the domain MDP."""
         self.result = []
         self.start_time     = clock() # Used to show the total time took the process
 
@@ -55,8 +84,8 @@ class PolicyIteration(MDPSolver):
                 for i in arange(0,no_of_states):
                     if not self.hasTime(): break
                     s = self.representation.stateID2state(i)
-                    if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
-                        self.BellmanBackup(s,policy.pi(s),self.ns_samples, policy)
+                    if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s=s)):
+                        self.BellmanBackup(s,policy.pi(s, False, self.domain.possibleActions(s=s)),self.ns_samples, policy)
                         bellmanUpdates += 1
 
                         if bellmanUpdates % self.log_interval == 0:
@@ -67,7 +96,7 @@ class PolicyIteration(MDPSolver):
                 theta_change = linalg.norm(policy.representation.theta - self.representation.theta,inf)
                 converged = theta_change < self.convergence_threshold
                 self.logger.log('PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' % (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
-                if self.show: self.domain.show(s,policy.pi(s),self.representation)
+                if self.show: self.domain.show(policy.pi(s, False, self.domain.possibleActions(s=s)),self.representation, s=s)
 
             #Policy Improvement:
             policy_improvement_iteration += 1
@@ -80,7 +109,7 @@ class PolicyIteration(MDPSolver):
                     for a in self.domain.possibleActions(s):
                         if not self.hasTime(): break
                         self.BellmanBackup(s,a,self.ns_samples, policy)
-                    if policy.pi(s) != self.representation.bestAction(s): policyChanged += 1
+                    if policy.pi(s, False, self.domain.possibleActions(s=s)) != self.representation.bestAction(s, False, self.domain.possibleActions(s=s)): policyChanged += 1
                 i += 1
             policy.representation.theta = self.representation.theta.copy() # This will cause the policy to be copied over
             performance_return, performance_steps, performance_term, performance_discounted_return  = self.performanceRun()
@@ -99,5 +128,7 @@ class PolicyIteration(MDPSolver):
 
         if converged: self.logger.log('Converged!')
         super(PolicyIteration,self).solve()
+
+
 
 

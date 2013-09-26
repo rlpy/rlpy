@@ -62,8 +62,10 @@ class GridWorld(Domain):
             self.logger.log("Dims:\t\t%dx%d" %(self.ROWS,self.COLS))
             self.logger.log("Movement Noise:\t%0.0f%%" %(self.NOISE*100))
 
-    def showDomain(self, a=0):
-       s = self.state
+    def showDomain(self, a=0, s=None):
+       if s is None:
+           s = self.state
+
        #Draw the environment
        if self.domain_fig is None:
            self.agent_fig = pl.subplot(1,2,1)

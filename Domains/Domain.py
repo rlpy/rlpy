@@ -86,7 +86,7 @@ Gamma:      {self.gamma}
 """.format(self=self)
         return res
 
-    def show(self, a=None, representation=None):
+    def show(self, a=None, representation=None, s=None):
         """
         Shows a visualization of the current state of the domain and that of learning. See code
         \ref Domain_show "Here".
@@ -95,10 +95,10 @@ Gamma:      {self.gamma}
         @param representation
         The representation to show
         """
-        self.showDomain(a)
+        self.showDomain(a, s=s)
         self.showLearning(representation)
 
-    def showDomain(self, a=0):
+    def showDomain(self, a=0, s=None):
         """
         \b ABSTRACT \b METHOD: Shows a visualization of the current state of the domain. See code
         \ref Domain_showDomain "Here".
