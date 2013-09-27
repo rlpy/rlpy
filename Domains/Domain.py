@@ -129,7 +129,7 @@ Gamma:      {self.gamma}
         """
         raise NotImplementedError("Children need to implement this method")
 
-    def possibleActions(self):
+    def possibleActions(self, s=None):
         """
         Returns all actions in the domain.
         The default version returns all actions [0, 1, 2...].
