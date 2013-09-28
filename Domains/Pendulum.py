@@ -287,7 +287,7 @@ class Pendulum(Domain):
 
         # Add noise to the force action
         if self.force_noise_max > 0:
-            forceAction += random.uniform(-self.force_noise_max, self.force_noise_max)
+            forceAction += self.random_state.uniform(-self.force_noise_max, self.force_noise_max)
         else: forceNoise = 0
 
         # Now, augment the state with our force action so it can be passed to _dsdt

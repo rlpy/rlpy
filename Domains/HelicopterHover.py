@@ -145,7 +145,7 @@ class HelicopterHoverExtended(Domain):
         t = self.state[-1]
         gust_noise = self.state[13:19]
         gust_noise = (self.gust_memory * gust_noise
-                      + (1. - self.gust_memory) * np.random.randn(6) * self.noise_level * self.noise_std)
+                      + (1. - self.gust_memory) * self.random_state.randn(6) * self.noise_level * self.noise_std)
         # update noise which simulates gusts
         for i in range(10):
             # Euler integration

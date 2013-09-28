@@ -177,9 +177,9 @@ class GridWorld(Domain):
     def step(self,a):
         r           = self.STEP_REWARD
         ns          = self.state.copy()
-        if random.random_sample() < self.NOISE:
+        if self.random_state.random_sample() < self.NOISE:
             #Random Move
-            a = randSet(self.possibleActions())
+            a = self.random_state.choice(self.possibleActions())
 
         # Take action
         ns = self.state + self.ACTIONS[a]

@@ -17,6 +17,8 @@
 # Developed by Alborz Geramiard Oct 30th 2012 at MIT #
 ######################################################
 from Policy import *
+import numpy as np
+
 class eGreedy(Policy):
     epsilon         = None
     old_epsilon     = None
@@ -35,13 +37,14 @@ class eGreedy(Policy):
         coin = random.rand()
         #print "coin=",coin
         if coin < self.epsilon:
-            return randSet(p_actions)
+            return np.random.choice(p_actions)
         else:
             b_actions = self.representation.bestActions(s, terminal, p_actions)
             if self.forcedDeterministicAmongBestActions:
                 return b_actions[0]
             else:
-                return randSet(b_actions)
+                return np.random.choice(b_actions)
+
     def turnOffExploration(self):
         self.old_epsilon = self.epsilon
         self.epsilon = 0

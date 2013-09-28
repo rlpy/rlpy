@@ -78,18 +78,18 @@ class MultiTrack(Domain):
             dx = 0
             dy = 0
             #decide whether to be random or not
-            if random.random() < self.motionNoise:
+            if self.random_state.random_sample() < self.motionNoise:
                 #stochastic motion
-                dx = random.randint(-self.TSTEP, self.TSTEP)
-                dy = random.randint(-self.TSTEP, self.TSTEP)
+                dx = self.random_state.randint(-self.TSTEP, self.TSTEP)
+                dy = self.random_state.randint(-self.TSTEP, self.TSTEP)
             else:
                 #nominal motion
                 #dictionary for nominal dx/dy - targets move left,right,up,down
                 nomdict = {0 : (1, 0), 1 : (-1, 0), 2 : (0, 1), 3 : (0, -1)}
                 dx, dy = nomdict[i%4]
                 if self.TSTEP > 1:
-                    dx = dx*random.randint(1, self.TSTEP)
-                    dy = dy*random.randint(1, self.TSTEP)
+                    dx = dx*self.random_state.randint(1, self.TSTEP)
+                    dy = dy*self.random_state.randint(1, self.TSTEP)
 
             if self.worldContains(ss.targetlocs[i].x + dx, ss.targetlocs[i].y+dy):
                 nss.targetlocs[i] = LocStruct(ss.targetlocs[i].x + dx, ss.targetlocs[i].y + dy, -1, self.GRID)
@@ -106,31 +106,32 @@ class MultiTrack(Domain):
                 tx = nss.targetlocs[j].x
                 ty = nss.targetlocs[j].y
                 if ss.targetavail[j] == 1 and (abs(ax-tx) == 1 or abs(ay-ty) == 1):
-                    if random.random() < 0.2:
+                    if self.random_state.random_sample() < 0.2:
                         nss.targetavail[j] = 0
                         rwd = rwd + 10
                 elif ss.targetavail[j] == 1 and abs(ax-tx) == 0 and abs(ay-ty) == 0:
-                    if random.random() < 0.8:
+                    if self.random_state.random_sample() < 0.8:
                         nss.targetavail[j] = 0
                         rwd = rwd + 10
             #otherwise, targetavail is left alone (still equal to the previous state's target avail
 
         ns = self.struct2State(nss)
         self.state = ns.copy()
-        return rwd,ns,self.isTerminal()
+        return rwd,ns,self.isTerminal(), self.possibleActions()
         # Returns the triplet [r,ns,t] => Reward, next state, isTerminal
 
     def s0(self):
         alocs = []
         tlocs = []
         for i in range(0, self.NUM_AGENTS):
-            loc = LocStruct(-1, -1, random.randint(0, self.GRID*self.GRID-1), self.GRID)
+            loc = LocStruct(-1, -1, self.random_state.randint(0, self.GRID*self.GRID-1), self.GRID)
             alocs.append(loc)
         for i in range(0, self.NUM_TARGETS):
-            loc = LocStruct(-1, -1, random.randint(0, self.GRID*self.GRID-1), self.GRID)
+            loc = LocStruct(-1, -1, self.random_state.randint(0, self.GRID*self.GRID-1), self.GRID)
             tlocs.append(loc)
         binvec = ones(self.NUM_TARGETS, dtype='int')
-        return self.struct2State(StateStruct(alocs, tlocs, binvec))
+        self.state = self.struct2State(StateStruct(alocs, tlocs, binvec))
+        return self.state.copy(), False, self.possibleActions()
 
     # @return: the tuple (locations, fuel, actuator, sensor), each an array indexed by uav_id
     def state2Struct(self,s):

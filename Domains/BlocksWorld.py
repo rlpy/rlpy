@@ -93,7 +93,7 @@ class BlocksWorld(Domain):
             print self.possibleActions()
             print id2vec(self.possibleActions(),[self.blocks, self.blocks])
 
-        if random.random_sample() < self.noise: B = A #Drop on Table
+        if self.random_state.random_sample() < self.noise: B = A #Drop on Table
         ns          = s.copy()
         ns[A]       = B # A is on top of B now.
         self.state = ns.copy()

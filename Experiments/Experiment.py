@@ -230,6 +230,7 @@ class Experiment(object):
             # Act,Step
             r, ns, terminal, np_actions   = self.domain.step(a)
             na              = self.agent.policy.pi(ns, terminal, np_actions)
+
             total_steps     += 1
             eps_steps       += 1
             eps_return      += r

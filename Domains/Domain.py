@@ -73,7 +73,7 @@ class Domain(object):
             self.states_num = np.inf
 
         # a new stream of random numbers for each domain
-        self.rand_state = np.random.RandomState()
+        self.random_state = np.random.RandomState()
 
     def __str__(self):
         res = """{self.__class__}:
