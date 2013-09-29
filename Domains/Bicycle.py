@@ -74,7 +74,7 @@ class BicycleBalancing(Domain):
         I_dl = M_d / 2 * r**2
         l = 1.11
 
-        w = np.random.uniform(-0.02, 0.02)
+        w = self.random_state.uniform(-0.02, 0.02)
 
         phi = omega + np.arctan(d + w) / h
         invr_f = np.abs(np.sin(theta)) / l

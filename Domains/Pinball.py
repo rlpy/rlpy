@@ -2,7 +2,6 @@
 """
 from Domain import Domain
 import numpy as np
-from Tools import randSet
 from itertools import tee, izip
 import itertools
 from Tkinter import Tk, Canvas
@@ -26,7 +25,6 @@ class Pinball(Domain):
         self.NOISE              = noise
         self.logger             = logger
         self.configuration      = configuration
-        self.environment        = PinballModel(self.configuration)
         self.screen             = None
         self.episodeCap         = episodeCap
         self.actions_num        = 5
@@ -34,6 +32,7 @@ class Pinball(Domain):
         self.statespace_limits  = np.array([[0.0, 1.0], [0.0, 1.0], [-2.0, 2.0], [-2.0, 2.0]])
         self.continuous_dims    = [4]
         super(Pinball,self).__init__(self.logger)
+        self.environment        = PinballModel(self.configuration, random_state=self.random_state)
 
     def showDomain(self, a):
         if self.screen is None:
@@ -51,9 +50,9 @@ class Pinball(Domain):
     def step(self, a):
         s = self.state
         [self.environment.ball.position[0], self.environment.ball.position[1], self.environment.ball.xdot, self.environment.ball.ydot] = s
-        if np.random.random_sample() < self.NOISE:
+        if self.random_state.random_sample() < self.NOISE:
             #Random Move
-            a = randSet(self.possibleActions())
+            a = self.random_state.choice(self.possibleActions())
         reward = self.environment.take_action(a)
         self.environment._check_bounds()
         state = np.array(self.environment.get_state())
@@ -312,7 +311,7 @@ class PinballModel:
     THRUST_PENALTY = -5
     END_EPISODE = 10000
 
-    def __init__(self, configuration):
+    def __init__(self, configuration, random_state=np.random.RandomState()):
         """ Read a configuration file for Pinball and draw the domain to screen
 
     :param configuration: a configuration file containing the polygons,
@@ -320,6 +319,8 @@ class PinballModel:
     :type configuration: str
 
         """
+
+        self.random_state = random_state
         self.action_effects = {self.ACC_X:(1, 0), self.ACC_Y:(0, 1), self.DEC_X:(-1, 0), self.DEC_Y:(0, -1), self.ACC_NONE:(0, 0)}
 
 
@@ -346,7 +347,7 @@ class PinballModel:
                 elif tokens[0] == 'ball':
                     ball_rad = float(tokens[1])
         self.start_pos = start_pos[0]
-        a = np.random.randint(len(start_pos))
+        a = self.random_state.randint(len(start_pos))
         self.ball = BallModel(list(start_pos[a]), ball_rad)
 
     def get_state(self):
@@ -419,6 +420,7 @@ class PinballModel:
             self.ball.position[1] = 0.95
         if self.ball.position[1] < 0.0:
             self.ball.position[1] = 0.05
+
 class PinballView:
     """ This class displays a :class:`PinballModel`
 
@@ -483,7 +485,7 @@ class PinballView:
 def run_pinballview(width, height, configuration):
     """
 
-        Changed from original Will Dabney implementation to reflect
+        Changed from original Pierre-Luc Bacon implementation to reflect
         the visualization changes in the PinballView Class.
 
     """

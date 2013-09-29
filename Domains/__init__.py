@@ -21,5 +21,5 @@ from RCCar import RCCar
 from Acrobot import Acrobot, AcrobotLegacy
 from Bicycle import BicycleBalancing
 from Pinball import Pinball
-# don't import by default as long as it requires pygame
-#from Pinball import Pinball
+from MultiTrack import MultiTrack
+from Pinball import Pinball

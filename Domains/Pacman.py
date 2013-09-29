@@ -174,9 +174,9 @@ class Pacman(Domain):
         Internal states accounted for along with scoring and terminal checking.
         Returns a tuple of form (reward, state vector, terminal)
         """
-        if np.random.random_sample() < self.noise:
+        if self.random_state.random_sample() < self.noise:
             #Random Move
-            a = np.random.choice(self.possibleActions())
+            a = self.random_state.choice(self.possibleActions())
         a = self.actions[a]
         next_state_p = self.game_state.generateSuccessor(0, a)
         next_state = next_state_p
@@ -189,7 +189,7 @@ class Pacman(Domain):
                 break
             ghostOptions = pacman.GhostRules.getLegalActions(next_state, i)
             #TODO: use domain random stream
-            randomAction_ind = np.random.randint(len(ghostOptions))
+            randomAction_ind = self.random_state.randint(len(ghostOptions))
             randomAction = ghostOptions[randomAction_ind]
             next_state = next_state.generateSuccessor(i, randomAction)
         # keep track of eaten stuff for graphics (original code assumes

@@ -59,7 +59,7 @@ class MountainCar(Domain):
 
     def step(self, a):
         position, velocity = self.state
-        noise = 2 * self.accelerationFactor * self.noise * (random.rand() - .5)
+        noise = 2 * self.accelerationFactor * self.noise * (self.random_state.rand() - .5)
         velocity += (noise +
                                 self.actions[a] * self.accelerationFactor +
                                 cos(self.hillPeakFrequency * position) * self.gravityFactor)
@@ -164,8 +164,9 @@ class MountainCar(Domain):
         for row, xDot in enumerate(linspace(self.XDOTMIN, self.XDOTMAX, self.XDot_discretization)):
             for col, x in enumerate(linspace(self.XMIN, self.XMAX, self.X_discretization)):
                 s           = [x,xDot]
-                Qs,As       = representation.Qs(s)
-                pi[row,col] = representation.bestAction(s)
+                Qs       = representation.Qs(s, False)
+                As       = self.possibleActions()
+                pi[row,col] = representation.bestAction(s, False, As)
                 V[row,col]  = max(Qs)
         self.valueFunction_im.set_data(V)
         self.policy_im.set_data(pi)

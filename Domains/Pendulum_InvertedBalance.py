@@ -76,7 +76,7 @@ class Pendulum_InvertedBalance(Pendulum):
     def s0(self):
         # Returns the initial state, pendulum vertical
         # Initial state is uniformly randomed between [-.2,.2] for both dimensions
-        self.state = (random.rand(2)*2-1)*0.2
+        self.state = (self.random_state.rand(2)*2-1)*0.2
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a):

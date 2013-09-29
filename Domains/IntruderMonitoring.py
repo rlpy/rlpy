@@ -1,7 +1,7 @@
 from numpy.ma.core import logical_or
 from Tools import *
 from Domain import Domain
-
+import time
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -37,7 +37,7 @@ class IntruderMonitoring(Domain):
     gamma = .8
     #: Rewards
     INTRUSION_PENALTY = -1.0
-    episodeCap  = 1000              # Episode Cap
+    episodeCap  = 100              # Episode Cap
 
     #Constants in the map
     EMPTY, INTRUDER, AGENT, DANGER = arange(4)
@@ -88,6 +88,7 @@ class IntruderMonitoring(Domain):
         #Move all intruders randomly
         #Calculate the reward: Number of danger zones being violated by intruders while no agents being present
         s = self.state
+
         #Move all agents based on the taken action
         agents      = array(s[:self.NUMBER_OF_AGENTS*2].reshape(-1,2))
         actions     = id2vec(a,self.ACTION_LIMITS)
@@ -152,7 +153,8 @@ class IntruderMonitoring(Domain):
 
         print 'Reward ',r
     def IntruderPolicy(self,s_i):
-         return randSet(self.possibleActionsPerAgent(s_i))
+         return self.random_state.choice(self.possibleActionsPerAgent(s_i))
+         
     def showDomain(self, a):
        s = self.state
        #Draw the environment

@@ -275,12 +275,12 @@ class PST(Domain):
         distanceTraveled = sum(logical_and(nsStruct.locations, sStruct.locations))
 
         # Actuator failure transition
-        randomFails = array([random.random() for dummy in arange(self.NUM_UAV)])
+        randomFails = array([self.random_state.random_sample() for dummy in arange(self.NUM_UAV)])
         randomFails = randomFails > self.P_ACT_FAIL
         nsStruct.actuator = logical_and(sStruct.actuator, randomFails)
 
         # Sensor failure transition
-        randomFails = array([random.random() for dummy in arange(self.NUM_UAV)])
+        randomFails = array([self.random_state.random_sample() for dummy in arange(self.NUM_UAV)])
         randomFails = randomFails > self.P_SENSOR_FAIL
         nsStruct.sensor = logical_and(sStruct.sensor, randomFails)
 

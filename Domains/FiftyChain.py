@@ -107,7 +107,7 @@ class FiftyChain(Domain):
         if self.value_function_fig is None:
             self.value_function_fig = pl.subplot(3,1,2)
             self.V_star_line = self.value_function_fig.plot(allStates,self.V_star)
-            V   = [representation.V(s) for s in allStates]
+            V   = [representation.V(s, False, self.possibleActions(s=s)) for s in allStates]
 
             # Note the comma below, since a tuple of line objects is returned
             self.V_approx_line, = self.value_function_fig.plot(allStates, V, 'r-',linewidth = 3)
@@ -121,8 +121,8 @@ class FiftyChain(Domain):
             self.policy_fig.xaxis.set_visible(False)
             self.policy_fig.yaxis.set_visible(False)
 
-        V   = [representation.V(s) for s in allStates]
-        pi  = [representation.bestAction(s) for s in allStates]
+        V   = [representation.V(s, False, self.possibleActions(s=s)) for s in allStates]
+        pi  = [representation.bestAction(s, False, self.possibleActions(s=s)) for s in allStates]
         #pi  = [self.optimal_policy[s] for s in allStates]
 
         DX  = [(2*a-1)*self.SHIFT*.1 for a in pi]
@@ -132,7 +132,7 @@ class FiftyChain(Domain):
         pl.draw()
 
     def step(self,a):
-        actionFailure = (random.random() < self.p_action_failure)
+        actionFailure = (self.random_state.random_sample() < self.p_action_failure)
         if a == self.LEFT or (a == self.RIGHT and actionFailure): #left
             ns = max(0,self.state-1)
         elif a == self.RIGHT or (a == self.LEFT and actionFailure):
@@ -143,14 +143,15 @@ class FiftyChain(Domain):
         return r,ns,terminal, self.possibleActions()
 
     def s0(self):
-        self.state = random.randint(0,self.chainSize)
+        self.state = self.random_state.randint(0,self.chainSize)
         return self.state, self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
         return False
 
-    def possibleActions(self):
-        s = self.state
+    def possibleActions(self,s=None):
+        if s is None:
+            s = self.state
         if self.using_optimal_policy: return array([self.optimal_policy[s]])
         else: return arange(self.actions_num)
 

@@ -162,7 +162,7 @@ class CartPole(Domain):
         pendulumBobX = curX + self.LENGTH  * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
 
-        r = self._getReward(s, a)
+        r = self._getReward(a, s=s)
         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
 
@@ -195,7 +195,7 @@ class CartPole(Domain):
 
         pl.draw()
 
-    def possibleActions(self): # Return list of all indices corresponding to actions available
+    def possibleActions(self, s=None): # Return list of all indices corresponding to actions available
         return np.arange(self.actions_num)
 
     def step(self, a):
@@ -204,7 +204,7 @@ class CartPole(Domain):
 
         # Add noise to the force action
         if self.force_noise_max > 0:
-            forceAction += np.random.uniform(-self.force_noise_max, self.force_noise_max)
+            forceAction += self.random_state.uniform(-self.force_noise_max, self.force_noise_max)
 
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = np.append(self.state, forceAction)
@@ -289,7 +289,7 @@ class CartPole(Domain):
         xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
         return np.array((thetaDot, thetaDotDot, xDot, xDotDot, 0))  # final cell corresponds to action passed in
 
-    def _getReward(self, a):
+    def _getReward(self, a, s=None):
         return NotImplementedError
 
     ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
@@ -344,7 +344,8 @@ class CartPole(Domain):
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = np.array([theta,thetaDot, 0, 0])
-                Qs,As       = representation.Qs(s)
+                Qs       = representation.Qs(s, False)
+                As       = self.possibleActions(s=s)
                 pi[row,col] = As[np.argmax(Qs)]
                 V[row,col]  = max(Qs)
 
@@ -414,10 +415,11 @@ class CartPole_InvertedBalance(CartPole):
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
 
-    def _getReward(self, a):
+    def _getReward(self, a, s=None):
         # On this domain, reward of 1 is given for each step spent within goal region.
         # There is no specific penalty for failure.
-        s = self.state
+        if s is None:
+            s = self.state
         return self.GOAL_REWARD if -pi/15 < s[StateIndex.THETA] < pi/15 else 0
 
     def isTerminal(self):
@@ -450,11 +452,12 @@ class CartPoleBalanceOriginal(CartPole):
         self.state = np.zeros(4)
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def _getReward(self, a):
-        return self.good_reward if not self.isTerminal() else -1.
+    def _getReward(self, a, s=None):
+        return self.good_reward if not self.isTerminal(s=s) else -1.
 
-    def isTerminal(self):
-        s = self.state
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
         return (not (-np.pi/15 < s[StateIndex.THETA] < np.pi/15) or
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 
@@ -478,14 +481,15 @@ class CartPoleBalanceModern(CartPole):
         super(CartPoleBalanceModern, self).__init__(logger)
 
     def s0(self):
-        self.state = np.array([np.random.randn()*0.01, 0., 0., 0.])
+        self.state = np.array([self.random_state.randn()*0.01, 0., 0., 0.])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def _getReward(self, a):
-        return 0. if not self.isTerminal() else -1.
+    def _getReward(self, a, s=None):
+        return 0. if not self.isTerminal(s=s) else -1.
 
-    def isTerminal(self):
-        s = self.state
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
         return (not (-np.pi/15 < s[StateIndex.THETA] < np.pi/15) or
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 
@@ -521,12 +525,14 @@ class CartPole_SwingUp(CartPole):
         self.state = np.array([pi,0,0,0])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def _getReward(self, a):
-        s = self.state
+    def _getReward(self, a, s=None):
+        if s is None:
+            s = self.state
         return self.GOAL_REWARD if -pi/6 < s[StateIndex.THETA] < pi/6 else 0
 
-    def isTerminal(self):
-        s = self.state
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
         return not (-2.4 < s[StateIndex.X] < 2.4)
 
 
@@ -549,8 +555,9 @@ class CartPole_SwingUpReal(CartPole_SwingUp):
     gamma = 0.95
     B = 0.1 # Friction between cart and ground
 
-    def _getReward(self, a):
-        s = self.state
+    def _getReward(self, a, s=None):
+        if s is None:
+            s = self.state
         if not (-2.4 < s[StateIndex.X] < 2.4):
             return -30
         pen_pos = np.array([s[StateIndex.X] + self.LENGTH * np.sin(s[StateIndex.THETA]),

@@ -98,7 +98,7 @@ class Acrobot(Domain):
 
         # Add noise to the force action
         if self.torque_noise_max > 0:
-            torque += np.random.uniform(-self.torque_noise_max, self.torque_noise_max)
+            torque += self.random_state.uniform(-self.torque_noise_max, self.torque_noise_max)
 
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = np.append(s, torque)
@@ -249,7 +249,7 @@ class AcrobotLegacy(Acrobot):
 
         # Add noise to the force action
         if self.torque_noise_max > 0:
-            torque += random.uniform(-self.torque_noise_max, self.torque_noise_max)
+            torque += self.random_state.uniform(-self.torque_noise_max, self.torque_noise_max)
 
         s_augmented = np.append(s, torque)
         for i in range(4):

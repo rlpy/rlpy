@@ -154,7 +154,7 @@ class SystemAdministrator(Domain):
             if(a == computer_id): #Reboot action on this computer
                 totalRebootReward += self.REBOOT_REWARD
                 # NOTE can break up if-statement below to separate cases
-                if (random.random() <= self.P_REBOOT_REPAIR):
+                if (self.random_state.random_sample() <= self.P_REBOOT_REPAIR):
                     ns[computer_id] = self.RUNNING
                 else:
                     ns[computer_id] = self.BROKEN
@@ -164,10 +164,10 @@ class SystemAdministrator(Domain):
                     sumOfNeighbors = sum([self.state[i] for i in self.NEIGHBORS[computer_id]])
                     # TODO this expression should be a function, or something
                     p_broken = 1.0 - (0.45 + 0.5 * (1+sumOfNeighbors) / (1+len(self.NEIGHBORS[computer_id])))
-                    if(random.random() < p_broken ):
+                    if(self.random_state.random_sample() < p_broken ):
                         ns[computer_id] = self.BROKEN
                 else:
-                    if(random.random() < self.P_SELF_REPAIR):
+                    if(self.random_state.random_sample() < self.P_SELF_REPAIR):
                         ns[computer_id] = self.RUNNING
         if (self.IS_RING and s[0] == self.RUNNING): totalRebootReward += 1 # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on one machine
         terminal = False

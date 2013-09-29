@@ -73,7 +73,7 @@ class Domain(object):
             self.states_num = np.inf
 
         # a new stream of random numbers for each domain
-        self.rand_state = np.random.RandomState()
+        self.random_state = np.random.RandomState()
 
     def __str__(self):
         res = """{self.__class__}:
@@ -129,7 +129,7 @@ Gamma:      {self.gamma}
         """
         raise NotImplementedError("Children need to implement this method")
 
-    def possibleActions(self):
+    def possibleActions(self, s=None):
         """
         Returns all actions in the domain.
         The default version returns all actions [0, 1, 2...].
