@@ -1,6 +1,6 @@
 from Tools import Logger
 from Domains import PST
-from Agents import Greedy_GQ
+from Agents import Q_Learning
 from Representations import *
 from Policies import eGreedy
 from Experiments import Experiment
@@ -16,27 +16,24 @@ param_space = {#'discretization': hp.quniform("discretization", 5, 50, 1),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    discover_threshold = 960.51,
+                    discover_threshold =1307.41,
                     lambda_=0.,
-                    boyan_N0=4206.,
-                    initial_alpha = .7457):
+                    boyan_N0=7147.75,
+                    initial_alpha = .9824):
     logger = Logger()
     max_steps = 500000
     num_policy_checks = 30
     checks_per_policy = 10
     sparsify = 1
-    ifddeps = 1e-7
-    beta_coef = 1e-6
+    kappa = 1e-7
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    initial_rep = IndependentDiscretization(domain, logger) 
+    initial_rep = IndependentDiscretization(domain, logger)
     representation = iFDD(domain, logger, discover_threshold, initial_rep,
                           sparsify=sparsify,
-                          #discretization=discretization,
                           useCache=True,
-                          iFDDPlus=1-ifddeps)
+                          iFDDPlus=1-kappa)
     policy = eGreedy(representation, logger, epsilon=0.1)
-    agent = Greedy_GQ(representation, policy, domain, logger,
-                      BetaCoef=beta_coef,
+    agent = Q_Learning(representation, policy, domain, logger,
                       lambda_=lambda_, initial_alpha=initial_alpha,
                       alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
