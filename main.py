@@ -13,21 +13,6 @@ except Exception:
     print "ROS is not installed => ROS_RCCar can not be used."
     pass
 
-#Locate RLPy
-#================
-import sys, os
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT
-+ '/..') and not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-   RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
-   print 'Error: Could not locate RLPy directory.'
-   print 'Please make sure the package directory is named RLPy.'
-   print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-   sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
