@@ -1,3 +1,5 @@
+"""Classic mountain car task."""
+
 from Tools import *
 from Domain import Domain
 import matplotlib.pyplot as plt

@@ -1,31 +1,25 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
+"""OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr"""
 
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-######################################################
-# Developed by Alborz Geramiard Jan 11th 2013 at MIT #
-######################################################
-# OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr
-# This implementation assumes an initial representation exists and the bag of features is the conjunctions of existing features
-# As a results OMP-TD uses iFDD to represents its features, yet its discovery method is different compared to iFDD as it does not have to look at the fringe of the tree
-# rather it looks through a predefined set of features
-# iFDD initially will expand all the features in the bag
-# The set of features used by OMPTD aside from the initial_features are represented by self.expandedFeatures
 from Representation import Representation
 from iFDD import *
 
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Alborz Geramifard"
+
 class OMPTD(Representation):
+    """OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr
+
+    This implementation assumes an initial representation exists and the bag of features is the conjunctions of existing features
+    As a results OMP-TD uses iFDD to represents its features, yet its discovery method is different compared to 
+    iFDD as it does not have to look at the fringe of the tree rather it looks through a predefined set of features
+    iFDD initially will expand all the features in the bag
+    
+    The set of features used by OMPTD aside from the initial_features are represented by self.expandedFeatures
+    """
+    
     maxBatchDicovery    = 0     # Maximum number of features to be expanded on each iteration
     batchThreshold      = 0      # Minimum threshold to add features
     selectedFeatures    = None    # List of selected features. In this implementation initial features are selected initially by default

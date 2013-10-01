@@ -1,4 +1,5 @@
 """Cart with a pole domains"""
+
 from Domain import Domain
 import numpy as np
 import scipy.integrate

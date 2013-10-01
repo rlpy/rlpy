@@ -1,3 +1,5 @@
+"""Network administrator task."""
+
 from Tools import *
 from Domain import Domain
 

@@ -1,44 +1,36 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-######################################################
-#       Robert H. Klein, Dec. 19, 2012 at MIT        #
-######################################################
-#
-# REQUIRES the implementation of locally-weighted
-# projection regression (LWPR), available at:
-# http://wcms.inf.ed.ac.uk/ipab/slmc/research/software-lwpr
-#
-# Parameters set according to:
-# Parr et al. 'Analyzing Feature Generation for Function Approximation'
-#
-# Bellman-Error Basis Function Representation.
-# 1. Initial basis function based on immediate reward.
-# 2. Evaluate r + Q(s', \pi{s'}) - Q(s,a) for all samples.
-# 3. Train function approximator on bellman error of present solution above
-# 4. Add the above as a new basis function.
-# 5. Repeat the process using the new basis until the most
-# recently added basis function has norm <= batchThreshold, which
-# Parr et al. used as 10^-5.
+"""Bellman-Error Basis Function Representation"""
 
 #from scipy.interpolate import Rbf
 from Tools import *
 from Representation import *
 
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Robert H. Klein"
+
 
 class BEBF(Representation):
+    """Bellman-Error Basis Function Representation
+
+    REQUIRES the implementation of locally-weighted
+    projection regression (LWPR), available at:
+    http://wcms.inf.ed.ac.uk/ipab/slmc/research/software-lwpr
+
+    Parameters set according to:
+    Parr et al. 'Analyzing Feature Generation for Function Approximation'
+
+    Bellman-Error Basis Function Representation.
+    1. Initial basis function based on immediate reward.
+    2. Evaluate r + Q(s', \pi{s'}) - Q(s,a) for all samples.
+    3. Train function approximator on bellman error of present solution above
+    4. Add the above as a new basis function.
+    5. Repeat the process using the new basis until the most
+    recently added basis function has norm <= batchThreshold, which
+    Parr et al. used as 10^-5.
+    """
+    
     debug                   = 0
     maxBatchDicovery        = 1     # Number of features to be expanded in the batch setting; here 1 since each BEBF will be identical on a given iteration
     svm_epsilon             = None  # from sklearn: "epsilon in the epsilon-SVR model. It specifies the epsilon-tube within which no penalty is associated in the training loss function with points predicted within a distance epsilon from the actual value."

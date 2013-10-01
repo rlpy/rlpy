@@ -1,16 +1,16 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
+"""Radial Basis Function Representation"""
 
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-######################################################
-# Developed by Alborz Geramiard Nov 9th 2012 at MIT #
-######################################################
 import os
 from Tools import *
 from Domains import *
 from Representation import Representation
 import numpy as np
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Alborz Geramifard"
 
 class RBF(Representation):
     state_dimensions = None

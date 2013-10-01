@@ -1,3 +1,5 @@
+"""Intruder monitoring task."""
+
 from numpy.ma.core import logical_or
 from Tools import *
 from Domain import Domain

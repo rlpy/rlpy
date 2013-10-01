@@ -1,39 +1,29 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
-
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-## \file Representation.py
-######################################################
-# \author Developed by Alborz Geramiard Oct 25th 2012 at MIT
-######################################################
+"""Representation base class."""
 
 from Tools import *
-## The Representation is the \ref Agents.Agent.Agent "Agent"'s model of the \ref Domains.Domain.Domain "Domain".
-#
-# As the Agent interacts with the Domain, it receives state updates. The Agent passes these associated state-action / state-action pairings
-# along with the associated reward for each timestep to its
-# %Representation, which is responsible for maintaining the value function for each state, usually in some
-# lower-dimensional feature space.
-# Agents can later query the %Representation for the value of being in a state V(s) or the value of taking an action
-# in a particular state ( known as the Q-function, Q(s,a) ).
-#
-# The \c %Representation class is a superclass that provides the basic framework for all representations. It provides the methods and attributes
-# that allow child classes to interact with the \c Agent and \c Domain classes within the RLPy library. \n
-# All new representation implimentations should inherit from \c %Representation.
-# \note It is assumed that the Linear Function approximator family of representations is being used.
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Alborz Geramifard"
 
 class Representation(object):
+    """The Representation is the \ref Agents.Agent.Agent "Agent"'s model of the \ref Domains.Domain.Domain "Domain".
+
+    As the Agent interacts with the Domain, it receives state updates. The Agent passes these associated state-action / state-action pairings
+    along with the associated reward for each timestep to its
+    %Representation, which is responsible for maintaining the value function for each state, usually in some
+    lower-dimensional feature space.
+    Agents can later query the %Representation for the value of being in a state V(s) or the value of taking an action
+    in a particular state ( known as the Q-function, Q(s,a) ).
+
+    The \c %Representation class is a superclass that provides the basic framework for all representations. It provides the methods and attributes
+    that allow child classes to interact with the \c Agent and \c Domain classes within the RLPy library. \n
+    All new representation implimentations should inherit from \c %Representation.
+    \note It is assumed that the Linear Function approximator family of representations is being used.
+    """
+
     ## In Debug Mode?
     ## \cond DEV
     DEBUG          = 0

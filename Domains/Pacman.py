@@ -1,3 +1,5 @@
+"""Pacman game domain."""
+
 from Domain import Domain
 from .PacmanPackage import layout, pacman, game, ghostAgents
 from .PacmanPackage import graphicsDisplay

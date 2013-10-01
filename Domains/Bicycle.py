@@ -1,3 +1,5 @@
+"""Bicycle balancing task."""
+
 from Domain import Domain
 import numpy as np
 from itertools import product

@@ -1,3 +1,5 @@
+"""Main script for running different combinations of Agent, Domain, and Experiment."""
+
 from Tools import *
 from Domains import *
 from Agents import *
@@ -25,6 +27,12 @@ if not os.path.exists(RL_PYTHON_ROOT+'/RLPy/Tools'):
    sys.exit(1)
 RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
 sys.path.insert(0, RL_PYTHON_ROOT)
+
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 visualize_steps = False # show each steps
 visualize_learning = True # show visualizations of the learning progress, e.g. value function

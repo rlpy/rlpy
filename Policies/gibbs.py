@@ -1,6 +1,13 @@
+"""Gibbs policy"""
+
 from Policy import Policy, Logger
 import numpy as np
 from Tools import randSet, discrete_sample
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 
 class GibbsPolicy(Policy):

@@ -1,3 +1,5 @@
+"""Functions to be used with hyperopt for doing hyper parameter optimization."""
+
 import os
 from Tools.Merger import Merger
 import Tools.run as rt
@@ -5,6 +7,11 @@ import hyperopt
 import numpy as np
 import time
 import pickle
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 def dummy_f():
     pass

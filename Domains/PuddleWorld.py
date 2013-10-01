@@ -1,3 +1,5 @@
+"""Puddle world domain (navigation task)."""
+
 from Domain import Domain
 import numpy as np
 import matplotlib.pyplot as plt

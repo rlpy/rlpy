@@ -1,9 +1,15 @@
+"""Nosetests for testing the domains and their methods."""
+
 import Domains
 from Domains.Domain import Domain
 import numpy as np
 import inspect
 from nose.tools import ok_, eq_
 
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 def test_random_trajectory():
     for d in Domains.__dict__.values():

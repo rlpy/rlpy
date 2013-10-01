@@ -1,3 +1,5 @@
+"""RC-Car domain"""
+
 from Tools import *
 from Domain import Domain
 

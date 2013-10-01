@@ -1,3 +1,5 @@
+"""Helicopter hovering task."""
+
 from Domain import Domain
 import numpy as np
 import Tools.transformations as trans

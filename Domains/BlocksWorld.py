@@ -1,4 +1,5 @@
 """BlocksWorld domain, stacking of blocks to form a tower"""
+
 from Domain import Domain
 from Tools import *
 

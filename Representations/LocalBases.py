@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Representations which use local bases function (e.g. kernels) distributed
 in the statespace according to some scheme (e.g. grid, random, on previous
@@ -9,6 +8,11 @@ import numpy as np
 from kernels import batch
 from Tools.GeneralTools import addNewElementForAllActions
 import matplotlib.pyplot as plt
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 
 class LocalBases(Representation):

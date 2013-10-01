@@ -1,32 +1,23 @@
-#See http://acl.mit.edu/RLPy for documentation and future code updates
+"""Trajectory Based Policy Iteration:
+    Loop until the weight change to the value function is small for some number of trajectories 
+    (cant check policy because we dont store anything in the size of the state-space)
+    1. Update the evaluation of the policy till the change is small.
+    2. Update the policy
 
-#Copyright (c) 2013, Alborz Geramifard, Robert H. Klein, and Jonathan P. How
-#All rights reserved.
-
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-#Neither the name of ACL nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-######################################################
-# Developed by A. Geramifard March 15th 2013 at MIT #
-######################################################
-# Trajectory Based Policy Iteration:
-# Loop until the weight change to the value function is small for some number of trajectories (cant check policy because we dont store anything in the size of the state-space)
-# 1. Update the evaluation of the policy till the change is small.
-# 2. Update the policy
-#
-# * There is solveInMatrixFormat function which does policy evaluation in one shot using samples collected in the matrix format. Since the algorithm toss out the samples convergence is hardly reached, because the policy may alternate.
+    * There is solveInMatrixFormat function which does policy evaluation in one shot using samples collected in the matrix format. 
+      Since the algorithm toss out the samples convergence is hardly reached, because the policy may alternate.
+"""
 
 from MDPSolver import MDPSolver
 from Tools import *
 from Representations import Tabular
 from Policies import eGreedy
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+__author__ = "Alborz Geramifard"
 
 class TrajectoryBasedPolicyIteration(MDPSolver):
     """Trajectory Based Policy Iteration MDP Solver.

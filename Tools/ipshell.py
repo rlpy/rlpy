@@ -1,3 +1,10 @@
+"""ip-shell functions"""
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
+
 _ip_shell = None
 def ipshell():
     if _ip_shell is not None:

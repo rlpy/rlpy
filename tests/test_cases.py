@@ -1,7 +1,14 @@
+"""Nosetests for testing the use cases contained in the cases directory."""
+
 import numpy as np
 from nose.tools import ok_, eq_
 import glob
 from Tools.run import read_setting_content
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 def test_all_100_step():
     for fn in glob.glob("cases/**/*.py"):

@@ -1,6 +1,13 @@
+"""Merger script for combining and plotting results."""
+
 from GeneralTools import *
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
+
+__copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+__credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+               "William Dabney", "Jonathan P. How"]
+__license__ = "BSD 3-Clause"
 
 def thousands(x, pos):
     'The two args are the value and tick position'
