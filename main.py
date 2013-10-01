@@ -97,7 +97,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     # DOMAIN
     #=================
     #domain          = ChainMDP(10, logger = logger)
-    domain          = GridWorld(RL_PYTHON_ROOT+'/'+MAZE, noise = NOISE, logger = logger)
+    domain          = GridWorld('./'+MAZE, noise = NOISE, logger = logger)
     #domain          = HelicopterHover(logger=logger)
     #domain          = Acrobot(logger=logger)
     #domain          = Pendulum_InvertedBalance(logger = logger);
@@ -105,16 +105,16 @@ def make_experiment(id=1, path="./Results/Temp"):
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = PuddleWorld(logger=logger)
     #domain          = ROS_RCCar(logger=logger)
-    #domain          = SystemAdministrator(networkmapname=RL_PYTHON_ROOT+'/'+NETWORKNMAP,logger = logger)
+    #domain          = SystemAdministrator(networkmapname='./'+NETWORKNMAP,logger = logger)
     #domain          = Acrobot(logger = logger)
     #domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
-    #domain          = IntruderMonitoring(RL_PYTHON_ROOT+'/'+INTRUDERMAP,logger)
+    #domain          = IntruderMonitoring('./'+INTRUDERMAP,logger)
     #domain          = Pendulum_SwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
     #domain          = CartPole_SwingUp(logger = logger)
     #domain          = FiftyChain(logger = logger)
     #domain          = RCCar(logger = logger)
-    #domain           = Pinball(logger, 500, width=500, height=500, configuration='/Domains/PinballConfigs/pinball_medium.cfg')
+    #domain           = Pinball(logger, 500, width=500, height=500, configuration='Domains/PinballConfigs/pinball_medium.cfg')
     #domain           = HIVTreatment(logger=logger)
     
     # REPRESENTATION
