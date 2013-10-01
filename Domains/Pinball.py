@@ -16,9 +16,12 @@ __author__ = ["Pierre-Luc Bacon",  # author of the original version
 
 class Pinball(Domain):
     """
-    Pinball Subclass of RLPy Domain Class created entirely by Austin Hays
-    """
+    Pinball Subclass of RLPy Domain Class created entirely by Austin Hays.
 
+    Pinball domain specification given in the paper:
+    G.D. Konidaris and A.G. Barto. Skill Discovery in Continuous Reinforcement Learning Domains using Skill Chaining. 
+    Advances in Neural Information Processing Systems 22, pages 1015-1023, December 2009.
+    """
 
     def __init__(self, noise = .1, episodeCap = 1000, logger = None,
                  configuration='./Domains/PinballConfigs/pinball_simple_single.cfg'):

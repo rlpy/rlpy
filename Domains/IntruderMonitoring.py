@@ -14,20 +14,37 @@ __author__ = "N. Kemal Ure"
 
 class IntruderMonitoring(Domain):
     """
-    State is : Location of Agent_1 x ... x Location of Agent n...
-    Location of Intruder 1 x ...x Location of Intruder_m
-    n is number of agents, m is number of intruders
+    Formulated as an MDP, the intruder monitoring task is to guard danger zones using cameras 
+    so that if an intruder moves to a danger zone, at least one camera is pointing at that location. 
+
+    The episode is finished after 1000 steps. 
+
+    State Features (n is number of agents, m is number of intruders): 
+        Location of Agent_1 x ... x Location of Agent n...
+        Location of Intruder 1 x ...x Location of Intruder_m
+
     Location is 2D position on a grid
-    Each agent can move in 4 directions + stay still, there is no noise
-    Each intruder moves with a fixed policy (specified by the user)
-    By Default, intruder policy is uniform random
-    Map of the world contains fixed number of danger zones,
-    Team receives a penalty whenever there is an intruder
-    on a danger zone in the absence of an agent
-    Task is to allocate agents on the map
-    so that intruders do not enter the danger zones without
-    attendance of an agent
+
+    Actions: 
+        [Up, Down, Left, Right, StayStill]^n (oone action for each agent)
+
+    Dynamics:
+        Each agent can move in 4 directions + stay still, there is no noise
+        Each intruder moves with a fixed policy (specified by the user)
+        By Default, intruder policy is uniform random
+    
+    Map of the world contains fixed number of danger zones. Maps are simple text files 
+    contained in the Domains/IntruderMonitoringMaps/ directory. 
+    
+    The team receives a penalty whenever there is an intruder on a danger zone in the 
+    absence of an agent. The task is to allocate agents on the map so that intruders 
+    do not enter the danger zones without attendance of an agent.
+
+    Reward:
+        -1 for every visit of an intruder to a danger zone with no camera present
+
     """
+
     map = None
 	#: Number of rows and columns of the map
     ROWS = COLS = 0

@@ -15,8 +15,8 @@ __author__ = "Austin Hays"
 
 class Pacman(Domain):
     """
-    wrapper for the Pacman implementation from the BerkeleyX/CS188.1x
-    project
+    Pacman domain, which acts as a wrapper for the Pacman implementation 
+    from the BerkeleyX/CS188.1x project. 
     """
 
     _max_scared_time = 39
