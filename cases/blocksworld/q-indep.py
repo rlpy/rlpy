@@ -13,8 +13,8 @@ param_space = {'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
                     lambda_=0.,
-                    boyan_N0 =10.09,
-                    initial_alpha = .47):
+                    boyan_N0 =143.791,
+                    initial_alpha =0.18696):
     logger = Logger()
     max_steps = 100000
     num_policy_checks = 20

@@ -14,10 +14,10 @@ param_space = {'discover_threshold': hp.loguniform("discover_threshold",
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    discover_threshold=0.02695,
+                    discover_threshold=0.023476,
                     lambda_=0.,
-                    boyan_N0=80.798,
-                    initial_alpha=0.402807):
+                    boyan_N0=20.84362,
+                    initial_alpha=0.3356222674):
     logger = Logger()
     max_steps = 100000
     num_policy_checks = 20
