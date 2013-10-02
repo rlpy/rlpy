@@ -8,18 +8,17 @@ import numpy as np
 from hyperopt import hp
 
 param_space = {'discover_threshold': hp.loguniform("discover_threshold",
-                   np.log(1e-5), np.log(1e2)),
+                   np.log(1e-3), np.log(1e2)),
                #'lambda_': hp.uniform("lambda_", 0., 1.),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    discover_threshold = 0.05,
+                    discover_threshold=0.02695,
                     lambda_=0.,
-                    boyan_N0 = 100,
-                    initial_alpha = .1,
-                    discretization=18):
+                    boyan_N0=80.798,
+                    initial_alpha=0.402807):
     logger = Logger()
     max_steps = 100000
     num_policy_checks = 20

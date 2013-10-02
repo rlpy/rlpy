@@ -1,6 +1,6 @@
 from Tools import Logger
 from Domains import BlocksWorld
-from Agents import Greedy_GQ
+from Agents import SARSA
 from Representations import *
 from Policies import eGreedy
 from Experiments import Experiment
@@ -24,7 +24,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     domain = BlocksWorld(blocks=6, noise=0.3, logger=logger)
     representation = IndependentDiscretization(domain, logger)
     policy = eGreedy(representation, logger, epsilon=0.1)
-    agent = Greedy_GQ(representation, policy, domain, logger
+    agent = SARSA(representation, policy, domain, logger
                        ,lambda_=lambda_, initial_alpha=initial_alpha,
                        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
