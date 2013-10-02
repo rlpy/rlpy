@@ -17,7 +17,7 @@ class Greedy_GQ(Agent):
     eligibility_trace_s = [] # eligibility trace using state only (no copy-paste), necessary for dabney decay mode
     def __init__(self, representation, policy, domain,logger, initial_alpha =.1,
                  lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000,
-                 BetaCoef = 1e-3):
+                 BetaCoef = 1e-6):
         self.eligibility_trace  = np.zeros(representation.features_num*domain.actions_num)
         self.eligibility_trace_s= np.zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_

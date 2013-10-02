@@ -33,13 +33,18 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
     trials = CondorTrials(path=path, ids=range(1, trials_per_point + 1),
                           setting=setting, objective=objective)
     domain = hyperopt.Domain(dummy_f, space, rseed=123)
-
-    n_queued = 0
+    trial_path = os.path.join(path, "trials.pck")
+    if os.path.exists(trial_path):
+        with open(trial_path) as f:
+            old_trials = pickle.load(f)
+        print "Loaded existing trials"
+        if old_trials.setting == trials.setting and trials.ids == old_trials.ids:
+            trials = old_trials
+    n_queued = trials.count_by_state_unsynced(hyperopt.JOB_STATES) 
 
     def get_queue_len():
         trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW)
         return trials.update_trials(trials._trials)
-
     stopped = False
     while n_queued < max_evals:
         qlen = get_queue_len()
@@ -60,12 +65,14 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
                     qlen = get_queue_len()
                 else:
                     break
-
+        
+        with open(trial_path,'w') as f:
+            pickle.dump(trials, f)
         # -- wait for workers to fill in the trials
         time.sleep(poll_interval_secs)
         if stopped:
             break
-    if get_queue_len() > 0:
+    if trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW) > 0:
         time.sleep(poll_interval_secs)
     trials.refresh()
     return trials
