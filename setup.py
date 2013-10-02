@@ -29,6 +29,9 @@ setup(name="_transformations",
                              # (e.g. to run on a cluster with older libc)
                              #extra_link_args=["-static-libstdc++"]# "Tools/libc-2.11.3.so"]
                              ),
+          Extension("Representations.hashing",
+                             ["Representations/hashing.pyx"],
+                             include_dirs=[numpy.get_include(), "Representations"]),
           Extension("Domains.HIVTreatment_dynamics",
                              ["Domains/HIVTreatment_dynamics.pyx"],
                              include_dirs=[numpy.get_include(), "Representations"]),
