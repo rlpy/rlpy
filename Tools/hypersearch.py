@@ -72,7 +72,7 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
         time.sleep(poll_interval_secs)
         if stopped:
             break
-    if trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW) > 0:
+    while trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW) > 0:
         time.sleep(poll_interval_secs)
     trials.refresh()
     return trials
