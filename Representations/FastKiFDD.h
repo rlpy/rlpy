@@ -80,9 +80,15 @@ struct hash_X {
 
 class Candidate {
     public:
-        double relevance = 0;
-        double total_activation = 0;
-        double total_error = 0;
+        double relevance;
+        double total_activation;
+        double total_error;
+
+        Candidate() {
+            relevance = 0;
+            total_activation = 0;
+            total_error = 0;
+        }
 };
 
 typedef std::unordered_map<std::pair<std::set<unsigned int>, std::set<unsigned int>>, Candidate, hash_X> CandidateMap;
@@ -107,7 +113,7 @@ class FastKiFDD {
         CandidateMap candidates;
         IdMap base_ids_to_id;
         int features_num;
-        bool normalization = true;
+        bool normalization;
         double activation_threshold;
         double discovery_threshold;
         double max_neighbor_similarity;
@@ -126,6 +132,7 @@ class FastKiFDD {
                 std::string kernel_spec, std::vector<double> kernel_widths,
                 int sparsification, double max_neighbor_similarity, 
                 unsigned int max_active_neighbors) {
+            normalization = true;
             if (kernel_spec == "gaussian_kernel") {
                 kernel = [kernel_widths] (std::vector<double> s1, std::vector<double> s2, std::vector<unsigned int> dim) { return gaussian_kernel(&s1[0], &s2[0], dim, &kernel_widths[0]); };
             } else if (kernel_spec == "linf_triangle_kernel") {
