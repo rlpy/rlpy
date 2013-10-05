@@ -14,7 +14,7 @@ import sys
 if sys.platform == 'darwin':
   extra_args = ["-std=c++11", "-stdlib=libc++"]
 else:
-  extra_args = ["-std=c++11"]
+  extra_args = ["-std=c++0x"]
 
 setup(name="_transformations",
       cmdclass = {"build_ext": build_ext},
