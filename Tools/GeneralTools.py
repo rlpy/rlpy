@@ -27,6 +27,9 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
+
+
+__rlpy_location__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 matplotlib_backend = 'TkAgg' # 'WX' 'QTAgg' 'QT4Agg'
 
 #For condor use

@@ -5,10 +5,12 @@ import numpy as np
 from itertools import tee, izip
 import itertools
 from Tkinter import Tk, Canvas
+import os
+from Tools import __rlpy_location__
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-            "William Dabney", "Jonathan P. How"]
+               "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 __author__ = ["Pierre-Luc Bacon",  # author of the original version
               "Austin Hays"]  # adapted for RLPy and TKinter
@@ -19,12 +21,14 @@ class Pinball(Domain):
     Pinball Subclass of RLPy Domain Class created entirely by Austin Hays.
 
     Pinball domain specification given in the paper:
-    G.D. Konidaris and A.G. Barto. Skill Discovery in Continuous Reinforcement Learning Domains using Skill Chaining. 
+    G.D. Konidaris and A.G. Barto. Skill Discovery in Continuous Reinforcement Learning Domains using Skill Chaining.
     Advances in Neural Information Processing Systems 22, pages 1015-1023, December 2009.
     """
+    #: default location of config files shipped with rlpy
+    default_config_dir = os.path.join(__rlpy_location__, "Domains", "PinballConfigs")
 
-    def __init__(self, noise = .1, episodeCap = 1000, logger = None,
-                 configuration='./Domains/PinballConfigs/pinball_simple_single.cfg'):
+    def __init__(self, noise=.1, episodeCap=1000, logger=None,
+                 configuration=os.path.join(default_config_dir, "pinball_simple_single.cfg")):
         self.NOISE              = noise
         self.logger             = logger
         self.configuration      = configuration
@@ -34,7 +38,7 @@ class Pinball(Domain):
         self.actions            = [PinballModel.ACC_X, PinballModel.DEC_Y, PinballModel.DEC_X, PinballModel.ACC_Y, PinballModel.ACC_NONE]
         self.statespace_limits  = np.array([[0.0, 1.0], [0.0, 1.0], [-2.0, 2.0], [-2.0, 2.0]])
         self.continuous_dims    = [4]
-        super(Pinball,self).__init__(self.logger)
+        super(Pinball, self).__init__(self.logger)
         self.environment        = PinballModel(self.configuration, random_state=self.random_state)
 
     def showDomain(self, a):
@@ -74,6 +78,7 @@ class Pinball(Domain):
 
     def isTerminal(self):
         return self.environment.episode_ended()
+
 
 class BallModel:
     """ This class maintains the state of the ball

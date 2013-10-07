@@ -2,10 +2,12 @@
 
 from Tools import *
 from Domain import Domain
+import os
+from Tools import __rlpy_location__
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-            "William Dabney", "Jonathan P. How"]
+               "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
@@ -65,9 +67,10 @@ class SystemAdministrator(Domain):
     BROKEN, RUNNING = 0,1
     _NUM_VALUES = 2         # Number of values possible for each state, must be hand-coded to match number defined above
 
-    # Note that you must pass a network map name as well as its format type.
-    # @see SystemAdministrator(Domain)
-    def __init__(self, networkmapname='./Domains/SystemAdministratorMaps/20MachTutorial.txt', logger = None):
+    default_map_dir = os.path.join(__rlpy_location__, "Domains", "SystemAdministratorMaps")
+
+    def __init__(self, networkmapname=os.path.join(default_map_dir, "20MachTutorial.txt"),
+                 logger=None):
         path                    = networkmapname
         self.IS_RING            = "ring.txt" in networkmapname.lower()
         self.loadNetwork(path)
@@ -81,8 +84,6 @@ class SystemAdministrator(Domain):
             self.logger.log('Neighbors:')
             for i in range(self.computers_num):
                 self.logger.log('%d : %s' % (i,str(list(self.NEIGHBORS[i]))))
-#        for computer_id, (neighbors, compstatus) in enumerate(zip(self.NEIGHBORS,self.s0())):
-#            [self.logger.log("Node:\t%d\t Neighbors:\t%d" % self.NEIGHBORS[i]) for i in self.NEIGHBORS]
 
     # @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/<mapname>.txt'             [Elliott Note: Doxygen did not like this documentation because it listed]
     # @param maptype: Specify the format for the map file, 'eachNeighbor' or 'edges'.                         [@params that are not called, I did not fixed documentation used below. ]
@@ -180,10 +181,6 @@ class SystemAdministrator(Domain):
     def s0(self):
         self.state = array([self.RUNNING for dummy in arange(0,self.state_space_dims)]) # Omits final index
         return self.state.copy(), self.isTerminal(), self.possibleActions()
-#        return array([self.BROKEN]* self.state_space_dims)
-        #arrTmp = array([self.BROKEN]* self.state_space_dims)
-        #arrTmp[arange(10)] = self.RUNNING
-        #return arrTmp
 
     def possibleActions(self):
         s = self.state

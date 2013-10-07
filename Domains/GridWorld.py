@@ -1,8 +1,8 @@
 """Gridworld Domain"""
 from Tools import *
 from Domain import Domain
-
-
+from Tools import __rlpy_location__
+import os
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -49,7 +49,11 @@ class GridWorld(Domain):
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
     #: Up, Down, Left, Right
     ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
-    def __init__(self,mapname='./Domains/GridWorldMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
+    #: directory of maps shipped with rlpy
+    default_map_dir = os.path.join(__rlpy_location__, "Domains", "GridWorldMaps")
+
+    def __init__(self,mapname=os.path.join(default_map_dir,"4x5.txt"),
+                 noise = .1, episodeCap = None, logger = None):
         self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         self.start_state              = argwhere(self.map==self.START)[0]
