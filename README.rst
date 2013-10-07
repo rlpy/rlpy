@@ -1,6 +1,11 @@
 .. -*- mode: rst -*-
 
-RLPy -- Reinforment Learning Framework
+|Travis|_
+
+.. |Travis| image:: https://api.travis-ci.org/rlpy/rlpy.png?branch=master
+.. _Travis: https://travis-ci.org/rlpy/rlpy
+
+RLPy - Reinforment Learning Framework
 ======================================
 
 RLPy is a framework to conduct sequential decision making experiments. The
@@ -11,10 +16,11 @@ Important Links
 ===============
 
 - Official source code repository: http://bitbucket.org/rlpy/rlpy
+- Github Mirror: http://github.com/rlpy/rlpy
 - Documentation and Homepage: http://acl.mit.edu/RLPy
 - Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
 
-Installation
-============
+Install
+=======
 
-For installation instructions see http://acl.mit.edu/RLPy/install.html
+Installation instructions can be found at http://acl.mit.edu/RLPy/dev/install.html

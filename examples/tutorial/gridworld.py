@@ -15,7 +15,8 @@ from Policies import eGreedy
 from Experiments import Experiment
 import os
 
-def make_experiment(id=1, path="./Results/Temp"):
+
+def make_experiment(id=1, path="./Results/Temp/Tutorial1/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -27,7 +28,6 @@ def make_experiment(id=1, path="./Results/Temp"):
     logger = Logger()
 
     ## Domain:
-    # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
@@ -50,8 +50,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     return experiment
 
 if __name__ == '__main__':
-    path = './Results/tutorial_gridworld'
-    experiment = make_experiment(1, path=path)
+    experiment = make_experiment(1)
     experiment.run(visualize_steps=False,  # should each learning step be shown?
                    visualize_learning=True,  # show performance runs?
                    visualize_performance=True)  # show value function?

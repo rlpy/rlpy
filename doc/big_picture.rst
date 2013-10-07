@@ -22,8 +22,8 @@ The Big Picture
 .. image:: overview.*
    :width: 85 %
 
-**Reinforcement Learning (RL)** (Refer to the top image)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Reinforcement Learning (RL)**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Setting up an RL experiment requires selecting the following 4 key components:
 
@@ -41,8 +41,8 @@ Setting up an RL experiment requires selecting the following 4 key components:
 The :ref:`Experiment <experiment>` class works as a glue that connect all these 
 pieces together.
 
-**Dynamic Programming** (Refer to the bottom image)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Dynamic Programming** 
+^^^^^^^^^^^^^^^^^^^^^^^
 
 If the full model of the MDP is known, Dynamic Programming techniques can be 
 used to solve the MDP. To setup a DP experiment the following 3 components 

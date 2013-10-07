@@ -4,8 +4,17 @@
 Installation
 ************
 
-Download
-========
+The installation consists of three steps:
+
+1. :ref:`Download the package <download>`
+2. :ref:`Install required libraries <dependencies>`
+3. :ref:`Compile C-Extenstions of RLPy <compile>`
+
+
+.. _download:
+
+1. Download
+===========
 
 Stable Version
 --------------
@@ -22,16 +31,19 @@ The git-repository with the latest development version can be cloned via::
 This will give you a copy of the repository in the directory `RLPy`. You might
 want to change the location as you wish.
 
-Dependencies
-============
+.. _dependencies:
+
+2. Dependencies
+===============
 
 RLPy requires the following packages besides Python:
 
-Graphviz
-    (optional) For creating the graphical ouput of the code profiling tool.
 GCC >= 4.6
-    For compiling some C++ extensions which use the C++11 standard.
-
+    for compiling some C++ extensions which use the C++11 standard.
+Graphviz (optional) 
+    for creating the graphical ouput of the code profiling tool.
+Tk
+    as a backend for matplotlib and for visualizations of some domains.
 
 In addition, RLPy requires Python 2.7 to run. We do not support Python 3 at the
 moment since most scientific libraries still require Python 2.
@@ -44,6 +56,8 @@ The following Python packages need to be available:
 - PyTk
 - scikit-learn
 - Cython
+- joblib
+- hyperopt
 
 
 Ubuntu / Debian
@@ -60,6 +74,7 @@ these packages will usually be older.
 You can install them by executing::
 
     sudo apt-get install python-dev python-setuptools python-sklearn python-numpy python-scipy python-matplotlib python-networkx graphviz python-pip tcl-dev tk-dev python-tk cython
+    pip install joblib hyperopt
 
 
 .. _anaconda:
@@ -77,12 +92,16 @@ Please follow the original `installation instructions
 After installing Anaconda, install the dependencies of RLPy by executing::
 
     conda install numpy scipy matplotlib networkx tk scikit-learn cython
+    pip install joblib hyperopt
 
-Build Extensions of RLPy
-------------------------
+.. _compile:
+
+3. Build Extensions of RLPy
+===========================
 
 Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
 
     python setup.py build_ext --inplace
 
-
+RLPy is now successfully installed. For an introduction on how to use the
+framework have a look at :ref:`tutorial`.

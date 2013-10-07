@@ -1,3 +1,5 @@
+.. _tutorial:
+
 Getting Started
 ===============
 
@@ -7,47 +9,94 @@ First Run
 .. tip::
     If you receive errors during any of the steps below, please refer to `install.txt` for solutions to common issues.
 
-Begin by looking at the file `cases/tutorial/gridworld.py`:
+Begin by looking at the file `examples/tutorial/gridworld.py`:
 
-.. literalinclude:: ../cases/tutorial.py
+.. literalinclude:: ../examples/tutorial/gridworld.py
    :language: python
    :linenos:
    
-The most important part is the `make_experiment` function which every file specifying an
-experimental setup in RLPy should contain.
+The file is an example for a reinforcement learning experiment. The main
+components of such an experiment is the **domain**, `GridWorld` in this case,
+the **agent** (`Q_Learning`), which uses the **policy** `eGreedy` and the
+value function **representation** `Tabular`. The **experiment** `Experiment` is
+in charge of the execution of the experiment by handling the interaction
+between the agent and the domain as well as storing the results on disk (see
+also :ref:`overview`).
 
-You will notice a series of parameters at the top of the file, 
-followed by assignments to each of the functional components 
-shown in :ref:`The Big Picture <big_picture>`: domain, representation, policy, agent, and experiment.
-Leave these alone for now; just run the file as-is.  You should see something like the following:
+The function `make_experiment` gets an id, which specifies the random seeds 
+and a path where the results are stored. It returns an instance of an
+`Experiment` which is ready to run. In line 53, such an experiment is created
+and then executed in line 54 by calling its `run` method. The three parameters
+of `run` control the graphical output. The result are plotted in line 57 and
+subsequently stored in line 58.
 
-.. image:: gridWorld_learning.png
-   :width: 90 %
+You can run the file by executing it with the python interpreter drom the rlpy
+root directory::
 
-This is a visual representation of the domain (here, *GridWorld*) and is useful in quickly judging or
-demonstrating the performance of an experiment.  The objective on this domain is to move the agent (triangle) 
-from the start (blue) to the goal (green) location in the shortest distance possible, while avoiding the 
-pits (red); -0.001 reward is applied for every step, and reaching the goal or pit regions give 
-rewards of +1.0 and -1.0 respectively, terminating the episode.
+    python examples/tutorial/gridworld.py
 
-On the left, you can see the learned policy in action after each 200 steps of training data.  
+.. tip::
+    We recommend using the IPython interpreter. Compared to the standard
+    interpreter it provides color output and better help functions. It is more 
+    comportable to work with in general. See `ipython homepage`_ for
+    details.
+    
+    
+
+    You can run the file with ipython by executing::
+        
+        ipython examples/tutorial/gridworld.py
+
+    or start the interactive python shell with::
+        
+        ipython
+
+    and then inside the ipython shell execute::
+
+        %run examples/tutorial/gridworld.py
+
+    This will not terminate the interpreter after running the file and allows
+    you to inspect the objects interactively afterwards.
+
+.. _ipython homepage: http://ipython.org
+
+While running the experiment you should see two windows, one showing the domain
+
+.. image:: gridworld_domain.png
+   :width: 400px
+
+and one showing the value function
+
+.. image:: gridworld_valfun.png
+    :width: 400px
+The Domain window is a visual representation of the domain (here, *GridWorld*) 
+and is useful in quickly judging or demonstrating the performance of an agent.  
+In this domain, the agent (triangle) has to move
+from the start (blue) to the goal (green) location in the shortest distance possible, 
+while avoiding the pits (red). The agent receives -0.001 reward every step.
+When it reaches the goal or a pit, it obtains rewards of +1.0 or and the episode
+is terminated
+
+The value function window shows the value function and the resulting policy.
 Notice how the policy gradually converges to the optimal, direct route which avoids pits.
-On the right, you can see the representation of the value function overlayed on the domain.  
-Notice how after successive iterations, the agent learns the high (green) value of being in 
+After successive iterations, the agent learns the high (green) value of being in 
 states that lie along the optimal path, even though they offer no immediate reward.  
 It also learns the low (red) value of unimportant / undesirable states.
 
 The set of possible actions in each grid is highlighted by arrows, where the size of arrows 
-correspond to the :math:`Q(s,a)`. The best action is shown as black. 
-If the agent hasn't learned the optimal policy in some grid cells (e.g. Row 2, Column 1), 
+correspond to the state-action value function :math:`Q(s,a)`. 
+The best action is shown as black. If the agent has not learned the optimal policy 
+in some grid cells (e.g. Row 2, Column 1 in the picture above), 
 it has not explored enough to learn the correct action ('left' in Row 2, Column 1).  
-It likely still performs well though, since such states are only ever reached because of random noise in the agent's actions.
+It likely still performs well though, since such states are only ever reached 
+because of :math:`\epsilon`-greedy policy which choses random actions with
+probability :math:`\epsilon=0.2`.
 
-Each domain in RLPy offers visualization like that shown on the left, and where possible, 
-a representation of the value function like that shown on the right as well.
+Most domain in RLPy have a visualization like `GridWorld` and often also a
+graphical presentation of the policy or value function.
 
-Interpreting Output
--------------------
+Interpreting Console Outputs
+----------------------------
 
 In the console window you should see output similar to the following::
     
@@ -61,19 +110,22 @@ Each part has a specific meaning:
    :width: 90 %
 
 
-Note that a *performance run* (indicated by *>>>* in the output window) tests 
-the agent using its latest policy, without any exploration or modifications that 
-might be used during learning (such as the randomization of the episilon-greedy policy). 
-The visualization shows these performance runs.
+Note that a *performance run* or *assessment run* 
+(indicated by *>>>* in the output window) tests the agent using the a greedy
+policy with always choses the action with the highest value of the agent's
+current value function estimate. 
 
 .. note::
-    If you see *only* performance runs as console output, this simply means that your machine 
-    is completing the learning before the performance run faster than the console logging rate,
+    If you see *only* performance runs as console output, 
+    this simply means that your machine is completing the learning steps
+    between two performance run faster than the console logging rate,
     usually 1 Hz, and does not indicate a problem.
 
 
-After the cutoff of 2,000 steps specified in `cases/tutorial/gridworld.py`, the experiment is 
-complete, and a second figure window appears, showing the reward earned on each performance run.  
+After the cutoff of 2,000 steps specified in line 47, the experiment is 
+complete, and a new window appears showing the reward earned on each 
+performance run.
+
 On this domain, an excellent policy is located almost immediately (reward 0.989).
 
 The final plot likely shows enormous variance in reward obtained on performance runs - 
