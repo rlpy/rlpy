@@ -13,9 +13,10 @@ from Agents import Q_Learning
 from Representations import Tabular
 from Policies import eGreedy
 from Experiments import Experiment
+import os
 
 
-def make_experiment(id=1, path="./Results/Temp"):
+def make_experiment(id=1, path="./Results/Temp/Tutorial1/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -27,8 +28,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     logger = Logger()
 
     ## Domain:
-    # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
-    maze = './Domains/GridWorldMaps/4x5.txt'
+    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
@@ -43,17 +43,16 @@ def make_experiment(id=1, path="./Results/Temp"):
                        initial_alpha=0.1,
                        alpha_decay_mode="boyan", boyan_N0=100,
                        lambda_=0.)
-
+    checks_per_policy = 100
     max_steps = 2000
     num_policy_checks = 10
     experiment = Experiment(**locals())
     return experiment
 
 if __name__ == '__main__':
-    path = './Results/tutorial_gridworld'
-    experiment = make_experiment(1, path=path)
+    experiment = make_experiment(1)
     experiment.run(visualize_steps=False,  # should each learning step be shown?
-                   visualize_learning=True,  # show performance runs?
-                   visualize_performance=True)  # show value function?
+                   visualize_learning=True,  # show policy / value function?
+                   visualize_performance=1)  # show performance runs?
     experiment.plot()
     experiment.save()

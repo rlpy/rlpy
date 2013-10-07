@@ -11,11 +11,8 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 
 def test_all_100_step():
-    for fn in glob.glob("cases/**/*.py"):
+    for fn in glob.glob("examples/**/*.py"):
         yield check_running, fn, 100
-
-def test_main_files():
-    yield check_running, "main.py", 100
 
 def check_running(filename, steps):
     content = read_setting_content(filename)

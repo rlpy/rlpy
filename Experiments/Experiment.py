@@ -125,9 +125,9 @@ class Experiment(object):
         """
         self.output_filename = '{:0>3}-results.json'.format(self.id)
         np.random.seed(self.randomSeeds[self.id - 1])
-        self.domain.rand_state = np.random.RandomState(self.randomSeeds[self.id - 1])
+        self.domain.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
         # make sure the performance_domain has a different seed
-        self.performance_domain.rand_state = np.random.RandomState(self.randomSeeds[self.id + 20])
+        self.performance_domain.random_state = np.random.RandomState(self.randomSeeds[self.id + 20])
 
     def performanceRun(self, total_steps, visualize=False):
         """
@@ -157,7 +157,6 @@ class Experiment(object):
             a = self.agent.policy.pi(s, eps_term, p_actions)
             if visualize:
                 self.performance_domain.showDomain(a)
-                plt.title('After ' + str(total_steps) + ' Steps')
 
             r, ns, eps_term, p_actions = self.performance_domain.step(a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
@@ -210,14 +209,18 @@ class Experiment(object):
             self.plot()
 
 
-    def run(self, visualize_performance=False, visualize_learning=False,
+    def run(self, visualize_performance=0, visualize_learning=False,
             visualize_steps=False, debug_on_sigurg=False):
         """
         Run the experiment and collect statistics / generate the results
 
 
-        visualize_performance (boolean):
-            show a visualization of the steps taken in performance runs
+        visualize_performance (int):
+            determines whether a visualization of the steps taken in
+            performance runs are shown. 0 means no visualization is shown.
+            A value n > 0 means that only the first n performance runs for a
+            specific policy are shown (i.e., for n < checks_per_policy, not all
+            performance runs are shown)
         visualize_learning (boolean):
             show some visualization of the learning status before each
             performance evaluation (e.g. Value function)
@@ -273,6 +276,7 @@ class Experiment(object):
                 episode_number += 1
             # Act,Step
             r, ns, terminal, np_actions   = self.domain.step(a)
+            #print total_steps, s, a, ns
             na              = self.agent.policy.pi(ns, terminal, np_actions)
 
             total_steps     += 1
@@ -315,7 +319,7 @@ class Experiment(object):
         self.logger.line()
         self.logger.log("Took %s\n" % (hhmmss(deltaT(self.start_time))))
 
-    def evaluate(self, total_steps, episode_number, visualize=False):
+    def evaluate(self, total_steps, episode_number, visualize=0):
         """
         Evaluate the current agent within an experiment
 
@@ -334,14 +338,14 @@ class Experiment(object):
             return
 
         random_state = np.random.get_state()
-        random_state_domain = copy(self.domain.rand_state)
+        #random_state_domain = copy(self.domain.random_state)
         elapsedTime = deltaT(self.start_time)
         performance_return = 0.
         performance_steps = 0.
         performance_term = 0.
         performance_discounted_return = 0.
         for j in xrange(self.checks_per_policy):
-            p_ret, p_step, p_term, p_dret = self.performanceRun(total_steps, visualize=visualize)
+            p_ret, p_step, p_term, p_dret = self.performanceRun(total_steps, visualize=visualize > j)
             performance_return += p_ret
             performance_steps += p_step
             performance_term += p_term
@@ -372,7 +376,7 @@ class Experiment(object):
                                                              num_feat=self.agent.representation.features_num))
 
         random.set_state(random_state)
-        self.domain.rand_state = random_state_domain
+        #self.domain.rand_state = random_state_domain
 
     def save(self):
         """Saves the experimental results to the results.json file

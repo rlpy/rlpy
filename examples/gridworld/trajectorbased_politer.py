@@ -4,11 +4,11 @@ __author__ = "William Dabney"
 
 from Domains import GridWorld
 from Tools import Logger
-from MDPSolvers import ValueIteration
+from MDPSolvers import TrajectoryBasedPolicyIteration
 from Representations import Tabular
 from Policies import GibbsPolicy
 from Experiments import MDPSolverExperiment
-
+import os
 
 def make_experiment(id=1, path="./Results/Temp", show=False):
     """
@@ -25,14 +25,14 @@ def make_experiment(id=1, path="./Results/Temp", show=False):
 
     ## Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
-    maze = './Domains/GridWorldMaps/4x5.txt'
+    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
     representation  = Tabular(domain, logger, discretization=20)
 
     ## Agent
-    agent = ValueIteration(id, representation, domain, logger, project_path=path, show=show)
+    agent = TrajectoryBasedPolicyIteration(id, representation, domain, logger, project_path=path, show=show)
 
     return MDPSolverExperiment(agent, domain)
 

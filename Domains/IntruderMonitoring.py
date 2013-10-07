@@ -1,9 +1,10 @@
 """Intruder monitoring task."""
 
-from numpy.ma.core import logical_or
 from Tools import *
 from Domain import Domain
 import time
+import os
+from Tools import __rlpy_location__
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -14,30 +15,30 @@ __author__ = "N. Kemal Ure"
 
 class IntruderMonitoring(Domain):
     """
-    Formulated as an MDP, the intruder monitoring task is to guard danger zones using cameras 
-    so that if an intruder moves to a danger zone, at least one camera is pointing at that location. 
+    Formulated as an MDP, the intruder monitoring task is to guard danger zones using cameras
+    so that if an intruder moves to a danger zone, at least one camera is pointing at that location.
 
-    The episode is finished after 1000 steps. 
+    The episode is finished after 1000 steps.
 
-    State Features (n is number of agents, m is number of intruders): 
+    State Features (n is number of agents, m is number of intruders):
         Location of Agent_1 x ... x Location of Agent n...
         Location of Intruder 1 x ...x Location of Intruder_m
 
     Location is 2D position on a grid
 
-    Actions: 
+    Actions:
         [Up, Down, Left, Right, StayStill]^n (oone action for each agent)
 
     Dynamics:
         Each agent can move in 4 directions + stay still, there is no noise
         Each intruder moves with a fixed policy (specified by the user)
         By Default, intruder policy is uniform random
-    
-    Map of the world contains fixed number of danger zones. Maps are simple text files 
-    contained in the Domains/IntruderMonitoringMaps/ directory. 
-    
-    The team receives a penalty whenever there is an intruder on a danger zone in the 
-    absence of an agent. The task is to allocate agents on the map so that intruders 
+
+    Map of the world contains fixed number of danger zones. Maps are simple text files
+    contained in the Domains/IntruderMonitoringMaps/ directory.
+
+    The team receives a penalty whenever there is an intruder on a danger zone in the
+    absence of an agent. The task is to allocate agents on the map so that intruders
     do not enter the danger zones without attendance of an agent.
 
     Reward:
@@ -68,7 +69,10 @@ class IntruderMonitoring(Domain):
     ally_fig        = None
     intruder_fig    = None
 
-    def __init__(self, mapname = './Domains/IntruderMonitoringMaps/4x4_2A_3I.txt', logger = None):
+    #: directory with maps shipped with rlpy
+    default_map_dir = os.path.join(__rlpy_location__, "Domains", "IntruderMonitoringMaps")
+
+    def __init__(self, mapname=os.path.join(default_map_dir, "4x4_2A_3I.txt"), logger = None):
 
         self.setupMap(mapname)
         self.state_space_dims                   = 2*(self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
@@ -173,7 +177,7 @@ class IntruderMonitoring(Domain):
         print 'Reward ',r
     def IntruderPolicy(self,s_i):
          return self.random_state.choice(self.possibleActionsPerAgent(s_i))
-         
+
     def showDomain(self, a):
        s = self.state
        #Draw the environment

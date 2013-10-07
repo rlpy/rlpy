@@ -1,22 +1,23 @@
 """Pacman game domain."""
-
+from Tools import __rlpy_location__
 from Domain import Domain
 from .PacmanPackage import layout, pacman, game, ghostAgents
 from .PacmanPackage import graphicsDisplay
 import numpy as np
 from copy import deepcopy
+import os
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-            "William Dabney", "Jonathan P. How"]
+               "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 __author__ = "Austin Hays"
 
 
 class Pacman(Domain):
     """
-    Pacman domain, which acts as a wrapper for the Pacman implementation 
-    from the BerkeleyX/CS188.1x project. 
+    Pacman domain, which acts as a wrapper for the Pacman implementation
+    from the BerkeleyX/CS188.1x project.
     """
 
     _max_scared_time = 39
@@ -25,8 +26,12 @@ class Pacman(Domain):
     actions_num = 5
     episodeCap = 1000
 
+    #: location of layouts shipped with rlpy
+    default_layout_dir = os.path.join(__rlpy_location__, "Domains", "PacmanPackage",
+                                      "layouts")
+
     def __init__(self, noise=.1, logger=None, timeout=30,
-                 layoutFile='./Domains/PacmanPackage/layouts/trickyClassic.lay',
+                 layoutFile=os.path.join(default_layout_dir, 'trickyClassic.lay'),
                  numGhostAgents=1000):
         """
             TODO fill
@@ -169,7 +174,7 @@ class Pacman(Domain):
             self.gameDisplay.update(s.data)
             s._foodEaten = None
             s._capsuleEaten = None
-        #from time import sleep; sleep(0.3)
+
     def step(self, a):
         """
         Applies actions from outside the Pacman domain to the given state.

@@ -13,13 +13,13 @@ class OMPTD(Representation):
     """OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr
 
     This implementation assumes an initial representation exists and the bag of features is the conjunctions of existing features
-    As a results OMP-TD uses iFDD to represents its features, yet its discovery method is different compared to 
+    As a results OMP-TD uses iFDD to represents its features, yet its discovery method is different compared to
     iFDD as it does not have to look at the fringe of the tree rather it looks through a predefined set of features
     iFDD initially will expand all the features in the bag
-    
+
     The set of features used by OMPTD aside from the initial_features are represented by self.expandedFeatures
     """
-    
+
     maxBatchDicovery    = 0     # Maximum number of features to be expanded on each iteration
     batchThreshold      = 0      # Minimum threshold to add features
     selectedFeatures    = None    # List of selected features. In this implementation initial features are selected initially by default
@@ -179,51 +179,3 @@ class OMPTD(Representation):
 
     def featureType(self):
         return self.initial_representation.featureType()
-
-if __name__ == '__main__':
-    STDOUT_FILE         = 'out.txt'
-    JOB_ID              = 1
-    OUT_PATH            = 'Results/Temp'
-#    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
-    logger              = Logger()
-    discovery_threshold = 1
-    #domain      = MountainCar()
-    domain      = SystemAdministrator('/../Domains/SystemAdministratorMaps/20MachTutorial.txt')
-    initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
-    rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1)
-    rep.theta   = arange(rep.features_num*domain.actions_num)*10
-    print 'Initial [0,1,20] => ',
-    print rep.findFinalActiveFeatures([0,1,20])
-    print 'Initial [0,20] => ',
-    print rep.findFinalActiveFeatures([0,20])
-    rep.showCache()
-    print 'discover 0,20'
-    phi_s = zeros(rep.features_num)
-    phi_s[0] = 1
-    phi_s[20] = 1
-    rep.discover(phi_s, discovery_threshold+1)
-    rep.showFeatures()
-    rep.showCache()
-    print 'Initial [0,20] => ',
-    print rep.findFinalActiveFeatures([0,20])
-    print 'Initial [0,1,20] => ',
-    print rep.findFinalActiveFeatures([0,1,20])
-    rep.showCache()
-    # Change the weight for new feature 40
-    rep.theta[40] = -100
-    print 'Initial [0,20] => ',
-    print rep.findFinalActiveFeatures([0,20])
-    print 'discover 0,1,20'
-    rep.inspectPair(1,rep.features_num-1, discovery_threshold+1)
-    rep.showFeatures()
-    rep.showCache()
-    print 'Initial [0,1,20] => ',
-    print rep.findFinalActiveFeatures([0,1,20])
-    rep.showCache()
-    print 'Initial [0,1,2,3,4,5,6,7,8,20] => ',
-    print rep.findFinalActiveFeatures([0,1,2,3,4,5,6,7,8,20])
-    rep.showCache()
-
-
-
-

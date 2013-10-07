@@ -1,55 +1,156 @@
+.. _tutorial:
+
 Getting Started
 ===============
+
+This tutorial covers the most common type of experiment in reinforcement
+learning: the control experiment. An agent is supposed to find a good policy
+while interacting with the domain. 
 
 First Run
 ---------
 
-.. tip::
-    If you receive errors during any of the steps below, please refer to `install.txt` for solutions to common issues.
+Begin by looking at the file `examples/tutorial/gridworld.py`:
 
-Begin by looking at the file `cases/tutorial/gridworld.py`:
-
-.. literalinclude:: ../cases/tutorial.py
+.. literalinclude:: ../examples/tutorial/gridworld.py
    :language: python
    :linenos:
    
-The most important part is the `make_experiment` function which every file specifying an
-experimental setup in RLPy should contain.
+The file is an example for a reinforcement learning experiment. The main
+components of such an experiment is the **domain**, `GridWorld` in this case,
+the **agent** (`Q_Learning`), which uses the **policy** `eGreedy` and the
+value function **representation** `Tabular`. The **experiment** `Experiment` is
+in charge of the execution of the experiment by handling the interaction
+between the agent and the domain as well as storing the results on disk (see
+also :ref:`overview`).
 
-You will notice a series of parameters at the top of the file, 
-followed by assignments to each of the functional components 
-shown in :ref:`The Big Picture <big_picture>`: domain, representation, policy, agent, and experiment.
-Leave these alone for now; just run the file as-is.  You should see something like the following:
+The function `make_experiment` gets an id, which specifies the random seeds 
+and a path where the results are stored. It returns an instance of an
+`Experiment` which is ready to run. In line 53, such an experiment is created
+and then executed in line 54 by calling its `run` method. The three parameters
+of `run` control the graphical output. The result are plotted in line 57 and
+subsequently stored in line 58.
 
-.. image:: gridWorld_learning.png
-   :width: 90 %
+You can run the file by executing it with the python interpreter from the rlpy
+root directory::
 
-This is a visual representation of the domain (here, *GridWorld*) and is useful in quickly judging or
-demonstrating the performance of an experiment.  The objective on this domain is to move the agent (triangle) 
-from the start (blue) to the goal (green) location in the shortest distance possible, while avoiding the 
-pits (red); -0.001 reward is applied for every step, and reaching the goal or pit regions give 
-rewards of +1.0 and -1.0 respectively, terminating the episode.
+    python examples/tutorial/gridworld.py
 
-On the left, you can see the learned policy in action after each 200 steps of training data.  
+.. tip::
+    We recommend using the IPython interpreter. Compared to the standard
+    interpreter it provides color output and better help functions. It is more 
+    comportable to work with in general. See the `Ipython homepage`_ for
+    details.
+    
+    
+
+    You can run the file with ipython by executing::
+        
+        ipython examples/tutorial/gridworld.py
+
+    or start the interactive python shell with::
+        
+        ipython
+
+    and then inside the ipython shell execute::
+
+        %run examples/tutorial/gridworld.py
+
+    This will not terminate the interpreter after running the file and allows
+    you to inspect the objects interactively afterwards.
+
+.. _Ipython homepage: http://ipython.org
+
+What Happens During an Control Experiment
+-----------------------------------------
+
+During an experiment, the agent does exactly in total `max_steps` learning
+steps where 
+
+    1. The agent choses an action given its (exploration) policy
+    2. The domain transitions to a new state
+    3. The agent observes the old and new state of the domain as well as the
+       reward for this transition and improves its policy based on this new
+       information
+
+To track the performance of the agent, the quality of its current policy is
+assessed `num_policy_checks` times per experiment. This is done by letting the
+agent interact for `checks_per_policy` episodes with the domain in so called 
+**performance runs**. During performance runs, the agent does not do any
+exploration but always choses actions that it thinks is optimal. This means,
+each step in a performance run consists of
+
+    1. The agent choses an action it thinks is optimal (e.g. greedy w.r.t. its
+       value function estimate
+    2. The domain transitions to a new state
+
+Note that no learning happens during performance runs. The total return for
+each episode of performance runs is averaged to obtain a quality measure of the
+agents policy.
+
+Graphical Output
+----------------
+
+While running the experiment you should see two windows, one showing the domain
+
+.. image:: gridworld_domain.png
+   :width: 400px
+
+and one showing the value function
+
+.. image:: gridworld_valfun.png
+    :width: 400px
+
+The Domain window is a visual representation of the domain (here, *GridWorld*) 
+and is useful in quickly judging or demonstrating the performance of an agent.  
+In this domain, the agent (triangle) has to move
+from the start (blue) to the goal (green) location in the shortest distance possible, 
+while avoiding the pits (red). The agent receives -0.001 reward every step.
+When it reaches the goal or a pit, it obtains rewards of +1.0 or and the episode
+is terminated.
+
+You see only the first episode of each of the ten policy assessments, since we
+set `visualize_performance=1` when calling the `run` method of Experiment. You
+can show more of the 100 performance runs per policy if you increase this
+parameter. If you set `visualize_steps=True` also steps during learning are
+shown.
+
+The value function window shows the value function and the resulting policy. It
+is shown because `visualize_learning=True`.
 Notice how the policy gradually converges to the optimal, direct route which avoids pits.
-On the right, you can see the representation of the value function overlayed on the domain.  
-Notice how after successive iterations, the agent learns the high (green) value of being in 
+After successive iterations, the agent learns the high (green) value of being in 
 states that lie along the optimal path, even though they offer no immediate reward.  
 It also learns the low (red) value of unimportant / undesirable states.
 
 The set of possible actions in each grid is highlighted by arrows, where the size of arrows 
-correspond to the :math:`Q(s,a)`. The best action is shown as black. 
-If the agent hasn't learned the optimal policy in some grid cells (e.g. Row 2, Column 1), 
+correspond to the state-action value function :math:`Q(s,a)`. 
+The best action is shown as black. If the agent has not learned the optimal policy 
+in some grid cells (e.g. Row 2, Column 1 in the picture above), 
 it has not explored enough to learn the correct action ('left' in Row 2, Column 1).  
-It likely still performs well though, since such states are only ever reached because of random noise in the agent's actions.
+It likely still performs well though, since such states are only ever reached 
+because of :math:`\epsilon`-greedy policy which choses random actions with
+probability :math:`\epsilon=0.2`.
 
-Each domain in RLPy offers visualization like that shown on the left, and where possible, 
-a representation of the value function like that shown on the right as well.
+Most domain in RLPy have a visualization like `GridWorld` and often also a
+graphical presentation of the policy or value function.
 
-Interpreting Output
--------------------
+At the end of the experiment another window called *Performance* pops up and
+shows a plot of the average return during each policy assessment. 
 
-In the console window you should see output similar to the following::
+.. image:: gridworld_performance.png
+   :width: 400px
+
+As we can see the agent learns after about 500 steps to obtain on average a
+reward of 0.7. The theoretically optimal reward for a single run is 0.99.
+However, the noise in the domains causing the agent to move only 70% of the
+times in the intended direction causes the total reward to be lower on average.
+In fact, the policy learned by the agent after 500 steps is the optimal one.
+
+Console Outputs
+---------------
+
+During execution of `examples/tutorial/gridworld.py`, you should see in the 
+console window output similar to the following::
     
     647: E[0:00:01]-R[0:00:15]: Return=+0.97, Steps=33, Features = 20
     1000 >>> E[0:00:04]-R[0:00:37]: Return=+0.99, Steps=11, Features = 20
@@ -60,38 +161,20 @@ Each part has a specific meaning:
 .. image:: rlpy_output.png
    :width: 90 %
 
-
-Note that a *performance run* (indicated by *>>>* in the output window) tests 
-the agent using its latest policy, without any exploration or modifications that 
-might be used during learning (such as the randomization of the episilon-greedy policy). 
-The visualization shows these performance runs.
-
-.. note::
-    If you see *only* performance runs as console output, this simply means that your machine 
-    is completing the learning before the performance run faster than the console logging rate,
-    usually 1 Hz, and does not indicate a problem.
-
-
-After the cutoff of 2,000 steps specified in `cases/tutorial/gridworld.py`, the experiment is 
-complete, and a second figure window appears, showing the reward earned on each performance run.  
-On this domain, an excellent policy is located almost immediately (reward 0.989).
-
-The final plot likely shows enormous variance in reward obtained on performance runs - 
-this is because the GridWorld domain has a default noise level of 0.3, meaning that 30% of 
-the time, a random action will be taken; at the start, when only two actions are available, 
-this corresponds to a 30% failure rate (-1 reward), even when the optimal policy has been found.
-
-You can adjust the noise parameter "NOISE" at the top of IShouldRun.py; just be aware that the agent
-does not explore (epsilon=0) during performance runs, so with 0 noise and a bad initial policy, you may 
-have to sit and watch the agent execute a (likely oscillatory) deterministic policy for all 1000 steps 
-of an episode!
+Lines with `>>>` are the averaged results of a policy assessment. 
+Results of policy assessments are always shown. The outcome of learning
+episodes is shown only every second. You might therefore see no output for
+learning episodes if your computer is fast enough to do all learning steps
+between two policy assessments in less than one second.
 
 Analyzing Data
 --------------
 
-The variable "path" in IShouldRun.py determines the directory in which all results are stored; 
-IShouldRun.py defaults to ./Results/I-Should-Run.  A folder for a particular experiment is automatically 
-generated in that directory as necessary based on its parameters; here, "GridWorld-Tabular-2000" for the 
+The variable "path" in IShouldRun.py determines the directory in which all 
+results are stored; IShouldRun.py defaults to ./Results/I-Should-Run.  
+A folder for a particular experiment is automatically 
+generated in that directory as necessary based on its parameters; 
+here, "GridWorld-Tabular-2000" for the 
 GridWorld domain, Tabular representation, with 2,000 steps total. 
 
 The data logged to the console is stored in a file "#-out.txt", where "#" is the ID of the experiment, 

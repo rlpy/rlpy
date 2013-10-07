@@ -1,7 +1,9 @@
 """Gridworld Domain"""
 from Tools import *
 from Domain import Domain
-
+from Tools import __rlpy_location__
+import os
+import matplotlib.pyplot as plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -49,7 +51,11 @@ class GridWorld(Domain):
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
     #: Up, Down, Left, Right
     ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
-    def __init__(self,mapname='./Domains/GridWorldMaps/4x5.txt', noise = .1, episodeCap = None, logger = None):
+    #: directory of maps shipped with rlpy
+    default_map_dir = os.path.join(__rlpy_location__, "Domains", "GridWorldMaps")
+
+    def __init__(self,mapname=os.path.join(default_map_dir,"4x5.txt"),
+                 noise = .1, episodeCap = None, logger = None):
         self.map                = loadtxt(mapname, dtype = uint8)
         if self.map.ndim == 1: self.map = self.map[newaxis,:]
         self.start_state              = argwhere(self.map==self.START)[0]
@@ -69,55 +75,55 @@ class GridWorld(Domain):
 
        #Draw the environment
        if self.domain_fig is None:
-           self.agent_fig = pl.subplot(1,2,1)
+           self.agent_fig = plt.figure("Domain")
            self.domain_fig = pl.imshow(self.map, cmap='GridWorld',interpolation='nearest',vmin=0,vmax=5)
            pl.xticks(arange(self.COLS), fontsize= FONTSIZE)
            pl.yticks(arange(self.ROWS), fontsize= FONTSIZE)
            #pl.tight_layout()
-           self.agent_fig = self.agent_fig.plot(s[1],s[0],'kd',markersize=20.0-self.COLS)
+           self.agent_fig = plt.gca().plot(s[1],s[0],'kd',markersize=20.0-self.COLS)
            pl.show()
+       self.agent_fig.pop(0).remove()
+       self.agent_fig = plt.figure("Domain")
        #mapcopy = copy(self.map)
        #mapcopy[s[0],s[1]] = self.AGENT
        #self.domain_fig.set_data(mapcopy)
-       self.agent_fig.pop(0).remove()
-       self.agent_fig = pl.subplot(1,2,1).plot(s[1],s[0],'k>',markersize=20.0-self.COLS) # Instead of '>' you can use 'D', 'o'
-       pl.draw()
+       self.agent_fig = plt.gca().plot(s[1],s[0],'k>',markersize=20.0-self.COLS) # Instead of '>' you can use 'D', 'o'
+       plt.draw()
 
     def showLearning(self,representation):
         if self.valueFunction_fig is None:
-            pl.subplot(1,2,2)
-            self.valueFunction_fig   = pl.imshow(self.map, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
-            pl.xticks(arange(self.COLS), fontsize=12)
-            pl.yticks(arange(self.ROWS), fontsize=12)
+            plt.figure("Value Function")
+            self.valueFunction_fig   = plt.imshow(self.map, cmap='ValueFunction',interpolation='nearest',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
+            plt.xticks(arange(self.COLS), fontsize=12)
+            plt.yticks(arange(self.ROWS), fontsize=12)
             #Create quivers for each action. 4 in total
-            X   = arange(self.ROWS)-self.SHIFT
-            Y   = arange(self.COLS)
+            X   = np.arange(self.ROWS)-self.SHIFT
+            Y   = np.arange(self.COLS)
             X,Y = pl.meshgrid(X,Y)
             DX = DY = ones(X.shape)
             C = zeros(X.shape); C[0,0] = 1 # Making sure C has both 0 and 1
             arrow_ratio = 0.4 # length of arrow/width of bax. Less then 0.5 because each arrow is offset, 0.4 looks nice but could be better/auto generated
             Max_Ratio_ArrowHead_to_ArrowLength = 0.25
             ARROW_WIDTH = 0.5*Max_Ratio_ArrowHead_to_ArrowLength/5.0
-            self.upArrows_fig = pl.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio, width = -1*ARROW_WIDTH)
+            self.upArrows_fig = plt.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio, width = -1*ARROW_WIDTH)
             self.upArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)+self.SHIFT
             Y   = arange(self.COLS)
             X,Y = pl.meshgrid(X,Y)
-            self.downArrows_fig = pl.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio, width = -1*ARROW_WIDTH)
+            self.downArrows_fig = plt.quiver(Y,X,DY,DX,C, units='y', cmap='Actions', scale_units="height", scale=self.ROWS/arrow_ratio, width = -1*ARROW_WIDTH)
             self.downArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)
             Y   = arange(self.COLS)-self.SHIFT
             X,Y = pl.meshgrid(X,Y)
-            self.leftArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
+            self.leftArrows_fig = plt.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
             self.leftArrows_fig.set_clim(vmin=0,vmax=1)
             X   = arange(self.ROWS)
             Y   = arange(self.COLS)+self.SHIFT
             X,Y = pl.meshgrid(X,Y)
-            self.rightArrows_fig = pl.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
+            self.rightArrows_fig = plt.quiver(Y,X,DY,DX,C, units='x', cmap='Actions', scale_units="width", scale=self.COLS/arrow_ratio, width = ARROW_WIDTH)
             self.rightArrows_fig.set_clim(vmin=0,vmax=1)
-            f = pl.gcf()
-            pl.show()
-            #pl.tight_layout()
+            plt.show()
+        plt.figure("Value Function")
         V            = zeros((self.ROWS,self.COLS))
         Mask         = ones((self.COLS,self.ROWS,self.actions_num), dtype='bool') #Boolean 3 dimensional array. The third array highlights the action. Thie mask is used to see in which cells what actions should exist
         arrowSize    = zeros((self.COLS,self.ROWS,self.actions_num), dtype ='float')
@@ -172,7 +178,7 @@ class GridWorld(Domain):
         DY = ma.masked_array(DY, mask=Mask[:,:,3])
         C  = ma.masked_array(arrowColors[:,:,3], mask=Mask[:,:,3])
         self.rightArrows_fig.set_UVC(DY,DX,C)
-        pl.draw()
+        plt.draw()
 
     def step(self,a):
         r           = self.STEP_REWARD
