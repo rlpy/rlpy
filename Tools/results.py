@@ -27,7 +27,7 @@ default_labels = {"learning_steps": "Learning Steps",
 #: default colors used for plotting
 default_colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'purple']
 #: default markers used for plotting
-default_markers = ['o', 'v', '8', 's', 'p', '*', '<', 'h', '^', 'H', 'D', '>', 'd'],
+default_markers = ['o', 'v', '8', 's', 'p', '*', '<', 'h', '^', 'H', 'D', '>', 'd']
 
 
 def thousand_format_xaxis():
@@ -85,7 +85,7 @@ def avg_quantity(results, quantity, pad=False):
     over all runs of a certain quantity.
     If pad is true, missing entries for runs with less entries are filled with the last value
     """
-    length = max([len(v[quantity] for v in results.itervalues())])
+    length = max([len(v[quantity]) for v in results.itervalues()])
     mean = np.zeros(length)
     std = np.zeros(length)
     num = np.zeros(length, dtype="int")
@@ -101,11 +101,23 @@ def avg_quantity(results, quantity, pad=False):
                 else:
                     last_values[k] = 0.
             mean[i] += last_values[k]
-            std[i] += last_values[k]**2
         if num[i] > 0:
             mean[i] /= num[i]
+
+        for k, v in results.iteritems():
+            if len(v[quantity]) > i:
+                last_values[k] = v[quantity][i]
+                num[i] += 1
+            else:
+                if pad:
+                    num[i] += 1
+                else:
+                    last_values[k] = 0.
+            std[i] += (last_values[k] - mean[i])**2
+        if num[i] > 0:
+
             std[i] /= num[i]
-    std[i] = np.sqrt(std[i] - mean[i]**2)
+        std[i] = np.sqrt(std[i])
     return mean, std, num
 
 
@@ -147,26 +159,40 @@ class MultiExperimentResults(object):
         self.data = {}
         if isinstance(paths, list):
             paths = dict(zip(paths, paths))
-        for label, path in paths:
+        for label, path in paths.iteritems():
             self.data[label] = load_results(path)
 
     def plot_avg_sem(self, x, y, pad_x=False, pad_y=False, xbars=False, ybars=True,
                      colors=None, markers=None, xerror_every=1,
                      legend=True, **kwargs):
-        style = {"linewidth": 2, "alpha": .7, "linestyle": "-", "markersize": 5,
+        """
+        plots quantity y over x (means and standard error of the mean).
+        The quantities are specified by their id strings,
+        i.e. "return" or "learning steps"
+
+        pad_x, pad_y: if not enough observations are present for some results,
+                should they be filled with the value of the last available obervation?
+        xbars, ybars: show standard error of the mean for the respective quantity
+        colors: dictionary which maps experiment keys to colors
+        markers: dictionary which maps experiment keys to markers
+        xerror_exery: show horizontal error bars only every .. observation
+        legend: show legend below plot
+
+        return the figure handle of the created plot
+        """
+        style = {"linewidth": 2, "alpha": .7, "linestyle": "-", "markersize": 7,
                  }
         if colors is None:
             colors = dict([(l, default_colors[i % len(default_colors)]) for i, l in enumerate(self.data.keys())])
         if markers is None:
             markers = dict([(l, default_markers[i % len(default_markers)]) for i, l in enumerate(self.data.keys())])
-            style.update(kwargs)
+        style.update(kwargs)
         min_ = np.inf
         max_ = - np.inf
         fig = plt.figure()
-        for label, results in self.data:
+        for label, results in self.data.items():
             style["color"] = colors[label]
             style["marker"] = markers[label]
-
             y_mean, y_std, y_num = avg_quantity(results, y, pad_y)
             y_sem = y_std / np.sqrt(y_num)
             x_mean, x_std, x_num = avg_quantity(results, x, pad_x)
@@ -176,7 +202,7 @@ class MultiExperimentResults(object):
                 plt.errorbar(x_mean, y_mean, xerr=x_sem, label=label,
                              ecolor="k", errorevery=xerror_every, **style)
             else:
-                plt.plot(x_mean, y_mean, label=label)
+                plt.plot(x_mean, y_mean, label=label, **style)
 
             if ybars:
                 plt.fill_between(x_mean, y_mean - y_sem, y_mean + y_sem,
@@ -203,7 +229,7 @@ class MultiExperimentResults(object):
             plt.gca().set_position([box.x0, box.y0 + box.height * 0.2,
                                     box.width, box.height * 0.8])
             legend_handle = plt.legend(loc='upper center',
-                                       bbox_to_anchor=(0.5, -0.1),
+                                       bbox_to_anchor=(0.5, -0.15),
                                        fancybox=True, shadow=True, ncol=2)
         return fig
 

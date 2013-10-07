@@ -250,7 +250,8 @@ class Pendulum(Domain):
                 As = self.possibleActions(s)
                 terminal = self.isTerminal(s)
                 Qs = representation.Qs(s, terminal)
-                pi[row,col] = As[argmax(Qs)]
+                a = np.random.choice(As[Qs.max()==Qs])
+                pi[row,col] = a
                 V[row,col]  = max(Qs)
         #Update the value function
         # Wireframe, needs some work
