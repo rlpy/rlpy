@@ -228,7 +228,7 @@ class Experiment(object):
                 episode_number += 1
             # Act,Step
             r, ns, terminal, np_actions   = self.domain.step(a)
-            print total_steps, s, a, ns
+            #print total_steps, s, a, ns
             na              = self.agent.policy.pi(ns, terminal, np_actions)
 
             total_steps     += 1

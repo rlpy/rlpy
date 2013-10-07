@@ -6,9 +6,6 @@ Getting Started
 First Run
 ---------
 
-.. tip::
-    If you receive errors during any of the steps below, please refer to `install.txt` for solutions to common issues.
-
 Begin by looking at the file `examples/tutorial/gridworld.py`:
 
 .. literalinclude:: ../examples/tutorial/gridworld.py
