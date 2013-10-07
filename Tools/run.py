@@ -58,6 +58,16 @@ queue 1
 """
 
 
+def exec_content(fn, id):
+    #local = {"__file__": ""}
+    content = read_setting_content(fn)
+    exec content
+
+    #make_experiment = local["make_experiment"]
+    exp = make_experiment(id, ".", **(hyper_param))
+    exp.run()
+    exp.save()
+
 def run_profiled(make_exp_fun, profile_location="Profiling", out="Test.pdf", **kwargs):
     """run an experiment (without storing its results) and profiles the execution.
     A gprof file is created and a pdf with a graphical visualization of the most
@@ -163,7 +173,7 @@ def run(setting, location, ids, parallelization="sequential",
 
 
 def run_joblib(fn, ids, n_jobs=-2, verbose=10):
-    jobs = (joblib.delayed(os.system)("python {} {} > /dev/null".format(fn, i + 1)) for i in ids)
+    jobs = (joblib.delayed(exec_content)(fn, i) for i in ids)
     exit_codes = joblib.Parallel(n_jobs=n_jobs, verbose=verbose)(jobs)
     return exit_codes
 
