@@ -119,9 +119,9 @@ class Experiment(object):
         based on the currently set id
         """
         random.seed(self.randomSeeds[self.id - 1])
-        self.domain.rand_state = random.RandomState(self.randomSeeds[self.id - 1])
+        self.domain.random_state = random.RandomState(self.randomSeeds[self.id - 1])
         # make sure the performance_domain has a different seed
-        self.performance_domain.rand_state = random.RandomState(self.randomSeeds[self.id + 20])
+        self.performance_domain.random_state = random.RandomState(self.randomSeeds[self.id + 20])
 
     def performanceRun(self, total_steps, visualize=False):
         """
@@ -151,7 +151,6 @@ class Experiment(object):
             a = self.agent.policy.pi(s, eps_term, p_actions)
             if visualize:
                 self.performance_domain.showDomain(a)
-                pl.title('After ' + str(total_steps) + ' Steps')
 
             r, ns, eps_term, p_actions = self.performance_domain.step(a)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
@@ -229,6 +228,7 @@ class Experiment(object):
                 episode_number += 1
             # Act,Step
             r, ns, terminal, np_actions   = self.domain.step(a)
+            print total_steps, s, a, ns
             na              = self.agent.policy.pi(ns, terminal, np_actions)
 
             total_steps     += 1
@@ -288,7 +288,7 @@ class Experiment(object):
             return
 
         random_state = np.random.get_state()
-        random_state_domain = copy(self.domain.rand_state)
+        #random_state_domain = copy(self.domain.random_state)
         elapsedTime = deltaT(self.start_time)
         performance_return = 0.
         performance_steps = 0.
@@ -324,7 +324,7 @@ class Experiment(object):
                                                              num_feat=self.agent.representation.features_num))
 
         random.set_state(random_state)
-        self.domain.rand_state = random_state_domain
+        #self.domain.rand_state = random_state_domain
 
     def save(self):
         """Saves the experimental results to the results.txt file
