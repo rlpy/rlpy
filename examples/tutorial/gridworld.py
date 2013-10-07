@@ -43,7 +43,7 @@ def make_experiment(id=1, path="./Results/Temp/Tutorial1/"):
                        initial_alpha=0.1,
                        alpha_decay_mode="boyan", boyan_N0=100,
                        lambda_=0.)
-
+    checks_per_policy = 100
     max_steps = 2000
     num_policy_checks = 10
     experiment = Experiment(**locals())
@@ -52,7 +52,7 @@ def make_experiment(id=1, path="./Results/Temp/Tutorial1/"):
 if __name__ == '__main__':
     experiment = make_experiment(1)
     experiment.run(visualize_steps=False,  # should each learning step be shown?
-                   visualize_learning=True,  # show performance runs?
-                   visualize_performance=True)  # show value function?
+                   visualize_learning=True,  # show policy / value function?
+                   visualize_performance=1)  # show performance runs?
     experiment.plot()
     experiment.save()

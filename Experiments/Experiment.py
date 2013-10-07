@@ -172,14 +172,18 @@ class Experiment(object):
         """
         printClass(self)
 
-    def run(self, visualize_performance=False, visualize_learning=False,
+    def run(self, visualize_performance=0, visualize_learning=False,
             visualize_steps=False, debug_on_sigurg=False):
         """
         Run the experiment and collect statistics / generate the results
 
 
-        visualize_performance (boolean):
-            show a visualization of the steps taken in performance runs
+        visualize_performance (int):
+            determines whether a visualization of the steps taken in
+            performance runs are shown. 0 means no visualization is shown.
+            A value n > 0 means that only the first n performance runs for a
+            specific policy are shown (i.e., for n < checks_per_policy, not all
+            performance runs are shown)
         visualize_learning (boolean):
             show some visualization of the learning status before each
             performance evaluation (e.g. Value function)
@@ -269,7 +273,7 @@ class Experiment(object):
         if visualize_steps:
             self.domain.show(a, self.agent.representation)
 
-    def evaluate(self, total_steps, episode_number, visualize=False):
+    def evaluate(self, total_steps, episode_number, visualize=0):
         """
         Evaluate the current agent within an experiment
 
@@ -295,7 +299,7 @@ class Experiment(object):
         performance_term = 0.
         performance_discounted_return = 0.
         for j in xrange(self.checks_per_policy):
-            p_ret, p_step, p_term, p_dret = self.performanceRun(total_steps, visualize=visualize)
+            p_ret, p_step, p_term, p_dret = self.performanceRun(total_steps, visualize=visualize > j)
             performance_return += p_ret
             performance_steps += p_step
             performance_term += p_term
