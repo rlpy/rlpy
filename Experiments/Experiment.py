@@ -8,6 +8,7 @@ import argparse
 import json
 import Tools.results
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -250,11 +251,12 @@ class Experiment(object):
         # show policy or value function of initial policy
         if visualize_learning:
             self.domain.showLearning(self.agent.representation)
-        # do a first evaluation to get the quality of the inital policy
-        self.evaluate(total_steps, episode_number, visualize_performance)
 
         start_log_time      = clock()  # Used to bound the number of logs in the file
         self.start_time     = clock()  # Used to show the total time took the process
+        self.elapsed_time = 0
+        # do a first evaluation to get the quality of the inital policy
+        self.evaluate(total_steps, episode_number, visualize_performance)
         self.total_eval_time = 0.
         terminal = True
         while total_steps < self.max_steps:
@@ -358,9 +360,13 @@ class Experiment(object):
         self.result["discounted_return"].append(performance_discounted_return)
         # reset start time such that performanceRuns don't count
         self.start_time = clock() - elapsedTime
+        if total_steps > 0:
+            remaining = hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps)
+        else:
+            remaining = "?"
         self.logger.log(self.performance_log_template.format(total_steps=total_steps,
                                                              elapsed=hhmmss(elapsedTime),
-                                                             remaining=hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps),
+                                                             remaining=remaining,
                                                              totreturn=performance_return,
                                                              steps=performance_steps,
                                                              num_feat=self.agent.representation.features_num))
@@ -395,8 +401,8 @@ class Experiment(object):
         performance_fig = pl.figure("Performance")
         res = self.result
         plt.plot(res[x], res[y], '-bo', lw=3, markersize=10)
-        plt.xlim(0, self.result[0, -1]*1.01)
-        y_arr = np.array(rey[y])
+        plt.xlim(0, res[x][-1]*1.01)
+        y_arr = np.array(res[y])
         m = y_arr.min()
         M = y_arr.max()
         delta = M-m
