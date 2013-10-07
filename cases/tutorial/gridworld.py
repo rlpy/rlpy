@@ -13,7 +13,7 @@ from Agents import Q_Learning
 from Representations import Tabular
 from Policies import eGreedy
 from Experiments import Experiment
-
+import os
 
 def make_experiment(id=1, path="./Results/Temp"):
     """
@@ -28,7 +28,7 @@ def make_experiment(id=1, path="./Results/Temp"):
 
     ## Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
-    maze = './Domains/GridWorldMaps/4x5.txt'
+    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation

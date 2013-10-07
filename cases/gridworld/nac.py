@@ -8,7 +8,7 @@ from Agents import NaturalActorCritic
 from Representations import Tabular
 from Policies import GibbsPolicy
 from Experiments import Experiment
-
+import os
 
 def make_experiment(id=1, path="./Results/Temp"):
     """
@@ -29,7 +29,7 @@ def make_experiment(id=1, path="./Results/Temp"):
 
     ## Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
-    maze = './Domains/GridWorldMaps/4x5.txt'
+    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
@@ -39,7 +39,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     policy = GibbsPolicy(representation, logger)
 
     ## Agent
-    agent = NaturalActorCritic(representation, policy, domain, 
+    agent = NaturalActorCritic(representation, policy, domain,
                  logger, 0.3, 100, 1000, .7, 0.1)
 
     experiment = Experiment(**locals())

@@ -8,7 +8,7 @@ from MDPSolvers import TrajectoryBasedPolicyIteration
 from Representations import Tabular
 from Policies import GibbsPolicy
 from Experiments import MDPSolverExperiment
-
+import os
 
 def make_experiment(id=1, path="./Results/Temp", show=False):
     """
@@ -25,7 +25,7 @@ def make_experiment(id=1, path="./Results/Temp", show=False):
 
     ## Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
-    maze = './Domains/GridWorldMaps/4x5.txt'
+    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
