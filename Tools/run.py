@@ -97,7 +97,7 @@ def run_profiled(make_exp_fun, profile_location="Profiling", out="Test.pdf", **k
 def get_finished_ids(path):
     """returns all experiment ids for which the result file exists in
     the given directory"""
-    l = [int(re.findall("([0-9]*)-results.txt", p)[0]) for p in glob.glob(os.path.join(path, "*-results.txt"))]
+    l = [int(re.findall("([0-9]*)-results.json", p)[0]) for p in glob.glob(os.path.join(path, "*-results.json"))]
     l.sort()
     return l
 

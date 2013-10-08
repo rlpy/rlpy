@@ -2,6 +2,7 @@
 
 import os
 from Tools.Merger import Merger
+import Tools.results as tres
 import Tools.run as rt
 import hyperopt
 import numpy as np
@@ -200,6 +201,32 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
     """
     This function does hyperparameter optimization for RLPy experiments with the
     hyperopt library.
+    At the end an instance of the optimization trials is stored in "path"/trials.pck
+
+    :param setting: file specifying the experimental setup.
+        It contains a make_experiment function and a dictionary
+        named param_space if the argument space is not used.
+        For each key of param_space there needs to be an optional
+        argument in make_experiment
+    :param path: directory used to store all intermediate results.
+    :param space: (optional) an alternative specification of the hyperparameter
+        space
+    :param max_evals: maximum number of evaluations of a single hyperparameter
+        setting
+    :param trials_per_point: specifies the number of independent runs (with
+        different seeds) of the experiment for evaluating a single hyperparameter
+        setting.
+    :param parallelization: either **sequential**, **joblib**, **condor_all**
+        or **condor_full**, **condor**.
+        the condor options can be used in a computing cluster with a HTCondor
+        machine. The joblib option parallelizes runs on one machine and sequential
+        runs every experiment in sequence.
+    :param objective: (optional) string specifying the objective to optimize,
+        possible values are *max_reward*, *min_steps*, *max_steps*
+    :param max_concurrent_jobs: only relevant for condor_full parallelization.
+        specifies the maximum number of jobs that should run at the same time.
+    :return a tuple containing the best hyperarameter settings and the hyperopt
+        trials instance of the optimization procedure
     """
     if space is None:
         space = import_param_space(setting)
@@ -215,16 +242,20 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
                parallelization=parallelization, force_rerun=False, block=True, **hyperparam)
 
         # all jobs should be done
-        m = Merger([full_path], minSamples=trials_per_point, showSplash=False)
+        res = tres.load_results(full_path)
+
         if objective == "max_steps":
-            val = -m.means[0][4, :]
-            idx = 4
+            m,s,n = tres.avg_quantity(res, "steps")
+            val = -m
+            std = s[-1]
         elif objective == "min_steps":
-            val = m.means[0][4, :]
-            idx = 4
+            m,s,n = tres.avg_quantity(res, "steps")
+            val = m
+            std = s[-1]
         elif objective == "max_reward":
-            val = -m.means[0][1, :]
-            idx = 1
+            m,s,n = tres.avg_quantity(res, "return")
+            val = -m
+            std = s[-1]
         else:
             print "unknown objective"
         weights = (np.arange(len(val)) + 1) ** 2
@@ -234,9 +265,9 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
         print "Loss", loss
         # use #steps/eps at the moment
         return {"loss": loss,
-                "num_trials": m.samples[0],
+                "num_trials": n[-1],
                 "status": hyperopt.STATUS_OK,
-                "std_last_mean": m.std_errs[0][idx, -1]}
+                "std_last_mean": std}
 
     if parallelization == "condor_all":
         trials = CondorTrials(path=path, ids=range(1, trials_per_point + 1),
@@ -264,5 +295,5 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
 
     with open(os.path.join(path, 'trials.pck'),'w') as f:
         pickle.dump(trials, f)
-    
+
     return best, trials

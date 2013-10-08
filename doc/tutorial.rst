@@ -320,17 +320,100 @@ the center (zero angle, zero velocity), radial basis functions can capture the
 necessary form there much more easily and therefore speed up the learning
 process.
 
-.. warning:: The rest of this tutorial is outdated!
 
-Tuning Hyper-Parameters
+Tuning Hyperparameters
 -----------------------
 
 The behavior of each component of an agent can be drastically modified by its
-parameters (or hyper-parameters, in contrast to the parameters of the value
-function that are learned). The module
+parameters (or hyperparameters, in contrast to the parameters of the value
+function that are learned). The module :mod:`Tools.hypersearch` provides tools
+for optimizing these parameters to get the best out of the algorithms.
 
+We first need to specify what the hyperparameters for a specific experimental
+setup are and what values they can possibly take. We therefore again look at
+part of 
+`examples/tutorial/pendulum_rbf.py`
 
+.. literalinclude:: ../examples/tutorial/pendulum_rbfs.py
+   :language: python
+   :linenos:
+   :lines: 11-30
 
+The variable `param_space` contains the definition of the space of 
+hyperparameters we are considering. As the `make_experiment` function, the
+variable needs to have exactly this name. For details on how this definition has to
+look like we refer to `the documentation of hyperopt`_, the package we are
+using for optimizing hyperparameters.
+
+.. _the documentation of hyperopt: http://jaberg.github.io/hyperopt
+
+For each hyperparameter (in this example `num_rbfs`, `resolution`, `lambda_`,
+`boyan_N0` and `initial_alpha`), the `make_experiment` function has to have an 
+optional argument with the same name.
+
+The script saved in `examples/tutorial/run_hyperparametersearch.py` shows us
+how to perform a quick search good parameters
+
+.. literalinclude:: ../examples/tutorial/run_parametersearch.py
+   :language: python
+   :linenos:
+
+.. warning:: Running this script might take a while.
+
+The :func:`Tools.hypersearch.find_hyperparameters` function is the most
+important tools for finding good parameters. For details on how to use it see
+its api documentation. 
+
+During the optimization, the results of several an entire experimental run need
+to be compressed into one target value. The parameter `objective` controls which
+quantity to optimize. In this example, it is *maximize the reward*. We could
+just take the return of the policy assessment with the most observations (the
+final policy). However, this can lead to artifacts and causes all
+hyperparameters that yield the same final performance to be considered equally
+good, no matter how fast they reach this performance. Therefore, the target
+value is computed as follows:
+
+The target value is the weighted average over all measurements of the desired quantity.
+For example, the averga ereturn during each policy assessment. 
+The weights increase quadratically with the observation number, i.e., the
+return achieved in the first policy assessment has weight 1, the second weight
+2, 9, 16, ... This weighting scheme ensures makes the final performance most
+important but also takes into account previous ones and therefore makes sure
+that the convergence speed is reflected in the optimized value. This weighting
+scheme has shown to be very robust in practice.
+
+When we run the search, we obtain the following result:
+
+   {'initial_alpha': 0.3414408997566183, 
+    'resolution': 21.0, 
+    'num_rbfs': 6988.0, 
+    'lambda\_': 0.38802888678400627, 
+    'boyan_N0': 5781.602341902433} 
+
+.. note:: 
+    This parameters are not optimal. To obtain better ones, the number of
+    evaluations need to be increased to 50 - 100 and also `trials_per_point=10`
+    makes the search more reliable. Be aware that 100 evaluations with 10
+    trials each result in 1000 experiment runs, which take a very long time.
+
+We can for example save these values by setting the default values in
+`make_experiment` accordingly. 
+
+What to do next?
+----------------
+
+In this introduction, we have seen how to 
+
+* run a single experiment with visualizations for getting an intuition of a
+  domain and an agent
+* run experiments in batch in parallel on multiple cores
+* analyze and create plot the results of experiments
+* optimize hyperparameters.
+
+We covered the basic tasks of working with rlpy. You can see more examples of 
+experiments in the `examples` directory. If you want to implement a new
+algorithm or problem, have a look at the api documentation. Contributions to
+rlpy of each flavor are always welcome!
 
 
 .. epigraph::

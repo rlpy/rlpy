@@ -87,7 +87,7 @@ Check what version of gcc you have by executing::
     gcc --version
 
 If it is older than 4.6, install a newer version. You can find compiled
-packages at http://sourceforge.net/projects/hpc/files/hpc/gcc.
+packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
 
 Anaconda
 --------
