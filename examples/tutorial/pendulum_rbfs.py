@@ -1,5 +1,5 @@
 """
-Cart-pole balancing with independent discretization
+Cart-pole balancing with randomly positioned radial basis functions
 """
 from Tools import Logger
 from Domains import Pendulum_InvertedBalance

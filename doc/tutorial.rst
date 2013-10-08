@@ -61,7 +61,7 @@ root directory::
 
 .. _Ipython homepage: http://ipython.org
 
-What Happens During an Control Experiment
+What Happens During a Control Experiment
 -----------------------------------------
 
 During an experiment, the agent does exactly in total `max_steps` learning
@@ -167,61 +167,63 @@ episodes is shown only every second. You might therefore see no output for
 learning episodes if your computer is fast enough to do all learning steps
 between two policy assessments in less than one second.
 
-Analyzing Data
---------------
 
-The variable "path" in IShouldRun.py determines the directory in which all 
-results are stored; IShouldRun.py defaults to ./Results/I-Should-Run.  
-A folder for a particular experiment is automatically 
-generated in that directory as necessary based on its parameters; 
-here, "GridWorld-Tabular-2000" for the 
-GridWorld domain, Tabular representation, with 2,000 steps total. 
+A Slightly More Challenging Domain: Inverted Pole Balancing
+-----------------------------------------------------------
 
-The data logged to the console is stored in a file "#-out.txt", where "#" is the ID of the experiment, 
-here "1".  Open this "1-out.txt" and verify this. 
+We will now look at how to run experiments in batch and how to analyze and
+compare the performance of different methods on the same task. To this end, we
+compare different value function representations on the Cart-Pole Balancing task 
+with an infinite track. The task is to keep a pole balanced upright. The pole
+is mounted on a cart which we can either push to the left or right.
 
-Data is stored in a more compact form in "#-results.txt", described below.
+The experimental setup is specified in `examples/tutorial/pendulum_tabular.py` with
+a tabular representation and in `examples/tutorial/pendulum_rbfs.py` with radial 
+basis functions (RBFs). The content of `pendulum_rbfs.py` is
 
-Now open the file "IShouldMerge.py" and run it.  
-(If you get an error which includes "No directory including result was found at `Results/IShouldRun`", 
-make sure you allow IShouldRun.py to run to completion, when the second figure window appears, 
-approximately 30 seconds; ensure you close both figures). \n
-You should now see several figures which demonstrate various performance measures of the 
-experiment, such as return vs. number of steps.  The "paths" variable in this file specifies 
-a directory to recursively search to generate these figures (and where to store them); if
-multiple results directories are found, they are plotted simultaneously against each other
-on the same figure.  If multiple results files are found in the same directory
-(e.g. 1-results.txt, 2-results.txt, etc., generated using multipleRuns.py) the mean curve 
-is drawn with variance around it.
+.. literalinclude:: ../examples/tutorial/pendulum_rbfs.py
+   :language: python
+   :linenos:
 
-You can experiment with this by re-running "IShouldRun.py", passing experiment id "2"
-instead of "1" to make_experiment() on lines 78 and 83. The seed to the random number
-generator is determined by this experiment id, so that results are reproducible.
+Again, as the first GridWorld example, the main content of the file is a
+`make_experiment` function which takes an id, a path and some more optional 
+parameters and returns an `Experiment` instance. This is the standard format of
+an RLPy experiment description and will allow us to run it in parallel on
+several cores on one computer or even on a computing cluster with numerous
+machines.
 
-A Slightly More Challenging Domain: Inverted Pendulum
------------------------------------------------------
+The content of `pendulum_tabular.py` very similar but differ in the definition
+of the representation parameter of the agent. Compared to our first example,
+the experiment is now executed by calling its `run_from_commandline` method.
+This is a wrapper around `Experiment.run` and allows to specify the options for
+visualization during the execution with command line arguments. You can for
+example run::
 
-The small GridWorld domain is easy to understand, but does not produce meaningful
-final plots because the optimal policy is learned so quickly.  We will now run an 
-experiment on the Inverted Pendulum Domain, where the goal is to prevent the pendulum 
-from falling below the horizontal by applying clockwise (red) or counterclockwise (black) torque. 
-No reward is received for balancing and there is no control penalty; a penalty is only applied 
-if the pendulum falls, after which the episode terminates.
+    python examples/tutorial/pendulum_tabular.py -l -p
 
-Return to IShouldRun.py, and:
-
-1. Near the top (line 34), change the following two variables to allow more steps for learning the domain::
-    performanceChecks   = 5
-    max_steps           = 8000
-
-2. Scroll to the "Domain" section (line 58), comment the line corresponding to GridWorld and decomment
-   the line corresponding to Pendulum_InvertedBalance.
-Now, run IShouldRun.py and observe the new domain.  Initially, the agent fails to balance the pendulum, 
-but after approximately 6000 steps, can do so reliably up to the maximum number of steps allowed for an 
-episode, 300.
+from the command line to run the experiment with visualization of the
+performance runs steps, policy and value function. 
 
 .. image:: pendulum_learning.png
    :width: 90 %
+
+If you pass no command line
+arguments, no visualization is shown and only the performance graph at the end 
+is produced. For an explination of each command line argument type::
+ 
+    python examples/tutorial/pendulum_tabular.py -h
+
+When we run the experiment with the tabular representation, we see that the
+pendulum can be balanced sometimes, but not reliably.
+
+In order to properly assess the quality of the learning algorithm using this
+representation, we need to average over several independent learning sequences.
+This means we need to execute the experiment with different seeds.
+
+Running Experiments in Parallel
+-------------------------------
+
+.. warning:: The rest of this tutorial is outdated!
 
 The value function (center), which plots pendulum angular rate against its angle, demonstrates 
 the highly undesirable states of a steeply inclined pendulum (near the horizontal) with high 
@@ -263,6 +265,40 @@ the one corresponding to the Pendulum results.  The learning up to approximately
 2,000 steps should be apparent through continuously improving performance.  
 Large fluctuations in reward due to chance are smoothed by running the experiment 
 many times using multipleRuns.py, described in another tutorial.
+
+Analyzing Results
+-----------------
+
+    from Tools.run import run
+    run("examples/tutorial/gridworld.py", "./Results/Tutorial/gridworld-qlearning", ids=range(10), parrallelization="joblib")
+
+The variable "path" in IShouldRun.py determines the directory in which all 
+results are stored; IShouldRun.py defaults to ./Results/I-Should-Run.  
+A folder for a particular experiment is automatically 
+generated in that directory as necessary based on its parameters; 
+here, "GridWorld-Tabular-2000" for the 
+GridWorld domain, Tabular representation, with 2,000 steps total. 
+
+The data logged to the console is stored in a file "#-out.txt", where "#" is the ID of the experiment, 
+here "1".  Open this "1-out.txt" and verify this. 
+
+Data is stored in a more compact form in "#-results.txt", described below.
+
+Now open the file "IShouldMerge.py" and run it.  
+(If you get an error which includes "No directory including result was found at `Results/IShouldRun`", 
+make sure you allow IShouldRun.py to run to completion, when the second figure window appears, 
+approximately 30 seconds; ensure you close both figures). \n
+You should now see several figures which demonstrate various performance measures of the 
+experiment, such as return vs. number of steps.  The "paths" variable in this file specifies 
+a directory to recursively search to generate these figures (and where to store them); if
+multiple results directories are found, they are plotted simultaneously against each other
+on the same figure.  If multiple results files are found in the same directory
+(e.g. 1-results.txt, 2-results.txt, etc., generated using multipleRuns.py) the mean curve 
+is drawn with variance around it.
+
+You can experiment with this by re-running "IShouldRun.py", passing experiment id "2"
+instead of "1" to make_experiment() on lines 78 and 83. The seed to the random number
+generator is determined by this experiment id, so that results are reproducible.
 
 Conclusion
 ----------
