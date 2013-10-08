@@ -52,11 +52,11 @@ class Experiment(object):
     #: Maximum number of runs used for averaging, specified so that enough
     #: random seeds are generated
     maxRuns = 1000
-    #: Array of random seeds. This is used to make sure all jobs start with
-    #: the same random seed
+    # Array of random seeds. This is used to make sure all jobs start with
+    # the same random seed
     randomSeeds = np.random.RandomState(mainSeed).randint(1, mainSeed, maxRuns)
 
-    #: ID of the current experiment running
+    #: ID of the current experiment (main seed)
     id = 1
 
     #: The domain to be tested on
@@ -76,17 +76,6 @@ class Experiment(object):
     #: Number of Performance Checks uniformly scattered along the trajectory
     num_policy_checks = 0
     log_interval = 0  #: Number of seconds between log prints
-
-    # TODO make sure these are actually used
-    STEP = 0  # Learning Steps
-    RETURN              = 1         # Sum of Rewards
-    CLOCK_TIME          = 2         # Time in seconds so far
-    FEATURE_SIZE        = 3         # Number of features used for value function representation
-    EPISODE_LENGTH      = 4
-    TERMINAL            = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
-    EPISODE_NUMBER      = 6
-    DISCOUNTED_RETURN   = 7
-    STATS_NUM = 8  #: Number of statistics to be saved
 
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template ='{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
@@ -134,8 +123,7 @@ class Experiment(object):
         Execute a single episode using the current policy to evaluate its
         performance. No exploration or learning is enabled.
 
-        Parameters
-        ----------
+        Parameters:
 
         total_steps: int
             maximum number of steps of the episode to peform
@@ -323,8 +311,7 @@ class Experiment(object):
         """
         Evaluate the current agent within an experiment
 
-        Parameters
-        ----------
+        Parameters:
 
         total_steps: int
                      number of steps used in learning so far

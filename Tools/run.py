@@ -14,7 +14,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 
-#: template for executable file used to execute experiments
+# template for executable file used to execute experiments
 template = """#!/usr/bin/env python
 import sys, os
 abspath = os.path.abspath(__file__)
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     exp.save()
 """
 
-#: template for submission files of htcondor queueing system
+# template for submission files of htcondor queueing system
 condor_submit_template_start = """
 executable = /data/scratch/cdann/anaconda/bin/python
 universe = vanilla
@@ -103,7 +103,8 @@ def get_finished_ids(path):
 
 
 def read_setting_content(filename):
-    """reads the file content without the __main__ section"""
+    """reads the file content without the __main__ section
+    :param filename: filename where the settings are specified"""
     setting_content = ""
     with open(filename) as f:
         lines = f.readlines()
@@ -120,12 +121,12 @@ def prepare_directory(setting, path, **hyperparam):
     """creates a directory in path with a file for executing a given
     setting. The function returns the executable python script file
 
-    setting (string):   filename which contains
-                        a make_experiment method that get the id and hyperparameters
-                        and returns an instance of Experiment ready to run
-    path (string):  specifies where to create the directory
-    **hyperparam:       all hyperparameters passed to the setting's make_experiment
-    """
+    :param setting: filename which contains a make_experiment method that get
+        the id and hyperparameters
+        and returns an instance of Experiment ready to run
+    :param path: specifies where to create the directory
+    :param \**hyperparam: all hyperparameters passed to the setting's make_experiment
+    :return filename of the file to execute in path"""
     # create file to execute
     variables = "hyper_param = dict(" + ",\n".join(["{}={}".format(k, repr(v)) for k, v in hyperparam.items()]) + ")"
     final_path = path
@@ -140,12 +141,30 @@ def prepare_directory(setting, path, **hyperparam):
     return fn
 
 
-def run(setting, location, ids, parallelization="sequential",
+def run(filename, location, ids, parallelization="sequential",
         force_rerun=False, block=True, n_jobs=-2, verbose=10, **hyperparam):
     """
+    run a file containing a RLPy experiment description (a make_experiment function)
+    in batch mode. Note that the __main__ section of this file is ignored
 
-
+    :param filename: file to run
+    :param location: directory (does not need to exist), where all outputs and a
+                     copy of the file to execute is stored
+    :param ids: list of ids / seeds which should be executed
+    :param parallelization: either **sequential** (running the experiment on one core
+                        for each seed in sequence), **joblib** (run using multiple
+                        cores in parallel, no console ouput of the individual runs)
+                        or **condor** (submit jobs to a HTCondor job scheduling
+                        system
+    :param force_rerun: if False, seeds for which the results exists are not executed
+    :param block: if True, the function returns when all jobs are done
+    :param n_jobs: if parallelized with joblib, this specifies the number of cores to use
+        specifying -1 means all cores, -2 means all but one cores
+    :param verbose: controls the amount of outputs
+    :param \**hyperaram: hyperparameter values which are passed to make_experiment
+        as keyword arguments.
     """
+    setting = filename
     fn = prepare_directory(setting, location, **hyperparam)
 
     # filter ids if necessary

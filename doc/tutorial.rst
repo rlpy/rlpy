@@ -31,24 +31,28 @@ and then executed in line 54 by calling its `run` method. The three parameters
 of `run` control the graphical output. The result are plotted in line 57 and
 subsequently stored in line 58.
 
-You can run the file by executing it with the python interpreter from the rlpy
+You can run the file by executing it with the ipython shell from the rlpy
 root directory::
 
-    python examples/tutorial/gridworld.py
+    ipython examples/tutorial/gridworld.py
 
 .. tip::
-    We recommend using the IPython interpreter. Compared to the standard
+    We recommend using the IPython shell. Compared to the standard
     interpreter it provides color output and better help functions. It is more 
     comportable to work with in general. See the `Ipython homepage`_ for
-    details.
+    details. 
     
-    
+.. note::
+    If you want to use the standard python shell make sure the rlpy root
+    directory is in the python seach path for modules. You can for example
+    use::
 
-    You can run the file with ipython by executing::
-        
-        ipython examples/tutorial/gridworld.py
+        PYTHONPATH=. python examples/tutorial/gridworld.py
 
-    or start the interactive python shell with::
+.. tip::    
+    You can also use the IPython shell interactively and then run the script
+    from within the shell. To do this, first start  the interactive python shell 
+    with::
         
         ipython
 
@@ -57,7 +61,8 @@ root directory::
         %run examples/tutorial/gridworld.py
 
     This will not terminate the interpreter after running the file and allows
-    you to inspect the objects interactively afterwards.
+    you to inspect the objects interactively afterwards (you can exit the shell
+    with CTRL + D)
 
 .. _Ipython homepage: http://ipython.org
 
@@ -187,7 +192,8 @@ basis functions (RBFs). The content of `pendulum_rbfs.py` is
 
 Again, as the first GridWorld example, the main content of the file is a
 `make_experiment` function which takes an id, a path and some more optional 
-parameters and returns an `Experiment` instance. This is the standard format of
+parameters and returns an :class:`Experiment.Experiment` instance. 
+This is the standard format of
 an RLPy experiment description and will allow us to run it in parallel on
 several cores on one computer or even on a computing cluster with numerous
 machines.
@@ -199,31 +205,13 @@ This is a wrapper around `Experiment.run` and allows to specify the options for
 visualization during the execution with command line arguments. You can for
 example run::
 
-    python examples/tutorial/pendulum_tabular.py -l -p
+    ipython examples/tutorial/pendulum_tabular.py -l -p
 
 from the command line to run the experiment with visualization of the
 performance runs steps, policy and value function. 
 
 .. image:: pendulum_learning.png
    :width: 90 %
-
-If you pass no command line
-arguments, no visualization is shown and only the performance graph at the end 
-is produced. For an explination of each command line argument type::
- 
-    python examples/tutorial/pendulum_tabular.py -h
-
-When we run the experiment with the tabular representation, we see that the
-pendulum can be balanced sometimes, but not reliably.
-
-In order to properly assess the quality of the learning algorithm using this
-representation, we need to average over several independent learning sequences.
-This means we need to execute the experiment with different seeds.
-
-Running Experiments in Parallel
--------------------------------
-
-.. warning:: The rest of this tutorial is outdated!
 
 The value function (center), which plots pendulum angular rate against its angle, demonstrates 
 the highly undesirable states of a steeply inclined pendulum (near the horizontal) with high 
@@ -236,86 +224,114 @@ a corrective clockwise torque action should certainly be applied.  The white str
 that no torque should be applied to a balanced pendulum with no angular velocity, or if it lies off-center 
 but has angular velocity towards the balance point.
 
+If you pass no command line
+arguments, no visualization is shown and only the performance graph at the end 
+is produced. For an explination of each command line argument type::
+ 
+    ipython examples/tutorial/pendulum_tabular.py -h
 
-To allow the experiment to run more quickly, without visualization: 
+When we run the experiment with the tabular representation, we see that the
+pendulum can be balanced sometimes, but not reliably.
 
-1) Assign::
+In order to properly assess the quality of the learning algorithm using this
+representation, we need to average over several independent learning sequences.
+This means we need to execute the experiment with different seeds.
 
-    visualize_steps     = False
-    visualize_learning  = False
-    visualize_performance = False
+Running Experiments in Batch
+----------------------------
 
-2) Assign::
+The module :mod:`Tools.run` provides several functions that are helpful for
+running experiments. The most important one is :func:`Tools.run.run`.
 
-    performanceChecks   = 10
+It allows us to run a specific experimental setup specified by a
+`make_experiment` function in a file with multiple seeds in parallel. For
+details see :func:`Tools.run.run`.
 
-3) Assign::
+You find in `examples/tutorials/run_pendulum_batch.py` a short script with the
+following content:
 
-    max_steps           = 20000
+.. literalinclude:: ../examples/tutorial/run_pendulum_batch.py
+   :language: python
+   :linenos:
 
-4) Assign::
-    
-    domain = Pendulum_InvertedBalance(episodeCap = 3000, logger = logger)
+This script first runs the inverted pendulum experiment with radial basis
+functions ten times with seeds 1 to 10. Subsequently the same is done for the
+experiment with tabular representation. Since we specified 
+`parallelization=joblib`, the joblib library is used to run the experiment in
+parallel on all but one core of your computer.
+The execution of this script with::
 
-(Step 4 extends the maximum number of steps per episode from 300 to 3000 to make the task slightly more challenging.)
+    ipython examples/tutorial/run_pendulum_batch.py
 
-Now, re-run the experiment.
-Finally, return to IShouldMerge.py, comment the old "paths" variable, and decomment 
-the one corresponding to the Pendulum results.  The learning up to approximately 
-2,000 steps should be apparent through continuously improving performance.  
-Large fluctuations in reward due to chance are smoothed by running the experiment 
-many times using multipleRuns.py, described in another tutorial.
+might take a few minutes depending on your hardware. 
 
 Analyzing Results
 -----------------
 
-    from Tools.run import run
-    run("examples/tutorial/gridworld.py", "./Results/Tutorial/gridworld-qlearning", ids=range(10), parrallelization="joblib")
+Running experiments via :func:`Tools.run.run` automatically saves the results 
+to the specified path. If we run an :class:`Experiments.Experiment` instance
+directly, we can store the results on disc with the
+:func:`Experiments.Experiment.save` method. The outcomes are then stored in
+the directory that is passed during initialization. The filename has the format
+`XXX-results.json` where `XXX` is the id / seed of the experiment. The results
+are stored in the JSON format that look for example like::
 
-The variable "path" in IShouldRun.py determines the directory in which all 
-results are stored; IShouldRun.py defaults to ./Results/I-Should-Run.  
-A folder for a particular experiment is automatically 
-generated in that directory as necessary based on its parameters; 
-here, "GridWorld-Tabular-2000" for the 
-GridWorld domain, Tabular representation, with 2,000 steps total. 
+    {"learning_steps": [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], 
+     "terminated": [1.0, 1.0, 1.0, 1.0, 0.9, 0.8, 0.3, 0.3, 0.0, 0.7, 0.0], 
+     "return": [-1.0, -1.0, -1.0, -1.0, -0.9, -0.8, -0.3, -0.3, 0.0, -0.7, 0.0], 
+     "learning_time": [0, 0.31999999999999995, 0.6799999999999998, 1.0099999999999998, 1.5599999999999996, 2.0300000000000002, 2.5300000000000002, 2.95, 3.3699999999999983, 3.7399999999999993, 4.11], 
+     "num_features": [400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400], 
+     "learning_episode": [0, 45, 71, 85, 99, 104, 110, 121, 136, 144, 152], 
+     "discounted_return": [-0.6646429809896579, -0.529605466143065, -0.09102296558580342, -0.2085618862726307, -0.012117452394591856, -0.02237266958836346, -0.012851215851463843, -0.0026252190655709274, 0.0, -0.0647935684347749, 0.0], 
+     "seed": 1, 
+     "steps": [9.0, 14.1, 116.2, 49.3, 355.5, 524.2, 807.1, 822.4, 1000.0, 481.0, 1000.0]}
 
-The data logged to the console is stored in a file "#-out.txt", where "#" is the ID of the experiment, 
-here "1".  Open this "1-out.txt" and verify this. 
+The measurements of each assessment of the learned policy is stored
+sequentially under the corresponding name.
+The module :mod:`Tools.results` provides a library of functions and classes that 
+simplify the analysis and visualization of results. See the the api documentation
+for details.
 
-Data is stored in a more compact form in "#-results.txt", described below.
+To see the different effect of RBFs and tabular representation on the
+performance of the algorithm, we will plot their average return for each policy
+assessment. The script saved in `examples/tutorial/plot_result.py` shows us
+how:
 
-Now open the file "IShouldMerge.py" and run it.  
-(If you get an error which includes "No directory including result was found at `Results/IShouldRun`", 
-make sure you allow IShouldRun.py to run to completion, when the second figure window appears, 
-approximately 30 seconds; ensure you close both figures). \n
-You should now see several figures which demonstrate various performance measures of the 
-experiment, such as return vs. number of steps.  The "paths" variable in this file specifies 
-a directory to recursively search to generate these figures (and where to store them); if
-multiple results directories are found, they are plotted simultaneously against each other
-on the same figure.  If multiple results files are found in the same directory
-(e.g. 1-results.txt, 2-results.txt, etc., generated using multipleRuns.py) the mean curve 
-is drawn with variance around it.
+.. literalinclude:: ../examples/tutorial/plot_result.py
+   :language: python
+   :linenos:
 
-You can experiment with this by re-running "IShouldRun.py", passing experiment id "2"
-instead of "1" to make_experiment() on lines 78 and 83. The seed to the random number
-generator is determined by this experiment id, so that results are reproducible.
+First, we specify the results we specify the directories where the results are
+stored and give them a label, here *RBFs* and *Tabular*. Then we create an
+instance of :class:`Tools.results.MultiExperimentResults` which loads all
+corresponding results an let us analyze and transform them. In line 7, we plot
+the average return of each method over the number learning steps done so far.
+Finally, the plot is saved in `./Results/Tutorial/plot.pdf` in the lossless pdf
+format. When we run the script, we get the following plot
 
-Conclusion
-----------
+.. image:: pendulum_plot.png
+   :width: 500px
 
-We have seen how to run experiments, interpret visualization, and generate 
-results on two classic Reinforcement Learning domains.  We have also seen
-the structure of the high-level files;
+The shaded areas in the plot indicate the standard error of the sampling mean.
+We see that with radial basis functions the agent is able to perform perfectly
+after 2000 learning steps, but with the tabular representation, it stays at a
+level of -0.4 return per episode. Since the value function only matters around
+the center (zero angle, zero velocity), radial basis functions can capture the
+necessary form there much more easily and therefore speed up the learning
+process.
 
-IShouldRun.py <--> main.py - Identical, former has excess options removed. 
-You may now try using main.py instead of IShouldRun.py, experimenting with 
-different agents, representations, etc., all of which have parameters defined
-at the top of main.py.
-IShouldMerge.py <--> mergeRuns.py - Identical, former just has "paths" prespecified. 
-You should now use mergeRuns.py to generate your results.
+.. warning:: The rest of this tutorial is outdated!
 
-Finally, you should explore the rest of the structure of the framework, 
-and perhaps try implementing domains and algorithms of your own.
+Tuning Hyper-Parameters
+-----------------------
+
+The behavior of each component of an agent can be drastically modified by its
+parameters (or hyper-parameters, in contrast to the parameters of the value
+function that are learned). The module
+
+
+
+
 
 .. epigraph::
     

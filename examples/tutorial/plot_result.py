@@ -1,8 +1,8 @@
-import Tools.results as restools
+import Tools.results as rt
 
 paths = {"RBFs": "./Results/Tutorial/Pendulum/RBFs",
          "Tabular": "./Results/Tutorial/Pendulum/Tabular"}
 
-merger = restools.MultiExperimentResults(paths)
+merger = rt.MultiExperimentResults(paths)
 fig = merger.plot_avg_sem("learning_steps", "return")
-restools.save_figure(fig, "./Results/Tutorial/plot.pdf")
+rt.save_figure(fig, "./Results/Tutorial/plot.pdf")
