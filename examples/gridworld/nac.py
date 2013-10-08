@@ -10,7 +10,7 @@ from Policies import GibbsPolicy
 from Experiments import Experiment
 import os
 
-def make_experiment(id=1, path="./Results/Temp"):
+def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -46,10 +46,5 @@ def make_experiment(id=1, path="./Results/Temp"):
     return experiment
 
 if __name__ == '__main__':
-    path = "./Results/Temp/{domain}/{agent}/{representation}/"
-    experiment = make_experiment(1, path=path)
-    experiment.run(visualize_steps=False,  # should each learning step be shown?
-                   visualize_learning=False,  # show performance runs?
-                   visualize_performance=True)  # show value function?
-    experiment.plot()
-    experiment.save()
+    experiment = make_experiment()
+    experiment.run_from_commandline()

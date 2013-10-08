@@ -1,11 +1,14 @@
 """Standard Experiment for Learning Control in RL"""
 from Tools import *
-from Agents import PolicyEvaluation
-from Domains import Pendulum_InvertedBalance
 import numpy as np
 from copy import copy, deepcopy
 import re
 import Tools.ipshell
+import argparse
+import json
+import Tools.results
+from collections import defaultdict
+import matplotlib.pyplot as plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -49,11 +52,11 @@ class Experiment(object):
     #: Maximum number of runs used for averaging, specified so that enough
     #: random seeds are generated
     maxRuns = 1000
-    #: Array of random seeds. This is used to make sure all jobs start with
-    #: the same random seed
-    randomSeeds = random.RandomState(mainSeed).randint(1, mainSeed, maxRuns)
+    # Array of random seeds. This is used to make sure all jobs start with
+    # the same random seed
+    randomSeeds = np.random.RandomState(mainSeed).randint(1, mainSeed, maxRuns)
 
-    #: ID of the current experiment running
+    #: ID of the current experiment (main seed)
     id = 1
 
     #: The domain to be tested on
@@ -74,17 +77,6 @@ class Experiment(object):
     num_policy_checks = 0
     log_interval = 0  #: Number of seconds between log prints
 
-    # TODO make sure these are actually used
-    STEP = 0  # Learning Steps
-    RETURN              = 1         # Sum of Rewards
-    CLOCK_TIME          = 2         # Time in seconds so far
-    FEATURE_SIZE        = 3         # Number of features used for value function representation
-    EPISODE_LENGTH      = 4
-    TERMINAL            = 5         # 0 = No Terminal, 1 = Normal Terminal, 2 = Critical Terminal
-    EPISODE_NUMBER      = 6
-    DISCOUNTED_RETURN   = 7
-    STATS_NUM = 8  #: Number of statistics to be saved
-
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template ='{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
 
@@ -98,13 +90,15 @@ class Experiment(object):
         #: of a single policy
         self.checks_per_policy = checks_per_policy
         self.domain = domain
-        self.output_filename = '%d-results.txt' % (id)
         self.max_steps = max_steps
         self.num_policy_checks = num_policy_checks
         self.logger = logger
         self.log_interval = log_interval
         self.logger.line()
         self.logger.log("Experiment:\t\t%s" % className(self))
+        self._update_path(path)
+
+    def _update_path(self, path):
 
         # compile and create output path
         self.full_path = self.compile_path(path)
@@ -118,18 +112,18 @@ class Experiment(object):
         the experiment run
         based on the currently set id
         """
-        random.seed(self.randomSeeds[self.id - 1])
-        self.domain.random_state = random.RandomState(self.randomSeeds[self.id - 1])
+        self.output_filename = '{:0>3}-results.json'.format(self.id)
+        np.random.seed(self.randomSeeds[self.id - 1])
+        self.domain.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
         # make sure the performance_domain has a different seed
-        self.performance_domain.random_state = random.RandomState(self.randomSeeds[self.id + 20])
+        self.performance_domain.random_state = np.random.RandomState(self.randomSeeds[self.id + 20])
 
     def performanceRun(self, total_steps, visualize=False):
         """
         Execute a single episode using the current policy to evaluate its
         performance. No exploration or learning is enabled.
 
-        Parameters
-        ----------
+        Parameters:
 
         total_steps: int
             maximum number of steps of the episode to peform
@@ -172,6 +166,37 @@ class Experiment(object):
         """
         printClass(self)
 
+    def run_from_commandline(self):
+        parser = argparse.ArgumentParser("Run rlpy experiments")
+        parser.add_argument("-v", "--show-plot", default=False, action="store_true",
+                             help="show a plot at the end with the results of the assessment runs")
+        parser.add_argument("-w", "--save", default=False, action="store_true",
+                             help="save results to disk")
+        parser.add_argument("-p", "--visualize-performance", default=False, action="store_true",
+                             help="visualize the interaction with the domain during assessment trials")
+        parser.add_argument("-s", "--visualize-steps",default=False, action="store_true",
+                             help="visualize steps during learning")
+        parser.add_argument("-l", "--visualize-learning",default=False, action="store_true",
+                             help="visualize learning progress")
+        parser.add_argument("-d", "--debug",default=False, action="store_true",
+                            help="enter pdb debugger when receiving SIGURG signal")
+        parser.add_argument("--seed", type=int)
+        parser.add_argument("--path", type=str)
+        args = parser.parse_args()
+        if args.seed is not None and args.seed > 0:
+            self.id = args.seed
+        if args.path is not None:
+            self._update_path(args.path)
+        self.run(visualize_performance=args.visualize_performance,
+                 visualize_learning=args.visualize_learning,
+                 visualize_steps=args.visualize_steps,
+                 debug_on_sigurg=args.debug)
+        if args.save:
+            self.save()
+        if args.show_plot:
+            self.plot()
+
+
     def run(self, visualize_performance=0, visualize_learning=False,
             visualize_steps=False, debug_on_sigurg=False):
         """
@@ -207,15 +232,23 @@ class Experiment(object):
         self.performance_domain = deepcopy(self.domain)
         self.seed_components()
 
-        self.result = zeros((self.STATS_NUM, self.num_policy_checks))
+        self.result = defaultdict(list)
+        self.result["seed"] = self.id
         total_steps         = 0
         eps_steps           = 0
         eps_return          = 0
         episode_number      = 0
+
+        # show policy or value function of initial policy
+        if visualize_learning:
+            self.domain.showLearning(self.agent.representation)
+
         start_log_time      = clock()  # Used to bound the number of logs in the file
         self.start_time     = clock()  # Used to show the total time took the process
+        self.elapsed_time = 0
+        # do a first evaluation to get the quality of the inital policy
+        self.evaluate(total_steps, episode_number, visualize_performance)
         self.total_eval_time = 0.
-        self.performance_tick = 0
         terminal = True
         while total_steps < self.max_steps:
             if terminal or eps_steps >= self.domain.episodeCap:
@@ -224,7 +257,6 @@ class Experiment(object):
                 # Visual
                 if visualize_steps:
                     self.domain.show(a, self.agent.representation)
-
 
                 # Output the current status if certain amount of time has been passed
                 eps_return      = 0
@@ -272,13 +304,14 @@ class Experiment(object):
         # Visual
         if visualize_steps:
             self.domain.show(a, self.agent.representation)
+        self.logger.line()
+        self.logger.log("Took %s\n" % (hhmmss(deltaT(self.start_time))))
 
     def evaluate(self, total_steps, episode_number, visualize=0):
         """
         Evaluate the current agent within an experiment
 
-        Parameters
-        ----------
+        Parameters:
 
         total_steps: int
                      number of steps used in learning so far
@@ -308,78 +341,73 @@ class Experiment(object):
         performance_steps /= self.checks_per_policy
         performance_term /= self.checks_per_policy
         performance_discounted_return /= self.checks_per_policy
-        self.result[:, self.performance_tick] = [total_steps, # index = 0
-                                        performance_return, # index = 1
-                                        self.elapsed_time, # index = 2
-                                        self.agent.representation.features_num, # index = 3
-                                        performance_steps,# index = 4
-                                        performance_term, # index = 5
-                                        episode_number, # index = 6
-                                        performance_discounted_return] # index = 7
-        last_run_res = self.result[:, self.performance_tick]
-        self.performance_tick    += 1
+        self.result["learning_steps"].append(total_steps)
+        self.result["return"].append(performance_return)
+        self.result["learning_time"].append(self.elapsed_time)
+        self.result["num_features"].append(self.agent.representation.features_num)
+        self.result["steps"].append(performance_steps)
+        self.result["terminated"].append(performance_term)
+        self.result["learning_episode"].append(episode_number)
+        self.result["discounted_return"].append(performance_discounted_return)
         # reset start time such that performanceRuns don't count
         self.start_time = clock() - elapsedTime
+        if total_steps > 0:
+            remaining = hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps)
+        else:
+            remaining = "?"
         self.logger.log(self.performance_log_template.format(total_steps=total_steps,
                                                              elapsed=hhmmss(elapsedTime),
-                                                             remaining=hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps),
-                                                             totreturn=last_run_res[1],
-                                                             steps=last_run_res[4],
+                                                             remaining=remaining,
+                                                             totreturn=performance_return,
+                                                             steps=performance_steps,
                                                              num_feat=self.agent.representation.features_num))
 
         random.set_state(random_state)
         #self.domain.rand_state = random_state_domain
 
     def save(self):
-        """Saves the experimental results to the results.txt file
+        """Saves the experimental results to the results.json file
         """
+        results_fn = os.path.join(self.full_path,self.output_filename)
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
-        savetxt(self.full_path+'/'+self.output_filename,
-                self.result, fmt='%.18e', delimiter='\t')
-        self.logger.line()
-        self.logger.log("Took %s\nResults\t=> %s/%s" % (hhmmss(deltaT(
-            self.start_time)), self.full_path, self.output_filename))
+        with open(results_fn, "w") as f:
+            json.dump(self.result, f)
 
     def load(self):
         """loads the experimental results from the results.txt file
         If the results could not be found, the function returns None
         and the results array otherwise.
         """
-        results_fn = self.full_path+'/'+self.output_filename
-        if not os.path.exists(results_fn):
-            return None
-        self.results = loadtxt(results_fn)
+        results_fn = os.path.join(self.full_path,self.output_filename)
+        self.results = Tools.results.load_single(results_fn)
         return self.results
 
-    def plot(self):
+    def plot(self, y="return", x="learning_steps", save=False):
         """Plots the performance of the experiment
         This function has only limited capabilities.
         For more advanced plotting of results consider Tools.Merger
         """
+        labels = Tools.results.default_labels
         performance_fig = pl.figure("Performance")
-        if isinstance(self.agent, PolicyEvaluation):
-            row = 2
-            ylabel = "||TD-Error||"
-        elif isinstance(self.agent.representation.domain, Pendulum_InvertedBalance):
-            row = self.EPISODE_LENGTH
-            ylabel = "Episode Length"
-        else:
-            row = self.RETURN
-            ylabel = "Performance"
         res = self.result
-        pl.plot(res[0,:], res[row,:], '-bo', lw=3, markersize=10)
-        pl.xlim(0, self.result[0, -1]*1.01)
-        m = min(res[row,:])
-        M = max(res[row,:])
+        plt.plot(res[x], res[y], '-bo', lw=3, markersize=10)
+        plt.xlim(0, res[x][-1]*1.01)
+        y_arr = np.array(res[y])
+        m = y_arr.min()
+        M = y_arr.max()
         delta = M-m
         if delta > 0:
-            pl.ylim(m-.1*delta-.1, M+.1*delta+.1)
-        pl.xlabel('steps', fontsize=16)
-        pl.ylabel(ylabel, fontsize=16)
-        performance_fig.savefig(self.full_path+'/'+str(self.id)+'-performance.pdf', transparent=True, pad_inches=.1)
-        pl.ioff()
-        pl.show()
+            plt.ylim(m-.1*delta-.1, M+.1*delta+.1)
+        xlabel = labels[x] if x in labels else x
+        ylabel = labels[y] if y in labels else y
+        plt.xlabel(xlabel, fontsize=16)
+        plt.ylabel(ylabel, fontsize=16)
+        if save:
+            path = os.path.join(self.full_path, "{:3}-performance.pdf".format(self.id))
+            performance_fig.savefig(path, transparent=True, pad_inches=.1)
+        plt.ioff()
+        plt.show()
 
     def compile_path(self, path):
         """

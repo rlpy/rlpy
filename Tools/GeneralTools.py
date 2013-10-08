@@ -42,7 +42,7 @@ if module_exists('matplotlib'):
     matplotlib.use(matplotlib_backend)
     from matplotlib import pylab as pl
     import matplotlib.ticker as ticker
-    from matplotlib import mpl,rc,colors
+    from matplotlib import rc,colors
     import matplotlib.patches as mpatches
     import matplotlib.path as mpath
     import matplotlib.cm as cm
@@ -838,12 +838,10 @@ def allExpectedPhiNS(domain, representation, policy, allStates = None):
 
 if module_exists('matplotlib'):
     createColorMaps()
-    rc('font',**{'family':'serif','sans-serif':['Helvetica']})
-    mpl.rcParams['font.size'] = 15.
-    mpl.rcParams['font.weight'] = 'bold'
-    mpl.rcParams['axes.labelsize'] = 15.
-    mpl.rcParams['xtick.labelsize'] = 15.
-    mpl.rcParams['ytick.labelsize'] = 15.
+    rc('font',family='serif', size=15, weight="bold", **{"sans-serif":["Helvetica"]})
+    rc("axes", labelsize=15)
+    rc("xtick", labelsize=15)
+    rc("ytick", labelsize=15)
     rc('text',usetex=False)
 
     # Try to use latex fonts, if available
