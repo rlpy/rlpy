@@ -12,7 +12,7 @@ import numpy
 
 import sys
 if sys.platform == 'darwin':
-  extra_args = ["-std=c++11", "-stdlib=libc++"]
+  extra_args = ["-std=c++0x", "-stdlib=libc++"]
 else:
   extra_args = ["-std=c++0x"]
 
