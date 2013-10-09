@@ -23,4 +23,4 @@ Important Links
 Install
 =======
 
-Installation instructions can be found at http://acl.mit.edu/RLPy/dev/install.html
+Installation instructions can be found at http://acl.mit.edu/RLPy/install.html
