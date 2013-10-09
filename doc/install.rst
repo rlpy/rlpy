@@ -18,7 +18,7 @@ The installation consists of three steps:
 
 Stable Version
 --------------
-You can download the latest stable version of RLPy from http://acl.mit.edu/RLPy.
+You can download the latest stable version of RLPy from http://acl.mit.edu/RLPy/RLPy.zip.
 Extract the package in your desired location.
 
 Development Version
