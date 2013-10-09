@@ -3,16 +3,11 @@
 Frequently Asked Questions (FAQ)
 ================================
 
-Which file should I use to run the framework?
----------------------------------------------
+How do I use the framework?
+---------------------------
 
-Use main.py to run your experiment. You can use	multipleRuns.py to run 
-the code in main.py in several threads, producing results of the format:
-    
-    1-out.txt, 2-out.txt, 3-out.txt, ... 
-
-You can also import the project into Eclipse after installing the 'Pydev' 
-package; see the :ref:`Install page <install>` page of this documentation.
+You can have a look at :ref:`tutorial` or the `examples` directory where you
+find many ready-to-run examples of reinforcement learning experiments.
 
 
 What does each line of output mean?
@@ -41,15 +36,16 @@ See documentation in the :ref:`Getting Started <interpret_output>` section.
 My code is slow, how can I improve its speed?
 ---------------------------------------------
 
-``ProfileMe.py`` runs the code at ``main.py`` and generates a pictorial profile of the
-resulting running time in pdf format. Each node represents proportional time
+You can use the :func:`Tools.run.run_profiled` function which takes a
+`make_experiment` function and generates a pictorial profile of the
+resulting running time in pdf format (see api doc for details on where to
+find this files). 
+Each node represents proportional time
 for finishing the function, proportional time spent within the function, and
 number of times it has been called. Nodes are color coded based on their time.
 You want to spend your time boosting the running time of nodes with the highest
 proportional time spent within them shown in parentheses. As an example you can
-look at ``Profiling/Inverted_Pendulum-TabularSarsa.pdf``
-It seems ``phi_sa`` should be the place to improve the algorithm as 34.97% was spent
-within this function. 
+look at ``Profiling/Example.pdf``
 
 My project does not work. Do I need to install packages?
 --------------------------------------------------------
@@ -61,37 +57,3 @@ I used to plot my figures based on number of episodes, why do you prefer steps?
 The use of episode numbers does not provide accurate plots as the number of
 samples can vary within each episode. The use of steps gurantees that all
 methods saw exactly the same amount of data before being tested.
-
-
-I have generated multiple trials for various methods. How do I merge the results?
----------------------------------------------------------------------------------
-
-Use ``mergeRuns.py``. You should be able to call the ``mergeRuns.py`` with the committed
-example results. Lets assume you have the following directory structure:
-
-- Results/MyProject
-
-  * Domain-Algorithm-Representation1
-  * Domain-Algorithm-Representation2
-  * Domain-Algorithm-Representation3
-
-Set the initial path for ``mergeRuns.py`` to ``Results/MyProject``. 
-Also use the desired Y and X Axes from the following set:
-
-+-----------------+---------------------------------------------------------+
-| Return          | Sum of rewards                                          |
-+-----------------+---------------------------------------------------------+
-| Features        | Number of basis functions used                          |
-+-----------------+---------------------------------------------------------+
-| Steps           | Length of the episode                                   |
-+-----------------+---------------------------------------------------------+
-| Terminal        | Did the episode finish due to reaching a                |
-|                 | terminal state or because the episode cap was reached.  |
-+-----------------+---------------------------------------------------------+
-| Learning Steps  | Number of interactions between the agent and domain     |
-+-----------------+---------------------------------------------------------+
-| Time(s)         | Clock Time in number of seconds                         |
-+-----------------+---------------------------------------------------------+
-| Episodes        | Number of episodes finished between the agent           |
-|                 | and the domain                                          |
-+-----------------+---------------------------------------------------------+

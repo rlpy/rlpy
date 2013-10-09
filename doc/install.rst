@@ -113,5 +113,11 @@ Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
 
     python setup.py build_ext --inplace
 
+.. note:: 
+    If you are using a MacOS and a MacPorts version of gcc and you get an
+    error about the `-arch` parameters, try using::
+
+        ARCHFLAGS="" python setup.py build_ext --inplace
+
 RLPy is now successfully installed. For an introduction on how to use the
 framework have a look at :ref:`tutorial`.
