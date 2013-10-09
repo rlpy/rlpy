@@ -14,30 +14,40 @@ pi = np.pi
 
 class CartPole(Domain):
     """
-    State: [theta, thetaDot, x, xDot].
-    Actions: [-50, 0, 50]
-
+    State
+    --------------------------------------
     theta    = Angular position of pendulum
-    (relative to straight up at 0 rad),and positive clockwise. \n
-    thetaDot = Angular rate of pendulum \n
+    (relative to straight up at 0 rad), positive clockwise. \n
+    thetaDot = Angular rate of pendulum. positive clockwise. \n
     x        = Linear position of the cart on its track (positive right). \n
     xDot     = Linear velocity of the cart on its track.
 
+    Actions
+    --------------------------------------
     Actions take the form of force applied to cart; \n
     [-50, 0, 50] N force are the default available actions. \n
     Positive force acts to the right on the cart.
 
     Uniformly distributed noise is added with magnitude 10 N.
 
-    Per Lagoudakis and Parr 2003, derived from Wang 1996.
-    (See "1Link" implementation by L & P.)
-    Dynamics in x, xdot derived from CartPole implementation
-    of rl-community.org, from Sutton and Barto's Pole-balancing
-    task in <Reinforcement Learning: An Introduction> (1998)
-    (See CartPole implementation in the RL Community,
-    http://library.rl-community.org/wiki/CartPole)
-    Domain constants per RL Community / RL_Glue CartPole implementation.
-    (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+    Reference
+    --------------------------------------
+    For details, see:
+    Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
+    Least-squares policy iteration.  Journal of Machine Learning Research
+    (2003) Issue 4.
+    
+    .. note::
+        for full domain description, see:
+        Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy
+        control of nonlinear systems: Stability and design issues.
+        IEEE Trans. on Fuzzy Systems, 4(1):14–23, 1996.
+    
+    .. note::
+        See also http://library.rl-community.org/wiki/CartPole
+        Domain constants per RL Community / RL_Glue CartPole implementation.
+        (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+    
     """
     #: Newtons, N - Torque values available as actions [-50,0,50 per DPF]
     AVAIL_FORCE         = np.array([-10, 10])

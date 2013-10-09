@@ -40,6 +40,9 @@ class ChainMDP(Domain):
     actions_num = 2
 
     def __init__(self, chainSize=2,logger = None):
+        """
+        :param chainSize: Number of states \'n\' in the chain.
+        """
         self.chainSize          = chainSize
         self.start              = 0
         self.goal               = chainSize - 1
