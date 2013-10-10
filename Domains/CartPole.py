@@ -14,39 +14,36 @@ pi = np.pi
 
 class CartPole(Domain):
     """
-    State
-    --------------------------------------
+    | **State**
     theta    = Angular position of pendulum
     (relative to straight up at 0 rad), positive clockwise. \n
     thetaDot = Angular rate of pendulum. positive clockwise. \n
     x        = Linear position of the cart on its track (positive right). \n
     xDot     = Linear velocity of the cart on its track.
 
-    Actions
-    --------------------------------------
+    | **Actions**
     Actions take the form of force applied to cart; \n
     [-50, 0, 50] N force are the default available actions. \n
     Positive force acts to the right on the cart.
 
     Uniformly distributed noise is added with magnitude 10 N.
 
-    Reference
-    --------------------------------------
+    | **Reference**
     For details, see:
-    Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
-    Least-squares policy iteration.  Journal of Machine Learning Research
-    (2003) Issue 4.
+        Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
+        Least-squares policy iteration.  Journal of Machine Learning Research
+        (2003) Issue 4.
     
-    .. note::
-        for full domain description, see:
-        Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy
-        control of nonlinear systems: Stability and design issues.
-        IEEE Trans. on Fuzzy Systems, 4(1):14–23, 1996.
-    
-    .. note::
-        See also http://library.rl-community.org/wiki/CartPole
-        Domain constants per RL Community / RL_Glue CartPole implementation.
-        (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+        .. note::
+            Note: for full domain description, see:
+            Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy control
+            of nonlinear systems; Stability and design issues.
+            IEEE Trans. on Fuzzy Systems, 4(1):14-23, 1996.
+        
+        .. note::
+            Note: See also `http://library.rl-community.org/wiki/CartPole`
+            Domain constants per RL Community / RL_Glue CartPole implementation.
+            (`http://code.google.com/p/rl-library/wiki/CartpoleJava`)
     
     """
     #: Newtons, N - Torque values available as actions [-50,0,50 per DPF]

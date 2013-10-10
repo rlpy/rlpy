@@ -11,38 +11,43 @@ __author__ = ["Alborz Geramifard", "Robert H. Klein"]
 
 class FiftyChain(Domain):
     """
-    50-state chain
-    s0 <-> s1 <-> ... <-> s49
+    | **50-state chain MDP**
+    | Random start location, goal is to proceed to nearest reward.
+    | **State** s0 <-> s1 <-> ... <-> s49
     
-    **Actions:** left [0] or right [1]
-    **Reward** of +1 at states 10 and 41 (indices 0 and 9)
-    Actions succeed with probability .9, otherwise execute opposite action.
+    | **Actions:** left [0] or right [1]
+    | **Reward** of +1 at states 10 and 41 (indices 9 and 40)
+    | Actions succeed with probability .9, otherwise execute opposite action.
     
-    Reference
-    ------------------------
-    Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
-    Least-squares policy iteration.  Journal of Machine Learning Research
-    (2003) Issue 4.
+        .. note::
+            The optimal policy is to always go to the nearest goal
     
+    | **Reference**
+    For details, see:
+    
+        Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
+        Least-squares policy iteration.  Journal of Machine Learning Research
+        (2003) Issue 4.
     """
+    #: Reward for each timestep spent in the goal region
     GOAL_REWARD = 1
     #: Indices of states with rewards
     GOAL_STATES = [9,40]
-    #: Set by the domain = min(100,rows*cols)
+    # Set by the domain = min(100,rows*cols)
     episodeCap  = 50
-    #: Used for graphical normalization
+    # Used for graphical normalization
     MAX_RETURN  = 2.5
-    #: Used for graphical normalization
+    # Used for graphical normalization
     MIN_RETURN  = 0
-    #: Used for graphical shifting of arrows
+    # Used for graphical shifting of arrows
     SHIFT       = .01
-    #: Used for graphical radius of states
+    # Used for graphical radius of states
     RADIUS      = .05
-    #: Stores the graphical pathes for states so that we can later change their colors
+    # Stores the graphical paths for states so that we can later change their colors
     circles     = None
     #: Number of states in the chain
     chainSize   = 50
-    #: Y values used for drawing circles
+    # Y values used for drawing circles
     Y           = 1
     actions_num = 2
     #: Probability of taking the other (unselected) action
@@ -173,5 +178,12 @@ class FiftyChain(Domain):
         else: return arange(self.actions_num)
 
     def L_inf_distance_to_V_star(self, representation):
+            """
+            :param representation: An arbitrary learned representation of the 
+                value function.
+            
+            :return: the L-infinity distance between the parameter representation
+                and the optimal one.
+            """
             V   = array([representation.V(s) for s in arange(self.chainSize)])
             return linalg.norm(V-self.V_star,inf)

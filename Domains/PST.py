@@ -11,34 +11,33 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 class PST(Domain):
     """
     Persistent Search and Track Mission with multiple UAV agents.
+    Goal is to perform surveillance and communicate it back to base,
+    without losing any UAVs because of running out of fuel.
 
-    State
-    --------------------------------------
+    | **State**
     Each UAV has 4 states:
     
-        LOC: position of a UAV: BASE (0),  REFUEL (1), COMMS (2), SURVEIL (3).
-        FUEL: integer fuel qty remaining.
-        ACT_STATUS: Actuator status: see description for info.
-        SENS_STATUS: Sensor status: see description for info.
+        - LOC: position of a UAV: BASE (0),  REFUEL (1), COMMS (2), SURVEIL (3).
+        - FUEL: integer fuel qty remaining.
+        - ACT_STATUS: Actuator status: see description for info.
+        - SENS_STATUS: Sensor status: see description for info.
 
-    Domain **state** vector consists of 4 blocks of states,
+    Domain state vector consists of 4 blocks of states,
     each corresponding to a property of the UAVs (listed above)
     
     So for example:
     state [1,2,9,3,1,0,1,1] -->
-    [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs:
+    [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs: \n
     UAV 1 in location 1, with 9 fuel units remaining, and
     sensor + actuator with status 1 (functioning). \n
     UAV 2 in location 2, 3 fuel units remaining, actuator
     with status 0 and sensor with status 1.
     
-    Actions
-    ----------------------------------------
-    Each UAV can take one of 3 actions: {RETREAT, LOITER, ADVANCE}
-    Thus, the action space is 3^n, where n is the number of UAVs.
+    | **Actions**
+    | Each UAV can take one of 3 actions: {RETREAT, LOITER, ADVANCE}
+    | Thus, the action space is 3^n, where n is the number of UAVs.
     
-    Description
-    ----------------------------------------
+    | **Description**
     Goal is to maintain as many UAVS with working sensor in the SURVEIL
     state as there are targets (NUM_TARGETS), while maintaining at least 1 UAV
     in each communication state. \n
@@ -61,9 +60,8 @@ class PST(Domain):
 
     Finally, if any UAV has fuel 0, the episode terminates with large penalty.
 
-    Reference
-    --------------------------------------------
-    For details see
+    | **Reference** 
+    For details see:
     
         J. D. Redding, T. Toksoz, N. Ure, A. Geramifard, J. P. How, M. Vavrina,
         and J. Vian. Distributed Multi-Agent Persistent Surveillance and
@@ -76,19 +74,19 @@ class PST(Domain):
 
     # Domain constants
     FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
-    P_ACT_FAIL          = 0.05 # Probability that actuators fail on this timestep [0.02 in tutorial]
-    P_SENSOR_FAIL       = 0.05 # Probability that sensors fail on this timestep [0.05 in tutorial]
+    P_ACT_FAIL          = 0.05 #: Probability that an actuator fails on this timestep for a given UAV
+    P_SENSOR_FAIL       = 0.05 #: Probability that a sensor fails on this timestep for a given UAV
 #    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
-    CRASH_REWARD        = -50
-    SURVEIL_REWARD      = 20 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
+    CRASH_REWARD        = -50 #: Reward for a crashed UAV (terminates episode)
+    SURVEIL_REWARD      = 20 #: Per-step, per-UAV reward coefficient for performing surveillance on each step [C_cov]
     FUEL_BURN_REWARD_COEFF = -1 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
-    MOVE_REWARD_COEFF   = 0   # Reward (negative) coefficient for movement (i.e., fuel burned while loitering might be penalized above, but no movement cost)
-    NUM_TARGET          = 1   # Number of targets; SURVEIL_REWARD is multiplied by the number of targets successfully observed
+    MOVE_REWARD_COEFF   = 0   #: Reward (negative) coefficient for movement (i.e., fuel burned while loitering might be penalized above, but no movement cost)
+    NUM_TARGET          = 1   #: Number of targets in surveillance region; SURVEIL_REWARD is multiplied by the number of targets successfully observed
     NUM_UAV             = None # Number of UAVs present in the mission [3 in tutorial
     NOM_FUEL_BURN       = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
 
     # Domain variables
-    motionNoise         = 0    # Noise in action (with some probability, loiter rather than move)
+    motionNoise         = 0    #: Noise in action (with some probability, loiter rather than move)
     numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
     fuelUnitsBurned     = 0
     LIMITS              = []   # Limits on action indices

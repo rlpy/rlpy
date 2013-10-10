@@ -14,46 +14,51 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
 class SystemAdministrator(Domain):
     """
-    Network Administrator with n computers, at most 1 reboot
-    action allowed per timestep.
+    **System Administrator Problem**
+    
+    Computers in a network randomly fail and influence the probability
+    of connected machines failing as well - the system administrator must work
+    to keep as many machines running as possible, but she can only fix one
+    at a time.
+    
+    | **State**
+    | Each computer has binary state {BROKEN, RUNNING}.
+    | The state space is thus *2^n*, where *n* is the number of computers in the system.
+    
+    | *Example*
+    | [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
 
-    Penalty -0.75 for taking a reboot action.
-
-    State is the vector of binary computer statuses:
-
-    RUNNING = 1 for working computers,
-    BROKEN = 0 otherwise.
-
-    Example:
-
-    [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
-
-    In visualization, broken computers are colored red,
-    and any links to other computers change from solid to
-    dotted, reflecting the higher probability of failure
-    of those machines.
-
-    -------------------INPUT-------------------
-
-    Each row is implicitly indexed starting at 0,
-    corresponding to the id of a computer.
-    The sequence of numbers (arbitrary order) corresponds
-    to the computers connected to this one.
-    NOTE: The graph is assumed to be bidirectional.
-    You dont have to specify both edges between the nodes!
-    1,2 on the first line means these edges: (0,1),(1,0),(2,0),(0,2).
-
-    Each line has to have at least one element
+    | **Actions**
+    The action space is the integers [0,n], where 0 corresponds to taking
+    no action, and [1,n] selects a computer to repair.
+    
+    Repairing a computer causes its state to become RUNNING regardless of its
+    previous state.
+    
+    However, penalty -0.75 is applied for taking a repair action.
+    
+    
+    | **Visualization**
+    Broken computers are colored red, and any links to other computers
+    change from solid to dotted, reflecting the higher probability 
+    of failure of those machines.
+    
+    | **Reference**
+    For details, see:
+    
+        Carlos Guestrin, Daphne Koller, Ronald Parr, and Shobha Venkataraman.
+        Efficient Solution Algorithms for Factored MDPs.  Journal of Artificial
+        Intelligence Research (2003) Issue 19, p 399-468.
     """
     NEIGHBORS       = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
     UNIQUE_EDGES    = [] # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
 
-    P_SELF_REPAIR   = 0.04
-    P_REBOOT_REPAIR = 1.0
+    P_SELF_REPAIR   = 0.04 #: Probability of a machine randomly self-repairing (no penalty)
+    P_REBOOT_REPAIR = 1.0 #: Probability that a machine becomes RUNNING after a repair action is taken
 
-    IS_RING         = False # For ring structures, Parr enforces assymetry by having one machine get extra reward for being up.
+    IS_RING         = False #: For ring structures, Parr enforces assymetry by having one machine get extra reward for being RUNNING.
 
-    REBOOT_REWARD   = -0.75
+    REBOOT_REWARD   = -0.75 #: Penalty applied for a REPAIR action
     # Computer "up" reward implicitly 1; tune other rewards relative to this.
 
     episodeCap      = 200        # 200 used in tutorial
@@ -71,6 +76,11 @@ class SystemAdministrator(Domain):
 
     def __init__(self, networkmapname=os.path.join(default_map_dir, "20MachTutorial.txt"),
                  logger=None):
+        """
+        :param networkmapname: The name of the file to use as the computer
+            network map.  Assumed to be located in the SystemAdministratorMaps
+            directory of RLPy.
+        """
         path                    = networkmapname
         self.IS_RING            = "ring.txt" in networkmapname.lower()
         self.loadNetwork(path)
@@ -85,20 +95,18 @@ class SystemAdministrator(Domain):
             for i in range(self.computers_num):
                 self.logger.log('%d : %s' % (i,str(list(self.NEIGHBORS[i]))))
 
-    # @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/<mapname>.txt'             [Elliott Note: Doxygen did not like this documentation because it listed]
-    # @param maptype: Specify the format for the map file, 'eachNeighbor' or 'edges'.                         [@params that are not called, I did not fixed documentation used below. ]
-    # @param numNodes: Number of nodes in the map.
-    # @see: SystemAdministrator(Domain) for a description of 'eachNeighbor' and 'edges'.
-    #
-    # @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
-    # containing the neighbors of computer node <i> at index <i>, and _Edges is a list
-    # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
-
-	# @param path: Path to the map file, of form '/Domains/SystemAdministratorMaps/mapname.txt'
-	# @return: the tuple (_Neighbors, _Edges), where each cell of _Neighbors is a list
-    # containing the neighbors of computer node i at index i, and _Edges is a list
-    # of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
+    
     def loadNetwork(self, path):
+        """
+        :param path: Path to the map file, of form
+            \'/Domains/SystemAdministratorMaps/mapname.txt\'
+        Sets the internal variables _Neighbors and _Edges, where each cell of
+        _Neighbors is a list containing the neighbors of computer node <i>
+        at index <i>, and
+        _Edges is a list of tuples (node1, node2) where node1 and node2
+        share an edge and node1 < node2.
+
+        """
         _Neighbors = []
         f = open(path, 'rb')
         reader = csv.reader(f, delimiter=',')
@@ -188,11 +196,14 @@ class SystemAdministrator(Domain):
         possibleActs.append(self.computers_num) # append the no-op action
         return array(possibleActs)
 
-    # @param neighborsList: each element at index i is a list of nodes connected to the node at i.
-    # @return: a list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.
     def setUniqueEdges(self, neighborsList):
-        # set Unique Edges of the network (all edges are bidirectional)
-        # the lowest computer_id [eg, edges (0,3) and (3,0) discard (3,0)]
+        """
+        :param neighborsList: each element at index i is a list of nodes
+            connected to the node at i.
+        Constructs a list (node1, node2) where node1 and node2 share an edge
+        and node1 < node2 and sets the unique Edges of the network
+        (all edges are bidirectional).
+        """
         self.UNIQUE_EDGES = []
         for computer_id, neighbors in enumerate(neighborsList):
             for neighbor_id in neighbors:
@@ -201,6 +212,14 @@ class SystemAdministrator(Domain):
                 if found == []:
                     self.UNIQUE_EDGES.append(edge)
     def setNeighbors(self):
+        """
+        Sets the internal NEIGHBORS variable
+        
+        .. note::
+
+            Requires a call to setUniqueEdges() first.
+
+        """
         self.NEIGHBORS = {} # Initialize list so we don't get out of bounds errors
         for edgePair in self.UNIQUE_EDGES:
             # Add each node as a neighbor to each other
