@@ -14,16 +14,29 @@ __author__ = "Alborz Geramifard"
 
 class GridWorld(Domain):
     """
-    State is x,y, Actions are 4 way directional with fixed noise.
-    Each grid cell is::
-
+    The GridWorld domain simulates a path-planning problem for a mobile robot
+    in an environment with obstacles. The goal of the agent is to
+    navigate from the starting point to the goal state.
+    The map is loaded from a text file filled with numbers showing the map with the following
+    coding for each cell:
+        
         0: empty
         1: blocked
         2: start
         3: goal
         4: pit
 
-    The task is to reach the goal from the start while avoiding the pits
+    STATE:
+    The Row and Column corresponding to the agent's location. 
+    ACTIONS:
+    Four cardinal directions: up, down, left, right (given that the destination is not blocked or out of range)
+    TRANSITION:
+    There is 30% probability of failure for each move, in which case the 
+    action is replaced with a random action at each time-step. Otherwise the move succeeds
+    and the agent moves in the intended direction.
+    REWARD:
+    The reward on each step is -.001 , except for actions
+    that bring the agent to the goal with reward of +1.     
     """
     map = start_state = goal              = None
     #: Used for graphics to show the domain

@@ -14,36 +14,28 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
 class SystemAdministrator(Domain):
     """
-    Network Administrator with n computers, at most 1 reboot
-    action allowed per timestep.
-
-    Penalty -0.75 for taking a reboot action.
-
-    State is the vector of binary computer statuses:
-
-    RUNNING = 1 for working computers,
-    BROKEN = 0 otherwise.
-
-    Example:
-
-    [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
-
-    In visualization, broken computers are colored red,
-    and any links to other computers change from solid to
-    dotted, reflecting the higher probability of failure
-    of those machines.
-
-    -------------------INPUT-------------------
-
-    Each row is implicitly indexed starting at 0,
-    corresponding to the id of a computer.
-    The sequence of numbers (arbitrary order) corresponds
-    to the computers connected to this one.
-    NOTE: The graph is assumed to be bidirectional.
-    You dont have to specify both edges between the nodes!
-    1,2 on the first line means these edges: (0,1),(1,0),(2,0),(0,2).
-
-    Each line has to have at least one element
+    The system administration domain simulates a real-world task-assignment problem for 
+    an administrator of a computer network [See Guestrin 2001 and Delgado 2009]. 
+    The goal is to optimize the behavior of an automated system administrator that 
+    controls a network of n computers. The topology of the network is read through a txt file. 
+    
+    STATE:
+    The status of each computer is represented by 
+    a boolean variable X_i, i \in [1,...,n], the computer i is said to be ``up'' if X_i=1 
+    and ``down'' if X_i=0. The state vector is n dimensional, where each component 
+    corresponds to X_i, i =1,...,n.
+    All computers are up initially and connected to each other with a fixed topology.
+    For example, [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
+    
+    ACTION:
+    The target computer to be booted up.
+    
+    TRANSITION:
+    On each step, each computer has a probablity of failure depending on the health status of its neighbor computers.
+    
+    REWARD:
+    The reward per step is the number of up computers plus a negative reward of -0.75 if 
+    the agent reboots a computer. For this particular implementation, we considered a network of $n=20$ computers, with the topology shown in \refFig{f:sysadmin}, which is identical to one of the test domains of the International Probabilistic Planning Competition \citep{IPPC}.  The size of the state-action space for this domain is $2^{20} \times 21 \approx 22 \times 10^{6}$. 
     """
     NEIGHBORS       = [] # Each cell corresponds to a computer; contents of cell is a list of neighbors connected to that computer
     UNIQUE_EDGES    = [] # A list of tuples (node1, node2) where node1 and node2 share an edge and node1 < node2.

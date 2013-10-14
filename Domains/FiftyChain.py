@@ -11,11 +11,18 @@ __author__ = ["Alborz Geramifard", "Robert H. Klein"]
 
 class FiftyChain(Domain):
     """
-    50-state chain described by Lagoudakis & Parr, 2003
-    s0 <-> s1 <-> ... <-> s50
+    50-state chain described by [Lagoudakis & Parr, 2003]. 
+    S0 <-> S1 <-> ... <-> S49 
+    There are 2 goal states. The task is not episodic.
+    STATE:
+    A number between 0 and 49 
+    ACTION:
     Actions are left [0] and right [1]
+    TRANSITION:
+    10% noise in the movement resulting in taking the opposite action. 
+    The agent can not exit the chain, hence bouncing back on the sides if it tries to move further.
+    REWARD:
     Reward of +1 at states 10 and 41 (indices 0 and 9)
-    Actions succeed with probability .9, otherwise execute opposite action.
     """
     GOAL_REWARD = 1
     #: Indices of states with rewards

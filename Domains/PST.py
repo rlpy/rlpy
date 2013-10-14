@@ -12,67 +12,35 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
 class PST(Domain):
     """
-    Persistent Search and Track Mission per [MATLAB implementation] \n
-
-    --------------------DESCRIPTION----------------------- \n
-    Each UAV has 4 states; location, fuel, actuator status, sensor status.
-
-    There are 4 types of locations a uav can be in; Base,
-    Refuel, Communications, surveillance. \n
-    Loitering for 1 timestep at Refuel assigns fuel of 10 to that UAV.\n
-    Loitering for 1 timestep at Base assigns status 1 to
-    Actuator and Sensor.
-
-    Goal is to maintain as many UAVS with working sensor in the Surveillance
-    state as there are targets (NUM_TARGETS), while maintaining at least 1 UAV
-    in each communication state. \n
-    Reward of 20 is earned for each UAV in the surveillance state with working
-    sensor, up to the number of targets. \n
-    If no UAV is in the communication state, zero reward earned for surveillance.
-    (No reward is earned for excess UAVs or those with failed sensor)
-
-    If the actuator fails, the UAV can only take actions leading it back to the
-    refuel or base states, where it may loiter.
-
-    A penalty is applied for each unit of fuel consumed,
-    which occurs when a UAV moves between locations or when it is loitering
-    above a communications or surveilllance location.
-    (ie, no penalty when loitering at REFUEL or BASE)
-
-    Finally, if any UAV has fuel 0, the episode terminates with large penalty.
-
-    --------------------FORMULATION----------------------- \n
-    State vector consists of 4 blocks of states,
-    each corresponding to a property of the UAVs
-    [locations, fuel quantities, actuator statuses, sensor statuses] \n
-    So for example: \n
-    state [1,2,9,3,1,0,1,1] -->
-    [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs:
-    UAV1 in location 1, with 9 fuel units remaining, and
-    sensor + actuator with status 1 (functioning). \n
-    UAV 2 in location 2, 3 fuel units remaining, actuator
-    with status 0 and sensor with status 1.
-
-    Location transitions, sensor and actuator failures, and
-    fuel consumption are stochastic.
-
-
-    --------------------VISUALIZATION----------------------- \n
-    In the current visualization, the 'actuator' which enables communication
-    is represented by a wedge above each UAV circle; a failed actuator is red,
-    functional is black.  Similarly, the 'sensor' which enables surveillance
-    is represented by a wedge in front of the UAV circle, with similar coloring.
-
-    If each comms location has at least 1 UAV able to perform communications,
-    lines are drawn connecting the surveillance location through each comms
-    location back to base. \n
-    If at least 1 vehicle is actively performing surveillance, this line is black; \n
-    Else If there are no vehicles performing surveillance, this line is red. \n
-    Else if there is no available comms link, no line is drawn. \n
-    Else If it least one capable vehicle is in the surveillance region but no comms
-    link is available, a partial red comms line is drawn with a red vertical
-    line cutting down its center.
-
+    Persistent Search and Track (PST) is a multi-agent Unmanned Aerial Vehicle
+    (UAV) mission planning problem, where 3 UAVs perform
+    surveillance on a target, in the presence of communication and health
+    constraints [Geramifard et al., 2011]. This domain simulates a real-world
+    planning problem with a relatively large state-action space.
+    STATE:
+    Each UAV’s individual state has four dimensions: location, fuel, actuator status, and sensor
+    status. The dimensionality of the state vector is therefore 4x3 = 12. 
+    The full state space is the combination of states for all UAVs. 
+    ACTION:
+    There are three available actions for each UAV: advance; retreat; loiter. 
+    Hence the size of the action space is 3^3 = 27.
+    TRANSITION:
+    Movement of each UAV is deterministic with 5% failure rate for both the actuator and sensor of each
+    UAV on each step. Each UAV starts with 10 units of fuel and burns one unit for all actions except 
+    when loitering in the base or refuel nodes. Executing “loiter” in the base and refuel nodes fixes all UAV failures and
+    fully refuels the UAV, respectively. If a UAV runs out of fuel, it is assumed to
+    crash, terminating the episode. A UAV with a failed sensor
+    cannot perform surveillance. A UAV with a failed actuator cannot perform
+    surveillance or communication. It can either retreat or loiter in refuel or base
+    nodes.  
+    REWARD:
+    The objective of the mission is to fly to the surveillance node and perform
+    surveillance on a target, while ensuring that a communication link with the
+    base is maintained by having a UAV with a working actuator loitering on
+    the communication node. The reward function = 
+        + 20 (if an ally with a working sensor is at surveillance node while an ally with a working motor is at the communication node) 
+        - 50 (If any UAVs crashe) 
+        - Burned Fuel;
     """
     episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
     gamma               = 0.9  # 0.9 used in tutorial and matlab

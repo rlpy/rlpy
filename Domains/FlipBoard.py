@@ -11,7 +11,7 @@ __author__ = "Alborz Geramifard"
 
 class FlipBoard(Domain):
     """
-    A domain based on the last puzzle of D&R Game stage 5-3
+    A domain based on the last puzzle of D&R Game stage 5-3 [http://bit.ly/SYqdZI]
     The goal of the game is to get all elements of a 4x4 board
     to have value 1.
 
@@ -22,8 +22,10 @@ class FlipBoard(Domain):
         0 1 0 0
         0 0 1 0
 
-    The action is to pick a spot on the board and all elements
-    on the same row and column will flip their values.
+    STATE: a 4x4 array of binary
+    ACTION: [Row, Col]
+    TRANSITION: Determinisically flip all elements of the board on the same row OR col of the action.
+    REWARD: -1 per step. 0 when the board is solved [all ones]
     """
     gamma = 1
     BOARD_SIZE  = 4

@@ -12,12 +12,18 @@ __author__ = "Alborz Geramifard"
 
 class ChainMDP(Domain):
     """
-    A simple Chain MDP
-    s0 <-> s1 <-> ... <-> sn
+     A simple Epsiodeic Chain MDP. 
+    S0 <-> S1 <-> ... <-> Sn 
+    The goal is to reach the far most right node (Sn) where the episode is finished.
+    STATE:
+    A number between 0 and n-1 
+    ACTION:
     Actions are left [0] and right [1]
-    The task is to reach sn from s0.
-    Optimal policy is always to go right
-
+    TRANSITION:
+    Deterministic movements.
+    The agent can not exit the chain, hence bouncing back on the sides if it tries to move further.
+    REWARD:
+    -1 per step and 0 at goal.
     """
     GOAL_REWARD = 0
     STEP_REWARD = -1
