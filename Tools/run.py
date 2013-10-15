@@ -2,12 +2,14 @@ import joblib
 import os
 import glob
 import re
+from Tools import __rlpy_location__
 import Tools.condor as ct
 from time import sleep
 import cProfile
 import pstats
 import platform
 import sys
+import subprocess
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -16,22 +18,8 @@ __license__ = "BSD 3-Clause"
 
 # template for executable file used to execute experiments
 template = """#!/usr/bin/env python
-import sys, os
-abspath = os.path.abspath(__file__)
-dname = os.path.dirname(abspath)
-os.chdir(dname)
-
-RL_PYTHON_ROOT = '.'
-while os.path.abspath(RL_PYTHON_ROOT) != os.path.abspath(RL_PYTHON_ROOT + '/..') and not os.path.exists(RL_PYTHON_ROOT + '/RLPy/Tools'):
-    RL_PYTHON_ROOT = RL_PYTHON_ROOT + '/..'
-if not os.path.exists(RL_PYTHON_ROOT + '/RLPy/Tools'):
-    print 'Error: Could not locate RLPy directory.'
-    print 'Please make sure the package directory is named RLPy.'
-    print 'If the problem persists, please download the package from http://acl.mit.edu/RLPy and reinstall.'
-    sys.exit(1)
-RL_PYTHON_ROOT = os.path.abspath(RL_PYTHON_ROOT + '/RLPy')
-sys.path.insert(0, RL_PYTHON_ROOT)
-
+import sys
+sys.path = ["{rlpy_location}"] + sys.path
 {setting_content}
 
 {variables}
@@ -136,6 +124,7 @@ def prepare_directory(setting, path, **hyperparam):
     setting_content = read_setting_content(setting)
     with open(fn, "w") as f:
         f.write(template.format(setting=setting,
+                                rlpy_location=__rlpy_location__,
                                 variables=variables,
                                 setting_content=setting_content))
     return fn
@@ -182,8 +171,17 @@ def run(filename, location, ids, parallelization="sequential",
             run_joblib(fn, ids, n_jobs=1, verbose=verbose)
 
 
+def _run_helper(fn, id, verbose):
+    if verbose >= 15:
+        out = ""
+    else:
+        out = "> /dev/null"
+    path, filen = os.path.split(fn)
+    subprocess.Popen("python {} {} {}".format(filen, id + 1, out), shell=True, cwd=path).wait()
+
+
 def run_joblib(fn, ids, n_jobs=-2, verbose=10):
-    jobs = (joblib.delayed(os.system)("python {} {} > /dev/null".format(fn, i + 1)) for i in ids)
+    jobs = (joblib.delayed(_run_helper)(fn, i, verbose) for i in ids)
     #jobs = (joblib.delayed(os.system)(fn, i) for i in ids)
     exit_codes = joblib.Parallel(n_jobs=n_jobs, verbose=verbose)(jobs)
     return exit_codes
