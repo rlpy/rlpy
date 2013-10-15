@@ -69,11 +69,11 @@ class PST(Domain):
         AIAA Guidance, Navigation, and Control Conference (2011).
 
     """
-    episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
-    gamma               = 0.9  # 0.9 used in tutorial and matlab
+    episodeCap          = 1000 #: Maximum number of steps per episode
+    gamma               = 0.9  #: Discount factor
 
     # Domain constants
-    FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
+    FULL_FUEL           = 10   #: Number of fuel units at start
     P_ACT_FAIL          = 0.05 #: Probability that an actuator fails on this timestep for a given UAV
     P_SENSOR_FAIL       = 0.05 #: Probability that a sensor fails on this timestep for a given UAV
 #    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]

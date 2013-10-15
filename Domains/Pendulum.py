@@ -46,7 +46,16 @@ __author__ = ["Alborz Geramifard", "Robert H. Klein"]
 ##########################################################
 
 class Pendulum(Domain):
-
+    """
+    .. warning::
+        Various literature sources refer to a \"Pendulum\" problem domain. \n
+        However, the underlying dynamics of this domain actually correspond to
+        that of ``CartPole``; thus to help eliminate this confusion, we do not
+        explicitly implement a \"Pendulum\" domain.\n
+        Interested users should refer to :class: `~FiniteTrackCartPole` instead.
+        
+    """
+    
     DEBUG               = 0     # Set to non-zero to enable print statements
 
     # Domain constants from children - Pendulum parameters are not standardized

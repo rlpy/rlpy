@@ -61,8 +61,8 @@ class SystemAdministrator(Domain):
     REBOOT_REWARD   = -0.75 #: Penalty applied for a REPAIR action
     # Computer "up" reward implicitly 1; tune other rewards relative to this.
 
-    episodeCap      = 200        # 200 used in tutorial
-    gamma           = .95        # Based on IJCAI01 Paper
+    episodeCap      = 200        #: Maximum number of steps
+    gamma           = .95        #: Discount factor
 
     # Plotting Variables
     networkGraph    = None     # Graph of network used for visualization
