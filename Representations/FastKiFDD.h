@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <string>
 #include <stdexcept>
-#include "kernels.h"
+#include "c_kernels.h"
 
 class cmp_dim {
     public:
