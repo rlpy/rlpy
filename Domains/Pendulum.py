@@ -63,7 +63,9 @@ class InfTrackCartPole(CartPoleBase):
     
     """
     
-    #: Default limits on theta (beyond which episode terminates)
+    __author__ = "Robert H. Klein"
+    
+    #: Default limits on theta
     ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
     #: Default limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
@@ -116,29 +118,36 @@ class InfTrackCartPole(CartPoleBase):
 # (See 1Link implementation by Lagoudakis & Parr, 2003)
 #####################################################################
 
-class InfCartInvertedBalance(Pendulum):
+class InfCartPoleBalance(InfTrackCartPole):
     """
-    Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
+    | **Goal**:
+    Balance the Pendulum on the CartPole, not letting it fall below horizontal.
+    
+    | **Reward**:
+    Penalty of ``FELL_REWARD`` is received when pendulum falls below horizontal,
+    zero otherwise.
+    
+    | Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
     
     .. warning::
         
         L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
         saturates them frequently when falling; more realistic to use 2*pi.
         
-    
     """
 
-    ## Reward received when the pendulum falls below the horizontal
+    __author__ = "Robert H. Klein"
+
+    #: Reward received when the pendulum falls below the horizontal
     FELL_REWARD         = -1
-    ## Limit on theta (Note that this may affect your representation's discretization)
+    #: Limit on theta (Note that this may affect your representation's discretization)
     ANGLE_LIMITS        = [-pi/2.0, pi/2.0]
-    ## Limits on pendulum rate, per 1Link of Lagoudakis & Parr
+    #: Limits on pendulum rate, per 1Link of Lagoudakis & Parr
     ANGULAR_RATE_LIMITS = [-2., 2.] # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.
 
-    def __init__(self, episodeCap = 3000, logger = None):
-        self.episodeCap = episodeCap
-        super(Pendulum_InvertedBalance,self).__init__(logger)
+    def __init__(self, logger = None):
+        super(InfCartInvertedBalance,self).__init__(logger)
 
     def s0(self):
         # Returns the initial state, pendulum vertical
@@ -156,61 +165,46 @@ class InfCartInvertedBalance(Pendulum):
             s = self.state
         return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0) # per L & P 2003
 
-
-
-#####################################################################
-# \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
-#####################################################################
-# ---OBJECTIVE--- \n
-# Reward is 1 within the goal region, 0 elsewhere. \n
-# There is no terminal condition aside from episodeCap. \n
-#
-# Pendulum starts straight down, theta = pi
-# (see Pendulum parent class for coordinate definitions). \n
-#
-# The objective is to get and then keep the pendulum in the goal
-# region for as long as possible, with +1 reward for
-# each step in which this condition is met; the expected
-# optimum then is to swing the pendulum vertically and
-# hold it there, collapsing the problem to Pendulum_InvertedBalance
-# but with much tighter bounds on the goal region. \n
-#
-# (See 1Link implementation by Lagoudakis & Parr, 2003)
-#
-#####################################################################
-
-class Pendulum_SwingUp(Pendulum):
-
-    # Domain constants [temporary, per Lagoudakis & Parr 2003, for InvertedBalance Task]
-
-    ## Reward received on each step the pendulum is in the goal region
-    GOAL_REWARD         = 1
-    ## Goal region for reward [temporary values]
+class InfCartPoleSwingUp(InfTrackCartPole):
+    """
+    | **Goal**
+    Reward is 1 whenever ``theta`` is within ``GOAL_LIMITS``, 0 elsewhere.\n
+    There is no terminal condition aside from ``episodeCap``.\n
+    
+    Pendulum starts straight down, ``theta = pi``.  The task is to swing it up,
+    after which the problem reduces to \c %InfCartInvertedBalance, though
+    possibly with different domain constants.
+    
+    """
+    
+    __author__ = "Robert H. Klein"
+    
+    #: Goal region for reward
     GOAL_LIMITS         = [-pi/6, pi/6]
-    ## Limit on theta
+    #: Limits on theta
     ANGLE_LIMITS        = [-pi, pi]
-    ## Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
+    #: Limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-3*pi, 3*pi]
-    ## Max number of steps per trajectory
+    #: Max number of steps per trajectory
     episodeCap          = 300
-    # For Visual Stuff
-    MAX_RETURN = episodeCap*GOAL_REWARD
-    MIN_RETURN = 0
-    gamma               = .9   #
+    #: Discount factor
+    gamma               = .90
 
     def __init__(self, logger = None):
         self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
-        super(Pendulum_SwingUp,self).__init__(logger)
+        super(InfCartPoleSwingUp,self).__init__(logger)
 
     def s0(self):
-        #Returns the initial state: pendulum straight up and unmoving.
+        """ Returns the initial state: pendulum straight up and unmoving. """
         self.state = array([pi,0])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a):
+        """
+        Return the reward earned for this state-action pair.
+        On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6
+        """
         s  = self.state
-        """Return the reward earned for this state-action pair.
-        On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6"""
         return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
 
     def isTerminal(self, s=None):

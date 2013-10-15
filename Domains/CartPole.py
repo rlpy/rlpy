@@ -9,7 +9,6 @@ __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
-__author__ = ["Robert H. Klein"]
 pi = np.pi
 
 class FiniteTrackCartPole(CartPoleBase):
@@ -58,7 +57,9 @@ class FiniteTrackCartPole(CartPoleBase):
     
     """
     
-    #: Default limits on theta (beyond which episode terminates)
+    __author__ = ["Robert H. Klein"]
+    
+    #: Default limits on theta
     ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
     #: Default limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
@@ -172,7 +173,9 @@ class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
     """
     A more realistic version of balancing with 3 actions (left, right, none)
     instead of the default (left, right), and nonzero, uniform noise in actions.\n
-    See \c %FiniteCartPoleBalance.
+    See \c %FiniteCartPoleBalance.\n
+    
+    Note that the start state has some noise.
     
     """
     
@@ -249,6 +252,9 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     This domain is a child of \c %FiniteCartPoleSwingUp.
     
     """
+    
+    __author__ = "Christoph Dann"
+    
     # TODO - needs reference
     
     

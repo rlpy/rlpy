@@ -9,7 +9,6 @@ __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
-__author__ = ["Robert H. Klein"]
 pi = np.pi
 
 class CartPoleBase(Domain):
@@ -33,24 +32,14 @@ class CartPoleBase(Domain):
         This is an abstract class and cannot be instantiated directly.
     
     """
-    #: Newtons, N - Force values available as actions
-    AVAIL_FORCE         = np.array([-10, 10])
-    #: kilograms, kg - Mass of the pendulum arm
-    MASS_PEND           = 0.1
-    #: kilograms, kg - Mass of cart
-    MASS_CART           = 1.0
-    #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    LENGTH              = 1.0
+    
+    __author__ = ["Robert H. Klein"]
+    
     #: m/s^2 - gravitational constant
     ACCEL_G             = 9.8
-    #: seconds, s - Time between steps
-    dt                  = 0.02
-    #: Newtons, N - Maximum noise possible, uniformly distributed.  Default 0.
-    force_noise_max     = 0.
 
     #: integration type, can be 'rk4', 'odeint' or 'euler'. Defaults to euler.
     int_type = 'euler'
-
     #: number of steps for Euler integration
     num_euler_steps = 1
 
@@ -63,6 +52,7 @@ class CartPoleBase(Domain):
     episodeCap          = 3000
     #: Discount factor
     gamma               = .95
+    
     #: Set to non-zero to enable print statements
     DEBUG               = 0
 
@@ -191,6 +181,26 @@ class CartPoleBase(Domain):
 
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = np.append(self.state, forceAction)
+        
+        
+        #-------------------------------------------------------------------------#
+        # There are several ways of integrating the nonlinear dynamics equations. #
+        # For consistency with prior results, we tested the custom integration    #
+        # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
+        # Balance task.                                                           #
+        # For our own experiments we use rk4 from mlab or euler integration.      #
+        #                                                                         #
+        # Integration method         Sample runtime  Error with scipy.integrate   #
+        #                                              (most accurate method)     #
+        #  euler (custom)              ?min ??sec              ????%              #
+        #  rk4 (mlab)                  3min 15sec            < 0.01%              #
+        #  pendulum_ode45 (L&P '03)    7min 15sec            ~ 2.00%              #
+        #  integrate.odeint (scipy)    9min 30sec            -------              #
+        #                                                                         #
+        # Use of these methods is supported by selectively commenting             #
+        # sections below.                                                         #
+        #-------------------------------------------------------------------------#
+        
         if self.int_type == "euler":
             int_fun = self.euler_int
         elif self.int_type == "odeint":
@@ -418,24 +428,24 @@ class CartPoleBase(Domain):
         pl.figure("Value Function")
         pl.draw()
         
-#     def euler_int(self, df, x0, times):
-#         """
-#         performs Euler integration with interface similar to other methods.
-#         
-#         :param df: TODO
-#         :param x0: initial state
-#         :param times: times at which to estimate integration values
-#         
-#         .. warning::
-#             All but the final cell of ``times`` argument are ignored.
-#             
-#         """
-#         steps = self.num_euler_steps
-#         dt = float(times[-1])
-#         ns = x0.copy()
-#         for i in range(steps):
-#             ns += dt / steps * df(ns, i * dt / steps)
-#         return [ns]
+    def euler_int(self, df, x0, times):
+        """
+        performs Euler integration with interface similar to other methods.
+         
+        :param df: TODO
+        :param x0: initial state
+        :param times: times at which to estimate integration values
+         
+        .. warning::
+            All but the final cell of ``times`` argument are ignored.
+             
+        """
+        steps = self.num_euler_steps
+        dt = float(times[-1])
+        ns = x0.copy()
+        for i in range(steps):
+            ns += dt / steps * df(ns, i * dt / steps)
+        return [ns]
         
 class StateIndex:
     """
