@@ -34,7 +34,7 @@ class FiniteTrackCartPole(CartPoleBase):
     Actions take the form of force applied to cart; \n
     Positive force acts to the right on the cart. \n
 
-    Uniformly distributed noise is added with magnitude 10 N.
+    Note the domain defaults in \c %CartPoleBase.
 
     | **Reference**
     For details, see:
@@ -50,6 +50,16 @@ class FiniteTrackCartPole(CartPoleBase):
         IEEE Trans. on Fuzzy Systems, 4(1):14-23, 1996.
     
     """
+    
+    #: Default limits on theta (beyond which episode terminates)
+    ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
+    #: Default limits on pendulum rate
+    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    #: m - Default limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+    #: m/s - Default limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]
+    
     def __init__(self, logger = None):
         # Limits of each dimension of the state space.
         # Each row corresponds to one dimension and has two elements [min, max]
@@ -78,14 +88,6 @@ class FiniteCartPoleBalance(FiniteTrackCartPole):
         `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
     
     """
-    #: Limit on theta (beyond which episode terminates)
-    ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
-    #: Based on Parr 2003 and ICML 11
-    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
-    #: m - Limits on cart position [Per RL Community CartPole]
-    POSITON_LIMITS      = [-2.4, 2.4]
-    #: m/s - Limits on cart velocity [per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]
     #: Discount factor
     gamma               = .999
 
@@ -127,20 +129,6 @@ class FiniteCartPoleBalanceOriginal(FiniteTrackCartPole):
     """
     __author__ = "Christoph Dann"
 
-    #: Limit on pendulum angle (beyond which episode terminates)
-    ANGLE_LIMITS        = [-np.pi/15.0, np.pi/15.0]
-    #: Limits on pendulum rate
-    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
-    #: m - Limits on cart position [Per RL Community CartPole]
-    POSITON_LIMITS      = [-2.4, 2.4]
-    #: m/s - Limits on cart velocity [per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]
-    #: Discount factor
-    gamma               = .95
-    AVAIL_FORCE         = np.array([-10, 10])
-    int_type = "euler"
-    num_euler_steps = 1
-
     def __init__(self, logger=None, good_reward=0.):
         self.good_reward = good_reward
         super(FiniteCartPoleBalanceOriginal, self).__init__(logger)
@@ -162,31 +150,17 @@ class FiniteCartPoleBalanceOriginal(FiniteTrackCartPole):
 class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
     """
     A more realistic version of balancing with 3 actions (left, right, none)
-    and some uniform noise.\n
-    See ``FiniteCartPoleBalance``
+    instead of the default (left, right), and nonzero, uniform noise in actions.\n
+    See \c %FiniteCartPoleBalance.
     
     """
     
     __author__ = "Christoph Dann"
 
-    #: Newtons, N - Force values available as actions (Note we add a no-force action)
+    #: Newtons, N - Force values available as actions (Note we add a 0-force action)
     AVAIL_FORCE = np.array([-10., 0., 10.])
     #: Newtons, N - Maximum noise possible, uniformly distributed
     force_noise_max = 1.
-    #: Discount factor
-    gamma = .95
-    #: integration type, can be 'rk4', 'odeint' or 'euler'. Defaults to rk4.
-    int_type = "euler"
-    #: number of steps for Euler integration
-    num_euler_steps = 1
-    #: Limit on pendulum angle (beyond which episode terminates)
-    ANGLE_LIMITS        = [-np.pi/15.0, np.pi/15.0]
-    #: Limits on pendulum rate
-    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
-    #: m - Limits on cart position [Per RL Community CartPole]
-    POSITON_LIMITS      = [-2.4, 2.4]
-    #: m/s - Limits on cart velocity [per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]
 
     def __init__(self, logger=None):
         super(FiniteCartPoleBalanceModern, self).__init__(logger)
@@ -223,14 +197,8 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     See parent class ``FiniteTrackCartPole`` for more information.
 
     """
-    #: Limit on pendulum angle (beyond which episode terminates)
+    #: Limit on pendulum angle (no termination, pendulum can make full cycle)
     ANGLE_LIMITS        = [-pi, pi]
-    #: Limits on pendulum rate
-    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
-    #: m - Limits on cart position [Per RL Community CartPole]
-    POSITON_LIMITS      = [-2.4, 2.4]
-    #: m/s - Limits on cart velocity [per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0]
 
     def __init__(self, logger = None):
         super(CartPole_SwingUp,self).__init__(logger)
@@ -260,13 +228,13 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     # TODO - needs reference
     
     
-    #: Limit on pendulum angle (beyond which episode terminates)
+    #: Limit on pendulum angle (no termination, pendulum can make full cycle)
     ANGLE_LIMITS        = [-pi, pi]
-    #: Limits on pendulum rate [per RL Community CartPole]
+    #: Limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-3.0, 3.0]
-    #: m - Limits on cart position [Per RL Community CartPole]
+    #: m - Limits on cart position
     POSITON_LIMITS      = [-2.4, 2.4]
-    #: m/s - Limits on cart velocity [per RL Community CartPole]
+    #: m/s - Limits on cart velocity
     VELOCITY_LIMITS     = [-3.0, 3.0]
 
     MASS_CART = 0.5 #: kilograms, kg - Mass of cart
@@ -276,10 +244,8 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     A = .5
     #: seconds, s - Time between steps
     dt                  = 0.10
-    #: Max number of steps per trajectory
+    #: Max number of steps per trajectory (reduced from default of 3000)
     episodeCap          = 400
-    # Discount factor
-    gamma = 0.95
     # Friction coefficient between cart and ground
     B = 0.1
     

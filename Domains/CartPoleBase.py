@@ -19,7 +19,8 @@ class CartPoleBase(Domain):
     as well as number of states varies among subclasses.
     See ``InfTrackCartPole`` and ``FiniteTrackCartPole``.
     
-    Domain constants (such as ``AVAIL_FORCE``, ``MASS_PEND``, and ``LENGTH``)
+    Domain constants (such as ``AVAIL_FORCE``, ``MASS_PEND``, and ``LENGTH``,
+    as well as state space limits such as ANGULAR_LIMITS)
     vary as well.
     
     .. note::
@@ -44,19 +45,15 @@ class CartPoleBase(Domain):
     ACCEL_G             = 9.8
     #: seconds, s - Time between steps
     dt                  = 0.02
-    #: Newtons, N - Maximum noise possible, uniformly distributed
+    #: Newtons, N - Maximum noise possible, uniformly distributed.  Default 0.
     force_noise_max     = 0.
 
-    #: integration type, can be 'rk4', 'odeint' or 'euler'. Defaults to rk4.
+    #: integration type, can be 'rk4', 'odeint' or 'euler'. Defaults to euler.
     int_type = 'euler'
 
     #: number of steps for Euler integration
     num_euler_steps = 1
 
-    #: Limits on pendulum rate [per RL Community CartPole]
-    ANGULAR_RATE_LIMITS = [-6.0, 6.0]
-    #: Limits on pendulum angle (wrapped around a full cycle)
-    ANGLE_LIMITS        = [-pi, pi]
     #: Reward received on each step the pendulum is in the goal region
     GOAL_REWARD         = 1
 
@@ -64,6 +61,8 @@ class CartPoleBase(Domain):
 
     #: Max number of steps per trajectory
     episodeCap          = 3000
+    #: Discount factor
+    gamma               = .95
     #: Set to non-zero to enable print statements
     DEBUG               = 0
 
