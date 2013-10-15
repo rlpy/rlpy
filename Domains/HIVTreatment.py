@@ -2,6 +2,7 @@
 from Domain import Domain
 import numpy as np
 from scipy.integrate import odeint
+from Tools import plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -41,7 +42,7 @@ class HIVTreatment(Domain):
 
 
     """
-
+    state_names = ("T1", "T1*", "T2", "T2*", "V", "E")
     gamma = 0.98
     continuous_dims = np.arange(6)
     actions = np.array([[0., 0.], [.7, 0.], [.3, 0.], [.7, .3]])
@@ -49,12 +50,16 @@ class HIVTreatment(Domain):
     episodeCap = 200  #: total of 1000 days with a measurement every 5 days
     dt = 5  #: measurement every 5 days
     logspace = True  #: whether observed states are in log10 space or not
+    show_domain_every = 20  #: only update the graphs in showDomain every x steps
+    episode_data = np.zeros((7, episodeCap + 1))  # store samples of current episode for drawing
+
     if logspace:
         statespace_limits = np.array([[-5, 8]] * 6)
     else:
         statespace_limits = np.array([[0., 1e8]] * 6)
 
     def step(self, a):
+        self.t += 1
         #if self.logspace:
         #    s = np.power(10, s)
 
@@ -66,18 +71,58 @@ class HIVTreatment(Domain):
         self.state = ns.copy()
         if self.logspace:
             ns = np.log10(ns)
+
+        self.episode_data[:-1, self.t] = self.state
+        self.episode_data[-1, self.t - 1] = a
         return reward, ns, False, self.possibleActions()
 
     def possibleActions(self):
         return np.arange(4)
 
     def s0(self):
+        self.t = 0
+        self.episode_data[:] = np.nan
         # non-healthy stable state of the system
         s = np.array([163573., 5., 11945., 46., 63919., 24.])
         self.state = s.copy()
         if self.logspace:
             return np.log10(s), self.isTerminal(), self.possibleActions()
+        self.episode_data[:-1, 0] = s
         return s, self.isTerminal(), self.possibleActions()
+
+    def showDomain(self, a=0, s=None):
+        """
+        shows a live graph of each concentration
+        """
+        # only update the graph every couple of steps, otherwise it is
+        # extremely slow
+        if self.t % self.show_domain_every != 0 and not self.t >= self.episodeCap:
+            return
+
+
+        n = self.state_space_dims + 1
+        names = list(self.state_names) + ["Action"]
+        colors = ["b", "b", "b", "b", "r", "g", "k"]
+        handles = getattr(self, "_state_graph_handles", None)
+        plt.figure("Domain", figsize=(12, 10))
+        if handles is None:
+            handles = []
+            f, axes = plt.subplots(n, sharex=True, num="Domain", figsize=(12, 10))
+            f.subplots_adjust(hspace=0.1)
+            for i in range(n):
+                ax = axes[i]
+                d = np.arange(self.episodeCap + 1)*5
+                ax.set_ylabel(names[i])
+                ax.locator_params(tight=True, nbins=4)
+                handles.append(ax.plot(d, self.episode_data[i], color=colors[i])[0])
+            self._state_graph_handles = handles
+            ax.set_xlabel("Days")
+        for i in range(n):
+            handles[i].set_ydata(self.episode_data[i])
+            ax = handles[i].get_axes()
+            ax.relim()
+            ax.autoscale_view()
+        plt.draw()
 
 
 def dsdt(s, t, eps1, eps2):
