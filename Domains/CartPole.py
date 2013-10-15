@@ -35,6 +35,13 @@ class FiniteTrackCartPole(CartPoleBase):
     Positive force acts to the right on the cart. \n
 
     Note the domain defaults in \c %CartPoleBase.
+    
+    .. warning::
+    
+        For \"Swing-Up\" tasks where the goal is to swing the pendulum from
+        rest to vertical, Lagoudakis, Parr, and Bartlett's default [-2, 2] rad/s
+        is unphysically slow; the Pendulum often saturates it.\n
+        RLPy will issue truncation warnings if this is occurring.
 
     | **Reference**
     For details, see:
@@ -59,6 +66,20 @@ class FiniteTrackCartPole(CartPoleBase):
     POSITON_LIMITS      = [-2.4, 2.4]
     #: m/s - Default limits on cart velocity [per RL Community CartPole]
     VELOCITY_LIMITS     = [-6.0, 6.0]
+    
+     #: Newtons, N - Force values available as actions
+    AVAIL_FORCE         = np.array([-10, 10])
+    
+    #: kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = 0.1
+    #: kilograms, kg - Mass of cart
+    MASS_CART           = 1.0
+    #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = 1.0
+    #: seconds, s - Time between steps
+    dt                  = 0.02
+    #: Newtons, N - Maximum noise possible, uniformly distributed.  Default 0.
+    force_noise_max     = 0.
     
     def __init__(self, logger = None):
         # Limits of each dimension of the state space.
@@ -199,6 +220,9 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     """
     #: Limit on pendulum angle (no termination, pendulum can make full cycle)
     ANGLE_LIMITS        = [-pi, pi]
+    
+    # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
+    # saturates them frequently when falling; more realistic to use 2*pi.
 
     def __init__(self, logger = None):
         super(CartPole_SwingUp,self).__init__(logger)
