@@ -79,7 +79,9 @@ steps where
        information
 
 To track the performance of the agent, the quality of its current policy is
-assessed `num_policy_checks` times per experiment. This is done by letting the
+assessed `num_policy_checks` times during the experiment (and one more time
+right at the beginning). 
+This is done by letting the
 agent interact for `checks_per_policy` episodes with the domain in so called 
 **performance runs**. During performance runs, the agent does not do any
 exploration but always choses actions that it thinks is optimal. This means,
