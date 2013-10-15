@@ -23,6 +23,12 @@ class CartPoleBase(Domain):
     vary as well.
     
     .. note::
+
+        Changing any of the state limits (e.g. ``ANGLE_LIMITS``,
+        ``POSITION_LIMITS``, etc.) will affect the resolution of the
+        discretized value function representation (and thus the policy as well)
+    
+    .. note::
         This is an abstract class and cannot be instantiated directly.
     
     """
@@ -48,14 +54,11 @@ class CartPoleBase(Domain):
     num_euler_steps = 1
 
     #: Limits on pendulum rate [per RL Community CartPole]
-    ANGULAR_RATE_LIMITS = [-6.0, 6.0] #### define in child
-    ANGLE_LIMITS        = [] #### define in child #: Limit on ``theta`` (used for discretization)
+    ANGULAR_RATE_LIMITS = [-6.0, 6.0]
+    #: Limits on pendulum angle (wrapped around a full cycle)
+    ANGLE_LIMITS        = [-pi, pi]
     #: Reward received on each step the pendulum is in the goal region
     GOAL_REWARD         = 1
-    #: m - Limits on cart position [Per RL Community CartPole]
-    POSITON_LIMITS      = [-2.4, 2.4] #### define in child
-    #: m/s - Limits on cart velocity [per RL Community CartPole]
-    VELOCITY_LIMITS     = [-6.0, 6.0] ##### not needed
 
     # Domain constants
 
@@ -102,15 +105,41 @@ class CartPoleBase(Domain):
         Setup required domain constants.
         """
         self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
-        self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
-
-        self.DimNames           = ['Theta', 'Thetadot', 'X', 'Xdot']
+        
+        if not self._isParamsValid():
+            # For now, continue execution with warnings.
+            # Optionally halt execution here.
+            pass
+            
 
         if self.logger:
             self.logger.log("Pendulum length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("Timestep length dt:\t\t\t%0.2f(s)" % self.dt)
         self._assignGroundVerts()
         super(CartPoleBase, self).__init__(logger)
+    
+    def _isParamsValid(self):
+        if not ((2*pi / dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / dt > -self.ANGULAR_RATE_LIMITS[0])):
+            errStr = """
+            WARNING:
+            If the bound on angular velocity is large compared with
+            the time discretization, seemingly 'optimal' performance
+            might result from a stroboscopic-like effect.
+            For example, if dt = 1.0 sec, and the angular rate limits
+            exceed -2pi or 2pi respectively, then it is possible that
+            between consecutive timesteps, the pendulum will have
+            the same position, even though it really completed a
+            rotation, and thus we will find a solution that commands
+            the pendulum to spin with angular rate in multiples of
+            2pi / dt instead of truly remaining stationary (0 rad/s) at goal.
+            """
+            print errStr
+            print 'Your selection, dt=',self.dt,'and limits',self.ANGULAR_RATE_LIMITS,'Are at risk.'
+            print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
+            print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
+            return False
+        
+        return True
     
     ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
     def _assignGroundVerts(self):
@@ -238,7 +267,9 @@ class CartPoleBase(Domain):
         Display the 4-d state of the cartpole and arrow indicating current
         force action (not including noise!).
         Note that for 2-D systems the cartpole is still displayed, but appears
-        static; see 
+        static; see ``InfTrackCartPole``.
+        
+        """
         s = self.state
         if self.domainFig is None:  # Need to initialize the figure
             self.domainFig = pl.figure("Domain")

@@ -29,7 +29,7 @@ class InfTrackCartPole(CartPoleBase):
         In the literature, this domain is often referred as a ``Pendulum`` and
         is often accompanied by misleading or even incorrect diagrams.
         However, the cited underlying dynamics correspond to a pendulum on a
-        cart (``CartPoleBase``), with cart position and velocity ignored and
+        cart (\c %CartPoleBase), with cart position and velocity ignored and
         unbounded (but **still impacting the pendulum dynamics**).\n
         Actions thus still take the form of forces and not torques.
     
@@ -62,8 +62,7 @@ class InfTrackCartPole(CartPoleBase):
             `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
     
     """
-
-class Pendulum(Domain):
+    
     # Variables from pendulum_ode45.m of the 1Link code, Lagoudakis & Parr 2003
     # The Fehlberg coefficients:
     _alpha = array([1/4.0, 3/8.0, 12/13.0, 1, 1/2.0])
@@ -80,71 +79,195 @@ class Pendulum(Domain):
               ])
     _pow    = 1/5.0
     def __init__(self, logger = None):
-        # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
-        self.actions_num        = len(self.AVAIL_FORCE)
+        # Limits of each dimension of the state space.
+        # Each row corresponds to one dimension and has two elements [min, max]
+        self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT]
-
-        self.MOMENT_ARM         = self.LENGTH / 2.0
-        self._ALPHA_MASS        = 1.0 / (self.MASS_CART + self.MASS_PEND)
-
-        self.xTicks         = linspace(0,self.Theta_discretization-1,5)
-        self.xTicksLabels   = around(linspace(self.statespace_limits[0,0]*180/pi,self.statespace_limits[0,1]*180/pi,5)).astype(int)
-        #self.xTicksLabels   = ["$-\\pi$","$-\\frac{\\pi}{2}$","$0$","$\\frac{\\pi}{2}$","$\\pi$"]
-        self.yTicks         = [0,self.Theta_discretization/4.0,self.ThetaDot_discretization/2.0,self.ThetaDot_discretization*3/4.0,self.ThetaDot_discretization-1]
-        self.yTicksLabels   = around(linspace(self.statespace_limits[1,0]*180/pi,self.statespace_limits[1,1]*180/pi,5)).astype(int)
-        #self.yTicksLabels   = ["$-8\\pi$","$-4\\pi$","$0$","$4\\pi$","$8\\pi$"]
         self.DimNames       = ['Theta','Thetadot']
-        if self.logger:
-            self.logger.log("length:\t\t%0.2f(m)" % self.LENGTH)
-            self.logger.log("dt:\t\t\t%0.2f(s)" % self.dt)
-
-        #        if not ((2*pi / dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / dt > -self.ANGULAR_RATE_LIMITS[0])):
-        #            print '''
-        #            WARNING:
-        #            # This has not been observed in practice, but conceivably
-        #            # if the bound on angular velocity is large compared with
-        #            # the time discretization, seemingly 'optimal' performance
-        #            # might result from a stroboscopic-like effect.
-        #            # For example, if dt = 1.0 sec, and the angular rate limits
-        #            # exceed -2pi or 2pi respectively, then it is possible that
-        #            # between consecutive timesteps, the pendulum will have
-        #            # the same position, even though it really completed a
-        #            # rotation, and thus we will find a solution that commands
-        #            # the pendulum to spin with angular rate in multiples of
-        #            # 2pi / dt.
-        #            '''
-        #            print 'Your selection, dt=',self.dt,'and limits',self.ANGULAR_RATE_LIMITS,'Are at risk.'
-        #            print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
-        #            print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
-
+        
         # Transpose the matrices shown above, if they have not been already by another instance of the domain.
         if len(self._beta) == 5: self._beta = (self._beta).conj().transpose()
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
-        super(Pendulum,self).__init__(logger)
+        super(InfTrackCartPole,self).__init__(logger)
 
     def s0(self):
         # Defined by children
         raise NotImplementedError
 
-    def possibleActions(self, s=None): # Return list of all indices corresponding to actions available
-        return arange(self.actions_num)
+    #-------------------------------------------------------------------------#
+    # There are several ways of integrating the nonlinear dynamics equations. #
+    # For consistency with prior results, we include the custom integration   #
+    # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
+    # Balance task, despite its slightly poorer performance in execution time #
+    # and accuracy of result.                                                 #
+    # For our own experiments we use rk4 from mlab.                           #
+    #                                                                         #
+    # Integration method         Sample runtime  Error with scipy.integrate   #
+    #                                              (most accurate method)     #
+    #  rk4 (mlab)                  3min 15sec            < 0.01%              #
+    #  pendulum_ode45 (L&P '03)    7min 15sec            ~ 2.00%              #
+    #  integrate.odeint (scipy)    9min 30sec            -------              #
+    #                                                                         #
+    # Use of any of these methods is supported by selectively commenting      #
+    # sections below.                                                         #
+    #-------------------------------------------------------------------------#
+        
+        
+        
+        
+    
+    
+    
+        
+#####################################################################
+# \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
+#####################################################################
+#
+# ---OBJECTIVE--- \n
+# Reward is 0 everywhere, -1 if theta falls below horizontal. \n
+# This is also the terminal condition for an episode. \n
+#
+# theta:    [-pi/2, pi/2] \n
+# thetaDot: [-2,2]    Limits imposed per L & P 2003 \n
+#
+# Pendulum starts unmoving, straight up, theta = 0.
+# (see Pendulum parent class for coordinate definitions). \n
+#
+# (See 1Link implementation by Lagoudakis & Parr, 2003)
+#####################################################################
+
+class InfCartInvertedBalance(Pendulum):
+    """
+    Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
+    
+    .. warning::
+        
+        L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
+        saturates them frequently when falling; more realistic to use 2*pi.
+        
+    
+    """
+    ## Newtons, N - Torque values available as actions
+    AVAIL_FORCE         = array([-50,0,50])
+    ## kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = 2.0
+    ## kilograms, kg - Mass of cart
+    MASS_CART           = 8.0
+    ## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = 1.0
+    ## m/s^2 - gravitational constant
+    ACCEL_G             = 9.8
+    ## Time between steps
+    dt                  = 0.1
+    ## Newtons, N - Maximum noise possible, uniformly distributed
+    force_noise_max     = 10
+
+    ## Reward received when the pendulum falls below the horizontal
+    FELL_REWARD         = -1
+    ## Limit on theta (Note that this may affect your representation's discretization)
+    ANGLE_LIMITS        = [-pi/2.0, pi/2.0]
+    ## Limits on pendulum rate, per 1Link of Lagoudakis & Parr
+    ANGULAR_RATE_LIMITS = [-2., 2.] # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
+                                # saturates them frequently when falling; more realistic to use 2*pi.
+    ## Max number of steps per trajectory (default 3000)
+    episodeCap          = None
+    ## Based on Parr 2003 and ICML 11 (RL-Matlab)
+    gamma               = .95
+
+    # For Visual Stuff
+    MAX_RETURN = 0
+    MIN_RETURN = -1
+
+    def __init__(self, episodeCap = 3000, logger = None):
+        self.episodeCap = episodeCap
+        super(Pendulum_InvertedBalance,self).__init__(logger)
+
+    def s0(self):
+        # Returns the initial state, pendulum vertical
+        # Initial state is uniformly random between [-.2,.2] for both dimensions
+        self.state = (self.random_state.rand(2)*2-1)*0.2
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
+
+    def _getReward(self, a):
+        # Return the reward earned for this state-action pair
+        # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
+        return self.FELL_REWARD if self.isTerminal() else 0
+
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
+        return not (-pi/2.0 < s[StateIndex.THETA] < pi/2.0) # per L & P 2003
 
 
 
-        #-------------------------------------------------------------------------#
-        # There are several ways of integrating the nonlinear dynamics equations. #
-        # For consistency with prior results, we include the custom integration   #
-        # method devloped by Lagoudakis & Parr (2003) for their Pendulum Inverted #
-        # Balance task, despite its slightly poorer performance in execution time #
-        # and accuracy of result.                                                 #
-        # For our own experiments we use rk4 from mlab.                           #
-        #                                                                         #
-        # Integration method         Sample runtime  Error with scipy.integrate   #
-        #                                              (most accurate method)     #
-        #  rk4 (mlab)                  3min 15sec            < 0.01%              #
-        #  pendulum_ode45 (L&P '03)    7min 15sec            ~ 2.00%              #
-        #  integrate.odeint (scipy)    9min 30sec            -------              #
-        #                                                                         #
-        # Use of any of these methods is supported by selectively commenting      #
-        # sections below.                                                         #
-        #-------------------------------------------------------------------------#
+#####################################################################
+# \author Robert H. Klein, Alborz Geramifard at MIT, Nov. 30 2012
+#####################################################################
+# ---OBJECTIVE--- \n
+# Reward is 1 within the goal region, 0 elsewhere. \n
+# There is no terminal condition aside from episodeCap. \n
+#
+# Pendulum starts straight down, theta = pi
+# (see Pendulum parent class for coordinate definitions). \n
+#
+# The objective is to get and then keep the pendulum in the goal
+# region for as long as possible, with +1 reward for
+# each step in which this condition is met; the expected
+# optimum then is to swing the pendulum vertically and
+# hold it there, collapsing the problem to Pendulum_InvertedBalance
+# but with much tighter bounds on the goal region. \n
+#
+# (See 1Link implementation by Lagoudakis & Parr, 2003)
+#
+#####################################################################
+
+class Pendulum_SwingUp(Pendulum):
+
+    # Domain constants [temporary, per Lagoudakis & Parr 2003, for InvertedBalance Task]
+    ## Newtons, N - Torque values available as actions
+    AVAIL_FORCE         = array([-50,0,50])
+    ## kilograms, kg - Mass of the pendulum arm
+    MASS_PEND           = 2.0
+    ## kilograms, kg - Mass of cart
+    MASS_CART           = 8.0
+    ## meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    LENGTH              = 1.0
+    ## m/s^2 - gravitational constant
+    ACCEL_G             = 9.8
+    ## Time between steps
+    dt                  = 0.1
+    ## Newtons, N - Maximum noise possible, uniformly distributed
+    force_noise_max     = 10
+
+    ## Reward received on each step the pendulum is in the goal region
+    GOAL_REWARD         = 1
+    ## Goal region for reward [temporary values]
+    GOAL_LIMITS         = [-pi/6, pi/6]
+    ## Limit on theta
+    ANGLE_LIMITS        = [-pi, pi]
+    ## Limits on pendulum rate [temporary values, copied from InvertedBalance task of RL Community]
+    ANGULAR_RATE_LIMITS = [-3*pi, 3*pi]
+    ## Max number of steps per trajectory
+    episodeCap          = 300
+    # For Visual Stuff
+    MAX_RETURN = episodeCap*GOAL_REWARD
+    MIN_RETURN = 0
+    gamma               = .9   #
+
+    def __init__(self, logger = None):
+        self.statespace_limits  = array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
+        super(Pendulum_SwingUp,self).__init__(logger)
+
+    def s0(self):
+        #Returns the initial state: pendulum straight up and unmoving.
+        self.state = array([pi,0])
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
+
+    def _getReward(self, a):
+        s  = self.state
+        """Return the reward earned for this state-action pair.
+        On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6"""
+        return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
+
+    def isTerminal(self, s=None):
+        return False

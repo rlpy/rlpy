@@ -16,16 +16,17 @@ class FiniteTrackCartPole(CartPoleBase):
     """
     Finite Track Cart Pole.\n
     Inherits dynamics from ``CartPoleBase`` and utilizes four states - angular
-    quantities of pendulum (position and velocity) and lateral quantities of cart.
+    quantities of pendulum (position and velocity) and lateral quantities of
+    the cart.
     Not only does this increase the state space relative to
-    ``InfTrackCartPole``, but the cart must remain in a finite interval
-    corresponding to a physical rail, which affects valid solutions.
+    \c %InfTrackCartPole, but the cart must remain in a finite interval
+    corresponding to a physical rail, which affects valid solutions/policies.
     
     
     | **State**
     theta    = Angular position of pendulum
     (relative to straight up at 0 rad), positive clockwise. \n
-    thetaDot = Angular rate of pendulum. positive clockwise. \n
+    thetaDot = Angular rate of pendulum. \n
     x        = Linear position of the cart on its track (positive right). \n
     xDot     = Linear velocity of the cart on its track.
 
@@ -41,57 +42,55 @@ class FiniteTrackCartPole(CartPoleBase):
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.
     
-        .. note::
-            Note: for full domain description, see:
-            Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy control
-            of nonlinear systems; Stability and design issues.
-            IEEE Trans. on Fuzzy Systems, 4(1):14-23, 1996.
-        
-        .. note::
-            Note: See also `RL-Library CartPole <http://library.rl-community.org/wiki/CartPole>`_
-            Domain constants per RL Community / RL_Glue
-            `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
+    .. note::
+    
+        For full domain description, see: \n
+        Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy control
+        of nonlinear systems; Stability and design issues.
+        IEEE Trans. on Fuzzy Systems, 4(1):14-23, 1996.
     
     """
-    
+    def __init__(self, logger = None):
+        # Limits of each dimension of the state space.
+        # Each row corresponds to one dimension and has two elements [min, max]
+        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
+        self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
+        self.DimNames           = ['Theta', 'Thetadot', 'X', 'Xdot']
+        super(FiniteCartPoleBalance,self).__init__(logger)
 
-class CartPole_InvertedBalance(CartPole):
+class FiniteCartPoleBalance(FiniteTrackCartPole):
     """
-    *OBJECTIVE*
+    | **Goal**
     Reward 1 is received on each timestep spent within the goal region,
     zero elsewhere.
     This is also the terminal condition.
-
-    RL Community has the following bounds for failure:
-    theta: [-12, 12] degrees  -->  [-pi/15, pi/15]
-    x: [-2.4, 2.4] meters
+    
+    The bounds for failure match those used in the RL-Community (see Reference) \n
+    ``theta``: [-12, 12] degrees  -->  [-pi/15, pi/15]
+    ``x``: [-2.4, 2.4] meters
 
     Pendulum starts straight up, theta = 0, with the
     cart at x = 0.
-    (see CartPole parent class for coordinate definitions).
 
-    Note that the reduction in angle limits affects the resolution
-    of the discretization of the continuous space.
-
-    Note that if unbounded x is desired, set x (and/or xdot) limits to
-    be ``[float("-inf"), float("inf")]``
-
-    .. note::
-        The reward scheme is different from that in ``Pendulum_InvertedBalance``
-
-    (See CartPole implementation in the RL Community,
-    http://library.rl-community.org/wiki/CartPole)
+    | **Reference**
+        See `RL-Library CartPole <http://library.rl-community.org/wiki/CartPole>`_ \n
+        Domain constants per RL Community / RL-Library
+        `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
+    
     """
-    #: Limit on theta (Note that this may affect your representation's discretization)
+    #: Limit on theta (beyond which episode terminates)
     ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
-    #: Based on Parr 2003 and ICML 11 (RL-Matlab)
+    #: Based on Parr 2003 and ICML 11
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    #: m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+    #: m/s - Limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]
+    #: Discount factor
     gamma               = .999
 
     def __init__(self, logger = None):
-        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
-        self.state_space_dims = len(self.statespace_limits)
-        super(CartPole_InvertedBalance,self).__init__(logger)
+        super(FiniteCartPoleBalance,self).__init__(logger)
 
     def s0(self):
         # Returns the initial state, pendulum vertical
@@ -112,21 +111,31 @@ class CartPole_InvertedBalance(CartPole):
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 
 
-class CartPoleBalanceOriginal(CartPole):
+class FiniteCartPoleBalanceOriginal(FiniteTrackCartPole):
     """
-    Domain and constants per
-    `original definition and code <http://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c>`_,
-    see reference below.
-    
-    **Reference**\n
+    | **Reference**
     Sutton, Richard S., and Andrew G. Barto:
     Reinforcement learning: An introduction.
     Cambridge: MIT press, 1998.
+    
+    | See FiniteCartPoleBalance
+    
+    .. note::
+    
+        `original definition and code <http://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c>`_
+    
     """
     __author__ = "Christoph Dann"
 
+    #: Limit on pendulum angle (beyond which episode terminates)
     ANGLE_LIMITS        = [-np.pi/15.0, np.pi/15.0]
+    #: Limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    #: m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+    #: m/s - Limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]
+    #: Discount factor
     gamma               = .95
     AVAIL_FORCE         = np.array([-10, 10])
     int_type = "euler"
@@ -134,9 +143,7 @@ class CartPoleBalanceOriginal(CartPole):
 
     def __init__(self, logger=None, good_reward=0.):
         self.good_reward = good_reward
-        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
-        self.state_space_dims = len(self.statespace_limits)
-        super(CartPoleBalanceOriginal, self).__init__(logger)
+        super(FiniteCartPoleBalanceOriginal, self).__init__(logger)
 
     def s0(self):
         self.state = np.zeros(4)
@@ -152,27 +159,37 @@ class CartPoleBalanceOriginal(CartPole):
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 
 
-class CartPoleBalanceModern(CartPole):
+class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
     """
     A more realistic version of balancing with 3 actions (left, right, none)
-    and some uniform noise
+    and some uniform noise.\n
+    See ``FiniteCartPoleBalance``
+    
     """
     
     __author__ = "Christoph Dann"
-    
-    int_type = 'rk4'
+
+    #: Newtons, N - Force values available as actions (Note we add a no-force action)
     AVAIL_FORCE = np.array([-10., 0., 10.])
+    #: Newtons, N - Maximum noise possible, uniformly distributed
     force_noise_max = 1.
+    #: Discount factor
     gamma = .95
+    #: integration type, can be 'rk4', 'odeint' or 'euler'. Defaults to rk4.
     int_type = "euler"
+    #: number of steps for Euler integration
     num_euler_steps = 1
+    #: Limit on pendulum angle (beyond which episode terminates)
     ANGLE_LIMITS        = [-np.pi/15.0, np.pi/15.0]
+    #: Limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    #: m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+    #: m/s - Limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]
 
     def __init__(self, logger=None):
-        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
-        self.state_space_dims = len(self.statespace_limits)
-        super(CartPoleBalanceModern, self).__init__(logger)
+        super(FiniteCartPoleBalanceModern, self).__init__(logger)
 
     def s0(self):
         self.state = np.array([self.random_state.randn()*0.01, 0., 0., 0.])
@@ -188,15 +205,13 @@ class CartPoleBalanceModern(CartPole):
                 not (-2.4    < s[StateIndex.X]     < 2.4))
 
 
-class CartPole_SwingUp(CartPole):
+class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     """
-    *OBJECTIVE*
-    Reward is 1 within the goal region, 0 elsewhere.
-    The episode terminates if x leaves its bounds, [-2.4, 2.4]
+    | **Goal**
+    Reward is 1 within the goal region, 0 elsewhere. \n
 
     Pendulum starts straight down, theta = pi, with the
     cart at x = 0.
-    (see CartPole parent class for coordinate definitions).
 
     The objective is to get and then keep the pendulum in the goal
     region for as long as possible, with +1 reward for
@@ -204,14 +219,20 @@ class CartPole_SwingUp(CartPole):
     optimum then is to swing the pendulum vertically and
     hold it there, collapsing the problem to Pendulum_InvertedBalance
     but with much tighter bounds on the goal region.
-
-    (See `CartPole <http://library.rl-community.org/wiki/CartPole>`_
-    implementation in the RL Community)
+    
+    See parent class ``FiniteTrackCartPole`` for more information.
 
     """
-    ANGLE_LIMITS        = [-pi, pi]     #: Limit on theta (used for discretization)
+    #: Limit on pendulum angle (beyond which episode terminates)
+    ANGLE_LIMITS        = [-pi, pi]
+    #: Limits on pendulum rate
+    ANGULAR_RATE_LIMITS = [-2.0, 2.0]
+    #: m - Limits on cart position [Per RL Community CartPole]
+    POSITON_LIMITS      = [-2.4, 2.4]
+    #: m/s - Limits on cart velocity [per RL Community CartPole]
+    VELOCITY_LIMITS     = [-6.0, 6.0]
+
     def __init__(self, logger = None):
-        self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         super(CartPole_SwingUp,self).__init__(logger)
 
     def s0(self):
@@ -230,15 +251,19 @@ class CartPole_SwingUp(CartPole):
         return not (-2.4 < s[StateIndex.X] < 2.4)
 
 
-class CartPole_SwingUpFriction(CartPole_SwingUp):
+class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     """
-    Modifies ``CartPole`` dynamics to include friction.
+    Modifies ``CartPole`` dynamics to include friction. \n
+    This domain is a child of \c %FiniteCartPoleSwingUp.
     
     """
+    # TODO - needs reference
+    
+    
+    #: Limit on pendulum angle (beyond which episode terminates)
+    ANGLE_LIMITS        = [-pi, pi]
     #: Limits on pendulum rate [per RL Community CartPole]
     ANGULAR_RATE_LIMITS = [-3.0, 3.0]
-    #: Reward received on each step the pendulum is in the goal region
-    GOAL_REWARD         = 1
     #: m - Limits on cart position [Per RL Community CartPole]
     POSITON_LIMITS      = [-2.4, 2.4]
     #: m/s - Limits on cart velocity [per RL Community CartPole]
@@ -247,16 +272,24 @@ class CartPole_SwingUpFriction(CartPole_SwingUp):
     MASS_CART = 0.5 #: kilograms, kg - Mass of cart
     MASS_PEND = 0.5 #: kilograms, kg - Mass of the pendulum arm
     LENGTH = 0.6 #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
+    # a friction coefficient 
     A = .5
-    DT = 0.1 #: seconds, s - Time between steps
+    #: seconds, s - Time between steps
+    dt                  = 0.10
+    #: Max number of steps per trajectory
     episodeCap          = 400
+    # Discount factor
     gamma = 0.95
-    B = 0.1 # Friction between cart and ground
+    # Friction coefficient between cart and ground
+    B = 0.1
+    
+    def __init__(self):
+        super(FiniteCartPoleSwingUpFriction,self).__init__(logger)
 
     def _getReward(self, a, s=None):
         if s is None:
             s = self.state
-        if not (-2.4 < s[StateIndex.X] < 2.4):
+        if not (POSITON_LIMITS[0] < s[StateIndex.X] < POSITON_LIMITS[1]):
             return -30
         pen_pos = np.array([s[StateIndex.X] + self.LENGTH * np.sin(s[StateIndex.THETA]),
                          self.LENGTH * np.cos(s[StateIndex.THETA])])
