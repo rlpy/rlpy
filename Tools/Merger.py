@@ -15,6 +15,16 @@ def thousands(x, pos):
 
 formatter = FuncFormatter(thousands)
 
+def readMatrixFromFile(filename):
+    # Reads a matrix in a text file specified by filename into a numpy matrix and returns it
+        x = loadtxt(filename)
+        if len(x.shape) == 1:
+            #Special Case where only one column is in the file
+            x = x.reshape((-1,1))
+        return x
+
+
+
 class Merger(object):
     CONTROL_AXES    = ['Learning Steps','Return','Time(s)','Features','Steps','Terminal','Episodes','Discounted Return']
     PE_AXES         = ['Iterations','Features','Error','Time(s)']
