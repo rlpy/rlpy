@@ -122,60 +122,6 @@ class Pendulum(Domain):
         if len(self._gamma) == 2: self._gamma = (self._gamma).conj().transpose()
         super(Pendulum,self).__init__(logger)
 
-    def showDomain(self, a=0):
-        s = self.state
-        # Plot the pendulum and its angle, along with an arc-arrow indicating the
-        # direction of torque applied (not including noise!)
-        if self.domain_fig == None: # Need to initialize the figure
-            self.domain_fig = pl.subplot(1,3,1)
-            self.pendulumArm = lines.Line2D([],[], linewidth = 3, color='black')
-            self.pendulumBob = mpatches.Circle((0,0), radius = self.circle_radius)
-
-            self.domain_fig.add_patch(self.pendulumBob)
-            self.domain_fig.add_line(self.pendulumArm)
-            # Allow room for pendulum to swing without getting cut off on graph
-            viewableDistance = self.LENGTH + self.circle_radius + 0.5
-            self.domain_fig.set_xlim(-viewableDistance, viewableDistance)
-            self.domain_fig.set_ylim(-viewableDistance, viewableDistance)
-            pl.axis('off')
-            self.domain_fig.set_aspect('equal')
-            pl.show()
-
-        forceAction = self.AVAIL_FORCE[a]
-        theta = s[StateIndex.THETA] # Using continuous state
-
-        # recall we define 0deg  up, 90 deg right
-        pendulumBobX = self.PENDULUM_PIVOT_X + self.LENGTH * sin(theta)
-        pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * cos(theta)
-
-        # update pendulum arm on figure
-        self.pendulumArm.set_data([self.PENDULUM_PIVOT_X, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])
-
-        #Fix the arrows because they are forces not torques
-        if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
-        if self.pendulumBob is not None:
-            self.pendulumBob.remove()
-            self.pendulumBob = None
-        if self.actionArrow is not None:
-            self.actionArrow.remove()
-            self.actionArrow = None
-
-        if forceAction == 0:
-            pass # no torque
-        else: # cw or ccw torque
-            SHIFT = .5
-            if (
-                (forceAction > 0 and (-pi/2. < theta < pi/2.)) or
-                (forceAction < 0 and not (-pi/2. < theta < pi/2.))
-                ): # counterclockwise torque
-                self.actionArrow = fromAtoB(SHIFT/2.0,.5*SHIFT,-SHIFT/2.0,-.5*SHIFT,'k',connectionstyle="arc3,rad=+1.2", ax =self.domain_fig)
-            else:# clockwise torque
-                self.actionArrow = fromAtoB(-SHIFT/2.0,.5*SHIFT,+SHIFT/2.0,-.5*SHIFT,'r',connectionstyle="arc3,rad=-1.2", ax =self.domain_fig)
-
-        self.pendulumBob = mpatches.Circle((pendulumBobX,pendulumBobY), radius = self.circle_radius, color = 'blue')
-        self.domain_fig.add_patch(self.pendulumBob)
-        pl.draw()
-
     def s0(self):
         # Defined by children
         raise NotImplementedError
