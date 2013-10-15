@@ -10,6 +10,7 @@ from Policies import eGreedy
 from Experiments import Experiment
 import numpy as np
 from hyperopt import hp
+from Representations import FastKiFDD
 
 param_space = {'kernel_resolution': hp.loguniform("kernel_resolution", np.log(3), np.log(100)),
                'discover_threshold': hp.loguniform("discover_threshold", np.log(1e-2), np.log(1e1)),
@@ -34,7 +35,6 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
 
     domain = Pendulum_InvertedBalance(logger=logger)
     kernel_width = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) / kernel_resolution
-    from Representations.KernelizediFDD import FastKiFDD
     representation = FastKiFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
                                     kernel_args=[kernel_width],

@@ -99,7 +99,6 @@ batch = {}
 batch["gaussian_kernel"] = all_gaussian_kernel
 batch["linf_triangle_kernel"] = all_linf_triangle_kernel
 
-#batch["linf_triangle_kernel"] = all_linf_triangle_kernel
 
 def discretization_kernel(np.ndarray[np.double_t, ndim=1] x,
                           np.ndarray[np.double_t, ndim=1] y,

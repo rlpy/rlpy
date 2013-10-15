@@ -5,9 +5,13 @@ samples)
 """
 from Representation import Representation
 import numpy as np
-from kernels import batch
 from Tools.GeneralTools import addNewElementForAllActions
 import matplotlib.pyplot as plt
+try:
+    from kernels import batch
+except ImportError:
+    from slow_kernels import batch
+    print "C-Extensions for kernels not available, except slow runtime"
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
