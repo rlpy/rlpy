@@ -14,30 +14,37 @@ pi = np.pi
 
 class CartPole(Domain):
     """
-    State: [theta, thetaDot, x, xDot].
-    Actions: [-50, 0, 50]
-
+    | **State**
     theta    = Angular position of pendulum
-    (relative to straight up at 0 rad),and positive clockwise. \n
-    thetaDot = Angular rate of pendulum \n
+    (relative to straight up at 0 rad), positive clockwise. \n
+    thetaDot = Angular rate of pendulum. positive clockwise. \n
     x        = Linear position of the cart on its track (positive right). \n
     xDot     = Linear velocity of the cart on its track.
 
+    | **Actions**
     Actions take the form of force applied to cart; \n
     [-50, 0, 50] N force are the default available actions. \n
     Positive force acts to the right on the cart.
 
     Uniformly distributed noise is added with magnitude 10 N.
 
-    Per Lagoudakis and Parr 2003, derived from Wang 1996.
-    (See "1Link" implementation by L & P.)
-    Dynamics in x, xdot derived from CartPole implementation
-    of rl-community.org, from Sutton and Barto's Pole-balancing
-    task in <Reinforcement Learning: An Introduction> (1998)
-    (See CartPole implementation in the RL Community,
-    http://library.rl-community.org/wiki/CartPole)
-    Domain constants per RL Community / RL_Glue CartPole implementation.
-    (http://code.google.com/p/rl-library/wiki/CartpoleJava)
+    | **Reference**
+    For details, see:
+        Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
+        Least-squares policy iteration.  Journal of Machine Learning Research
+        (2003) Issue 4.
+    
+        .. note::
+            Note: for full domain description, see:
+            Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy control
+            of nonlinear systems; Stability and design issues.
+            IEEE Trans. on Fuzzy Systems, 4(1):14-23, 1996.
+        
+        .. note::
+            Note: See also `RL-Library CartPole <http://library.rl-community.org/wiki/CartPole>`_
+            Domain constants per RL Community / RL_Glue
+            `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
+    
     """
     #: Newtons, N - Torque values available as actions [-50,0,50 per DPF]
     AVAIL_FORCE         = np.array([-10, 10])
@@ -49,7 +56,7 @@ class CartPole(Domain):
     LENGTH              = 1.0
     #: m/s^2 - gravitational constant
     ACCEL_G             = 9.8
-    #: Time between steps
+    #: seconds, s - Time between steps
     dt                  = 0.02
     #: Newtons, N - Maximum noise possible, uniformly distributed
     force_noise_max     = 0.
@@ -80,38 +87,6 @@ class CartPole(Domain):
     MOMENT_ARM          = LENGTH / 2.
     #: 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
     _ALPHA_MASS         = 1.0 / (MASS_CART + MASS_PEND)
-
-
-    # Plotting variables
-    pendulumArm = None
-    cartBox = None
-    actionArrow = None
-    ACTION_ARROW_LENGTH = 0.4
-    domainFig = None
-    circle_radius = 0.05
-    PENDULUM_PIVOT_Y = 0  # Y position of pendulum pivot
-    RECT_WIDTH = 0.5
-    RECT_HEIGHT = .4
-    BLOB_WIDTH = RECT_HEIGHT / 2.0
-    PEND_WIDTH = 2
-    GROUND_WIDTH = 2
-    GROUND_HEIGHT = 1
-
-    #Visual Stuff
-    valueFunction_fig       = None
-    policy_fig              = None
-    MIN_RETURN              = None  # Minimum return possible, used for graphical normalization, computed in init
-    MAX_RETURN              = None  # Minimum return possible, used for graphical normalization, computed in init
-    circle_radius           = 0.05
-    ARM_LENGTH              = 1.0
-    PENDULUM_PIVOT_X        = 0  # X position is also fixed in this visualization
-    PENDULUM_PIVOT_Y        = 0  # Y position of pendulum pivot
-    pendulumArm             = None
-    pendulumBob             = None
-    actionArrow             = None
-    domain_fig              = None
-    Theta_discretization    = 20  # Used for visualizing the policy and the value function
-    ThetaDot_discretization = 20  # Used for visualizing the policy and the value function
 
     def __init__(self, logger=None):
         # Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
@@ -310,12 +285,25 @@ class CartPole(Domain):
 
     def showLearning(self, representation):
         """
-        visualizes the policy and value function for the the cart being at the
-        center with 0 velocity
+        Shows the policy and value function of the cart (with resolution
+        dependent on the representation.
+        
+        :param representation: learned value function representation to display
+            (optimal policy computed w.r.t. this representation)
         """
+        # multiplies each dimension, used to make displayed grid appear finer
         granularity = 5.
-        pi = np.zeros((self.Theta_discretization*granularity, self.ThetaDot_discretization*granularity),'uint8')
-        V = np.zeros((self.Theta_discretization*granularity,self.ThetaDot_discretization*granularity))
+        
+        
+        # TODO: currently we only allow for equal discretization in all
+        # dimensions.  In future, must modify below code to handle non-uniform
+        # discretization.
+        thetaDiscr = representation.discretization
+        thetaDotDiscr = representation.discretization
+        
+        
+        pi = np.zeros((thetaDiscr*granularity, self.thetaDotDiscr*granularity),'uint8')
+        V = np.zeros((thetaDiscr*granularity,self.thetaDotDiscr*granularity))
 
         if self.valueFunction_fig is None:
             self.valueFunction_fig   = pl.figure("Value Function")
@@ -338,10 +326,10 @@ class CartPole(Domain):
             f.subplots_adjust(left=0,wspace=.5)
 
         # Create the center of the grid cells both in theta and thetadot_dimension
-        theta_binWidth      = (self.ANGLE_LIMITS[1]-self.ANGLE_LIMITS[0])/(self.Theta_discretization*granularity)
-        thetas              = np.linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, self.Theta_discretization*granularity)
-        theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(self.ThetaDot_discretization*granularity)
-        theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.ThetaDot_discretization*granularity)
+        theta_binWidth      = (self.ANGLE_LIMITS[1]-self.ANGLE_LIMITS[0])/(thetaDiscr*granularity)
+        thetas              = np.linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, thetaDiscr*granularity)
+        theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(self.thetaDotDiscr*granularity)
+        theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.thetaDotDiscr*granularity)
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = np.array([theta,thetaDot, 0, 0])
@@ -391,10 +379,10 @@ class CartPole_InvertedBalance(CartPole):
     of the discretization of the continuous space.
 
     Note that if unbounded x is desired, set x (and/or xdot) limits to
-    be [float("-inf"), float("inf")]
+    be `[float("-inf"), float("inf")]`
 
     .. note::
-        The reward scheme is different from that in Pendulum_InvertedBalance
+        The reward scheme is different from that in `Pendulum_InvertedBalance`
 
     (See CartPole implementation in the RL Community,
     http://library.rl-community.org/wiki/CartPole)
@@ -431,8 +419,14 @@ class CartPole_InvertedBalance(CartPole):
 
 class CartPoleBalanceOriginal(CartPole):
     """
-    taken from
-    http://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c
+    Domain and constants per
+    `original definition and code <http://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c>`_,
+    see reference below.
+    
+    **Reference**\n
+    Sutton, Richard S., and Andrew G. Barto:
+    Reinforcement learning: An introduction.
+    Cambridge: MIT press, 1998.
     """
     __author__ = "Christoph Dann"
 
@@ -465,8 +459,12 @@ class CartPoleBalanceOriginal(CartPole):
 
 class CartPoleBalanceModern(CartPole):
     """
-    more realistic version of balancing with 3 actions and some uinform noise
+    A more realistic version of balancing with 3 actions (left, right, none)
+    and some uniform noise
     """
+    
+    __author__ = "Christoph Dann"
+    
     int_type = 'rk4'
     AVAIL_FORCE = np.array([-10., 0., 10.])
     force_noise_max = 1.
@@ -512,8 +510,8 @@ class CartPole_SwingUp(CartPole):
     hold it there, collapsing the problem to Pendulum_InvertedBalance
     but with much tighter bounds on the goal region.
 
-    (See CartPole implementation in the RL Community,
-    http://library.rl-community.org/wiki/CartPole)
+    (See `CartPole <http://library.rl-community.org/wiki/CartPole>`_
+    implementation in the RL Community)
 
     """
     ANGLE_LIMITS        = [-pi, pi]     #: Limit on theta (used for discretization)
@@ -537,7 +535,11 @@ class CartPole_SwingUp(CartPole):
         return not (-2.4 < s[StateIndex.X] < 2.4)
 
 
-class CartPole_SwingUpReal(CartPole_SwingUp):
+class CartPole_SwingUpFriction(CartPole_SwingUp):
+    """
+    Modifies ``CartPole`` dynamics to include friction.
+    
+    """
     #: Limits on pendulum rate [per RL Community CartPole]
     ANGULAR_RATE_LIMITS = [-3.0, 3.0]
     #: Reward received on each step the pendulum is in the goal region
@@ -547,11 +549,11 @@ class CartPole_SwingUpReal(CartPole_SwingUp):
     #: m/s - Limits on cart velocity [per RL Community CartPole]
     VELOCITY_LIMITS     = [-3.0, 3.0]
 
-    MASS_CART = 0.5
-    MASS_PEND = 0.5
-    LENGTH = 0.6
+    MASS_CART = 0.5 #: kilograms, kg - Mass of cart
+    MASS_PEND = 0.5 #: kilograms, kg - Mass of the pendulum arm
+    LENGTH = 0.6 #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
     A = .5
-    DT = 0.1
+    DT = 0.1 #: seconds, s - Time between steps
     episodeCap          = 400
     gamma = 0.95
     B = 0.1 # Friction between cart and ground
@@ -590,7 +592,7 @@ class CartPole_SwingUpReal(CartPole_SwingUp):
         #cdef double g, c3, s3
         s3 = np.sin(s[3])
         c3 = np.cos(s[3])
-        g = 9.81
+        g = self.ACCEL_G
         ds = np.zeros(4)
         ds[0] = s[1]
         ds[1] = (2 * m * l * s[2] ** 2 * s3 + 3 * m * g * s3 * c3 + 4 * a - 4 * b * s[1])\
