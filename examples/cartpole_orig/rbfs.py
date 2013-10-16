@@ -2,7 +2,7 @@
 Cart-pole balancing with independent discretization
 """
 from Tools import Logger
-from Domains.CartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
+from Domains.FiniteTrackCartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
 from Agents import SARSA, Q_LEARNING
 from Representations import *
 from Policies import eGreedy
