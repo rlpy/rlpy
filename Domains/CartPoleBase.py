@@ -95,15 +95,16 @@ class CartPoleBase(Domain):
             # Optionally halt execution here.
             pass
             
-
+        self._assignGroundVerts()
+        super(CartPoleBase, self).__init__(logger)
+        
         if self.logger:
             self.logger.log("Pendulum length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("Timestep length dt:\t\t\t%0.2f(s)" % self.dt)
-        self._assignGroundVerts()
-        super(CartPoleBase, self).__init__(logger)
+            self.logger.log("Number of state dimensions: %d" % self.state_space_dims)
     
     def _isParamsValid(self):
-        if not ((2*pi / dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / dt > -self.ANGULAR_RATE_LIMITS[0])):
+        if not ((2*pi / self.dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / self.dt > -self.ANGULAR_RATE_LIMITS[0])):
             errStr = """
             WARNING:
             If the bound on angular velocity is large compared with
@@ -166,16 +167,25 @@ class CartPoleBase(Domain):
         """
         return np.arange(self.actions_num)
 
-    def step(self, a):
+    def step(self):
+        errMsg = "Implemented in child classes which call _stepFourState()"
+        raise NotImplementedError(errMsg)
+
+    def _stepFourState(self, s, a):
+        """
+        Performs a single step of the CartPoleDomain without modifying
+        ``self.state`` - this is left to the ``step()`` function in child
+        classes.        
+        """
 
         forceAction = self.AVAIL_FORCE[a]
 
         # Add noise to the force action
         if self.force_noise_max > 0:
             forceAction += self.random_state.uniform(-self.force_noise_max, self.force_noise_max)
-
+        
         # Now, augment the state with our force action so it can be passed to _dsdt
-        s_augmented = np.append(self.state, forceAction)
+        s_augmented = np.append(s, forceAction)
         
         
         #-------------------------------------------------------------------------#
@@ -215,7 +225,7 @@ class CartPoleBase(Domain):
         ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
-        self.state = ns.copy()
+        
         terminal                    = self.isTerminal()
         reward                      = self._getReward(a)
         return reward, ns, terminal, self.possibleActions()
@@ -223,7 +233,7 @@ class CartPoleBase(Domain):
     def _dsdt(self, s_augmented, t):
         """
         This function is needed for ode integration.  It calculates and returns the
-        derivatives at a given state, s.  The last element of s_augmented is the
+        derivatives at a given state, s, of length 4.  The last element of s_augmented is the
         force action taken, required to compute these derivatives.
         
         The equation used::
@@ -242,6 +252,13 @@ class CartPoleBase(Domain):
             Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
             
             xDotDot = w - (alpha)ml * thetaDotDot * cos(theta)
+        
+        .. note::
+        
+            while the presence of the cart affects dynamics, the particular
+            values of ``x`` and ``xdot`` do not affect the solution.
+            In other words, the reference frame corresponding to any choice
+            of ``x`` and ``xdot`` remains inertial.
         
         """
         g = self.ACCEL_G
@@ -338,33 +355,51 @@ class CartPoleBase(Domain):
                 )
 
         pl.draw()
-    
-    
-    def showLearning(self, representation):
+        
+    def _plot_policy(self, piMat):
         """
-        Shows the policy and value function of the cart (with resolution
-        dependent on the representation.
-        
-        :param representation: learned value function representation to display
-            (optimal policy computed w.r.t. this representation)
-        
-        .. note::
-            this function only shows the ``theta`` and ``thetaDot`` dimensions;
-            for the 4-state cartpole systems, ``x`` and ``xdot`` are assumed 0.
+        :returns: handle to the figure
         """
-        
-        if statelength4:# state has length 4:
-            errStr = "WARNING: showLearning() called with 4-state "
-            "cartpole; no plot shown."
+        if self.policy_fig is None:
+            self.policy_fig = pl.figure("Policy")
+            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
+            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            pl.title('Policy')
             
-            if self.logger:
-                self.logger.log(errStr)
-            else: print errStr
+        self.policy_fig.set_data(piMat)
+        pl.draw()
             
-            return
-        # else we continue and display the plot
-        
-        # multiplies each dimension, used to make displayed grid appear finer
+    def _plot_valfun(self, VMat):
+        """
+        :returns: handle to the figure
+        """
+        if self.valueFunction_fig is None:
+            self.valueFunction_fig   = pl.figure("Value Function")
+            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
+            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            pl.title('Value Function')
+            
+        norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
+        self.valueFunction_fig.set_data(VMat)
+        self.valueFunction_fig.set_norm(norm)
+        pl.draw()
+    
+    def _setup_learning(self, representation):
+        """
+        Initializes the arrays of ``theta`` and ``thetaDot`` values we will
+        use to sample the value function and compute the policy.
+        :return: ``thetas``, a discretized array of values in the theta dimension
+        :return: ``theta_dots``, a discretized array of values in the thetaDot dimension. 
+        """
+        # multiplies each dimension, used to make displayed grid appear finer:
+        # plotted gridcell values computed through interpolation nearby according
+        # to representation.Qs(s)
         granularity = 5.
         
         
@@ -378,31 +413,38 @@ class CartPoleBase(Domain):
         pi = np.zeros((thetaDiscr*granularity, self.thetaDotDiscr*granularity),'uint8')
         V = np.zeros((thetaDiscr*granularity,self.thetaDotDiscr*granularity))
 
-        if self.valueFunction_fig is None:
-            self.valueFunction_fig   = pl.figure("Value Function")
-            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
-            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-            pl.title('Value Function')
-
-            self.policy_fig = pl.figure("Policy")
-            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
-            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-            pl.title('Policy')
-            pl.show()
-            f = pl.gcf()
-            f.subplots_adjust(left=0,wspace=.5)
-
         # Create the center of the grid cells both in theta and thetadot_dimension
         theta_binWidth      = (self.ANGLE_LIMITS[1]-self.ANGLE_LIMITS[0])/(thetaDiscr*granularity)
         thetas              = np.linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, thetaDiscr*granularity)
         theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(self.thetaDotDiscr*granularity)
         theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.thetaDotDiscr*granularity)
+    
+        return (thetas, theta_dots)
+    
+    def showLearning(self, representation):
+        """
+        Shows the policy and value function of the cart (with resolution
+        dependent on the representation.
+        
+        :param representation: learned value function representation to display
+            (optimal policy computed w.r.t. this representation)
+        
+        
+        """
+        
+        xSlice = 0.
+        xDotSlice=0.
+        
+        if self.state_space_dims > 2:# state has length 4:
+            warnStr = "WARNING: showLearning() called with 4-state "
+            "cartpole; only showing slice at (x, xDot) = (%.2f, %.2f)" % (xSlice, xDotSlice)
+            if self.logger:
+                self.logger.log(errStr)
+            else: print errStr
+            
+        # else we continue and display the plot
+        
+        (thetas, theta_dots) = self._setup_learning(representation)
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = np.array([theta,thetaDot, 0, 0])
@@ -415,14 +457,14 @@ class CartPoleBase(Domain):
                 # Assign V to be the value of the Q-function under optimal action
                 V[row,col]  = max(Qs)
 
-        norm = colors.Normalize(vmin=V.min(), vmax=V.max())
-        self.valueFunction_fig.set_data(V)
-        self.valueFunction_fig.set_norm(norm)
-        self.policy_fig.set_data(pi)
-        pl.figure("Policy")
-        pl.draw()
-        pl.figure("Value Function")
-        pl.draw()
+        self._plot_policy(pi)
+        self._plot_valfun(V)
+        
+        if self.policy_fig is None or self.valueFunction_fig is None:
+            pl.show()
+            f = pl.gcf()
+            f.subplots_adjust(left=0,wspace=.5)
+        
         
     def euler_int(self, df, x0, times):
         """

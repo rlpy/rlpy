@@ -1,7 +1,7 @@
 """Cart with a pole domains"""
 
 from Domain import Domain
-from CartPoleBase import CartPoleBase
+from CartPoleBase import CartPoleBase, StateIndex
 import numpy as np
 import scipy.integrate
 from Tools import pl, mpatches, mpath, fromAtoB, lines, rk4, wrap, bound, colors
@@ -93,7 +93,46 @@ class FiniteTrackCartPole(CartPoleBase):
         self.statespace_limits  = np.array([self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS, self.POSITON_LIMITS, self.VELOCITY_LIMITS])
         self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
         self.DimNames           = ['Theta', 'Thetadot', 'X', 'Xdot']
-        super(FiniteCartPoleBalance,self).__init__(logger)
+        super(FiniteTrackCartPole,self).__init__(logger)
+    
+    def step(self,a):
+        s = self.state
+        reward, ns, terminal, possibleActions = super(FiniteTrackCartPole, self)._stepFourState(s,a)
+        self.state = ns.copy()
+        return reward, ns, terminal, possibleActions
+    
+    def showLearning(self, representation):
+        """
+        
+        ``xSlice`` and ``xDotSlice`` - the value of ``x`` and ``xDot``
+        respectively, associated with the plotted value function and policy
+        (which are each 2-D grids across ``theta`` and ``thetaDot``).
+        
+        """
+        xSlice = 0.  # value of x assumed when plotting V and pi
+        xDotSlice=0. # value of xDot assumed when plotting V and pi
+        
+        (thetas, theta_dots) = self._setup_learning(representation)
+        for row, thetaDot in enumerate(theta_dots):
+            for col, theta in enumerate(thetas):
+                s           = np.array([theta,thetaDot, xSlice, xDotSlice])
+                # Array of Q-function evaluated at all possible actions at state s
+                Qs       = representation.Qs(s, False)
+                # Array of all possible actions at state s
+                As       = self.possibleActions(s=s)
+                # Assign pi to be optimal action (which maximizes Q-function)
+                pi[row,col] = As[np.argmax(Qs)]
+                # Assign V to be the value of the Q-function under optimal action
+                V[row,col]  = max(Qs)
+
+        self._plot_policy(pi)
+        self._plot_valfun(V)
+        
+        if self.policy_fig is None or self.valueFunction_fig is None:
+            pl.show()
+            f = pl.gcf()
+            f.subplots_adjust(left=0,wspace=.5)
+    
 
 class FiniteCartPoleBalance(FiniteTrackCartPole):
     """

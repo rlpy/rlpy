@@ -2,7 +2,7 @@
 
 from Tools import *
 from Domain import *
-from CartPoleBase import CartPoleBase
+from CartPoleBase import CartPoleBase, StateIndex
 
 from scipy import integrate # For integrate.odeint (accurate, slow)
 
@@ -105,6 +105,43 @@ class InfTrackCartPole(CartPoleBase):
     def s0(self):
         # Defined by children
         raise NotImplementedError
+
+    def step(self,a):
+        """
+        Append arbitrary lateral position and velocity of cart: ``[0,0]``
+        and perform a ``step()``.        
+        """
+        s = np.append(self.state, array([0,0])) # 0 cart position and velocity
+        reward, ns, terminal, possibleActions = super(InfiniteTrackCartPole, self)._stepFourState(s,a)
+        ns = ns[0:2] # [theta,thetadot], ie, omitting position/velocity of cart
+        self.state = ns.copy()
+        return reward, ns, terminal, possibleActions
+
+    def showDomain(self):
+        self._plot_cart()
+        self.
+    
+    def showLearning(self, representation):
+        (thetas, theta_dots) = self._setup_learning(representation)
+        for row, thetaDot in enumerate(theta_dots):
+            for col, theta in enumerate(thetas):
+                s           = np.array([theta,thetaDot])
+                # Array of Q-function evaluated at all possible actions at state s
+                Qs       = representation.Qs(s, False)
+                # Array of all possible actions at state s
+                As       = self.possibleActions(s=s)
+                # Assign pi to be optimal action (which maximizes Q-function)
+                pi[row,col] = As[np.argmax(Qs)]
+                # Assign V to be the value of the Q-function under optimal action
+                V[row,col]  = max(Qs)
+
+        self._plot_policy(pi)
+        self._plot_valfun(V)
+        
+        if self.policy_fig is None or self.valueFunction_fig is None:
+            pl.show()
+            f = pl.gcf()
+            f.subplots_adjust(left=0,wspace=.5)
 
 class InfCartPoleBalance(InfTrackCartPole):
     """
