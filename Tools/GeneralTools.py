@@ -811,10 +811,10 @@ if module_exists('matplotlib'):
     rc("axes", labelsize=15)
     rc("xtick", labelsize=15)
     rc("ytick", labelsize=15)
-    rc('text',usetex=False)
+    #rc('text',usetex=False)
 
     # Try to use latex fonts, if available
-    rc('text',usetex=True)
+    #rc('text',usetex=True)
 
 #Colors
 PURPLE  = '\033[95m'
