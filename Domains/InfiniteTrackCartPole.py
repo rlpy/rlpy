@@ -134,7 +134,8 @@ class InfCartPoleBalance(InfTrackCartPole):
     ANGULAR_RATE_LIMITS = [-2., 2.] # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
                                 # saturates them frequently when falling; more realistic to use 2*pi.
 
-    def __init__(self, logger = None):
+    def __init__(self, logger = None, episodeCap=3000):
+        self.episodeCap = episodeCap
         super(InfCartInvertedBalance,self).__init__(logger)
 
     def s0(self):
