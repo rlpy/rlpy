@@ -55,11 +55,6 @@ class CartPoleBase(Domain):
     
     #: Set to non-zero to enable print statements
     DEBUG               = 0
-
-    # m - Length of moment-arm to center of mass (= half the pendulum length)
-    MOMENT_ARM          = LENGTH / 2.
-    # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND + MASS_CART)
-    _ALPHA_MASS         = 1.0 / (MASS_CART + MASS_PEND)
     
     
     
@@ -91,7 +86,7 @@ class CartPoleBase(Domain):
     
     def __init__(self, logger=None):
         """
-        Setup required domain constants.
+        Setup the required domain constants.
         """
         self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
         
@@ -358,9 +353,10 @@ class CartPoleBase(Domain):
             for the 4-state cartpole systems, ``x`` and ``xdot`` are assumed 0.
         """
         
-        if # state has length 4:
+        if statelength4:# state has length 4:
             errStr = "WARNING: showLearning() called with 4-state "
-                "cartpole; no plot shown."
+            "cartpole; no plot shown."
+            
             if self.logger:
                 self.logger.log(errStr)
             else: print errStr
