@@ -213,9 +213,9 @@ from the command line to run the experiment with visualization of the
 performance runs steps, policy and value function.
 
 .. note::
-    The `--` is only necessary, when executing a script directly at start-up of
+    The ------ is only necessary, when executing a script directly at start-up of
     IPython. If our use the standard python interpreter or execute the file
-    from within IPython with `%run` you can omit the `--`.
+    from within IPython with `%run` you can omit the ------.
 
 .. image:: pendulum_learning.png
    :width: 90 %
