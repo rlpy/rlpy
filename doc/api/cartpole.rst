@@ -10,7 +10,7 @@ Cart-Pole Balancing
 Cart-Pole Balancing (classic version)
 -------------------------------------
 
-.. autoclass:: Domains.CartPole.CartPoleBalanceOriginal
+.. autoclass:: Domains.CartPole.FiniteCartPoleBalanceOriginal
     :members:
     :inherited-members:
 

@@ -30,7 +30,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     sparsify = 1
 
     domain = HelicopterHover(logger=logger)
-    # domain = CartPoleBalanceModern(logger=logger)
+    # domain = FiniteCartPoleBalanceModern(logger=logger)
     kernel_width = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) \
                    / kernel_resolution
     representation = FastKiFDD(domain, sparsify=sparsify,

@@ -2,7 +2,7 @@
 Cart-pole balancing with continuous / Kernelized iFDD
 """
 from Tools import Logger
-from Domains.CartPole import CartPoleBalanceOriginal, CartPoleBalanceModern
+from Domains.CartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
 from Agents import SARSA, Q_LEARNING
 from Representations import *
 from Policies import eGreedy
@@ -29,7 +29,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 10
     sparsify = 1
 
-    domain = CartPoleBalanceOriginal(logger=logger, good_reward = 0.)
+    domain = FiniteCartPoleBalanceOriginal(logger=logger, good_reward = 0.)
     initial_rep = IndependentDiscretization(domain, logger, discretization=discretization)
     representation = iFDD(domain, logger, discover_threshold, initial_rep,
                           sparsify=sparsify,
