@@ -420,51 +420,6 @@ class CartPoleBase(Domain):
         theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.thetaDotDiscr*granularity)
     
         return (thetas, theta_dots)
-    
-    def showLearning(self, representation):
-        """
-        Shows the policy and value function of the cart (with resolution
-        dependent on the representation.
-        
-        :param representation: learned value function representation to display
-            (optimal policy computed w.r.t. this representation)
-        
-        
-        """
-        
-        xSlice = 0.
-        xDotSlice=0.
-        
-        if self.state_space_dims > 2:# state has length 4:
-            warnStr = "WARNING: showLearning() called with 4-state "
-            "cartpole; only showing slice at (x, xDot) = (%.2f, %.2f)" % (xSlice, xDotSlice)
-            if self.logger:
-                self.logger.log(errStr)
-            else: print errStr
-            
-        # else we continue and display the plot
-        
-        (thetas, theta_dots) = self._setup_learning(representation)
-        for row, thetaDot in enumerate(theta_dots):
-            for col, theta in enumerate(thetas):
-                s           = np.array([theta,thetaDot, 0, 0])
-                # Array of Q-function evaluated at all possible actions at state s
-                Qs       = representation.Qs(s, False)
-                # Array of all possible actions at state s
-                As       = self.possibleActions(s=s)
-                # Assign pi to be optimal action (which maximizes Q-function)
-                pi[row,col] = As[np.argmax(Qs)]
-                # Assign V to be the value of the Q-function under optimal action
-                V[row,col]  = max(Qs)
-
-        self._plot_policy(pi)
-        self._plot_valfun(V)
-        
-        if self.policy_fig is None or self.valueFunction_fig is None:
-            pl.show()
-            f = pl.gcf()
-            f.subplots_adjust(left=0,wspace=.5)
-        
         
     def euler_int(self, df, x0, times):
         """

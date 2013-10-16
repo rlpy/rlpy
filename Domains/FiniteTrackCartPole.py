@@ -112,6 +112,12 @@ class FiniteTrackCartPole(CartPoleBase):
         xSlice = 0.  # value of x assumed when plotting V and pi
         xDotSlice=0. # value of xDot assumed when plotting V and pi
         
+        warnStr = "WARNING: showLearning() called with 4-state "
+        "cartpole; only showing slice at (x, xDot) = (%.2f, %.2f)" % (xSlice, xDotSlice)
+        if self.logger:
+            self.logger.log(warnStr)
+        else: print warnStr
+        
         (thetas, theta_dots) = self._setup_learning(representation)
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
