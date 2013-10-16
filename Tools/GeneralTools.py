@@ -32,15 +32,12 @@ __author__ = "Alborz Geramifard"
 __rlpy_location__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 matplotlib_backend = 'TkAgg' # 'WX' 'QTAgg' 'QT4Agg'
 
-#For condor use
-CONDOR_CLUSTER_PREFIX = '/data' # For use on MIT Clusters
-# os.environ['HOME'] = HOME_DIR  # matplotlib attempts to write to a condor directory in "~" which it doesn't own; have it write to tmp instead, common solution on forums
-# os.environ['MPLCONFIGDIR'] = os.environ['HOME']
 
 if module_exists('matplotlib'):
     import matplotlib
     matplotlib.use(matplotlib_backend)
     from matplotlib import pylab as pl
+    import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
     from matplotlib import rc,colors
     import matplotlib.patches as mpatches
@@ -86,23 +83,12 @@ from decimal import Decimal
 # If running on an older version of numpy, check to make sure we have defined all required functions.
 import numpy # We need to be able to reference numpy by name
 from select import select
-# BELOW we have opted to always use the custom count_nonzero function; see comments
-#
 
-def input_wait(timeout):
-    """reads from the command line for timeout seconds. If nothing was entered,
-    None is returned
-    """
-    rlist, _, _ = select([sys.stdin], [], [], timeout)
-    if rlist:
-        s = sys.stdin.readline()
-        return s
-    else:
-        return None
 
 def discrete_sample(p):
     cp = numpy.cumsum(p)
     return numpy.sum(cp <= numpy.random.rand(1))
+
 def matrix_mult(A,B):
     # TO BE COMPLETED!
     # This function is defined due to many frustration with the dot, * operators that behave differently based on the input values: sparse.matrix, matrix, ndarray and array
@@ -275,13 +261,6 @@ def scale(x,m,M):
     # negative numbers are scaled [m,0] -> [-1,0]
     pos_ind = where(x>0)
     #x(pos_ind) = x(pos_ind)
-def readMatrixFromFile(filename):
-    # Reads a matrix in a text file specified by filename into a numpy matrix and returns it
-        x = loadtxt(filename)
-        if len(x.shape) == 1:
-            #Special Case where only one column is in the file
-            x = x.reshape((-1,1))
-        return x
 def createColorMaps():
     #Make Grid World ColorMap
     mycmap = colors.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
@@ -306,17 +285,7 @@ def createColorMaps():
     cm.register_cmap(cmap=mycmap)
     mycmap = colors.ListedColormap(['r','w','k','b'], '4Actions')
     cm.register_cmap(cmap=mycmap)
-#    Some useful Colormaps
-#    red_yellow_blue = make_colormap({0.:'r', 0.5:'#ffff00', 1.:'b'})
-#    blue_yellow_red = make_colormap({0.:'b', 0.5:'#ffff00', 1.:'r'})
-#    yellow_red_blue = make_colormap({0.:'#ffff00', 0.5:'r', 1.:'b'})
-#    white_red = make_colormap({0.:'w', 1.:'r'})
-#    white_blue = make_colormap({0.:'w', 1.:'b'})
-#
-#    schlieren_grays = schlieren_colormap('k')
-#    schlieren_reds = schlieren_colormap('r')
-#    schlieren_blues = schlieren_colormap('b')
-#    schlieren_greens = schlieren_colormap('g')
+
 def make_colormap(colors):
     """
     Define a new color map based on values specified in the dictionary
@@ -845,7 +814,7 @@ if module_exists('matplotlib'):
     rc('text',usetex=False)
 
     # Try to use latex fonts, if available
-    #rc('text',usetex=True)
+    rc('text',usetex=True)
 
 #Colors
 PURPLE  = '\033[95m'

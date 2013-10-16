@@ -256,7 +256,8 @@ class KernelizediFDD(Representation):
                 out /= out.sum()
         return out
 
-    def phi_raw(self, s):
+    def phi_raw(self, s, terminal):
+        assert(terminal is False)
         out = np.zeros(self.features_num)
         for i in xrange(self.features_num):
             out[i] = self.features[i].output(s)
@@ -288,7 +289,7 @@ class KernelizediFDD(Representation):
 
         # update relevance statistics of all feature candidates
         if discovered:
-            phi_s = self.phi(s)
+            phi_s = self.phi(s, terminal)
         la = len(active_indices)
         if la * (la - 1)  <  len(self.candidates):
             for ind, cand in self.candidates.items():
@@ -405,103 +406,50 @@ class KernelizediFDD(Representation):
         return self.features_num - 1
 
 
-def gaussian_kernel(x, y, dim, sigma):
-    return exp(- float((((x[dim] - y[dim]) / sigma[dim]) ** 2).sum()))
-
-
-def truncated_gaussian_kernel(x, y, dim, sigma, threshold):
-    res = exp(- float((((x[dim] - y[dim]) / sigma[dim]) ** 2).sum()))
-    res -= threshold
-    if res < 0:
-        return 0.
-    res *= 1. / (1. - threshold)
-    return res
-
-
-def discretization_kernel(x, y, dim, sigma):
-    return np.all(np.floor(x[dim] / sigma[dim]) == np.floor(y[dim] / sigma[dim]))
-
-
-def linf_kernel(x, y, dim, sigma):
-    return np.all(np.abs(x[dim] - y[dim]) < sigma[dim])
-
-
-def linf_triangle_kernel(x, y, dim, sigma):
-    d = 1 - float(abs(x[dim] - y[dim])) / sigma[im]
-    d[d <= 0] = 0
-    return d.min()
-
 try:
     from kernels import *
-    print "Use cython extension for kernels"
+except ImportError:
+    print "C-Extension for kernels not available, expect slow runtime"
+    from slow_kernels import *
+
+try:
+    from FastCythonKiFDD import FastCythonKiFDD
+
+    class FastKiFDD(Representation, FastCythonKiFDD):
+        def __init__(self, domain, kernel, active_threshold, discover_threshold,
+                    logger=None, kernel_args=[], normalization=True, sparsify=True,
+                    max_active_base_feat=2, max_base_feat_sim=0.7):
+            super(FastKiFDD, self).__init__(domain, logger)
+            self.kernel = kernel
+            assert(normalization)
+            self.normalization = normalization
+            #assert(kernel == gaussian_kernel)
+            logger.log(str(self))
+        def phi_nonTerminal(self, s):
+            return FastCythonKiFDD.phi_nonTerminal(self, s)
+
+        def post_discover(self, s, terminal, a, td_error, phi_s):
+
+            Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
+            discovered =  FastCythonKiFDD.discover(self, s, a, td_error, phi_s)
+            self.features_num += discovered
+            if discovered > 0:
+                if self.normalization:
+                    new = Q * np.ones((self.domain.actions_num, discovered))
+                else:
+                    new = np.zeros((self.domain.actions_num, discovered))
+                self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, new)
+            return discovered
+
+        def __str__(self):
+            res = """FastKiFDD (C++ Implementation of kernelized iFDD):
+        kernel: {self.kernel.__name__}
+        normalization:  {self.normalization}
+        sparsification: {self.sparsification}
+        activation threshold: {self.activation_threshold}
+        discovery threshold:  {self.discovery_threshold}
+    """.format(self=self)
+            return res
 except Exception, e:
     print e
-    print "Cython extension for kernels not available, expect slow runtime"
-
-
-
-from FastCythonKiFDD import FastCythonKiFDD
-
-class FastKiFDD(Representation, FastCythonKiFDD):
-    def __init__(self, domain, kernel, active_threshold, discover_threshold,
-                 logger=None, kernel_args=[], normalization=True, sparsify=True,
-                 max_active_base_feat=2, max_base_feat_sim=0.7):
-        super(FastKiFDD, self).__init__(domain, logger)
-        self.kernel = kernel
-        assert(normalization)
-        self.normalization = normalization
-        #assert(kernel == gaussian_kernel)
-        logger.log(str(self))
-    def phi_nonTerminal(self, s):
-        return FastCythonKiFDD.phi_nonTerminal(self, s)
-
-    def post_discover(self, s, terminal, a, td_error, phi_s):
-
-        Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
-        discovered =  FastCythonKiFDD.discover(self, s, a, td_error, phi_s)
-        self.features_num += discovered
-        if discovered > 0:
-            if self.normalization:
-                new = Q * np.ones((self.domain.actions_num, discovered))
-            else:
-                new = np.zeros((self.domain.actions_num, discovered))
-            self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, new)
-        return discovered
-
-    def __str__(self):
-        res = """FastKiFDD (C++ Implementation of kernelized iFDD):
-    kernel: {self.kernel.__name__}
-    normalization:  {self.normalization}
-    sparsification: {self.sparsification}
-    activation threshold: {self.activation_threshold}
-    discovery threshold:  {self.discovery_threshold}
-""".format(self=self)
-        return res
-
-if __name__ == "__main__":
-    from Domains import PuddleWorld
-    from Tools import Logger
-    domain = PuddleWorld(logger=Logger())
-    repres = KernelizediFDD(domain=domain, kernel=gaussian_kernel,
-                            active_threshold=0.01, discover_threshold=10000,
-                            max_active_base_feat=10, max_base_feat_sim=0.4,
-                            normalization=False, sparsify=False,
-                            kernel_args=[np.ones(2) * 0.1],
-                            logger=Logger())
-    repres.add_base_feature(center=np.ones(2) * 0.5, dim=0, Q=np.zeros(4))
-    repres.add_base_feature(center=np.ones(2) * 0.7, dim=1, Q=np.zeros(4))
-    repres.add_refined_feature(0, 1, Q=np.ones(4))
-    repres.show_features()
-    repres.theta[:3] = [1, 2, 3]
-    a = np.zeros((2))
-    val_map = np.zeros((100, 100))
-    for i, x in enumerate(np.linspace(0, 1, 100)):
-        for j, y in enumerate(np.linspace(0, 1, 100)):
-            a[0] = x
-            a[1] = y
-            val_map[j, i] = repres.Qs(a)[0][0]
-    valfun_fig = plt.figure("Value Function")
-    val_im = plt.imshow(val_map, extent=(0, 1, 0, 1), origin="lower")
-    plt.colorbar()
-    plt.draw()
-    plt.show()
+    print "Fast KiFDD is not available, C++ Extensions not build"

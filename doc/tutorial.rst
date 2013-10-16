@@ -79,7 +79,9 @@ steps where
        information
 
 To track the performance of the agent, the quality of its current policy is
-assessed `num_policy_checks` times per experiment. This is done by letting the
+assessed `num_policy_checks` times during the experiment (and one more time
+right at the beginning). 
+This is done by letting the
 agent interact for `checks_per_policy` episodes with the domain in so called 
 **performance runs**. During performance runs, the agent does not do any
 exploration but always choses actions that it thinks is optimal. This means,
@@ -205,10 +207,15 @@ This is a wrapper around `Experiment.run` and allows to specify the options for
 visualization during the execution with command line arguments. You can for
 example run::
 
-    ipython examples/tutorial/pendulum_tabular.py -l -p
+    ipython examples/tutorial/pendulum_tabular.py -- -l -p
 
 from the command line to run the experiment with visualization of the
-performance runs steps, policy and value function. 
+performance runs steps, policy and value function.
+
+.. note::
+    The `--` is only necessary, when executing a script directly at start-up of
+    IPython. If our use the standard python interpreter or execute the file
+    from within IPython with `%run` you can omit the `--`.
 
 .. image:: pendulum_learning.png
    :width: 90 %

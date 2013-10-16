@@ -74,7 +74,7 @@ these packages will usually be older.
 You can install them by executing::
 
     sudo apt-get install python-dev python-setuptools python-sklearn python-numpy python-scipy python-matplotlib python-networkx graphviz python-pip tcl-dev tk-dev python-tk cython
-    pip install joblib hyperopt
+    pip install joblib hyperopt pymongo
 
 
 .. _anaconda:
@@ -102,7 +102,7 @@ Please follow the original `installation instructions
 After installing Anaconda, install the dependencies of RLPy by executing::
 
     conda install numpy scipy matplotlib networkx tk scikit-learn cython
-    pip install joblib hyperopt
+    pip install joblib hyperopt pymongo
 
 .. _compile:
 

@@ -18,29 +18,34 @@ class PST(Domain):
     constraints [Geramifard et al., 2011]. This domain simulates a real-world
     planning problem with a relatively large state-action space.
     STATE:
-    Each UAV’s individual state has four dimensions: location, fuel, actuator status, and sensor
-    status. The dimensionality of the state vector is therefore 4x3 = 12. 
-    The full state space is the combination of states for all UAVs. 
+    Each UAVs individual state has four dimensions: location, fuel, actuator
+    status, and sensor
+    status. The dimensionality of the state vector is therefore 4x3 = 12.
+    The full state space is the combination of states for all UAVs.
     ACTION:
-    There are three available actions for each UAV: advance; retreat; loiter. 
+    There are three available actions for each UAV: advance; retreat; loiter.
     Hence the size of the action space is 3^3 = 27.
     TRANSITION:
-    Movement of each UAV is deterministic with 5% failure rate for both the actuator and sensor of each
-    UAV on each step. Each UAV starts with 10 units of fuel and burns one unit for all actions except 
-    when loitering in the base or refuel nodes. Executing “loiter” in the base and refuel nodes fixes all UAV failures and
+    Movement of each UAV is deterministic with 5% failure rate for both the
+    actuator and sensor of each
+    UAV on each step. Each UAV starts with 10 units of fuel and burns one unit
+    for all actions except
+    when loitering in the base or refuel nodes. Executing "loiter" in the base
+    and refuel nodes fixes all UAV failures and
     fully refuels the UAV, respectively. If a UAV runs out of fuel, it is assumed to
     crash, terminating the episode. A UAV with a failed sensor
     cannot perform surveillance. A UAV with a failed actuator cannot perform
     surveillance or communication. It can either retreat or loiter in refuel or base
-    nodes.  
+    nodes.
     REWARD:
     The objective of the mission is to fly to the surveillance node and perform
     surveillance on a target, while ensuring that a communication link with the
     base is maintained by having a UAV with a working actuator loitering on
-    the communication node. The reward function = 
-        + 20 (if an ally with a working sensor is at surveillance node while an ally with a working motor is at the communication node) 
-        - 50 (If any UAVs crashe) 
-        - Burned Fuel;
+    the communication node. The reward function =
+    |    + 20 (if an ally with a working sensor is at surveillance node while an
+    |          ally with a working motor is at the communication node)
+    |    - 50 (If any UAVs crashe)
+    |    - Burned Fuel;
     """
     episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
     gamma               = 0.9  # 0.9 used in tutorial and matlab

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <array>
 #include <set>
 #include <map>
 #include <cmath>
@@ -9,14 +8,7 @@
 #include <assert.h>
 #include <string>
 #include <stdexcept>
-
-double gaussian_kernel(const double* s1, const double* s2, 
-                    const std::vector<unsigned int>& dim, 
-                    const double* widths);
-
-double linf_triangle_kernel(const double* s1, const double* s2, 
-                    const std::vector<unsigned int>& dim, 
-                    const double* widths);
+#include "c_kernels.h"
 
 class cmp_dim {
     public:
