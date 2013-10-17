@@ -116,13 +116,17 @@ class FiniteTrackCartPole(CartPoleBase):
         xSlice = 0.  # value of x assumed when plotting V and pi
         xDotSlice=0. # value of xDot assumed when plotting V and pi
         
-        warnStr = "WARNING: showLearning() called with 4-state "
+        warnStr = "WARNING: showLearning() called with 4-state "\
         "cartpole; only showing slice at (x, xDot) = (%.2f, %.2f)" % (xSlice, xDotSlice)
         if self.logger:
             self.logger.log(warnStr)
         else: print warnStr
         
         (thetas, theta_dots) = self._setup_learning(representation)
+        
+        pi = np.zeros( (len(theta_dots), len(thetas)),'uint8' )
+        V = np.zeros( (len(theta_dots), len(thetas)) )
+        
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = np.array([theta,thetaDot, xSlice, xDotSlice])
@@ -135,13 +139,13 @@ class FiniteTrackCartPole(CartPoleBase):
                 # Assign V to be the value of the Q-function under optimal action
                 V[row,col]  = max(Qs)
 
-        self._plot_policy(pi)
-        self._plot_valfun(V)
-        
         if self.policy_fig is None or self.valueFunction_fig is None:
             pl.show()
             f = pl.gcf()
             f.subplots_adjust(left=0,wspace=.5)
+
+        self._plot_policy(pi)
+        self._plot_valfun(V)
     
     def showDomain(self, a=0):
         """
@@ -150,7 +154,7 @@ class FiniteTrackCartPole(CartPoleBase):
         
         """
         fourState = self.state
-        self._plot_cart(fourState, a)
+        self._plot_state(fourState, a)
 
 class FiniteCartPoleBalance(FiniteTrackCartPole):
     """
@@ -222,6 +226,8 @@ class FiniteCartPoleBalanceOriginal(FiniteTrackCartPole):
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a, s=None):
+        if s is None:
+            s = self.state
         return self.good_reward if not self.isTerminal(s=s) else -1.
 
     def isTerminal(self, s=None):
@@ -256,6 +262,8 @@ class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a, s=None):
+        if s is None:
+            s = self.state
         return 0. if not self.isTerminal(s=s) else -1.
 
     def isTerminal(self, s=None):
@@ -277,7 +285,7 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     region for as long as possible, with +1 reward for
     each step in which this condition is met; the expected
     optimum then is to swing the pendulum vertically and
-    hold it there, collapsing the problem to Pendulum_InvertedBalance
+    hold it there, collapsing the problem to InfCartPoleBalance
     but with much tighter bounds on the goal region.
     
     See parent class ``FiniteTrackCartPole`` for more information.

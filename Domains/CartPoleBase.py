@@ -176,6 +176,7 @@ class CartPoleBase(Domain):
 
     def _stepFourState(self, s, a):
         """
+        :param s: the four-dimensional cartpole state
         Performs a single step of the CartPoleDomain without modifying
         ``self.state`` - this is left to the ``step()`` function in child
         classes.        
@@ -229,8 +230,8 @@ class CartPoleBase(Domain):
         ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
         
-        terminal                    = self.isTerminal()
-        reward                      = self._getReward(a)
+        terminal                    = self.isTerminal() # automatically uses self.state
+        reward                      = self._getReward(a) # Automatically uses self.state
         return reward, ns, terminal, self.possibleActions()
     
     def _dsdt(self, s_augmented, t):
@@ -290,30 +291,34 @@ class CartPoleBase(Domain):
         """
         :returns: handle to the figure
         """
-        if self.policy_fig is None:
-            self.policy_fig = pl.figure("Policy")
-            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
-            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-            pl.title('Policy')
+#         if self.policy_fig is None:
+        self.policy_fig = pl.figure("Policy")
+        self.policy_fig = pl.imshow(piMat, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
+        #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+        #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+        pl.xlabel(r"$\theta$ (degree)")
+        pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+        pl.title('Policy')
             
         self.policy_fig.set_data(piMat)
+        print piMat
+        print sum(piMat)
+        print sum(abs(piMat))
+        print piMat.shape
         pl.draw()
             
     def _plot_valfun(self, VMat):
         """
         :returns: handle to the figure
         """
-        if self.valueFunction_fig is None:
-            self.valueFunction_fig   = pl.figure("Value Function")
-            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
-            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-            pl.title('Value Function')
+#         if self.valueFunction_fig is None:
+        self.valueFunction_fig   = pl.figure("Value Function")
+        self.valueFunction_fig   = pl.imshow(VMat, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
+        #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+        #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+        pl.xlabel(r"$\theta$ (degree)")
+        pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+        pl.title('Value Function')
             
         norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
         self.valueFunction_fig.set_data(VMat)
@@ -346,7 +351,7 @@ class CartPoleBase(Domain):
             self.timeText = ax.text(self.POSITON_LIMITS[1], self.LENGTH,"")
             self.rewardText = ax.text(self.POSITON_LIMITS[0], self.LENGTH,"")
             # Allow room for pendulum to swing without getting cut off on graph
-            viewableDistance = self.LENGTH + self.circle_radius + 0.5
+            viewableDistance = self.LENGTH  + 0.5
             ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
             ax.set_ylim(-viewableDistance, viewableDistance)
             #ax.set_aspect('equal')
@@ -413,16 +418,12 @@ class CartPoleBase(Domain):
         # discretization.
         thetaDiscr = representation.discretization
         thetaDotDiscr = representation.discretization
-        
-        
-        pi = np.zeros((thetaDiscr*granularity, self.thetaDotDiscr*granularity),'uint8')
-        V = np.zeros((thetaDiscr*granularity,self.thetaDotDiscr*granularity))
 
         # Create the center of the grid cells both in theta and thetadot_dimension
         theta_binWidth      = (self.ANGLE_LIMITS[1]-self.ANGLE_LIMITS[0])/(thetaDiscr*granularity)
         thetas              = np.linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, thetaDiscr*granularity)
-        theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(self.thetaDotDiscr*granularity)
-        theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, self.thetaDotDiscr*granularity)
+        theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(thetaDotDiscr*granularity)
+        theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, thetaDotDiscr*granularity)
     
         return (thetas, theta_dots)
         

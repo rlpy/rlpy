@@ -112,7 +112,7 @@ class InfTrackCartPole(CartPoleBase):
         and perform a ``step()``.        
         """
         s = np.append(self.state, array([0,0])) # 0 cart position and velocity
-        reward, ns, terminal, possibleActions = super(InfiniteTrackCartPole, self)._stepFourState(s,a)
+        reward, ns, terminal, possibleActions = super(InfTrackCartPole, self)._stepFourState(s,a)
         ns = ns[0:2] # [theta,thetadot], ie, omitting position/velocity of cart
         self.state = ns.copy()
         return reward, ns, terminal, possibleActions
@@ -126,10 +126,14 @@ class InfTrackCartPole(CartPoleBase):
         
         """
         fourState = np.append(self.state, array([0,0])) # 0 cart position and velocity
-        self._plot_cart(fourState, a)
+        self._plot_state(fourState, a)
     
     def showLearning(self, representation):
         (thetas, theta_dots) = self._setup_learning(representation)
+        
+        pi = np.zeros( (len(theta_dots), len(thetas)),'uint8' )
+        V = np.zeros( (len(theta_dots), len(thetas)) )
+        
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = np.array([theta,thetaDot])
@@ -180,7 +184,7 @@ class InfCartPoleBalance(InfTrackCartPole):
 
     def __init__(self, logger = None, episodeCap=3000):
         self.episodeCap = episodeCap
-        super(InfCartInvertedBalance,self).__init__(logger)
+        super(InfCartPoleBalance,self).__init__(logger)
 
     def s0(self):
         # Returns the initial state, pendulum vertical
@@ -188,10 +192,12 @@ class InfCartPoleBalance(InfTrackCartPole):
         self.state = (self.random_state.rand(2)*2-1)*0.2
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def _getReward(self, a):
+    def _getReward(self, a, s=None):
         # Return the reward earned for this state-action pair
         # On this domain, reward of -1 is given for failure, |angle| exceeding pi/2
-        return self.FELL_REWARD if self.isTerminal() else 0
+        if s is None:
+            s = self.state
+        return self.FELL_REWARD if self.isTerminal(s=s) else 0
 
     def isTerminal(self, s=None):
         if s is None:
@@ -205,7 +211,7 @@ class InfCartPoleSwingUp(InfTrackCartPole):
     There is no terminal condition aside from ``episodeCap``.\n
     
     Pendulum starts straight down, ``theta = pi``.  The task is to swing it up,
-    after which the problem reduces to \c %InfCartInvertedBalance, though
+    after which the problem reduces to \c %InfCartPoleBalance, though
     with (possibly) different domain constants defined below.
     
     """
@@ -232,12 +238,13 @@ class InfCartPoleSwingUp(InfTrackCartPole):
         self.state = array([pi,0])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def _getReward(self, a):
+    def _getReward(self, a, s=None):
         """
         Return the reward earned for this state-action pair.
         On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6
         """
-        s  = self.state
+        if s is None:
+            s = self.state
         return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
 
     def isTerminal(self, s=None):
