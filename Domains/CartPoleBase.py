@@ -157,7 +157,10 @@ class CartPoleBase(Domain):
         """
         raise NotImplementedError
     
-    def s0(self):
+    def showDomain(self, a=0):
+        raise NotImplementedError
+    
+    def showLearning(self, representation):
         raise NotImplementedError
     
     def possibleActions(self, s=None):
@@ -282,16 +285,51 @@ class CartPoleBase(Domain):
 
         xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
         return np.array((thetaDot, thetaDotDot, xDot, xDotDot, 0))  # final cell corresponds to action passed in
-    
-    def showDomain(self, a=0):
-        """
-        Display the 4-d state of the cartpole and arrow indicating current
-        force action (not including noise!).
-        Note that for 2-D systems the cartpole is still displayed, but appears
-        static; see ``InfTrackCartPole``.
         
+    def _plot_policy(self, piMat):
         """
-        s = self.state
+        :returns: handle to the figure
+        """
+        if self.policy_fig is None:
+            self.policy_fig = pl.figure("Policy")
+            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
+            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            pl.title('Policy')
+            
+        self.policy_fig.set_data(piMat)
+        pl.draw()
+            
+    def _plot_valfun(self, VMat):
+        """
+        :returns: handle to the figure
+        """
+        if self.valueFunction_fig is None:
+            self.valueFunction_fig   = pl.figure("Value Function")
+            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
+            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            pl.title('Value Function')
+            
+        norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
+        self.valueFunction_fig.set_data(VMat)
+        self.valueFunction_fig.set_norm(norm)
+        pl.draw()
+        
+    def _plot_state(self, fourDimState, a):
+        """
+        :param fourDimState: Four-dimensional cartpole state
+            (``theta, thetaDot, x, xDot``)
+        :param a: force action on the cart
+        
+        Visualizes the state of the cartpole - the force action on the cart
+        is displayed as an arrow (not including noise!)
+        """
+        s = fourDimState
         if self.domainFig is None:  # Need to initialize the figure
             self.domainFig = pl.figure("Domain")
             ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
@@ -356,39 +394,6 @@ class CartPoleBase(Domain):
 
         pl.draw()
         
-    def _plot_policy(self, piMat):
-        """
-        :returns: handle to the figure
-        """
-        if self.policy_fig is None:
-            self.policy_fig = pl.figure("Policy")
-            self.policy_fig = pl.imshow(pi, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
-            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-            pl.title('Policy')
-            
-        self.policy_fig.set_data(piMat)
-        pl.draw()
-            
-    def _plot_valfun(self, VMat):
-        """
-        :returns: handle to the figure
-        """
-        if self.valueFunction_fig is None:
-            self.valueFunction_fig   = pl.figure("Value Function")
-            self.valueFunction_fig   = pl.imshow(V, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
-            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-            pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-            pl.title('Value Function')
-            
-        norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
-        self.valueFunction_fig.set_data(VMat)
-        self.valueFunction_fig.set_norm(norm)
-        pl.draw()
     
     def _setup_learning(self, representation):
         """

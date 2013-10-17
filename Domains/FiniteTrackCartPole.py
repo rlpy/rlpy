@@ -101,6 +101,10 @@ class FiniteTrackCartPole(CartPoleBase):
         self.state = ns.copy()
         return reward, ns, terminal, possibleActions
     
+    def s0(self):
+        # defined by children
+        raise NotImplementedError
+    
     def showLearning(self, representation):
         """
         
@@ -139,6 +143,14 @@ class FiniteTrackCartPole(CartPoleBase):
             f = pl.gcf()
             f.subplots_adjust(left=0,wspace=.5)
     
+    def showDomain(self, a=0):
+        """
+        Display the 4-d state of the cartpole and arrow indicating current
+        force action (not including noise!).
+        
+        """
+        fourState = self.state
+        self._plot_cart(fourState, a)
 
 class FiniteCartPoleBalance(FiniteTrackCartPole):
     """
