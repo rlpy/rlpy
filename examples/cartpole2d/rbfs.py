@@ -2,7 +2,7 @@
 Cart-pole balancing with independent discretization
 """
 from Tools import Logger
-from Domains import Pendulum_InvertedBalance
+from Domains import InfCartPoleBalance
 from Agents import Q_Learning
 from Representations import *
 from Policies import eGreedy
@@ -28,7 +28,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     num_policy_checks = 20
     checks_per_policy = 10
 
-    domain = Pendulum_InvertedBalance(logger=logger)
+    domain = InfCartPoleBalance(logger=logger)
     representation = RBF(domain, num_rbfs=int(num_rbfs), logger=logger,
                           resolution_max=resolution, resolution_min=resolution,
                           const_feature=False, normalize=True, seed=id)

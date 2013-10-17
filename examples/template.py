@@ -57,13 +57,13 @@ def make_experiment(id=1, path="./Results/Temp"):
     BLOCKS              = 6     # Number of blocks for the BlocksWorld domain
     # Representation ----------------------
     DISCRITIZATION              = 9 # CHANGE ME TO 20 # Number of bins used to discritize each continuous dimension. Used for some representations, Suggestion: 30 for Acrobot, 20 for other domains
-    RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'Pendulum_InvertedBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
+    RBFS                        = 200  #{'GridWorld':10, 'CartPole':20, 'BlocksWorld':100, 'SystemAdministrator':500, 'PST':500, 'InfCartPoleBalance': 20 } # Values used in tutorial RBF was 1000 though but it takes 13 hours time to run
     iFDDOnlineThreshold         =	1e7 # Edited by makexp.py script
     BatchDiscoveryThreshold     =	0.05 # Edited by makexp.py script
-    #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'Pendulum_InvertedBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
+    #BEBFNormThreshold           = #CONTROL:{'BlocksWorld':0.005, 'InfCartPoleBalance':0.20}  # If the maximum norm of the td_errors is less than this value, representation expansion halts until the next LSPI iteration (if any).
     iFDD_CACHED                 = 1 # Results will remain IDENTICAL, but often faster
     Max_Batch_Feature_Discovery = 1 # Maximum Number of Features discovered on each iteration in the batch mode of iFDD
-    BEBF_svm_epsilon            = .1 #{'BlocksWorld':0.0005,'Pendulum_InvertedBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
+    BEBF_svm_epsilon            = .1 #{'BlocksWorld':0.0005,'InfCartPoleBalance':0.1} # See BEBF; essentially the region in which no penalty is applied for training
     FourierOrder                = 3     #
     iFDD_Sparsify               = 1     # Should be on for online and off for batch methods. Sparsify the output feature vectors at iFDD? [wont make a difference for 2 dimensional spaces.
     iFDD_Plus                   = 1     # True: relevance = abs(TD_Error)/norm(feature), False: relevance = sum(abs(TD_error)) [ICML 11]
@@ -100,7 +100,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     domain          = GridWorld('./'+MAZE, noise = NOISE, logger = logger)
     #domain          = HelicopterHover(logger=logger)
     #domain          = Acrobot(logger=logger)
-    #domain          = Pendulum_InvertedBalance(logger = logger);
+    #domain          = InfCartPoleBalance(logger = logger);
     #domain          = MountainCar(noise = NOISE,logger = logger)
     #domain          = BlocksWorld(blocks=BLOCKS,noise = NOISE, logger = logger)
     #domain          = PuddleWorld(logger=logger)
@@ -109,7 +109,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     #domain          = Acrobot(logger = logger)
     #domain          = PST(NUM_UAV = 4, motionNoise = 0,logger = logger)
     #domain          = IntruderMonitoring('./'+INTRUDERMAP,logger)
-    #domain          = Pendulum_SwingUp(logger = logger)
+    #domain          = InfCartPoleSwingUp(logger = logger)
     #domain          = CartPole_InvertedBalance(logger = logger)
     #domain          = CartPole_SwingUp(logger = logger)
     #domain          = FiftyChain(logger = logger)

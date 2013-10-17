@@ -3,7 +3,7 @@ Cart-pole balancing with continuous / Kernelized iFDD
 """
 
 from Tools import Logger
-from Domains import Pendulum_InvertedBalance
+from Domains import InfCartPoleBalance
 from Agents import SARSA, Q_LEARNING
 from Representations import *
 from Policies import eGreedy
@@ -33,7 +33,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     max_base_feat_sim = 0.5
     sparsify = 1
 
-    domain = Pendulum_InvertedBalance(logger=logger)
+    domain = InfCartPoleBalance(logger=logger)
     kernel_width = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) / kernel_resolution
     representation = FastKiFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
