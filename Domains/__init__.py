@@ -22,6 +22,5 @@ from FiniteTrackCartPole import (FiniteCartPoleBalance,
                                  FiniteCartPoleBalanceOriginal,
                                  FiniteCartPoleBalanceModern,
                                  FiniteCartPoleSwingUp,
-                                 FiniteCartPoleSwingUpFriction
-                                 )
+                                 FiniteCartPoleSwingUpFriction)
 from InfiniteTrackCartPole import InfCartPoleBalance, InfCartPoleSwingUp
