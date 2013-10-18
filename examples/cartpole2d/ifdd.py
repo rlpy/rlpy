@@ -4,7 +4,7 @@ Cart-pole balancing with iFDD+
 
 import sys, os
 from Tools import Logger
-from Domains import Pendulum_InvertedBalance
+from Domains import InfCartPoleBalance
 from Agents import SARSA, Q_LEARNING
 from Representations import *
 from Policies import eGreedy
@@ -28,13 +28,10 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     logger = Logger()
     max_steps = 10000
     num_policy_checks = 20
-    show_performance = False
-    show_all = False
-    plot_performance = False
     checks_per_policy = 10
     sparsify = True
 
-    domain = Pendulum_InvertedBalance(logger=logger)
+    domain = InfCartPoleBalance(logger=logger)
 
     initial_rep = IndependentDiscretization(domain, logger, discretization=discretization)
     representation = iFDD(domain, logger, discover_threshold, initial_rep,
@@ -53,5 +50,5 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
 
 if __name__ == '__main__':
     experiment = make_experiment(1)
-    experiment.run()
+    experiment.run(visualize_performance=False, visualize_learning=True)
     experiment.save()

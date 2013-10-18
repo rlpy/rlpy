@@ -10,11 +10,6 @@ from SystemAdministrator import SystemAdministrator
 from PST import PST
 from Pacman import Pacman
 from IntruderMonitoring import IntruderMonitoring
-from CartPole import CartPoleBalanceOriginal
-from CartPole import CartPole_InvertedBalance
-from CartPole import CartPole_SwingUp, CartPole_SwingUpReal
-from Pendulum_InvertedBalance import Pendulum_InvertedBalance
-from Pendulum_SwingUp import Pendulum_SwingUp
 from FiftyChain import FiftyChain
 from FlipBoard import FlipBoard
 from RCCar import RCCar
@@ -23,3 +18,6 @@ from Bicycle import BicycleBalancing
 from Pinball import Pinball
 from MultiTrack import MultiTrack
 from Pinball import Pinball
+from CartPoleBase import CartPoleBase, StateIndex
+from FiniteTrackCartPole import *
+from InfiniteTrackCartPole import *

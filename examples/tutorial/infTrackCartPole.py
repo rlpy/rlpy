@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 __author__ = "Robert H. Klein"
-from Domains import Pendulum_InvertedBalance
+from Domains import InfCartPoleBalance
 from Tools import Logger
 from Agents import Q_Learning
 from Representations import Tabular
@@ -19,7 +19,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     """
     logger = Logger()
 
-    domain = Pendulum_InvertedBalance(episodeCap=300, logger=logger)
+    domain = InfCartPoleBalance(episodeCap=300, logger=logger)
 
     representation  = Tabular(domain, logger, discretization=20)
     policy = eGreedy(representation, logger, epsilon=0.2)

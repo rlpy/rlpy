@@ -20,7 +20,7 @@ class FixedPolicy(Policy):
         self.tableOfValues = tableOfValues
         super(FixedPolicy, self).__init__(representation,logger)
 
-    supportedDomains = ['Pendulum_InvertedBalance','BlocksWorld','IntruderMonitoring',\
+    supportedDomains = ['InfCartPoleBalance','BlocksWorld','IntruderMonitoring',\
                         'SystemAdministrator','MountainCar','PST','GridWorld',\
                         ]
     def pi(self,s, terminal, p_actions):
@@ -91,7 +91,7 @@ class FixedPolicy(Policy):
 
 
 
-        if className(domain) == 'Pendulum_InvertedBalance':
+        if className(domain) == 'InfCartPoleBalance':
             # Fixed policy rotate the pendulum in the opposite direction of the thetadot
             theta, thetadot = s
             if thetadot > 0:

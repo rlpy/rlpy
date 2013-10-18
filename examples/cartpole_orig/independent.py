@@ -2,7 +2,7 @@
 Cart-pole balancing with independent discretization
 """
 from Tools import Logger
-from Domains.CartPole import CartPoleBalanceOriginal, CartPoleBalanceModern
+from Domains.FiniteTrackCartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
 from Agents import SARSA, Q_LEARNING
 from Representations import *
 from Policies import eGreedy
@@ -24,7 +24,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     num_policy_checks = 20
     checks_per_policy = 1
 
-    domain = CartPoleBalanceOriginal(logger=logger, good_reward=0.)
+    domain = FiniteCartPoleBalanceOriginal(logger=logger, good_reward=0.)
     representation = IndependentDiscretization(domain, discretization=discretization, logger=logger)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Q_LEARNING(representation, policy, domain, logger
