@@ -114,7 +114,7 @@ class MDPSolver(object):
 
         s, eps_term, p_actions           = self.domain.s0()
         terminal    = False
-        #if self.show_performance:
+        #if self.visualize_performance:
         #    self.domain.showLearning(self.representation)
 
         while not eps_term and eps_length < self.domain.episodeCap:

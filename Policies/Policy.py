@@ -42,7 +42,7 @@ class Policy(object):
 
     # [pi code]
     def pi(self,s, terminal, p_actions):
-       abstract
+       raise NotImplementedError
     # [pi code]
 
 

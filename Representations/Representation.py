@@ -307,7 +307,7 @@ class Representation(object):
 
     # [phi_nonTerminal code]
     def phi_nonTerminal(self,s):
-            abstract
+        raise NotImplementedError
     # [phi_nonTerminal code]
 
 
@@ -395,7 +395,7 @@ class Representation(object):
 
     # [featureType code]
     def featureType(self):
-        abstract
+        raise NotImplementedError
     # [featureType code]
 
 
