@@ -30,22 +30,23 @@ class InfTrackCartPole(CartPoleBase):
         In the literature, this domain is often referred as a ``Pendulum`` and
         is often accompanied by misleading or even incorrect diagrams.
         However, the cited underlying dynamics correspond to a pendulum on a
-        cart (\c %CartPoleBase), with cart position and velocity ignored and
-        unbounded (but **still impacting the pendulum dynamics**).\n
+        cart (:class:`Domains.CartPoleBase.CartPoleBase`), with
+        cart position and velocity ignored and unbounded
+        (but **still impacting the pendulum dynamics**).\n
         Actions thus still take the form of forces and not torques.
     
-    | **State**
+    **State** \n
     theta    = Angular position of pendulum
     (relative to straight up at 0 rad), positive clockwise. \n
     thetaDot = Angular rate of pendulum. positive clockwise. \n
 
-    | **Actions**
+    **Actions** \n
     Actions take the form of force applied to cart; \n
     Positive force acts to the right on the cart. \n
 
     Uniformly distributed noise is added with magnitude 10 N.
 
-    | **Reference**
+    **Reference** \n
     For details, see:
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
         Least-squares policy iteration.  Journal of Machine Learning Research
@@ -122,7 +123,7 @@ class InfTrackCartPole(CartPoleBase):
         Display the 4-d state of the cartpole and arrow indicating current
         force action (not including noise!).
         Note that for 2-D systems the cartpole is still displayed, but appears
-        static; see ``InfTrackCartPole``.
+        static; see :class:`Domains.InfiniteTrackCartPole.InfTrackCartPole`.
         
         """
         fourState = np.append(self.state, array([0,0])) # 0 cart position and velocity
@@ -156,14 +157,14 @@ class InfTrackCartPole(CartPoleBase):
 
 class InfCartPoleBalance(InfTrackCartPole):
     """
-    | **Goal**:
-    Balance the Pendulum on the CartPole, not letting it fall below horizontal.
+    **Goal**: \n
+    Balance the Pendulum on the cart, not letting it fall below horizontal.
     
-    | **Reward**:
+    **Reward**: \n
     Penalty of ``FELL_REWARD`` is received when pendulum falls below horizontal,
     zero otherwise.
-    
-    | Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
+    \n
+    Domain constants per 1Link implementation by Lagoudakis & Parr, 2003.
     
     .. warning::
         
@@ -206,12 +207,13 @@ class InfCartPoleBalance(InfTrackCartPole):
 
 class InfCartPoleSwingUp(InfTrackCartPole):
     """
-    | **Goal**
+    **Goal** \n
     Reward is 1 whenever ``theta`` is within ``GOAL_LIMITS``, 0 elsewhere.\n
     There is no terminal condition aside from ``episodeCap``.\n
     
     Pendulum starts straight down, ``theta = pi``.  The task is to swing it up,
-    after which the problem reduces to \c %InfCartPoleBalance, though
+    after which the problem reduces to
+    :class:`Domains.InfiniteTrackCartPole.InfCartPoleBalance`, though
     with (possibly) different domain constants defined below.
     
     """
@@ -241,7 +243,8 @@ class InfCartPoleSwingUp(InfTrackCartPole):
     def _getReward(self, a, s=None):
         """
         Return the reward earned for this state-action pair.
-        On this domain, reward of 1 is given for success, which occurs when |theta| < pi/6
+        On this domain, reward of 1 is given for success, which occurs when
+        |theta| < pi/6
         """
         if s is None:
             s = self.state
