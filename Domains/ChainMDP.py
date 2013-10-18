@@ -17,8 +17,8 @@ class ChainMDP(Domain):
     | **Actions** are left [0] and right [1]
     The task is to reach sn from s0, after which the episode terminates.
 
-        .. note::
-            Optimal policy is to always to go right.
+    .. note::
+        Optimal policy is to always to go right.
 
     |**Reward**
     -1 per step, 0 at goal (terminates)
