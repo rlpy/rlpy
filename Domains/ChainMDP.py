@@ -12,40 +12,50 @@ __author__ = "Alborz Geramifard"
 
 class ChainMDP(Domain):
     """
-     A simple Epsiodeic Chain MDP. 
-    S0 <-> S1 <-> ... <-> Sn 
-    The goal is to reach the far most right node (Sn) where the episode is finished.
-    STATE:
-    A number between 0 and n-1 
-    ACTION:
-    Actions are left [0] and right [1]
-    TRANSITION:
-    Deterministic movements.
-    The agent can not exit the chain, hence bouncing back on the sides if it tries to move further.
-    REWARD:
-    -1 per step and 0 at goal.
+    | A simple Chain MDP with **states**:
+    | s0 <-> s1 <-> ... <-> sn
+    | **Actions** are left [0] and right [1]
+    The task is to reach sn from s0, after which the episode terminates.
+
+        .. note::
+            Optimal policy is to always to go right.
+
+    |**Reward**
+    -1 per step, 0 at goal (terminates)
+
+    | **Reference**
+    For details, see:
+    
+        Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
+        Least-squares policy iteration.  Journal of Machine Learning Research
+        (2003) Issue 4.
     """
+    #: Reward for each timestep spent in the goal region
     GOAL_REWARD = 0
+    #: Reward for each timestep
     STEP_REWARD = -1
     #: Set by the domain = min(100,rows*cols)
     episodeCap  = 0
-    #: Used for graphical normalization
+    # Used for graphical normalization
     MAX_RETURN  = 1
-    #: Used for graphical normalization
+    # Used for graphical normalization
     MIN_RETURN  = 0
-    #: Used for graphical shifting of arrows
+    # Used for graphical shifting of arrows
     SHIFT       = .3
-    #: Used for graphical radius of states
+    #:Used for graphical radius of states
     RADIUS      = .5
-    #: Stores the graphical pathes for states so that we can later change their colors
+    # Stores the graphical pathes for states so that we can later change their colors
     circles     = None
     #: Number of states in the chain
     chainSize   = 0
-    #: Y values used for drawing circles
+    # Y values used for drawing circles
     Y           = 1
     actions_num = 2
 
     def __init__(self, chainSize=2,logger = None):
+        """
+        :param chainSize: Number of states \'n\' in the chain.
+        """
         self.chainSize          = chainSize
         self.start              = 0
         self.goal               = chainSize - 1

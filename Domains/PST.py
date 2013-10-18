@@ -12,33 +12,62 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
 class PST(Domain):
     """
-    Persistent Search and Track (PST) is a multi-agent Unmanned Aerial Vehicle
-    (UAV) mission planning problem, where 3 UAVs perform
-    surveillance on a target, in the presence of communication and health
-    constraints [Geramifard et al., 2011]. This domain simulates a real-world
-    planning problem with a relatively large state-action space.
-    STATE:
-    Each UAVs individual state has four dimensions: location, fuel, actuator
-    status, and sensor
-    status. The dimensionality of the state vector is therefore 4x3 = 12.
-    The full state space is the combination of states for all UAVs.
-    ACTION:
-    There are three available actions for each UAV: advance; retreat; loiter.
-    Hence the size of the action space is 3^3 = 27.
-    TRANSITION:
-    Movement of each UAV is deterministic with 5% failure rate for both the
-    actuator and sensor of each
-    UAV on each step. Each UAV starts with 10 units of fuel and burns one unit
-    for all actions except
-    when loitering in the base or refuel nodes. Executing "loiter" in the base
-    and refuel nodes fixes all UAV failures and
-    fully refuels the UAV, respectively. If a UAV runs out of fuel, it is assumed to
-    crash, terminating the episode. A UAV with a failed sensor
-    cannot perform surveillance. A UAV with a failed actuator cannot perform
-    surveillance or communication. It can either retreat or loiter in refuel or base
-    nodes.
-    REWARD:
+    Persistent Search and Track Mission with multiple Unmanned Aerial Vehicle
+    (UAV) agents.\n
+    Goal is to perform surveillance and communicate it back to base
+    in the presence of stochastic communication and \"health\"
+    (overall system functionality) constraints, all without
+    without losing any UAVs because of running out of fuel.
+
+    | **State**
+    Each UAV has 4 state dimensions:
+    
+        - LOC: position of a UAV: BASE (0),  REFUEL (1), COMMS (2), SURVEIL (3).
+        - FUEL: integer fuel qty remaining.
+        - ACT_STATUS: Actuator status: see description for info.
+        - SENS_STATUS: Sensor status: see description for info.
+
+    Domain state vector consists of 4 blocks of states,
+    each corresponding to a property of the UAVs (listed above)
+    
+    So for example:
+    state [1,2,9,3,1,0,1,1] -->
+    [1,2] | [9,3] | [1,0] | [1,1] --> 2 UAVs: \n
+    UAV 1 in location 1, with 9 fuel units remaining, and
+    sensor + actuator with status 1 (functioning). \n
+    UAV 2 in location 2, 3 fuel units remaining, actuator
+    with status 0 and sensor with status 1.
+    
+    | **Actions**
+    | Each UAV can take one of 3 actions: {RETREAT, LOITER, ADVANCE}
+    | Thus, the action space is 3^n, where n is the number of UAVs.
+    
+    | **Detailed Description**
     The objective of the mission is to fly to the surveillance node and perform
+    surveillance on a target, while ensuring that a communication link with the
+    base is maintained by having a UAV with a working actuator loitering on
+    the communication node.
+    
+	Movement of each UAV is deterministic with 5% failure rate for both the
+    actuator and sensor of each UAV on each step.
+    A penalty is applied for each unit of fuel consumed,
+    which occurs when a UAV moves between locations or when it is loitering
+    above a COMMS or SURVEIL location
+    (ie, no penalty when loitering at REFUEL or BASE).\n
+    
+    A UAV with a failed sensor cannot perform surveillance.\n
+    A UAV with a failed actuator cannot perform surveillance or communication,
+    and can only take actions leading it back to the REFUEL or BASE states,
+    where it may loiter.\n
+    Loitering for 1 timestep at REFUEL assigns fuel of 10 to that UAV.\n
+    Loitering for 1 timestep at BASE assigns status 1 (functioning) to
+    Actuator and Sensor. 
+
+    Finally, if any UAV has fuel 0, the episode terminates with large penalty.
+    \n
+    
+    | **Reward**
+	The objective of the mission is to fly to the surveillance node and perform
     surveillance on a target, while ensuring that a communication link with the
     base is maintained by having a UAV with a working actuator loitering on
     the communication node. The reward function =
@@ -46,26 +75,34 @@ class PST(Domain):
     |          ally with a working motor is at the communication node)
     |    - 50 (If any UAVs crashe)
     |    - Burned Fuel;
+
+    | **Reference** 
+    For details see:
+    
+        J. D. Redding, T. Toksoz, N. Ure, A. Geramifard, J. P. How, M. Vavrina,
+        and J. Vian. Distributed Multi-Agent Persistent Surveillance and
+        Tracking With Health Management.
+        AIAA Guidance, Navigation, and Control Conference (2011).
+
     """
-    episodeCap          = 1000 # 100 used in tutorial, 1000 in matlab
-    gamma               = 0.9  # 0.9 used in tutorial and matlab
+    episodeCap          = 1000 #: Maximum number of steps per episode
+    gamma               = 0.9  #: Discount factor
 
     # Domain constants
-    FULL_FUEL           = 10   # Number of fuel units at start [10 in tutorial]
-    P_ACT_FAIL          = 0.05 # Probability that actuators fail on this timestep [0.02 in tutorial]
-    P_SENSOR_FAIL       = 0.05 # Probability that sensors fail on this timestep [0.05 in tutorial]
+    FULL_FUEL           = 10   #: Number of fuel units at start
+    P_ACT_FAIL          = 0.05 #: Probability that an actuator fails on this timestep for a given UAV
+    P_SENSOR_FAIL       = 0.05 #: Probability that a sensor fails on this timestep for a given UAV
 #    CRASH_REWARD_COEFF  = -2.0 # Negative reward coefficient for running out of fuel (applied on every step) [C_crash] [-2.0 in tutorial]
-    CRASH_REWARD        = -50
-    SURVEIL_REWARD      = 20 # Positive reward coefficient for performing surveillance on each step [C_cov] [1.5 in tutorial]
-    FUEL_BURN_REWARD_COEFF = -1 # Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
-    MOVE_REWARD_COEFF   = 0   # Reward (negative) coefficient for movement (i.e., fuel burned while loitering might be penalized above, but no movement cost)
-    NUM_TARGET          = 1   # Number of targets; SURVEIL_REWARD is multiplied by the number of targets successfully observed
+    CRASH_REWARD        = -50 #: Reward for a crashed UAV (terminates episode)
+    SURVEIL_REWARD      = 20  #: Per-step, per-UAV reward coefficient for performing surveillance on each step [C_cov]
+    FUEL_BURN_REWARD_COEFF = -1 #: Negative reward coefficient: for fuel burn penalty [not mentioned in MDP Tutorial]
+    MOVE_REWARD_COEFF   = 0   #: Reward (negative) coefficient for movement (i.e., fuel burned while loitering might be penalized above, but no movement cost)
+    NUM_TARGET          = 1   #: Number of targets in surveillance region; SURVEIL_REWARD is multiplied by the number of targets successfully observed
     NUM_UAV             = None # Number of UAVs present in the mission [3 in tutorial
     NOM_FUEL_BURN       = 1 # Nominal rate of fuel depletion selected with probability P_NOM_FUEL_BURN
 
     # Domain variables
-    motionNoise         = 0    # Noise in action (with some probability, loiter rather than move)
-    numCrashed          = 0    # Number of crashed UAVs [n_c]
+    motionNoise         = 0    #: Noise in action (with some probability, loiter rather than move)
     numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
     fuelUnitsBurned     = 0
     LIMITS              = []   # Limits on action indices
@@ -93,6 +130,12 @@ class PST(Domain):
 
     ###
     def __init__(self, NUM_UAV = 3, motionNoise = 0, logger = None):
+        """
+        :param NUM_UAV: the number of UAVs in the domain
+        :param motionNoise: probability of taking the LOITER action instead of the one selected.
+        
+        """
+        
         self.NUM_UAV                = NUM_UAV
         self.states_num             = NUM_UAV * UAVIndex.SIZE       # Number of states (LOC, FUEL...) * NUM_UAV
         self.actions_num            = pow(UAVAction.SIZE,NUM_UAV)    # Number of Actions: ADVANCE, RETREAT, LOITER
@@ -119,10 +162,6 @@ class PST(Domain):
         [self.DimNames.append('UAV%d-sen' % i) for i in arange(NUM_UAV)]
         super(PST,self).__init__(logger)
         if self.logger: self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
-
-    def resetLocalVariables(self):
-        self.numCrashed = 0 # Number of crashed UAVs [n_c]
-
 
     def showDomain(self, a=0):
         s = self.state
@@ -287,7 +326,6 @@ class PST(Domain):
         return totalStepReward,ns,self.isTerminal(), self.possibleActions()
 
     def s0(self):
-        self.resetLocalVariables()
         locations   = ones(self.NUM_UAV, dtype='int') * UAVLocation.BASE
         fuel        = ones(self.NUM_UAV, dtype='int') * self.FULL_FUEL
         actuator    = ones(self.NUM_UAV, dtype='int') * ActuatorState.RUNNING
@@ -297,20 +335,39 @@ class PST(Domain):
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def state2Struct(self,s):
+        """
+        Convert generic RLPy state ``s`` to generic 
+        
+        :param s: RLPy state
+        :returns: PST.StateStruct -- the custom structure used by this domain.
+        
+        """
         # Only perform multiplication once to save time
         fuelEndInd      = 2*self.NUM_UAV
         actuatorEndInd  = 3*self.NUM_UAV
         sensorEndInd    = 4*self.NUM_UAV
-        locations = s[0         :self.NUM_UAV]
-        fuel =      s[self.NUM_UAV   :fuelEndInd]
-        actuator =  s[fuelEndInd :actuatorEndInd]
-        sensor =    s[actuatorEndInd   :sensorEndInd]
+        locations = s[0             :self.NUM_UAV]
+        fuel =      s[self.NUM_UAV  :fuelEndInd]
+        actuator =  s[fuelEndInd    :actuatorEndInd]
+        sensor =    s[actuatorEndInd:sensorEndInd]
 
         return StateStruct(locations, fuel, actuator, sensor)
+    
     def properties2StateVec(self,locations, fuel, actuator, sensor):
+        """
+        Appends the arguments into an nparray to create an RLPy state vector.
+        
+        """
         return hstack([locations, fuel, actuator, sensor])
 
     def struct2State(self,sState):
+        """
+        Converts a custom PST.StateStruct to an RLPy state vector.
+        
+        :param sState: the PST.StateStruct object
+        :returns: RLPy state vector
+        
+        """
         return hstack([sState.locations, sState.fuel, sState.actuator, sState.sensor])
 
     def possibleActions(self):
@@ -349,13 +406,22 @@ class PST(Domain):
         return array(self.vecList2id(validActions, UAVAction.SIZE)) # TODO place this in tools
 
     # TODO place this in Tools
-    # Given a list of lists of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
-    # unique id for each permutation between lists; eg above, would return 3*2*2*2 values
-    # ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists, maxValue)
     def vecList2id(self,x,maxValue):
-    #returns a list of unique id's based on possible permutations of this list of lists
+        """
+        Returns a list of unique id's based on possible permutations of a list of integer lists.
+        The length of the integer lists need not be the same.
+        
+        :param x: A list of varying-length lists
+        :param maxValue: the largest value a cell of ``x`` can take.
+        :returns: int -- unique value associated with a list of lists of this length.
+        
+        Given a list of lists of the form [[0,1,2],[0,1],[1,2],[0,1]]... return
+        unique id for each permutation between lists; eg above, would return 3*2*2*2 values
+        ranging from 0 to 3^4 -1 (3 is max value possible in each of the lists, maxValue)
+        
+        """
         _id = 0
-        actionIDs = []
+        actionIDs = [] # This variable is MODIFIED by vecList2idHelper() below.
         curActionList = []
         lenX = len(x)
         limits = tile(maxValue, (1,lenX))[0] # eg [3,3,3,3] # TODO redundant computation
@@ -364,7 +430,14 @@ class PST(Domain):
         return actionIDs
 
     def vecList2idHelper(self,x,actionIDs,ind,curActionList, maxValue,limits):
-    #returns a list of unique id's based on possible permutations of this list of lists.  See vecList2id
+        """
+        Helper method for vecList2id().
+        
+        :returns: a list of unique id's based on possible permutations of this list of lists.
+        
+        See vecList2id()
+        
+        """
         for curAction in x[ind]: # x[ind] is one of the lists, e.g [0, 2] or [1,2]
             partialActionAssignment = curActionList[:]
             partialActionAssignment.append(curAction)
@@ -372,18 +445,27 @@ class PST(Domain):
                 actionIDs.append(vec2id(partialActionAssignment, limits)) # eg [0,1,0,2] and [3,3,3,3]
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
+    
     def isTerminal(self):
         sStruct = self.state2Struct(self.state)
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 
 class UAVLocation:
-    BASE = 0
+    """
+    Enumerated type for possible UAV Locations
+    
+    """
+    BASE        = 0
     REFUEL      = 1
     COMMS       = 2
     SURVEIL     = 3
     SIZE        = 4
 
 class StateStruct:
+    """
+    Custom internal state structure
+    
+    """
     def __init__(self, locations, fuel, actuator, sensor):
         self.locations = locations
         self.fuel       = fuel
@@ -391,24 +473,35 @@ class StateStruct:
         self.sensor     = sensor
 
 class ActuatorState:
+    """
+    Enumerated type for individual actuator state.
+    
+    """
     FAILED, RUNNING = 0,1 # Status of actuator
     SIZE = 2
 class SensorState:
+    """
+    Enumerated type for individual sensor state.
+    
+    """
     FAILED, RUNNING = 0,1 # Status of sensor
     SIZE = 2
 
 # Future code (in 'step') assumes that these can be summed, ie, 0,1,2 retreat, advance, loiter
 class UAVAction:
+    """
+    Enumerated type for individual UAV actions.
+    
+    """
     ADVANCE,RETREAT,LOITER = 2,0,1 # Available actions
     SIZE = 3 # number of states above
 
 # NOTE: properties2StateVec assumes the order loc,fuel,actuator,sensor
 class UAVIndex:
+    """
+    Enumerated type for individual UAV Locations
+    
+    """
     LOC, FUEL, ACT_STATUS, SENS_STATUS = 0,1,2,3
     SIZE = 4 # Number of indices required for state of each UAV
-
-
-
-
-
 
