@@ -23,14 +23,14 @@ class FiniteTrackCartPole(CartPoleBase):
     corresponding to a physical rail, which affects valid solutions/policies.
     
     
-    | **State**
+    **State** \n
     theta    = Angular position of pendulum
     (relative to straight up at 0 rad), positive clockwise. \n
     thetaDot = Angular rate of pendulum. \n
     x        = Linear position of the cart on its track (positive right). \n
     xDot     = Linear velocity of the cart on its track.
 
-    | **Actions**
+    **Actions** \n
     Actions take the form of force applied to cart; \n
     Positive force acts to the right on the cart. \n
 
@@ -43,7 +43,7 @@ class FiniteTrackCartPole(CartPoleBase):
         is unphysically slow; the Pendulum often saturates it.\n
         RLPy will issue truncation warnings if this is occurring.
 
-    | **Reference**
+    **Reference** \n
     For details, see:
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
         Least-squares policy iteration.  Journal of Machine Learning Research
@@ -158,19 +158,19 @@ class FiniteTrackCartPole(CartPoleBase):
 
 class FiniteCartPoleBalance(FiniteTrackCartPole):
     """
-    | **Goal**
+    **Goal** \n
     Reward 1 is received on each timestep spent within the goal region,
     zero elsewhere.
     This is also the terminal condition.
     
     The bounds for failure match those used in the RL-Community (see Reference) \n
-    ``theta``: [-12, 12] degrees  -->  [-pi/15, pi/15]
+    ``theta``: [-12, 12] degrees  -->  [-pi/15, pi/15] \n
     ``x``: [-2.4, 2.4] meters
 
-    Pendulum starts straight up, theta = 0, with the
-    cart at x = 0.
+    Pendulum starts straight up, ``theta = 0``, with the
+    cart at ``x = 0``.
 
-    | **Reference**
+    **Reference** \n
         See `RL-Library CartPole <http://library.rl-community.org/wiki/CartPole>`_ \n
         Domain constants per RL Community / RL-Library
         `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
@@ -203,12 +203,12 @@ class FiniteCartPoleBalance(FiniteTrackCartPole):
 
 class FiniteCartPoleBalanceOriginal(FiniteTrackCartPole):
     """
-    | **Reference**
+    **Reference** \n
     Sutton, Richard S., and Andrew G. Barto:
     Reinforcement learning: An introduction.
     Cambridge: MIT press, 1998.
     
-    | See FiniteCartPoleBalance
+    See :class:`Domains.FiniteTrackCartPole.FiniteCartPoleBalance` \n
     
     .. note::
     
@@ -241,7 +241,7 @@ class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
     """
     A more realistic version of balancing with 3 actions (left, right, none)
     instead of the default (left, right), and nonzero, uniform noise in actions.\n
-    See \c %FiniteCartPoleBalance.\n
+    See :class:`Domains.FiniteTrackCartPole.FiniteCartPoleBalance`.\n
     
     Note that the start state has some noise.
     
@@ -275,7 +275,7 @@ class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
 
 class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     """
-    | **Goal**
+    **Goal** \n
     Reward is 1 within the goal region, 0 elsewhere. \n
 
     Pendulum starts straight down, theta = pi, with the
@@ -288,7 +288,7 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     hold it there, collapsing the problem to InfCartPoleBalance
     but with much tighter bounds on the goal region.
     
-    See parent class ``FiniteTrackCartPole`` for more information.
+    See parent class :class:`Domains.FiniteTrackCartPole.FiniteTrackCartPole` for more information.
 
     """
     #: Limit on pendulum angle (no termination, pendulum can make full cycle)
@@ -298,7 +298,7 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     # saturates them frequently when falling; more realistic to use 2*pi.
 
     def __init__(self, logger = None):
-        super(CartPole_SwingUp,self).__init__(logger)
+        super(FiniteCartPoleSwingUp,self).__init__(logger)
 
     def s0(self):
         # Returns the initial state, pendulum vertical
@@ -319,7 +319,7 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
 class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     """
     Modifies ``CartPole`` dynamics to include friction. \n
-    This domain is a child of \c %FiniteCartPoleSwingUp.
+    This domain is a child of :class:`Domains.FiniteTrackCartPole.FiniteCartPoleSwingUp`.
     
     """
     
@@ -349,7 +349,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     # Friction coefficient between cart and ground
     B = 0.1
     
-    def __init__(self):
+    def __init__(self, logger = None):
         super(FiniteCartPoleSwingUpFriction,self).__init__(logger)
 
     def _getReward(self, a, s=None):

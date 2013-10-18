@@ -24,6 +24,8 @@ Domains
     :maxdepth: 1
 
     acrobot.rst
-    cartpole.rst
     bicycle.rst
     domains_misc.rst
+    finite_cartpole.rst
+    infinite_cartpole.rst
+    

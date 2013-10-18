@@ -18,6 +18,9 @@ from Bicycle import BicycleBalancing
 from Pinball import Pinball
 from MultiTrack import MultiTrack
 from Pinball import Pinball
-from CartPoleBase import CartPoleBase, StateIndex
-from FiniteTrackCartPole import *
-from InfiniteTrackCartPole import *
+from FiniteTrackCartPole import (FiniteCartPoleBalance, 
+                                 FiniteCartPoleBalanceOriginal,
+                                 FiniteCartPoleBalanceModern,
+                                 FiniteCartPoleSwingUp,
+                                 FiniteCartPoleSwingUpFriction)
+from InfiniteTrackCartPole import InfCartPoleBalance, InfCartPoleSwingUp
