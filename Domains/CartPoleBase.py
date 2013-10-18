@@ -136,17 +136,21 @@ class CartPoleBase(Domain):
             This function *does not* affect system dynamics.
             
         """
-        minPosition = self.POSITON_LIMITS[0]-self.RECT_WIDTH/2.0
-        maxPosition = self.POSITON_LIMITS[1]+self.RECT_WIDTH/2.0
+        if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
+            self.minPosition = 0 - self.RECT_WIDTH/2.0
+            self.maxPosition = 0 + self.RECT_WIDTH/2.0
+        else:
+            self.minPosition = self.POSITON_LIMITS[0]-self.RECT_WIDTH/2.0
+            self.maxPosition = self.POSITON_LIMITS[1]+self.RECT_WIDTH/2.0
         self.GROUND_VERTS = np.array([
-            (minPosition, -self.RECT_HEIGHT / 2.0),
-            (minPosition,self.RECT_HEIGHT / 2.0),
-            (minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
-            (minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
-            (maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
-            (maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
-            (maxPosition, self.RECT_HEIGHT/2.0),
-            (maxPosition, -self.RECT_HEIGHT/2.0),
+            (self.minPosition, -self.RECT_HEIGHT / 2.0),
+            (self.minPosition,self.RECT_HEIGHT / 2.0),
+            (self.minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
+            (self.minPosition-self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
+            (self.maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0-self.GROUND_HEIGHT),
+            (self.maxPosition+self.GROUND_WIDTH, self.RECT_HEIGHT/2.0),
+            (self.maxPosition, self.RECT_HEIGHT/2.0),
+            (self.maxPosition, -self.RECT_HEIGHT/2.0),
         ])
         
     def _getReward(self, a, s=None):
@@ -301,10 +305,6 @@ class CartPoleBase(Domain):
         pl.title('Policy')
             
         self.policy_fig.set_data(piMat)
-        print piMat
-        print sum(piMat)
-        print sum(abs(piMat))
-        print piMat.shape
         pl.draw()
             
     def _plot_valfun(self, VMat):
@@ -337,6 +337,9 @@ class CartPoleBase(Domain):
         s = fourDimState
         if self.domainFig is None:  # Need to initialize the figure
             self.domainFig = pl.figure("Domain")
+#             pl.xlabel(r"$x$ position (meters)")
+#             pl.ylabel(r"$y$ position (meters)")
+#             pl.title('Domain State')
             ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
             self.pendulumArm = lines.Line2D([], [], linewidth = self.PEND_WIDTH, color='black')
             self.cartBox    = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT / 2.0], self.RECT_WIDTH, self.RECT_HEIGHT, alpha=.4)
@@ -352,34 +355,38 @@ class CartPoleBase(Domain):
             self.rewardText = ax.text(self.POSITON_LIMITS[0], self.LENGTH,"")
             # Allow room for pendulum to swing without getting cut off on graph
             viewableDistance = self.LENGTH  + 0.5
-            ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
+            if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
+                # We have huge position limits, limit the figure width so
+                # cart is still visible
+                ax.set_xlim(-viewableDistance, viewableDistance)
+            else:
+                ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
             ax.set_ylim(-viewableDistance, viewableDistance)
             #ax.set_aspect('equal')
 
             pl.show()
 
-        self.domainFig = pl.figure("Domain")
+#         self.domainFig = pl.figure("Domain")
         forceAction = self.AVAIL_FORCE[a]
         curX = s[StateIndex.X]
         curTheta = s[StateIndex.THETA]
-
+ 
         pendulumBobX = curX + self.LENGTH  * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
-
+ 
         r = self._getReward(a, s=s)
-        self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
+#         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
-
+ 
         # update pendulum arm on figure
         self.pendulumArm.set_data([curX, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])
         self.cartBox.set_x(curX - self.RECT_WIDTH/2.0)
         self.cartBlob.set_x(curX - self.BLOB_WIDTH/2.0)
-
-
+  
         if self.actionArrow is not None:
             self.actionArrow.remove()
             self.actionArrow = None
-
+ 
         if forceAction == 0: pass # no force
         else:  # cw or ccw torque
             if forceAction > 0: # rightward force

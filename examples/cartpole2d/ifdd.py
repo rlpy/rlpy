@@ -28,9 +28,6 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     logger = Logger()
     max_steps = 10000
     num_policy_checks = 20
-    show_performance = True
-    show_all = True
-    plot_performance = False
     checks_per_policy = 10
     sparsify = True
 
@@ -53,5 +50,5 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
 
 if __name__ == '__main__':
     experiment = make_experiment(1)
-    experiment.run(visualize_performance=False, visualize_learning=False)
+    experiment.run(visualize_performance=False, visualize_learning=True)
     experiment.save()
