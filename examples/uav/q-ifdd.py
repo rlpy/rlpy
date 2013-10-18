@@ -16,10 +16,10 @@ param_space = {#'discretization': hp.quniform("discretization", 5, 50, 1),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
-                    discover_threshold =1307.41,
+                    discover_threshold =1204.,
                     lambda_=0.,
-                    boyan_N0=7147.75,
-                    initial_alpha = .9824):
+                    boyan_N0=7353.2,
+                    initial_alpha = .9712):
     logger = Logger()
     max_steps = 500000
     num_policy_checks = 30
