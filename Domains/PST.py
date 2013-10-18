@@ -67,7 +67,7 @@ class PST(Domain):
     \n
     
     | **Reward**
-	The objective of the mission is to fly to the surveillance node and perform
+    The objective of the mission is to fly to the surveillance node and perform
     surveillance on a target, while ensuring that a communication link with the
     base is maintained by having a UAV with a working actuator loitering on
     the communication node. The reward function =
