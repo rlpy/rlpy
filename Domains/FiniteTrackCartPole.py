@@ -298,7 +298,7 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     # saturates them frequently when falling; more realistic to use 2*pi.
 
     def __init__(self, logger = None):
-        super(CartPole_SwingUp,self).__init__(logger)
+        super(FiniteCartPoleSwingUp,self).__init__(logger)
 
     def s0(self):
         # Returns the initial state, pendulum vertical
@@ -349,7 +349,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     # Friction coefficient between cart and ground
     B = 0.1
     
-    def __init__(self):
+    def __init__(self, logger = None):
         super(FiniteCartPoleSwingUpFriction,self).__init__(logger)
 
     def _getReward(self, a, s=None):
