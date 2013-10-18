@@ -48,7 +48,7 @@ class PST(Domain):
     base is maintained by having a UAV with a working actuator loitering on
     the communication node.
     
-	Movement of each UAV is deterministic with 5% failure rate for both the
+    Movement of each UAV is deterministic with 5% failure rate for both the
     actuator and sensor of each UAV on each step.
     A penalty is applied for each unit of fuel consumed,
     which occurs when a UAV moves between locations or when it is loitering
