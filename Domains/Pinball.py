@@ -20,15 +20,40 @@ class Pinball(Domain):
     """
     Pinball Subclass of RLPy Domain Class created entirely by Austin Hays.
 
-    Pinball domain specification given in the paper:
-    G.D. Konidaris and A.G. Barto. Skill Discovery in Continuous Reinforcement Learning Domains using Skill Chaining.
-    Advances in Neural Information Processing Systems 22, pages 1015-1023, December 2009.
+    The goal of this domain is to maneuver a small ball on a plate into a hole.
+    The plate may contain obstacles which should be avoided.
+
+    **State**:
+        The state is given by a 4-dimensional vector, consisting of position and
+        velocity of the ball.
+
+    **Actions**:
+        There are 5 actions, standing for slanting the  plat in x or y direction
+        or a horizontal position
+        of the plate.
+
+    **Reward**:
+        Slanting the plate costs -4 reward in addition to -1 reward for each timestep.
+        When the ball reaches the hole, the agent receives 10000 units of reward.
+
+    .. seealso::
+        G.D. Konidaris and A.G. Barto:
+        *Skill Discovery in Continuous Reinforcement Learning Domains using Skill Chaining.*
+        Advances in Neural Information Processing Systems 22, pages 1015-1023, December 2009.
     """
     #: default location of config files shipped with rlpy
     default_config_dir = os.path.join(__rlpy_location__, "Domains", "PinballConfigs")
 
     def __init__(self, noise=.1, episodeCap=1000, logger=None,
                  configuration=os.path.join(default_config_dir, "pinball_simple_single.cfg")):
+        """
+        configuration:
+            location of the configuration file
+        episodeCap:
+            maximum length of an episode
+        noise:
+            with probability noise, a uniformly random action is executed
+        """
         self.NOISE              = noise
         self.logger             = logger
         self.configuration      = configuration

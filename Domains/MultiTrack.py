@@ -7,7 +7,7 @@ __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
-__author__ = "Tevor Campbell"
+__author__ = "Trevor Campbell"
 
 
 class MultiTrack(Domain):
@@ -33,7 +33,8 @@ class MultiTrack(Domain):
     motionNoise         = 0
 
     ###
-    def __init__(self, GRID = 6, ASTEP = 2, TSTEP = 1, NUM_AGENTS = 1, NUM_TARGETS = 1, motionNoise = 0, logger = None):
+    def __init__(self, GRID = 6, ASTEP = 2, TSTEP = 1, NUM_AGENTS = 1,
+                 NUM_TARGETS = 1, motionNoise = 0, logger = None):
         #Domain-specific
         self.NUM_AGENTS             = NUM_AGENTS
         self.NUM_TARGETS            = NUM_TARGETS

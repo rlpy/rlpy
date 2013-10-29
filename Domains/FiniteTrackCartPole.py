@@ -355,7 +355,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     def _getReward(self, a, s=None):
         if s is None:
             s = self.state
-        if not (POSITON_LIMITS[0] < s[StateIndex.X] < POSITON_LIMITS[1]):
+        if not (self.POSITON_LIMITS[0] < s[StateIndex.X] < self.POSITON_LIMITS[1]):
             return -30
         pen_pos = np.array([s[StateIndex.X] + self.LENGTH * np.sin(s[StateIndex.THETA]),
                          self.LENGTH * np.cos(s[StateIndex.THETA])])
