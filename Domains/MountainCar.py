@@ -15,36 +15,35 @@ class MountainCar(Domain):
     """
     The goal is to drive an under accelerated car up to the hill.\n
     
-    **State:** Position and velocity of the car: [x, xdot] 
-    **Actions:**
-    [Acc backwards, Coast, Acc forward]
-    Transition:
-    Move along the hill with some noise on the movement.
-    REWARD:
-    -1 per step and 0 at goal.
+    **STATE:**        Position and velocity of the car [x, xdot] \n
+    **ACTIONS:**      [Acc backwards, Coast, Acc forward] \n
+    **TRANSITIONS:**  Move along the hill with some noise on the movement. \n
+    **REWARD:**       -1 per step and 0 at or beyond goal (``x-goal > 0``). \n
     
-    **Reference**:
-    Based on `RL-Community Java Implementation <http://library.rl-community.org/wiki/Mountain_Car_(Java)`_
+    There is optional noise on vehicle acceleration.
+    
+    **REFERENCE:**
+    Based on `RL-Community Java Implementation <http://library.rl-community.org/wiki/Mountain_Car_(Java)>`_
     """
     actions_num = 3
     state_space_dims = 2
     continuous_dims = [0,1]
 
-    XMIN = -1.2
-    XMAX = 0.6
-    XDOTMIN = -0.07
-    XDOTMAX = 0.07
-    INIT_STATE = array([-0.5, 0.0])
-    STEP_REWARD = -1
-    GOAL_REWARD = 0
-    GOAL = .5
+    XMIN = -1.2 #: Lower bound on domain position
+    XMAX = 0.6  #: Upper bound on domain position
+    XDOTMIN = -0.07 #: Lower bound on car velocity
+    XDOTMAX = 0.07  #: Upper bound on car velocity
+    INIT_STATE = array([-0.5, 0.0]) #: Initial car state
+    STEP_REWARD = -1 #: Penalty for each step taken before reaching the goal
+    GOAL_REWARD = 0  #: Reward for reach the goal.
+    GOAL = .5        #: X-Position of the goal location (Should be at/near hill peak)
     actions = [-1, 0, 1]
-    noise = 0
-    accelerationFactor = 0.001
+    noise = 0        #: Magnitude of noise (times accelerationFactor) in stochastic velocity changes
+    accelerationFactor = 0.001 #: Magnitude of acceleration action
     gravityFactor = -0.0025;
-    hillPeakFrequency = 3.0;
+    hillPeakFrequency = 3.0; #: Hill peaks are generated as sinusoid; this is freq. of that sinusoid.
     #gamma = .9
-    episodeCap = 10000
+    episodeCap = 10000 #: Maximum number of steps before terminating episode
 
     #Used for visual stuff:
     domain_fig          = None
@@ -57,6 +56,10 @@ class MountainCar(Domain):
     CAR_WIDTH           = .1
     ARROW_LENGTH        = .2
     def __init__(self, noise = 0, logger = None):
+        """
+        :param noise: Magnitude of noise (times accelerationFactor) in stochastic velocity changes
+        
+        """
         self.statespace_limits = array([[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise
         #Visual stuff:
@@ -70,8 +73,12 @@ class MountainCar(Domain):
         super(MountainCar,self).__init__(logger)
 
     def step(self, a):
+        """
+        Take acceleration action *a*, adding noise as specified in ``__init__()``.
+        
+        """
         position, velocity = self.state
-        noise = 2 * self.accelerationFactor * self.noise * (self.random_state.rand() - .5)
+        noise = self.accelerationFactor * self.noise * 2 * (self.random_state.rand() - .5)
         velocity += (noise +
                                 self.actions[a] * self.accelerationFactor +
                                 cos(self.hillPeakFrequency * position) * self.gravityFactor)
@@ -90,6 +97,11 @@ class MountainCar(Domain):
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
+        """
+        :return: ``True`` if the car has reached or exceeded the goal position.
+        
+        """
+        
         return self.state[0] > self.GOAL
 
     def showDomain(self, a):

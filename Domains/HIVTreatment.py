@@ -15,7 +15,7 @@ class HIVTreatment(Domain):
     """
     Simulation of HIV Treatment. The aim is to find an optimal drug schedule.
 
-    **State:** The state contains concentrations of 6 different cells:
+    **STATE:** The state contains concentrations of 6 different cells:
 
     * T1: non-infected CD4+ T-lymphocytes [cells / ml]
     * T1*:    infected CD4+ T-lymphocytes [cells / ml]
@@ -24,7 +24,7 @@ class HIVTreatment(Domain):
     * V: number of free HI viruses [copies / ml]
     * E: number of cytotoxic T-lymphocytes [cells / ml]
 
-    **Actions:** The therapy consists of 2 drugs
+    **ACTIONS:** The therapy consists of 2 drugs
     (reverse transcriptase inhibitor [RTI] and protease inhibitor [PI]) which
     are activated or not. The action space contains therefore of 4 actions:
 
@@ -33,7 +33,7 @@ class HIVTreatment(Domain):
     * *2*: PI active
     * *3*: RTI and PI active
 
-    For details see
+    **REFERENCE:** For details see
         Ernst, D., Stan, G., Gonc, J. & Wehenkel, L.
         Clinical data based optimal STI strategies for HIV:
         A reinforcement learning approach
