@@ -98,7 +98,20 @@ each package.
 Windows
 -------
 
+We recommend using Anaconda for installing Python and all dependencies. Follow the instructions in 
+:ref:`the following section <anaconda>`. On Windows, Anaconda also comes with the gcc compiler.
 
+.. warning::
+    Unfortunately, matplotlib shipped with Anaconda does not contain the `tkagg` backend, which we
+    use by default. At the moment you need to install matplotlib manually with tkinter support for RLPy 
+    to work properly.
+    
+.. warning::
+    A couple of problems arise when building our Cython / C++ Extensions on Windows. It requires therefore
+    some workarounds to get all extensions running on Windows. For details see
+    https://bitbucket.org/rlpy/rlpy/issue/31/windows-anaconda-installation-problems
+    Unfortunately, the problems are caused by packages we rely on and are therefore not easy to resolve for us.
+    
 .. _anaconda:
 
 Anaconda
@@ -130,6 +143,7 @@ Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
     error about the `-arch` parameters, try using::
 
         ARCHFLAGS="" python setup.py build_ext --inplace
+
 
 .. tip::
     You can verify that your rlpy installation works well by running the testsuite in
