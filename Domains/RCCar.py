@@ -11,7 +11,7 @@ __author__ = "Alborz Geramifard"
 
 class RCCar(Domain):
     """
-    This is a simple simulation of Remote Controlled Car in a room with no obstacle
+    This is a simple simulation of Remote Controlled Car in a room with no obstacle.
 
     **STATE:** 4 continuous dimensions:
     
