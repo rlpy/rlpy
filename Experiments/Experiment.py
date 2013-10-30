@@ -20,12 +20,13 @@ class Experiment(object):
     """
     The Experiment controls the training, testing, and evaluation of the
     agent. Reinforcement learning is based around
-    the concept of training an Agent to solve a task and later testing its
-    ability to use what it has learned to solve the task.
+    the concept of training an :py:class:`~Agents.Agent.Agent` to solve a task,
+    and later testing its ability to do so based on what it has learned.
     This cycle forms a loop that the experiment defines and controls. First
     the agent is repeatedly tasked with solving a problem determined by the
-    domain, restarting after some termination condition is reached
-    (The sequence of steps between terminations is known as an *episode*).
+    :py:class:`~Domains.Domain.Domain`, restarting after some termination
+    condition is reached.
+    (The sequence of steps between terminations is known as an *episode*.)
 
     Each time the Agent attempts to solve the task, it learns more about how
     to accomplish its goal. The experiment controls this loop of "training
@@ -39,15 +40,16 @@ class Experiment(object):
     evaluation, the experiment determines whether or not the visualization
     of the step should generated.
 
-    The :ref:`Experiment <experiment>` class is a superclass that provides
+    The Experiment class is a base class that provides
     the basic framework for all RL experiments. It provides the methods and
-    attributes that allow child classes to interact with the :ref:`Agent <agent>`
-    and :ref:`Domain <domain>` classes within the RLPy library.
+    attributes that allow child classes to interact with the Agent
+    and Domain classes within the RLPy library.
 
-    All experiment implementations should inherit from :ref:`Experiment <experiment>`.
+    .. note::
+        All experiment implementations should inherit from this class.
     """
 
-    #: The Main Random Seed used to generate other random seeds
+    #: The Main Random Seed used to generate other random seeds (we use a different seed for each experiment id)
     mainSeed = 999999999
     #: Maximum number of runs used for averaging, specified so that enough
     #: random seeds are generated
@@ -56,26 +58,26 @@ class Experiment(object):
     # the same random seed
     randomSeeds = np.random.RandomState(mainSeed).randint(1, mainSeed, maxRuns)
 
-    #: ID of the current experiment (main seed)
+    #: ID of the current experiment (main seed used for calls to np.rand)
     id = 1
 
-    #: The domain to be tested on
+    # The domain to be tested on
     domain = None
-    #: The agent to be tested
+    # The agent to be tested
     agent = None
 
-    #: An array that stores all generated results. The purpose of a run
+    #: A 2-d numpy array that stores all generated results.The purpose of a run
     #: is to fill this array. Size is stats_num x num_policy_checks.
     result = None
     #: The name of the file used to store the data
     output_filename = ''
-    #: A simple object that records the prints in a file
+    # A simple object that records the prints in a file
     logger = None
 
-    max_steps = 0  #: Total number of interactions
-    #: Number of Performance Checks uniformly scattered along the trajectory
+    max_steps = 0  # Total number of interactions
+    # Number of Performance Checks uniformly scattered along timesteps of the experiment
     num_policy_checks = 0
-    log_interval = 0  #: Number of seconds between log prints
+    log_interval = 0  # Number of seconds between log prints to console
 
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template ='{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
@@ -83,11 +85,30 @@ class Experiment(object):
     def __init__(self, agent, domain, logger, id=1, max_steps=max_steps,
                  num_policy_checks=10, log_interval=1, path='Results/Temp',
                  checks_per_policy=1, **kwargs):
+        """
+        :param agent: the :py:class:`~Agents.Agent.Agent` to use for learning the task.
+        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
+        :param id: ID of this experiment (main seed used for calls to np.rand)
+        :param max_steps: Total number of interactions (steps) before experiment termination.
+        
+        .. note::
+            ``max_steps`` is distinct from ``episodeCap``; ``episodeCap`` defines the
+            the largest number of interactions which can occur in a single
+            episode / trajectory, while ``max_steps`` limits the sum of all
+            interactions over all episodes which can occur in an experiment.
+        
+        :param num_policy_checks: Number of Performance Checks uniformly
+            scattered along timesteps of the experiment
+        :param log_interval: Number of seconds between log prints to console
+        :param path: Path to the directory to be used for results storage
+            (Results are stored in ``path/output_filename``)
+        :param checks_per_policy: defines how many episodes should be run to
+            estimate the performance of a single policy
+        
+        """
         self.id = id
         assert id > 0
         self.agent = agent
-        #: defines how many episodes should be run to estimate the performance
-        #: of a single policy
         self.checks_per_policy = checks_per_policy
         self.domain = domain
         self.max_steps = max_steps
@@ -109,8 +130,7 @@ class Experiment(object):
     def seed_components(self):
         """
         set the initial seeds for all random number generators used during
-        the experiment run
-        based on the currently set id
+        the experiment run based on the currently set ``id``.
         """
         self.output_filename = '{:0>3}-results.json'.format(self.id)
         np.random.seed(self.randomSeeds[self.id - 1])
@@ -123,11 +143,9 @@ class Experiment(object):
         Execute a single episode using the current policy to evaluate its
         performance. No exploration or learning is enabled.
 
-        Parameters:
-
-        total_steps: int
+        :param total_steps: int
             maximum number of steps of the episode to peform
-        visualize: boolean, optional (default: False)
+        :param visualize: boolean, optional
             defines whether to show each step or not (if implemented by the domain)
         """
 
@@ -167,6 +185,11 @@ class Experiment(object):
         printClass(self)
 
     def run_from_commandline(self):
+        """
+        Enables construction of an experiment from the command line, rather
+        than via another .py configuration file.
+        """
+        
         parser = argparse.ArgumentParser("Run rlpy experiments")
         parser.add_argument("-v", "--show-plot", default=False, action="store_true",
                              help="show a plot at the end with the results of the assessment runs")
@@ -201,20 +224,19 @@ class Experiment(object):
             visualize_steps=False, debug_on_sigurg=False):
         """
         Run the experiment and collect statistics / generate the results
-
-
-        visualize_performance (int):
+        
+        :param visualize_performance: (int)
             determines whether a visualization of the steps taken in
             performance runs are shown. 0 means no visualization is shown.
             A value n > 0 means that only the first n performance runs for a
             specific policy are shown (i.e., for n < checks_per_policy, not all
             performance runs are shown)
-        visualize_learning (boolean):
+        :param visualize_learning: (boolean)
             show some visualization of the learning status before each
             performance evaluation (e.g. Value function)
-        visualize_steps (boolean):
+        :param visualize_steps: (boolean)
             visualize all steps taken during learning
-        debug_on_sigurg (boolean):
+        :param debug_on_sigurg: (boolean)
             if true, the ipdb debugger is opened when the python process
             receives a SIGURG signal. This allows to enter a debugger at any
             time, e.g. to view data interactively or actual debugging.
@@ -310,12 +332,10 @@ class Experiment(object):
     def evaluate(self, total_steps, episode_number, visualize=0):
         """
         Evaluate the current agent within an experiment
-
-        Parameters:
-
-        total_steps: int
+        
+        :param total_steps: (int)
                      number of steps used in learning so far
-        episode_number: int
+        :param episode_number: (int)
                         number of episodes used in learning so far
         """
         # TODO resolve this hack
@@ -366,7 +386,7 @@ class Experiment(object):
         #self.domain.rand_state = random_state_domain
 
     def save(self):
-        """Saves the experimental results to the results.json file
+        """Saves the experimental results to the ``results.json`` file
         """
         results_fn = os.path.join(self.full_path,self.output_filename)
         if not os.path.exists(self.full_path):
@@ -375,8 +395,8 @@ class Experiment(object):
             json.dump(self.result, f)
 
     def load(self):
-        """loads the experimental results from the results.txt file
-        If the results could not be found, the function returns None
+        """loads the experimental results from the ``results.txt`` file
+        If the results could not be found, the function returns ``None``
         and the results array otherwise.
         """
         results_fn = os.path.join(self.full_path,self.output_filename)
@@ -386,7 +406,8 @@ class Experiment(object):
     def plot(self, y="return", x="learning_steps", save=False):
         """Plots the performance of the experiment
         This function has only limited capabilities.
-        For more advanced plotting of results consider Tools.Merger
+        For more advanced plotting of results consider
+        :py:class:`Tools.Merger.Merger`.
         """
         labels = Tools.results.default_labels
         performance_fig = pl.figure("Performance")
