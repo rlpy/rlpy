@@ -11,20 +11,19 @@ __author__ = ["Alborz Geramifard", "Robert H. Klein"]
 
 class FiftyChain(Domain):
     """
-    | **50-state chain MDP**
-    | Random start location, goal is to proceed to nearest reward.
-    | **STATE:** s0 <-> s1 <-> ... <-> s49
+    Random start location, goal is to proceed to nearest reward. \n
+    **STATE:** s0 <-> s1 <-> ... <-> s49 \n
+    **ACTIONS:** left [0] or right [1] \n
+    Actions succeed with probability .9, otherwise execute opposite action. \n
     
-    | **ACTIONS:** left [0] or right [1]
-    | Actions succeed with probability .9, otherwise execute opposite action.
-    | **REWARD:** of +1 at states 10 and 41 (indices 9 and 40)
+    .. note::
+        The optimal policy is to always go to the nearest goal
+        
+    **REWARD:** of +1 at states 10 and 41 (indices 9 and 40) \n
     
-        .. note::
-            The optimal policy is to always go to the nearest goal
+    **REFERENCE:**
     
-    | **Reference**
-    For details, see:
-    
+    .. seealso::
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.

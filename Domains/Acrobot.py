@@ -28,17 +28,7 @@ class Acrobot(Domain):
     **ACTIONS:**
     The action is either applying +1, 0 or -1 torque on the joint between
     the two pendulum links.
-
-    **REFERENCE:**
-    for details see
-        R. Sutton: Generalization in Reinforcement Learning:
-        Successful Examples Using Sparse Coarse Coding (NIPS 1996)
-
-    or
-        Sutton, Richard S., and Andrew G. Barto:
-        Reinforcement learning: An introduction.
-        Cambridge: MIT press, 1998.
-
+    
     .. note::
 
         The dynamics equations were missing some terms in the NIPS paper which
@@ -48,6 +38,17 @@ class Acrobot(Domain):
 
         However, there is the option to run the domain with the paper equations
         by setting book_or_nips = 'nips'
+
+    **REFERENCE:**
+    
+    .. seealso::
+        R. Sutton: Generalization in Reinforcement Learning:
+        Successful Examples Using Sparse Coarse Coding (NIPS 1996)
+
+    .. seealso::
+        R. Sutton and A. G. Barto:
+        Reinforcement learning: An introduction.
+        Cambridge: MIT press, 1998.
 
     .. warning::
 
@@ -214,22 +215,15 @@ class AcrobotLegacy(Acrobot):
     Both links can swing freely and can pass by each other, i.e., they don't
     collide when they have the same angle.
 
+    **STATE:**
     The state consists of the two rotational joint angles and their velocities
     [theta1 theta2 thetaDot1 thetaDot2]. An angle of 0 corresponds to
     the respective link pointing downwards (angles are in world coordinates).
 
+    **ACTIONS:**
     The action is either applying +1, 0 or -1 torque on the joint between
     the two pendulum links.
-
-    for details see
-        R. Sutton: Generalization in Reinforcement Learning:
-        Successful Examples Using Sparse Coarse Coding (NIPS 1996)
-
-    or
-        Sutton, Richard S., and Andrew G. Barto:
-        Reinforcement learning: An introduction.
-        Cambridge: MIT press, 1998.
-
+    
     .. note::
 
         The dynamics equations were missing some terms in the NIPS paper which
@@ -239,6 +233,17 @@ class AcrobotLegacy(Acrobot):
 
         However, there is the option to run the domain with the paper equations
         by setting book_or_nips = 'nips'
+
+    **REFERENCE:**
+    
+    .. seealso::
+        R. Sutton: Generalization in Reinforcement Learning:
+        Successful Examples Using Sparse Coarse Coding (NIPS 1996)
+
+    .. seealso::
+        Sutton, Richard S., and Andrew G. Barto:
+        Reinforcement learning: An introduction.
+        Cambridge: MIT press, 1998.
 
     """
 

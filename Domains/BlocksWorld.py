@@ -11,25 +11,35 @@ __author__ = "Alborz Geramifard"
 
 class BlocksWorld(Domain):
     """
-    The Blocks world domain is a classical MDP problem [Winograd, 1971]. 
-    This implementation is based on [Geramifard, 2011] Paper.
+    Classical BlocksWorld Domain [Winograd, 1971]. 
     The objective is to put blocks on top of each other in a specific order to form
     a tower. Initially all blocks are unstacked and are on the table.
     **STATE:**
     The state of the MDP is defined by n integer values [s_1 ... s_n]: si = j indicates
     that block i is on top of j (for compactness s_i = i indicates that the block i 
-    is on the table). 
+    is on the table). \n
     [0 1 2 3 4 0] => means all blocks on table except block 5 which is on top of block 0
+    
     **ACTIONS:**
     At each step, the agent can take a block, and put it on top of another
     block or move it to the table, given that blocks do not have any other blocks 
     on top of them prior to this action. 
+    
     **TRANSITION:**
     There is 30% probability of failure for each move, in which case the agent drops 
     the moving block on the table. Otherwise the move succeeds.
+    
     **REWARD:**
     The reward is -.001 for each step where the tower is not built and +1.0
     when the tower is built. 
+    
+    **REFERENCE:**
+    
+    .. seealso::
+        Alborz Geramifard, Finale Doshi, Joshua Redding, Nicholas Roy, and Jonathan How.
+        Online discovery of feature dependencies.
+        International Conference on Machine Learning (ICML), pages 881-888.
+        ACM, June 2011
     """
     #: reward per step
     STEP_REWARD             = -.001

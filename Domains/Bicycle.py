@@ -27,7 +27,7 @@ class BicycleBalancing(Domain):
     [x_b:       x-coordinate where the back tire touches the ground [m]] \n
     [y_b:       y-coordinate where the back tire touches the ground [m]] \N
     
-    *The state variables *x_b* and *y_b* are not observable.*
+    *The state variables* x_b *and* y_b *are not observable.*
 
     **ACTIONS:**
     
@@ -36,8 +36,9 @@ class BicycleBalancing(Domain):
     i.e., 9 actions in total.
 
 
-    For details see
+    **REFERENCE:**
 
+    .. seealso::
         Ernst, D., Geurts, P. & Wehenkel, L. Tree-Based Batch Mode Reinforcement Learning.
         Journal of Machine Learning Research (2005) Issue 6
 

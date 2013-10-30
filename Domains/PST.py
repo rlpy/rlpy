@@ -20,13 +20,13 @@ class PST(Domain):
     (overall system functionality) constraints, all without
     without losing any UAVs because of running out of fuel.
 
-    | **State**
+    | **STATE:**
     Each UAV has 4 state dimensions:
 
-        - LOC: position of a UAV: BASE (0),  REFUEL (1), COMMS (2), SURVEIL (3).
-        - FUEL: integer fuel qty remaining.
-        - ACT_STATUS: Actuator status: see description for info.
-        - SENS_STATUS: Sensor status: see description for info.
+    - LOC: position of a UAV: BASE (0),  REFUEL (1), COMMS (2), SURVEIL (3).
+    - FUEL: integer fuel qty remaining.
+    - ACT_STATUS: Actuator status: see description for info.
+    - SENS_STATUS: Sensor status: see description for info.
 
     Domain state vector consists of 4 blocks of states,
     each corresponding to a property of the UAVs (listed above)
@@ -46,7 +46,7 @@ class PST(Domain):
     UAV 2 in location 2, 3 fuel units remaining, actuator
     with status 0 and sensor with status 1.
 
-    | **Actions**
+    | **ACTIONS:**
     Each UAV can take one of 3 actions: {*RETREAT, LOITER, ADVANCE*}
     Thus, the action space is :math:`3^n`, where n is the number of UAVs.
 
@@ -76,7 +76,7 @@ class PST(Domain):
     Finally, if any UAV has fuel 0, the episode terminates with large penalty.
 
 
-    | **Reward**
+    | **REWARD**
     The objective of the mission is to fly to the surveillance node and perform
     surveillance on a target, while ensuring that a communication link with the
     base is maintained by having a UAV with a working actuator loitering on
@@ -86,9 +86,9 @@ class PST(Domain):
     node while an ally with a working motor is at the communication node,
     apenalty of - 50 if any UAV crashes and always some small penalty for burned fuel.
 
-
+    **REFERENCE:**
+    
     .. seealso::
-
         J. D. Redding, T. Toksoz, N. Ure, A. Geramifard, J. P. How, M. Vavrina,
         and J. Vian. Distributed Multi-Agent Persistent Surveillance and
         Tracking With Health Management.

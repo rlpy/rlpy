@@ -36,11 +36,6 @@ class HelicopterHoverExtended(Domain):
     autonomous helicopters (an XCell Tempest helicopter) in the flight
     regime close to hover.
 
-    **REFERENCE:** See:
-        Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
-        with application to modeling helicopters.
-        Advances in Neural Information Systems (2006).
-
     Adapted from the
     `RL-Community Java Implementation <http://library.rl-community.org/wiki/Helicopter_(Java)>`_
 
@@ -60,6 +55,14 @@ class HelicopterHoverExtended(Domain):
     * 9-12: orientation of heli in world as quaterion
     * 13-18: current noise due to gusts (usually not observable!)
     * 19: t number of timesteps in current episode
+    
+    **REFERENCE:**
+    
+    .. seealso::
+        Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
+        with application to modeling helicopters.
+        Advances in Neural Information Systems (2006).
+
     """
 
     MAX_POS = 20.  #: [m]  maximum deviation in position in each dimension
@@ -361,14 +364,10 @@ class HelicopterHover(HelicopterHoverExtended):
     autonomous helicopters (an XCell Tempest helicopter) in the flight
     regime close to hover.
 
-    See
-        Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
-        with application to modeling helicopters.
-        Advances in Neural Information Systems (2006).
-
     Adapted from the
     `RL-Community Java Implementation <http://library.rl-community.org/wiki/Helicopter_(Java)>`_
 
+    **STATE:**
     The state of the helicopter is described by a 12-dimensional vector
     with the following entries:
 
@@ -382,6 +381,13 @@ class HelicopterHover(HelicopterHoverExtended):
     * 7: q [angular rate around helicopter's y axis]
     * 8: r [angular rate around helicopter's z axis]
     * 9-11: orientation of the world in the heli system as quaterion
+    
+    **REFERENCE:**
+    
+    .. seealso::
+        Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
+        with application to modeling helicopters.
+        Advances in Neural Information Systems (2006).
     """
 
     episodeCap = 6000

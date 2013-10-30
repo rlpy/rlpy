@@ -33,7 +33,9 @@ class HIVTreatment(Domain):
     * *2*: PI active
     * *3*: RTI and PI active
 
-    **REFERENCE:** For details see
+    **REFERENCE:**
+    
+    .. seealso::
         Ernst, D., Stan, G., Gonc, J. & Wehenkel, L.
         Clinical data based optimal STI strategies for HIV:
         A reinforcement learning approach

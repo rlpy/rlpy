@@ -13,7 +13,7 @@ __author__ = "Alborz Geramifard"
 class ChainMDP(Domain):
     """
     A simple Chain MDP.\n
-    **STATE:** s0 <-> s1 <-> ... <-> sn
+    **STATE:** s0 <-> s1 <-> ... <-> sn \n
     **ACTIONS:** are left [0] and right [1]. \n
     
     The task is to reach sn from s0, after which the episode terminates.
@@ -25,8 +25,8 @@ class ChainMDP(Domain):
     -1 per step, 0 at goal (terminates)
 
     **REFERENCE:**
-    For details, see:
     
+    .. seealso::    
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.

@@ -47,8 +47,13 @@ class IntruderMonitoring(Domain):
     The team receives a penalty whenever there is an intruder on a danger zone in the
     absence of an agent. The task is to allocate agents on the map so that intruders
     do not enter the danger zones without attendance of an agent.
-
+    
     """
+#     **REFERENCE:**
+#     
+#     .. seealso::
+#         [[]]
+
 
     map = None
 	#: Number of rows and columns of the map

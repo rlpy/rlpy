@@ -26,7 +26,7 @@ class GridWorld(Domain):
     * 3: goal
     * 4: pit
 
-    ** STATE:**
+    **STATE:**
     The Row and Column corresponding to the agent's location. \n
     **ACTIONS:**
     Four cardinal directions: up, down, left, right (given that
@@ -37,8 +37,13 @@ class GridWorld(Domain):
     and the agent moves in the intended direction. \n
     **REWARD:**
     The reward on each step is -.001 , except for actions
-    that bring the agent to the goal with reward of +1.     
+    that bring the agent to the goal with reward of +1.\n
+    
     """
+#    **REFERENCE:**
+#    
+#    .. seealso::
+        
     map = start_state = goal              = None
     # Used for graphics to show the domain
     agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None

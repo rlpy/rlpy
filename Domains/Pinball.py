@@ -18,24 +18,24 @@ __author__ = ["Pierre-Luc Bacon",  # author of the original version
 
 class Pinball(Domain):
     """
-    Pinball Subclass of RLPy Domain Class created entirely by Austin Hays.
-
     The goal of this domain is to maneuver a small ball on a plate into a hole.
     The plate may contain obstacles which should be avoided.
 
-    **State**:
+    **STATE:**
         The state is given by a 4-dimensional vector, consisting of position and
         velocity of the ball.
 
-    **Actions**:
+    **ACTIONS:**
         There are 5 actions, standing for slanting the  plat in x or y direction
         or a horizontal position
         of the plate.
 
-    **Reward**:
+    **REWARD:**
         Slanting the plate costs -4 reward in addition to -1 reward for each timestep.
         When the ball reaches the hole, the agent receives 10000 units of reward.
 
+    **REFERENCE:**
+    
     .. seealso::
         G.D. Konidaris and A.G. Barto:
         *Skill Discovery in Continuous Reinforcement Learning Domains using Skill Chaining.*
