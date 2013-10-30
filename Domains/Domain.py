@@ -10,26 +10,41 @@ __license__ = "BSD 3-Clause"
 
 class Domain(object):
     """
-    The Domain controls the environment in which the \ref Agents.Agent.Agent "Agent" resides and the goal that said Agent is trying to acheive.
+    The Domain controls the environment in which the
+    :py:class:`~Agents.Agent.Agent` resides as well as the reward function the
+    Agent is subject to.
 
-    The Agent interacts with the %Domain in discrete timesteps called 'episodes'. Each episode, the %Domain provides the Agent with some observations
-    about its surroundings. Based on that information, the Agent informs the %Domain what indexed action it wants to perform.
-    The %Domain then calculates the effects this action has on the environment and returns the new state, a reward/penalty, and whether or not the episode is over or not (thus resetting the agent to its initial state).
-    This process repeats until the %Domain determines that the Agent has either completed its goal or
-    failed. The \ref Experiments.Experiment.Experiment "Experiment" controls this cycle.
+    The Agent interacts with the Domain in discrete timesteps called
+    'episodes' (see [[step]])
+    At each step, the Agent informs the Domain what indexed action it wants to
+    perform.  The Domain then calculates the effects this action has on the
+    environment and updates its internal state accordingly.
+    It also returns the new state to the agent, along with a reward/penalty,
+    and whether or not the episode is over (thus resetting the agent to its
+    initial state).
+    
+    This process repeats until the Domain determines that the Agent has either
+    completed its goal or failed.
+    The :py:class:`~Experiments.Experiment.Experiment` controls this cycle.
 
-    Because Agents are designed to be agnostic to the %Domain that they are acting within and the problem they are trying to solve,
-    the %Domain needs to completely describe everything related to the task. Therefore, the %Domain must not only define the observations
-    that the Agent receives, but also the states it can be in, the actions that it can perform, and the relationships between the three.
-    Note that because RL-Agents are designed around obtaining a reward, observations that the %Domain returns should include a reward.
+    Because Agents are designed to be agnostic to the Domain that they are
+    acting within and the problem they are trying to solve, the Domain needs
+    to completely describe everything related to the task. Therefore, the
+    Domain must not only define the observations that the Agent receives,
+    but also the states it can be in, the actions that it can perform, and the
+    relationships between the three.
 
-    The \c %Domain class is a superclass that provides the basic framework for all Domains. It provides the methods and attributes
-    that allow child classes to interact with the \c %Agent and \c Experiment classes within the RLPy library.
-    %Domains should also provide methods that provide visualization of the %Domain itself and of the Agent's learning (showDomain and showLearning)   \n
-    All new domain implementations should inherit from \c %Domain.
+    The Domain class is a superclass that provides the basic framework for all
+    Domains. It provides the methods and attributes that allow child classes
+    to interact with the Agent and Experiment classes within the RLPy library.
+    Domains should also provide methods that provide visualization of the 
+    Domain itself and of the Agent's learning
+    (:py:meth:`~Domains.Domain.Domain.showDomain` and
+    :py:meth:`~Domains.Domain.Domain.showLearning` respectively) \n
+    All new domain implementations should inherit from :py:class:Domains.Domain.Domain`.
 
     .. note::
-        Though the state s can take on almost any value, if a dimension is not
+        Though the state *s* can take on almost any value, if a dimension is not
         marked as 'continuous' then it is assumed to be integer.
 
     """
@@ -53,11 +68,10 @@ class Domain(object):
     logger = None
 
     def __init__(self, logger=None):
-        """
-        Initializes the \c %Domain object. See code
-        \ref Domain_init "Here".
-
-        """
+#        """
+#        :param logger: The Logger object to be used when recording output.
+#
+#        """
         if logger is None:
             logger = Tools.Logger()
         self.logger = logger
@@ -88,55 +102,64 @@ Gamma:      {self.gamma}
 
     def show(self, a=None, representation=None, s=None):
         """
-        Shows a visualization of the current state of the domain and that of learning. See code
-        \ref Domain_show "Here".
-        @param a
-        The action being performed
-        @param representation
-        The representation to show
+        Shows a visualization of the current state of the domain and that of learning.
+        
+        :param a: The action being performed
+        :param representation: The representation to show
+        
         """
         self.showDomain(a, s=s)
         self.showLearning(representation)
 
     def showDomain(self, a=0, s=None):
         """
-        \b ABSTRACT \b METHOD: Shows a visualization of the current state of the domain. See code
-        \ref Domain_showDomain "Here".
-        @param a
-        The action being performed
+        **ABSTRACT METHOD:** Shows a visualization of the current state of the domain.
+        
+        :param a: The action being performed.
+        :param s: The current domain state (overrides self.state if != None)
 
         """
         pass
 
     def showLearning(self, representation):
         """
-        \b ABSTRACT \b METHOD: Shows a visualization of the current learning. This visualization is usually in the form
-        of a value gridded value function and policy. It is thus really only possible for 1 or 2-state domains. See code
-        \ref Domain_showLearning "Here".
-        @param representation
-        The representation to show
+        **Abstract Method:** Shows a visualization of the current learning,
+        usually in the form of a gridded value function and policy.
+        It is thus really only possible for 1 or 2-state domains.
+        
+        :param representation: the learned value function representation
+            to generate the value function / policy plots.
 
         """
         pass
 
     def s0(self):
         """
-        Begins a new episode and returns the initial observed state of the %Domain
-        @return
-        A numpy array that defines the initial state of the %Domain. See code
-        \ref Domain_s0 "Here".
-
+        Begins a new episode and returns the initial observed state of the Domain.
+        Sets self.state accordingly.
+        
+        :return: A numpy array that defines the initial domain state.
+        
         """
         raise NotImplementedError("Children need to implement this method")
 
     def possibleActions(self, s=None):
         """
-        Returns all actions in the domain.
-        The default version returns all actions [0, 1, 2...].
-        You may want to change this method in your domain if all actions are not available at all times. See code
-        \ref Domain_possActions "Here".
-        @return
-        A numpy array that contains a list of every action in the domain.
+        The default version returns an enumeration of all actions [0, 1, 2...].
+        We suggest overriding this method in your domain, especially if not all
+        actions are available from all states.
+        
+        :param s: The state to query for possible actions
+            (overrides self.state if != None)
+        
+        :return: A numpy array containing every possible action in the domain.
+        
+        .. note::
+            
+            *These actions must be integers*; internally they may be handled
+            using other datatypes.  See :py:meth:`~Tools.GeneralTools.vec2id`
+            and :py:meth:`~Tools.GeneralTools.id2vec` for converting between
+            integers and multidimensional quantities.
 
         """
         return np.arange(self.actions_num)
