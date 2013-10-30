@@ -30,14 +30,39 @@ __author__ = "Alborz Geramifard"
 
 
 __rlpy_location__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-matplotlib_backend = 'TkAgg' # 'WX' 'QTAgg' 'QT4Agg'
+matplotlib_backend = 'tkagg' # 'WX' 'QTAgg' 'QT4Agg'
 
+
+def available_matplotlib_backends():
+    def is_backend_module(fname):
+        """Identifies if a filename is a matplotlib backend module"""
+        return fname.startswith('backend_') and fname.endswith('.py')
+
+    def backend_fname_formatter(fname):
+        """Removes the extension of the given filename, then takes away the leading 'backend_'."""
+        return os.path.splitext(fname)[0][8:]
+
+    # get the directory where the backends live
+    backends_dir = os.path.dirname(matplotlib.backends.__file__)
+
+    # filter all files in that directory to identify all files which provide a backend
+    backend_fnames = filter(is_backend_module, os.listdir(backends_dir))
+
+    backends = [backend_fname_formatter(fname) for fname in backend_fnames]
+    return backends
 
 if module_exists('matplotlib'):
+
     import matplotlib
-    matplotlib.use(matplotlib_backend)
-    from matplotlib import pylab as pl
+    import matplotlib.backends
     import matplotlib.pyplot as plt
+    mpl_backends = available_matplotlib_backends()
+    if matplotlib_backend in mpl_backends:
+        plt.switch_backend(matplotlib_backend)
+    else:
+        print "Warning: Matplotlib backend", matplotlib_backend, "not available"
+        print "Available backends:", mpl_backends
+    from matplotlib import pylab as pl
     import matplotlib.ticker as ticker
     from matplotlib import rc,colors
     import matplotlib.patches as mpatches

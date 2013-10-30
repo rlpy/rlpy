@@ -30,10 +30,12 @@ def check_traj(domain_class, filename):
     traj_now = sample_random_trajectory(domain_class)
     for i, e1, e2 in zip(range(len(traj_now)), traj_now, traj):
         print i
+        print e1[0], e2[0]
         if not np.allclose(e1[0], e2[0]):  # states
             print e1[0], e2[0]
             assert False
         eq_(e1[-1], e2[-1])  # reward
+        print "Terminal", e1[1], e2[1]
         eq_(e1[1], e2[1])  # terminal
         eq_(len(e1[2]), len(e2[2]))
         assert np.all([a == b for a,b in zip(e1[2],e2[2])])  # p_actions
