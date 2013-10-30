@@ -64,11 +64,13 @@ Ubuntu / Debian
 ---------------
 Install the non-python dependencies with::
 
-    sudo apt-get install graphviz tk blt tcl gcc
+    sudo apt-get install graphviz tk blt tcl gcc g++
+
 
 To install the Python packages we recommend using Anaconda as described in
 :ref:`the following section <anaconda>` . This will ensure you have the latest versions of
 each package.
+
 **Alternatively** you can install the python packages via apt. Note however that
 these packages will usually be older.
 You can install them by executing::
@@ -77,7 +79,6 @@ You can install them by executing::
     pip install joblib hyperopt pymongo
 
 
-.. _anaconda:
 
 MacOS
 -----
@@ -88,6 +89,17 @@ Check what version of gcc you have by executing::
 
 If it is older than 4.6, install a newer version. You can find compiled
 packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
+
+To install the Python packages we recommend using Anaconda as described in
+:ref:`the following section <anaconda>` . This will ensure you have the latest versions of
+each package.
+
+
+Windows
+-------
+
+
+.. _anaconda:
 
 Anaconda
 --------
@@ -118,6 +130,12 @@ Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
     error about the `-arch` parameters, try using::
 
         ARCHFLAGS="" python setup.py build_ext --inplace
+
+.. tip::
+    You can verify that your rlpy installation works well by running the testsuite in
+    the `tests` directory. You can do so by executing from the rlpy directory::
+
+        nosetests tests
 
 RLPy is now successfully installed. For an introduction on how to use the
 framework have a look at :ref:`tutorial`.
