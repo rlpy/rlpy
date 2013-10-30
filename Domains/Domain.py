@@ -41,7 +41,7 @@ class Domain(object):
     Domain itself and of the Agent's learning
     (:py:meth:`~Domains.Domain.Domain.showDomain` and
     :py:meth:`~Domains.Domain.Domain.showLearning` respectively) \n
-    All new domain implementations should inherit from :py:class:Domains.Domain.Domain`.
+    All new domain implementations should inherit from :py:class:`~Domains.Domain.Domain`.
 
     .. note::
         Though the state *s* can take on almost any value, if a dimension is not
@@ -79,7 +79,7 @@ class Domain(object):
         self.gamma = float(self.gamma)  # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
         # The original limits will be saved in self.discrete_statespace_limits
-        self.extendDiscreteDimensions()
+        self._extendDiscreteDimensions()
         if self.continuous_dims == []:
             self.states_num = int(np.prod(self.statespace_limits[:, 1]
                                   - self.statespace_limits[:, 0]))
@@ -102,10 +102,16 @@ Gamma:      {self.gamma}
 
     def show(self, a=None, representation=None, s=None):
         """
-        Shows a visualization of the current state of the domain and that of learning.
+        Shows a visualization of the current state of the domain and that of
+        learning.
+        
+        See :py:meth:`~Domains.Domain.Domain.showDomain()` and
+        :py:meth:`~Domains.Domain.Domain.showLearning()`,
+        both called by this method.
         
         :param a: The action being performed
-        :param representation: The representation to show
+        :param representation: The learned value function representation.
+            
         
         """
         self.showDomain(a, s=s)
@@ -113,7 +119,8 @@ Gamma:      {self.gamma}
 
     def showDomain(self, a=0, s=None):
         """
-        **ABSTRACT METHOD:** Shows a visualization of the current state of the domain.
+        *Abstract Method:*\n
+        Shows a visualization of the current state of the domain.
         
         :param a: The action being performed.
         :param s: The current domain state (overrides self.state if != None)
@@ -123,7 +130,8 @@ Gamma:      {self.gamma}
 
     def showLearning(self, representation):
         """
-        **Abstract Method:** Shows a visualization of the current learning,
+        *Abstract Method:*\n
+        Shows a visualization of the current learning,
         usually in the form of a gridded value function and policy.
         It is thus really only possible for 1 or 2-state domains.
         
@@ -164,33 +172,63 @@ Gamma:      {self.gamma}
         """
         return np.arange(self.actions_num)
 
+
+    # TODO: change 'a' to be 'aID' to make it clearer when we refer to
+    # actions vs. integer IDs of actions?  They aren't always interchangeable.
     def step(self, a):
         """
-        \b ABSTRACT \b METHOD: Performs an action while in a specific state and updates the domain accordingly.
-        This function should return a reward that the agent acheives for the action, the next observed state that the domain/agent should be in,
-        and a boolean determining whether a goal or fail state has been reached. See code
-        \ref Domain_step "Here".
-        @param a
-        The action to perform. Note that each action outside of the domain corresponds to the index of the action. This index will be interpreted within the domain.
-        @return [r,ns,t] => Reward (number), next observed state (state), isTerminal (bool)
+        *Abstract Method:*\n
+        Performs the action *a* and updates the Domain
+        state accordingly.
+        Returns the reward/penalty the agent obtains for
+        the state/action pair determined by *Domain.state*  and the parameter
+        *a*, the next state into which the agent has transitioned, and a 
+        boolean determining whether a goal or fail state has been reached.
+        
+        .. note::
+            
+            Domains often specify stochastic internal state transitions, such
+            that the result of a (state,action) pair might vary on different
+            calls (see also the :py:meth:`~Domains.Domain.Domain.sampleStep`
+            method).
+            Be sure to look at unique noise parameters of each domain if you
+            require deterministic transitions.
+            
+        
+        :param a: The action to perform.
+        
+        .. warning::
+        
+            The action *a* **must** be an integer >= 0, and might better be
+            called the "actionID".  See the class description
+            :py:class:`~Domains.Domain.Domain` above.
+        
+        :return: The tuple (r, ns, t) =
+            (Reward [value], next observed state, isTerminal [boolean])
 
         """
         raise NotImplementedError("Each domain needs to implement this method")
 
     def isTerminal(self):
         """
-        Determines whether the stats s is a terminal state.
-        The default definition does not terminate. Override this function to specify otherwise. See code
-        \ref Domain_isTerminal "Here".
-        @return
-        True if the state is a terminal state, False otherwise.
+        Returns ``True`` if the current Domain.state is a terminal one, ie,
+        one that ends the episode.  This often results from either a failure
+        or goal state being achieved.\n
+        The default definition does not terminate.
+        
+        :return: ``True`` if the state is a terminal state, ``False`` otherwise.
+        
         """
         return False
 
-    def extendDiscreteDimensions(self):
+    def _extendDiscreteDimensions(self):
         """
-        Offsets discrete dimensions by 0.5 so that binning works properly. See code
-        \ref Domain_extendDiscreteDimensions "Here".
+        Offsets discrete dimensions by 0.5 so that binning works properly.
+        
+        .. warning::
+            
+            This code is used internally by the Domain base class.
+            **It should only be called once**
 
         """
         # Store the original limits for other types of calculations
@@ -204,16 +242,19 @@ Gamma:      {self.gamma}
 
     def sampleStep(self, a, num_samples):
         """
-        Sample a set number of next states and rewards from the domain. See code
-        \ref sampleStep "Here".
-        @param s
-        The given state
-        @param a
-        The given action
-        @param num_samples
-        The number of next states and rewards to be sampled.
-        @return
-        [S,A] => S is an array of next states, A is an array of rewards for those states
+        Sample a set number of next states and rewards from the domain.
+        This function is used when state transitions are stochastic;
+        deterministic transitions will yield an identical result regardless
+        of *num_samples*, since repeatedly sampling a (state,action) pair
+        will always yield the same tuple (r,ns,terminal).
+        See :py:meth:`~Domains.Domain.Domain.step`.
+        
+        :param a: The action to attempt
+        :param num_samples: The number of next states and rewards to be sampled.
+        
+        :return: A tuple of arrays ( S[], A[] ) where
+            *S* is an array of next states,
+            *A* is an array of rewards for those states.
 
         """
         next_states = []
