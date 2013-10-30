@@ -13,16 +13,18 @@ __author__ = ["Josh Joseph", "Alborz Geramifard"]
 
 class MountainCar(Domain):
     """
-    based on http://library.rl-community.org/wiki/Mountain_Car_(Java)
-    The goal is to drive an under accelerated car up to the hill.
-    STATE:
-    position and velocity of the car: [x, xdot] 
-    ACTION:
+    The goal is to drive an under accelerated car up to the hill.\n
+    
+    **State:** Position and velocity of the car: [x, xdot] 
+    **Actions:**
     [Acc backwards, Coast, Acc forward]
-    TRANSITION:
+    Transition:
     Move along the hill with some noise on the movement.
     REWARD:
-    -1 per step and 0 at goal.    
+    -1 per step and 0 at goal.
+    
+    **Reference**:
+    Based on `RL-Community Java Implementation <http://library.rl-community.org/wiki/Mountain_Car_(Java)`_
     """
     actions_num = 3
     state_space_dims = 2

@@ -13,11 +13,11 @@ class FiftyChain(Domain):
     """
     | **50-state chain MDP**
     | Random start location, goal is to proceed to nearest reward.
-    | **State** s0 <-> s1 <-> ... <-> s49
+    | **STATE:** s0 <-> s1 <-> ... <-> s49
     
-    | **Actions:** left [0] or right [1]
-    | **Reward** of +1 at states 10 and 41 (indices 9 and 40)
+    | **ACTIONS:** left [0] or right [1]
     | Actions succeed with probability .9, otherwise execute opposite action.
+    | **REWARD:** of +1 at states 10 and 41 (indices 9 and 40)
     
         .. note::
             The optimal policy is to always go to the nearest goal
@@ -81,6 +81,7 @@ class FiftyChain(Domain):
     def storeOptimalPolicy(self):
         """
         Computes and stores the optimal policy on this particular chain.
+        
         .. warning::
         
            This ONLY applies for the scenario where two states provide

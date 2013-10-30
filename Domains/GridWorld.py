@@ -20,30 +20,31 @@ class GridWorld(Domain):
     The map is loaded from a text file filled with numbers showing the map with the following
     coding for each cell:
         
-        0: empty
-        1: blocked
-        2: start
-        3: goal
-        4: pit
+    * 0: empty
+    * 1: blocked
+    * 2: start
+    * 3: goal
+    * 4: pit
 
-    STATE:
-    The Row and Column corresponding to the agent's location. 
-    ACTIONS:
-    Four cardinal directions: up, down, left, right (given that the destination is not blocked or out of range)
-    TRANSITION:
-    There is 30% probability of failure for each move, in which case the 
-    action is replaced with a random action at each time-step. Otherwise the move succeeds
-    and the agent moves in the intended direction.
-    REWARD:
+    ** STATE:**
+    The Row and Column corresponding to the agent's location. \n
+    **ACTIONS:**
+    Four cardinal directions: up, down, left, right (given that
+    the destination is not blocked or out of range). \n
+    **TRANSITION:**
+    There is 30% probability of failure for each move, in which case the action
+    is replaced with a random action at each timestep. Otherwise the move succeeds
+    and the agent moves in the intended direction. \n
+    **REWARD:**
     The reward on each step is -.001 , except for actions
     that bring the agent to the goal with reward of +1.     
     """
     map = start_state = goal              = None
-    #: Used for graphics to show the domain
+    # Used for graphics to show the domain
     agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None
     #: Number of rows and columns of the map
     ROWS = COLS = 0
-    #Rewards
+    #: Reward constants
     GOAL_REWARD = +1
     PIT_REWARD = -1
     STEP_REWARD = -.001
@@ -51,12 +52,12 @@ class GridWorld(Domain):
     episodeCap  = None
     #: Movement Noise
     NOISE = 0
-    #: Used for graphical normalization
+    # Used for graphical normalization
     MAX_RETURN  = 1
     RMAX = MAX_RETURN
-    #: Used for graphical normalization
+    # Used for graphical normalization
     MIN_RETURN  = -1
-    #: Used for graphical shifting of arrows
+    # Used for graphical shifting of arrows
     SHIFT       = .1
 
     actions_num        = 4
@@ -64,7 +65,7 @@ class GridWorld(Domain):
     EMPTY, BLOCKED, START, GOAL, PIT, AGENT = arange(6)
     #: Up, Down, Left, Right
     ACTIONS = array([[-1,0], [+1,0], [0,-1], [0,+1] ])
-    #: directory of maps shipped with rlpy
+    # directory of maps shipped with rlpy
     default_map_dir = os.path.join(__rlpy_location__, "Domains", "GridWorldMaps")
 
     def __init__(self,mapname=os.path.join(default_map_dir,"4x5.txt"),

@@ -20,19 +20,21 @@ class Acrobot(Domain):
     Both links can swing freely and can pass by each other, i.e., they don't
     collide when they have the same angle.
 
+    **STATE:**
     The state consists of the two rotational joint angles and their velocities
     [theta1 theta2 thetaDot1 thetaDot2]. An angle of 0 corresponds to corresponds
-    to the respective link pointing downwards (angle are in world coordinates).
+    to the respective link pointing downwards (angles are in world coordinates).
 
-    The action is either either applying +1, 0 or -1 torque on the joint between
+    **ACTIONS:**
+    The action is either applying +1, 0 or -1 torque on the joint between
     the two pendulum links.
 
+    **REFERENCE:**
     for details see
         R. Sutton: Generalization in Reinforcement Learning:
         Successful Examples Using Sparse Coarse Coding (NIPS 1996)
 
     or
-
         Sutton, Richard S., and Andrew G. Barto:
         Reinforcement learning: An introduction.
         Cambridge: MIT press, 1998.
@@ -205,18 +207,18 @@ class Acrobot(Domain):
 
 class AcrobotLegacy(Acrobot):
     """
-    Acrobot is a 2-link pendulum with only the second joint actuated
-    Intitially, both links point downwards. The goal is to swing the
-    end-effector at a height at least the length of one link above the base.
+    Acrobot is a 2-link pendulum with only the second joint actuated.
+    Initially, both links point downwards. The goal is to swing the
+    end-effector to a height at least the length of one link above the base.
 
     Both links can swing freely and can pass by each other, i.e., they don't
     collide when they have the same angle.
 
     The state consists of the two rotational joint angles and their velocities
-    [theta1 theta2 thetaDot1 thetaDot2]. An angle of 0 corresponds to corresponds
-    to the respective link pointing downwards (angle are in world coordinates).
+    [theta1 theta2 thetaDot1 thetaDot2]. An angle of 0 corresponds to
+    the respective link pointing downwards (angles are in world coordinates).
 
-    The action is either either applying +1, 0 or -1 torque on the joint between
+    The action is either applying +1, 0 or -1 torque on the joint between
     the two pendulum links.
 
     for details see
@@ -224,8 +226,7 @@ class AcrobotLegacy(Acrobot):
         Successful Examples Using Sparse Coarse Coding (NIPS 1996)
 
     or
-
-    Sutton, Richard S., and Andrew G. Barto:
+        Sutton, Richard S., and Andrew G. Barto:
         Reinforcement learning: An introduction.
         Cambridge: MIT press, 1998.
 

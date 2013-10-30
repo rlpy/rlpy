@@ -22,10 +22,11 @@ class FlipBoard(Domain):
         0 1 0 0
         0 0 1 0
 
-    STATE: a 4x4 array of binary
-    ACTION: [Row, Col]
-    TRANSITION: Determinisically flip all elements of the board on the same row OR col of the action.
-    REWARD: -1 per step. 0 when the board is solved [all ones]
+    **STATE:** a 4x4 array of binary values. \n
+    **ACTION:** Invert the value of a given [Row, Col] (from 0->1 or 1->0).\n
+    **TRANSITION:** Determinisically flip all elements of the board on the same
+    row OR col of the action. \n
+    **REWARD:** -1 per step. 0 when the board is solved [all ones]
     """
     gamma = 1
     BOARD_SIZE  = 4

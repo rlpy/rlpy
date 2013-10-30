@@ -12,18 +12,19 @@ __author__ = "Alborz Geramifard"
 
 class ChainMDP(Domain):
     """
-    | A simple Chain MDP with **states**:
-    | s0 <-> s1 <-> ... <-> sn
-    | **Actions** are left [0] and right [1]
+    A simple Chain MDP.\n
+    **STATE:** s0 <-> s1 <-> ... <-> sn
+    **ACTIONS:** are left [0] and right [1]. \n
+    
     The task is to reach sn from s0, after which the episode terminates.
 
     .. note::
         Optimal policy is to always to go right.
 
-    |**Reward**
+    **REWARD:**
     -1 per step, 0 at goal (terminates)
 
-    | **Reference**
+    **REFERENCE:**
     For details, see:
     
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
