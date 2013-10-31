@@ -131,7 +131,6 @@ class InfTrackCartPole(CartPoleBase):
         terminal = self.isTerminal()  # automatically uses self.state
         reward = self._getReward(a)  # Automatically uses self.state
         possibleActions = self.possibleActions()
-        print self.state
         return reward, ns, terminal, possibleActions
 
     def showDomain(self, a=0):
