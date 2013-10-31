@@ -17,24 +17,24 @@ class CartPoleBase(Domain):
     domain task (and associated reward function and termination condition)
     as well as number of states varies among subclasses.
     See ``InfTrackCartPole`` and ``FiniteTrackCartPole``.
-    
+
     Domain constants (such as ``AVAIL_FORCE``, ``MASS_PEND``, and ``LENGTH``,
     as well as state space limits such as ANGULAR_LIMITS)
     vary as well.
-    
+
     .. note::
 
         Changing any of the state limits (e.g. ``ANGLE_LIMITS``,
         ``POSITION_LIMITS``, etc.) will affect the resolution of the
         discretized value function representation (and thus the policy as well)
-    
+
     .. note::
         This is an abstract class and cannot be instantiated directly.
-    
+
     """
-    
+
     __author__ = ["Robert H. Klein"]
-    
+
     #: m/s^2 - gravitational constant
     ACCEL_G             = 9.8
 
@@ -52,18 +52,18 @@ class CartPoleBase(Domain):
     episodeCap          = 3000
     #: Discount factor
     gamma               = .95
-    
+
     #: Set to non-zero to enable print statements
     DEBUG               = 0
-    
-    
-    
+
+
+
     ### Domain visual objects
     pendulumArm         = None
     cartBox             = None
     actionArrow         = None
     domainFig           = None
-    
+
     ### Domain visual constants (these DO NOT affect dynamics, purely visual).
     ACTION_ARROW_LENGTH = 0.4   # length of arrow showing force action on cart
     PENDULUM_PIVOT_Y    = 0     # Y position of pendulum pivot
@@ -83,26 +83,26 @@ class CartPoleBase(Domain):
     MIN_RETURN              = None
     # Maximum return possible, used for graphic normalization, computed in init
     MAX_RETURN              = None
-    
+
     def __init__(self, logger=None):
         """
         Setup the required domain constants.
         """
         self.actions_num        = len(self.AVAIL_FORCE)      # Number of Actions
-        
+
         if not self._isParamsValid():
             # For now, continue execution with warnings.
             # Optionally halt execution here.
             pass
-            
+
         self._assignGroundVerts()
         super(CartPoleBase, self).__init__(logger)
-        
+
         if self.logger:
             self.logger.log("Pendulum length:\t\t%0.2f(m)" % self.LENGTH)
             self.logger.log("Timestep length dt:\t\t\t%0.2f(s)" % self.dt)
             self.logger.log("Number of state dimensions: %d" % self.state_space_dims)
-    
+
     def _isParamsValid(self):
         if not ((2*pi / self.dt > self.ANGULAR_RATE_LIMITS[1]) and (2*pi / self.dt > -self.ANGULAR_RATE_LIMITS[0])):
             errStr = """
@@ -123,18 +123,18 @@ class CartPoleBase(Domain):
             print 'Reduce your timestep dt (to increase # timesteps) or reduce angular rate limits so that 2pi / dt > max(AngularRateLimit)'
             print 'Currently, 2pi / dt = ',2*pi/self.dt,', angular rate limits shown above.'
             return False
-        
+
         return True
-    
+
     ## Assigns the GROUND_VERTS array, placed here to avoid cluttered code in init.
     def _assignGroundVerts(self):
         """
         Assign the ``GROUND_VERTS`` array, which defines the coordinates used
         for domain visualization.
-        
+
         .. note::
             This function *does not* affect system dynamics.
-            
+
         """
         if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
             self.minPosition = 0 - self.RECT_WIDTH/2.0
@@ -152,21 +152,21 @@ class CartPoleBase(Domain):
             (self.maxPosition, self.RECT_HEIGHT/2.0),
             (self.maxPosition, -self.RECT_HEIGHT/2.0),
         ])
-        
+
     def _getReward(self, a, s=None):
         """
         Obtain the reward corresponding to this domain implementation
         (e.g. for swinging the pendulum up vs. balancing).
-        
+
         """
         raise NotImplementedError
-    
+
     def showDomain(self, a=0):
         raise NotImplementedError
-    
+
     def showLearning(self, representation):
         raise NotImplementedError
-    
+
     def possibleActions(self, s=None):
         """
         Returns an integer for each available action.  Some child domains allow
@@ -183,7 +183,7 @@ class CartPoleBase(Domain):
         :param s: the four-dimensional cartpole state
         Performs a single step of the CartPoleDomain without modifying
         ``self.state`` - this is left to the ``step()`` function in child
-        classes.        
+        classes.
         """
 
         forceAction = self.AVAIL_FORCE[a]
@@ -191,11 +191,11 @@ class CartPoleBase(Domain):
         # Add noise to the force action
         if self.force_noise_max > 0:
             forceAction += self.random_state.uniform(-self.force_noise_max, self.force_noise_max)
-        
+
         # Now, augment the state with our force action so it can be passed to _dsdt
         s_augmented = np.append(s, forceAction)
-        
-        
+
+
         #-------------------------------------------------------------------------#
         # There are several ways of integrating the nonlinear dynamics equations. #
         # For consistency with prior results, we tested the custom integration    #
@@ -213,7 +213,7 @@ class CartPoleBase(Domain):
         # Use of these methods is supported by selectively commenting             #
         # sections below.                                                         #
         #-------------------------------------------------------------------------#
-        
+
         if self.int_type == "euler":
             int_fun = self.euler_int
         elif self.int_type == "odeint":
@@ -233,41 +233,39 @@ class CartPoleBase(Domain):
         ns[StateIndex.THETA_DOT]= bound(ns[StateIndex.THETA_DOT], self.ANGULAR_RATE_LIMITS[0], self.ANGULAR_RATE_LIMITS[1])
         ns[StateIndex.X]        = bound(ns[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
         ns[StateIndex.X_DOT]    = bound(ns[StateIndex.X_DOT], self.VELOCITY_LIMITS[0], self.VELOCITY_LIMITS[1])
-        
-        terminal                    = self.isTerminal() # automatically uses self.state
-        reward                      = self._getReward(a) # Automatically uses self.state
-        return reward, ns, terminal, self.possibleActions()
-    
+
+        return ns
+
     def _dsdt(self, s_augmented, t):
         """
         This function is needed for ode integration.  It calculates and returns the
         derivatives at a given state, s, of length 4.  The last element of s_augmented is the
         force action taken, required to compute these derivatives.
-        
+
         The equation used::
-        
+
             ThetaDotDot =
-            
+
               g sin(theta) - (alpha)ml(tdot)^2 * sin(2theta)/2  -  (alpha)cos(theta)u
               -----------------------------------------------------------------------
                                     4l/3  -  (alpha)ml*cos^2(theta)
-            
+
                   g sin(theta) - w cos(theta)
             =     ---------------------------
                   4l/3 - (alpha)ml*cos^2(theta)
-            
+
             where w = (alpha)u + (alpha)ml*(tdot)^2*sin(theta)
             Note we use the trigonometric identity sin(2theta)/2 = cos(theta)*sin(theta)
-            
+
             xDotDot = w - (alpha)ml * thetaDotDot * cos(theta)
-        
+
         .. note::
-        
+
             while the presence of the cart affects dynamics, the particular
             values of ``x`` and ``xdot`` do not affect the solution.
             In other words, the reference frame corresponding to any choice
             of ``x`` and ``xdot`` remains inertial.
-        
+
         """
         g = self.ACCEL_G
         l = self.MOMENT_ARM
@@ -290,7 +288,7 @@ class CartPoleBase(Domain):
 
         xDotDot = term1 - m_pendAlphaTimesL * thetaDotDot * cosTheta
         return np.array((thetaDot, thetaDotDot, xDot, xDotDot, 0))  # final cell corresponds to action passed in
-        
+
     def _plot_policy(self, piMat):
         """
         :returns: handle to the figure
@@ -303,10 +301,10 @@ class CartPoleBase(Domain):
         pl.xlabel(r"$\theta$ (degree)")
         pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
         pl.title('Policy')
-            
+
         self.policy_fig.set_data(piMat)
         pl.draw()
-            
+
     def _plot_valfun(self, VMat):
         """
         :returns: handle to the figure
@@ -319,18 +317,18 @@ class CartPoleBase(Domain):
         pl.xlabel(r"$\theta$ (degree)")
         pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
         pl.title('Value Function')
-            
+
         norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
         self.valueFunction_fig.set_data(VMat)
         self.valueFunction_fig.set_norm(norm)
         pl.draw()
-        
+
     def _plot_state(self, fourDimState, a):
         """
         :param fourDimState: Four-dimensional cartpole state
             (``theta, thetaDot, x, xDot``)
         :param a: force action on the cart
-        
+
         Visualizes the state of the cartpole - the force action on the cart
         is displayed as an arrow (not including noise!)
         """
@@ -370,23 +368,23 @@ class CartPoleBase(Domain):
         forceAction = self.AVAIL_FORCE[a]
         curX = s[StateIndex.X]
         curTheta = s[StateIndex.THETA]
- 
+
         pendulumBobX = curX + self.LENGTH  * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
- 
+
         r = self._getReward(a, s=s)
 #         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG: print 'Pendulum Position: ',pendulumBobX,pendulumBobY
- 
+
         # update pendulum arm on figure
         self.pendulumArm.set_data([curX, pendulumBobX],[self.PENDULUM_PIVOT_Y, pendulumBobY])
         self.cartBox.set_x(curX - self.RECT_WIDTH/2.0)
         self.cartBlob.set_x(curX - self.BLOB_WIDTH/2.0)
-  
+
         if self.actionArrow is not None:
             self.actionArrow.remove()
             self.actionArrow = None
- 
+
         if forceAction == 0: pass # no force
         else:  # cw or ccw torque
             if forceAction > 0: # rightward force
@@ -405,21 +403,21 @@ class CartPoleBase(Domain):
                 )
 
         pl.draw()
-        
-    
+
+
     def _setup_learning(self, representation):
         """
         Initializes the arrays of ``theta`` and ``thetaDot`` values we will
         use to sample the value function and compute the policy.
         :return: ``thetas``, a discretized array of values in the theta dimension
-        :return: ``theta_dots``, a discretized array of values in the thetaDot dimension. 
+        :return: ``theta_dots``, a discretized array of values in the thetaDot dimension.
         """
         # multiplies each dimension, used to make displayed grid appear finer:
         # plotted gridcell values computed through interpolation nearby according
         # to representation.Qs(s)
         granularity = 5.
-        
-        
+
+
         # TODO: currently we only allow for equal discretization in all
         # dimensions.  In future, must modify below code to handle non-uniform
         # discretization.
@@ -431,20 +429,20 @@ class CartPoleBase(Domain):
         thetas              = np.linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, thetaDiscr*granularity)
         theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(thetaDotDiscr*granularity)
         theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, thetaDotDiscr*granularity)
-    
+
         return (thetas, theta_dots)
-        
+
     def euler_int(self, df, x0, times):
         """
         performs Euler integration with interface similar to other methods.
-         
+
         :param df: TODO
         :param x0: initial state
         :param times: times at which to estimate integration values
-         
+
         .. warning::
             All but the final cell of ``times`` argument are ignored.
-             
+
         """
         steps = self.num_euler_steps
         dt = float(times[-1])
@@ -452,7 +450,7 @@ class CartPoleBase(Domain):
         for i in range(steps):
             ns += dt / steps * df(ns, i * dt / steps)
         return [ns]
-        
+
 class StateIndex:
     """
     Flexible way to index states in the CartPole Domain.

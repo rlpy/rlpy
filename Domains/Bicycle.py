@@ -14,27 +14,31 @@ __author__ = "Christoph Dann"
 class BicycleBalancing(Domain):
     """
     Simulation of balancing a bicycle.
-
+    
+    **STATE:**
     The state contains of 5 variables. Four are related to the bicycle and
     the remaining three describe its position on the plane.
 
-        omega:     angle from the vertical to the bicycle [rad]
-        omega dot: angular velocity for omega [rad / s]
-        theta:     angle the handlebars are displaced from normal [rad]
-        theta dot: angular velocity for theta [rad / s]
-        psi:       angle formed by bicycle frame and x-axis [rad]
-        [x_b:       x-coordinate where the back tire touches the ground [m]]
-        [y_b:       y-coordinate where the back tire touches the ground [m]]
+    * *omega:*     angle from the vertical to the bicycle [rad]
+    * *omega dot:* angular velocity for omega [rad / s]
+    * *theta:*     angle the handlebars are displaced from normal [rad]
+    * *theta dot:* angular velocity for theta [rad / s]
+    * *psi:*       angle formed by bicycle frame and x-axis [rad]
+    [x_b:       x-coordinate where the back tire touches the ground [m]] \n
+    [y_b:       y-coordinate where the back tire touches the ground [m]] \N
+    
+    *The state variables* x_b *and* y_b *are not observable.*
 
-    The actions consist of:
-        T in {-2, 0, 2}:      the tourque applied to the handlebar
-        d in {-.02, 0, .02}:  displacement of the rider
+    **ACTIONS:**
+    
+    * T in {-2, 0, 2}:      the torque applied to the handlebar
+    * d in {-.02, 0, .02}:  displacement of the rider
     i.e., 9 actions in total.
 
-    The state variable x_b and y_b are not observable
 
-    For details see
+    **REFERENCE:**
 
+    .. seealso::
         Ernst, D., Geurts, P. & Wehenkel, L. Tree-Based Batch Mode Reinforcement Learning.
         Journal of Machine Learning Research (2005) Issue 6
 
@@ -46,8 +50,8 @@ class BicycleBalancing(Domain):
     continuous_dims = np.arange(5)
     actions = np.array(list(product([-2, 0, 2], [-.02, 0., .02])))
     actions_num = len(actions)
-    episodeCap = 50000  #: total of 500s
-    dt = 0.01  #: 100 Hz
+    episodeCap = 50000  #: Total episode duration is ``episodeCap * dt`` sec.
+    dt = 0.01  #: Frequency is ``1 / dt``.
     statespace_limits = np.array([[-np.pi*12/180, np.pi*12/180],
                                   [-np.pi, np.pi],
                                   [-np.pi*80/180, np.pi*80/180],

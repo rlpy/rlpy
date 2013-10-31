@@ -11,19 +11,29 @@ __author__ = "Alborz Geramifard"
 
 class RCCar(Domain):
     """
-    This is a simple simulation of Remote Controlled Car in a room with no obstacle
+    This is a simple simulation of Remote Controlled Car in a room with no obstacle.
 
-    Based on http://planning.cs.uiuc.edu/node658.html. We refer to it as webpage.
+    **STATE:** 4 continuous dimensions:
+    
+    * x, y: (center point on the line connecting the back wheels),
+    * speed (S on the webpage)
+    * heading (theta on the webpage) w.r.t. body frame.
+        positive values => turning right, negative values => turning left
 
-    State: x,y (center point on the line connecting the back wheels),
-    speed (S on the webpage), heading (theta on the webpage)
-    heading is the angle with respect to the body frame. positive values => Turning right.
-    Negative values => Turning left
+    **ACTIONS:** Two action dimensions:
+    
+    * accel [forward, coast, backward]
+    * phi [turn left, straight, turn Right]
+    
+    This leads to 3 x 3 = 9 possible actions.
 
-    Actions: [Accelerate forward, 0, Accelerate backward] x [Turn left, 0, Turn Right].
-    The second argument is phi based on the webpage
-
-    Reward: -1 per step, 100 at goal.
+    **REWARD:** -1 per step, 100 at goal.
+    
+    **REFERENCE:**
+    
+    .. seealso::
+        http://planning.cs.uiuc.edu/node658.html
+        
     """
     actions_num = 9
     state_space_dims = 4

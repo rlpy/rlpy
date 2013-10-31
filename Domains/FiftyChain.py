@@ -11,20 +11,19 @@ __author__ = ["Alborz Geramifard", "Robert H. Klein"]
 
 class FiftyChain(Domain):
     """
-    | **50-state chain MDP**
-    | Random start location, goal is to proceed to nearest reward.
-    | **State** s0 <-> s1 <-> ... <-> s49
+    Random start location, goal is to proceed to nearest reward. \n
+    **STATE:** s0 <-> s1 <-> ... <-> s49 \n
+    **ACTIONS:** left [0] or right [1] \n
+    Actions succeed with probability .9, otherwise execute opposite action. \n
     
-    | **Actions:** left [0] or right [1]
-    | **Reward** of +1 at states 10 and 41 (indices 9 and 40)
-    | Actions succeed with probability .9, otherwise execute opposite action.
+    .. note::
+        The optimal policy is to always go to the nearest goal
+        
+    **REWARD:** of +1 at states 10 and 41 (indices 9 and 40) \n
     
-        .. note::
-            The optimal policy is to always go to the nearest goal
+    **REFERENCE:**
     
-    | **Reference**
-    For details, see:
-    
+    .. seealso::
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.
@@ -81,6 +80,7 @@ class FiftyChain(Domain):
     def storeOptimalPolicy(self):
         """
         Computes and stores the optimal policy on this particular chain.
+        
         .. warning::
         
            This ONLY applies for the scenario where two states provide

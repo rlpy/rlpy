@@ -36,30 +36,33 @@ class HelicopterHoverExtended(Domain):
     autonomous helicopters (an XCell Tempest helicopter) in the flight
     regime close to hover.
 
-    See
+    Adapted from the
+    `RL-Community Java Implementation <http://library.rl-community.org/wiki/Helicopter_(Java)>`_
 
+    **STATE:**
+    The state of the helicopter is described by a 20-dimensional vector
+    with the following entries:
+
+    * 0: xerr [helicopter x-coord position - desired x-coord position] -- helicopter's x-axis points forward
+    * 1: yerr [helicopter y-coord position - desired y-coord position] -- helicopter's y-axis points to the right
+    * 2: zerr [helicopter z-coord position - desired z-coord position] -- helicopter's z-axis points down
+    * 3: u [forward velocity]
+    * 4: v [sideways velocity (to the right)]
+    * 5: w [downward velocity]
+    * 6: p [angular rate around helicopter's x axis]
+    * 7: q [angular rate around helicopter's y axis]
+    * 8: r [angular rate around helicopter's z axis]
+    * 9-12: orientation of heli in world as quaterion
+    * 13-18: current noise due to gusts (usually not observable!)
+    * 19: t number of timesteps in current episode
+    
+    **REFERENCE:**
+    
+    .. seealso::
         Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
         with application to modeling helicopters.
         Advances in Neural Information Systems (2006).
 
-    Adapted from the Java Implementation documented at
-    http://library.rl-community.org/wiki/Helicopter_(Java)
-
-    The state of the helicopter is described by a 20-dimensional vector
-    with the following entries:
-
-    0: xerr [helicopter x-coord position - desired x-coord position] -- helicopter's x-axis points forward
-    1: yerr [helicopter y-coord position - desired y-coord position] -- helicopter's y-axis points to the right
-    2: zerr [helicopter z-coord position - desired z-coord position] -- helicopter's z-axis points down
-    3: u [forward velocity]
-    4: v [sideways velocity (to the right)]
-    5: w [downward velocity]
-    6: p [angular rate around helicopter's x axis]
-    7: q [angular rate around helicopter's y axis]
-    8: r [angular rate around helicopter's z axis]
-    9-12: orientation of heli in world as quaterion
-    13-18: current noise due to gusts (usually not observable!)
-    19: t number of timesteps in current episode
     """
 
     MAX_POS = 20.  #: [m]  maximum deviation in position in each dimension
@@ -70,7 +73,7 @@ class HelicopterHoverExtended(Domain):
     MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.)
 
     wind = np.array([.0, .0, 0.])  #: wind in neutral orientation
-    gamma = 0.95  #: discout factor
+    gamma = 0.95  #: discount factor
     gust_memory = 0.8
     domain_fig = None
 
@@ -361,27 +364,30 @@ class HelicopterHover(HelicopterHoverExtended):
     autonomous helicopters (an XCell Tempest helicopter) in the flight
     regime close to hover.
 
-    See
-    Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
-    with application to modeling helicopters.
-    Advances in Neural Information Systems (2006).
+    Adapted from the
+    `RL-Community Java Implementation <http://library.rl-community.org/wiki/Helicopter_(Java)>`_
 
-    Adapted from the Java Implementation documented at
-    http://library.rl-community.org/wiki/Helicopter_(Java)
-
+    **STATE:**
     The state of the helicopter is described by a 12-dimensional vector
     with the following entries:
 
-    0: xerr [helicopter x-coord position - desired x-coord position] -- helicopter's x-axis points forward
-    1: yerr [helicopter y-coord position - desired y-coord position] -- helicopter's y-axis points to the right
-    2: zerr [helicopter z-coord position - desired z-coord position] -- helicopter's z-axis points down
-    3: u [forward velocity]
-    4: v [sideways velocity (to the right)]
-    5: w [downward velocity]
-    6: p [angular rate around helicopter's x axis]
-    7: q [angular rate around helicopter's y axis]
-    8: r [angular rate around helicopter's z axis]
-    9-11: orientation of the world in the heli system as quaterion
+    * 0: xerr [helicopter x-coord position - desired x-coord position] -- helicopter's x-axis points forward
+    * 1: yerr [helicopter y-coord position - desired y-coord position] -- helicopter's y-axis points to the right
+    * 2: zerr [helicopter z-coord position - desired z-coord position] -- helicopter's z-axis points down
+    * 3: u [forward velocity]
+    * 4: v [sideways velocity (to the right)]
+    * 5: w [downward velocity]
+    * 6: p [angular rate around helicopter's x axis]
+    * 7: q [angular rate around helicopter's y axis]
+    * 8: r [angular rate around helicopter's z axis]
+    * 9-11: orientation of the world in the heli system as quaterion
+    
+    **REFERENCE:**
+    
+    .. seealso::
+        Abbeel, P., Ganapathi, V. & Ng, A. Learning vehicular dynamics,
+        with application to modeling helicopters.
+        Advances in Neural Information Systems (2006).
     """
 
     episodeCap = 6000

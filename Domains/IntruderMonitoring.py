@@ -18,33 +18,42 @@ class IntruderMonitoring(Domain):
     Formulated as an MDP, the intruder monitoring task is to guard danger zones using cameras
     so that if an intruder moves to a danger zone, at least one camera is pointing at that location.
 
+    All locations are on a 2-D grid.
+
     The episode is finished after 1000 steps.
 
-    State Features (n is number of agents, m is number of intruders):
-        Location of Agent_1 x ... x Location of Agent n...
-        Location of Intruder 1 x ...x Location of Intruder_m
+    **STATE:** \n
+    Location of: [ Agent_1, Agent_2, ... Agent n ] \n
+    Location of: [ Intruder_1, Intruder_2, ... Intruder_m ]\n
+    
+    Where *n* is number of agents, *m* is number of intruders.
+    
+        
+    **ACTIONS:**
+    [Up, Down, Left, Right, Remain]^n (one action for each agent)
 
-    Location is 2D position on a grid
-
-    Actions:
-        [Up, Down, Left, Right, StayStill]^n (oone action for each agent)
-
-    Dynamics:
-        Each agent can move in 4 directions + stay still, there is no noise
-        Each intruder moves with a fixed policy (specified by the user)
-        By Default, intruder policy is uniform random
+    **TRANSITION:**
+    Each agent can move in 4 directions + stay still.
+    There is no noise on any movements.
+    Each intruder moves with a fixed policy (specified by the user)
+    By Default, intruder policy is uniform random.
 
     Map of the world contains fixed number of danger zones. Maps are simple text files
-    contained in the Domains/IntruderMonitoringMaps/ directory.
+    contained in the ``Domains/IntruderMonitoringMaps/`` directory.
 
+    **REWARD:** \n
+    -1 for every visit of an intruder to a danger zone with no camera present
+        
     The team receives a penalty whenever there is an intruder on a danger zone in the
     absence of an agent. The task is to allocate agents on the map so that intruders
     do not enter the danger zones without attendance of an agent.
-
-    Reward:
-        -1 for every visit of an intruder to a danger zone with no camera present
-
+    
     """
+#     **REFERENCE:**
+#     
+#     .. seealso::
+#         [[]]
+
 
     map = None
 	#: Number of rows and columns of the map

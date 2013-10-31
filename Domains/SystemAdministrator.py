@@ -14,14 +14,12 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
 class SystemAdministrator(Domain):
     """
-    **System Administrator Problem**
-    
     Computers in a network randomly fail and influence the probability
     of connected machines failing as well - the system administrator must work
     to keep as many machines running as possible, but she can only fix one
     at a time.
     
-    | **State**
+    | **STATE:**
     | Each computer has binary state {BROKEN, RUNNING}.
     | The state space is thus *2^n*, where *n* is the number of computers in the system.
     | All computers are connected to each other by a fixed topology
@@ -30,7 +28,7 @@ class SystemAdministrator(Domain):
     | *Example*
     | [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
 
-    | **Actions**
+    | **ACTIONS:**
     The action space is the integers [0,n], where 0 corresponds to taking
     no action, and [1,n] selects a computer to repair.
     
@@ -39,7 +37,7 @@ class SystemAdministrator(Domain):
     
     However, penalty -0.75 is applied for taking a repair action.
     
-    | **Reward**
+    | **REWARD:**
     +1 is awarded for each computer with status RUNNING, but -0.75 is
     applied for any repair action taken (ie, a != 0)
 
@@ -48,9 +46,9 @@ class SystemAdministrator(Domain):
     change from solid to dotted, reflecting the higher probability 
     of failure of those machines.
     
-    | **Reference**
-    For details, see:
+    | **REFERENCE**
     
+    .. seealso::
         Carlos Guestrin, Daphne Koller, Ronald Parr, and Shobha Venkataraman.
         Efficient Solution Algorithms for Factored MDPs.  Journal of Artificial
         Intelligence Research (2003) Issue 19, p 399-468.

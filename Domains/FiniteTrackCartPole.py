@@ -21,8 +21,8 @@ class FiniteTrackCartPole(CartPoleBase):
     Not only does this increase the state space relative to
     \c %InfTrackCartPole, but the cart must remain in a finite interval
     corresponding to a physical rail, which affects valid solutions/policies.
-    
-    
+
+
     **State** \n
     theta    = Angular position of pendulum
     (relative to straight up at 0 rad), positive clockwise. \n
@@ -35,9 +35,9 @@ class FiniteTrackCartPole(CartPoleBase):
     Positive force acts to the right on the cart. \n
 
     Note the domain defaults in \c %CartPoleBase.
-    
+
     .. warning::
-    
+
         For \"Swing-Up\" tasks where the goal is to swing the pendulum from
         rest to vertical, Lagoudakis, Parr, and Bartlett's default [-2, 2] rad/s
         is unphysically slow; the Pendulum often saturates it.\n
@@ -48,18 +48,18 @@ class FiniteTrackCartPole(CartPoleBase):
         Michail G. Lagoudakis, Ronald Parr, and L. Bartlett
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.
-    
+
     .. note::
-    
+
         For full domain description, see: \n
         Wang, H., Tanaka, K., and Griffin, M. An approach to fuzzy control
         of nonlinear systems; Stability and design issues.
         IEEE Trans. on Fuzzy Systems, 4(1):14-23, 1996.
-    
+
     """
-    
+
     __author__ = ["Robert H. Klein"]
-    
+
     #: Default limits on theta
     ANGLE_LIMITS        = [-pi/15.0, pi/15.0]
     #: Default limits on pendulum rate
@@ -68,10 +68,10 @@ class FiniteTrackCartPole(CartPoleBase):
     POSITON_LIMITS      = [-2.4, 2.4]
     #: m/s - Default limits on cart velocity [per RL Community CartPole]
     VELOCITY_LIMITS     = [-6.0, 6.0]
-    
+
      #: Newtons, N - Force values available as actions
     AVAIL_FORCE         = np.array([-10, 10])
-    
+
     #: kilograms, kg - Mass of the pendulum arm
     MASS_PEND           = 0.1
     #: kilograms, kg - Mass of cart
@@ -86,7 +86,7 @@ class FiniteTrackCartPole(CartPoleBase):
     dt                  = 0.02
     #: Newtons, N - Maximum noise possible, uniformly distributed.  Default 0.
     force_noise_max     = 0.
-    
+
     def __init__(self, logger = None):
         # Limits of each dimension of the state space.
         # Each row corresponds to one dimension and has two elements [min, max]
@@ -94,39 +94,42 @@ class FiniteTrackCartPole(CartPoleBase):
         self.continuous_dims    = [StateIndex.THETA, StateIndex.THETA_DOT, StateIndex.X, StateIndex.X_DOT]
         self.DimNames           = ['Theta', 'Thetadot', 'X', 'Xdot']
         super(FiniteTrackCartPole,self).__init__(logger)
-    
+
     def step(self,a):
         s = self.state
-        reward, ns, terminal, possibleActions = super(FiniteTrackCartPole, self)._stepFourState(s,a)
+        ns = self._stepFourState(s,a)
         self.state = ns.copy()
+        terminal = self.isTerminal() # automatically uses self.state
+        reward = self._getReward(a) # Automatically uses self.state
+        possibleActions = self.possibleActions()
         return reward, ns, terminal, possibleActions
-    
+
     def s0(self):
         # defined by children
         raise NotImplementedError
-    
+
     def showLearning(self, representation):
         """
-        
+
         ``xSlice`` and ``xDotSlice`` - the value of ``x`` and ``xDot``
         respectively, associated with the plotted value function and policy
         (which are each 2-D grids across ``theta`` and ``thetaDot``).
-        
+
         """
         xSlice = 0.  # value of x assumed when plotting V and pi
         xDotSlice=0. # value of xDot assumed when plotting V and pi
-        
+
         warnStr = "WARNING: showLearning() called with 4-state "\
         "cartpole; only showing slice at (x, xDot) = (%.2f, %.2f)" % (xSlice, xDotSlice)
         if self.logger:
             self.logger.log(warnStr)
         else: print warnStr
-        
+
         (thetas, theta_dots) = self._setup_learning(representation)
-        
+
         pi = np.zeros( (len(theta_dots), len(thetas)),'uint8' )
         V = np.zeros( (len(theta_dots), len(thetas)) )
-        
+
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s           = np.array([theta,thetaDot, xSlice, xDotSlice])
@@ -146,12 +149,12 @@ class FiniteTrackCartPole(CartPoleBase):
 
         self._plot_policy(pi)
         self._plot_valfun(V)
-    
+
     def showDomain(self, a=0):
         """
         Display the 4-d state of the cartpole and arrow indicating current
         force action (not including noise!).
-        
+
         """
         fourState = self.state
         self._plot_state(fourState, a)
@@ -162,7 +165,7 @@ class FiniteCartPoleBalance(FiniteTrackCartPole):
     Reward 1 is received on each timestep spent within the goal region,
     zero elsewhere.
     This is also the terminal condition.
-    
+
     The bounds for failure match those used in the RL-Community (see Reference) \n
     ``theta``: [-12, 12] degrees  -->  [-pi/15, pi/15] \n
     ``x``: [-2.4, 2.4] meters
@@ -174,7 +177,7 @@ class FiniteCartPoleBalance(FiniteTrackCartPole):
         See `RL-Library CartPole <http://library.rl-community.org/wiki/CartPole>`_ \n
         Domain constants per RL Community / RL-Library
         `CartPole implementation <http://code.google.com/p/rl-library/wiki/CartpoleJava>`_
-    
+
     """
     #: Discount factor
     gamma               = .999
@@ -207,13 +210,13 @@ class FiniteCartPoleBalanceOriginal(FiniteTrackCartPole):
     Sutton, Richard S., and Andrew G. Barto:
     Reinforcement learning: An introduction.
     Cambridge: MIT press, 1998.
-    
+
     See :class:`Domains.FiniteTrackCartPole.FiniteCartPoleBalance` \n
-    
+
     .. note::
-    
+
         `original definition and code <http://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c>`_
-    
+
     """
     __author__ = "Christoph Dann"
 
@@ -242,11 +245,11 @@ class FiniteCartPoleBalanceModern(FiniteTrackCartPole):
     A more realistic version of balancing with 3 actions (left, right, none)
     instead of the default (left, right), and nonzero, uniform noise in actions.\n
     See :class:`Domains.FiniteTrackCartPole.FiniteCartPoleBalance`.\n
-    
+
     Note that the start state has some noise.
-    
+
     """
-    
+
     __author__ = "Christoph Dann"
 
     #: Newtons, N - Force values available as actions (Note we add a 0-force action)
@@ -287,13 +290,13 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
     optimum then is to swing the pendulum vertically and
     hold it there, collapsing the problem to InfCartPoleBalance
     but with much tighter bounds on the goal region.
-    
+
     See parent class :class:`Domains.FiniteTrackCartPole.FiniteTrackCartPole` for more information.
 
     """
     #: Limit on pendulum angle (no termination, pendulum can make full cycle)
     ANGLE_LIMITS        = [-pi, pi]
-    
+
     # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
     # saturates them frequently when falling; more realistic to use 2*pi.
 
@@ -320,14 +323,14 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     """
     Modifies ``CartPole`` dynamics to include friction. \n
     This domain is a child of :class:`Domains.FiniteTrackCartPole.FiniteCartPoleSwingUp`.
-    
+
     """
-    
+
     __author__ = "Christoph Dann"
-    
+
     # TODO - needs reference
-    
-    
+
+
     #: Limit on pendulum angle (no termination, pendulum can make full cycle)
     ANGLE_LIMITS        = [-pi, pi]
     #: Limits on pendulum rate
@@ -340,7 +343,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     MASS_CART = 0.5 #: kilograms, kg - Mass of cart
     MASS_PEND = 0.5 #: kilograms, kg - Mass of the pendulum arm
     LENGTH = 0.6 #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
-    # a friction coefficient 
+    # a friction coefficient
     A = .5
     #: seconds, s - Time between steps
     dt                  = 0.10
@@ -348,7 +351,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     episodeCap          = 400
     # Friction coefficient between cart and ground
     B = 0.1
-    
+
     def __init__(self, logger = None):
         super(FiniteCartPoleSwingUpFriction,self).__init__(logger)
 

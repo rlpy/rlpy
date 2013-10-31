@@ -64,11 +64,13 @@ Ubuntu / Debian
 ---------------
 Install the non-python dependencies with::
 
-    sudo apt-get install graphviz tk blt tcl gcc
+    sudo apt-get install graphviz tk blt tcl gcc g++
+
 
 To install the Python packages we recommend using Anaconda as described in
 :ref:`the following section <anaconda>` . This will ensure you have the latest versions of
 each package.
+
 **Alternatively** you can install the python packages via apt. Note however that
 these packages will usually be older.
 You can install them by executing::
@@ -77,7 +79,6 @@ You can install them by executing::
     pip install joblib hyperopt pymongo
 
 
-.. _anaconda:
 
 MacOS
 -----
@@ -88,6 +89,30 @@ Check what version of gcc you have by executing::
 
 If it is older than 4.6, install a newer version. You can find compiled
 packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
+
+To install the Python packages we recommend using Anaconda as described in
+:ref:`the following section <anaconda>` . This will ensure you have the latest versions of
+each package.
+
+
+Windows
+-------
+
+We recommend using Anaconda for installing Python and all dependencies. Follow the instructions in 
+:ref:`the following section <anaconda>`. On Windows, Anaconda also comes with the gcc compiler.
+
+.. warning::
+    Unfortunately, matplotlib shipped with Anaconda does not contain the `tkagg` backend, which we
+    use by default. At the moment you need to install matplotlib manually with tkinter support for RLPy 
+    to work properly.
+    
+.. warning::
+    A couple of problems arise when building our Cython / C++ Extensions on Windows. It requires therefore
+    some workarounds to get all extensions running on Windows. For details see
+    https://bitbucket.org/rlpy/rlpy/issue/31/windows-anaconda-installation-problems
+    Unfortunately, the problems are caused by packages we rely on and are therefore not easy to resolve for us.
+    
+.. _anaconda:
 
 Anaconda
 --------
@@ -118,6 +143,13 @@ Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
     error about the `-arch` parameters, try using::
 
         ARCHFLAGS="" python setup.py build_ext --inplace
+
+
+.. tip::
+    You can verify that your rlpy installation works well by running the testsuite in
+    the `tests` directory. You can do so by executing from the rlpy directory::
+
+        nosetests tests
 
 RLPy is now successfully installed. For an introduction on how to use the
 framework have a look at :ref:`tutorial`.

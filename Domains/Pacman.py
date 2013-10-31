@@ -19,22 +19,30 @@ class Pacman(Domain):
     """
     Pacman domain, which acts as a wrapper for the Pacman implementation
     from the BerkeleyX/CS188.1x course project 3.
-    The course website is
-    https://courses.edx.org/courses/BerkeleyX/CS188.1x/2013_Spring/courseware/Week_9/Project_3_Reinforcement/
 
-    The original source code is available at
-    https://courses.edx.org/static/content-berkeley-cs188x~2013_Spring/projects/reinforcement/reinforcement.zip
+    **STATE:** The state vector has a series of dimensions:
 
-    **States** are (2 + 3 * #ghosts + #food + #capsules) dimensional vectors consisting of
+    * [2] The x and y coordinates of pacman
+    * [3 * ng] the x and y coordinates as well as the scare time of each ghost
+      ("scare time" is how long the ghost remains scared after consuming a capsule.)
+    * [nf] binary variables indicating if a food is still on the board or not
+    * [nc] binary variables for each capsule indicating if it is still on the board or not
 
-    1. The x and y coordinates of pacman
-    2. the x and y coordinates as well as the scare time of each ghost
-    3. binary variables indicating if a food is still on the board or not
-    4. binary variables for each capsule indicating if it is still on the board or not
+    *nf* and *nc* are map-dependent, and *ng* can be set as a parameter.
+    Based on above, total dimensionality of state vector is map-dependent,
+    and given by (2 + 3*ng + nf + nc).
 
-    The **actions** are either move up, down, left, right or stay at position.
+    **ACTIONS:** Move Pacman [up, down, left, right, stay]
+    
+    **REWARD:** See the Berkeley project website below for more info.
+    
+    **REFERENCE:** This domain is an RLPy wrapper for the implementation
+    from the `BerkeleyX/CS188.1x course project 3 <https://courses.edx.org/courses/BerkeleyX/CS188.1x/2013_Spring/courseware/Week_9/Project_3_Reinforcement/>`_
 
-    For details of the domain see the original package in the `Domains/PacmanPackage` folder.
+    See the original `source code (zipped) <https://courses.edx.org/static/content-berkeley-cs188x~2013_Spring/projects/reinforcement/reinforcement.zip>`_
+
+    For more details of the domain see the original package in the `Domains/PacmanPackage` folder.
+    
     """
 
     _max_scared_time = 39
@@ -207,7 +215,7 @@ class Pacman(Domain):
         """
         Applies actions from outside the Pacman domain to the given state.
         Internal states accounted for along with scoring and terminal checking.
-        Returns a tuple of form (reward, state vector, terminal)
+        Returns a tuple of form (reward, new state vector, terminal)
         """
         if self.random_state.random_sample() < self.noise:
             # Random Move
@@ -269,6 +277,8 @@ class Pacman(Domain):
     def isTerminal(self):
         """
         Checks whether the game should terminate at the given state.
+        (Terminate for failure, ie eaten by ghost or out of time, and for
+        success, all food on map eaten.)
         If game should terminate, returns the proper indication to step function.
         Accounts for scoring changes in terminal states.
         """

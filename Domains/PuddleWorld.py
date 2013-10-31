@@ -13,14 +13,25 @@ __author__ = "Christoph Dann"
 
 class PuddleWorld(Domain):
     """
-    Implementation of the puddle world benchmark as described in
+    Implementation of the puddle world benchmark as described in references
+    below.
 
-    Jong, N. & Stone, P.: Kernel-based models for reinforcement learning, ICML (2006)
-    and
-    Sutton, R. S.: Generalization in Reinforcement Learning:
-    Successful Examples Using Sparse Coarse Coding, NIPS(1996)
+    
 
-    the state is a 2-dimensional vector s \in [0,1]^2
+    **STATE:** 2-dimensional vector, *s*, each dimension is continuous in [0,1]\n
+    **ACTIONS:** [right, up, left, down] - NOTE it is not possible to loiter.\n
+    **REWARD:** 0 for goal state, -1 for each step, and an additional penalty
+        for passing near puddles.
+    
+    **REFERENCE:**
+    
+    .. seealso::
+        Jong, N. & Stone, P.: Kernel-based models for reinforcement learning, ICML (2006)
+
+    .. seealso::
+        Sutton, R. S.: Generalization in Reinforcement Learning:
+        Successful Examples Using Sparse Coarse Coding, NIPS(1996)
+        
     """
 
     gamma = 1.  # discout factor
