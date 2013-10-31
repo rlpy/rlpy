@@ -52,8 +52,9 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
 
 if __name__ == '__main__':
     from Tools.run import run_profiled
-    run_profiled(make_experiment)
-    #experiment = make_experiment(1)
-    #experiment.run(visualize_learning=True)
-    #experiment.plot()
+    #run_profiled(make_experiment)
+    experiment = make_experiment(1)
+    experiment.run(visualize_learning=True,
+                   visualize_performance=True)
+    experiment.plot()
     #experiment.save()
