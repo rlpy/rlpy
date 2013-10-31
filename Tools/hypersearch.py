@@ -1,7 +1,6 @@
 """Functions to be used with hyperopt for doing hyper parameter optimization."""
 
 import os
-from Tools.Merger import Merger
 import Tools.results as tres
 import Tools.run as rt
 import hyperopt
@@ -161,27 +160,21 @@ class CondorTrials(hyperopt.Trials):
 
     def get_results(self, path):
         # all jobs should be done
-        m = Merger([path], showSplash=False)
-        if self.objective == "max_steps":
-            val = -m.means[0][4, :]
-            idx = 4
-        elif self.objective == "min_steps":
-            val = m.means[0][4, :]
-            idx = 4
-        elif self.objective == "max_reward":
-            val = -m.means[0][1, :]
-            idx = 1
-        else:
-            print "unknown objective"
-        weights = (np.arange(len(val)) + 1) ** 2
-        loss = (val * weights).sum() / weights.sum()
+        res = tres.load_results(path)
+        mapping = {'max_steps': (-1., 'steps'), 'min_steps': (1., 'steps'),
+                   'max_reward': (-1., 'return')}
+        neg, quan = mapping[self.objective]
+        avg, std, n_trials = tres.avg_quantity(res, quan)
+        avg *= neg
+        weights = (np.arange(len(avg)) + 1) ** 2
+        loss = (avg * weights).sum() / weights.sum()
         print time.ctime()
         print "Loss: {:.4g}".format(loss)
         # use #steps/eps at the moment
         return {"loss": loss,
-                "num_trials": m.samples[0],
+                "num_trials": n_trails[-1],
                 "status": hyperopt.STATUS_OK,
-                "std_last_mean": m.std_errs[0][idx, -1]}
+                "std_last_mean": std[-1]}
 
 
 def import_param_space(filename):
