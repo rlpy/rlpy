@@ -80,8 +80,8 @@ You can install them by executing::
 
 
 
-MacOS
------
+OS X
+----
 
 Check what version of gcc you have by executing::
     
@@ -90,21 +90,30 @@ Check what version of gcc you have by executing::
 If it is older than 4.6, install a newer version. You can find compiled
 packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
 
-To install the Python packages we recommend using Anaconda as described in
-:ref:`the following section <anaconda>` . This will ensure you have the latest versions of
+To install the Python packages we recommend either using MacPorts and pip or Anaconda (as described in
+:ref:`the Anaconda section <anaconda>`. This will ensure you have the latest versions of
 each package.
 
+.. warning::
+    At the moment, the Python binaries shipped with Anaconda are built with old OS X versions for
+    compatibility. Unfortunately, the employed environment does not support compiling C++11 code,
+    which we use for the `Representation.KernelizediFDD` representation.
+
+    If you use Anaconda, you will therefore get errors when building the C++11 extensions. However,
+    everything in RLPy will work except the kernelized iFDD representation.
 
 Windows
 -------
 
 We recommend using Anaconda for installing Python and all dependencies. Follow the instructions in 
-:ref:`the following section <anaconda>`. On Windows, Anaconda also comes with the gcc compiler.
+:ref:`the following section <anaconda>`. On Windows, Anaconda also comes with a gcc compiler.
 
 .. warning::
     Unfortunately, matplotlib shipped with Anaconda does not contain the `tkagg` backend, which we
     use by default. At the moment you need to install matplotlib manually with tkinter support for RLPy 
-    to work properly.
+    to work properly. We hope this issue is fixed soon. See also 
+    https://groups.google.com/a/continuum.io/forum/#!topic/anaconda/G4McL1bclAs
+    for updates.
     
 .. warning::
     A couple of problems arise when building our Cython / C++ Extensions on Windows. It requires therefore
@@ -149,7 +158,7 @@ Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
     You can verify that your rlpy installation works well by running the testsuite in
     the `tests` directory. You can do so by executing from the rlpy directory::
 
-        nosetests tests
+        nosetests tests --exe
 
 RLPy is now successfully installed. For an introduction on how to use the
 framework have a look at :ref:`tutorial`.
