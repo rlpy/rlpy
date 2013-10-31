@@ -172,7 +172,7 @@ class CondorTrials(hyperopt.Trials):
         print "Loss: {:.4g}".format(loss)
         # use #steps/eps at the moment
         return {"loss": loss,
-                "num_trials": n_trails[-1],
+                "num_trials": n_trials[-1],
                 "status": hyperopt.STATUS_OK,
                 "std_last_mean": std[-1]}
 
