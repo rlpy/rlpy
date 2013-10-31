@@ -10,47 +10,46 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 class Policy(object):
-    """The Policy determines the discrete action that an \ref Agents.Agent.Agent "Agent" will take 
-    given its \ref Representations.Representation.Representation "Representation".
+    """The Policy determines the discrete action that an
+    :py:class:`~Agents.Agent.Agent` will take  given its
+    :py:class:`~Representations.Representation.Representation.
 
-    The Agent learns about the \ref Domains.Domain.Domain "Domain" as the two interact. 
-    Each step, the Agent passes information about its current state and information
-    relevant to that state to the %Policy. The %Policy uses this information to decide what 
-    discrete action the Agent should perform next. \n
+    The Agent learns about the :py:class:`~Domains.Domain.Domain`
+    as the two interact. 
+    At each step, the Agent passes information about its current state
+    to the Policy; the Policy uses this to decide what discrete action the
+    Agent should perform next (see :py:meth:`~Policies.Policy.Policy.pi`) \n
 
-    The \c %Policy class is a superclass that provides the basic framework for all policies. It provides the methods and attributes
-    that allow child classes to interact with the \c Agent and \c Representation classes within the RLPy library. \n
-    All new policy implementations should inherit from \c %Policy.
+    The Policy class is a base class that provides the basic framework for all
+    policies. It provides the methods and attributes that allow child classes
+    to interact with the Agent and Representation within the RLPy library. \n
+    
+    .. note::
+        All new policy implementations should inherit from Policy.
+        
     """
 
-    # The \ref Representations.Representation.Representation "Representation" to be associated with
     representation = None
-    # \cond DEV
     DEBUG          = False
-    # \endcond
 
-    # [init code]
     def __init__(self,representation,logger):
+        """
+        :param representation: the :py:class:`~Representation.Representation.Representation`
+            to use in learning the value function.
+        
+        """
         self.representation = representation
         ## An object to record the print outs in a file
         self.logger         = logger
-    # [init code]
-
-
-    ## \b ABSTRACT \b METHOD: Select an action given a state. See code
-    # \ref Policy_pi "Here".
-
-    # [pi code]
+        
     def pi(self,s, terminal, p_actions):
-       raise NotImplementedError
-    # [pi code]
+        """ *Abstract Method:* Select an action given a state. """
+        raise NotImplementedError
 
-
-    ## \b ABSTRACT \b METHOD: Turn exploration off. See code
-    # \ref Policy_turnOffExploration "Here".
-
-    # [turnOffExploration code]
     def turnOffExploration(self):
+        """
+        *Abstract Method:* Turn off exploration (e.g., epsilon=0 in epsilon-greedy)
+        """
         pass
     # [turnOffExploration code]
 
@@ -60,23 +59,34 @@ class Policy(object):
 
     # [turnOnExploration code]
     def turnOnExploration(self):
+        """
+        *Abstract Method:*
+        If :py:meth:Policies.Policy.Policy.turnOffExploration` was called
+        previously, reverse its effects (e.g. restore epsilon to its previous,
+        possibly nonzero, value).
+        """
         pass
-    # [turnOnExploration code]
 
-
-    ## Prints class information. See code
-    # \ref Policy_printAll "Here".
-
-    # [printAll code]
     def printAll(self):
+        """ Prints all class information to console. """
         print className(self)
         print '======================================='
         for property, value in vars(self).iteritems():
             print property, ": ", value
             
-    # [printAll code]
     def collectSamples(self, samples):
-        # Return matrices of S,A,NS,R,T where each row of each matrix is a sample by following the current policy
+        """
+        Return matrices of S,A,NS,R,T where each row of each numpy 2d-array
+        is a sample by following the current policy.
+        
+        - S: (#samples) x (# state space dimensions)
+        - A: (#samples) x (1) int [we are storing actionIDs here, integers]
+        - NS:(#samples) x (# state space dimensions)
+        - R: (#samples) x (1) float
+        - T: (#samples) x (1) bool
+        
+        See :py:meth:`Agents.Agent.Agent.Q_MC` and :py:meth:`Agents.Agent.Agent.MC_episode`
+        """
         domain = self.representation.domain
         S   = empty((samples,self.representation.domain.state_space_dims),dtype = type(domain.s0()))
         A   = empty((samples,1),dtype='uint16')

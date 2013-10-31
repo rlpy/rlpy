@@ -110,7 +110,8 @@ Gamma:      {self.gamma}
         both called by this method.
         
         :param a: The action being performed
-        :param representation: The learned value function representation.
+        :param representation: The learned value function
+            :py:class:`~Representation.Representation.Representation`.
             
         
         """
@@ -135,7 +136,8 @@ Gamma:      {self.gamma}
         usually in the form of a gridded value function and policy.
         It is thus really only possible for 1 or 2-state domains.
         
-        :param representation: the learned value function representation
+        :param representation: the learned value function
+            :py:class:`~Representation.Representation.Representation`
             to generate the value function / policy plots.
 
         """
