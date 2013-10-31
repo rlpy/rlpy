@@ -16,8 +16,7 @@ class BicycleBalancing(Domain):
     Simulation of balancing a bicycle.
     
     **STATE:**
-    The state contains of 5 variables. Four are related to the bicycle and
-    the remaining three describe its position on the plane.
+    The state contains of 7 variables, 5 of which are observable.
 
     * *omega:*     angle from the vertical to the bicycle [rad]
     * *omega dot:* angular velocity for omega [rad / s]
