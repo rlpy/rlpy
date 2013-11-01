@@ -1,6 +1,6 @@
 from Tools.run import run
-run("examples/tutorial/pendulum_rbfs.py", "./Results/Tutorial/Pendulum/RBFs",
+run("examples/tutorial/infTrackCartPole_rbfs.py", "./Results/Tutorial/InfTrackCartPole/RBFs",
     ids=range(10), parallelization="joblib")
 
-run("examples/tutorial/pendulum_tabular.py", "./Results/Tutorial/Pendulum/Tabular",
+run("examples/tutorial/infTrackCartPole_tabular.py", "./Results/Tutorial/InfTrackCartPole/Tabular",
     ids=range(10), parallelization="joblib")
