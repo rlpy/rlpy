@@ -17,7 +17,7 @@ Begin by looking at the file `examples/tutorial/gridworld.py`:
    :linenos:
    
 The file is an example for a reinforcement learning experiment. The main
-components of such an experiment is the **domain**, `GridWorld` in this case,
+components of such an experiment are the **domain**, `GridWorld` in this case,
 the **agent** (`Q_Learning`), which uses the **policy** `eGreedy` and the
 value function **representation** `Tabular`. The **experiment** `Experiment` is
 in charge of the execution of the experiment by handling the interaction
@@ -47,7 +47,8 @@ root directory::
     directory is in the python seach path for modules. You can for example
     use::
 
-        PYTHONPATH=. python examples/tutorial/gridworld.py
+        PYTHONPATH=.
+        python examples/tutorial/gridworld.py
 
 .. tip::    
     You can also use the IPython shell interactively and then run the script
@@ -62,15 +63,16 @@ root directory::
 
     This will not terminate the interpreter after running the file and allows
     you to inspect the objects interactively afterwards (you can exit the shell
-    with CTRL + D)
+    with CTRL + D).
 
 .. _Ipython homepage: http://ipython.org
 
 What Happens During a Control Experiment
 -----------------------------------------
 
-During an experiment, the agent does exactly in total `max_steps` learning
-steps where 
+During an experiment, the agent performs a series of episodes, each of which
+consists of a series of steps.  Over the course of its lifetime, the agent
+performs a total of `max_steps` learning steps, each of which consists of: 
 
     1. The agent choses an action given its (exploration) policy
     2. The domain transitions to a new state
@@ -79,31 +81,34 @@ steps where
        information
 
 To track the performance of the agent, the quality of its current policy is
-assessed `num_policy_checks` times during the experiment (and one more time
-right at the beginning). 
-This is done by letting the
-agent interact for `checks_per_policy` episodes with the domain in so called 
-**performance runs**. During performance runs, the agent does not do any
-exploration but always choses actions that it thinks is optimal. This means,
-each step in a performance run consists of
+assessed `num_policy_checks` times during the experiment at uniformly spaced
+intervals (and one more time right at the beginning). 
+At each policy check, the agent is allowed to interact with the domain
+in what are called **performance runs**, with `checks_per_policy` runs
+occuring in each. (Using these multiple samples helps smooth the resulting
+performanace.)
+During performance runs, the agent does not do any exploration but always
+chooses actions optimal with respect to its value function.
+Thus, each step in a performance run consists of:
 
     1. The agent choses an action it thinks is optimal (e.g. greedy w.r.t. its
-       value function estimate
+       value function estimate)
     2. The domain transitions to a new state
 
-Note that no learning happens during performance runs. The total return for
-each episode of performance runs is averaged to obtain a quality measure of the
-agents policy.
+.. note::
+    No learning happens during performance runs. The total return for
+    each episode of performance runs is averaged to obtain a quality measure
+    of the agent's policy.
 
 Graphical Output
 ----------------
 
-While running the experiment you should see two windows, one showing the domain
+While running the experiment you should see two windows, one showing the domain:
 
 .. image:: gridworld_domain.png
    :width: 400px
 
-and one showing the value function
+and one showing the value function:
 
 .. image:: gridworld_valfun.png
     :width: 400px
@@ -116,12 +121,6 @@ while avoiding the pits (red). The agent receives -0.001 reward every step.
 When it reaches the goal or a pit, it obtains rewards of +1.0 or and the episode
 is terminated.
 
-You see only the first episode of each of the ten policy assessments, since we
-set `visualize_performance=1` when calling the `run` method of Experiment. You
-can show more of the 100 performance runs per policy if you increase this
-parameter. If you set `visualize_steps=True` also steps during learning are
-shown.
-
 The value function window shows the value function and the resulting policy. It
 is shown because `visualize_learning=True`.
 Notice how the policy gradually converges to the optimal, direct route which avoids pits.
@@ -131,14 +130,17 @@ It also learns the low (red) value of unimportant / undesirable states.
 
 The set of possible actions in each grid is highlighted by arrows, where the size of arrows 
 correspond to the state-action value function :math:`Q(s,a)`. 
-The best action is shown as black. If the agent has not learned the optimal policy 
-in some grid cells (e.g. Row 2, Column 1 in the picture above), 
-it has not explored enough to learn the correct action ('left' in Row 2, Column 1).  
-It likely still performs well though, since such states are only ever reached 
-because of :math:`\epsilon`-greedy policy which choses random actions with
-probability :math:`\epsilon=0.2`.
+The best action is shown in black. If the agent has not learned the optimal policy 
+in some grid cells, it has not explored enough to learn the correct
+action.  (This often happens in Row 2, Column 1 of this example, where the
+correct action is `left`.)
+The agent likely still performs well though, since such states do not lie along
+the optimal route from the initial state `s0`; they are only rarely reached
+either because of :math:`\epsilon`-greedy policy which choses random actions with
+probability :math:`\epsilon=0.2`, or noise in the domain which takes a random
+action despite the one commanded.
 
-Most domain in RLPy have a visualization like `GridWorld` and often also a
+Most domains in RLPy have a visualization like `GridWorld` and often also a
 graphical presentation of the policy or value function.
 
 At the end of the experiment another window called *Performance* pops up and
@@ -149,8 +151,9 @@ shows a plot of the average return during each policy assessment.
 
 As we can see the agent learns after about 500 steps to obtain on average a
 reward of 0.7. The theoretically optimal reward for a single run is 0.99.
-However, the noise in the domains causing the agent to move only 70% of the
-times in the intended direction causes the total reward to be lower on average.
+However, the noise in the domain causes the agent to take the commanded
+action only 70% of the time (see the domain initialization in line 32);
+thus the total reward is correspondingly lower on average.
 In fact, the policy learned by the agent after 500 steps is the optimal one.
 
 Console Outputs
@@ -174,6 +177,13 @@ episodes is shown only every second. You might therefore see no output for
 learning episodes if your computer is fast enough to do all learning steps
 between two policy assessments in less than one second.
 
+.. note::
+    Throughout these experiments, if you see error messages similar to:
+    ``rlpy/Tools/transformations.py:1886: UserWarning: failed to import module
+    _transformations`` you may safely ignore them.  They merely reflect that
+    configuration does not support all features of rlpy.
+
+
 
 A Slightly More Challenging Domain: Inverted Pole Balancing
 -----------------------------------------------------------
@@ -184,11 +194,11 @@ compare different value function representations on the Cart-Pole Balancing task
 with an infinite track. The task is to keep a pole balanced upright. The pole
 is mounted on a cart which we can either push to the left or right.
 
-The experimental setup is specified in `examples/tutorial/pendulum_tabular.py` with
-a tabular representation and in `examples/tutorial/pendulum_rbfs.py` with radial 
-basis functions (RBFs). The content of `pendulum_rbfs.py` is
+The experimental setup is specified in `examples/tutorial/infTrackCartPole_tabular.py` with
+a tabular representation and in `examples/tutorial/infTrackCartPole_rbfs.py` with radial 
+basis functions (RBFs). The content of `infTrackCartPole_rbfs.py` is
 
-.. literalinclude:: ../examples/tutorial/pendulum_rbfs.py
+.. literalinclude:: ../examples/tutorial/infTrackCartPole_rbfs.py
    :language: python
    :linenos:
 
@@ -200,14 +210,15 @@ an RLPy experiment description and will allow us to run it in parallel on
 several cores on one computer or even on a computing cluster with numerous
 machines.
 
-The content of `pendulum_tabular.py` very similar but differ in the definition
-of the representation parameter of the agent. Compared to our first example,
+The content of `infTrackCartPole_infTrackCartPole.py` very similar but
+differ in the definition of the representation parameter of the agent.
+Compared to our first example,
 the experiment is now executed by calling its `run_from_commandline` method.
 This is a wrapper around `Experiment.run` and allows to specify the options for
 visualization during the execution with command line arguments. You can for
 example run::
 
-    ipython examples/tutorial/pendulum_tabular.py -- -l -p
+    ipython examples/tutorial/infTrackCartPole_tabular.py -- -l -p
 
 from the command line to run the experiment with visualization of the
 performance runs steps, policy and value function.
@@ -217,8 +228,13 @@ performance runs steps, policy and value function.
     IPython. If our use the standard python interpreter or execute the file
     from within IPython with `%run` you can omit the ------.
 
+.. note::
+    As learning occurs, execution may appear to slow down; this is merely
+    because as the agent learns, it is able to balance the pendulum for a
+    greater number of steps, and so each episode takes longer.
+
 .. image:: pendulum_learning.png
-   :width: 90 %
+   :width: 100 %
 
 The value function (center), which plots pendulum angular rate against its angle, demonstrates 
 the highly undesirable states of a steeply inclined pendulum (near the horizontal) with high 
@@ -233,9 +249,9 @@ but has angular velocity towards the balance point.
 
 If you pass no command line
 arguments, no visualization is shown and only the performance graph at the end 
-is produced. For an explination of each command line argument type::
+is produced. For an explanation of each command line argument type::
  
-    ipython examples/tutorial/pendulum_tabular.py -h
+    ipython examples/tutorial/infTrackCartPole_tabular.py -h
 
 When we run the experiment with the tabular representation, we see that the
 pendulum can be balanced sometimes, but not reliably.
@@ -254,23 +270,25 @@ It allows us to run a specific experimental setup specified by a
 `make_experiment` function in a file with multiple seeds in parallel. For
 details see :func:`Tools.run.run`.
 
-You find in `examples/tutorials/run_pendulum_batch.py` a short script with the
+You find in `examples/tutorial/run_infTrackCartPole_batch.py` a short script with the
 following content:
 
-.. literalinclude:: ../examples/tutorial/run_pendulum_batch.py
+.. literalinclude:: ../examples/tutorial/run_infTrackCartPole_batch.py
    :language: python
    :linenos:
 
-This script first runs the inverted pendulum experiment with radial basis
+This script first runs the infinite track cartpole experiment with radial basis
 functions ten times with seeds 1 to 10. Subsequently the same is done for the
 experiment with tabular representation. Since we specified 
 `parallelization=joblib`, the joblib library is used to run the experiment in
 parallel on all but one core of your computer.
-The execution of this script with::
+You can execute this script with::
 
-    ipython examples/tutorial/run_pendulum_batch.py
+    ipython examples/tutorial/run_infTrackCartPole_batch.py
 
-might take a few minutes depending on your hardware. 
+.. note::
+    This might take a few minutes depending on your hardware, and you may see
+    minimal output during this time.
 
 Analyzing Results
 -----------------
@@ -339,9 +357,9 @@ for optimizing these parameters to get the best out of the algorithms.
 We first need to specify what the hyperparameters for a specific experimental
 setup are and what values they can possibly take. We therefore again look at
 part of 
-`examples/tutorial/pendulum_rbf.py`
+`examples/tutorial/infTrackCartPole_rbfs.py`
 
-.. literalinclude:: ../examples/tutorial/pendulum_rbfs.py
+.. literalinclude:: ../examples/tutorial/infTrackCartPole_rbfs.py
    :language: python
    :linenos:
    :lines: 11-30
@@ -358,7 +376,7 @@ For each hyperparameter (in this example `num_rbfs`, `resolution`, `lambda_`,
 `boyan_N0` and `initial_alpha`), the `make_experiment` function has to have an 
 optional argument with the same name.
 
-The script saved in `examples/tutorial/run_hyperparametersearch.py` shows us
+The script saved in `examples/tutorial/run_parametersearch.py` shows us
 how to perform a quick search good parameters
 
 .. literalinclude:: ../examples/tutorial/run_parametersearch.py
@@ -378,10 +396,10 @@ just take the return of the policy assessment with the most observations (the
 final policy). However, this can lead to artifacts and causes all
 hyperparameters that yield the same final performance to be considered equally
 good, no matter how fast they reach this performance. Therefore, the target
-value is computed as follows:
+value is computed as described below.
 
-The target value is the weighted average over all measurements of the desired quantity.
-For example, the averga ereturn during each policy assessment. 
+The target value is the weighted average over all measurements of the desired quantity
+(e.g., the average return during each policy assessment).
 The weights increase quadratically with the observation number, i.e., the
 return achieved in the first policy assessment has weight 1, the second weight
 2, 9, 16, ... This weighting scheme ensures makes the final performance most
@@ -399,9 +417,9 @@ When we run the search, we obtain the following result:
 
 .. note:: 
     This parameters are not optimal. To obtain better ones, the number of
-    evaluations need to be increased to 50 - 100 and also `trials_per_point=10`
+    evaluations need to be increased to 50 - 100. Also, `trials_per_point=10`
     makes the search more reliable. Be aware that 100 evaluations with 10
-    trials each result in 1000 experiment runs, which take a very long time.
+    trials each result in 1000 experiment runs, which can take a very long time.
 
 We can for example save these values by setting the default values in
 `make_experiment` accordingly. 
