@@ -30,8 +30,11 @@ __author__ = "Alborz Geramifard"
 
 
 __rlpy_location__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-matplotlib_backend = 'tkagg' # 'WX' 'QTAgg' 'QT4Agg'
-
+try:
+    import matplotlib.backend._tkagg
+    matplotlib_backend = 'tkagg' # 'WX' 'QTAgg' 'QT4Agg'
+except ImportError:
+    matplotlib_backend = 'qtagg'
 
 def available_matplotlib_backends():
     def is_backend_module(fname):

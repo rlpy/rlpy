@@ -1,3 +1,10 @@
+BlocksWorld
+-----------
+
+.. autoclass:: Domains.BlocksWorld.BlocksWorld
+    :members:
+
+
 Linear Chain MDP
 ----------------
 
@@ -49,12 +56,6 @@ Mountain Car
 .. autoclass:: Domains.MountainCar.MountainCar
     :members:
 
-
-Multi Track
------------
-
-.. autoclass:: Domains.MultiTrack.MultiTrack
-    :members:
 
 Persistent Search and Track Mission 
 -----------------------------------

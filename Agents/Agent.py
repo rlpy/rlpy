@@ -36,7 +36,7 @@ class Agent(object):
 
     .. note::
         All new agent implementations should inherit from this class.
-        
+
     """
     # The Representation to be used by the Agent
     representation      = None
@@ -77,14 +77,14 @@ class Agent(object):
         :param policy: the :py:class:`~Policies.Policy.Policy` to use when selecting actions.
         :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
         :param initial_alpha: Initial learning rate to use (where applicable)
-        
+
         .. warning::
             ``initial_alpha`` should be set to 1 for automatic learning rate;
             otherwise, initial_alpha will act as a permanent upper-bound on alpha.
-        
+
         :param alpha_decay_mode: The learning rate decay mode (where applicable)
         :param boyan_N0: Initial Boyan rate parameter (when alpha_decay_mode='boyan')
-        
+
         """
         self.representation = representation
         self.policy     = policy
@@ -116,7 +116,7 @@ class Agent(object):
         """
         This function receives observations of a single transition and
         learns from it.
-        
+
         .. note::
             Each inheriting class (Agent) must implement this method.
 
@@ -142,7 +142,7 @@ class Agent(object):
         :param gamma: The discount factor for learning
         :param nnz: The number of nonzero features
         :param terminal: Boolean that determines if the step is terminal or not
-        
+
         """
 
         if self.alpha_decay_mode == 'dabney':
@@ -180,7 +180,7 @@ class Agent(object):
         :return eps_length: Length of the Episode
         :return eps_term: Specifies the terminal condition of the episode: 0 (stopped due to length), >0 (stopped due to a terminal state)
         :return eps_discounted_return: Sum of discounted rewards.
-        
+
         """
         eps_length              = 0
         eps_return              = 0
@@ -210,9 +210,9 @@ class Agent(object):
         :param tolerance: If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
         :param MC_samples: Number of samples to be used to evaluated the Q value
         :return: Q_avg, Averaged sum of discounted rewards = estimate of the Q.
-        
+      	
         """
-        
+
         Q_avg = 0
         for i in arange(MC_samples):
             #print "MC Sample:", i
@@ -226,7 +226,7 @@ class Agent(object):
         in a numpy 2-d array: (#samples) x (|S|+2), where the two appended
         columns correspond to the action (integer) and Q(s,a). \n
         Saves the data generated in a file. \n
-        
+
         :param samples: The number of samples (s,a)
         :param MC_samples: The number of MC simulations used to estimate Q(s,a)
         :param output_file: The file in which the data is saved.
@@ -234,7 +234,7 @@ class Agent(object):
         :return: the data generated and stored in the output_file
         
         """
-        
+
         tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q
         cols            = self.domain.state_space_dims + 2
         DATA            = empty((samples,cols))
@@ -259,11 +259,11 @@ class Agent(object):
         """
         This function adjusts all necessary elements of the agent at the end of
         the episodes.
-        
+
         .. note::
             Every agent must call this function at the end of the learning if the
             transition led to terminal state.
-            
+
         """
         #Increase the number of episodes
         self.episode_count += 1
