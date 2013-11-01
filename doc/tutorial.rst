@@ -383,7 +383,7 @@ how to perform a quick search good parameters
    :language: python
    :linenos:
 
-.. warning:: Running this script might take a while.
+.. warning:: Running this script might take a while (approx. 5-30 min)
 
 The :func:`Tools.hypersearch.find_hyperparameters` function is the most
 important tools for finding good parameters. For details on how to use it see
