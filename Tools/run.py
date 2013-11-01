@@ -24,6 +24,7 @@ sys.path = ["{rlpy_location}"] + sys.path
 
 {variables}
 if __name__ == "__main__":
+    exp.log_interval = 60
     exp = make_experiment(int(sys.argv[1]), ".", **hyper_param)
     exp.run()
     exp.save()
