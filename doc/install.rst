@@ -114,6 +114,10 @@ We recommend using Anaconda for installing Python and all dependencies. Follow t
     to work properly. We hope this issue is fixed soon. See also 
     https://groups.google.com/a/continuum.io/forum/#!topic/anaconda/G4McL1bclAs
     for updates.
+
+    If you see an error complaining that the module `_tkagg` could not be imported, change 
+    the `matplotlib_backend` variable in `Tools.GeneralTools` to \"qtagg\". While this workaround
+    allows you to use matplotlib, it may result in interactive matplotlib plots to not be shown.
     
 .. warning::
     A couple of problems arise when building our Cython / C++ Extensions on Windows. It requires therefore
