@@ -63,6 +63,7 @@ class CartPoleBase(Domain):
     cartBox             = None
     actionArrow         = None
     domainFig           = None
+    domainAx            = None
 
     ### Domain visual constants (these DO NOT affect dynamics, purely visual).
     ACTION_ARROW_LENGTH = 0.4   # length of arrow showing force action on cart
@@ -338,29 +339,29 @@ class CartPoleBase(Domain):
 #             pl.xlabel(r"$x$ position (meters)")
 #             pl.ylabel(r"$y$ position (meters)")
 #             pl.title('Domain State')
-            ax = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
+            self.domainAx = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
             self.pendulumArm = lines.Line2D([], [], linewidth = self.PEND_WIDTH, color='black')
             self.cartBox    = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT / 2.0], self.RECT_WIDTH, self.RECT_HEIGHT, alpha=.4)
             self.cartBlob   = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.BLOB_WIDTH / 2.0], self.BLOB_WIDTH, self.BLOB_WIDTH, alpha=.4)
-            ax.add_patch(self.cartBox)
-            ax.add_line(self.pendulumArm)
-            ax.add_patch(self.cartBlob)
+            self.domainAx.add_patch(self.cartBox)
+            self.domainAx.add_line(self.pendulumArm)
+            self.domainAx.add_patch(self.cartBlob)
             #Draw Ground
             groundPath    = mpath.Path(self.GROUND_VERTS)
             groundPatch   = mpatches.PathPatch(groundPath,hatch="//")
-            ax.add_patch(groundPatch)
-            self.timeText = ax.text(self.POSITON_LIMITS[1], self.LENGTH,"")
-            self.rewardText = ax.text(self.POSITON_LIMITS[0], self.LENGTH,"")
+            self.domainAx.add_patch(groundPatch)
+            self.timeText = self.domainAx.text(self.POSITON_LIMITS[1], self.LENGTH,"")
+            self.rewardText = self.domainAx.text(self.POSITON_LIMITS[0], self.LENGTH,"")
             # Allow room for pendulum to swing without getting cut off on graph
             viewableDistance = self.LENGTH  + 0.5
             if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
                 # We have huge position limits, limit the figure width so
                 # cart is still visible
-                ax.set_xlim(-viewableDistance, viewableDistance)
+                self.domainAx.set_xlim(-viewableDistance, viewableDistance)
             else:
-                ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
-            ax.set_ylim(-viewableDistance, viewableDistance)
-            #ax.set_aspect('equal')
+                self.domainAx.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
+            self.domainAx.set_ylim(-viewableDistance, viewableDistance)
+            #self.domainAx.set_aspect('equal')
 
             pl.show()
 
@@ -392,14 +393,14 @@ class CartPoleBase(Domain):
                     curX - self.ACTION_ARROW_LENGTH - self.RECT_WIDTH/2.0, 0,
                     curX - self.RECT_WIDTH/2.0,  0,
                     'k',"arc3,rad=0",
-                    0,0, 'simple'
+                    0,0, 'simple', ax=self.domainAx
                 )
             else:# leftward force
                 self.actionArrow = fromAtoB(
                     curX + self.ACTION_ARROW_LENGTH + self.RECT_WIDTH/2.0, 0,
                     curX + self.RECT_WIDTH/2.0, 0,
                     'r',"arc3,rad=0",
-                    0,0,'simple'
+                    0,0,'simple', ax=self.domainAx
                 )
 
         pl.draw()
