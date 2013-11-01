@@ -12,7 +12,7 @@ __author__ = "Alborz Geramifard"
 class Policy(object):
     """The Policy determines the discrete action that an
     :py:class:`~Agents.Agent.Agent` will take  given its
-    :py:class:`~Representations.Representation.Representation.
+    :py:class:`~Representations.Representation.Representation`.
 
     The Agent learns about the :py:class:`~Domains.Domain.Domain`
     as the two interact. 
@@ -34,7 +34,7 @@ class Policy(object):
 
     def __init__(self,representation,logger):
         """
-        :param representation: the :py:class:`~Representation.Representation.Representation`
+        :param representation: the :py:class:`~Representations.Representation.Representation`
             to use in learning the value function.
         
         """
@@ -43,12 +43,18 @@ class Policy(object):
         self.logger         = logger
         
     def pi(self,s, terminal, p_actions):
-        """ *Abstract Method:* Select an action given a state. """
+        """
+        *Abstract Method:*\n Select an action given a state.
+        
+        :param s: The current state
+        :param terminal: boolean, whether or not the *s* is a terminal state.
+        :param p_actions: a list / array of all possible actions in *s*.
+        """
         raise NotImplementedError
 
     def turnOffExploration(self):
         """
-        *Abstract Method:* Turn off exploration (e.g., epsilon=0 in epsilon-greedy)
+        *Abstract Method:* \n Turn off exploration (e.g., epsilon=0 in epsilon-greedy)
         """
         pass
     # [turnOffExploration code]
@@ -60,7 +66,7 @@ class Policy(object):
     # [turnOnExploration code]
     def turnOnExploration(self):
         """
-        *Abstract Method:*
+        *Abstract Method:* \n
         If :py:meth:Policies.Policy.Policy.turnOffExploration` was called
         previously, reverse its effects (e.g. restore epsilon to its previous,
         possibly nonzero, value).

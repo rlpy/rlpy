@@ -11,7 +11,7 @@ __author__ = "Alborz Geramifard"
 class Representation(object):
     """
     The Representation is the :py:class:`~Agents.Agent.Agent`'s model of the
-    value function associated with a :py:class:`~Domains.Domain.Domain.
+    value function associated with a :py:class:`~Domains.Domain.Domain`.
 
     As the Agent interacts with the Domain, it receives updates in the form of
     state, action, reward, next state, next action. \n
@@ -402,32 +402,49 @@ class Representation(object):
         for the general case.
             
         :param s: The given state
+        
+        :return: The feature vector evaluated at state *s*.
         """
         raise NotImplementedError
 
     def activeInitialFeatures(self,s):
         """
-        Returns the index of active initial features based on bins in each dimensions. See code
-        # \ref Representation_activeInitialFeatures "Here".
-        # @param s The given state
-        # @return The desired index
+        Returns the index of active initial features based on bins in each
+        dimension.
+        :param s: The state
+        
+        :return: The active initial features of this representation
+            (before expansion)
         """
         bs        = self.binState(s)
         shifts    = hstack((0, cumsum(self.bins_per_dim)[:-1]))
         index      = bs+shifts
         return    index.astype('uint32')
 
-    ## Build the feature vector for a series of state-action pairs (s,a) using the copy-paste method. See code
-    # \ref Representation_batchPhi_s_a "Here".
-    # @param all_phi_s The feature vectors. p-by-n, where p is the number of s-a pairs (indexed by row), and n is the number of features.
-    # @param all_actions The set of actions corresponding to each feature. p-by-1, where p is the number of states included in this batch.
-    # @param all_phi_s_a fOptional: Feature vector for a series of state-action pairs (s,a) using the copy-paste method.
-    # If phi_s_a has already been built for all actions, pass it for speed boost.
-    # @param use_sparse Determines whether or not to use sparse matrix libraries provided with numpy
-    # @return all_phi_s_a (of dimension p x (s_a) )
-
-    # [batchPhi_s_a code]
     def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):
+        """
+        Builds the feature vector for a series of state-action pairs (s,a)
+        using the copy-paste method.
+        
+        .. note::
+            See :py:meth:`~Representations.Representation.Representation.phi_sa`
+            for more information.
+            
+        :param all_phi_s: The feature vectors evaluated at a series of states.
+            Has dimension *p* x *n*, where *p* is the number of states
+            (indexed by row), and *n* is the number of features.
+        :param all_actions: The set of actions corresponding to each feature.
+            Dimension *p* x *1*, where *p* is the number of states included
+            in this batch.
+        :param all_phi_s_a: (Optional) Feature vector for a series of
+            state-action pairs (s,a) using the copy-paste method.
+            If the feature vector phi(s) has already been cached,
+            pass it here as input so that it need not be computed again.
+        :param use_sparse: Determines whether or not to use sparse matrix
+        libraries provided with numpy.
+        
+        :return: all_phi_s_a (of dimension p x (s_a) )
+        """
         p,n         = all_phi_s.shape
         a_num       = self.domain.actions_num
         if use_sparse:
@@ -439,10 +456,28 @@ class Representation(object):
             rows = where(all_actions==i)[0]
             if len(rows): phi_s_a[rows,i*n:(i+1)*n] = all_phi_s[rows,:]
         return phi_s_a
-    # [batchPhi_s_a code]
 
-    # [batchBestAction code]
     def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
+        """
+        Accepts a batch of states, returns the best action associated with each.
+        
+        .. note::
+            See :py:meth:`~Representations.Representation.Representation.bestAction`
+           
+        :param all_s: An array of all the states to consider.
+        :param all_phi_s: The feature vectors evaluated at a series of states.
+            Has dimension *p* x *n*, where *p* is the number of states
+            (indexed by row), and *n* is the number of features.
+        :param action_mask: (optional) a *p* x *|A|* mask on the possible
+            actions to consider, where *|A|* is the size of the action space.
+            The mask is a binary 2-d array, where 1 indicates an active mask
+            (action is unavailable) while 0 indicates a possible action.
+        :param useSparse: Determines whether or not to use sparse matrix
+        libraries provided with numpy.
+        
+        :return: An array of the best action associated with each state.
+        
+        """
         p,n  = all_phi_s.shape
         a_num   = self.domain.actions_num
 
@@ -465,32 +500,42 @@ class Representation(object):
         # Calculate the corresponding phi_s_a
         phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a, useSparse)
         return best_action, phi_s_a, action_mask
-    # [batchBestAction code]
 
-
-    ## \b ABSTRACT \b METHOD: Return the data type for features. See code
-    # \ref Representation_featureType "Here".
-
-    # [featureType code]
     def featureType(self):
+        """ *Abstract Method* \n
+        Return the data type for the underlying features (eg 'float').
+        """
         raise NotImplementedError
-    # [featureType code]
 
-
-    ## Returns the state action value, Q(s,a), by performing one step look-ahead on the domain.
-    # An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998.
-    # If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
-    # If policy is passed (used in the policy evaluation), it is used to generate the action for the next state. Otherwise the best action is selected.
-    # \ref Representation_Q_oneStepLookAhead "Here".
-    # \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model
-    # @param s The given state
-    # @param a The given action
-    # @param ns_samples The number of samples used to estimate the one_step look-aghead.
-    # @param policy The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead. If not set the best action will be selected.
-    # @return \b Q: The state-action value.
-
-    # [Q_oneStepLookAhead code]
     def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
+        """
+        Returns the state action value, Q(s,a), by performing one step
+        look-ahead on the domain.
+        
+        .. note::
+            For an example of how this function works, see
+            `Line 8 of Figure 4.3 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
+            in Sutton and Barto 1998.
+            
+        If the domain does not define ``expectedStep()``, this function uses
+        ``ns_samples`` samples to estimate the one_step look-ahead.
+        If a policy is passed (used in the policy evaluation), it is used to
+        generate the action for the next state.
+        Otherwise the best action is selected.
+        
+        .. note::
+            This function should not be called in any RL algorithms unless
+            the underlying domain is an approximation of the true model.
+            
+        :param s: The given state
+        :param a: The given action
+        :param ns_samples: The number of samples used to estimate the one_step look-ahead.
+        :param policy: (optional) Used to select the action in the next state
+            (*after* taking action a) when estimating the one_step look-aghead.
+            If ``policy == None``, the best action will be selected.
+        
+        :return: The one-step lookahead state-action value, Q(s,a).
+        """
         # Hash new state for the incremental tabular case
         self.continuous_state_starting_samples = 10
         if hasFunction(self,'addState'): self.addState(s)
@@ -550,53 +595,79 @@ class Representation(object):
             else:
                 Q = mean([rewards[i] + gamma*self.Q(next_states[i,:],policy.pi(next_states[i,:])) for i in arange(ns_samples)])
         return Q
-    # [Q_oneStepLookAhead code]
 
-
-    ## Returns an array of actions available at a state and their associated values, Qs(s,a), by performing one step look-ahead on the domain.
-    # An example of how this function works can be found on Line 8 of Figure 4.3 in Sutton and Barto 1998.
-    # If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
-    # \ref Representation_Qs_oneStepLookAhead "Here".
-    # \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model
-    # @param s The given state
-    # @param ns_samples The number of samples used to estimate the one_step look-aghead.
-    # @param policy The optional parameter to decide about the action to be selected in the next state when estimating the one_step look-aghead.
-    # @return [Qs, actions] \n
-    # \b Qs: an array of Q(s,a), the values of each action. \n
-    # \b actions: the corresponding array of action numbers
-
-    # [Qs_oneStepLookAhead code]
     def Qs_oneStepLookAhead(self,s, ns_samples, policy = None):
+        """
+        Returns an array of actions and their associated values Q(s,a),
+        by performing one step look-ahead on the domain for each of them.
+        
+        .. note::
+            For an example of how this function works, see
+            `Line 8 of Figure 4.3 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
+            in Sutton and Barto 1998.
+            
+        If the domain does not define ``expectedStep()``, this function uses
+        ``ns_samples`` samples to estimate the one_step look-ahead.
+        If a policy is passed (used in the policy evaluation), it is used to
+        generate the action for the next state.
+        Otherwise the best action is selected.
+        
+        .. note::
+            This function should not be called in any RL algorithms unless
+            the underlying domain is an approximation of the true model.
+            
+        :param s: The given state
+        :param ns_samples: The number of samples used to estimate the one_step look-ahead.
+        :param policy: (optional) Used to select the action in the next state
+            (*after* taking action a) when estimating the one_step look-aghead.
+            If ``policy == None``, the best action will be selected.
+        
+        :return: an array of length `|A|` containing the *Q(s,a)* for each
+            possible *a*, where `|A|` is the number of possible actions from state *s*
+        """
         actions = self.domain.possibleActions(s)
         Qs      = array([self.Q_oneStepLookAhead(s, a, ns_samples, policy) for a in actions])
         return Qs, actions
-    # [Qs_oneStepLookAhead code]
 
-
-    ## Returns V(s) by performing one step look-ahead on the domain.
-    # An example of how this function works can be found on Line 6 of Figure 4.5 in Sutton and Barto 1998.
-    # If the domain does not have expectedStep function, this function uses ns_samples samples to estimate the one_step look-ahead. See code
-    # \ref Representation_V_oneStepLookAhead "Here".
-    # \note This function should not be called in any RL algorithms unless the underlying domain is an approximation of the true model
-    # @param s The given state
-    # @param ns_samples The number of samples used to estimate the one_step look-aghead.
-    # @return
-    # The estimated value = max_a Q(s,a) together with the corresponding action that maximizes the Q function
-
-
-    # [V_oneStepLookAhead code]
     def V_oneStepLookAhead(self,s,ns_samples):
+        """
+        Returns the value of being in state *s*, V(s),
+        by performing one step look-ahead on the domain.
+        
+        .. note::
+            For an example of how this function works, see
+            `Line 6 of Figure 4.5 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
+            in Sutton and Barto 1998.
+            
+        If the domain does not define ``expectedStep()``, this function uses
+        ``ns_samples`` samples to estimate the one_step look-ahead.
+        
+        .. note::
+            This function should not be called in any RL algorithms unless
+            the underlying domain is an approximation of the true model.
+            
+        :param s: The given state
+        :param ns_samples: The number of samples used to estimate the one_step look-ahead.
+        
+        :return: The value of being in state *s*, *V(s)*.
+        """
+    # The estimated value = max_a Q(s,a) together with the corresponding action that maximizes the Q function
         Qs, actions     = self.Qs_oneStepLookAhead(s,ns_samples)
         a_ind           = argmax(Qs)
         return Qs[a_ind],actions[a_ind]
-    # [V_oneStepLookAhead code]
-
-    ## Returns the state vector correponding to a state_id
-    # If dimensions are continuous it returns the state representing the middle of the bin (each dimension is discritized using a parameter into a set of bins)
-    # @param s_id The id of the state, often calculated using the state2bin function
-
-    # [stateID2state code]
+    
     def stateID2state(self,s_id):
+        """
+        Returns the state vector correponding to a state_id.
+        If dimensions are continuous it returns the state representing the
+        middle of the bin (each dimension is discretized according to
+        ``representation.discretization``.
+        
+        :param s_id: The id of the state, often calculated using the
+            ``state2bin`` function
+        
+        :return: The state *s* corresponding to the integer *s_id*.
+        """
 
         #Find the bin number on each dimension
         s   = array(id2vec(s_id,self.bins_per_dim))
@@ -608,17 +679,21 @@ class Representation(object):
         if len(self.domain.continuous_dims) == 0:
             s = s.astype(int)
         return s
-    # [stateID2state code]
 
-    ## This function returns the state in the middle of the grid that captures the input state.
-    # For continuous MDPs this plays a major rule in improving the speed through caching of next samples
-    # @param s The given state
-
-    # [stateInTheMiddleOfGrid]
     def stateInTheMiddleOfGrid(self,s):
+        """
+        Accepts a continuous state *s*, bins it into the discretized domain,
+        and returns the state of the nearest gridpoint.
+        Essentially, we snap *s* to the nearest gridpoint and return that
+        gridpoint state.
+        For continuous MDPs this plays a major rule in improving the speed
+        through caching of next samples.
+        
+        :param s: The given state
+        
+        :return: The nearest state *s* which is captured by the discretization.
+        """
         s_normalized = s.copy()
         for d in arange(self.domain.state_space_dims):
             s_normalized[d] = closestDiscretization(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
         return s_normalized
-    # [stateInTheMiddleOfGrid]
-
