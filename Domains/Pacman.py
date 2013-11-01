@@ -6,6 +6,7 @@ from .PacmanPackage import graphicsDisplay
 import numpy as np
 from copy import deepcopy
 import os
+import time
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -35,6 +36,11 @@ class Pacman(Domain):
     **ACTIONS:** Move Pacman [up, down, left, right, stay]
     
     **REWARD:** See the Berkeley project website below for more info.
+    
+    .. note::
+        The visualization runs as fast as your CPU will permit; to slow things
+        down so gameplay is actually visible, de-comment time.sleep()
+        in the showDomain() method.
     
     **REFERENCE:** This domain is an RLPy wrapper for the implementation
     from the `BerkeleyX/CS188.1x course project 3 <https://courses.edx.org/courses/BerkeleyX/CS188.1x/2013_Spring/courseware/Week_9/Project_3_Reinforcement/>`_
@@ -186,7 +192,12 @@ class Pacman(Domain):
         return s
     state = property(_get_state, _set_state)
 
-    def showDomain(self, a):
+    def showDomain(self, a, s=None):
+        if s != None:
+            errStr = 'ERROR: In Pacman.py, attempted to pass a state (s)'\
+                'to showDomain(); Pacman only supports internal states.'\
+                'If you do pass a state parameter, ensure it is set to None.'
+            raise Exception(errStr)
         s = self.game_state
         if self.gameDisplay is None:
             self.gameDisplay = graphicsDisplay.PacmanGraphics()
@@ -210,6 +221,7 @@ class Pacman(Domain):
             self.gameDisplay.update(s.data)
             s._foodEaten = None
             s._capsuleEaten = None
+#         time.sleep(0.1) # Sleep for 0.1 sec
 
     def step(self, a):
         """

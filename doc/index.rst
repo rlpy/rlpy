@@ -6,7 +6,20 @@
 Welcome to RLPy's documentation!
 ================================
 
-Contents:
+RLPy is a framework to conduct sequential decision making experiments. The
+current focus of this project lies on value-function-based reinforcement
+learning. The project is distributed under the 3-Clause BSD License.
+
+Important Links
+===============
+
+- Official source code repository: http://bitbucket.org/rlpy/rlpy
+- Github Mirror: http://github.com/rlpy/rlpy
+- Documentation and Homepage: http://acl.mit.edu/RLPy
+- Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
+
+Documentation
+=============
 
 .. toctree::
    :maxdepth: 2

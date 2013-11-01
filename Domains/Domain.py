@@ -15,7 +15,7 @@ class Domain(object):
     Agent is subject to.
 
     The Agent interacts with the Domain in discrete timesteps called
-    'episodes' (see [[step]])
+    *episodes* (see :py:meth:`~Domains.Domain.Domain.step`).
     At each step, the Agent informs the Domain what indexed action it wants to
     perform.  The Domain then calculates the effects this action has on the
     environment and updates its internal state accordingly.
@@ -34,7 +34,7 @@ class Domain(object):
     but also the states it can be in, the actions that it can perform, and the
     relationships between the three.
 
-    The Domain class is a superclass that provides the basic framework for all
+    The Domain class is a base clase that provides the basic framework for all
     Domains. It provides the methods and attributes that allow child classes
     to interact with the Agent and Experiment classes within the RLPy library.
     Domains should also provide methods that provide visualization of the 
@@ -110,8 +110,10 @@ Gamma:      {self.gamma}
         both called by this method.
         
         :param a: The action being performed
-        :param representation: The learned value function representation.
-            
+        :param representation: The learned value function
+            :py:class:`~Representation.Representation.Representation`.
+        :param s: The state of the domain to display; overrides self.state
+            if ``s != None``.
         
         """
         self.showDomain(a, s=s)
@@ -135,7 +137,8 @@ Gamma:      {self.gamma}
         usually in the form of a gridded value function and policy.
         It is thus really only possible for 1 or 2-state domains.
         
-        :param representation: the learned value function representation
+        :param representation: the learned value function
+            :py:class:`~Representation.Representation.Representation`
             to generate the value function / policy plots.
 
         """
@@ -158,7 +161,7 @@ Gamma:      {self.gamma}
         actions are available from all states.
         
         :param s: The state to query for possible actions
-            (overrides self.state if != None)
+            (overrides self.state if ``s != None``)
         
         :return: A numpy array containing every possible action in the domain.
         

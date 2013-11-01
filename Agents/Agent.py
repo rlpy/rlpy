@@ -44,13 +44,20 @@ class Agent(object):
     domain              = None
     # The policy to be used by the agent
     policy              = None
-    # The initial learning rate. Note that initial_alpha should be set to 1 for automatic learning rate; otherwise, initial_alpha will act as a permanent upper-bound on alpha.
+    # The initial learning rate. Note that initial_alpha should be set to
+    # 1 for automatic learning rate; otherwise, initial_alpha will act as
+    # a permanent upper-bound on alpha.
     initial_alpha       = 0.1
     #: The learning rate
     alpha               = 0
-    #: Only used in the 'dabney' method of learning rate update.  This value is updated in the updateAlpha method. We use the rate calculated by [Dabney W 2012] \n http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
+    #: Only used in the 'dabney' method of learning rate update. 
+    #: This value is updated in the updateAlpha method. We use the rate 
+    #: calculated by [Dabney W 2012]: http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
     candid_alpha        = 0
-    #: The eligibility trace, which marks states as eligible for a learning update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the parameter lambda is set. See: \n http://www.incompleteideas.net/sutton/book/7/node1.html
+    #: The eligibility trace, which marks states as eligible for a learning
+    #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
+    #: parameter lambda is set. See:
+    #: http://www.incompleteideas.net/sutton/book/7/node1.html
     eligibility_trace   = []
     #: A simple object that records the prints in a file
     logger              = None
@@ -163,6 +170,7 @@ class Agent(object):
         Run a single monte-carlo simulation episode from state *s* with action
         *a* following the current policy of the agent.
         See :py:meth:`~Agents.Agent.Agent.Q_MC`.
+        
         :param s: The state used in the simulation
         :param a: The action used in the simulation
         :param tolerance: If the tolerance is set to a non-zero value, episodes
@@ -196,12 +204,13 @@ class Agent(object):
         """
         Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a).
         See :py:meth:`~Agents.Agent.Agent.MC_episode`.
+        
         :param s: The state used in the simulation
         :param a: The action used in the simulation
         :param tolerance: If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
         :param MC_samples: Number of samples to be used to evaluated the Q value
-        :return Q_avg: Averaged sum of discounted rewards = estimate of the Q
-
+        :return: Q_avg, Averaged sum of discounted rewards = estimate of the Q.
+      	
         """
 
         Q_avg = 0
@@ -221,8 +230,9 @@ class Agent(object):
         :param samples: The number of samples (s,a)
         :param MC_samples: The number of MC simulations used to estimate Q(s,a)
         :param output_file: The file in which the data is saved.
-        :return DATA: The data generated and stored in the output_file
-
+        
+        :return: the data generated and stored in the output_file
+        
         """
 
         tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q

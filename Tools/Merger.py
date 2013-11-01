@@ -1,5 +1,9 @@
 """Merger script for combining and plotting results."""
 
+##################################################################
+# WARNING : THIS CLASS IS DEPRECATED.  USE Tools.results INSTEAD #
+##################################################################
+
 from GeneralTools import *
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
@@ -36,7 +40,10 @@ class Merger(object):
                  styles = ['o', 'v', '8', 's', 'p', '*', '<','h', '^', 'H', 'D',  '>', 'd'],
                  markersize = 5, xbars=1, ybars=1, legend = False, maxSamples = inf, minSamples = 1,
                  getMAX = 0,showSplash=True, numLabelSuffixes=2, token_split_char='-'):
-
+        
+        print '*** WARNING: this class is deprecated.  Use Tools.results instead. ***'
+        
+        
         #import the data from each path. Results in each of the paths has to be consistent in terms of size
         self.means                  = []
         self.std_errs               = []

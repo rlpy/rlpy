@@ -20,10 +20,10 @@ cdef long hash(long [:] A, long [:] R, int increment, int max):
 
 @cython.boundscheck(False)
 @cython.cdivision(True)
-def physical_addr(np.ndarray[np.long_t, ndim=1] A,
-                   np.ndarray[np.long_t, ndim=1] R,
-                   np.ndarray[np.long_t, ndim=1] counts,
-                   np.ndarray[np.long_t, ndim=1] check_data):
+def physical_addr(np.ndarray[np.npy_long, ndim=1] A,
+                   np.ndarray[np.npy_long, ndim=1] R,
+                   np.ndarray[np.npy_longlong, ndim=1] counts,
+                   np.ndarray[np.npy_longlong, ndim=1] check_data):
     """
     Map a virtual vector address A to a physical address i.e. the actual
     feature number.
