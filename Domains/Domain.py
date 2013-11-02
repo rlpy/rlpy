@@ -22,7 +22,7 @@ class Domain(object):
     It also returns the new state to the agent, along with a reward/penalty,
     and whether or not the episode is over (thus resetting the agent to its
     initial state).
-    
+
     This process repeats until the Domain determines that the Agent has either
     completed its goal or failed.
     The :py:class:`~Experiments.Experiment.Experiment` controls this cycle.
@@ -37,7 +37,7 @@ class Domain(object):
     The Domain class is a base clase that provides the basic framework for all
     Domains. It provides the methods and attributes that allow child classes
     to interact with the Agent and Experiment classes within the RLPy library.
-    Domains should also provide methods that provide visualization of the 
+    Domains should also provide methods that provide visualization of the
     Domain itself and of the Agent's learning
     (:py:meth:`~Domains.Domain.Domain.showDomain` and
     :py:meth:`~Domains.Domain.Domain.showLearning` respectively) \n
@@ -104,17 +104,17 @@ Gamma:      {self.gamma}
         """
         Shows a visualization of the current state of the domain and that of
         learning.
-        
+
         See :py:meth:`~Domains.Domain.Domain.showDomain()` and
         :py:meth:`~Domains.Domain.Domain.showLearning()`,
         both called by this method.
-        
+
         :param a: The action being performed
         :param representation: The learned value function
             :py:class:`~Representation.Representation.Representation`.
         :param s: The state of the domain to display; overrides self.state
             if ``s != None``.
-        
+
         """
         self.showDomain(a, s=s)
         self.showLearning(representation)
@@ -123,7 +123,7 @@ Gamma:      {self.gamma}
         """
         *Abstract Method:*\n
         Shows a visualization of the current state of the domain.
-        
+
         :param a: The action being performed.
         :param s: The current domain state (overrides self.state if != None)
 
@@ -136,7 +136,7 @@ Gamma:      {self.gamma}
         Shows a visualization of the current learning,
         usually in the form of a gridded value function and policy.
         It is thus really only possible for 1 or 2-state domains.
-        
+
         :param representation: the learned value function
             :py:class:`~Representation.Representation.Representation`
             to generate the value function / policy plots.
@@ -148,9 +148,9 @@ Gamma:      {self.gamma}
         """
         Begins a new episode and returns the initial observed state of the Domain.
         Sets self.state accordingly.
-        
+
         :return: A numpy array that defines the initial domain state.
-        
+
         """
         raise NotImplementedError("Children need to implement this method")
 
@@ -159,14 +159,14 @@ Gamma:      {self.gamma}
         The default version returns an enumeration of all actions [0, 1, 2...].
         We suggest overriding this method in your domain, especially if not all
         actions are available from all states.
-        
+
         :param s: The state to query for possible actions
             (overrides self.state if ``s != None``)
-        
+
         :return: A numpy array containing every possible action in the domain.
-        
+
         .. note::
-            
+
             *These actions must be integers*; internally they may be handled
             using other datatypes.  See :py:meth:`~Tools.GeneralTools.vec2id`
             and :py:meth:`~Tools.GeneralTools.id2vec` for converting between
@@ -185,28 +185,28 @@ Gamma:      {self.gamma}
         state accordingly.
         Returns the reward/penalty the agent obtains for
         the state/action pair determined by *Domain.state*  and the parameter
-        *a*, the next state into which the agent has transitioned, and a 
+        *a*, the next state into which the agent has transitioned, and a
         boolean determining whether a goal or fail state has been reached.
-        
+
         .. note::
-            
+
             Domains often specify stochastic internal state transitions, such
             that the result of a (state,action) pair might vary on different
             calls (see also the :py:meth:`~Domains.Domain.Domain.sampleStep`
             method).
             Be sure to look at unique noise parameters of each domain if you
             require deterministic transitions.
-            
-        
+
+
         :param a: The action to perform.
-        
+
         .. warning::
-        
+
             The action *a* **must** be an integer >= 0, and might better be
             called the "actionID".  See the class description
             :py:class:`~Domains.Domain.Domain` above.
-        
-        :return: The tuple (r, ns, t) =
+
+        :return: The tuple (r, ns, t, p_actions) =
             (Reward [value], next observed state, isTerminal [boolean])
 
         """
@@ -218,18 +218,18 @@ Gamma:      {self.gamma}
         one that ends the episode.  This often results from either a failure
         or goal state being achieved.\n
         The default definition does not terminate.
-        
+
         :return: ``True`` if the state is a terminal state, ``False`` otherwise.
-        
+
         """
         return False
 
     def _extendDiscreteDimensions(self):
         """
         Offsets discrete dimensions by 0.5 so that binning works properly.
-        
+
         .. warning::
-            
+
             This code is used internally by the Domain base class.
             **It should only be called once**
 
@@ -251,10 +251,10 @@ Gamma:      {self.gamma}
         of *num_samples*, since repeatedly sampling a (state,action) pair
         will always yield the same tuple (r,ns,terminal).
         See :py:meth:`~Domains.Domain.Domain.step`.
-        
+
         :param a: The action to attempt
         :param num_samples: The number of next states and rewards to be sampled.
-        
+
         :return: A tuple of arrays ( S[], A[] ) where
             *S* is an array of next states,
             *A* is an array of rewards for those states.
