@@ -31,7 +31,7 @@ __author__ = "Alborz Geramifard"
 
 __rlpy_location__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:
-    import matplotlib.backend._tkagg
+    import matplotlib.backends._tkagg
     matplotlib_backend = 'tkagg' # 'WX' 'QTAgg' 'QT4Agg'
 except ImportError:
     matplotlib_backend = 'qt4agg' # Anaconda is built with QT4 backend support on Windows
