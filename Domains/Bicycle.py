@@ -95,12 +95,15 @@ class BicycleBalancing(Domain):
                                       (I_dc * dsigma * dtheta +
                                        np.sign(theta) * v**2*(M_d * r * (invr_f + invr_b) + M*h*invr_CM))) / I
         out = theta + self.dt * dtheta
-        ntheta = out if abs(out) > 80. / 180 * np.pi else np.sign(out)*80./180*np.pi
-        ndtheta = dtheta + self.dt * (T - I_dv * dsigma * domega) / I_dl if abs(out) > 80./180*np.pi else 0.
-        npsi = psi * self.dt * np.sign(theta) * v * invr_b
+        ntheta = out if abs(out) <= (80. / 180) * np.pi else np.sign(out)*(80./180)*np.pi
+        ndtheta = dtheta + self.dt * (T - I_dv * dsigma * domega) / I_dl if abs(out) <= (80./180)*np.pi else 0.
+        npsi = psi + self.dt * np.sign(theta) * v * invr_b
+        
+        # Where are these three lines from? Having a hard time finding them in the paper referenced
         npsi = npsi % (2 * np.pi)
         if npsi > np.pi:
             npsi -= 2 * np.pi
+            
         ns = np.array([nomega, ndomega, ntheta, ndtheta, npsi])
         self.state = ns
 
