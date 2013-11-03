@@ -11,11 +11,11 @@ from Cython.Build import cythonize
 import numpy
 
 import sys
-#if sys.platform == 'darwin':
-#  extra_args = [] #"-std=c++0x", "-stdlib=libc++"]
-#else:
+if sys.platform == 'darwin':
+  extra_args = ["-std=c++0x", "-stdlib=libc++"]
+else:
 #  extra_args = ["-std=c++0x"]
-extra_args = []
+  extra_args = []
 setup(name="_transformations",
       cmdclass = {"build_ext": build_ext},
       ext_modules=[
