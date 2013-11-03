@@ -92,3 +92,9 @@ System Administrator
 
 .. autoclass:: Domains.SystemAdministrator.SystemAdministrator
     :members:
+
+Swimmer
+-------
+
+.. autoclass:: Domains.Swimmer.Swimmer
+    :members:
