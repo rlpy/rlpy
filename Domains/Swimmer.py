@@ -17,6 +17,19 @@ class Swimmer(Domain):
     Each joint is actuated. The goal is to move the swimmer to a specified goal
     position.
 
+    *States*:
+        | 2 dimensions: position of nose relative to goal
+        | d -1 dimensions: angles
+        | 2 dimensions: velocity of the nose
+        | d dimensions: angular velocities
+
+    *Actions*:
+        each joint torque is discretized in 3 values: -2, 0, 2
+
+    .. note::
+        adapted from Yuval Tassas swimmer implementation in Matlab available at
+        http://www.cs.washington.edu/people/postdocs/tassa/code/
+
     .. seealso::
         Tassa, Y., Erez, T., & Smart, B. (2007).
         *Receding Horizon Differential Dynamic Programming.*
@@ -26,7 +39,10 @@ class Swimmer(Domain):
     episodeCap = 1000
 
     def __init__(self, logger=None, d=3, k1=7.5, k2=0.3):
-
+        """
+        d:
+            number of joints
+        """
         self.d = d
         self.logger = logger
         self.k1 = k1
@@ -47,7 +63,7 @@ class Swimmer(Domain):
         A[-1, -1] = 0.
         self.P = np.dot(np.linalg.inv(Q), A * self.lengths[None,:]) / 2.
 
-        self.U = - np.eye(self.d) - np.eye(self.d, k=-1)
+        self.U = np.eye(self.d) - np.eye(self.d, k=-1)
         self.U = self.U[:,:-1]
         self.G = np.dot(self.P.T * self.masses[None,:], self.P)
 
@@ -81,29 +97,40 @@ class Swimmer(Domain):
         return np.arange(self.actions_num)
 
     def showDomain(self, a=None):
+        if a is not None:
+            a = self.actions[a]
         T = np.empty((self.d, 2))
         T[:, 0] = np.cos(self.theta)
-        T[:, 1] = np.cos(self.theta)
+        T[:, 1] = np.sin(self.theta)
         R = np.dot(self.P, T)
         R1 = R - .5 * self.lengths[:, None] * T
         R2 = R + .5 * self.lengths[:, None] * T
         Rx = np.hstack([R1[:,0], R2[:,0]]) + self.pos_cm[0]
         Ry = np.hstack([R1[:,1], R2[:,1]]) + self.pos_cm[1]
-
         f = plt.figure("Swimmer Domain")
         if not hasattr(self, "swimmer_lines"):
             plt.plot(0. , 0., "ro")
             self.swimmer_lines = plt.plot(Rx, Ry)[0]
+            self.action_text = plt.text(-2, -8, str(a))
+            plt.xlim(-15, 5)
+            plt.ylim(-15, 5)
         else:
             self.swimmer_lines.set_data(Rx, Ry)
+            self.action_text.set_text(str(a))
         plt.draw()
 
     def _body_coord(self):
+        """
+        transforms the current state into coordinates that are more
+        reasonable for learning
+        returns a 4-tupel consisting of:
+        nose position, joint angles (d-1), nose velocity, angular velocities
+        """
         cth = np.cos(self.theta)
         sth = np.sin(self.theta)
         M = self.P - 0.5 * np.diag(self.lengths)
         c2n = np.array([np.dot(M[self.nose], cth), np.dot(M[self.nose], sth)])
-        T = self.pos_cm - c2n
+        T = -self.pos_cm - c2n
         vx = -np.dot(M, sth * self.dtheta)
         vy = np.dot(M, cth * self.dtheta)
         v2n = np.array([vx[self.nose], vy[self.nose]])
@@ -127,12 +154,25 @@ class Swimmer(Domain):
         self.pos_cm = ns[:2]
         return self._reward(a), self.state, self.isTerminal(), self.possibleActions()
 
+    def _dsdt(self, s, a):
+        """ just a convenience function for testing and debugging, not really used"""
+        return dsdt(s, 0., a, self.P, self.inertia, self.G, self.U, self.lengths,
+                    self.masses, self.k1, self.k2)
+
     def _reward(self, a):
+        """
+        penalizes the l2 distance to the goal (almost linearly) and
+        a small penalty for torques coming from actions
+        """
+
         xrel = self._body_coord()[0] - self.goal
         dist = np.sum(xrel ** 2)
         return - self.cx * dist / (np.sqrt(dist) + 1) - self.cu * np.sum(a**2)
 
 def dsdt(s, t, a, P, I, G, U, lengths, masses, k1, k2):
+    """
+    time derivative of system dynamics
+    """
     d = len(a) + 1
     theta = s[2:2+d]
     vcm = s[2+d:4+d]
@@ -150,7 +190,7 @@ def dsdt(s, t, a, P, I, G, U, lengths, masses, k1, k2):
 
     EL1 = np.dot((v1Mv2(-sth, G, cth) + v1Mv2(cth, G, sth)) * dtheta[None,:] \
             + (v1Mv2(cth, G, -sth) + v1Mv2(sth, G, cth)) * dtheta[:, None], dtheta)
-    EL3 = I + v1Mv2(sth, G, sth) + v1Mv2(cth, G, cth)
+    EL3 = np.diag(I) + v1Mv2(sth, G, sth) + v1Mv2(cth, G, cth)
     EL2 = - k1 * np.dot((v1Mv2(-sth, P.T, -sth) + v1Mv2(cth, P.T, cth)) * lengths[None, :], Vn) \
           - k1 * np.power(lengths, 3) * dtheta / 12. \
           - k2 * np.dot((v1Mv2(-sth, P.T, cth) + v1Mv2(cth, P.T, sth)) * lengths[None, :], Vt)
