@@ -26,7 +26,7 @@ Development Version
 The development is maintained bitbucket at https://bitbucket.org/rlpy/rlpy.
 The git-repository with the latest development version can be cloned via::
 
-    git clone git://bitbucket.org/rlpy/rlpy.git RLPy
+    git clone https://bitbucket.org/rlpy/rlpy.git RLPy
 
 This will give you a copy of the repository in the directory `RLPy`. You might
 want to change the location as you wish.
