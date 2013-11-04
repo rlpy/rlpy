@@ -100,7 +100,7 @@ Gamma:      {self.gamma}
 """.format(self=self)
         return res
 
-    def show(self, a=None, representation=None, s=None):
+    def show(self, a=None, representation=None):
         """
         Shows a visualization of the current state of the domain and that of
         learning.
@@ -108,24 +108,26 @@ Gamma:      {self.gamma}
         See :py:meth:`~Domains.Domain.Domain.showDomain()` and
         :py:meth:`~Domains.Domain.Domain.showLearning()`,
         both called by this method.
+        
+        .. note::
+            Some domains override this function to allow an optional *s*
+            parameter to be passed, which overrides the *self.state* internal
+            to the domain; however, not all have this capability.
 
         :param a: The action being performed
         :param representation: The learned value function
             :py:class:`~Representation.Representation.Representation`.
-        :param s: The state of the domain to display; overrides self.state
-            if ``s != None``.
 
         """
-        self.showDomain(a, s=s)
-        self.showLearning(representation)
+        self.showDomain(a=a)
+        self.showLearning(representation=representation)
 
-    def showDomain(self, a=0, s=None):
+    def showDomain(self, a=0):
         """
         *Abstract Method:*\n
         Shows a visualization of the current state of the domain.
 
         :param a: The action being performed.
-        :param s: The current domain state (overrides self.state if != None)
 
         """
         pass
