@@ -80,10 +80,6 @@ class CartPoleBase(Domain):
     valueFunction_fig       = None
     #
     policy_fig              = None
-    # Minimum return possible, used for graphic normalization, computed in init
-    MIN_RETURN              = None
-    # Maximum return possible, used for graphic normalization, computed in init
-    MAX_RETURN              = None
 
     def __init__(self, logger=None):
         """
@@ -98,6 +94,11 @@ class CartPoleBase(Domain):
 
         self._assignGroundVerts()
         super(CartPoleBase, self).__init__(logger)
+        
+        self.xTicksLabels   = np.around(np.linspace(self.statespace_limits[0,0]*180/pi,
+                                                 self.statespace_limits[0,1]*180/pi,5)).astype(int)
+        self.yTicksLabels   = np.around(np.linspace(self.statespace_limits[1,0]*180/pi,
+                                                 self.statespace_limits[1,1]*180/pi,5)).astype(int)
 
         if self.logger:
             self.logger.log("Pendulum length:\t\t%0.2f(m)" % self.LENGTH)
@@ -294,14 +295,14 @@ class CartPoleBase(Domain):
         """
         :returns: handle to the figure
         """
-#         if self.policy_fig is None:
-        self.policy_fig = pl.figure("Policy")
-        self.policy_fig = pl.imshow(piMat, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
-        #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-        #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-        pl.xlabel(r"$\theta$ (degree)")
-        pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-        pl.title('Policy')
+        if self.policy_fig is None:
+            self.policy_fig = pl.figure("Policy")
+            self.policy_fig = pl.imshow(piMat, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
+            pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            pl.title('Policy')
 
         self.policy_fig.set_data(piMat)
         pl.draw()
@@ -310,14 +311,16 @@ class CartPoleBase(Domain):
         """
         :returns: handle to the figure
         """
-#         if self.valueFunction_fig is None:
-        self.valueFunction_fig   = pl.figure("Value Function")
-        self.valueFunction_fig   = pl.imshow(VMat, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=self.MIN_RETURN,vmax=self.MAX_RETURN)
-        #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-        #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-        pl.xlabel(r"$\theta$ (degree)")
-        pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
-        pl.title('Value Function')
+        if self.valueFunction_fig is None:
+            maxV = VMat.max()
+            minV = VMat.min()
+            self.valueFunction_fig   = pl.figure("Value Function")
+            self.valueFunction_fig   = pl.imshow(VMat, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=minV,vmax=maxV)
+            pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            pl.xlabel(r"$\theta$ (degree)")
+            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            pl.title('Value Function')
 
         norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
         self.valueFunction_fig.set_data(VMat)
@@ -430,6 +433,9 @@ class CartPoleBase(Domain):
         thetas              = np.linspace(self.ANGLE_LIMITS[0]+theta_binWidth/2, self.ANGLE_LIMITS[1]-theta_binWidth/2, thetaDiscr*granularity)
         theta_dot_binWidth  = (self.ANGULAR_RATE_LIMITS[1]-self.ANGULAR_RATE_LIMITS[0])/(thetaDotDiscr*granularity)
         theta_dots          = np.linspace(self.ANGULAR_RATE_LIMITS[0]+theta_dot_binWidth/2, self.ANGULAR_RATE_LIMITS[1]-theta_dot_binWidth/2, thetaDotDiscr*granularity)
+
+        self.xTicks = np.linspace(0,granularity * thetaDiscr - 1, 5)
+        self.yTicks = np.linspace(0,granularity * thetaDotDiscr - 1, 5)
 
         return (thetas, theta_dots)
 

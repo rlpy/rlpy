@@ -154,13 +154,16 @@ class InfTrackCartPole(CartPoleBase):
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
                 s = np.array([theta, thetaDot])
+                terminal = self.isTerminal(s)
                 # Array of Q-function evaluated at all possible actions at
                 # state s
-                Qs = representation.Qs(s, False)
+                Qs = representation.Qs(s, terminal)
                 # Array of all possible actions at state s
                 As = self.possibleActions(s=s)
-                # Assign pi to be optimal action (which maximizes Q-function)
-                pi[row, col] = As[np.argmax(Qs)]
+                # If multiple optimal actions, pick one randomly
+                a = np.random.choice(As[Qs.max()==Qs])
+                # Assign pi to be an optimal action (which maximizes Q-function)
+                pi[row, col] = a
                 # Assign V to be the value of the Q-function under optimal
                 # action
                 V[row, col] = max(Qs)
