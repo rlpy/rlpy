@@ -132,23 +132,25 @@ class FiniteTrackCartPole(CartPoleBase):
 
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
-                s           = np.array([theta,thetaDot, xSlice, xDotSlice])
-                # Array of Q-function evaluated at all possible actions at state s
-                Qs       = representation.Qs(s, False)
+                s = np.array([theta,thetaDot, xSlice,xDotSlice])
+                terminal = self.isTerminal(s)
+                # Array of Q-function evaluated at all possible actions at
+                # state s
+                Qs = representation.Qs(s, terminal)
                 # Array of all possible actions at state s
-                As       = self.possibleActions(s=s)
-                # Assign pi to be optimal action (which maximizes Q-function)
-                pi[row,col] = As[np.argmax(Qs)]
-                # Assign V to be the value of the Q-function under optimal action
-                V[row,col]  = max(Qs)
-
-        if self.policy_fig is None or self.valueFunction_fig is None:
-            pl.show()
-            f = pl.gcf()
-            f.subplots_adjust(left=0,wspace=.5)
+                As = self.possibleActions(s=s)
+                # If multiple optimal actions, pick one randomly
+                a = np.random.choice(As[Qs.max()==Qs])
+                # Assign pi to be an optimal action (which maximizes Q-function)
+                pi[row, col] = a
+                # Assign V to be the value of the Q-function under optimal
+                # action
+                V[row,col] = max(Qs)
 
         self._plot_policy(pi)
         self._plot_valfun(V)
+        
+        pl.draw()
 
     def showDomain(self, a=0):
         """

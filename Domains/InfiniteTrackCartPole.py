@@ -148,8 +148,8 @@ class InfTrackCartPole(CartPoleBase):
     def showLearning(self, representation):
         (thetas, theta_dots) = self._setup_learning(representation)
 
-        pi = np.zeros((len(theta_dots), len(thetas)), 'uint8')
-        V = np.zeros((len(theta_dots), len(thetas)))
+        pi = np.zeros( (len(theta_dots), len(thetas)),'uint8' )
+        V = np.zeros( (len(theta_dots), len(thetas)) )
 
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
@@ -166,15 +166,12 @@ class InfTrackCartPole(CartPoleBase):
                 pi[row, col] = a
                 # Assign V to be the value of the Q-function under optimal
                 # action
-                V[row, col] = max(Qs)
+                V[row,col] = max(Qs)
 
         self._plot_policy(pi)
         self._plot_valfun(V)
-
-        if self.policy_fig is None or self.valueFunction_fig is None:
-            plt.show()
-            f = plt.gcf()
-            f.subplots_adjust(left=0, wspace=.5)
+        
+#         plt.draw()
 
 
 class InfCartPoleBalance(InfTrackCartPole):

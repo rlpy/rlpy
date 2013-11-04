@@ -62,8 +62,8 @@ class CartPoleBase(Domain):
     pendulumArm         = None
     cartBox             = None
     actionArrow         = None
-    domainFig           = None
-    domainAx            = None
+    domain_fig           = None
+    domain_ax            = None
 
     ### Domain visual constants (these DO NOT affect dynamics, purely visual).
     ACTION_ARROW_LENGTH = 0.4   # length of arrow showing force action on cart
@@ -78,8 +78,10 @@ class CartPoleBase(Domain):
     ### Value and policy figure objects + constants
     #
     valueFunction_fig       = None
+    valueFunction_img       = None
     #
     policy_fig              = None
+    policy_img              = None
 
     def __init__(self, logger=None):
         """
@@ -294,38 +296,51 @@ class CartPoleBase(Domain):
     def _plot_policy(self, piMat):
         """
         :returns: handle to the figure
+                
+        .. warning::
+            The calling function MUST call pl.draw() or the figures
+            will not be updated.
+            
         """
         if self.policy_fig is None:
             self.policy_fig = pl.figure("Policy")
-            self.policy_fig = pl.imshow(piMat, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
+            ax = self.policy_fig.add_subplot(111) 
+            self.policy_img = ax.imshow(piMat, cmap='InvertedPendulumActions', interpolation='nearest',origin='lower',vmin=0,vmax=self.actions_num)
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
             pl.xlabel(r"$\theta$ (degree)")
             pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.title('Policy')
 
-        self.policy_fig.set_data(piMat)
-        pl.draw()
+        self.policy_img.set_data(piMat)
+        self.policy_fig.canvas.draw()
 
     def _plot_valfun(self, VMat):
         """
         :returns: handle to the figure
+        
+        .. warning::
+            The calling function MUST call pl.draw() or the figures
+            will not be updated.
+            
         """
         if self.valueFunction_fig is None:
             maxV = VMat.max()
             minV = VMat.min()
             self.valueFunction_fig   = pl.figure("Value Function")
-            self.valueFunction_fig   = pl.imshow(VMat, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=minV,vmax=maxV)
+            ax = self.valueFunction_fig.add_subplot(111)
+            self.valueFunction_img   = ax.imshow(VMat, cmap='ValueFunction',interpolation='nearest',origin='lower',vmin=minV,vmax=maxV)
             pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
-            pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            # Don't need the y labels since we share axes on subplot
+#             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+#             pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.xlabel(r"$\theta$ (degree)")
-            pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.title('Value Function')
 
         norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
-        self.valueFunction_fig.set_data(VMat)
-        self.valueFunction_fig.set_norm(norm)
-        pl.draw()
+        self.valueFunction_img.set_data(VMat)
+        self.valueFunction_img.set_norm(norm)
+        self.valueFunction_fig.canvas.draw()
 
     def _plot_state(self, fourDimState, a):
         """
@@ -337,38 +352,38 @@ class CartPoleBase(Domain):
         is displayed as an arrow (not including noise!)
         """
         s = fourDimState
-        if self.domainFig is None:  # Need to initialize the figure
-            self.domainFig = pl.figure("Domain")
+        if self.domain_fig is None:  # Need to initialize the figure
+            self.domain_fig = pl.figure("Domain")
 #             pl.xlabel(r"$x$ position (meters)")
 #             pl.ylabel(r"$y$ position (meters)")
 #             pl.title('Domain State')
-            self.domainAx = self.domainFig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
+            self.domain_ax = self.domain_fig.add_axes([0, 0, 1, 1], frameon=True, aspect=1.)
             self.pendulumArm = lines.Line2D([], [], linewidth = self.PEND_WIDTH, color='black')
             self.cartBox    = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.RECT_HEIGHT / 2.0], self.RECT_WIDTH, self.RECT_HEIGHT, alpha=.4)
             self.cartBlob   = mpatches.Rectangle([0, self.PENDULUM_PIVOT_Y - self.BLOB_WIDTH / 2.0], self.BLOB_WIDTH, self.BLOB_WIDTH, alpha=.4)
-            self.domainAx.add_patch(self.cartBox)
-            self.domainAx.add_line(self.pendulumArm)
-            self.domainAx.add_patch(self.cartBlob)
+            self.domain_ax.add_patch(self.cartBox)
+            self.domain_ax.add_line(self.pendulumArm)
+            self.domain_ax.add_patch(self.cartBlob)
             #Draw Ground
             groundPath    = mpath.Path(self.GROUND_VERTS)
             groundPatch   = mpatches.PathPatch(groundPath,hatch="//")
-            self.domainAx.add_patch(groundPatch)
-            self.timeText = self.domainAx.text(self.POSITON_LIMITS[1], self.LENGTH,"")
-            self.rewardText = self.domainAx.text(self.POSITON_LIMITS[0], self.LENGTH,"")
+            self.domain_ax.add_patch(groundPatch)
+            self.timeText = self.domain_ax.text(self.POSITON_LIMITS[1], self.LENGTH,"")
+            self.rewardText = self.domain_ax.text(self.POSITON_LIMITS[0], self.LENGTH,"")
             # Allow room for pendulum to swing without getting cut off on graph
             viewableDistance = self.LENGTH  + 0.5
             if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
                 # We have huge position limits, limit the figure width so
                 # cart is still visible
-                self.domainAx.set_xlim(-viewableDistance, viewableDistance)
+                self.domain_ax.set_xlim(-viewableDistance, viewableDistance)
             else:
-                self.domainAx.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
-            self.domainAx.set_ylim(-viewableDistance, viewableDistance)
-            #self.domainAx.set_aspect('equal')
+                self.domain_ax.set_xlim(self.POSITON_LIMITS[0] - viewableDistance, self.POSITON_LIMITS[1] + viewableDistance)
+            self.domain_ax.set_ylim(-viewableDistance, viewableDistance)
+            #self.domain_ax.set_aspect('equal')
 
             pl.show()
 
-#         self.domainFig = pl.figure("Domain")
+#         self.domain_fig = pl.figure("Domain")
         forceAction = self.AVAIL_FORCE[a]
         curX = s[StateIndex.X]
         curTheta = s[StateIndex.THETA]
@@ -396,18 +411,16 @@ class CartPoleBase(Domain):
                     curX - self.ACTION_ARROW_LENGTH - self.RECT_WIDTH/2.0, 0,
                     curX - self.RECT_WIDTH/2.0,  0,
                     'k',"arc3,rad=0",
-                    0,0, 'simple', ax=self.domainAx
+                    0,0, 'simple', ax=self.domain_ax
                 )
             else:# leftward force
                 self.actionArrow = fromAtoB(
                     curX + self.ACTION_ARROW_LENGTH + self.RECT_WIDTH/2.0, 0,
                     curX + self.RECT_WIDTH/2.0, 0,
                     'r',"arc3,rad=0",
-                    0,0,'simple', ax=self.domainAx
+                    0,0,'simple', ax=self.domain_ax
                 )
-
-        pl.draw()
-
+        self.domain_fig.canvas.draw()
 
     def _setup_learning(self, representation):
         """
