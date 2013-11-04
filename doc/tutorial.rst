@@ -47,8 +47,7 @@ root directory::
     directory is in the python seach path for modules. You can for example
     use::
 
-        PYTHONPATH=.
-        python examples/tutorial/gridworld.py
+        PYTHONPATH=. python examples/tutorial/gridworld.py
 
 .. tip::    
     You can also use the IPython shell interactively and then run the script
@@ -210,11 +209,11 @@ an RLPy experiment description and will allow us to run it in parallel on
 several cores on one computer or even on a computing cluster with numerous
 machines.
 
-The content of `infTrackCartPole_infTrackCartPole.py` very similar but
-differ in the definition of the representation parameter of the agent.
+The content of `infTrackCartPole_tabular.py` is very similar but
+differs in the definition of the representation parameter of the agent.
 Compared to our first example,
-the experiment is now executed by calling its `run_from_commandline` method.
-This is a wrapper around `Experiment.run` and allows to specify the options for
+the experiment is now executed by calling its :func:`Experiments.Experiment.run_from_commandline` method.
+This is a wrapper around :func:`Experiments.Experiment.run` and allows to specify the options for
 visualization during the execution with command line arguments. You can for
 example run::
 

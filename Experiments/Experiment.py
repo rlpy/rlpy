@@ -84,19 +84,19 @@ class Experiment(object):
 
     def __init__(self, agent, domain, logger, id=1, max_steps=max_steps,
                  num_policy_checks=10, log_interval=1, path='Results/Temp',
-                 checks_per_policy=1, **kwargs):
+                 checks_per_policy=1, stat_bins_per_state_dim=0, **kwargs):
         """
         :param agent: the :py:class:`~Agents.Agent.Agent` to use for learning the task.
         :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
         :param id: ID of this experiment (main seed used for calls to np.rand)
         :param max_steps: Total number of interactions (steps) before experiment termination.
-        
+
         .. note::
             ``max_steps`` is distinct from ``episodeCap``; ``episodeCap`` defines the
             the largest number of interactions which can occur in a single
             episode / trajectory, while ``max_steps`` limits the sum of all
             interactions over all episodes which can occur in an experiment.
-        
+
         :param num_policy_checks: Number of Performance Checks uniformly
             scattered along timesteps of the experiment
         :param log_interval: Number of seconds between log prints to console
@@ -104,7 +104,7 @@ class Experiment(object):
             (Results are stored in ``path/output_filename``)
         :param checks_per_policy: defines how many episodes should be run to
             estimate the performance of a single policy
-        
+
         """
         self.id = id
         assert id > 0
@@ -118,6 +118,11 @@ class Experiment(object):
         self.logger.line()
         self.logger.log("Experiment:\t\t%s" % className(self))
         self._update_path(path)
+        if stat_bins_per_state_dim > 0:
+            self.state_counts_learn = np.zeros((domain.statespace_limits.shape[0],
+                                                stat_bins_per_state_dim), dtype=np.long)
+            self.state_counts_perf = np.zeros((domain.statespace_limits.shape[0],
+                                               stat_bins_per_state_dim), dtype=np.long)
 
     def _update_path(self, path):
 
@@ -165,6 +170,7 @@ class Experiment(object):
                 self.performance_domain.showDomain(a)
 
             r, ns, eps_term, p_actions = self.performance_domain.step(a)
+            self._gather_transition_statistics(s, a, ns, r, learning=False)
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
@@ -184,12 +190,31 @@ class Experiment(object):
         """
         printClass(self)
 
+    def _gather_transition_statistics(self, s, a, sn, r, learning=False):
+        """
+        This function can be used in subclasses to collect statistics about the transitions
+        """
+        if hasattr(self, "state_counts_learn") and learning:
+            counts = self.state_counts_learn
+        elif hasattr(self, "state_counts_perf") and not learning:
+            counts = self.state_counts_perf
+        else:
+            return
+        rng = self.domain.statespace_limits[:,1] - self.domain.statespace_limits[:,0]
+        d = counts.shape[-1] - 2
+        s_norm = s - self.domain.statespace_limits[:,0]
+        idx = np.floor(s_norm / rng * d).astype("int")
+        idx += 1
+        idx[idx < 0] = 0
+        idx[idx >= d + 2] = d + 1
+        #import ipdb; ipdb.set_trace()
+        counts[range(counts.shape[0]),idx] += 1
+
     def run_from_commandline(self):
         """
-        Enables construction of an experiment from the command line, rather
-        than via another .py configuration file.
+        wrapper around run method which automatically reads run parameters from command line arguments
         """
-        
+
         parser = argparse.ArgumentParser("Run rlpy experiments")
         parser.add_argument("-v", "--show-plot", default=False, action="store_true",
                              help="show a plot at the end with the results of the assessment runs")
@@ -224,7 +249,7 @@ class Experiment(object):
             visualize_steps=False, debug_on_sigurg=False):
         """
         Run the experiment and collect statistics / generate the results
-        
+
         :param visualize_performance: (int)
             determines whether a visualization of the steps taken in
             performance runs are shown. 0 means no visualization is shown.
@@ -286,7 +311,8 @@ class Experiment(object):
                 episode_number += 1
             # Act,Step
             r, ns, terminal, np_actions   = self.domain.step(a)
-            #print total_steps, s, a, ns
+
+            self._gather_transition_statistics(s, a, ns, r, learning=True)
             na              = self.agent.policy.pi(ns, terminal, np_actions)
 
             total_steps     += 1
@@ -332,7 +358,7 @@ class Experiment(object):
     def evaluate(self, total_steps, episode_number, visualize=0):
         """
         Evaluate the current agent within an experiment
-        
+
         :param total_steps: (int)
                      number of steps used in learning so far
         :param episode_number: (int)
@@ -453,3 +479,5 @@ class Experiment(object):
                     print "Warning: Could not interpret path variable", repr(v)
 
         return path.format(**replacements)
+
+
