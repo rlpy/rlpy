@@ -87,20 +87,25 @@ Check what version of gcc you have by executing::
     
     gcc --version
 
-If it is older than 4.6, install a newer version. You can find compiled
-packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
+If you do not have gcc you can download it either through MacPorts (newer versions) or through Apple's developer 
+downloads site under `Command Line Tools <https://developer.apple.com/downloads/index.action>`_ (older versions). 
+
+GCC >=4.2 and <=4.6 
++++++++++++++++++++
+
+If gcc is older than 4.6 we recommend installing a newer version. 
+You can find compiled packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
+However, if this is not an option you can follow these instructions to 
+get things set up by manually installing dependencies with pip::
+
+    pip install joblib hyperopt pymongo sip numpy scipy matplotlib cython nose networkx
+
+GCC >= 4.7
+++++++++++
 
 To install the Python packages we recommend either using MacPorts and pip or Anaconda (as described in
 :ref:`the Anaconda section <anaconda>`. This will ensure you have the latest versions of
 each package.
-
-.. warning::
-    At the moment, the Python binaries shipped with Anaconda are built with old OS X versions for
-    compatibility. Unfortunately, the employed environment does not support compiling C++11 code,
-    which we use for the `Representation.KernelizediFDD` representation.
-
-    If you use Anaconda, you will therefore get errors when building the C++11 extensions. However,
-    everything in RLPy will work except the kernelized iFDD representation.
 
 Windows
 -------
