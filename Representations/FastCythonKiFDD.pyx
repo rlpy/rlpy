@@ -11,13 +11,14 @@ ctypedef unsigned int uint
 
 cdef extern from "FastKiFDD.h":
     cdef cppclass FastKiFDD:
-        FastKiFDD(double, double, stlstring, vector[double], int, double, unsigned int)
+        FastKiFDD(double, double, stlstring, vector[double], int, double, unsigned int, bool)
         vector[double] phi(vector[double])
         unsigned int discover(vector[double] s, unsigned int a, double td_error, vector[double] previous_phi)
         bool verbose
         int features_num
         double activation_threshold
         double discovery_threshold
+        bool normalization
         double max_neighbor_similarity
         int sparsification
         vector[sett[uint]] base_ids
@@ -34,7 +35,7 @@ cdef class FastCythonKiFDD:
             kw.push_back(k)
         cdef stlstring kernel_string = kernel.__name__
         self.thisptr = new FastKiFDD(active_threshold, discover_threshold, kernel_string,
-                                     kw, sparsify, max_base_feat_sim, max_active_base_feat)
+                                     kw, sparsify, max_base_feat_sim, max_active_base_feat, normalization)
 
     def __dealloc__(self):
         del self.thisptr
@@ -47,6 +48,10 @@ cdef class FastCythonKiFDD:
         fv = self.thisptr.phi(sv)
 
         return np.array(list(fv))
+
+    @property
+    def normalization(self):
+        return self.thisptr.normalization
 
     @property
     def activation_threshold(self):

@@ -2,7 +2,10 @@
 
 from Domain import Domain
 import numpy as np
-from Tools import plt, rk4, cartesian
+from Tools import plt, rk4, cartesian, colors
+from Tools import matplotlib as mpl
+
+from Policies.SwimmerPolicy import SwimmerPolicy
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -37,6 +40,7 @@ class Swimmer(Domain):
     """
     dt = 0.03
     episodeCap = 1000
+    gamma = 0.98
 
     def __init__(self, logger=None, d=3, k1=7.5, k2=0.3):
         """
@@ -75,13 +79,14 @@ class Swimmer(Domain):
         self.actions = cartesian((d - 1) * [[-2., 0., 2]])
         self.actions_num = len(self.actions)
 
-        self.statespace_limits = [[-15, 5]] * 2 + [[-np.pi, np.pi]] * (d - 1) \
-                + [[-5, 5]] * 2 + [[-np.pi*2, np.pi*2]] * d
+        self.statespace_limits = [[-15, 15]] * 2 + [[-np.pi, np.pi]] * (d - 1) \
+                + [[-2, 2]] * 2 + [[-np.pi*2, np.pi*2]] * d
         self.statespace_limits = np.array(self.statespace_limits)
-
+        self.continuous_dims = range(self.statespace_limits.shape[0])
+        super(Swimmer, self).__init__(logger)
     def s0(self):
         self.theta = np.zeros(self.d)
-        self.pos_cm = np.array([-10, -10])
+        self.pos_cm = np.array([10, 0])
         self.v_cm = np.zeros(2)
         self.dtheta = np.zeros(self.d)
         return self.state, self.isTerminal(), self.possibleActions()
@@ -93,7 +98,7 @@ class Swimmer(Domain):
     def isTerminal(self):
         return False
 
-    def possibleActions(self):
+    def possibleActions(self, s=None):
         return np.arange(self.actions_num)
 
     def showDomain(self, a=None):
@@ -112,11 +117,102 @@ class Swimmer(Domain):
             plt.plot(0. , 0., "ro")
             self.swimmer_lines = plt.plot(Rx, Ry)[0]
             self.action_text = plt.text(-2, -8, str(a))
-            plt.xlim(-15, 5)
-            plt.ylim(-15, 5)
+            plt.xlim(-5, 15)
+            plt.ylim(-10, 10)
         else:
             self.swimmer_lines.set_data(Rx, Ry)
             self.action_text.set_text(str(a))
+        plt.draw()
+
+    def showLearning(self, representation):
+        good_pol = SwimmerPolicy(representation=representation, logger=None, epsilon=0)
+        id1 = 2
+        id2 = 3
+        res = 200
+        s = np.zeros(self.state_space_dims)
+        l1 = np.linspace(self.statespace_limits[id1, 0], self.statespace_limits[id1, 1], res)
+        l2 = np.linspace(self.statespace_limits[id2, 0], self.statespace_limits[id2, 1], res)
+
+        pi = np.zeros((res, res), 'uint8')
+        good_pi = np.zeros((res, res), 'uint8')
+        V = np.zeros((res, res))
+
+        for row, x1 in enumerate(l1):
+            for col, x2 in enumerate(l2):
+                s[id1] = x1
+                s[id2] = x2
+                # Array of Q-function evaluated at all possible actions at
+                # state s
+                Qs = representation.Qs(s, False)
+                # Assign pi to be optimal action (which maximizes Q-function)
+                maxQ = np.max(Qs)
+                pi[row, col] = np.random.choice(np.arange(len(Qs))[Qs == maxQ])
+                good_pi[row, col] = good_pol.pi(s, False, np.arange(self.actions_num))
+                # Assign V to be the value of the Q-function under optimal
+                # action
+                V[row, col] = maxQ
+
+        self._plot_policy(pi, title="Learned Policy", ylim=self.statespace_limits[id1], xlim=self.statespace_limits[id2])
+        self._plot_policy(good_pi, title="Good Policy", var="good_policy_fig", ylim=self.statespace_limits[id1], xlim=self.statespace_limits[id2])
+        self._plot_valfun(V, ylim=self.statespace_limits[id1], xlim=self.statespace_limits[id2])
+
+        if self.policy_fig is None or self.valueFunction_fig is None:
+            plt.show()
+
+    def _plot_policy(self, piMat, title="Policy", var="policy_fig", xlim=None, ylim=None):
+        """
+        :returns: handle to the figure
+        """
+
+        if getattr(self, var, None) is None:
+            plt.figure(title)
+            # define the colormap
+            cmap = plt.cm.jet
+            # extract all colors from the .jet map
+            cmaplist = [cmap(i) for i in range(cmap.N)]
+            # force the first color entry to be grey
+            cmaplist[0] = (.5,.5,.5,1.0)
+            # create the new map
+            cmap = cmap.from_list('Custom cmap', cmaplist, cmap.N)
+
+            # define the bins and normalize
+            bounds = np.linspace(0,self.actions_num,self.actions_num + 1)
+            norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+            if xlim is not None and ylim is not None:
+                extent = [xlim[0], xlim[1], ylim[0], ylim[1]]
+            else:
+                extent = [0, 1, 0, 1]
+            self.__dict__[var] = plt.imshow(piMat, interpolation='nearest',origin='lower', cmap=cmap, norm=norm, extent=extent)
+            #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+            #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+            #pl.xlabel(r"$\theta$ (degree)")
+            #pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+            plt.title(title)
+
+            plt.colorbar()
+        plt.figure(title)
+        self.__dict__[var].set_data(piMat)
+        plt.draw()
+
+    def _plot_valfun(self, VMat, xlim=None, ylim=None):
+        """
+        :returns: handle to the figure
+        """
+        plt.figure("Value Function")
+        #pl.xticks(self.xTicks,self.xTicksLabels, fontsize=12)
+        #pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
+        #pl.xlabel(r"$\theta$ (degree)")
+        #pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
+        plt.title('Value Function')
+        if xlim is not None and ylim is not None:
+            extent = [xlim[0], xlim[1], ylim[0], ylim[1]]
+        else:
+            extent = [0, 1, 0, 1]
+        self.valueFunction_fig = plt.imshow(VMat, cmap='ValueFunction',interpolation='nearest',origin='lower', extent=extent)
+
+        norm = colors.Normalize(vmin=VMat.min(), vmax=VMat.max())
+        self.valueFunction_fig.set_data(VMat)
+        self.valueFunction_fig.set_norm(norm)
         plt.draw()
 
     def _body_coord(self):
@@ -139,7 +235,8 @@ class Swimmer(Domain):
         Tcn = np.array([np.sum(T * c2n_x),np.sum(T * c2n_y)])
         Vcn = np.array([np.sum((self.v_cm + v2n) * c2n_x),
                         np.sum((self.v_cm + v2n) * c2n_y)])
-        return Tcn - self.goal, self.theta[1:] - self.theta[:-1], Vcn, self.dtheta
+        ang = np.mod(self.theta[1:] - self.theta[:-1] + np.pi, 2 * np.pi) - np.pi
+        return Tcn - self.goal, ang, Vcn, self.dtheta
 
     def step(self, a):
         d = self.d

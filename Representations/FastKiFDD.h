@@ -98,6 +98,7 @@ class FastKiFDD {
         
         double update_candidate(Candidate& c, double td_error, double phi1, double phi2);
 
+        std::vector<unsigned int> filter_ids(std::map<unsigned int, double> active_ids, const std::vector<double>& s);
         void add_base(const std::vector<double>& center, unsigned int dim);
         void add_refined(unsigned int idx1, unsigned int idx2, CandidateMap::iterator cit);
     public:
@@ -123,8 +124,7 @@ class FastKiFDD {
         FastKiFDD(double activation_threshold, double discovery_threshold,
                 std::string kernel_spec, std::vector<double> kernel_widths,
                 int sparsification, double max_neighbor_similarity, 
-                unsigned int max_active_neighbors) {
-            normalization = true;
+                unsigned int max_active_neighbors, bool normalization) {
             if (kernel_spec == "gaussian_kernel") {
                 kernel = [kernel_widths] (std::vector<double> s1, std::vector<double> s2, std::vector<unsigned int> dim) { return gaussian_kernel(&s1[0], &s2[0], dim, &kernel_widths[0]); };
             } else if (kernel_spec == "linf_triangle_kernel") {
@@ -138,6 +138,7 @@ class FastKiFDD {
             this->activation_threshold = activation_threshold;
             this->max_neighbor_similarity = max_neighbor_similarity;
             this->max_active_neighbors = max_active_neighbors;
+            this->normalization = normalization;
             verbose = false;
         }
 

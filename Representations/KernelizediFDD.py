@@ -421,8 +421,8 @@ try:
                     max_active_base_feat=2, max_base_feat_sim=0.7):
             super(FastKiFDD, self).__init__(domain, logger)
             self.kernel = kernel
-            assert(normalization)
-            self.normalization = normalization
+            #assert(normalization)
+            #self.normalization = normalization
             #assert(kernel == gaussian_kernel)
             logger.log(str(self))
         def phi_nonTerminal(self, s):
@@ -450,6 +450,28 @@ try:
         discovery threshold:  {self.discovery_threshold}
     """.format(self=self)
             return res
+
+        def plot_1d_phi(self, dimension_idx, s, resolution=100, omit_constant=True):
+            """Creates a plot for each specified dimension of the state space and shows
+            dimension_idx: either a single dimension index (int) or a list of indices.
+            """
+            idx = dimension_idx
+            if isinstance(idx, int):
+                idx = [idx]
+
+            for cur_i in idx:
+                cur_s = s.copy()
+                xi = np.linspace(self.domain.statespace_limits[cur_i, 0], self.domain.statespace_limits[cur_i, 1], resolution)
+                Phi = np.zeros((resolution, self.features_num))
+                for k,x in enumerate(xi):
+                    cur_s[cur_i] = x
+                    Phi[k] = self.phi_nonTerminal(cur_s)
+                plt.figure("Feature Dimension {}".format(cur_i))
+                for f in range(self.features_num):
+                    if omit_constant and Phi[:,f].min() == Phi[:,f].max():
+                        continue
+                    plt.plot(xi, Phi[:,f], label="id {}".format(f))
+            plt.draw()
 except Exception, e:
     print e
     print "Fast KiFDD is not available, C++ Extensions not build"

@@ -88,11 +88,43 @@ void FastKiFDD::add_base(const std::vector<double>& center, unsigned int dim) {
         std::cout << "New base feature " << features_num - 1 << " in dimension " << dim << "; " << candidates.size() << " Candidates in total" << std::endl;
 }
 
+std::vector<unsigned int> FastKiFDD::filter_ids(std::map<unsigned int, double> active_ids, const std::vector<double>& s) {
+    std::vector<unsigned int> cur_feat_ids;
+    for (auto in : sorted_spec_ids) {
+        unsigned int i = in.first;
+        auto pos = is_subset<unsigned int, double>(base_ids[i], active_ids);
+        if (pos.size() != base_ids[i].size()) {
+            continue;
+        }
+        bool good = true;
+        for (unsigned int j : cur_feat_ids) {
+            if (base_ids[j].size() == base_ids[i].size())
+                break;
+            if (std::includes(base_ids[j].begin(), base_ids[j].end(),
+                  base_ids[i].begin(), base_ids[i].end())) {
+                good = false;
+                break;
+            }
+            
+        }
+        if (good && (sparsification > 10 || kernel(centers[i], s, dims[i]) > activation_threshold))
+            cur_feat_ids.push_back(i);
+    }
+    return cur_feat_ids;
+}
 std::vector<double> FastKiFDD::phi(const std::vector<double>& s) {
     std::vector<double> output = std::vector<double>(features_num, 0);
     double out_sum = 0;
     if (sparsification > 0) {
         std::map<unsigned int, double> active_ids = get_active_base_ids(s);
+        if (sparsification == 10) {
+            auto cur_ids = filter_ids(active_ids, s);
+            for (unsigned int i : cur_ids) {
+                output[i] = kernel(centers[i], s, dims[i]);
+                out_sum += abs(output[i]);
+            }
+        } else {
+
         // iterate from most specific to most general feature
         // O(n*k*k)
         for (auto i : sorted_spec_ids) {
@@ -126,7 +158,7 @@ std::vector<double> FastKiFDD::phi(const std::vector<double>& s) {
                     }
                 }
             }
-        }
+        }}
 
     } else {
         // O(n)
