@@ -1,4 +1,5 @@
 from Policy import Policy
+
 import numpy as np
 from scipy.io import loadmat
 from Tools import __rlpy_location__, cartesian
@@ -18,7 +19,7 @@ class SwimmerPolicy(Policy):
 
     default_location = os.path.join(__rlpy_location__, "Policies", "swimmer3.mat")
 
-    def __init__(self, representation, logger=None, filename=default_location):
+    def __init__(self, representation, logger=None, filename=default_location, epsilon=0.1):
 
         self.logger = logger
         self.representation = representation
@@ -28,6 +29,8 @@ class SwimmerPolicy(Policy):
         self.scale = E["scale"][0][0]
         self.gains = E["Gains"][0][0]
         self.d = 3
+        self.eGreedy = False
+        self.epsilon = epsilon
         d = self.d
         # incidator variables for angles in a state representation
         self.angles = np.zeros(2 + self.d * 2 + 1, dtype=np.bool)
@@ -35,7 +38,27 @@ class SwimmerPolicy(Policy):
         self.actions = cartesian((d - 1) * [[-2., 0., 2]])
         self.actions_num = len(self.actions)
 
-    def pi(self, s, terminal, p_actions):
+    def pi(self,s, terminal, p_actions):
+        coin = np.random.rand()
+        if coin < self.epsilon:
+            return np.random.choice(p_actions)
+        else:
+            if self.eGreedy:
+                b_actions = self.representation.bestActions(s, terminal, p_actions)
+                return np.random.choice(b_actions)
+            else:
+                return self.pi_sam(s, terminal, p_actions)
+    """
+    def turnOffExploration(self):
+        self.old_epsilon = self.epsilon
+        self.epsilon = 0
+        self.eGreedy = True
+
+    def turnOnExploration(self):
+        self.epsilon = self.old_epsilon
+        self.eGreedy = False
+    """
+    def pi_sam(self, s, terminal, p_actions):
         #import ipdb; ipdb.set_trace()
         # d        = size(x,1);
         # x_a = [x(~angles,:); sin(x(angles,:)); cos(x(angles,:))];

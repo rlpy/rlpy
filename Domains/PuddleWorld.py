@@ -16,22 +16,22 @@ class PuddleWorld(Domain):
     Implementation of the puddle world benchmark as described in references
     below.
 
-    
+
 
     **STATE:** 2-dimensional vector, *s*, each dimension is continuous in [0,1]\n
     **ACTIONS:** [right, up, left, down] - NOTE it is not possible to loiter.\n
     **REWARD:** 0 for goal state, -1 for each step, and an additional penalty
         for passing near puddles.
-    
+
     **REFERENCE:**
-    
+
     .. seealso::
         Jong, N. & Stone, P.: Kernel-based models for reinforcement learning, ICML (2006)
 
     .. seealso::
         Sutton, R. S.: Generalization in Reinforcement Learning:
         Successful Examples Using Sparse Coarse Coding, NIPS(1996)
-        
+
     """
 
     gamma = 1.  # discout factor
@@ -147,3 +147,11 @@ class PuddleWorld(Domain):
             self.pol_im.set_data(self.pi_map)
             self.pol_im.autoscale()
         plt.draw()
+
+
+class PuddleGapWorld(PuddleWorld):
+    def _reward(self, s):
+        r = super(PuddleGapWorld, self)._reward(s)
+        if s[1] < .67 and s[1] >= .6:
+            r = -1
+        return r
