@@ -83,29 +83,18 @@ You can install them by executing::
 OS X
 ----
 
-Check what version of gcc you have by executing::
-    
-    gcc --version
+Please install **XCode** and **command line tools** from the App Store or the Apple Developer Account
+direct download if you do not have already. These packages contain the compilers necessary for building RLPy's C++ extensions.
 
-If you do not have gcc you can download it either through MacPorts (newer versions) or through Apple's developer 
-downloads site under `Command Line Tools <https://developer.apple.com/downloads/index.action>`_ (older versions). 
+You can verify that your compiler is new enough by executing::
 
-GCC >=4.2 and <=4.6 
-+++++++++++++++++++
+    clang++ --version
 
-If gcc is older than 4.6 we recommend installing a newer version. 
-You can find compiled packages at http://sourceforge.net/projects/hpc/files/hpc/gcc or use MacPorts.
-However, if this is not an option you can follow these instructions to 
-get things set up by manually installing dependencies with pip::
+You should see somewhere in the output `(based on LLVM 3.2svn)` or a higher version number.
 
-    pip install joblib hyperopt pymongo sip numpy scipy matplotlib cython nose networkx
-
-GCC >= 4.7
-++++++++++
-
-To install the Python packages we recommend either using MacPorts and pip or Anaconda (as described in
-:ref:`the Anaconda section <anaconda>`. This will ensure you have the latest versions of
-each package.
+To install the Python packages we recommend Anaconda. This will ensure you have the latest versions of
+each package. Follow the instructions in  
+:ref:`the Anaconda section <anaconda>`.
 
 Windows
 -------
