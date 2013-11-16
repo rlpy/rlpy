@@ -9,13 +9,17 @@ from distutils.core import setup, Extension
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 import numpy
-
+import os
 import sys
 if sys.platform == 'darwin':
-  extra_args = ["-std=c++0x", "-stdlib=libc++"]
+    # by default use clang++ as this most likely to have c++11 support
+    # on OSX
+    if "CC" not in os.environ or os.environ["CC"] == "":
+        os.environ["CC"] = "clang++"
+        extra_args = ["-std=c++0x", "-stdlib=libc++"]
 else:
-#  extra_args = ["-std=c++0x"]
-  extra_args = []
+    extra_args = []
+
 setup(name="_transformations",
       cmdclass = {"build_ext": build_ext},
       ext_modules=[
