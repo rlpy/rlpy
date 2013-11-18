@@ -15,7 +15,8 @@ Important Links
 
 - Official source code repository: http://bitbucket.org/rlpy/rlpy
 - Github Mirror: http://github.com/rlpy/rlpy
-- Documentation and Homepage: http://acl.mit.edu/RLPy
+- Documentation and Homepage: http://acl.mit.edu/rlpy
+- Download latest version: http://acl.mit.edu/rlpy/rlpy-1.2.1.zip
 - Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
 
 Documentation
