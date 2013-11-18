@@ -28,4 +28,11 @@ Domains
     domains_misc.rst
     finite_cartpole.rst
     infinite_cartpole.rst
-    
+
+Helper modules
+##############
+
+.. toctree::
+    :maxdepth: 1
+
+    runtools.rst
