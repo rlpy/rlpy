@@ -112,6 +112,8 @@ class Swimmer(Domain):
         R2 = R + .5 * self.lengths[:, None] * T
         Rx = np.hstack([R1[:,0], R2[:,0]]) + self.pos_cm[0]
         Ry = np.hstack([R1[:,1], R2[:,1]]) + self.pos_cm[1]
+        print Rx
+        print Ry
         f = plt.figure("Swimmer Domain")
         if not hasattr(self, "swimmer_lines"):
             plt.plot(0. , 0., "ro")
@@ -221,22 +223,33 @@ class Swimmer(Domain):
         reasonable for learning
         returns a 4-tupel consisting of:
         nose position, joint angles (d-1), nose velocity, angular velocities
+
+        The nose position and nose velocities are referenced to the nose rotation.
         """
         cth = np.cos(self.theta)
         sth = np.sin(self.theta)
         M = self.P - 0.5 * np.diag(self.lengths)
+        #  stores the vector from the center of mass to the nose
         c2n = np.array([np.dot(M[self.nose], cth), np.dot(M[self.nose], sth)])
-        T = -self.pos_cm - c2n
-        vx = -np.dot(M, sth * self.dtheta)
-        vy = np.dot(M, cth * self.dtheta)
-        v2n = np.array([vx[self.nose], vy[self.nose]])
+        #  absolute position of nose
+        T = -self.pos_cm - c2n - self.goal
+        #  rotating coordinate such that nose is axis-aligned (nose frame)
+        #  (no effect when  \theta_{nose} = 0)
         c2n_x = np.array([cth[self.nose], sth[self.nose]])
         c2n_y = np.array([-sth[self.nose], cth[self.nose]])
         Tcn = np.array([np.sum(T * c2n_x),np.sum(T * c2n_y)])
+
+        #  velocity at each joint relative to center of mass velocity
+        vx = -np.dot(M, sth * self.dtheta)
+        vy = np.dot(M, cth * self.dtheta)
+        #  velocity at nose (world frame) relative to center of mass velocity
+        v2n = np.array([vx[self.nose], vy[self.nose]])
+        #  rotating nose velocity to be in nose frame
         Vcn = np.array([np.sum((self.v_cm + v2n) * c2n_x),
                         np.sum((self.v_cm + v2n) * c2n_y)])
+        #  angles should be in [-pi, pi]
         ang = np.mod(self.theta[1:] - self.theta[:-1] + np.pi, 2 * np.pi) - np.pi
-        return Tcn - self.goal, ang, Vcn, self.dtheta
+        return Tcn, ang, Vcn, self.dtheta
 
     def step(self, a):
         d = self.d
