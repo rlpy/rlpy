@@ -4,7 +4,7 @@ Cart-pole balancing with iFDD+
 
 import sys, os
 from Tools import Logger
-from Domains import Pendulum_InvertedBalance
+from Domains import InfCartPoleBalance
 from Agents import Greedy_GQ, SARSA, Q_Learning
 from Representations import *
 from Policies import eGreedy
@@ -19,8 +19,8 @@ param_space = {'discretization': hp.quniform("discretization", 5, 40, 1),
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
                     lambda_=0.,
-                    boyan_N0=21.492871,
-                    initial_alpha=0.0385705,
+                    boyan_N0=116.7025,
+                    initial_alpha=0.01402,
                     discretization=6.):
     logger = Logger()
     max_steps = 50000
@@ -28,13 +28,12 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 10
     sparsify = True
 
-    domain = Pendulum_InvertedBalance(logger=logger)
+    domain = InfCartPoleBalance(logger=logger)
 
     representation = IndependentDiscretization(domain, logger, discretization=discretization)
     policy = eGreedy(representation, logger, epsilon=0.1)
-    agent = Greedy_GQ(representation, policy, domain, logger,
-                       lambda_=lambda_, 
-                       BetaCoef=1e-6,
+    agent = SARSA(representation, policy, domain, logger,
+                       lambda_=lambda_,
                        initial_alpha=initial_alpha,
                        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())

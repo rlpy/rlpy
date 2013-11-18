@@ -1,6 +1,14 @@
 doc/_build/*
+build/*
 Results/*
+Representations/FastCythonKiFDD.cpp
+Representations/hashing.c
+Representations/kernels.cpp
+Domains/HIVTreatment_dynamics.c
 *.so
+*.swp
+.project
+.pydevproject
 *.pyc
 Config.py
 .ropeproject
