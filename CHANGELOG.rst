@@ -1,0 +1,14 @@
+Version 1.2.1
+-------------
+
+- Partially fixed installation issues on OSX and Windows 
+- added Swimmer domain
+- Visualization for HIV Treatment domain
+- Pendulum renamed to InfTrackCartPole
+
+Version 1.2
+-----------
+
+- major update for the getting started tutorial
+- results are stored in json format
+- new module `Tools.results` for examining and plotting results
