@@ -151,6 +151,12 @@ Build the C++ / Cython extensions of RLPy by executing in your RLPy directory::
 
         ARCHFLAGS="" python setup.py build_ext --inplace
 
+.. note::
+    If you use Anaconda and get an error about incompatibility to the 
+    deployment target try instead::
+
+        MACOSX_DEPLOYMENT_TARGET=10.7 python setup.py build_ext --inplace
+
 
 .. tip::
     You can verify that your rlpy installation works well by running the testsuite in

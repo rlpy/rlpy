@@ -1864,8 +1864,8 @@ py_superimposition_matrix(
                 }
             } else {
                 double t, v1x, v1y, v1z;
-                char *v0p = PyArray_DATA(v0);
-                char *v1p = PyArray_DATA(v1);
+                char *v0p = (char*)PyArray_DATA(v0);
+                char *v1p = (char*)PyArray_DATA(v1);
 
                 for (i = 0; i < size; i++) {
                     v1x = (*(double*)(v1p)) - v1t[0];
@@ -3424,7 +3424,7 @@ py_vector_norm(
         if ((PyArray_NDIM(data) == 1) &&
             (PyArray_STRIDE(data, 0) == sizeof(double))) {
             Py_ssize_t i;
-            double* dptr = PyArray_DATA(data);
+            double* dptr = (double *)PyArray_DATA(data);
             #pragma vector always
             for (i = 0; i < PyArray_DIM(data, 0); i++) {
                 len += dptr[i] * dptr[i];
@@ -3903,7 +3903,7 @@ py_eigenvector_of_symmetric_44(
         goto _fail;
     }
 
-    buffer = PyMem_Malloc(12 * sizeof(double));
+    buffer = (double *) PyMem_Malloc(12 * sizeof(double));
     if (buffer == NULL) {
         PyErr_Format(PyExc_MemoryError, "unable to allocate buffer");
         goto _fail;
