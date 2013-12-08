@@ -47,6 +47,10 @@ Output = condor/{id}.out
 queue 1
 """
 
+if sys.platform.startswith("win") or sys.platform.startswith("cygwin"):
+    devnull = "nul"
+else:
+    devnull = "/dev/null"
 
 def run_profiled(make_exp_fun, profile_location="Profiling", out="Test.pdf", **kwargs):
     """run an experiment (without storing its results) and profiles the execution.
@@ -176,7 +180,7 @@ def _run_helper(fn, id, verbose):
     if verbose >= 15:
         out = ""
     else:
-        out = "> /dev/null"
+        out = "> " + devnull
     path, filen = os.path.split(fn)
     subprocess.Popen("python {} {} {}".format(filen, id + 1, out), shell=True, cwd=path).wait()
 
