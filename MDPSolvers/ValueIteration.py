@@ -35,6 +35,14 @@ class ValueIteration(MDPSolver):
         log_interval (int): Minimum number of seconds between displaying logged information.
 
         show (bool):    Enable visualization?
+
+    .. warning::
+
+        THE CURRENT IMPLEMENTATION ASSUMES *DETERMINISTIC* TRANSITIONS:
+        In other words, in each iteration, from each state, we only sample
+        each possible action **once**. \n
+        For stochastic domains, it is necessary to sample multiple times and
+        use the average.
     """
 
     def solve(self):
