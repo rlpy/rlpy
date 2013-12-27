@@ -4,7 +4,7 @@ from Domain import Domain
 from CartPoleBase import CartPoleBase, StateIndex
 import numpy as np
 import scipy.integrate
-from Tools import pl, mpatches, mpath, fromAtoB, lines, rk4, wrap, bound, colors
+from Tools import pl, mpatches, mpath, fromAtoB, lines, rk4, wrap, bound, colors, plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -121,9 +121,6 @@ class FiniteTrackCartPole(CartPoleBase):
 
         warnStr = "WARNING: showLearning() called with 4-state "\
         "cartpole; only showing slice at (x, xDot) = (%.2f, %.2f)" % (xSlice, xDotSlice)
-        if self.logger:
-            self.logger.log(warnStr)
-        else: print warnStr
 
         (thetas, theta_dots) = self._setup_learning(representation)
 
@@ -148,8 +145,10 @@ class FiniteTrackCartPole(CartPoleBase):
                 V[row,col] = max(Qs)
 
         self._plot_policy(pi)
+        plt.title("Policy (Slice at x=0, xDot=0)")
         self._plot_valfun(V)
-        
+        plt.title("Value Function (Slice at x=0, xDot=0)")
+
         pl.draw()
 
     def showDomain(self, a=0):

@@ -24,7 +24,7 @@ class eGreedy(Policy):
             self.logger.log("Epsilon\t\t{0}".format(self.epsilon))
 
     def pi(self,s, terminal, p_actions):
-        coin = random.rand()
+        coin = np.random.rand()
         #print "coin=",coin
         if coin < self.epsilon:
             return np.random.choice(p_actions)
@@ -34,6 +34,16 @@ class eGreedy(Policy):
                 return b_actions[0]
             else:
                 return np.random.choice(b_actions)
+
+    def prob(self, s, terminal, p_actions):
+        p = np.ones(len(p_actions)) / len(p_actions)
+        p *= self.epsilon
+        b_actions = self.representation.bestActions(s, terminal, p_actions)
+        if self.forcedDeterministicAmongBestActions:
+            p[b_actions[0]] += (1 - self.epsilon)
+        else:
+            p[b_actions] += (1 - self.epsilon) / len(b_actions)
+        return p
 
     def turnOffExploration(self):
         self.old_epsilon = self.epsilon
