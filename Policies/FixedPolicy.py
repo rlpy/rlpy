@@ -1,14 +1,40 @@
 """Fixed policy. Encodes fixed policies for particular domains."""
 
-from Policy import *
-
+import Policy
+import numpy as np
+from Tools import randSet, className
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
-class FixedPolicy(Policy):
+class BasicPuddlePolicy(Policy.Policy):
+    __author__ = "Christoph Dann"
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def pi(self, s, terminal, p_actions):
+        # 0 up, 1 down
+        assert(len(s) == 2)
+        if 0 not in p_actions:
+            assert(1 in p_actions)
+            return 1
+        if 1 not in p_actions:
+            assert(0 in p_actions)
+            return 0
+        d = np.ones(2) - s
+        if np.random.rand() * d.sum() < d[0]:
+            return 0
+        else:
+            return 1
+
+    def __getstate__(self):
+        return self.__dict__
+
+
+class FixedPolicy(Policy.Policy):
 
     policyName  = '' # The name of the desired policy, where applicable. Otherwise ignored.
     tableOfValues = None
@@ -105,7 +131,7 @@ class FixedPolicy(Policy):
 
             #Random Action with some probability
             #TODO fix isTerminal use here
-            if random.rand() < .3 or domain.isTerminal():
+            if np.random.rand() < .3 or domain.isTerminal():
                 return randSet(domain.possibleActions(s))
 
             #non-Random Policy

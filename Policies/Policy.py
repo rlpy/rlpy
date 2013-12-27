@@ -1,7 +1,7 @@
 """Policy base class"""
 
-from Tools import *
-from Representations import *
+from Tools import className, Logger
+#from Representations import *
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -15,7 +15,7 @@ class Policy(object):
     :py:class:`~Representations.Representation.Representation`.
 
     The Agent learns about the :py:class:`~Domains.Domain.Domain`
-    as the two interact. 
+    as the two interact.
     At each step, the Agent passes information about its current state
     to the Policy; the Policy uses this to decide what discrete action the
     Agent should perform next (see :py:meth:`~Policies.Policy.Policy.pi`) \n
@@ -23,10 +23,10 @@ class Policy(object):
     The Policy class is a base class that provides the basic framework for all
     policies. It provides the methods and attributes that allow child classes
     to interact with the Agent and Representation within the RLPy library. \n
-    
+
     .. note::
         All new policy implementations should inherit from Policy.
-        
+
     """
 
     representation = None
@@ -36,16 +36,16 @@ class Policy(object):
         """
         :param representation: the :py:class:`~Representations.Representation.Representation`
             to use in learning the value function.
-        
+
         """
         self.representation = representation
         ## An object to record the print outs in a file
         self.logger         = logger
-        
+
     def pi(self,s, terminal, p_actions):
         """
         *Abstract Method:*\n Select an action given a state.
-        
+
         :param s: The current state
         :param terminal: boolean, whether or not the *s* is a terminal state.
         :param p_actions: a list / array of all possible actions in *s*.
@@ -79,18 +79,21 @@ class Policy(object):
         print '======================================='
         for property, value in vars(self).iteritems():
             print property, ": ", value
-            
+
     def collectSamples(self, samples):
         """
+        DEPRECATED
+
+
         Return matrices of S,A,NS,R,T where each row of each numpy 2d-array
         is a sample by following the current policy.
-        
+
         - S: (#samples) x (# state space dimensions)
         - A: (#samples) x (1) int [we are storing actionIDs here, integers]
         - NS:(#samples) x (# state space dimensions)
         - R: (#samples) x (1) float
         - T: (#samples) x (1) bool
-        
+
         See :py:meth:`Agents.Agent.Agent.Q_MC` and :py:meth:`Agents.Agent.Agent.MC_episode`
         """
         domain = self.representation.domain

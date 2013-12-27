@@ -11,5 +11,10 @@ __author__ = "Alborz Geramifard"
 
 
 class UniformRandom(Policy):
+
+    def prob(self, s, terminal, p_actions):
+        p = np.ones(len(p_actions)) / len(p_actions)
+        return p
+
     def pi(self, s, terminal, p_actions):
         return np.random.choice(p_actions)

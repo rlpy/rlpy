@@ -1,11 +1,11 @@
-from Policy import Policy
+import Policies.Policy
 
 import numpy as np
 from scipy.io import loadmat
 from Tools import __rlpy_location__, cartesian
 import os
 
-class SwimmerPolicy(Policy):
+class SwimmerPolicy(Policies.Policy.Policy):
     """
     Fixed deterministic policy for a 3-link swimmer.
     It is a discretized version from Yuval Tassas MATLAB implmentation
