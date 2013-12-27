@@ -1,24 +1,25 @@
 
 
-from Tabular import Tabular
-from IncrementalTabular import IncrementalTabular
-from IndependentDiscretization import IndependentDiscretization
-from IndependentDiscretizationCompactBinary import IndependentDiscretizationCompactBinary
-from RBF import RBF
-from iFDD import iFDD
-from Fourier import Fourier
-from BEBF import BEBF
-from OMPTD import OMPTD
-from TileCoding import TileCoding
+from Tabular import Tabular, QTabular
+from IncrementalTabular import IncrementalTabular, QIncrementalTabular
+from IndependentDiscretization import IndependentDiscretization, QIndependentDiscretization
+from IndependentDiscretization import IndependentDiscretizationCompact, QIndependentDiscretizationCompact
+from RBF import QRBF, RBF
+from iFDD import iFDD, QiFDD
+from Fourier import Fourier, QFourier
+from BEBF import BEBF, QBEBF
+from OMPTD import OMPTD, QOMPTD
+from TileCoding import TileCoding, QTileCoding
 
-from KernelizediFDD import linf_triangle_kernel, gaussian_kernel, KernelizediFDD
+from KernelizediFDD import linf_triangle_kernel, gaussian_kernel, KernelizediFDD, QKernelizediFDD
 try:
-    from KernelizediFDD import FastKiFDD
+    from KernelizediFDD import FastKiFDD, QFastKiFDD
 except ImportError:
     print "C-Extensions not build, Fast Kernelized iFDD not available"
     FastKiFDD = KernelizediFDD
-from LocalBases import RandomLocalBases
-from LocalBases import NonparametricLocalBases
+    QFastKiFDD = QKernelizediFDD
+from LocalBases import RandomLocalBases, QRandomLocalBases
+from LocalBases import NonparametricLocalBases, QNonparametricLocalBases
 
 
 

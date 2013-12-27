@@ -27,8 +27,8 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     sparsify = 1
     kappa = 1e-7
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    initial_rep = IndependentDiscretization(domain, logger)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    initial_rep = QIndependentDiscretization(domain, logger)
+    representation = QiFDD(domain, logger, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           useCache=True,
                           iFDDPlus=1-kappa)

@@ -22,7 +22,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     sparsify = 1
     ifddeps = 1e-7
     domain = BlocksWorld(blocks=6, noise=0.3, logger=logger)
-    representation = IndependentDiscretization(domain, logger)
+    representation = QIndependentDiscretization(domain, logger)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Greedy_GQ(representation, policy, domain, logger
                        ,lambda_=lambda_, initial_alpha=initial_alpha,

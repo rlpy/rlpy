@@ -1,6 +1,6 @@
 """OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr"""
 
-from Representation import Representation
+from Representation import Representation, QFunRepresentation
 from iFDD import *
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -47,9 +47,11 @@ class OMPTD(Representation):
             self.logger.log("Bag Size:\t\t%d"% self.bagSize)
             self.logger.log("Batch Threshold:\t\t%0.3f"% self.batchThreshold)
             self.logger.log("Max Batch Discovery:\t%d"% self.maxBatchDicovery)
+
     def phi_nonTerminal(self,s):
         F_s                     = self.iFDD.phi_nonTerminal(s)
         return F_s[self.selectedFeatures]
+
     def show(self):
         if self.logger:
             self.logger.log('Features:\t\t%d' % self.features_num)
@@ -179,3 +181,6 @@ class OMPTD(Representation):
 
     def featureType(self):
         return self.initial_representation.featureType()
+
+class QOMPTD(OMPTD, QFunRepresentation):
+    pass

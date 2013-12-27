@@ -30,7 +30,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
 
     domain = InfCartPoleBalance(logger=logger)
 
-    representation = IndependentDiscretization(domain, logger, discretization=discretization)
+    representation = QIndependentDiscretization(domain, logger, discretization=discretization)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Q_Learning(representation, policy, domain, logger,
                        lambda_=lambda_,

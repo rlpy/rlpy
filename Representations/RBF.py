@@ -1,9 +1,7 @@
 """Radial Basis Function Representation"""
 
-import os
-from Tools import *
-from Domains import *
-from Representation import Representation
+from Tools import perms
+from Representation import Representation, QFunRepresentation
 import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -11,6 +9,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
+
 
 class RBF(Representation):
     state_dimensions = None
@@ -43,7 +42,7 @@ class RBF(Representation):
                                    - domain.statespace_limits[state_dimensions,0])
             #super(RBF,self).__init__(domain,logger)
             rand_stream = np.random.RandomState(seed=seed)
-            for i in arange(num_rbfs):
+            for i in np.arange(num_rbfs):
                 for d in state_dimensions:
                     self.rbfs_mu[i,d] = rand_stream.uniform(domain.statespace_limits[d,0],
                                                         domain.statespace_limits[d,1])
@@ -57,15 +56,15 @@ class RBF(Representation):
         super(RBF, self).__init__(domain, logger)
 
     def phi_nonTerminal(self, s):
-        F_s = ones(self.features_num)
+        F_s = np.ones(self.features_num)
         if self.state_dimensions is not None:
             s = s[self.state_dimensions]
 
-        exponent = sum(0.5 * ((s - self.rbfs_mu) / self.rbfs_sigma)**2, axis=1)
+        exponent = np.sum(0.5 * ((s - self.rbfs_mu) / self.rbfs_sigma)**2, axis=1)
         if self.const_feature:
-            F_s[:-1] = exp(-exponent)
+            F_s[:-1] = np.exp(-exponent)
         else:
-            F_s[:] = exp(-exponent)
+            F_s[:] = np.exp(-exponent)
 
         if self.normalize and F_s.sum() != 0.:
             F_s /= F_s.sum()
@@ -95,10 +94,10 @@ class RBF(Representation):
         #Find centers in each dimension
         domain      = self.domain
         dims        = domain.state_space_dims
-        rbfs_num    = prod(bins_per_dimension[:]+1) if IncludeBorders else prod(bins_per_dimension[:]-1)
+        rbfs_num    = np.prod(bins_per_dimension[:]+1) if IncludeBorders else np.prod(bins_per_dimension[:]-1)
         all_centers = []
-        for d in arange(dims):
-            centers = linspace(domain.statespace_limits[d, 0],
+        for d in np.arange(dims):
+            centers = np.linspace(domain.statespace_limits[d, 0],
                                domain.statespace_limits[d,1],
                                bins_per_dimension[d]+1)
             if not IncludeBorders:
@@ -113,3 +112,5 @@ class RBF(Representation):
     def featureType(self):
         return float
 
+class QRBF(RBF, QFunRepresentation):
+    pass

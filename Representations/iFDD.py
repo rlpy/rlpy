@@ -7,10 +7,7 @@ from copy import deepcopy
 import numpy as np
 
 from Tools import *
-from Domains import *
-from Representation import *
-from IndependentDiscretization import *
-from IndependentDiscretizationCompactBinary import *
+from .Representation import Representation, QFunRepresentation
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -447,3 +444,6 @@ class iFDD(Representation):
         ifdd.features_num = self.features_num
         ifdd.theta = deepcopy(self.theta)
         return ifdd
+
+class QiFDD(iFDD, QFunRepresentation):
+    pass

@@ -3,7 +3,7 @@ Representations which use local bases function (e.g. kernels) distributed
 in the statespace according to some scheme (e.g. grid, random, on previous
 samples)
 """
-from Representation import Representation
+from Representation import Representation, QFunRepresentation
 import numpy as np
 from Tools.GeneralTools import addNewElementForAllActions
 import matplotlib.pyplot as plt
@@ -110,3 +110,9 @@ class RandomLocalBases(LocalBases):
                                                          domain.statespace_limits[d, 1])
                 self.widths[i, d] = rand_stream.uniform(dim_widths[d] / resolution_max,
                                                         dim_widths[d] / resolution_min)
+
+class QNonparametricLocalBases(NonparametricLocalBases, QFunRepresentation):
+    pass
+
+class QRandomLocalBases(RandomLocalBases, QFunRepresentation):
+    pass

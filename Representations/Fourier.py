@@ -1,6 +1,6 @@
 """Fourier representation"""
 
-from Representation import Representation
+from Representation import Representation, QFunRepresentation
 from Tools import indices, pi, cos, dot
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -21,5 +21,9 @@ class Fourier(Representation):
         s_min,s_max = self.domain.statespace_limits.T
         norm_state = (s - s_min) / (s_max - s_min)
         return cos(pi * dot(self.coeffs, norm_state))
+
     def featureType(self):
         return float
+
+class QFourier(Fourier, QFunRepresentation):
+    pass

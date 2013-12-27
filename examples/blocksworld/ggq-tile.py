@@ -44,7 +44,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
                     0 1 1 0 1 0;
                     0 1 1 0 0 1""")
     #assert(mat.shape[0] == 20)
-    representation = TileCoding(domain, logger, memory=2000, num_tilings=[1]*mat.shape[0],
+    representation = QTileCoding(domain, logger, memory=2000, num_tilings=[1]*mat.shape[0],
                                 resolution_matrix=mat * 6, safety="none")
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Greedy_GQ(representation, policy, domain, logger

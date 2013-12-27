@@ -33,7 +33,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     domain = InfCartPoleBalance(logger=logger)
 
     initial_rep = IndependentDiscretization(domain, logger, discretization=discretization)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    representation = QiFDD(domain, logger, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           discretization=discretization,
                           useCache=True,

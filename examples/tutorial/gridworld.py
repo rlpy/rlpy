@@ -10,7 +10,7 @@ __author__ = "Robert H. Klein"
 from Domains import GridWorld
 from Tools import Logger
 from Agents import Q_Learning
-from Representations import Tabular
+from Representations import QTabular
 from Policies import eGreedy
 from Experiments import Experiment
 import os
@@ -32,7 +32,7 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-qlearning"):
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    representation  = QTabular(domain, logger, discretization=20)
 
     ## Policy
     policy = eGreedy(representation, logger, epsilon=0.2)

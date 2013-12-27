@@ -25,7 +25,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 1
 
     domain = FiniteCartPoleBalanceOriginal(logger=logger, good_reward=0.)
-    representation = IndependentDiscretization(domain, discretization=discretization, logger=logger)
+    representation = QIndependentDiscretization(domain, discretization=discretization, logger=logger)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Q_LEARNING(representation, policy, domain, logger
                        ,lambda_=0.9, initial_alpha=initial_alpha,

@@ -1,6 +1,7 @@
 doc/_build/*
 build/*
 Results/*
+cache/*
 Representations/FastCythonKiFDD.cpp
 Representations/hashing.c
 Representations/kernels.cpp

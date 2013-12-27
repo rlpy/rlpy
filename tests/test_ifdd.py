@@ -1,5 +1,5 @@
 from Representations import iFDD
-from Representations import IndependentDiscretizationCompactBinary
+from Representations import IndependentDiscretizationCompact
 import Domains
 from Tools import Logger
 import numpy as np
@@ -16,7 +16,7 @@ def deterministic_test():
     discovery_threshold = 1
     sparsify = True
     domain = Domains.SystemAdministrator()
-    initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
+    initialRep  = IndependentDiscretizationCompact(domain,logger)
     rep = iFDD(domain,logger,discovery_threshold,initialRep,
                debug=0, useCache=1, sparsify = sparsify)
     rep.theta = np.arange(rep.features_num*domain.actions_num)*10
@@ -80,7 +80,7 @@ def random_test():
     K           = 5 # number of randomly activated features
     domain      = Domains.PST()
     np.random.seed(999999999)
-    initialRep  = IndependentDiscretizationCompactBinary(domain,logger)
+    initialRep  = IndependentDiscretizationCompact(domain,logger)
     rep         = iFDD(domain,logger,discovery_threshold,initialRep,debug=0,useCache=1,iFDDPlus=0)
     rep.theta   = np.arange(rep.features_num*domain.actions_num)*10
     n           = rep.features_num

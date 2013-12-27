@@ -116,22 +116,22 @@ def make_experiment(id=1, path="./Results/Temp"):
     #domain          = RCCar(logger = logger)
     #domain           = Pinball(logger, 500, width=500, height=500, configuration='Domains/PinballConfigs/pinball_medium.cfg')
     #domain           = HIVTreatment(logger=logger)
-    
+
     # REPRESENTATION
     #================
-    initial_rep     = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #initial_rep     = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    initial_rep     = QIndependentDiscretizationCompact(domain,logger, discretization = DISCRITIZATION)
+    #initial_rep     = QIndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
 
     #representation  =  initial_rep
-    #representation  = IndependentDiscretizationCompactBinary(domain,logger, discretization = DISCRITIZATION)
-    #representation  = IndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
-    #representation  = Tabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
-    #representation  = IncrementalTabular(domain,logger)
-    representation  = iFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
-    #representation  = RBF(domain,logger, rbfs = RBFS, id = JOB_ID)
-    #representation  = Fourier(domain,logger,order=FourierOrder)
-    #representation  = BEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
-    #representation  = OMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
+    #representation  = QIndependentDiscretizationCompact(domain,logger, discretization = DISCRITIZATION)
+    #representation  = QIndependentDiscretization(domain,logger, discretization = DISCRITIZATION)
+    #representation  = QTabular(domain,logger,discretization = DISCRITIZATION) # Optional parameter discretization, for continuous domains
+    #representation  = QIncrementalTabular(domain,logger)
+    representation  = QiFDD(domain,logger,iFDDOnlineThreshold,initial_rep,sparsify = iFDD_Sparsify,discretization = DISCRITIZATION,useCache=iFDD_CACHED,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, iFDDPlus = iFDD_Plus)
+    #representation  = QRBF(domain,logger, rbfs = RBFS, id = JOB_ID)
+    #representation  = QFourier(domain,logger,order=FourierOrder)
+    #representation  = QBEBF(domain,logger, batchThreshold=BatchDiscoveryThreshold, svm_epsilon=BEBF_svm_epsilon)
+    #representation  = QOMPTD(domain,logger, initial_representation = initial_rep, discretization = DISCRITIZATION,maxBatchDicovery = Max_Batch_Feature_Discovery, batchThreshold = BatchDiscoveryThreshold, bagSize = OMPTD_BAG_SIZE, sparsify = iFDD_Sparsify)
 
     #tile_matrix = array(mat("""
     #72 72 84 84             ;

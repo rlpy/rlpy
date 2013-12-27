@@ -5,7 +5,7 @@ __author__ = "William Dabney"
 from Domains import GridWorld
 from Tools import Logger
 from MDPSolvers import PolicyIteration
-from Representations import Tabular
+from Representations import QTabular
 from Policies import GibbsPolicy
 from Experiments import MDPSolverExperiment
 import os
@@ -29,7 +29,7 @@ def make_experiment(id=1, path="./Results/Temp", show=False):
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    representation  = QTabular(domain, logger, discretization=20)
 
     ## Agent
     agent = PolicyIteration(id, representation, domain, logger, project_path=path, show=show)

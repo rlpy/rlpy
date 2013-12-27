@@ -5,7 +5,7 @@ __author__ = "William Dabney"
 from Domains import GridWorld
 from Tools import Logger
 from Agents import LSPI
-from Representations import Tabular
+from Representations import QTabular
 from Policies import eGreedy
 from Experiments import Experiment
 import os
@@ -33,7 +33,7 @@ def make_experiment(id=1, path="./Results/Temp"):
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
     ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    representation  = QTabular(domain, logger, discretization=20)
 
     ## Policy
     policy = eGreedy(representation, logger, epsilon=0.1)

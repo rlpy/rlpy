@@ -27,11 +27,11 @@ class Representation(object):
     that allow child classes to interact with the Agent and Domain classes
     within the RLPy library. \n
     All new representation implementations should inherit from this class.
-    
+
     .. note::
         At present, it is assumed that the Linear Function approximator
         family of representations is being used.
-        
+
     """
 
     DEBUG          = 0
@@ -63,10 +63,252 @@ class Representation(object):
         :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
         :param discretization: Number of bins used for each continuous dimension
         """
-        
-        for v in ['features_num']:
-            if getattr(self,v) == None:
-                raise Exception('Missed domain initialization of '+ v)
+
+        self.setBinsPerDimension(domain,discretization)
+        self.domain = domain
+        self.discretization = discretization
+        try:
+            self.theta  = zeros(self.features_num)
+        except MemoryError as m:
+            print("Unable to allocate weights of size: %d\n" % self.features_num)
+            raise m
+
+        self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
+        self.logger = logger
+
+    def phi(self,s, terminal):
+        """
+        Returns :py:meth:`~Representations.Representation.Representation.phi_nonTerminal`
+        for a given representation, or a zero feature vector in a terminal state.
+
+        :param s: The state for which to compute the feature vector
+
+        :return: numpy array, the feature vector evaluted at state *s*.
+
+        .. note::
+            If state *s* is terminal the feature vector is returned as zeros!
+            This prevents the learning algorithm from wrongfully associating
+            the end of one episode with the start of the next (e.g., thinking
+            that reaching the terminal state causes it to teleport back to the
+            start state s0).
+
+
+        """
+        if terminal or self.features_num == 0:
+            return zeros(self.features_num,'bool')
+        else:
+            return self.phi_nonTerminal(s)
+
+    def V(self, s, terminal, p_actions, phi_s = None):
+        """ Returns the value of state s under possible actions p_actions.
+
+        :param s: The queried state
+        :param terminal: Whether or not *s* is a terminal state
+        :param p_actions: the set of possible actions
+        :param phi_s: (optional) The feature vector evaluated at state s.
+            If the feature vector phi(s) has already been cached,
+            pass it here as input so that it need not be computed again.
+
+        See :py:meth:`~Representations.Representation.Representation.Qs`.
+        """
+        if phi_s is None:
+            phi_s = self.phi(s, terminal)
+        return np.dot(phi_s, self.theta)
+
+
+    def hashState(self,s,):
+        """
+        Returns a unique id for a given state.
+        Essentially, enumerate all possible states and return the ID associated
+        with *s*.
+
+        Under the hood: first, discretize continuous dimensions into bins
+        as necessary. Then map the binstate to an integer.
+        """
+        ds = self.binState(s)
+        #self.logger.log(str(s)+"=>"+str(ds))
+        return vec2id(ds,self.bins_per_dim)
+
+    def setBinsPerDimension(self,domain,discretization):
+        """
+        Set the number of bins for each dimension of the domain.
+        Continuous spaces will be slices using the ``discretization`` parameter.
+        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
+        :param discretization: The number of bins a continuous domain should be sliced into.
+
+        """
+        self.bins_per_dim      = np.zeros(domain.state_space_dims,uint16)
+        self.binWidth_per_dim   = np.zeros(domain.state_space_dims)
+        for d in arange(domain.state_space_dims):
+             if d in domain.continuous_dims:
+                 self.bins_per_dim[d] = discretization
+             else:
+                 self.bins_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]
+             self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d,0])/(self.bins_per_dim[d]*1.)
+
+    def binState(self, s):
+        """
+        Returns a vector where each element is the zero-indexed bin number
+        corresponding with the given state.
+        (See :py:meth:`~Representations.Representation.Representation.hashState`)
+        Note that this vector will have the same dimensionality as *s*.
+
+        (Note: This method is binary compact; the negative case of binary features is
+        excluded from feature activation.
+        For example, if the domain has a light and the light is off, no feature
+        will be added. This is because the very *absence* of the feature
+        itself corresponds to the light being off.
+        """
+        s = np.atleast_1d(s)
+        limits = self.domain.statespace_limits
+        assert (np.all(s >= limits[:, 0]))
+        assert (np.all(s <= limits[:, 1]))
+        width = limits[:, 1] - limits[:, 0]
+        diff = s - limits[:, 0]
+        bs = (diff * self.bins_per_dim / width).astype("uint32")
+        m = bs == self.bins_per_dim
+        bs[m] = self.bins_per_dim[m] - 1
+        return bs
+
+
+
+    def pre_discover(self, s, terminal, a, sn, terminaln):
+        """
+        Identifies and adds ("discovers") new features for this adaptive
+        representation BEFORE having obtained the TD-Error.
+        For example, see :py:class:`~Representations.IncrementalTabular.IncrementalTabular`.
+        In that class, a new feature is added anytime a novel state is observed.
+
+        .. note::
+            For adaptive representations that require access to TD-Error to
+            determine which features to add next, use
+            :py:meth:`~Representations.Representation.Representation.post_discover`
+            instead.
+
+        :param s: The state
+        :param terminal: boolean, whether or not *s* is a terminal state.
+        :param a: The action
+        :param sn: The next state
+        :param terminaln: boolean, whether or not *sn* is a terminal state.
+
+        :return: The number of new features added to the representation
+        """
+
+        return 0
+
+    def post_discover(self, s, terminal, a, td_error, phi_s):
+        """
+        Identifies and adds ("discovers") new features for this adaptive
+        representation AFTER having obtained the TD-Error.
+        For example, see :py:class:`~Representations.iFDD.iFDD`.
+        In that class, a new feature is added based on regions of high TD-Error.
+
+        .. note::
+            For adaptive representations that do not require access to TD-Error
+            to determine which features to add next, you may use
+            :py:meth:`~Representations.Representation.Representation.pre_discover`
+            instead.
+
+        :param s: The state
+        :param terminal: boolean, whether or not *s* is a terminal state.
+        :param a: The action
+        :param td_error: The temporal difference error at this transition.
+        :param phi_s: The feature vector evaluated at state *s*.
+
+        :return: The number of new features added to the representation
+        """
+        return 0
+
+
+    def phi_nonTerminal(self,s):
+        """ *Abstract Method* \n
+        Returns the feature vector evaluated at state *s* for non-terminal
+        states; see function
+        :py:meth:`~Representations.Representation.Representation.phi
+        for the general case.
+
+        :param s: The given state
+
+        :return: The feature vector evaluated at state *s*.
+        """
+        raise NotImplementedError
+
+    def activeInitialFeatures(self,s):
+        """
+        Returns the index of active initial features based on bins in each
+        dimension.
+        :param s: The state
+
+        :return: The active initial features of this representation
+            (before expansion)
+        """
+        bs        = self.binState(s)
+        shifts    = hstack((0, cumsum(self.bins_per_dim)[:-1]))
+        index      = bs+shifts
+        return    index.astype('uint32')
+
+
+
+    def featureType(self):
+        """ *Abstract Method* \n
+        Return the data type for the underlying features (eg 'float').
+        """
+        raise NotImplementedError
+
+
+
+    def stateID2state(self,s_id):
+        """
+        Returns the state vector correponding to a state_id.
+        If dimensions are continuous it returns the state representing the
+        middle of the bin (each dimension is discretized according to
+        ``representation.discretization``.
+
+        :param s_id: The id of the state, often calculated using the
+            ``state2bin`` function
+
+        :return: The state *s* corresponding to the integer *s_id*.
+        """
+
+        #Find the bin number on each dimension
+        s   = array(id2vec(s_id,self.bins_per_dim))
+
+        #Find the value corresponding to each bin number
+        for d in arange(self.domain.state_space_dims):
+            s[d] = bin2state(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+
+        if len(self.domain.continuous_dims) == 0:
+            s = s.astype(int)
+        return s
+
+    def stateInTheMiddleOfGrid(self,s):
+        """
+        Accepts a continuous state *s*, bins it into the discretized domain,
+        and returns the state of the nearest gridpoint.
+        Essentially, we snap *s* to the nearest gridpoint and return that
+        gridpoint state.
+        For continuous MDPs this plays a major rule in improving the speed
+        through caching of next samples.
+
+        :param s: The given state
+
+        :return: The nearest state *s* which is captured by the discretization.
+        """
+        s_normalized = s.copy()
+        for d in arange(self.domain.state_space_dims):
+            s_normalized[d] = closestDiscretization(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
+        return s_normalized
+
+
+class QFunRepresentation(Representation):
+
+
+    def __init__(self,domain,logger,discretization = 20):
+        """
+        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
+        :param discretization: Number of bins used for each continuous dimension
+        """
+
         self.expectedStepCached = {}
         self.setBinsPerDimension(domain,discretization)
         self.domain = domain
@@ -89,19 +331,20 @@ class Representation(object):
             self.logger.log("Starting Features:\t%d"% self.features_num)
             self.logger.log("Aggregated States:\t%d"% self.agg_states_num)
 
+
     def V(self, s, terminal, p_actions, phi_s = None):
         """ Returns the value of state s under possible actions p_actions.
-        
+
         :param s: The queried state
         :param terminal: Whether or not *s* is a terminal state
         :param p_actions: the set of possible actions
         :param phi_s: (optional) The feature vector evaluated at state s.
             If the feature vector phi(s) has already been cached,
             pass it here as input so that it need not be computed again.
-    
+
         See :py:meth:`~Representations.Representation.Representation.Qs`.
         """
-        
+
         if phi_s is None: phi_s = self.phi(s, terminal)
         AllQs   = self.Qs(s, terminal, phi_s)
         if len(p_actions):
@@ -113,26 +356,26 @@ class Representation(object):
         """
         Returns an array of actions available at a state and their
         associated values.
-        
+
         :param s: The queried state
         :param terminal: Whether or not *s* is a terminal state
         :param phi_s: (optional) The feature vector evaluated at state s.
             If the feature vector phi(s) has already been cached,
             pass it here as input so that it need not be computed again.
-        
+
         :return: The tuple (Q,A) where:
             - Q: an array of Q(s,a), the values of each action at *s*. \n
             - A: the corresponding array of actionIDs (integers)
-        
+
         .. note::
             This function is distinct from
             :py:meth:`~Representations.Representation.Representation.Q`,
             which computes the Q function for an (s,a) pair. \n
             Instead, this function ``Qs()`` computes all Q function values
             (for all possible actions) at a given state *s*.
-            
+
         """
-        
+
         if phi_s is None: phi_s   = self.phi(s, terminal)
         if len(phi_s) == 0:
             return np.zeros((self.domain.actions_num))
@@ -141,17 +384,17 @@ class Representation(object):
             self._phi_sa_cache =  empty((self.domain.actions_num, self.features_num))
         Q = multiply(theta_prime, phi_s, out=self._phi_sa_cache).sum(axis=1) # stacks phi_s in cache
         return Q
-    
+
     def Q(self, s, terminal, a, phi_s = None):
         """ Returns the learned value of a state-action pair, *Q(s,a)*.
-        
+
         :param s: The queried state in the state-action pair.
         :param terminal: Whether or not *s* is a terminal state
         :param a: The queried action in the state-action pair.
         :param phi_s: (optional) The feature vector evaluated at state s.
             If the feature vector phi(s) has already been cached,
             pass it here as input so that it need not be computed again.
-        
+
         :return: (float) the value of the state-action pair (s,a), Q(s,a).
 
         """
@@ -161,379 +404,66 @@ class Representation(object):
         else:
             return 0.0
 
-    def phi(self,s, terminal):
+    def Qs_oneStepLookAhead(self,s, ns_samples, policy = None):
         """
-        Returns :py:meth:`~Representations.Representation.Representation.phi_nonTerminal`
-        for a given representation, or a zero feature vector in a terminal state.
-        
-        :param s: The state for which to compute the feature vector
-        
-        :return: numpy array, the feature vector evaluted at state *s*.
-        
-        .. note::
-            If state *s* is terminal the feature vector is returned as zeros!
-            This prevents the learning algorithm from wrongfully associating
-            the end of one episode with the start of the next (e.g., thinking
-            that reaching the terminal state causes it to teleport back to the
-            start state s0).
-            
-        
-        """
-        if terminal or self.features_num == 0:
-            return zeros(self.features_num,'bool')
-        else:
-            return self.phi_nonTerminal(s)
+        Returns an array of actions and their associated values Q(s,a),
+        by performing one step look-ahead on the domain for each of them.
 
-    def phi_sa(self, s, terminal, a, phi_s = None, snippet=False):
-        """
-        Returns the feature vector corresponding to a state-action pair.
-        We use the copy paste technique (Lagoudakis & Parr 2003).
-        Essentially, we append the phi(s) vector to itself *|A|* times, where
-        *|A|* is the size of the action space.
-        We zero the feature values of all of these blocks except the one
-        corresponding to the actionID *a*.
-        
-        When ``snippet == False`` we construct and return the full, sparse phi_sa.
-        When ``snippet == True``, we return the tuple (phi_s, index1, index2)
-        where index1 and index2 are the indices defining the ends of the phi_s
-        block which WOULD be nonzero if we were to construct the full phi_sa.
-        
-        :param s: The queried state in the state-action pair.
-        :param terminal: Whether or not *s* is a terminal state
-        :param a: The queried action in the state-action pair.
-        :param phi_s: (optional) The feature vector evaluated at state s.
-            If the feature vector phi(s) has already been cached,
-            pass it here as input so that it need not be computed again.
-        :param snippet: if ``True``, do not return a single phi_sa vector,
-            but instead a tuple of the components needed to create it.
-            See return value below.
-        
-        :return: If ``snippet==False``, return the enormous phi_sa vector
-            constructed by the copy-paste method.
-            If ``snippet==True``, do not construct phi_sa, only return
-            a tuple (phi_s, index1, index2) as described above.
-        
-        """
-        if phi_s is None: phi_s = self.phi(s, terminal)
-        if snippet is True:
-            return phi_s, a*self.features_num, (a+1) * self.features_num
-
-        phi_sa = zeros((self.features_num*self.domain.actions_num), dtype=phi_s.dtype)
-        if self.features_num == 0:
-            return phi_sa
-        if len(self._arange_cache) != self.features_num:
-            self._arange_cache = arange(a * self.features_num, (a+1) * self.features_num)
-        else:
-            self._arange_cache += a*self.features_num - self._arange_cache[0]
-        phi_sa[self._arange_cache] = phi_s
-        ##Slower alternatives
-        ##Alternative 1: Set only non_zeros (Very close on running time with the current solution. In fact it is sometimes better)
-        #nnz_ind = phi_s.nonzero()
-        #phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
-        ##Alternative 2: Use of Kron
-        #A = zeros(self.domain.actions_num)
-        #A[a] = 1
-        #F_sa = kron(A,F_s)
-        return phi_sa
-
-    def addNewWeight(self):
-        """
-        Add a new zero weight, corresponding to a newly added feature,
-        to all actions.
-        """
-        self.theta    = addNewElementForAllActions(self.theta,self.domain.actions_num)
-
-    def hashState(self,s,):
-        """
-        Returns a unique id for a given state.
-        Essentially, enumerate all possible states and return the ID associated
-        with *s*.
-        
-        Under the hood: first, discretize continuous dimensions into bins
-        as necessary. Then map the binstate to an integer.
-        """
-        ds = self.binState(s)
-        #self.logger.log(str(s)+"=>"+str(ds))
-        return vec2id(ds,self.bins_per_dim)
-    
-    def setBinsPerDimension(self,domain,discretization):
-        """
-        Set the number of bins for each dimension of the domain.
-        Continuous spaces will be slices using the ``discretization`` parameter.
-        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
-        :param discretization: The number of bins a continuous domain should be sliced into.
-        
-        """
-        self.bins_per_dim      = np.zeros(domain.state_space_dims,uint16)
-        self.binWidth_per_dim   = np.zeros(domain.state_space_dims)
-        for d in arange(domain.state_space_dims):
-             if d in domain.continuous_dims:
-                 self.bins_per_dim[d] = discretization
-             else:
-                 self.bins_per_dim[d] = domain.statespace_limits[d,1] - domain.statespace_limits[d,0]
-             self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d,0])/(self.bins_per_dim[d]*1.)
-
-    def binState(self, s):
-        """
-        Returns a vector where each element is the zero-indexed bin number
-        corresponding with the given state.
-        (See :py:meth:`~Representations.Representation.Representation.hashState`)
-        Note that this vector will have the same dimensionality as *s*.
-        
-        (Note: This method is binary compact; the negative case of binary features is 
-        excluded from feature activation.
-        For example, if the domain has a light and the light is off, no feature
-        will be added. This is because the very *absence* of the feature
-        itself corresponds to the light being off.
-        """
-        s = np.atleast_1d(s)
-        limits = self.domain.statespace_limits
-        assert (np.all(s >= limits[:, 0]))
-        assert (np.all(s <= limits[:, 1]))
-        width = limits[:, 1] - limits[:, 0]
-        diff = s - limits[:, 0]
-        bs = (diff * self.bins_per_dim / width).astype("uint32")
-        m = bs == self.bins_per_dim
-        bs[m] = self.bins_per_dim[m] - 1
-        return bs
-
-    def bestActions(self,s, terminal, p_actions, phi_s = None):
-        """
-        Returns a list of the best actions at a given state.
-        If *phi_s* [the feature vector at state *s*] is given, it is used to
-        speed up code by preventing re-computation within this function.
-        
-        See :py:meth:`~Representations.Representation.Representation.bestAction`
-        
-        :param s: The given state
-        :param terminal: Whether or not the state *s* is a terminal one.
-        :param phi_s: (optional) the feature vector at state (s).
-        :return: A list of the best actions at the given state.
-        
-        """
-        Qs = self.Qs(s, terminal, phi_s)
-        Qs = Qs[p_actions]
-        # Find the index of best actions
-        ind   = findElemArray1D(Qs,Qs.max())
-        if self.DEBUG:
-            self.logger.log('State:' +str(s))
-            self.logger.line()
-            for i in arange(len(A)):
-                self.logger.log('Action %d, Q = %0.3f' % (A[i], Qs[i]))
-            self.logger.line()
-            self.logger.log('Best: %s, Max: %s' % (str(A[ind]),str(Qs.max())))
-            #raw_input()
-        return p_actions[ind]
-
-    def pre_discover(self, s, terminal, a, sn, terminaln):
-        """
-        Identifies and adds ("discovers") new features for this adaptive
-        representation BEFORE having obtained the TD-Error.
-        For example, see :py:class:`~Representations.IncrementalTabular.IncrementalTabular`.
-        In that class, a new feature is added anytime a novel state is observed.
-        
-        .. note::
-            For adaptive representations that require access to TD-Error to
-            determine which features to add next, use
-            :py:meth:`~Representations.Representation.Representation.post_discover`
-            instead.
-        
-        :param s: The state
-        :param terminal: boolean, whether or not *s* is a terminal state.
-        :param a: The action
-        :param sn: The next state
-        :param terminaln: boolean, whether or not *sn* is a terminal state.
-        
-        :return: The number of new features added to the representation
-        """
-        
-        return 0
-
-    def post_discover(self, s, terminal, a, td_error, phi_s):
-        """
-        Identifies and adds ("discovers") new features for this adaptive
-        representation AFTER having obtained the TD-Error.
-        For example, see :py:class:`~Representations.iFDD.iFDD`.
-        In that class, a new feature is added based on regions of high TD-Error.
-        
-        .. note::
-            For adaptive representations that do not require access to TD-Error
-            to determine which features to add next, you may use
-            :py:meth:`~Representations.Representation.Representation.pre_discover`
-            instead.
-        
-        :param s: The state
-        :param terminal: boolean, whether or not *s* is a terminal state.
-        :param a: The action
-        :param td_error: The temporal difference error at this transition.
-        :param phi_s: The feature vector evaluated at state *s*.
-        
-        :return: The number of new features added to the representation
-        """
-        return 0
-
-    def bestAction(self,s, terminal, p_actions, phi_s = None):
-        """
-        Returns the best action at a given state.
-        If there are multiple best actions, this method selects one of them 
-        uniformly randomly.
-        If *phi_s* [the feature vector at state *s*] is given, it is used to
-        speed up code by preventing re-computation within this function.
-        
-        See :py:meth:`~Representations.Representation.Representation.bestActions`
-        
-        :param s: The given state
-        :param terminal: Whether or not the state *s* is a terminal one.
-        :param phi_s: (optional) the feature vector at state (s).
-        :return: The best action at the given state.
-        """        
-        bestA = self.bestActions(s, terminal, p_actions, phi_s)
-        if len(bestA) > 1:
-            return randSet(bestA)
-            #return bestA[0]
-        else:
-            return bestA[0]
-
-    def phi_nonTerminal(self,s):
-        """ *Abstract Method* \n
-        Returns the feature vector evaluated at state *s* for non-terminal
-        states; see function 
-        :py:meth:`~Representations.Representation.Representation.phi
-        for the general case.
-            
-        :param s: The given state
-        
-        :return: The feature vector evaluated at state *s*.
-        """
-        raise NotImplementedError
-
-    def activeInitialFeatures(self,s):
-        """
-        Returns the index of active initial features based on bins in each
-        dimension.
-        :param s: The state
-        
-        :return: The active initial features of this representation
-            (before expansion)
-        """
-        bs        = self.binState(s)
-        shifts    = hstack((0, cumsum(self.bins_per_dim)[:-1]))
-        index      = bs+shifts
-        return    index.astype('uint32')
-
-    def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):
-        """
-        Builds the feature vector for a series of state-action pairs (s,a)
-        using the copy-paste method.
-        
-        .. note::
-            See :py:meth:`~Representations.Representation.Representation.phi_sa`
-            for more information.
-            
-        :param all_phi_s: The feature vectors evaluated at a series of states.
-            Has dimension *p* x *n*, where *p* is the number of states
-            (indexed by row), and *n* is the number of features.
-        :param all_actions: The set of actions corresponding to each feature.
-            Dimension *p* x *1*, where *p* is the number of states included
-            in this batch.
-        :param all_phi_s_a: (Optional) Feature vector for a series of
-            state-action pairs (s,a) using the copy-paste method.
-            If the feature vector phi(s) has already been cached,
-            pass it here as input so that it need not be computed again.
-        :param use_sparse: Determines whether or not to use sparse matrix
-        libraries provided with numpy.
-        
-        :return: all_phi_s_a (of dimension p x (s_a) )
-        """
-        p,n         = all_phi_s.shape
-        a_num       = self.domain.actions_num
-        if use_sparse:
-            phi_s_a         = sp.lil_matrix((p,n*a_num),dtype = all_phi_s.dtype)
-        else:
-            phi_s_a         = zeros((p,n*a_num),dtype = all_phi_s.dtype)
-
-        for i in arange(a_num):
-            rows = where(all_actions==i)[0]
-            if len(rows): phi_s_a[rows,i*n:(i+1)*n] = all_phi_s[rows,:]
-        return phi_s_a
-
-    def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
-        """
-        Accepts a batch of states, returns the best action associated with each.
-        
-        .. note::
-            See :py:meth:`~Representations.Representation.Representation.bestAction`
-           
-        :param all_s: An array of all the states to consider.
-        :param all_phi_s: The feature vectors evaluated at a series of states.
-            Has dimension *p* x *n*, where *p* is the number of states
-            (indexed by row), and *n* is the number of features.
-        :param action_mask: (optional) a *p* x *|A|* mask on the possible
-            actions to consider, where *|A|* is the size of the action space.
-            The mask is a binary 2-d array, where 1 indicates an active mask
-            (action is unavailable) while 0 indicates a possible action.
-        :param useSparse: Determines whether or not to use sparse matrix
-        libraries provided with numpy.
-        
-        :return: An array of the best action associated with each state.
-        
-        """
-        p,n  = all_phi_s.shape
-        a_num   = self.domain.actions_num
-
-        if action_mask == None:
-            action_mask = ones((p,a_num))
-            for i,s in enumerate(all_s):
-                action_mask[i,self.domain.possibleActions(s)] = 0
-
-        a_num      = self.domain.actions_num
-        if useSparse:
-                all_phi_s_a = sp.kron(eye(a_num,a_num),all_phi_s)    #all_phi_s_a will be ap-by-an
-                all_q_s_a   = all_phi_s_a*self.theta.reshape(-1,1) #ap-by-1
-        else:
-                all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
-                all_q_s_a   = dot(all_phi_s_a,self.theta.T) #ap-by-1
-        all_q_s_a   = all_q_s_a.reshape((a_num,-1)).T  #a-by-p
-        all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
-        best_action = argmax(all_q_s_a,axis=1)
-
-        # Calculate the corresponding phi_s_a
-        phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a, useSparse)
-        return best_action, phi_s_a, action_mask
-
-    def featureType(self):
-        """ *Abstract Method* \n
-        Return the data type for the underlying features (eg 'float').
-        """
-        raise NotImplementedError
-
-    def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
-        """
-        Returns the state action value, Q(s,a), by performing one step
-        look-ahead on the domain.
-        
         .. note::
             For an example of how this function works, see
             `Line 8 of Figure 4.3 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
             in Sutton and Barto 1998.
-            
+
         If the domain does not define ``expectedStep()``, this function uses
         ``ns_samples`` samples to estimate the one_step look-ahead.
         If a policy is passed (used in the policy evaluation), it is used to
         generate the action for the next state.
         Otherwise the best action is selected.
-        
+
         .. note::
             This function should not be called in any RL algorithms unless
             the underlying domain is an approximation of the true model.
-            
+
+        :param s: The given state
+        :param ns_samples: The number of samples used to estimate the one_step look-ahead.
+        :param policy: (optional) Used to select the action in the next state
+            (*after* taking action a) when estimating the one_step look-aghead.
+            If ``policy == None``, the best action will be selected.
+
+        :return: an array of length `|A|` containing the *Q(s,a)* for each
+            possible *a*, where `|A|` is the number of possible actions from state *s*
+        """
+        actions = self.domain.possibleActions(s)
+        Qs      = array([self.Q_oneStepLookAhead(s, a, ns_samples, policy) for a in actions])
+        return Qs, actions
+
+    def Q_oneStepLookAhead(self,s,a, ns_samples, policy = None):
+        """
+        Returns the state action value, Q(s,a), by performing one step
+        look-ahead on the domain.
+
+        .. note::
+            For an example of how this function works, see
+            `Line 8 of Figure 4.3 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
+            in Sutton and Barto 1998.
+
+        If the domain does not define ``expectedStep()``, this function uses
+        ``ns_samples`` samples to estimate the one_step look-ahead.
+        If a policy is passed (used in the policy evaluation), it is used to
+        generate the action for the next state.
+        Otherwise the best action is selected.
+
+        .. note::
+            This function should not be called in any RL algorithms unless
+            the underlying domain is an approximation of the true model.
+
         :param s: The given state
         :param a: The given action
         :param ns_samples: The number of samples used to estimate the one_step look-ahead.
         :param policy: (optional) Used to select the action in the next state
             (*after* taking action a) when estimating the one_step look-aghead.
             If ``policy == None``, the best action will be selected.
-        
+
         :return: The one-step lookahead state-action value, Q(s,a).
         """
         # Hash new state for the incremental tabular case
@@ -547,13 +477,13 @@ class Representation(object):
             for j in arange(len(p)):
                 if policy == None:
                     Q += p[j,0]*(r[j,0] + gamma*self.V(ns[j,:], t[j,:], p_actions[j]))
-                else: 
+                else:
                     # For some domains such as blocks world, you may want to apply bellman backup to impossible states which may not have any possible actions.
                     # This if statement makes sure that there exist at least one action in the next state so the bellman backup with the fixed policy is valid
                     if len(self.domain.possibleActions(ns[j,:])):
                         na = policy.pi(ns[j,:], t[j,:], self.domain.possibleActions(ns[j,:]))
                         Q += p[j,0]*(r[j,0] + gamma*self.Q(ns[j,:],t[j,:], na))
-        else:    
+        else:
             # See if they are in cache:
             key = tuple(hstack((s,[a])))
             cacheHit     = self.expectedStepCached.get(key)
@@ -596,104 +526,219 @@ class Representation(object):
                 Q = mean([rewards[i] + gamma*self.Q(next_states[i,:],policy.pi(next_states[i,:])) for i in arange(ns_samples)])
         return Q
 
-    def Qs_oneStepLookAhead(self,s, ns_samples, policy = None):
-        """
-        Returns an array of actions and their associated values Q(s,a),
-        by performing one step look-ahead on the domain for each of them.
-        
-        .. note::
-            For an example of how this function works, see
-            `Line 8 of Figure 4.3 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
-            in Sutton and Barto 1998.
-            
-        If the domain does not define ``expectedStep()``, this function uses
-        ``ns_samples`` samples to estimate the one_step look-ahead.
-        If a policy is passed (used in the policy evaluation), it is used to
-        generate the action for the next state.
-        Otherwise the best action is selected.
-        
-        .. note::
-            This function should not be called in any RL algorithms unless
-            the underlying domain is an approximation of the true model.
-            
-        :param s: The given state
-        :param ns_samples: The number of samples used to estimate the one_step look-ahead.
-        :param policy: (optional) Used to select the action in the next state
-            (*after* taking action a) when estimating the one_step look-aghead.
-            If ``policy == None``, the best action will be selected.
-        
-        :return: an array of length `|A|` containing the *Q(s,a)* for each
-            possible *a*, where `|A|` is the number of possible actions from state *s*
-        """
-        actions = self.domain.possibleActions(s)
-        Qs      = array([self.Q_oneStepLookAhead(s, a, ns_samples, policy) for a in actions])
-        return Qs, actions
-
     def V_oneStepLookAhead(self,s,ns_samples):
         """
         Returns the value of being in state *s*, V(s),
         by performing one step look-ahead on the domain.
-        
+
         .. note::
             For an example of how this function works, see
             `Line 6 of Figure 4.5 <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node43.html>`_
             in Sutton and Barto 1998.
-            
+
         If the domain does not define ``expectedStep()``, this function uses
         ``ns_samples`` samples to estimate the one_step look-ahead.
-        
+
         .. note::
             This function should not be called in any RL algorithms unless
             the underlying domain is an approximation of the true model.
-            
+
         :param s: The given state
         :param ns_samples: The number of samples used to estimate the one_step look-ahead.
-        
+
         :return: The value of being in state *s*, *V(s)*.
         """
-    # The estimated value = max_a Q(s,a) together with the corresponding action that maximizes the Q function
+        # The estimated value = max_a Q(s,a) together with the corresponding action that maximizes the Q function
         Qs, actions     = self.Qs_oneStepLookAhead(s,ns_samples)
         a_ind           = argmax(Qs)
         return Qs[a_ind],actions[a_ind]
-    
-    def stateID2state(self,s_id):
+
+    def batchPhi_s_a(self,all_phi_s, all_actions, all_phi_s_a = None, use_sparse = False):
         """
-        Returns the state vector correponding to a state_id.
-        If dimensions are continuous it returns the state representing the
-        middle of the bin (each dimension is discretized according to
-        ``representation.discretization``.
-        
-        :param s_id: The id of the state, often calculated using the
-            ``state2bin`` function
-        
-        :return: The state *s* corresponding to the integer *s_id*.
+        Builds the feature vector for a series of state-action pairs (s,a)
+        using the copy-paste method.
+
+        .. note::
+            See :py:meth:`~Representations.Representation.Representation.phi_sa`
+            for more information.
+
+        :param all_phi_s: The feature vectors evaluated at a series of states.
+            Has dimension *p* x *n*, where *p* is the number of states
+            (indexed by row), and *n* is the number of features.
+        :param all_actions: The set of actions corresponding to each feature.
+            Dimension *p* x *1*, where *p* is the number of states included
+            in this batch.
+        :param all_phi_s_a: (Optional) Feature vector for a series of
+            state-action pairs (s,a) using the copy-paste method.
+            If the feature vector phi(s) has already been cached,
+            pass it here as input so that it need not be computed again.
+        :param use_sparse: Determines whether or not to use sparse matrix
+        libraries provided with numpy.
+
+        :return: all_phi_s_a (of dimension p x (s_a) )
         """
+        p,n         = all_phi_s.shape
+        a_num       = self.domain.actions_num
+        if use_sparse:
+            phi_s_a         = sp.lil_matrix((p,n*a_num),dtype = all_phi_s.dtype)
+        else:
+            phi_s_a         = zeros((p,n*a_num),dtype = all_phi_s.dtype)
 
-        #Find the bin number on each dimension
-        s   = array(id2vec(s_id,self.bins_per_dim))
+        for i in arange(a_num):
+            rows = where(all_actions==i)[0]
+            if len(rows): phi_s_a[rows,i*n:(i+1)*n] = all_phi_s[rows,:]
+        return phi_s_a
 
-        #Find the value corresponding to each bin number
-        for d in arange(self.domain.state_space_dims):
-            s[d] = bin2state(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
-
-        if len(self.domain.continuous_dims) == 0:
-            s = s.astype(int)
-        return s
-
-    def stateInTheMiddleOfGrid(self,s):
+    def batchBestAction(self, all_s, all_phi_s, action_mask = None, useSparse = True):
         """
-        Accepts a continuous state *s*, bins it into the discretized domain,
-        and returns the state of the nearest gridpoint.
-        Essentially, we snap *s* to the nearest gridpoint and return that
-        gridpoint state.
-        For continuous MDPs this plays a major rule in improving the speed
-        through caching of next samples.
-        
+        Accepts a batch of states, returns the best action associated with each.
+
+        .. note::
+            See :py:meth:`~Representations.Representation.Representation.bestAction`
+
+        :param all_s: An array of all the states to consider.
+        :param all_phi_s: The feature vectors evaluated at a series of states.
+            Has dimension *p* x *n*, where *p* is the number of states
+            (indexed by row), and *n* is the number of features.
+        :param action_mask: (optional) a *p* x *|A|* mask on the possible
+            actions to consider, where *|A|* is the size of the action space.
+            The mask is a binary 2-d array, where 1 indicates an active mask
+            (action is unavailable) while 0 indicates a possible action.
+        :param useSparse: Determines whether or not to use sparse matrix
+        libraries provided with numpy.
+
+        :return: An array of the best action associated with each state.
+
+        """
+        p,n  = all_phi_s.shape
+        a_num   = self.domain.actions_num
+
+        if action_mask == None:
+            action_mask = ones((p,a_num))
+            for i,s in enumerate(all_s):
+                action_mask[i,self.domain.possibleActions(s)] = 0
+
+        a_num      = self.domain.actions_num
+        if useSparse:
+                all_phi_s_a = sp.kron(eye(a_num,a_num),all_phi_s)    #all_phi_s_a will be ap-by-an
+                all_q_s_a   = all_phi_s_a*self.theta.reshape(-1,1) #ap-by-1
+        else:
+                all_phi_s_a = kron(eye(a_num,a_num),all_phi_s) #all_phi_s_a will be ap-by-an
+                all_q_s_a   = dot(all_phi_s_a,self.theta.T) #ap-by-1
+        all_q_s_a   = all_q_s_a.reshape((a_num,-1)).T  #a-by-p
+        all_q_s_a   = ma.masked_array(all_q_s_a, mask=action_mask)
+        best_action = argmax(all_q_s_a,axis=1)
+
+        # Calculate the corresponding phi_s_a
+        phi_s_a = self.batchPhi_s_a(all_phi_s, best_action, all_phi_s_a, useSparse)
+        return best_action, phi_s_a, action_mask
+
+    def bestAction(self,s, terminal, p_actions, phi_s = None):
+        """
+        Returns the best action at a given state.
+        If there are multiple best actions, this method selects one of them
+        uniformly randomly.
+        If *phi_s* [the feature vector at state *s*] is given, it is used to
+        speed up code by preventing re-computation within this function.
+
+        See :py:meth:`~Representations.Representation.Representation.bestActions`
+
         :param s: The given state
-        
-        :return: The nearest state *s* which is captured by the discretization.
+        :param terminal: Whether or not the state *s* is a terminal one.
+        :param phi_s: (optional) the feature vector at state (s).
+        :return: The best action at the given state.
         """
-        s_normalized = s.copy()
-        for d in arange(self.domain.state_space_dims):
-            s_normalized[d] = closestDiscretization(s[d],self.bins_per_dim[d],self.domain.statespace_limits[d,:])
-        return s_normalized
+        bestA = self.bestActions(s, terminal, p_actions, phi_s)
+        if len(bestA) > 1:
+            return randSet(bestA)
+            #return bestA[0]
+        else:
+            return bestA[0]
+
+    def phi_sa(self, s, terminal, a, phi_s = None, snippet=False):
+        """
+        Returns the feature vector corresponding to a state-action pair.
+        We use the copy paste technique (Lagoudakis & Parr 2003).
+        Essentially, we append the phi(s) vector to itself *|A|* times, where
+        *|A|* is the size of the action space.
+        We zero the feature values of all of these blocks except the one
+        corresponding to the actionID *a*.
+
+        When ``snippet == False`` we construct and return the full, sparse phi_sa.
+        When ``snippet == True``, we return the tuple (phi_s, index1, index2)
+        where index1 and index2 are the indices defining the ends of the phi_s
+        block which WOULD be nonzero if we were to construct the full phi_sa.
+
+        :param s: The queried state in the state-action pair.
+        :param terminal: Whether or not *s* is a terminal state
+        :param a: The queried action in the state-action pair.
+        :param phi_s: (optional) The feature vector evaluated at state s.
+            If the feature vector phi(s) has already been cached,
+            pass it here as input so that it need not be computed again.
+        :param snippet: if ``True``, do not return a single phi_sa vector,
+            but instead a tuple of the components needed to create it.
+            See return value below.
+
+        :return: If ``snippet==False``, return the enormous phi_sa vector
+            constructed by the copy-paste method.
+            If ``snippet==True``, do not construct phi_sa, only return
+            a tuple (phi_s, index1, index2) as described above.
+
+        """
+        if phi_s is None: phi_s = self.phi(s, terminal)
+        if snippet is True:
+            return phi_s, a*self.features_num, (a+1) * self.features_num
+
+        phi_sa = zeros((self.features_num*self.domain.actions_num), dtype=phi_s.dtype)
+        if self.features_num == 0:
+            return phi_sa
+        if len(self._arange_cache) != self.features_num:
+            self._arange_cache = arange(a * self.features_num, (a+1) * self.features_num)
+        else:
+            self._arange_cache += a*self.features_num - self._arange_cache[0]
+        phi_sa[self._arange_cache] = phi_s
+        ##Slower alternatives
+        ##Alternative 1: Set only non_zeros (Very close on running time with the current solution. In fact it is sometimes better)
+        #nnz_ind = phi_s.nonzero()
+        #phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
+        ##Alternative 2: Use of Kron
+        #A = zeros(self.domain.actions_num)
+        #A[a] = 1
+        #F_sa = kron(A,F_s)
+        return phi_sa
+
+    def addNewWeight(self):
+        """
+        Add a new zero weight, corresponding to a newly added feature,
+        to all actions.
+        """
+        self.theta    = addNewElementForAllActions(self.theta,self.domain.actions_num)
+
+
+    def bestActions(self,s, terminal, p_actions, phi_s = None):
+        """
+        Returns a list of the best actions at a given state.
+        If *phi_s* [the feature vector at state *s*] is given, it is used to
+        speed up code by preventing re-computation within this function.
+
+        See :py:meth:`~Representations.Representation.Representation.bestAction`
+
+        :param s: The given state
+        :param terminal: Whether or not the state *s* is a terminal one.
+        :param phi_s: (optional) the feature vector at state (s).
+        :return: A list of the best actions at the given state.
+
+        """
+        Qs = self.Qs(s, terminal, phi_s)
+        Qs = Qs[p_actions]
+        # Find the index of best actions
+        ind   = findElemArray1D(Qs,Qs.max())
+        if self.DEBUG:
+            self.logger.log('State:' +str(s))
+            self.logger.line()
+            for i in arange(len(A)):
+                self.logger.log('Action %d, Q = %0.3f' % (A[i], Qs[i]))
+            self.logger.line()
+            self.logger.log('Best: %s, Max: %s' % (str(A[ind]),str(Qs.max())))
+            #raw_input()
+        return p_actions[ind]

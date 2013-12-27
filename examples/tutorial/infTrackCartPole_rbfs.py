@@ -29,7 +29,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 10
 
     domain = InfCartPoleBalance(logger=logger, episodeCap=1000)
-    representation = RBF(domain, num_rbfs=int(num_rbfs), logger=logger,
+    representation = QRBF(domain, num_rbfs=int(num_rbfs), logger=logger,
                           resolution_max=resolution, resolution_min=resolution,
                           const_feature=False, normalize=True, seed=id)
     policy = eGreedy(representation, logger, epsilon=0.1)

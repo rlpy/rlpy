@@ -28,8 +28,8 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     ifddeps = 1e-7
     beta_coef = 1e-6
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    initial_rep = IndependentDiscretization(domain, logger) 
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    initial_rep = QIndependentDiscretization(domain, logger)
+    representation = QiFDD(domain, logger, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           #discretization=discretization,
                           useCache=True,

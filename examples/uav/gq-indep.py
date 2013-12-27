@@ -22,7 +22,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 10
     beta_coef = 1e-6
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    representation = IndependentDiscretization(domain, logger) 
+    representation = QIndependentDiscretization(domain, logger)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Greedy_GQ(representation, policy, domain, logger,
                       BetaCoef=beta_coef,

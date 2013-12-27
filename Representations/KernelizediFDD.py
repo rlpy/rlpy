@@ -1,7 +1,7 @@
 """Kernelized Incremental Feature Dependency Discovery"""
 
 import numpy as np
-from Representation import Representation
+from .Representation import Representation, QFunRepresentation
 from itertools import combinations
 from Tools import addNewElementForAllActions, PriorityQueueWithNovelty
 import matplotlib.pyplot as plt
@@ -405,6 +405,11 @@ class KernelizediFDD(Representation):
 
         return self.features_num - 1
 
+    def featureType(self):
+        return float
+
+class QKernelizediFDD(KernelizediFDD, QFunRepresentation):
+    pass
 
 try:
     from kernels import *
@@ -472,6 +477,11 @@ try:
                         continue
                     plt.plot(xi, Phi[:,f], label="id {}".format(f))
             plt.draw()
+
+    class QFastKiFDD(FastKiFDD, QFunRepresentation):
+        pass
+
+
 except Exception, e:
     print e
     print "Fast KiFDD is not available, C++ Extensions not build"

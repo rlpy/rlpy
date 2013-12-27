@@ -24,7 +24,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 1
 
     domain = HIVTreatment(logger=logger)
-    representation = NonparametricLocalBases(domain, logger=logger,
+    representation = QNonparametricLocalBases(domain, logger=logger,
                                              kernel=linf_triangle_kernel,
                                              resolution=resolution,
                                              normalization=True)

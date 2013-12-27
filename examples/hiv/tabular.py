@@ -24,7 +24,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 1
 
     domain = HIVTreatment(logger=logger)
-    representation = IncrementalTabular(domain, discretization=discretization, logger=logger)
+    representation = QIncrementalTabular(domain, discretization=discretization, logger=logger)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Q_Learning(representation, policy, domain, logger
                        ,lambda_=0.9, initial_alpha=initial_alpha,

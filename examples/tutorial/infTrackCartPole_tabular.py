@@ -27,7 +27,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     checks_per_policy = 10
 
     domain = InfCartPoleBalance(logger=logger, episodeCap=1000)
-    representation = Tabular(domain, logger=logger,
+    representation = QTabular(domain, logger=logger,
                              discretization=discretization)
     policy = eGreedy(representation, logger, epsilon=0.1)
     agent = Q_Learning(representation, policy, domain, logger

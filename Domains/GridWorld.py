@@ -19,7 +19,7 @@ class GridWorld(Domain):
     navigate from the starting point to the goal state.
     The map is loaded from a text file filled with numbers showing the map with the following
     coding for each cell:
-        
+
     * 0: empty
     * 1: blocked
     * 2: start
@@ -28,22 +28,21 @@ class GridWorld(Domain):
 
     **STATE:**
     The Row and Column corresponding to the agent's location. \n
+
     **ACTIONS:**
     Four cardinal directions: up, down, left, right (given that
     the destination is not blocked or out of range). \n
+
     **TRANSITION:**
     There is 30% probability of failure for each move, in which case the action
     is replaced with a random action at each timestep. Otherwise the move succeeds
     and the agent moves in the intended direction. \n
+
     **REWARD:**
     The reward on each step is -.001 , except for actions
     that bring the agent to the goal with reward of +1.\n
-    
     """
-#    **REFERENCE:**
-#    
-#    .. seealso::
-        
+
     map = start_state = goal              = None
     # Used for graphics to show the domain
     agent_fig = upArrows_fig = downArrows_fig = leftArrows_fig = rightArrows_fig = domain_fig = valueFunction_fig  = None

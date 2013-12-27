@@ -36,7 +36,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     kernel_width = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) \
                    / kernel_resolution
     from Representations.KernelizediFDD import FastKiFDD
-    representation = FastKiFDD(domain, sparsify=sparsify,
+    representation = QFastKiFDD(domain, sparsify=sparsify,
                                     kernel=linf_triangle_kernel,
                                     kernel_args=[kernel_width],
                                     active_threshold=active_threshold,

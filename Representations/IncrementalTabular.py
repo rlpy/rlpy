@@ -1,6 +1,6 @@
 """Incrementally expanded Tabular Representation"""
 
-from Representation import Representation
+from Representation import Representation, QFunRepresentation
 import numpy as np
 from copy import deepcopy
 
@@ -52,3 +52,7 @@ class IncrementalTabular(Representation):
 
     def featureType(self):
         return bool
+
+
+class QIncrementalTabular(IncrementalTabular, QFunRepresentation):
+    pass

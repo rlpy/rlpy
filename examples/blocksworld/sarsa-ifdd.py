@@ -25,8 +25,8 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     sparsify = 1
     ifddeps = 1e-7
     domain = BlocksWorld(blocks=6, noise=0.3, logger=logger)
-    initial_rep = IndependentDiscretization(domain, logger)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    initial_rep = QIndependentDiscretization(domain, logger)
+    representation = QiFDD(domain, logger, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           useCache=True,
                           iFDDPlus=1-ifddeps)
