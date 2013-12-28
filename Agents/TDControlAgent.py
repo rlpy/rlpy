@@ -1,5 +1,5 @@
 """Control Agents based on TD Learning, i.e., Q-Learning and SARSA"""
-from Agent import Agent
+from Agent import Agent, DescentAlgorithm
 from Tools import addNewElementForAllActions, count_nonzero
 import numpy as np
 
@@ -9,7 +9,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 
 
-class TDControlAgent(Agent):
+class TDControlAgent(DescentAlgorithm, Agent):
     """
     abstract class for the control variants of the classical linear TD-Learning.
     It is the parent of SARSA and Q-Learning
@@ -21,15 +21,11 @@ class TDControlAgent(Agent):
     eligibility_trace = []  #: eligibility trace
     eligibility_trace_s = []  #: eligibility trace using state only (no copy-paste), necessary for dabney decay mode
 
-    def __init__(self, representation, policy, domain, logger, initial_alpha =.1,
-                 lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000):
+    def __init__(self, representation, policy, domain, logger, lambda_=0., **kwargs):
         self.eligibility_trace  = np.zeros(representation.features_num * domain.actions_num)
         self.eligibility_trace_s= np.zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_
-        super(TDControlAgent,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
-        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
-        self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
-        self.logger.log("lambda:\t%0.2f" % lambda_)
+        super(TDControlAgent,self).__init__(representation=representation, policy=policy, domain=domain, logger=logger, **kwargs)
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """needs to be implemented by children"""
@@ -83,7 +79,11 @@ class TDControlAgent(Agent):
         if terminal:
             self.episodeTerminated()
 
-
+    def episodeTerminated(self):
+        if self.lambda_:
+            self.eligibility_trace  = np.zeros(self.representation.features_num*self.domain.actions_num)
+            self.eligibility_trace_s = np.zeros(self.representation.features_num)
+        super(TDControlAgent, self).episodeTerminated()
 class Q_Learning(TDControlAgent):
     """
     The off-policy variant known as Q-Learning

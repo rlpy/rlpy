@@ -3,12 +3,14 @@ from LSPI import *
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
-__license__ = "BSD 3-Clause" 
+__license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
 class PolicyEvaluation(LSPI):
-    """presumably an LSTD agent"""
+    """
+    DEPRECATED
+    presumably an LSTD agent"""
     LOAD_POLICY_FILE = False     # If Q,S,A are read from the file
 
     def __init__(self,representation,policy,domain,logger, sample_window = 100, accuracy_test_samples = 10000, MC_samples = 100, target_path = '.',re_iterations = 100):

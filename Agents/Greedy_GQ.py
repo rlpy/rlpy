@@ -1,5 +1,5 @@
 """Greedy-GQ(lambda) learning agent"""
-from Agent import Agent
+from Agent import Agent, DescentAlgorithm
 from Tools import addNewElementForAllActions, count_nonzero
 import numpy as np
 from copy import copy
@@ -11,23 +11,21 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
-class Greedy_GQ(Agent):
+class Greedy_GQ(DescentAlgorithm, Agent):
     lambda_ = 0        #lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace   = []
     eligibility_trace_s = [] # eligibility trace using state only (no copy-paste), necessary for dabney decay mode
-    def __init__(self, representation, policy, domain,logger, initial_alpha =.1,
-                 lambda_ = 0, alpha_decay_mode = 'dabney', boyan_N0 = 1000,
-                 BetaCoef = 1e-6):
+    def __init__(self, representation, policy, domain,logger, lambda_ = 0,
+                 BetaCoef = 1e-6, **kwargs):
         self.eligibility_trace  = np.zeros(representation.features_num*domain.actions_num)
         self.eligibility_trace_s= np.zeros(representation.features_num) # use a state-only version of eligibility trace for dabney decay mode
         self.lambda_            = lambda_
-        super(Greedy_GQ,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
+        super(Greedy_GQ,self).__init__(representation=representation,
+                                       policy=policy,
+                                       domain=domain,
+                                       logger=logger, **kwargs)
         self.GQWeight = copy(self.representation.theta)
         self.secondLearningRateCoef = BetaCoef  # The beta in the GQ algorithm is assumed to be alpha * THIS CONSTANT
-        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
-        self.logger.log("Decay mode:\t\t"+str(alpha_decay_mode))
-        self.logger.log("Beta:\t\t"+str(BetaCoef))
-        if lambda_: self.logger.log("lambda:\t%0.2f" % lambda_)
 
     def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
         self.representation.pre_discover(s, False, a, ns, terminal)
@@ -74,6 +72,12 @@ class Greedy_GQ(Agent):
             self._expand_vectors(expanded)
         if terminal:
             self.episodeTerminated()
+
+    def episodeTerminated(self):
+        if self.lambda_:
+            self.eligibility_trace  = np.zeros(self.representation.features_num*self.domain.actions_num)
+            self.eligibility_trace_s = np.zeros(self.representation.features_num)
+        super(Greedy_GQ, self).episodeTerminated()
 
     def _expand_vectors(self, num_expansions):
         """

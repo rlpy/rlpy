@@ -9,6 +9,125 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
+class DescentAlgorithm(object):
+    """
+    Abstract base class that contains step-size control methods for (stochastic)
+    descent algorithms such as TD Learning, Greedy-GQ etc.
+    """
+
+    # The initial learning rate. Note that initial_alpha should be set to
+    # 1 for automatic learning rate; otherwise, initial_alpha will act as
+    # a permanent upper-bound on alpha.
+    initial_alpha       = 0.1
+    #: The learning rate
+    alpha               = 0
+    #: Only used in the 'dabney' method of learning rate update.
+    #: This value is updated in the updateAlpha method. We use the rate
+    #: calculated by [Dabney W 2012]: http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
+    candid_alpha        = 0
+    #: The eligibility trace, which marks states as eligible for a learning
+    #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
+    #: parameter lambda is set. See:
+    #: http://www.incompleteideas.net/sutton/book/7/node1.html
+    eligibility_trace   = []
+    #: A simple object that records the prints in a file
+    logger              = None
+    #: Used by some alpha_decay modes
+    episode_count       = 0
+    # Decay mode of learning rate. Options are determined by valid_decay_modes.
+    alpha_decay_mode    = 'dabney'
+    # Valid selections for the ``alpha_decay_mode``.
+    valid_decay_modes   = ['dabney','boyan','const','boyan_const']
+    #  The N0 parameter for boyan learning rate decay
+    boyan_N0            = 1000
+
+    def __init__(self, initial_alpha = 0.1, alpha_decay_mode='dabney', boyan_N0=1000, **kwargs):
+        """
+        :param policy: the :py:class:`~Policies.Policy.Policy` to use when selecting actions.
+        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
+        :param initial_alpha: Initial learning rate to use (where applicable)
+
+        .. warning::
+            ``initial_alpha`` should be set to 1 for automatic learning rate;
+            otherwise, initial_alpha will act as a permanent upper-bound on alpha.
+
+        :param alpha_decay_mode: The learning rate decay mode (where applicable)
+        :param boyan_N0: Initial Boyan rate parameter (when alpha_decay_mode='boyan')
+
+        """
+        self.initial_alpha = initial_alpha
+        self.alpha      = initial_alpha
+        self.alpha_decay_mode = alpha_decay_mode.lower()
+        self.boyan_N0   = boyan_N0
+        if self.logger:
+            self.logger.line()
+            self.logger.log("Agent:\t\t"+str(className(self)))
+            self.logger.log("Policy:\t\t"+str(className(self.policy)))
+            if self.alpha_decay_mode == 'boyan': self.logger.log("boyan_N0:\t%.1f"%self.boyan_N0)
+        # Check to make sure selected alpha_decay mode is valid
+        if not self.alpha_decay_mode in self.valid_decay_modes:
+            errMsg = "Invalid decay mode selected:"+self.alpha_decay -_mode+".\nValid choices are: "+str(self.valid_decay_modes)
+            if self.logger:
+                self.logger.log(errMsg)
+            else: shout(errMsg)
+            sys.exit(1)
+        # Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
+        # initial_alpha will act as a permanent upper-bound on alpha.
+        if self.alpha_decay_mode == 'dabney':
+            self.initial_alpha = 1.0
+            self.alpha = 1.0
+
+        super(DescentAlgorithm, self).__init__(**kwargs)
+
+    def updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):
+        """Computes a new learning rate (alpha) for the agent based on
+        ``self.alpha_decay_mode``.
+
+        :param phi_s: The feature vector evaluated at state (s)
+        :param phi_prime_s: The feature vector evaluated at the new state (ns) = (s')
+        :param eligibility_trace_s: Eligibility trace using state only (no copy-paste)
+        :param gamma: The discount factor for learning
+        :param nnz: The number of nonzero features
+        :param terminal: Boolean that determines if the step is terminal or not
+
+        """
+
+        if self.alpha_decay_mode == 'dabney':
+        # We only update alpha if this step is non-terminal; else phi_prime becomes
+        # zero and the dot product below becomes very large, creating a very small alpha
+            if not terminal:
+                #Automatic learning rate: [Dabney W. 2012]
+                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,eligibility_trace_s)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
+                self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
+                self.alpha          = min(self.alpha,self.candid_alpha)
+            # else we take no action
+        elif self.alpha_decay_mode == 'boyan':
+            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
+            self.alpha /= sum(abs(phi_s)) # divide by l1 of the features; note that this method is only called if phi_s != 0
+        elif self.alpha_decay_mode == 'boyan_const':
+            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
+        elif self.alpha_decay_mode == "const":
+            self.alpha = self.initial_alpha
+        else:
+            shout("Unrecognized decay mode")
+            self.logger.log("Unrecognized decay mode ")
+
+    def episodeTerminated(self):
+        """
+        This function adjusts all necessary elements of the agent at the end of
+        the episodes.
+
+        .. note::
+            Every agent must call this function at the end of the learning if the
+            transition led to terminal state.
+
+        """
+        #Increase the number of episodes
+        self.episode_count += 1
+
+        super(DescentAlgorithm, self).episodeTerminated()
+
+
 class Agent(object):
     """
     The Agent receives observations from the Domain and performs actions to
@@ -44,33 +163,10 @@ class Agent(object):
     domain              = None
     # The policy to be used by the agent
     policy              = None
-    # The initial learning rate. Note that initial_alpha should be set to
-    # 1 for automatic learning rate; otherwise, initial_alpha will act as
-    # a permanent upper-bound on alpha.
-    initial_alpha       = 0.1
-    #: The learning rate
-    alpha               = 0
-    #: Only used in the 'dabney' method of learning rate update. 
-    #: This value is updated in the updateAlpha method. We use the rate 
-    #: calculated by [Dabney W 2012]: http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-    candid_alpha        = 0
-    #: The eligibility trace, which marks states as eligible for a learning
-    #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
-    #: parameter lambda is set. See:
-    #: http://www.incompleteideas.net/sutton/book/7/node1.html
-    eligibility_trace   = []
     #: A simple object that records the prints in a file
     logger              = None
-    #: Used by some alpha_decay modes
-    episode_count       = 0
-    # Decay mode of learning rate. Options are determined by valid_decay_modes.
-    alpha_decay_mode    = 'dabney'
-    # Valid selections for the ``alpha_decay_mode``.
-    valid_decay_modes   = ['dabney','boyan','const','boyan_const']
-    #  The N0 parameter for boyan learning rate decay
-    boyan_N0            = 1000
 
-    def __init__(self,representation,policy,domain,logger,initial_alpha = 0.1,alpha_decay_mode = 'dabney', boyan_N0 = 1000):
+    def __init__(self, representation, policy, domain, logger=None, **kwargs):
         """
         :param representation: the :py:class:`~Representation.Representation.Representation`
             to use in learning the value function.
@@ -90,27 +186,6 @@ class Agent(object):
         self.policy     = policy
         self.domain     = domain
         self.logger     = logger
-        self.initial_alpha = initial_alpha
-        self.alpha      = initial_alpha
-        self.alpha_decay_mode = alpha_decay_mode.lower()
-        self.boyan_N0   = boyan_N0
-        if self.logger:
-            self.logger.line()
-            self.logger.log("Agent:\t\t"+str(className(self)))
-            self.logger.log("Policy:\t\t"+str(className(self.policy)))
-            if self.alpha_decay_mode == 'boyan': self.logger.log("boyan_N0:\t%.1f"%self.boyan_N0)
-        # Check to make sure selected alpha_decay mode is valid
-        if not self.alpha_decay_mode in self.valid_decay_modes:
-            errMsg = "Invalid decay mode selected:"+self.alpha_decay -_mode+".\nValid choices are: "+str(self.valid_decay_modes)
-            if self.logger:
-                self.logger.log(errMsg)
-            else: shout(errMsg)
-            sys.exit(1)
-        # Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
-        # initial_alpha will act as a permanent upper-bound on alpha.
-        if self.alpha_decay_mode == 'dabney':
-            self.initial_alpha = 1.0
-            self.alpha = 1.0
 
     def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
         """
@@ -131,46 +206,13 @@ class Agent(object):
         """
         return NotImplementedError
 
-
-    def updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):
-        """Computes a new learning rate (alpha) for the agent based on
-        ``self.alpha_decay_mode``.
-
-        :param phi_s: The feature vector evaluated at state (s)
-        :param phi_prime_s: The feature vector evaluated at the new state (ns) = (s')
-        :param eligibility_trace_s: Eligibility trace using state only (no copy-paste)
-        :param gamma: The discount factor for learning
-        :param nnz: The number of nonzero features
-        :param terminal: Boolean that determines if the step is terminal or not
-
-        """
-
-        if self.alpha_decay_mode == 'dabney':
-        # We only update alpha if this step is non-terminal; else phi_prime becomes
-        # zero and the dot product below becomes very large, creating a very small alpha
-            if not terminal:
-                #Automatic learning rate: [Dabney W. 2012]
-                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,eligibility_trace_s)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
-                self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
-                self.alpha          = min(self.alpha,self.candid_alpha)
-            # else we take no action
-        elif self.alpha_decay_mode == 'boyan':
-            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
-            self.alpha /= sum(abs(phi_s)) # divide by l1 of the features; note that this method is only called if phi_s != 0
-        elif self.alpha_decay_mode == 'boyan_const':
-            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
-        elif self.alpha_decay_mode == "const":
-            self.alpha = self.initial_alpha
-        else:
-            shout("Unrecognized decay mode")
-            self.logger.log("Unrecognized decay mode ")
-
+    @deprecated
     def MC_episode(self,s=None,a=None, tolerance = 0):
         """
         Run a single monte-carlo simulation episode from state *s* with action
         *a* following the current policy of the agent.
         See :py:meth:`~Agents.Agent.Agent.Q_MC`.
-        
+
         :param s: The state used in the simulation
         :param a: The action used in the simulation
         :param tolerance: If the tolerance is set to a non-zero value, episodes
@@ -199,18 +241,18 @@ class Agent(object):
                 break
         return eps_return, eps_length, eps_term, eps_discounted_return
 
-
+    @deprecated
     def Q_MC(self,s,a,MC_samples = 1000, tolerance = 0):
         """
         Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a).
         See :py:meth:`~Agents.Agent.Agent.MC_episode`.
-        
+
         :param s: The state used in the simulation
         :param a: The action used in the simulation
         :param tolerance: If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
         :param MC_samples: Number of samples to be used to evaluated the Q value
         :return: Q_avg, Averaged sum of discounted rewards = estimate of the Q.
-      	
+
         """
 
         Q_avg = 0
@@ -220,6 +262,7 @@ class Agent(object):
             Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)
         return Q_avg
 
+    @deprecated
     def evaluate(self,samples, MC_samples, output_file):
         """
         Evaluate the current policy for fixed number of samples and store them
@@ -230,9 +273,9 @@ class Agent(object):
         :param samples: The number of samples (s,a)
         :param MC_samples: The number of MC simulations used to estimate Q(s,a)
         :param output_file: The file in which the data is saved.
-        
+
         :return: the data generated and stored in the output_file
-        
+
         """
 
         tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q
@@ -256,22 +299,4 @@ class Agent(object):
         return DATA
 
     def episodeTerminated(self):
-        """
-        This function adjusts all necessary elements of the agent at the end of
-        the episodes.
-
-        .. note::
-            Every agent must call this function at the end of the learning if the
-            transition led to terminal state.
-
-        """
-        #Increase the number of episodes
-        self.episode_count += 1
-
-        #Update the eligibility traces if they exist:
-        # Set eligibility Traces to zero if it is end of the episode
-        if hasattr(self, 'eligibility_trace'):
-            if self.lambda_:
-                self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num)
-                self.eligibility_trace_s = zeros(self.representation.features_num)
-
+        pass

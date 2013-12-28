@@ -17,12 +17,12 @@ class LSPI(Agent):
 
         policy (Policy):    Policy used by the agent.
 
-        domain (Domain):    Domain the agent will be acting within. This is used to get the state 
+        domain (Domain):    Domain the agent will be acting within. This is used to get the state
                             information and discount rate.
 
         logger (Logger):    Logger class used for outputing information and debugging.
 
-        max_window (int):   Maximum number of steps the agent will be run for, 
+        max_window (int):   Maximum number of steps the agent will be run for,
                             which acts as the number of transitions to store.
 
         steps_between_LSPI (int):   Number of steps between runs of the LSPI algorithm.
@@ -54,7 +54,8 @@ class LSPI(Agent):
     #Reprsentation Expansion
     re_iterations   = 0 # Maximum number of iterations over LSPI and Representation expansion
 
-    def __init__(self,representation,policy,domain,logger,max_window, steps_between_LSPI, lspi_iterations = 5, epsilon = 1e-3, re_iterations = 100, use_sparse = False):
+    def __init__(self,representation,policy,domain,logger,max_window, steps_between_LSPI,
+                 lspi_iterations = 5, epsilon = 1e-3, re_iterations = 100, use_sparse = False):
         self.samples_count      = 0
         self.max_window         = max_window
         self.steps_between_LSPI = steps_between_LSPI
@@ -99,7 +100,7 @@ class LSPI(Agent):
                 if not self.fixedRep: self.logger.log('Max Representation Expansion Iterations:\t%d' % self.re_iterations)
 
     def learn(self,s,p_actions,a,r,ns,np_actions,na,terminal):
-        """Iterative learning method for the agent. 
+        """Iterative learning method for the agent.
 
         Args:
             s (ndarray):    The current state features
@@ -170,7 +171,7 @@ class LSPI(Agent):
         return td_errors
 
     def LSTD(self):
-        """Run the LSTD algorithm on the collected data, and update the 
+        """Run the LSTD algorithm on the collected data, and update the
         policy parameters.
         """
         start_time = clock()
@@ -300,14 +301,3 @@ class LSPI(Agent):
             self.LSTD()
             self.policyIteration()
         self.logger.log("============================")
-
-    def episodeTerminated(self):
-        """This function adjusts all necessary elements of the agent at the end of
-        the episodes.
-        .. note::
-            Every agent must call this function at the end of the learning if the
-            transition led to terminal state.
-        """
-        #Increase the number of episodes
-        self.episode_count += 1
-
