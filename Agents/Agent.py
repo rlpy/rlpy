@@ -125,7 +125,7 @@ class DescentAlgorithm(object):
         #Increase the number of episodes
         self.episode_count += 1
 
-        super(DescentAlgorithm, self).episodeTerminated()
+        #super(DescentAlgorithm, self).episodeTerminated()
 
 
 class Agent(object):
