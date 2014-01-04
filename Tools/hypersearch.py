@@ -39,7 +39,7 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
         print "Loaded existing trials"
         if old_trials.setting == trials.setting and trials.ids == old_trials.ids:
             trials = old_trials
-    n_queued = trials.count_by_state_unsynced(hyperopt.JOB_STATES) 
+    n_queued = trials.count_by_state_unsynced(hyperopt.JOB_STATES)
 
     def get_queue_len():
         trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW)
@@ -64,7 +64,7 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
                     qlen = get_queue_len()
                 else:
                     break
-        
+
         with open(trial_path,'w') as f:
             pickle.dump(trials, f)
         # -- wait for workers to fill in the trials
@@ -255,6 +255,10 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
         elif objective == "max_reward":
             m,s,n = tres.avg_quantity(res, "return")
             val = -m
+            std = s[-1]
+        elif objective == "min_rmse":
+            m,s,n = tres.avg_quantity(res, "rmse")
+            val = m
             std = s[-1]
         else:
             print "unknown objective"

@@ -1,6 +1,7 @@
 """Domain base class"""
 import numpy as np
 import Tools
+from copy import copy
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -68,10 +69,6 @@ class Domain(object):
     logger = None
 
     def __init__(self, logger=None):
-#        """
-#        :param logger: The Logger object to be used when recording output.
-#
-#        """
         if logger is None:
             logger = Tools.Logger()
         self.logger = logger
@@ -88,6 +85,9 @@ class Domain(object):
 
         # a new stream of random numbers for each domain
         self.random_state = np.random.RandomState()
+
+    def __getstate__(self):
+        return self.__dict__
 
     def __str__(self):
         res = """{self.__class__}:
@@ -108,7 +108,7 @@ Gamma:      {self.gamma}
         See :py:meth:`~Domains.Domain.Domain.showDomain()` and
         :py:meth:`~Domains.Domain.Domain.showLearning()`,
         both called by this method.
-        
+
         .. note::
             Some domains override this function to allow an optional *s*
             parameter to be passed, which overrides the *self.state* internal
@@ -244,6 +244,53 @@ Gamma:      {self.gamma}
                 self.statespace_limits[d, 0] += -.5
                 self.statespace_limits[d, 1] += +.5
 
+    def sample_trajectory(self, s_init, policy, max_len_traj):
+        r = np.zeros(max_len_traj)
+        s = np.zeros((max_len_traj, self.state_space_dims))
+        a = np.zeros(max_len_traj)
+        self.s0()
+        self.state = s_init.copy()
+
+        ns = self.state
+        pa = self.possibleActions()
+        t = self.isTerminal()
+
+        for i in range(max_len_traj - 1):
+            if t:
+                break
+            s[i] = ns
+            a[i] = policy.pi(s[i], t, pa)
+            r[i], ns, t, pa = self.step(a[i])
+            if t:
+                break
+        return s[:i+1], a[:i+1], r[:i+1]
+
+
+    def transition_samples(self, policy, num_samples):
+        stat = self.state.copy()
+        ran_stat = copy(self.random_state)
+
+        R = np.empty(num_samples)
+        S = np.empty((num_samples, self.state_space_dims))
+        S_term = np.zeros(num_samples, dtype="bool")
+        Sn = np.empty((num_samples, self.state_space_dims))
+        Sn_term = np.zeros(num_samples, dtype="bool")
+
+        term = True
+        for i in range(num_samples):
+            if term:
+                s, term, pa = self.s0()
+            a = policy.pi(s, term, pa)
+            r, sn, sn_term, pa = self.step(a)
+            S[i] = s
+            Sn[i] = sn
+            Sn_term[i] = sn_term
+            S_term[i] = term
+            R[i] = r
+            s, term = sn, sn_term
+        self.state = stat
+        self.random_state = ran_stat
+        return S, S_term, Sn, Sn_term, R
 
     def sampleStep(self, a, num_samples):
         """

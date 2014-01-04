@@ -16,6 +16,12 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 
+try:
+    from line_profiler import LineProfiler
+    lprofiler = LineProfiler()
+except ImportError:
+    pass
+
 # template for executable file used to execute experiments
 template = """#!/usr/bin/env python
 import sys
