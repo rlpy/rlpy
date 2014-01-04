@@ -453,7 +453,6 @@ class Experiment(object):
         if save:
             path = os.path.join(self.full_path, "{:3}-performance.pdf".format(self.id))
             performance_fig.savefig(path, transparent=True, pad_inches=.1)
-        plt.ioff()
         plt.show()
 
     def compile_path(self, path):
