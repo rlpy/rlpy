@@ -162,7 +162,7 @@ class CondorTrials(hyperopt.Trials):
         # all jobs should be done
         res = tres.load_results(path)
         mapping = {'max_steps': (-1., 'steps'), 'min_steps': (1., 'steps'),
-                   'max_reward': (-1., 'return')}
+                   'max_reward': (-1., 'return'), "min_rmse": (1., "rmse")}
         neg, quan = mapping[self.objective]
         avg, std, n_trials = tres.avg_quantity(res, quan)
         avg *= neg
