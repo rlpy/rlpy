@@ -34,6 +34,86 @@ class BasicPuddlePolicy(Policy.Policy):
         return self.__dict__
 
 
+
+class OptimalBlocksWorldPolicy(Policy.Policy):
+
+    def __init__(self, domain, logger=None, random_action_prob=0.0):
+        self.random_action_prob = random_action_prob
+        self.domain = domain
+
+    def prob(self, s, terminal, p_actions):
+        res = np.zeros(self.domain.num_actions)
+        if terminal:
+            res[p_actions[0]] = 1.
+            return res
+        res[p_actions] = self.random_action_prob / (len(p_actions) - 1)
+        ind = self._optimal_action(self, s, terminal)
+        assert ind in p_actions
+        res[ind] = 1 - self.random_action_prob
+        return res
+
+    def pi(self, s, terminal, p_actions):
+        # Fixed policy rotate the blocksworld = Optimal Policy (Always pick the next piece of the tower and move it to the tower
+        # Policy: Identify the top of the tower.
+
+        if terminal:
+            return p_actions[0]
+        if np.random.rand() < self.random_action_prob:
+            return np.random.choice(p_actions)
+        return self._optimal_action(s, terminal, p_actions)
+
+    def _optimal_action(self, s, terminal, p_actions=None):
+        if terminal:
+            return p_actions[0]
+        #next_block is the block that should be stacked on the top of the tower
+        #wrong_block is the highest block stacked on the top of the next_block
+        #Wrong_tower_block is the highest stacked on the top of the tower
+        domain = self.domain
+        blocks = domain.blocks
+
+        correct_tower_size = 0 # Length of the tower assumed to be built correctly.
+        for i in xrange(blocks):
+            # Check the next block
+            block = correct_tower_size
+            if (block == 0 and domain.on_table(block,s)) or domain.on(block,block-1,s):
+                #This block is on the right position, check the next block
+                correct_tower_size += 1
+            else:
+                #print s
+                #print "Incorrect block:", block
+                # The block is on the wrong place.
+                # 1. Check if the tower is empty => If not take one block from the tower and put it on the table
+                # 2. check to see if this wrong block is empty => If not put one block from its stack and put on the table
+                # 3. Otherwise move this block on the tower
+
+                ###################
+                #1
+                ###################
+                if block != 0: # If the first block is in the wrong place, then the tower top which is table is empty by definition
+                    ideal_tower_top     = block - 1
+                    tower_top = domain.towerTop(ideal_tower_top,s)
+                    if tower_top != ideal_tower_top:
+                        # There is a wrong block there hence we should put it on the table first
+                        return domain.getActionPutAonTable(tower_top) #put the top of the tower on the table since it is not correct
+                ###################
+                #2
+                ###################
+                block_top = domain.towerTop(block,s)
+                if block_top != block:
+                    # The target block to be stacked is not empty
+                    return domain.getActionPutAonTable(block_top)
+                ###################
+                #3
+                ###################
+                if block == 0:
+                    return domain.getActionPutAonTable(block)
+                else:
+                    return domain.getActionPutAonB(block,block-1)
+
+    def __getstate__(self):
+        return self.__dict__
+
+
 class FixedPolicy(Policy.Policy):
 
     policyName  = '' # The name of the desired policy, where applicable. Otherwise ignored.
