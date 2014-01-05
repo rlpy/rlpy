@@ -166,6 +166,8 @@ class CondorTrials(hyperopt.Trials):
         neg, quan = mapping[self.objective]
         avg, std, n_trials = tres.avg_quantity(res, quan)
         avg *= neg
+        if self.objective == "min_rmse":
+            avg = np.log(avg)
         weights = (np.arange(len(avg)) + 1) ** 2
         loss = (avg * weights).sum() / weights.sum()
         print time.ctime()
@@ -258,7 +260,8 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
             std = s[-1]
         elif objective == "min_rmse":
             m,s,n = tres.avg_quantity(res, "rmse")
-            val = m
+            val = m.copy()
+            val = np.log(val)
             std = s[-1]
         else:
             print "unknown objective"

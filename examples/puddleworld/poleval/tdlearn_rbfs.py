@@ -38,7 +38,9 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/rbfs",
     pol = BasicPuddlePolicy(domain, None)
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha)
-    experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20, path=path)
+    experiment = PolicyEvaluationExperiment(estimator, domain, pol,
+                                            max_steps=max_steps, num_checks=20, 
+                                            log_interval=10, path=path, id=id)
 
     #policy = eGreedy(representation, logger, epsilon=0.1)
     #agent = Q_Learning(representation, policy, domain, logger

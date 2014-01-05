@@ -19,10 +19,10 @@ param_space = {'lambda_': hp.uniform("lambda_", 0., 1.),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/tab",
-                    boyan_N0=13444.,
-                    initial_alpha=0.1, #0.6633,
+                    boyan_N0=3243.266410,
+                    initial_alpha=0.191, #0.6633,
                     discretization=16.,
-                    lambda_=.0): #1953):
+                    lambda_=0.81140): #1953):
     logger = Logger()
     max_steps = 1000000
     num_policy_checks = 20
