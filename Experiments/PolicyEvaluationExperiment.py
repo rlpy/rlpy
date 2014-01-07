@@ -18,7 +18,7 @@ class PolicyEvaluationExperiment(Experiment):
     """
 
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Features = {num_feat}'
-    performance_log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: RMSE={rmse: >10.4g}, RMS_FP={rmse_fp: >10.4g} Features = {num_feat}'
+    performance_log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: RMSE={rmse: >10.4g}, RMSBE={rmsbe: >8.4g}, |TD-Error|={tderr: >8.4g} Features = {num_feat}'
     num_eval_points_per_dim = 41
 
     def __init__(self, estimator, domain, sample_policy, target_policy=None, logger=None, id=1, max_steps=10000,
@@ -92,6 +92,18 @@ class PolicyEvaluationExperiment(Experiment):
         return mspbe_fp
 
 
+    def _evaluate_RMSBE(self, V):
+        P, R, _, _ = self.domain.chain_model(self.target_policy)
+        delta = V - np.dot(P, V) * self.domain.gamma - R
+        return np.sqrt(np.sum(delta**2))
+
+    def _evaluate_matderror(self, f, num_samples=200000):
+        S, S_term, Sn, Sn_term, R = self.domain.transition_samples(self.target_policy, num_samples=num_samples)
+        delta = 0.
+        for i in xrange(num_samples):
+            delta += np.abs(f(S[i], S_term[i]) - self.domain.gamma * f(Sn[i], Sn_term[i]) - R[i])
+        delta /= num_samples
+        return delta
 
     def evaluate(self, total_steps, episode_number):
         """
@@ -108,20 +120,24 @@ class PolicyEvaluationExperiment(Experiment):
         elapsedTime = deltaT(self.start_time)
         V_true, s_test, s_term, s_distr = self.domain.V(self.target_policy, discretization=self.num_eval_points_per_dim, num_traj=2000, max_len_traj=200)
         V_pred = np.zeros_like(V_true)
-        V_fp = np.zeros_like(V_true)
-        if False and hasattr(self.estimator, "partitioning"):
-            fp_fun = self._estimate_mpsbe_fp_for_partitioning(self.estimator.partitioning, self.estimator.num_parts)
-        else:
-            fp_fun = lambda x, terminal=False: 0.
         for i in xrange(s_test.shape[1]):
             V_pred[i] = self.estimator.predict(s_test[:, i], s_term[i])
-            V_fp[i] = fp_fun(s_test[:, i])
-            #print V_true[i], V_fp[i], V_pred[i]
         rmse = np.sqrt(((V_true - V_pred)**2 * s_distr).sum() / s_distr.sum())
-        rmse_fp = np.sqrt(((V_fp - V_true)**2 * s_distr).sum() / s_distr.sum())
+        matderror = self._evaluate_matderror(self.estimator.predict, num_samples=10000)
+        #matderror = self._evaluate_matderror(predict_V_true)
+        #def predict_V_true(s, t):
+        #    for i in xrange(s_test.shape[1]):
+        #        if np.all(s == s_test[:,i]):
+        #            return V_true[i]
+
+        if hasattr(self.domain, "chain_model"):
+            rmsbe = self._evaluate_RMSBE(V_pred)
+        else:
+            # we do not compute MSBE for domains without a model
+            rmsbe = -1.
         self.result["learning_steps"].append(total_steps)
         self.result["rmse"].append(rmse)
-        self.result["rmse_fp"].append(rmse_fp)
+        self.result["matderror"].append(matderror)
         self.result["learning_time"].append(self.elapsed_time)
         self.result["num_features"].append(self.estimator.representation.features_num)
         self.result["learning_episode"].append(episode_number)
@@ -134,7 +150,8 @@ class PolicyEvaluationExperiment(Experiment):
         self.logger.log(self.performance_log_template.format(total_steps=total_steps,
                                                              elapsed=hhmmss(elapsedTime),
                                                              remaining=remaining,
-                                                             rmse=rmse, rmse_fp=rmse_fp,
+                                                             rmsbe=rmsbe,
+                                                             rmse=rmse, tderr=matderror,
                                                              num_feat=self.estimator.representation.features_num))
 
         np.random.set_state(random_state)
