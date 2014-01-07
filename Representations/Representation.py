@@ -256,6 +256,12 @@ class Representation(object):
         raise NotImplementedError
 
 
+    def addNewWeight(self):
+        theta_tmp = self.theta
+        l = len(theta_tmp)
+        self.theta = np.empty(l + 1)
+        self.theta[:l] = theta_tmp
+        self.theta[-1] = 0.
 
     def stateID2state(self,s_id):
         """
