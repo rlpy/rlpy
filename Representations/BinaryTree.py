@@ -104,6 +104,27 @@ class Tree(Representation.Representation):
         print "Nodes:", self.features_num
         print "Depth:", self.depth
 
+    def output_dot(self):
+        stri = '''digraph Tree {{
+            forcelabels=true;
+            '''
+        template =  'n{id} -> n{cid} [label="s[{dim}] {cmp} {val}"]\n'
+        for n in self.nodelist:
+            stri += 'n{id} [label="{id}"];\n'.format(id=n.id)
+            if n.leaf:
+                stri += 'n{id} [xlabel="{val}"];\n'.format(id=n.id, val=n.value)
+            else:
+                stri +=template.format(id=n.id, cid=n.left.id, cmp="<", val=n.split_val,
+                                       dim=n.split_d)
+                stri +=template.format(id=n.id, cid=n.right.id, cmp=">=", val=n.split_val,
+                                       dim=n.split_d)
+        stri += '''}}'''
+        return stri
+
+    def save_dot(self, filename):
+        with open(filename, "w") as f:
+            f.write(self.output_dot())
+
     def plot_2d_cuts(self):
         if self.num_dim != 2:
             warnings.warn("Plotting the decision boundaries of tree only supported for 2d domains")
@@ -171,6 +192,9 @@ class Node(object):
     @property
     def leaf(self):
         return self.right is None and self.left is None
+
+
+
 
     def output(self, recursive=True):
         print "Node ID", self.id
@@ -258,17 +282,18 @@ class Node(object):
         self.struct_stsq += val ** 2
         self.structure_count += 1
 
-        decision = (s[self.cand_split_dim][:,None] > self.cand_split_val).astype("int")
+        decision = (s[self.cand_split_dim][:,None] >= self.cand_split_val).astype("int")
         self.cand_split_st[:,:,0] += (1 - decision) * val
         self.cand_split_st[:,:,1] += decision * val
         self.cand_split_stsq[:,:,0] += (1 - decision) * val ** 2
         self.cand_split_stsq[:,:,1] += decision * val ** 2
         self.cand_split_count[:,:,0] += (1 - decision)
         self.cand_split_count[:,:,1] += decision
-
+        np.seterr(divide="ignore", invalid="ignore")
         # compute reduction in variance for each split
         exp = self.cand_split_st / self.cand_split_count
         var = self.cand_split_stsq / self.cand_split_count - exp ** 2
+        np.seterr(divide="warn", invalid="warn")
         wvar = self.cand_split_count * var
         ss = self.cand_split_count.sum(axis=2)
         wvar = wvar.sum(axis=2)
@@ -282,10 +307,15 @@ class Node(object):
         #for j in xrange(self.cand_split_val.shape[0]):
         #    for k in xrange(self.root.m):
         #        print self.cand_split_val[j, k], objective[j, k]
-
-        if objective[a, b] > self.tree.kappa or (i > self.beta() and np.isfinite(objective[a, b])):
-            # I've seen enough! Split, bitch!
-            #import ipdb;ipdb.set_trace()
+        split = False
+        if objective[a, b] > self.tree.kappa:
+            self.split_reason = "objective of " + str(objective[a, b])
+            split = True
+        if i > self.beta() and np.isfinite(objective[a, b]):
+            # I've seen enough!
+            self.split_reason = "too many samples observed"
+            split = True
+        if split:
             self.split_node_from_candidates(a, b)
 
     def phi_nonTerminal(self, s):
