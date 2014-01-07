@@ -42,14 +42,14 @@ class OptimalBlocksWorldPolicy(Policy.Policy):
         self.domain = domain
 
     def prob(self, s, terminal, p_actions):
-        res = np.zeros(self.domain.num_actions)
+        res = np.zeros(self.domain.actions_num)
         if terminal:
             res[p_actions[0]] = 1.
             return res
-        res[p_actions] = self.random_action_prob / (len(p_actions) - 1)
-        ind = self._optimal_action(self, s, terminal)
+        res[p_actions] = self.random_action_prob / len(p_actions)
+        ind = self._optimal_action(s, terminal, p_actions)
         assert ind in p_actions
-        res[ind] = 1 - self.random_action_prob
+        res[ind] += 1 - self.random_action_prob
         return res
 
     def pi(self, s, terminal, p_actions):
