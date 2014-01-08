@@ -22,14 +22,14 @@ param_space = {"learn_rate_coef": hp.loguniform("learn_rate_coef", np.log(1e-2),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest1",
-                    learn_rate_coef=0.105540,
-                    learn_rate_exp=-0.080932, #13444,  #-0.04,
-                    grow_coef=10.,
-                    grow_exp=1.0001, #0001,
+                    learn_rate_coef= 0.03694991,
+                    learn_rate_exp=-0.05956, #13444,  #-0.04,
+                    grow_coef=11.4433125,
+                    grow_exp=1.129231, #0001,
                     p_structure=0.05,
-                    m=15):
+                    m=50):
     logger = Logger()
-    max_steps = 3000000
+    max_steps = 1000000
 
     domain = BlocksWorld(logger=logger, gamma=0.95, blocks=6, noise=0.1)
     pol = OptimalBlocksWorldPolicy(domain, random_action_prob=0.3)

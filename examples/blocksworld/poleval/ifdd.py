@@ -16,10 +16,10 @@ param_space = {'discover_threshold': hp.loguniform("discover_threshold",
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
-                    discover_threshold=0.03104970,
-                    lambda_=0.,
-                    boyan_N0=1220.247254,
-                    initial_alpha=0.27986823):
+                    discover_threshold=0.1166188,
+                    lambda_=0.303740,
+                    boyan_N0=1947.37293,
+                    initial_alpha=0.925823):
     logger = Logger()
     max_steps = 1000000
     sparsify = 1
