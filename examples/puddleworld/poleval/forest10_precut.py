@@ -27,7 +27,8 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest10_precut"
                     grow_coef=10.5790307,
                     grow_exp=1.02322986, #0001,
                     p_structure=0.05,
-                    m=3):
+                    m=10,
+                    lambda_=0.8):
     logger = Logger()
     max_steps = 1000000
 
@@ -37,8 +38,9 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest10_precut"
                     grow_coef=grow_coef, grow_exp=grow_exp, learn_rate_mode="exp",
                     learn_rate_coef=learn_rate_coef,
                     learn_rate_exp=learn_rate_exp,
-                    precuts=16)
-    experiment = PolicyEvaluationExperiment(forest, domain, pol, max_steps=max_steps, num_checks=20, path=path, id=id, log_interval=10)
+                    precuts=16, lambda_=lambda_)
+    experiment = PolicyEvaluationExperiment(forest, domain, pol, max_steps=max_steps,
+                                            num_checks=20, path=path, id=id, log_interval=10)
 
     return experiment
 
@@ -47,7 +49,7 @@ if __name__ == '__main__':
     #from Tools.run import run_profiled
     #run_profiled(make_experiment)
     experiment.run(visualize_learning=False)
-    experiment.plot(y="rmse")
+    #experiment.plot(y="rmse")
 
     #tree = experiment.estimator.trees[0]
     #import matplotlib.pyplot as plt
