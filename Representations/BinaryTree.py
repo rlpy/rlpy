@@ -8,11 +8,17 @@ class Tree(Representation.Representation):
 
     def __init__(self, domain, logger, p_structure=.05, m=100, lam=2000, kappa=0.1,
                  learn_rate_coef=0.1, learn_rate_exp=-0.05, learn_rate_mode="boyan", grow_coef=25, grow_exp=1.1,
-                 beta_coef=4, precuts=None, random_seed=0):
+                 beta_coef=4, precuts=None, random_seed=0, lambda_=0., node_class=None):
+        if node_class is None:
+            node_class = Node
+        self.node_class = node_class
+        self.values = np.zeros(500)
+        self.etraces = np.zeros(500)
         self.random_state = np.random.RandomState(seed=random_seed)
         self.p_structure = p_structure
         self.m = m
         self.lam = lam
+        self.lambda_ = lambda_
         self.kappa = kappa
         self.learn_rate_coef = learn_rate_coef
         self.learn_rate_exp = learn_rate_exp
@@ -24,12 +30,14 @@ class Tree(Representation.Representation):
         self.learn_rate_mode = learn_rate_mode
         self.t = 0
         self.depth = 1
-        self.root = Node(self, 1, leaf_id=1)
+        self.root = self.node_class(self, 1, leaf_id=1)
         self.num_nodes = 1
         self.num_leafs = 1
         self.nodelist = [self.root]
+        self.leaflist = [self.root]
         self.domain = domain
         self.num_episodes = 0
+
         if precuts is not None:
             if precuts % 2 != 0:
                 warnings.warn("precuts only possible in multiples of 2")
@@ -71,7 +79,19 @@ class Tree(Representation.Representation):
     def add_node(self, node):
         self.nodelist.append(node)
         assert(len(self.nodelist) == self.num_nodes)
-        self.num_leafs = sum([1 if n.leaf else 0 for n in self.nodelist])
+        if node.leaf_id == len(self.leaflist) + 1:
+            self.leaflist.append(node)
+        else:
+            self.leaflist[node.leaf_id - 1] = node
+        self.num_leafs = len(self.leaflist)
+        if len(self.values) <= self.num_leafs:
+            val = self.values
+            self.values = np.empty(int(len(self.values)*1.5))
+            self.values[:self.num_leafs] = val
+            et = self.etraces
+            self.etraces = np.empty(int(len(self.etraces)*1.5))
+            self.etraces[:self.num_leafs] = et
+
         self.update_depth(node.depth)
 
     @property
@@ -82,12 +102,18 @@ class Tree(Representation.Representation):
         structure_point = self.random_state.rand() < self.p_structure
         if not structure_point:
             self.t += 1
-        return self.root.descent(s).learn(s, r, ns, terminal=terminal, structure_point=structure_point)
+            if self.lambda_ > 0.:
+                #assert(len(self.leaflist) == self.num_leafs)
+                self.etraces[:self.num_leafs] *= self.lambda_ * self.gamma
+        tderr = self.root.descent(s).learn(s, r, ns, terminal=terminal, structure_point=structure_point)
+        if self.lambda_ > 0. and not structure_point:
+            mu = self.mu()
+            self.values[:self.num_leafs] += mu * tderr * self.etraces[:self.num_leafs]
 
     def predict(self, s, terminal=False):
         if terminal:
             return 0.
-        return self.root.descent(s).value
+        return self.values[self.root.descent(s).leaf_id - 1]
 
     def predict_id(self, s, terminal=False):
         return self.root.descent(s).id
@@ -155,31 +181,47 @@ class Tree(Representation.Representation):
 
     def episodeTerminated(self):
         self.num_episodes += 1
+        if self.lambda_ > 0:
+            for n in self.nodelist:
+                n.etrace = 0.
 
+    def mu(self):
+        """learning rate for updating the value estimate"""
+        # boyan scheme
+        if self.learn_rate_mode is "boyan":
+            return self.learn_rate_coef * (self.learn_rate_exp + 1.) / (self.learn_rate_exp + (self.num_episodes + 1) ** 1.1)
+        else:
+            return self.learn_rate_coef * self.t**self.learn_rate_exp
 
 class Node(object):
 
     depth = 0
     right = None
     left = None
-    value = 0.
     tree = None
 
 
-    def __init__(self, tree, id=-1, value=0., depth=1, leaf_id=-2):
-        self.value = value
+    def __init__(self, tree, id=-1, value=0., depth=1, leaf_id=-2, etraces=0.):
         self.depth = depth
         if id == -1 and tree is not None:
             id = tree.next_id()
             if leaf_id is -1:
-                leaf_id = tree.num_leafs
+                leaf_id = tree.num_leafs + 1
+            self.leaf_id = leaf_id
             tree.add_node(self)
-
+        self.tree = tree
+        self.tree.values[leaf_id - 1] = value
+        self.tree.etraces[leaf_id - 1] = etraces
         self.id = id
         self.leaf_id = leaf_id
-        self.tree = tree
         m = self.tree.m
         d = min(1 + self.tree.random_state.poisson(self.tree.lam), self.tree.num_dim)
+        self.d = d
+        self._init_struct_statistics()
+
+    def _init_struct_statistics(self):
+        d = self.d
+        m = self.tree.m
         self.structure_count = 0
         self.struct_st = 0.
         self.struct_stsq = 0.
@@ -193,13 +235,9 @@ class Node(object):
     def leaf(self):
         return self.right is None and self.left is None
 
-
-
-
     def output(self, recursive=True):
         print "Node ID", self.id
         print "\tLeaf", self.leaf
-        print "\tValue", self.value
         if not self.leaf:
             print "\tSplit s[", self.split_d, "] <= ", self.split_val
             print "\tLeft: Node", self.left.id, ",\tRight: Node", self.right.id
@@ -231,20 +269,15 @@ class Node(object):
     def beta(self):
         return self.tree.beta_coef * self.alpha()
 
-    def mu(self):
-        """learning rate for updating the value estimate"""
-        # boyan scheme
-        if self.tree.learn_rate_mode is "boyan":
-            return self.tree.learn_rate_coef * (self.tree.learn_rate_exp + 1.) / (self.tree.learn_rate_exp + (self.tree.num_episodes + 1) ** 1.1)
-        else:
-            return self.tree.learn_rate_coef * self.tree.t**self.tree.learn_rate_exp
-
     def _learn_estimation(self, s, r, ns, terminal):
         """improve estimation value based on this observation in this node
         only called in leafs"""
-        delta = r + self.tree.gamma * self.tree.predict(ns, terminal=terminal) - self.value
-        self.value += delta * self.mu()
-        assert np.isfinite(self.value)
+        delta = r + self.tree.gamma * self.tree.predict(ns, terminal=terminal) - self.tree.values[self.leaf_id - 1]
+        if self.tree.lambda_ > 0:
+            self.tree.etraces[self.leaf_id - 1] += 1
+        else:
+            self.tree.values[self.leaf_id - 1] += delta * self.tree.mu()
+        return delta
 
     def split_node_from_candidates(self, dimension_id, split_id):
         split_d = self.cand_split_dim[dimension_id]
@@ -255,9 +288,15 @@ class Node(object):
         self.split_d = split_d
         self.split_val = split_val
         # create children
-        self.left = Node(self.tree, -1, self.value, self.depth + 1, self.leaf_id)
-        self.right = Node(self.tree, -1, self.value, self.depth + 1, -1)
+        assert(self.tree.leaflist[self.leaf_id - 1] == self)
+        self.left = self.tree.node_class(self.tree, -1, self.tree.values[self.leaf_id - 1], self.depth + 1,
+                                         self.leaf_id, etraces=self.tree.etraces[self.leaf_id - 1])
+        self.right = self.tree.node_class(self.tree, -1, self.tree.values[self.leaf_id - 1], self.depth + 1,
+                                          -1, etraces=self.tree.etraces[self.leaf_id - 1])
         self.leaf_id = -1
+        self._del_cand_stats()
+
+    def _del_cand_stats(self):
         del self.cand_split_count
         del self.cand_split_stsq
         del self.cand_split_st
@@ -327,4 +366,68 @@ class Node(object):
 
     def featureType(self):
         return bool
+
+class OMPNode(Node):
+
+    def _init_struct_statistics(self):
+        d = self.d
+        m = self.tree.m
+        self.structure_count = 0
+        self.structure_delta = 0.
+        self.cand_split_dim = self.tree.random_state.permutation(np.arange(self.tree.num_dim))[:d]
+        self.cand_split_delta = np.zeros((d, m, 2))
+        self.cand_split_val = np.zeros((d, m))
+        self.cand_split_count = np.zeros((d, m, 2), dtype="int")
+
+    def _learn_structure(self, s, r, ns, terminal):
+        i = self.structure_count
+        # add candidate splits if not enough available
+        if i < self.tree.m:
+            for j in xrange(self.cand_split_val.shape[0]):
+                self.cand_split_val[j, i] = s[self.cand_split_dim[j]]
+        if i == self.tree.m:
+            pass
+            # all splits are generated
+            # update stats for splits based on previous data
+
+        # update split status
+        val = r + self.tree.gamma * self.tree.predict(ns)
+        delta = self.value - val
+        assert(not np.isnan(val))
+        self.structure_count += 1
+        self.structure_delta += delta
+        decision = (s[self.cand_split_dim][:,None] >= self.cand_split_val).astype("int")
+        self.cand_split_delta[:,:,0] += (1 - decision) * delta
+        self.cand_split_delta[:,:,1] += decision * delta
+        self.cand_split_count[:,:,0] += (1 - decision)
+        self.cand_split_count[:,:,1] += decision
+        np.seterr(divide="ignore", invalid="ignore")
+        # compute reduction in variance for each split
+        objective = (np.abs(self.cand_split_delta) / np.sqrt(self.cand_split_count)).sum(axis=2)
+        np.seterr(divide="warn", invalid="warn")
+        objective[np.any(self.cand_split_count < self.alpha(), axis = 2)] = -np.inf
+        assert(not np.any(np.isnan(objective)))
+        # find biggest reduction
+        a, b = np.unravel_index(np.nanargmax(objective), objective.shape)
+        #print "Node", self.id, "splits:"
+        #for j in xrange(self.cand_split_val.shape[0]):
+        #    for k in xrange(self.tree.m):
+        #        print self.cand_split_val[j, k], objective[j, k]
+        split = False
+        if objective[a, b] > self.tree.kappa:
+            self.split_reason = "objective of " + str(objective[a, b])
+            split = True
+        if i > self.beta() and np.isfinite(objective[a, b]):
+            # I've seen enough!
+            self.split_reason = "too many samples observed"
+            split = True
+        if split:
+            self.split_node_from_candidates(a, b)
+
+    def _del_cand_stats(self):
+        del self.cand_split_count
+        del self.cand_split_delta
+        del self.cand_split_val
+        del self.cand_split_dim
+
 
