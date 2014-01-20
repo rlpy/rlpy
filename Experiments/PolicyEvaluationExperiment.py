@@ -20,7 +20,7 @@ class PolicyEvaluationExperiment(Experiment):
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Features = {num_feat}'
     performance_log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: RMSE={rmse: >10.4g}, RMSBE={rmsbe: >8.4g}, |TD-Error|={tderr: >8.4g} Features = {num_feat}'
     num_eval_points_per_dim = 41
-
+    num_traj_V = 2000
     def __init__(self, estimator, domain, sample_policy, target_policy=None, logger=None, id=1, max_steps=10000,
                  num_checks=10, log_interval=1, path="Results/Temp", **kwargs):
 
@@ -118,7 +118,7 @@ class PolicyEvaluationExperiment(Experiment):
         random_state = np.random.get_state()
         #random_state_domain = copy(self.domain.random_state)
         elapsedTime = deltaT(self.start_time)
-        V_true, s_test, s_term, s_distr = self.domain.V(self.target_policy, discretization=self.num_eval_points_per_dim, num_traj=2000, max_len_traj=200)
+        V_true, s_test, s_term, s_distr = self.domain.V(self.target_policy, discretization=self.num_eval_points_per_dim, num_traj=self.num_traj_V, max_len_traj=200)
         V_pred = np.zeros_like(V_true)
         for i in xrange(s_test.shape[1]):
             V_pred[i] = self.estimator.predict(s_test[:, i], s_term[i])

@@ -2,6 +2,7 @@
 import numpy as np
 import Tools
 from copy import copy
+from Tools.progressbar import ProgressBar
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -319,3 +320,91 @@ Gamma:      {self.gamma}
             rewards.append(r)
 
         return np.array(next_states), np.array(rewards)
+
+class ContinuousDomain(object):
+
+    @property
+    def num_dim(self):
+        return self.statespace_limits.shape[0]
+
+    batch_V_sampling = 1
+
+    def num_V_batches(self, discretization):
+        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
+        num_dim = self.statespace_limits.shape[0]
+        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
+        xtest = np.mgrid[a].reshape(num_dim,-1)
+        return int(np.ceil(float(xtest.shape[1]) / self.batch_V_sampling))
+
+    def precompute_V_batch_cache(self, discretization, policy, max_len_traj, num_traj, batch):
+        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
+        num_dim = self.statespace_limits.shape[0]
+        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
+        xtest = np.mgrid[a].reshape(num_dim,-1)
+        rng = slice(batch * self.batch_V_sampling, min((batch + 1) * self.batch_V_sampling, xtest.shape[1]))
+        print "Compute batch", batch, "with indices", rng
+        # no need to return stuff. should be cached anyway
+        self.sample_V_batch(xtest[:,rng], policy, num_traj, max_len_traj)
+
+
+    def V(self, policy, discretization=20, max_len_traj=200, num_traj=1000):
+        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
+        num_dim = self.statespace_limits.shape[0]
+        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
+        xtest = np.mgrid[a].reshape(num_dim,-1)
+        R = np.zeros(xtest.shape[1])
+        xtest_term = np.zeros(xtest.shape[1], dtype="bool")
+        if self.batch_V_sampling == 1:
+            with ProgressBar() as p:
+                for i in xrange(xtest.shape[1]):
+                    p.update(i, xtest.shape[1], "Sample V")
+                    if self.isTerminal(xtest[:,i]):
+                        R[i] = 0.
+                        xtest_term[i] = True
+                    else:
+                        R[i] = self.sample_V(xtest[:,i], policy, num_traj, max_len_traj)
+        else:
+            # batch mode to be able to do caching with smaller batches and
+            # precompute V in parallel with cluster jobs
+            for i in xrange(0, xtest.shape[1], self.batch_V_sampling):
+                rng = slice(i * self.batch_V_sampling, min((i + 1) * self.batch_V_sampling, xtest.shape[1]))
+                R[rng], xtest_term[rng] = self.sample_V_batch(xtest[:,rng], policy, num_traj, max_len_traj)
+        stationary_dis = self.stationary_distribution(policy, discretization=discretization,
+                                                      num_traj=num_traj)
+        return R, xtest, xtest_term, stationary_dis
+
+    def sample_V_batch(self, xtest, policy, num_traj, max_len_traj):
+        R = np.zeros(xtest.shape[1])
+        xtest_term = np.zeros(xtest.shape[1], dtype="bool")
+        with ProgressBar() as p:
+            for i in xrange(xtest.shape[1]):
+                p.update(i, xtest.shape[1], "Sample V batch")
+                if self.isTerminal(xtest[:,i]):
+                    R[i] = 0.
+                    xtest_term[i] = True
+                else:
+                    R[i] = self.sample_V(xtest[:,i], policy, num_traj, max_len_traj)
+        return R, xtest_term
+
+    def sample_V(self, s, policy, num_traj, max_len_traj):
+        ret = 0.
+        for i in xrange(num_traj):
+            _, _, rt = self.sample_trajectory(s, policy, max_len_traj)
+            ret += np.sum(rt * np.power(self.gamma, np.arange(len(rt))))
+        return ret / num_traj
+
+    def stationary_distribution(self, policy, discretization=20, num_traj=1000):
+        counts = np.zeros([discretization]*self.num_dim)
+
+        for i in xrange(num_traj):
+            self.s0()
+            s, _, _ = self.sample_trajectory(self.state, policy, self.episodeCap)
+            s -= self.statespace_limits[:,0]
+            s /= (self.statespace_limits[:,1] - self.statespace_limits[:,0])
+            k = (s * discretization).astype("int")
+            k[k == discretization] = discretization - 1
+            for j in xrange(k.shape[0]):
+                t = tuple(k[j])
+                counts[t] += 1
+        return counts.flatten()
+

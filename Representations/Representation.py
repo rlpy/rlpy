@@ -328,6 +328,8 @@ class QFunRepresentation(Representation):
         self._phi_sa_cache = empty((self.domain.actions_num, self.features_num))
         self._arange_cache = arange(self.features_num)
         self.agg_states_num = prod(self.bins_per_dim.astype('uint64'))
+        if self.logger is None:
+            return
         self.logger = logger
         self.logger.line()
         self.logger.log("Representation:\t\t%s" % className(self))

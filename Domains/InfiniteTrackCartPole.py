@@ -2,8 +2,10 @@
 
 from .CartPoleBase import CartPoleBase, StateIndex
 import numpy as np
-from Tools import plt
-
+from .Domain import ContinuousDomain
+from Tools import memory
+from copy import copy
+from Tools.progressbar import ProgressBar
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -170,11 +172,11 @@ class InfTrackCartPole(CartPoleBase):
 
         self._plot_policy(pi)
         self._plot_valfun(V)
-        
+
 #         plt.draw()
 
 
-class InfCartPoleBalance(InfTrackCartPole):
+class InfCartPoleBalance(InfTrackCartPole, ContinuousDomain):
 
     """
     **Goal**: \n
@@ -208,6 +210,19 @@ class InfCartPoleBalance(InfTrackCartPole):
     def __init__(self, logger=None, episodeCap=3000):
         self.episodeCap = episodeCap
         super(InfCartPoleBalance, self).__init__(logger)
+        def gk(key):
+            key["policy"] = key["policy"].__class__.__name__, key["policy"].__getstate__()
+            key["self"] = copy(key["self"].__getstate__())
+            lst = ["random_state", "V", "maxPosition", "xTicksLabels", "GROUND_VERTS", "yTicksLabels", "DimNames",
+                   "logger", "minPosition", "state", "transition_samples", "d"]
+            for l in lst:
+                if l in key["self"]:
+                    del key["self"][l]
+            return key
+        self.V = memory.cache(self.V, get_key=gk)
+        self.transition_samples = memory.cache(self.transition_samples, get_key=gk)
+
+
 
     def s0(self):
         # import ipdb; ipdb.set_trace()
@@ -231,7 +246,7 @@ class InfCartPoleBalance(InfTrackCartPole):
         return not (-np.pi/2.0 < s[StateIndex.THETA] < np.pi/2.0)  # per L & P 2003
 
 
-class InfCartPoleSwingUp(InfTrackCartPole):
+class InfCartPoleSwingUp(InfTrackCartPole, ContinuousDomain):
 
     """
     **Goal** \n
@@ -262,6 +277,17 @@ class InfCartPoleSwingUp(InfTrackCartPole):
         self.statespace_limits = np.array(
             [self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
         super(InfCartPoleSwingUp, self).__init__(logger)
+        def gk(key):
+            key["policy"] = key["policy"].__class__.__name__, key["policy"].__getstate__()
+            key["self"] = copy(key["self"].__getstate__())
+            lst = ["random_state", "V", "maxPosition", "xTicksLabels", "GROUND_VERTS", "yTicksLabels", "DimNames",
+                   "logger", "minPosition", "state", "transition_samples", "d"]
+            for l in lst:
+                if l in key["self"]:
+                    del key["self"][l]
+            return key
+        self.V = memory.cache(self.V, get_key=gk)
+        self.transition_samples = memory.cache(self.transition_samples, get_key=gk)
 
     def s0(self):
         """ Returns the initial state: pendulum straight up and unmoving. """

@@ -1,11 +1,13 @@
 """Cart with a pole domains"""
 
-from Domain import Domain
+from Domain import Domain, ContinuousDomain
 from CartPoleBase import CartPoleBase, StateIndex
 import numpy as np
 import scipy.integrate
 from Tools import pl, mpatches, mpath, fromAtoB, lines, rk4, wrap, bound, colors, plt
-
+from Tools import memory
+from copy import copy
+import warnings
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -159,6 +161,8 @@ class FiniteTrackCartPole(CartPoleBase):
         """
         fourState = self.state
         self._plot_state(fourState, a)
+
+
 
 class FiniteCartPoleBalance(FiniteTrackCartPole):
     """
@@ -320,7 +324,7 @@ class FiniteCartPoleSwingUp(FiniteTrackCartPole):
         return not (-2.4 < s[StateIndex.X] < 2.4)
 
 
-class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
+class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp, ContinuousDomain):
     """
     Modifies ``CartPole`` dynamics to include friction. \n
     This domain is a child of :class:`Domains.FiniteTrackCartPole.FiniteCartPoleSwingUp`.
@@ -340,7 +344,8 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     POSITON_LIMITS      = [-2.4, 2.4]
     #: m/s - Limits on cart velocity
     VELOCITY_LIMITS     = [-3.0, 3.0]
-
+     #: Newtons, N - Force values available as actions
+    AVAIL_FORCE         = np.array([-30, 30])
     MASS_CART = 0.5 #: kilograms, kg - Mass of cart
     MASS_PEND = 0.5 #: kilograms, kg - Mass of the pendulum arm
     LENGTH = 0.6 #: meters, m - Physical length of the pendulum, meters (note the moment-arm lies at half this distance)
@@ -353,8 +358,39 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     # Friction coefficient between cart and ground
     B = 0.1
 
+    def s0(self):
+        # Returns the initial state, pendulum vertical
+        self.state = np.array([pi,0,0,0])
+        self.state[StateIndex.THETA] += self.random_state.randn() * np.pi / 3.
+
+        self.state[StateIndex.THETA]    = bound(self.state[StateIndex.THETA], self.ANGLE_LIMITS[0], self.ANGLE_LIMITS[1])
+        self.state[StateIndex.X] += self.random_state.randn() * .5
+
+        self.state[StateIndex.X] = bound(self.state[StateIndex.X], self.POSITON_LIMITS[0], self.POSITON_LIMITS[1])
+        return self.state.copy(), self.isTerminal(), self.possibleActions()
+
     def __init__(self, logger = None):
+
+        try:
+            from Domain.HIVTreatment_dynamics import cartpole_friction_ode
+            self._ode = cartpole_friction_ode
+        except ImportError:
+            warnings.warn("Compiled fast dynamics derivative not available")
         super(FiniteCartPoleSwingUpFriction,self).__init__(logger)
+        self.batch_V_sampling = 1000
+        def gk(key):
+            key["policy"] = key["policy"].__class__.__name__, key["policy"].__getstate__()
+            key["self"] = copy(key["self"].__getstate__())
+            lst = ["random_state", "V", "sample_V_batch", "batch_V_sampling", "maxPosition", "xTicksLabels",
+                   "GROUND_VERTS", "yTicksLabels", "DimNames",
+                   "logger", "minPosition", "state", "transition_samples", "d", "_ode"]
+            for l in lst:
+                if l in key["self"]:
+                    del key["self"][l]
+            return key
+        self.V = memory.cache(self.V, get_key=gk)
+        self.sample_V_batch = memory.cache(self.sample_V_batch, get_key=gk)
+        self.transition_samples = memory.cache(self.transition_samples, get_key=gk)
 
     def _getReward(self, a, s=None):
         if s is None:
