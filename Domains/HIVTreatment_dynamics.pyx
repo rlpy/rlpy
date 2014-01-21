@@ -59,3 +59,22 @@ def dsdt(np.ndarray[np.double_t, ndim=1] s, double t, double eps1, double eps2):
             - d_E * (T1s + T2s) / (T1s + T2s + Kd) * E - deltaE * E
 
     return np.array([dT1, dT2, dT1s, dT2s, dV, dE])
+
+
+
+def cartpole_friction_ode(np.ndarray[np.double_t, ndim=1] s, double t, double a,
+                          double m, double l, double M, double b):
+    """
+    For use in FiniteCartPoleSwingUpFriction
+    [x, dx, dtheta, theta]
+    """
+
+    #cdef double g, c3, s3
+    cdef double s3 = np.sin(s[3])
+    cdef double c3 = np.cos(s[3])
+    cdef double g = 9.81
+    cdef double ds1 = (2 * m * l * s[2] ** 2 * s3 + 3 * m * g * s3 * c3 + 4 * a - 4 * b * s[1])\
+        / (4 * (M + m) - 3 * m * c3 ** 2)
+    cdef double ds2 = (-3 * m * l * s[2] ** 2 * s3*c3 - 6 * (M + m) * g * s3 - 6 * (a - b * s[1]) * c3)\
+        / (4 * l * (m + M) - 3 * m * l * c3 ** 2)
+    return np.ndarray((s[1], ds1, ds2, s[2]))
