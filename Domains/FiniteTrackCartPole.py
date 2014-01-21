@@ -372,24 +372,26 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp, ContinuousDomain):
     def __init__(self, logger = None):
 
         try:
-            from Domain.HIVTreatment_dynamics import cartpole_friction_ode
+            from Domains.HIVTreatment_dynamics import cartpole_friction_ode
             self._ode = cartpole_friction_ode
         except ImportError:
             warnings.warn("Compiled fast dynamics derivative not available")
+            self._ode = friction_ode
         super(FiniteCartPoleSwingUpFriction,self).__init__(logger)
-        self.batch_V_sampling = 1000
+        #self.batch_V_sampling = 1000
         def gk(key):
             key["policy"] = key["policy"].__class__.__name__, key["policy"].__getstate__()
             key["self"] = copy(key["self"].__getstate__())
             lst = ["random_state", "V", "sample_V_batch", "batch_V_sampling", "maxPosition", "xTicksLabels",
-                   "GROUND_VERTS", "yTicksLabels", "DimNames",
+                   "GROUND_VERTS", "yTicksLabels", "DimNames", "test_states",
                    "logger", "minPosition", "state", "transition_samples", "d", "_ode"]
             for l in lst:
                 if l in key["self"]:
                     del key["self"][l]
             return key
         self.V = memory.cache(self.V, get_key=gk)
-        self.sample_V_batch = memory.cache(self.sample_V_batch, get_key=gk)
+        self.test_states = memory.cache(self.test_states, get_key=gk)
+        #self.sample_V_batch = memory.cache(self.sample_V_batch, get_key=gk)
         self.transition_samples = memory.cache(self.transition_samples, get_key=gk)
 
     def _getReward(self, a, s=None):
@@ -418,20 +420,19 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp, ContinuousDomain):
         ds_aug[StateIndex.THETA] = ds[3]
         return ds_aug
 
-    def _ode(self, s, t, a, m, l, M, b):
-        """
-        [x, dx, dtheta, theta]
-        """
-
-        #cdef double g, c3, s3
-        s3 = np.sin(s[3])
-        c3 = np.cos(s[3])
-        g = self.ACCEL_G
-        ds = np.zeros(4)
-        ds[0] = s[1]
-        ds[1] = (2 * m * l * s[2] ** 2 * s3 + 3 * m * g * s3 * c3 + 4 * a - 4 * b * s[1])\
-            / (4 * (M + m) - 3 * m * c3 ** 2)
-        ds[2] = (-3 * m * l * s[2] ** 2 * s3*c3 - 6 * (M + m) * g * s3 - 6 * (a - b * s[1]) * c3)\
-            / (4 * l * (m + M) - 3 * m * l * c3 ** 2)
-        ds[3] = s[2]
-        return ds
+def friction_ode(s, t, a, m, l, M, b):
+    """
+    [x, dx, dtheta, theta]
+    """
+    #cdef double g, c3, s3
+    s3 = np.sin(s[3])
+    c3 = np.cos(s[3])
+    g = 9.81
+    ds = np.zeros(4)
+    ds[0] = s[1]
+    ds[1] = (2 * m * l * s[2] ** 2 * s3 + 3 * m * g * s3 * c3 + 4 * a - 4 * b * s[1])\
+        / (4 * (M + m) - 3 * m * c3 ** 2)
+    ds[2] = (-3 * m * l * s[2] ** 2 * s3*c3 - 6 * (M + m) * g * s3 - 6 * (a - b * s[1]) * c3)\
+        / (4 * l * (m + M) - 3 * m * l * c3 ** 2)
+    ds[3] = s[2]
+    return ds

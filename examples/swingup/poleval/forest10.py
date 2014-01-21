@@ -22,17 +22,17 @@ param_space = {"learn_rate_coef": hp.loguniform("learn_rate_coef", np.log(1e-2),
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest1",
                     learn_rate_coef=0.2737982386,
                     learn_rate_exp=-0.0782840, #13444,  #-0.04,
-                    grow_coef=19.210704,
+                    grow_coef=11.210704,
                     grow_exp=1.052772, #0001,
                     p_structure=0.05,
-                    m=46,
+                    m=30,
                     lambda_=0.9):
     logger = Logger()
     max_steps = 500000
 
     domain = FiniteCartPoleSwingUpFriction(logger=logger)
     pol = GoodCartPoleSwingupPolicy(domain, logger)
-    forest = Forest(domain, None, num_trees=1, m=m, p_structure=p_structure,
+    forest = Forest(domain, None, num_trees=10, m=m, p_structure=p_structure,
                     grow_coef=grow_coef, grow_exp=grow_exp, learn_rate_mode="exp",
                     learn_rate_coef=learn_rate_coef, learn_rate_exp=learn_rate_exp, lambda_=.9)
     experiment = PolicyEvaluationExperiment(forest, domain, pol, max_steps=max_steps, num_checks=20,
@@ -47,6 +47,12 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest1",
 
 if __name__ == '__main__':
     experiment = make_experiment(1)
+    #from Tools.run import run_profiled
+    #run_profiled(make_experiment)
     experiment.run(visualize_learning=False)
     experiment.plot(y="rmse")
 
+    #tree = experiment.estimator.trees[0]
+    #import matplotlib.pyplot as plt
+    #plt.figure("Cuts")
+    #tree.plot_2d_cuts()

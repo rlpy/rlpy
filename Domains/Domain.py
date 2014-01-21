@@ -329,29 +329,22 @@ class ContinuousDomain(object):
 
     batch_V_sampling = 1
 
-    def num_V_batches(self, discretization):
-        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
-        num_dim = self.statespace_limits.shape[0]
-        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
-        xtest = np.mgrid[a].reshape(num_dim,-1)
+    """
+    def num_V_batches(self, policy, num_traj,  discretization):
+        xtest, stationary_dis = self.test_states(policy, discretization=discretization, num_traj=num_traj)
         return int(np.ceil(float(xtest.shape[1]) / self.batch_V_sampling))
 
     def precompute_V_batch_cache(self, discretization, policy, max_len_traj, num_traj, batch):
-        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
-        num_dim = self.statespace_limits.shape[0]
-        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
-        xtest = np.mgrid[a].reshape(num_dim,-1)
+        xtest, stationary_dis = self.test_states(policy, discretization=discretization, num_traj=num_traj)
         rng = slice(batch * self.batch_V_sampling, min((batch + 1) * self.batch_V_sampling, xtest.shape[1]))
         print "Compute batch", batch, "with indices", rng
         # no need to return stuff. should be cached anyway
         self.sample_V_batch(xtest[:,rng], policy, num_traj, max_len_traj)
 
+    """
 
-    def V(self, policy, discretization=20, max_len_traj=200, num_traj=1000):
-        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
-        num_dim = self.statespace_limits.shape[0]
-        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
-        xtest = np.mgrid[a].reshape(num_dim,-1)
+    def V(self, policy, discretization=20, max_len_traj=200, num_traj=1000, num_traj_stationary=1000):
+        xtest, stationary_dis = self.test_states(policy, discretization=discretization, num_traj=num_traj_stationary)
         R = np.zeros(xtest.shape[1])
         xtest_term = np.zeros(xtest.shape[1], dtype="bool")
         if self.batch_V_sampling == 1:
@@ -369,10 +362,8 @@ class ContinuousDomain(object):
             for i in xrange(0, xtest.shape[1], self.batch_V_sampling):
                 rng = slice(i * self.batch_V_sampling, min((i + 1) * self.batch_V_sampling, xtest.shape[1]))
                 R[rng], xtest_term[rng] = self.sample_V_batch(xtest[:,rng], policy, num_traj, max_len_traj)
-        stationary_dis = self.stationary_distribution(policy, discretization=discretization,
-                                                      num_traj=num_traj)
         return R, xtest, xtest_term, stationary_dis
-
+    """
     def sample_V_batch(self, xtest, policy, num_traj, max_len_traj):
         R = np.zeros(xtest.shape[1])
         xtest_term = np.zeros(xtest.shape[1], dtype="bool")
@@ -385,7 +376,7 @@ class ContinuousDomain(object):
                 else:
                     R[i] = self.sample_V(xtest[:,i], policy, num_traj, max_len_traj)
         return R, xtest_term
-
+    """
     def sample_V(self, s, policy, num_traj, max_len_traj):
         ret = 0.
         for i in xrange(num_traj):
@@ -393,18 +384,38 @@ class ContinuousDomain(object):
             ret += np.sum(rt * np.power(self.gamma, np.arange(len(rt))))
         return ret / num_traj
 
+    def test_states(self, policy, discretization=21, num_traj=3000):
+        stationary_dis = self.stationary_distribution(policy, discretization=discretization,
+                                                      num_traj=num_traj)
+        dis = (self.statespace_limits[:,1] - self.statespace_limits[:,0]) / discretization
+        num_dim = self.statespace_limits.shape[0]
+        a = [slice(self.statespace_limits[i,0], self.statespace_limits[i,1], dis[i]) for i in xrange(num_dim)]
+        xtest = np.mgrid[a].reshape(num_dim,-1)
+        xtest += dis[:, None] / 2
+        k = self.discrete_idx(xtest.T, discretization)
+        for j in xrange(xtest.shape[1]):
+            assert(stationary_dis[tuple(k[j])] == stationary_dis.flatten()[j])
+        stat = stationary_dis.flatten()
+        mask = stat > 0
+        return xtest.T[mask].T, stat[mask]
+
     def stationary_distribution(self, policy, discretization=20, num_traj=1000):
-        counts = np.zeros([discretization]*self.num_dim)
+        counts = np.zeros([discretization] * self.num_dim)
 
         for i in xrange(num_traj):
             self.s0()
             s, _, _ = self.sample_trajectory(self.state, policy, self.episodeCap)
-            s -= self.statespace_limits[:,0]
-            s /= (self.statespace_limits[:,1] - self.statespace_limits[:,0])
-            k = (s * discretization).astype("int")
-            k[k == discretization] = discretization - 1
+            k = self.discrete_idx(s, discretization)
             for j in xrange(k.shape[0]):
                 t = tuple(k[j])
                 counts[t] += 1
-        return counts.flatten()
+        return counts
 
+
+    def discrete_idx(self, s, discretization):
+        w  = (self.statespace_limits[:,1] - self.statespace_limits[:,0])
+        k = s - self.statespace_limits[:,0]
+        k /= w
+        k = (k * discretization).astype("int")
+        k[k == discretization] = discretization - 1
+        return k
