@@ -314,7 +314,7 @@ class Node(object):
 
         # update split status
         val = r + self.tree.gamma * self.tree.predict(ns)
-        assert(not np.isnan(val))
+        #assert(not np.isnan(val))
         self.struct_st += val
         self.struct_stsq += val ** 2
         self.structure_count += 1
@@ -337,7 +337,7 @@ class Node(object):
         wvar[ss > 0] /= ss[ss > 0]
         objective = self.struct_stsq / self.structure_count - (self.struct_st / self.structure_count) ** 2 - wvar
         objective[np.any(self.cand_split_count < self.alpha(), axis = 2)] = -np.inf
-        assert(not np.any(np.isnan(objective)))
+        #assert(not np.any(np.isnan(objective)))
         # find biggest reduction
         a, b = np.unravel_index(np.nanargmax(objective), objective.shape)
 
@@ -391,7 +391,7 @@ class OMPNode(Node):
         # update split status
         val = r + self.tree.gamma * self.tree.predict(ns)
         delta = self.value - val
-        assert(not np.isnan(val))
+        #assert(not np.isnan(val))
         self.structure_count += 1
         self.structure_delta += delta
         decision = (s[self.cand_split_dim][:,None] >= self.cand_split_val).astype("int")
@@ -404,7 +404,7 @@ class OMPNode(Node):
         objective = (np.abs(self.cand_split_delta) / np.sqrt(self.cand_split_count)).sum(axis=2)
         np.seterr(divide="warn", invalid="warn")
         objective[np.any(self.cand_split_count < self.alpha(), axis = 2)] = -np.inf
-        assert(not np.any(np.isnan(objective)))
+        #assert(not np.any(np.isnan(objective)))
         # find biggest reduction
         a, b = np.unravel_index(np.nanargmax(objective), objective.shape)
         #print "Node", self.id, "splits:"
