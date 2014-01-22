@@ -102,9 +102,9 @@ class Tree(Representation.Representation):
         structure_point = self.random_state.rand() < self.p_structure
         if not structure_point:
             self.t += 1
-            if self.lambda_ > 0.:
+        if self.lambda_ > 0.:
                 #assert(len(self.leaflist) == self.num_leafs)
-                self.etraces[:self.num_leafs] *= self.lambda_ * self.gamma
+            self.etraces[:self.num_leafs] *= self.lambda_ * self.gamma
         tderr = self.root.descent(s).learn(s, r, ns, terminal=terminal, structure_point=structure_point)
         if self.lambda_ > 0. and not structure_point:
             mu = self.mu()
@@ -182,9 +182,7 @@ class Tree(Representation.Representation):
     def episodeTerminated(self):
         self.num_episodes += 1
         if self.lambda_ > 0:
-            for n in self.nodelist:
-                n.etrace = 0.
-
+            self.etraces[:self.num_leafs] = 0
     def mu(self):
         """learning rate for updating the value estimate"""
         # boyan scheme
