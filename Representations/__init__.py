@@ -5,7 +5,7 @@ from IncrementalTabular import IncrementalTabular, QIncrementalTabular
 from IndependentDiscretization import IndependentDiscretization, QIndependentDiscretization
 from IndependentDiscretization import IndependentDiscretizationCompact, QIndependentDiscretizationCompact
 from RBF import QRBF, RBF
-from iFDD import iFDD, QiFDD
+from iFDD import iFDD, QiFDD, iFDDK, QiFDDK
 from Fourier import Fourier, QFourier
 from BEBF import BEBF, QBEBF
 from OMPTD import OMPTD, QOMPTD

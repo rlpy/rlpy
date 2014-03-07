@@ -1,5 +1,5 @@
 from Tools import Logger
-from Domains import PuddleWorld 
+from Domains import PuddleWorld
 from ValueEstimators.TDLearning import TDLearning
 from Representations import *
 from Policies import eGreedy

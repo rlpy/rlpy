@@ -37,10 +37,8 @@ class Tree(Representation.Representation):
         self.leaflist = [self.root]
         self.domain = domain
         self.num_episodes = 0
-
+        self.tderr = 0.
         if precuts is not None:
-            if precuts % 2 != 0:
-                warnings.warn("precuts only possible in multiples of 2")
             stride = (domain.statespace_limits[:,1] - domain.statespace_limits[:,0]) / precuts
             cuts = np.outer(np.arange(1, precuts), stride).T.tolist()
             # add dimension ids
@@ -106,6 +104,9 @@ class Tree(Representation.Representation):
                 #assert(len(self.leaflist) == self.num_leafs)
             self.etraces[:self.num_leafs] *= self.lambda_ * self.gamma
         tderr = self.root.descent(s).learn(s, r, ns, terminal=terminal, structure_point=structure_point)
+        if not structure_point:
+            self.tderr = self.tderr * 0.9 + tderr
+
         if self.lambda_ > 0. and not structure_point:
             mu = self.mu()
             self.values[:self.num_leafs] += mu * tderr * self.etraces[:self.num_leafs]

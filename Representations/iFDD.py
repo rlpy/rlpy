@@ -1,11 +1,9 @@
 """Incremental Feature Dependency Discovery"""
 # iFDD implementation based on ICML 2011 paper
 
-import sys, os
-from Queue import PriorityQueue
 from copy import deepcopy
 import numpy as np
-
+from collections import defaultdict
 from Tools import *
 from .Representation import Representation, QFunRepresentation
 
@@ -63,7 +61,7 @@ class iFDD_potential(object):
         self.count      = 1
     def __deepcopy__(self,memo):
         new_p       = iFDD_potential(self.f_set,self.p1,self.p2)
-        mew_p.cumtderr = self.cumtderr
+        new_p.cumtderr = self.cumtderr
         new_p.cumabstderr = self.cumabstderr
         return new_p
     def show(self):
@@ -87,7 +85,10 @@ class iFDD(Representation):
     initial_representation  = None  # A Representation that provides the initial set of features for iFDD
     maxRelevance            = -inf  # Helper parameter to get a sense of appropriate threshold on the relevance for discovery
     use_chirstoph_ordered_features = True # As Christoph mentioned adding new features may affect the phi for all states. This idea was to make sure both conditions for generating active features generate the same result.
-    def __init__(self,domain,logger,discovery_threshold, initial_representation, sparsify = True, discretization = 20,debug = 0,useCache = 0,maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
+
+    def __init__(self,domain,logger,discovery_threshold, initial_representation,
+                 sparsify = True, discretization = 20,debug = 0,useCache = 0,
+                 maxBatchDicovery = 1, batchThreshold = 0,iFDDPlus = 1):
         self.iFDD_features          = {}
         self.iFDD_potentials        = {}
         self.featureIndex2feature   = {}
@@ -166,7 +167,7 @@ class iFDD(Representation):
 
                         if initialSet.issuperset(set(candidate)): # This was missing from ICML 2011 paper algorithm. Example: [0,1,20], [0,20] is discovered, but if [0] is checked before [1] it will be added even though it is already covered by [0,20]
                             feature = self.iFDD_features.get(frozenset(candidate))
-                            if feature != None:
+                            if feature is not None:
                                 finalActiveFeatures.append(feature.index)
                                 if self.sparsify:
                                     #print "Sets:", initialSet, feature.f_set
@@ -203,10 +204,12 @@ class iFDD(Representation):
             self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures
 
-    def post_discover(self, s, terminal, a, td_error, phi_s):
+    def post_discover(self, s, terminal, a, td_error, phi_s, rho=1):
         """
         returns the number of added features
         """
+
+
         activeFeatures = phi_s.nonzero()[0] # Indices of non-zero elements of vector phi_s
         discovered = 0
         for g_index,h_index in combinations(activeFeatures,2):
@@ -306,7 +309,6 @@ class iFDD(Representation):
         # phi: n-by-p features corresponding to all samples (each column corresponds to one sample)
         # self.batchThreshold is the minimum relevance value for the feature to be expanded
         SHOW_PLOT       = 0      #Shows the histogram of relevances
-        max_excitement  = 0
         maxDiscovery    = self.maxBatchDicovery
         n               = self.features_num #number of features
         p               = len(td_errors)     #Number of samples
@@ -345,7 +347,7 @@ class iFDD(Representation):
 
         #Sort based on relevances
         sortedIndices  = argsort(relevances)[::-1] # We want high to low hence the reverse: [::-1]
-        max_relevance   = relevances[sortedIndices[0]];
+        max_relevance   = relevances[sortedIndices[0]]
         #Add top <maxDiscovery> features
         self.logger.log("iFDD Batch: Max Relevance = {0:g}".format(max_relevance))
         added_feature = False
@@ -455,3 +457,207 @@ class QiFDD(iFDD, QFunRepresentation):
             newElem =  None
         self.theta      = addNewElementForAllActions(self.theta,a,newElem)
         self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
+
+
+class iFDDK_potential(iFDD_potential):
+    f_set     = None     # Set of features it corresponds to [Immutable]
+    index     = None     # If this feature has been discovered set this to its index else 0
+    p1        = None     # Parent 1 feature index
+    p2        = None     # Parent 2 feature index
+    a = 0.   # tE[phi |\delta|] estimate
+    b = 0.   # tE[phi \delta] estimate
+    c = 0.   # || phi ||^2_d estimate
+    n_crho = 0  # rho episode index of last update
+    e = 0.   # eligibility trace
+
+    nu = 0.  # w value of last statistics update
+    x_a = 0.  # y_a value of last statistics update
+    x_b = 0.  # y_b value of last stistics update
+    l = 0 # t value of last statistics update
+
+    def relevance(self, kappa=None, plus=None):
+        if plus is None:
+            assert(kappa is not None)
+            plus = np.random.rand() >= kappa
+
+        if plus:
+            return np.abs(self.b) / np.sqrt(self.c)
+        else:
+            return self.a / np.sqrt(self.c)
+
+
+    def update_statistics(self, rho, td_error, lambda_, gamma, phi_s, n_rho):
+        phi = phi_s[self.p1] * phi_s[self.p2]
+        if n_rho > self.n_crho:
+            self.e = 0
+        else:
+            self.e = rho * (lambda_ * gamma * self.e + phi)
+
+        self.a += np.abs(td_error) * self.e
+        self.b += td_error * self.e
+        self.c += phi**2
+
+        self.n_crho = n_rho
+
+    def update_lazy_statistics(self, rho, td_error, lambda_, gamma, phi_s, y_a, y_b, t_rho, w, t, n_rho):
+        phi = phi_s[self.p1] * phi_s[self.p2]
+        # catch up on old updates
+        gl = np.power(gamma * lambda_,t_rho[n_rho] - self.l)
+        self.a += self.e * (y_a[self.n_crho] - self.x_a) * np.exp(- self.nu) * gl
+        self.b += self.e * (y_b[self.n_crho] - self.x_b) * np.exp(- self.nu) * gl
+        if n_rho > self.n_crho:
+            self.e = 0
+            # TODO clean up y_a and y_b
+        else:
+            np.seterr(under="warn")
+            self.e *= gl * (lambda_ * gamma)**(t - 1 - t_rho[n_rho]) * np.exp(w - self.nu)
+            np.seterr(under="raise")
+        # updates based on current transition
+        np.seterr(under="warn")
+        self.e = rho * (lambda_ * gamma * self.e + phi)
+
+        self.a += np.abs(td_error) * self.e
+        self.b += td_error * self.e
+        np.seterr(under="raise")
+        self.c += phi**2
+        # save current values for next catch-up update
+        self.l = t
+        self.x_a = y_a[n_rho]
+        self.x_b = y_b[n_rho]
+        self.nu = w
+        self.n_crho = n_rho
+
+    def __init__(self, f_set, parent1, parent2):
+        self.f_set      = deepcopy(f_set)
+        self.index      = -1  # -1 means it has not been discovered yet
+        self.p1         = parent1
+        self.p2         = parent2
+
+    def __deepcopy__(self, memo):
+        new_p = iFDD_potential(self.f_set, self.p1, self.p2)
+        for i in ["a", "b", "c", "n_crho", "e", "nu", "x_a", "x_b", "l"]:
+            new_p.__dict__[i] = self.__dict__[i]
+        return new_p
+
+
+class iFDDK(iFDD):
+    """iFDD(kappa) algorithm with support for elibility traces"""
+
+    w = 0  # log(rho) trace
+    n_rho = 0  # index for rho episodes
+    t = 0
+    y_a = defaultdict(float)
+    y_b = defaultdict(float)
+    t_rho = defaultdict(int)
+
+    def __init__(self, domain, logger, discovery_threshold, initial_representation, sparsify=True,
+                 discretization=20, debug=0, useCache=0, kappa=1e-5, lambda_=0., lazy=False):
+        self.lambda_ = lambda_
+        self.kappa = kappa
+        self.gamma = domain.gamma
+        self.lazy = lazy  # lazy updating?
+        super(iFDDK, self).__init__(domain, logger, discovery_threshold, initial_representation,
+                                    sparsify=sparsify, discretization=discretization, debug=debug,
+                                    useCache=useCache)
+
+    def episodeTerminated(self):
+        self.n_rho += 1
+        self.w = 0
+        self.t_rho[self.n_rho] = self.t
+
+    def post_discover(self, s, terminal, a, td_error, phi_s, rho=1):
+        """
+        returns the number of added features
+        """
+        self.t += 1
+        discovered = 0
+        plus = np.random.rand() >= self.kappa
+
+        activeFeatures = phi_s.nonzero()[0]  # Indices of non-zero elements of vector phi_s
+        if not self.lazy:
+            for g_index, h_index in combinations(activeFeatures, 2):
+                # create potential if necessary
+                self.get_potential(g_index, h_index)
+
+            for f, potential in self.iFDD_potentials.items():
+                potential.update_statistics(rho, td_error, self.lambda_, self.gamma, phi_s)
+                #print plus, potential.relevance(plus=plus)
+                if potential.relevance(plus=plus) >= self.discovery_threshold:
+                    self.addFeature(potential)
+                    del self.iFDD_potentials[f]
+                    discovered += 1
+            return discovered
+
+
+        for g_index,h_index in combinations(activeFeatures,2):
+            discovered += self.inspectPair(g_index,h_index,td_error, phi_s, rho, plus)
+
+        if rho > 0:
+            self.w += np.log(rho)
+        else:
+            # cut e-traces
+            self.n_rho += 1
+            self.w = 0
+            self.t_rho[self.n_rho] = self.t
+        # "rescale" to avoid numerical problems
+        if self.t_rho[self.n_rho] + 300 < self.t:
+            self.y_a[self.n_rho] *= (self.gamma * self.lambda_) ** (-300)
+            self.y_b[self.n_rho] *= (self.gamma * self.lambda_) ** (-300)
+            self.t_rho[self.n_rho] += 300
+
+        self.y_a[self.n_rho] += np.exp(self.w) * (self.gamma * self.lambda_) ** (self.t - self.t_rho[self.n_rho]) * np.abs(td_error)
+        self.y_b[self.n_rho] += np.exp(self.w) * (self.gamma * self.lambda_) ** (self.t - self.t_rho[self.n_rho]) * td_error
+        return discovered
+
+    def get_potential(self, g_index, h_index):
+        g  = self.featureIndex2feature[g_index].f_set
+        h  = self.featureIndex2feature[h_index].f_set
+        f           = g.union(h)
+        feature     = self.iFDD_features.get(f)
+
+        if feature is not None:
+            #Already exists
+            return None
+
+        #Look it up in potentials
+        potential = self.iFDD_potentials.get(f)
+        if potential is None:
+            # Generate a new potential and put it in the dictionary
+            potential = iFDDK_potential(f, g_index, h_index)
+            self.iFDD_potentials[f] = potential
+        return potential
+
+    def inspectPair(self,g_index,h_index,td_error, phi_s, rho, plus):
+        # Inspect feature f = g union h where g_index and h_index are the indices of features g and h
+        # If the relevance is > Threshold add it to the list of features
+        # Returns True if a new feature is added
+        potential = self.get_potential(g_index, h_index)
+        potential.update_lazy_statistics(rho, td_error, lambda_, gamma, phi_s, self.y_a, self.y_b, self.t_rho, self.w, self.t, self.n_rho)
+        # Check for discovery
+
+        relevance = potential.relevance(plus=plus)
+        if relevance >= self.discovery_threshold:
+            self.maxRelevance = -np.inf
+            self.addFeature(potential)
+            del self.iFDD_potentials[potential.f_set]
+            return 1
+        else:
+            self.updateMaxRelevance(relevance)
+            return 0
+
+class QiFDDK(iFDDK, QFunRepresentation):
+
+    def updateWeight(self, p1_index, p2_index):
+
+        # Add a new weight corresponding to the new added feature for all actions.
+        # The new weight is set to zero if sparsify = False, and equal to the sum of weights corresponding to the parents if sparsify = True
+        a = self.domain.actions_num
+        f = self.features_num-1 # Number of feature before adding the new one
+        if self.sparsify:
+            newElem = (self.theta[p1_index::f] + self.theta[p2_index::f]).reshape((-1,1))
+        else:
+            newElem =  None
+        self.theta      = addNewElementForAllActions(self.theta,a,newElem)
+        self.hashed_s   = None # We dont want to reuse the hased phi because phi function is changed!
+
+

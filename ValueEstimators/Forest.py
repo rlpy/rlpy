@@ -3,9 +3,10 @@ from Representations.BinaryTree import Tree
 
 class Forest(Representation.Representation):
 
-    def __init__(self, domain, logger, num_trees=10, **kwargs):
+    def __init__(self, domain, logger, num_trees=10, weighted=False, **kwargs):
         self.trees = [Tree(domain, logger, random_seed=i, **kwargs) for i in range(num_trees)]
         self.representation = self
+        self.weighted = weighted
 
     @property
     def features_num(self):
@@ -24,9 +25,17 @@ class Forest(Representation.Representation):
 
     def predict(self, s, terminal=False):
         v = 0.
-        for t in self.trees:
-            v += t.predict(s, terminal)
-        return v / len(self.trees)
+        w = 0.
+
+        if self.weighted:
+            for t in self.trees:
+                w += 1 / (t.tderr + 1e-3)
+                v += 1 / (t.tderr + 1e-3) * t.predict(s, terminal)
+        else:
+            for t in self.trees:
+                w += 1.
+                v += t.predict(s, terminal)
+        return v / w
 
     @property
     def alpha(self):
