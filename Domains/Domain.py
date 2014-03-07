@@ -248,7 +248,7 @@ Gamma:      {self.gamma}
     def sample_trajectory(self, s_init, policy, max_len_traj):
         r = np.zeros(max_len_traj)
         s = np.zeros((max_len_traj, self.state_space_dims))
-        a = np.zeros(max_len_traj)
+        a = np.zeros(max_len_traj, dtype="int")
         self.s0()
         self.state = s_init.copy()
 
