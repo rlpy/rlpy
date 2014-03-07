@@ -580,7 +580,7 @@ class iFDDK(iFDD):
                 self.get_potential(g_index, h_index)
 
             for f, potential in self.iFDD_potentials.items():
-                potential.update_statistics(rho, td_error, self.lambda_, self.gamma, phi_s)
+                potential.update_statistics(rho, td_error, self.lambda_, self.gamma, phi_s, self.n_rho)
                 #print plus, potential.relevance(plus=plus)
                 if potential.relevance(plus=plus) >= self.discovery_threshold:
                     self.addFeature(potential)
