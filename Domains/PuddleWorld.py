@@ -99,6 +99,7 @@ class PuddleWorld(Domain):
         return np.arange(self.actions_num)
 
     def step(self, a):
+        #import ipdb; ipdb.set_trace()
         a = self.actions[a]
         ns = self.state + a + self.random_state.randn() * self.noise_level
         # make sure we stay inside the [0,1]^2 region
@@ -222,7 +223,7 @@ class PuddleWorld(Domain):
         self.random_state = ran_stat
         return P, R, d
 
-    def V(self, policy, discretization=20, max_len_traj=200, num_traj=1000):
+    def V(self, policy, discretization=20, max_len_traj=200, num_traj=1000, num_traj_stationary=1000):
         dis = 1. / discretization
         xtest = np.mgrid[0:1:dis,0:1:dis].reshape(2,-1)
         R = np.zeros(xtest.shape[1])
@@ -236,7 +237,7 @@ class PuddleWorld(Domain):
                 else:
                     R[i] = self.sample_V(xtest[:,i], policy, num_traj, max_len_traj)
         stationary_dis = self.stationary_distribution(policy, discretization=discretization,
-                                                      num_traj=num_traj)
+                                                      num_traj=num_traj_stationary)
         return R, xtest, xtest_term, stationary_dis
 
     def approx_Phi(self, representation, policy, max_len_traj=200, num_traj=1000):
