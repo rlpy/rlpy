@@ -124,7 +124,6 @@ class DescentAlgorithm(object):
         """
         #Increase the number of episodes
         self.episode_count += 1
-
         #super(DescentAlgorithm, self).episodeTerminated()
 
 
@@ -299,4 +298,4 @@ class Agent(object):
         return DATA
 
     def episodeTerminated(self):
-        pass
+        self.representation.episodeTerminated()
