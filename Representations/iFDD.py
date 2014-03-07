@@ -486,15 +486,18 @@ class iFDDK_potential(iFDD_potential):
             return self.a / np.sqrt(self.c)
 
 
-    def update_statistics(self, rho, td_error, lambda_, gamma, phi_s):
+    def update_statistics(self, rho, td_error, lambda_, gamma, phi_s, n_rho):
         phi = phi_s[self.p1] * phi_s[self.p2]
-        self.e = rho * (lambda_ * gamma * self.e + phi)
+        if n_rho > self.n_crho:
+            self.e = 0
+        else:
+            self.e = rho * (lambda_ * gamma * self.e + phi)
 
         self.a += np.abs(td_error) * self.e
         self.b += td_error * self.e
-
         self.c += phi**2
 
+        self.n_crho = n_rho
 
     def update_lazy_statistics(self, rho, td_error, lambda_, gamma, phi_s, y_a, y_b, t_rho, w, t, n_rho):
         phi = phi_s[self.p1] * phi_s[self.p2]
