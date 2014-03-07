@@ -171,6 +171,9 @@ class CondorTrials(hyperopt.Trials):
         weights = (np.arange(len(avg)) + 1) ** 2
         loss = (avg * weights).sum() / weights.sum()
         print time.ctime()
+        if np.isnan(loss):
+            loss = 1e30  # replace nans with bad values to not
+        # confuse the min computation
         print "Loss: {:.4g}".format(loss)
         # use #steps/eps at the moment
         return {"loss": loss,

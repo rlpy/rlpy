@@ -20,13 +20,13 @@ param_space = {"learn_rate_coef": hp.loguniform("learn_rate_coef", np.log(1e-2),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest1",
-                    learn_rate_coef=0.2737982386,
-                    learn_rate_exp=-0.0782840, #13444,  #-0.04,
-                    grow_coef=11.210704,
-                    grow_exp=1.052772, #0001,
+                    learn_rate_coef=0.03870882,
+                    learn_rate_exp=-0.011265, #13444,  #-0.04,
+                    grow_coef=10.1152766,
+                    grow_exp=1.2217416, #0001,
                     p_structure=0.05,
-                    m=30,
-                    lambda_=0.9):
+                    m=5,
+                    lambda_=0.994068):
     logger = Logger()
     max_steps = 500000
 
@@ -34,7 +34,8 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/forest1",
     pol = GoodCartPoleSwingupPolicy(domain, logger)
     forest = Forest(domain, None, num_trees=10, m=m, p_structure=p_structure,
                     grow_coef=grow_coef, grow_exp=grow_exp, learn_rate_mode="exp",
-                    learn_rate_coef=learn_rate_coef, learn_rate_exp=learn_rate_exp, lambda_=.9)
+                    learn_rate_coef=learn_rate_coef,
+                    learn_rate_exp=learn_rate_exp, lambda_=lambda_)
     experiment = PolicyEvaluationExperiment(forest, domain, pol, max_steps=max_steps, num_checks=20,
                                             path=path, id=id, log_interval=10)
     experiment.num_eval_points_per_dim=20

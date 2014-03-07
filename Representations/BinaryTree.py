@@ -339,7 +339,12 @@ class Node(object):
         objective[np.any(self.cand_split_count < self.alpha(), axis = 2)] = -np.inf
         #assert(not np.any(np.isnan(objective)))
         # find biggest reduction
-        a, b = np.unravel_index(np.nanargmax(objective), objective.shape)
+
+        nam = np.nanargmax(objective)
+        if (np.isnan(nam)):
+            # all values are nan, everything is lost anyway...
+            return
+        a, b = np.unravel_index(nam, objective.shape)
 
         #for j in xrange(self.cand_split_val.shape[0]):
         #    for k in xrange(self.root.m):
@@ -406,7 +411,11 @@ class OMPNode(Node):
         objective[np.any(self.cand_split_count < self.alpha(), axis = 2)] = -np.inf
         #assert(not np.any(np.isnan(objective)))
         # find biggest reduction
-        a, b = np.unravel_index(np.nanargmax(objective), objective.shape)
+        nam = np.nanargmax(objective)
+        if (np.isnan(nam)):
+            # all values are nan, everything is lost anyway...
+            return
+        a, b = np.unravel_index(nam, objective.shape)
         #print "Node", self.id, "splits:"
         #for j in xrange(self.cand_split_val.shape[0]):
         #    for k in xrange(self.tree.m):
