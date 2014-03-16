@@ -140,6 +140,7 @@ class Experiment(object):
         self.output_filename = '{:0>3}-results.json'.format(self.id)
         np.random.seed(self.randomSeeds[self.id - 1])
         self.domain.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
+        self.agent.policy.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
         # make sure the performance_domain has a different seed
         self.performance_domain.random_state = np.random.RandomState(self.randomSeeds[self.id + 20])
 

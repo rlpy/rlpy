@@ -48,7 +48,8 @@ class PolicyEvaluationExperiment(Experiment):
         self.output_filename = '{:0>3}-results.json'.format(self.id)
         np.random.seed(self.randomSeeds[self.id - 1])
         self.domain.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
-
+        self.sample_policy.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
+        self.target_policy.random_state = np.random.RandomState(self.randomSeeds[self.id + 1])
     def _estimate_mpsbe_fp_for_partitioning(self, partitioning, num_parts):
         # P, R, d = self.domain.model_for_partitioning(self.target_policy, partitioning, num_parts, num_traj=10000)
         # value at each part of the partitioning
