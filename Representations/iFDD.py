@@ -71,6 +71,21 @@ class iFDD_potential(object):
     def show(self):
         Tools.printClass(self)
 
+def _set_comp_lt(a, b):
+    if len(a) < len(b):
+        return -1
+    elif len(a) > len(b):
+        return 1
+    l1 = list(a)
+    l2 = list(b)
+    l1.sort()
+    l2.sort()
+    for i in xrange(len(l1)):
+        if l1[i] < l2[i]:
+            return -1
+        if l1[i] > l2[i]:
+            return +1
+    return 0
 
 class iFDD(Representation):
     PRINT_MAX_RELEVANCE = False  # It is a good starting point to see how relevances grow if threshold is set to infinity.
@@ -212,7 +227,6 @@ class iFDD(Representation):
                         # print "Sets:", initialSet, feature.f_set
                         initialSet = initialSet - feature.f_set
                         # print "Remaining Set:", initialSet
-
         if self.useCache:
             self.cache[frozenset(intialActiveFeatures)] = finalActiveFeatures
         return finalActiveFeatures
@@ -223,6 +237,7 @@ class iFDD(Representation):
         """
         activeFeatures = phi_s.nonzero()[
                                        0]  # Indices of non-zero elements of vector phi_s
+        #print "Active Features:", activeFeatures, phi_s
         discovered = 0
         # if self.t == 21:
         #    import ipdb; ipdb.set_trace()
@@ -230,6 +245,8 @@ class iFDD(Representation):
             discovered += self.inspectPair(g_index, h_index, td_error)
         self.t += 1
         #print "t", self.t, "td_error", td_error, discovered
+        #self.showCache()
+        #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
         #self.showPotentials()
         return discovered
 
@@ -420,7 +437,9 @@ class iFDD(Representation):
         print "-" * 30
         print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
         print "-" * 30
-        for _, potential in self.iFDD_potentials.iteritems():
+        k = sorted(self.iFDD_potentials.keys(), cmp=_set_comp_lt)
+        for f_set in k:
+            potential = self.iFDD_potentials[f_set]
             if potential.index != -1:
                 continue
             print " %d\t| %s\t| %g\t| %d\t| %s\t| %s" % (potential.index, str(np.sort(list(potential.f_set))), np.abs(potential.cumtderr) / np.sqrt(potential.count), potential.count, potential.p1, potential.p2)
@@ -542,8 +561,7 @@ class iFDDK_potential(iFDD_potential):
         # phi = phi_s[self.p1] * phi_s[self.p2]
         if n_rho > self.n_crho:
             self.e = 0
-        else:
-            self.e = rho * (lambda_ * gamma * self.e + phi)
+        self.e = rho * (lambda_ * gamma * self.e + phi)
 
         self.a += np.abs(td_error) * self.e
         self.b += td_error * self.e
@@ -555,13 +573,10 @@ class iFDDK_potential(iFDD_potential):
         # phi = phi_s[self.p1] * phi_s[self.p2]
         if lambda_ > 0:
             # catch up on old updates
-            gl = np.power(np.array(
-                gamma * lambda_, dtype="float128"), t_rho[n_rho] - self.l)
+            gl = np.power(np.array(gamma * lambda_, dtype="float128"), t_rho[n_rho] - self.l)
             sa, sb = self.a.copy(), self.b.copy()
-            self.a += self.e * (y_a[
-                                self.n_crho] - self.x_a) * np.exp(- self.nu) * gl
-            self.b += self.e * (y_b[
-                                self.n_crho] - self.x_b) * np.exp(- self.nu) * gl
+            self.a += self.e * (y_a[self.n_crho] - self.x_a) * np.exp(- self.nu) * gl
+            self.b += self.e * (y_b[self.n_crho] - self.x_b) * np.exp(- self.nu) * gl
             if not np.isfinite(self.a):
                 self.a = sa
                 warnings.warn("Overflow in potential relevance estimate")
@@ -598,7 +613,9 @@ class iFDDK_potential(iFDD_potential):
 
 class iFDDK(iFDD):
 
-    """iFDD(kappa) algorithm with support for elibility traces"""
+    """iFDD(kappa) algorithm with support for elibility traces
+    The iFDD(kappa) algorithm is a stochastic mixture of iFDD and iFDD+
+    to retain the best properties of both algorithms."""
 
     w = 0  # log(rho) trace
     n_rho = 0  # index for rho episodes
@@ -629,7 +646,10 @@ class iFDDK(iFDD):
         print "-" * 30
         print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
         print "-" * 30
-        for _, potential in self.iFDD_potentials.iteritems():
+
+        k = sorted(self.iFDD_potentials.iterkeys(), cmp=_set_comp_lt)
+        for f_set in k:
+            potential = self.iFDD_potentials[f_set]
             print " %d\t| %s\t| %g\t| %d\t| %s\t| %s" % (potential.index, str(np.sort(list(potential.f_set))), potential.relevance(plus=True), potential.c, potential.p1, potential.p2)
 
     def post_discover(self, s, terminal, a, td_error, phi_s, rho=1):
@@ -643,6 +663,7 @@ class iFDDK(iFDD):
         #    import ipdb; ipdb.set_trace()
         activeFeatures = phi_s.nonzero()[
                                        0]  # Indices of non-zero elements of vector phi_s
+        #print "Active Features:", activeFeatures, phi_s
         if not self.lazy:
             dd = defaultdict(float)
             for g_index, h_index in Tools.combinations(activeFeatures, 2):
@@ -657,11 +678,15 @@ class iFDDK(iFDD):
                     self.addFeature(potential)
                     del self.iFDD_potentials[f]
                     discovered += 1
+            #print "t", self.t, "td_error", td_error, discovered
+            #self.showCache()
+            #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
+            #self.showPotentials()
+
             return discovered
 
         for g_index, h_index in Tools.combinations(activeFeatures, 2):
-            discovered += self.inspectPair(
-                g_index, h_index, td_error, phi_s, rho, plus)
+            discovered += self.inspectPair(g_index, h_index, td_error, phi_s, rho, plus)
 
         if rho > 0:
             self.w += np.log(rho)
@@ -684,6 +709,8 @@ class iFDDK(iFDD):
             assert(np.isfinite(self.y_b[self.n_rho]))
 
         #print "t", self.t, "td_error", td_error, discovered
+        #self.showCache()
+        #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
         #self.showPotentials()
         return discovered
 
