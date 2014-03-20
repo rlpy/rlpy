@@ -2,6 +2,7 @@
 
 from Tools import className, Logger
 #from Representations import *
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -32,6 +33,8 @@ class Policy(object):
     representation = None
     DEBUG          = False
 
+    # a new stream of random numbers for each domain
+    random_state = np.random.RandomState()
     def __init__(self,representation,logger):
         """
         :param representation: the :py:class:`~Representations.Representation.Representation`

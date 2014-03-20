@@ -1,41 +1,37 @@
 from Tools import Logger
-from Domains import PuddleWorld
+from Domains import BlocksWorld
 from ValueEstimators.TDLearning import TDLearning
 from Representations import *
 from Policies import eGreedy
 from Experiments.PolicyEvaluationExperiment import PolicyEvaluationExperiment
-from Policies import BasicPuddlePolicy
+from Policies import OptimalBlocksWorldPolicy
 import numpy as np
 from hyperopt import hp
 
 param_space = {'discover_threshold': hp.loguniform("discover_threshold",
                    np.log(1e-3), np.log(1e2)),
-               'discretization': hp.qloguniform('discretization', np.log(5),
-                   np.log(50), 1),
                'lambda_': hp.uniform("lambda_", 0., 1.),
                'kappa': hp.loguniform("kappa", np.log(1e-10), np.log(1e-3)),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(1e-2), np.log(1))}
 
 
-def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifddk/",
-                    discover_threshold=2.0953701,
-                    lambda_=0.58488,
+def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
+                    discover_threshold=0.1166188,
+                    lambda_=0.3,
+                    boyan_N0=1947.37293,
                     kappa=1e-7,
-                    boyan_N0=40172.71,
-                    discretization=28,
-                    initial_alpha=0.17978):
+                    initial_alpha=0.925823):
     logger = Logger()
     max_steps = 1000000
     sparsify = 1
-    domain = PuddleWorld(logger=logger)
-    pol = BasicPuddlePolicy(domain, None)
-    initial_rep = IndependentDiscretization(domain, logger,
-                                            discretization=discretization)
+    domain = BlocksWorld(blocks=6, noise=0.1, gamma=0.95, logger=logger)
+    initial_rep = IndependentDiscretization(domain, logger)
     representation = iFDDK(domain, logger, discover_threshold, initial_rep,
                            sparsify=sparsify, lambda_=lambda_,
-                           useCache=True, lazy=False,
+                           useCache=True, lazy=True,
                            kappa=kappa)
+    pol = OptimalBlocksWorldPolicy(domain, random_action_prob=0.3)
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha, alpha_decay_mode="boyan")
     experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20,

@@ -124,6 +124,7 @@ class DescentAlgorithm(object):
         """
         #Increase the number of episodes
         self.episode_count += 1
+        self.representation.episodeTerminated()
         #super(DescentAlgorithm, self).episodeTerminated()
 
 

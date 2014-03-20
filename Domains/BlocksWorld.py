@@ -324,10 +324,10 @@ class BlocksWorld(Domain):
             a, b) or not self.on_table(a, s)]  # condition means if A sits on the table you can not pick it and put it on the table
         return np.array([Tools.vec2id(x, [self.blocks, self.blocks]) for x in actions])
 
-    def V(self, policy, discretization=None, max_len_traj=None, num_traj=None):
+    def V(self, policy, discretization=None, max_len_traj=None, num_traj=None, num_traj_stationary=10000):
         P, R, states, s_term = self.chain_model(policy)
         V = np.linalg.solve(np.eye(P.shape[0]) - self.gamma * P, R)
-        s_distr = self.stationary_distribution(policy, states)
+        s_distr = self.stationary_distribution(policy, states, num_traj=num_traj_stationary)
         return V, states.T, s_term, s_distr
 
     def validAction(self, s, A, B):

@@ -1,6 +1,7 @@
 """Fixed policy. Encodes fixed policies for particular domains."""
 
 import Policy
+import copy
 import numpy as np
 from Representations import QRBF
 from Tools import randSet, className
@@ -75,8 +76,8 @@ class OptimalBlocksWorldPolicy(Policy.Policy):
 
         if terminal:
             return p_actions[0]
-        if np.random.rand() < self.random_action_prob:
-            return np.random.choice(p_actions)
+        if self.random_state.rand() < self.random_action_prob:
+            return self.random_state.choice(p_actions)
         return self._optimal_action(s, terminal, p_actions)
 
     def _optimal_action(self, s, terminal, p_actions=None):
@@ -128,7 +129,9 @@ class OptimalBlocksWorldPolicy(Policy.Policy):
                     return domain.getActionPutAonB(block,block-1)
 
     def __getstate__(self):
-        return self.__dict__
+        b = copy.copy(self.__dict__)
+        del b["random_state"]
+        return b
 
 
 class GoodCartPoleSwingupPolicy(Policy.Policy):
