@@ -22,6 +22,8 @@ thousands_formatter = FuncFormatter(_thousands)
 #: default labels for result quantities
 default_labels = {"learning_steps": "Learning Steps",
                   "return": "Average Return",
+                  "rmse": "Root Mean Squared Error",
+                  "num_features": "Number of Features",
                   "discounted_return": "Discounted Return",
                   "learning_time": "Computation Time"}
 #: default colors used for plotting
