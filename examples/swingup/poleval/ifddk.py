@@ -11,7 +11,8 @@ from hyperopt import hp
 param_space = {'discretization': hp.quniform("discretization", 5, 40, 1),
                'discover_threshold': hp.loguniform("discover_threshold",
                    np.log(1e-3), np.log(1e2)),
-               #'lambda_': hp.uniform("lambda_", 0., 1.),
+               'lambda_': hp.uniform("lambda_", 0., 1.),
+               'kappa': hp.loguniform("kappa", np.log(1e-10), np.log(1e-3)),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(1e-2), np.log(1))}
 
@@ -19,7 +20,8 @@ param_space = {'discretization': hp.quniform("discretization", 5, 40, 1),
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
                     discretization=16,
                     discover_threshold=0.42878655,
-                    lambda_=0.0,
+                    lambda_=0.701309,
+                    kappa=1e-7,
                     boyan_N0=1375.098,
                     initial_alpha=0.6329):
     logger = Logger()
@@ -29,10 +31,9 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
     pol = GoodCartPoleSwingupPolicy(domain, logger)
 
     initial_rep = IndependentDiscretization(domain, logger)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
-                          sparsify=sparsify,
-                          useCache=True,
-                          iFDDPlus=1)
+    representation = iFDDK(domain, logger, discover_threshold, initial_rep,
+                           sparsify=sparsify, lambda_=lambda_,
+                           useCache=True, lazy=True, kappa=kappa)
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha, alpha_decay_mode="boyan")
     experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20,
