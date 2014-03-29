@@ -1,4 +1,4 @@
-from eGreedy import eGreedy
+from eGreedy import eGreedy, StoredPolicy
 from UniformRandom import UniformRandom
 from gibbs import GibbsPolicy
 from FixedPolicy import FixedPolicy
