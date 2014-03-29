@@ -1,6 +1,6 @@
 from Tools import Logger
 from ValueEstimators.TDLearning import TDLearning
-from Representations import *
+from Representations import IndependentDiscretization, iFDD
 from Domains import PST
 from Tools import __rlpy_location__
 from Experiments.PolicyEvaluationExperiment import PolicyEvaluationExperiment
@@ -11,16 +11,13 @@ from hyperopt import hp
 param_space = {
                'discover_threshold': hp.loguniform("discover_threshold",
                    np.log(1e1), np.log(1e4)),
-               'lambda_': hp.uniform("lambda_", 0., 1.),
-               'kappa': hp.loguniform("kappa", np.log(1e-10), np.log(1e-3)),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(1e-2), np.log(1))}
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
                     discover_threshold=100., #0.42878655,
-                    lambda_=0.701309,
-                    kappa=1e-7,
+                    lambda_=0.,
                     boyan_N0=1375.098,
                     initial_alpha=0.016329):
     logger = Logger()
@@ -29,9 +26,10 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
     pol = StoredPolicy(filename="__rlpy_location__/Policies/PST_4UAV_mediocre_policy_nocache.pck")
     initial_rep = IndependentDiscretization(domain, logger)
-    representation = iFDDK(domain, logger, discover_threshold, initial_rep,
-                           sparsify=sparsify, lambda_=lambda_,
-                           useCache=True, lazy=True, kappa=kappa)
+    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+                          sparsify=sparsify,
+                          useCache=True,
+                          iFDDPlus=1)
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha, alpha_decay_mode="boyan")
     experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20,
