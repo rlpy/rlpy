@@ -1,6 +1,7 @@
 """epsilon-Greedy Policy"""
 
 import Policies.Policy
+from Tools import __rlpy_location__
 import numpy as np
 import pickle
 import copy
@@ -70,7 +71,8 @@ class StoredPolicy(eGreedy):
         """
         self.filename = filename
         self.epsilon = epsilon
-        with open(self.filename) as f:
+        fn = self.filename.replace("__rlpy_location__", __rlpy_location__)
+        with open(fn) as f:
             self.representation = pickle.load(f)
         self.forcedDeterministicAmongBestActions = False
 

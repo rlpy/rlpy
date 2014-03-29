@@ -3,7 +3,6 @@ from ValueEstimators.TDLearning import TDLearning
 from Representations import *
 from Domains import PST
 from Tools import __rlpy_location__
-from Policies.FixedPolicy import GoodCartPoleSwingupPolicy
 from Experiments.PolicyEvaluationExperiment import PolicyEvaluationExperiment
 from Policies import StoredPolicy
 import numpy as np
@@ -28,19 +27,18 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
     max_steps = 500000
     sparsify = 1
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    pol = StoredPolicy(filename=__rlpy_location__+ "/Policies/PST_4UAV_mediocre_policy_nocache.pck")
-
+    pol = StoredPolicy(filename="__rlpy_location__/Policies/PST_4UAV_mediocre_policy_nocache.pck")
     initial_rep = IndependentDiscretization(domain, logger)
     representation = iFDDK(domain, logger, discover_threshold, initial_rep,
                            sparsify=sparsify, lambda_=lambda_,
                            useCache=True, lazy=True, kappa=kappa)
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha, alpha_decay_mode="boyan")
-    experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20,
+    experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=2,
                                             path=path, log_interval=10, id=id)
     experiment.num_eval_points_per_dim=20
-    experiment.num_traj_V = 100
-    experiment.num_traj_stationary = 100
+    experiment.num_traj_V = 300
+    experiment.num_traj_stationary = 300
     return experiment
 
 if __name__ == '__main__':
