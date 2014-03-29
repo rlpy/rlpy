@@ -1,8 +1,8 @@
 """Persistent search and track mission domain."""
 
 from Tools import *
-from Domain import Domain
-
+from Domain import Domain, BigDiscreteDomain
+import copy
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
             "William Dabney", "Jonathan P. How"]
@@ -10,7 +10,7 @@ __license__ = "BSD 3-Clause"
 __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 
 
-class PST(Domain):
+class PST(Domain, BigDiscreteDomain):
     """
     Persistent Search and Track Mission with multiple Unmanned Aerial Vehicle
     (UAV) agents.
@@ -87,7 +87,7 @@ class PST(Domain):
     apenalty of - 50 if any UAV crashes and always some small penalty for burned fuel.
 
     **REFERENCE:**
-    
+
     .. seealso::
         J. D. Redding, T. Toksoz, N. Ure, A. Geramifard, J. P. How, M. Vavrina,
         and J. Vian. Distributed Multi-Agent Persistent Surveillance and
@@ -113,10 +113,7 @@ class PST(Domain):
 
     # Domain variables
     motionNoise         = 0    #: Noise in action (with some probability, loiter rather than move)
-    numHealthySurveil   = 0    # Number of UAVs in surveillance area with working sensor and actuator [n_s]
-    fuelUnitsBurned     = 0
     LIMITS              = []   # Limits on action indices
-    isCommStatesCovered = False # All comms states are covered on a given timestep, enabling surveillance rewards
 
     # Plotting constants
     UAV_RADIUS = 0.3
@@ -138,6 +135,7 @@ class PST(Domain):
     RECT_GAP            = 0.9   # Gap to leave between rectangles
     dist_between_locations = 0 # Total distance between location rectangles in plot, computed in init()
 
+    possible_action_cache = {}
     ###
     def __init__(self, NUM_UAV = 3, motionNoise = 0, logger = None):
         """
@@ -156,7 +154,6 @@ class PST(Domain):
         self.statespace_limits      = vstack([locations_lim, fuel_lim, actuator_lim, sensor_lim])# Limits of each dimension of the state space. Each row corresponds to one dimension and has two elements [min, max]
         self.motionNoise            = motionNoise # with some noise, when uav desires to transition to new state, remains where it is (loiter)
         self.LIMITS                 = UAVAction.SIZE * ones(NUM_UAV, dtype='int') # eg [3,3,3,3], number of possible actions
-        self.isCommStatesCovered    = False # Don't have communications available yet, so no surveillance reward allowed.
         self.location_rect_vis      = None #
         self.location_coord         = None
         self.uav_circ_vis           = None
@@ -172,6 +169,29 @@ class PST(Domain):
         [self.DimNames.append('UAV%d-sen' % i) for i in arange(NUM_UAV)]
         super(PST,self).__init__(logger)
         if self.logger: self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
+        def gk(key):
+            key["policy"] = (key["policy"].__class__.__name__,
+                            copy.copy(key["policy"].__getstate__()))
+            if "domain" in key["policy"][1]:
+                del key["policy"][1]["domain"]
+            if "random_state" in key["policy"][1]:
+                del key["policy"][1]["random_state"]
+
+            key["self"] = copy.copy(key["self"].__getstate__())
+            lst = [
+                "random_state", "V", "domain_fig", "logger", "DirNames", "state",
+                "transition_samples", "_all_states", "chain_model", "policy",
+                "possible_action_cache", "location_rect_vis", "location_coord",
+                "uav_circ_vis", "uav_text_vis", "uav_sensor_vis",
+                "uav_actuator_vis", "comms_line", "DimNames", "stationary_distribution"]
+            for l in lst:
+                if l in key["self"]:
+                    del key["self"][l]
+            return key
+
+        self.V = memory.cache(self.V, get_key=gk)
+        self.stationary_distribution = memory.cache(self.stationary_distribution, get_key=gk)
+        self.s0()
 
     def showDomain(self, a=0):
         s = self.state
@@ -288,14 +308,14 @@ class PST(Domain):
         sStruct = self.state2Struct(self.state)
         nsStruct = self.state2Struct(ns)
         # Subtract 1 below to give -1,0,1, easily sum actions
-        actionVector = array(id2vec(a,self.LIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
+        actionVector = np.array(id2vec(a,self.LIMITS)) # returns list of form [0,1,0,2] corresponding to action of each uav
         nsStruct.locations += (actionVector-1)
 
         #TODO - incorporate cost graph as in matlab.
         fuelBurnedBool = [(actionVector[i] == UAVAction.LOITER and (nsStruct.locations[i] == UAVLocation.REFUEL or nsStruct.locations[i] == UAVLocation.BASE)) for i in arange(self.NUM_UAV)]
         fuelBurnedBool = array(fuelBurnedBool) == False
         nsStruct.fuel = array([sStruct.fuel[i] - self.NOM_FUEL_BURN * fuelBurnedBool[i] for i in arange(self.NUM_UAV)]) # if fuel
-        self.fuelUnitsBurned = sum(fuelBurnedBool)
+        fuelUnitsBurned = sum(fuelBurnedBool)
         distanceTraveled = sum(logical_and(nsStruct.locations, sStruct.locations))
 
         # Actuator failure transition
@@ -318,10 +338,10 @@ class PST(Domain):
         nsStruct.sensor[baseIndices] = SensorState.RUNNING
 
         # Test if have communication
-        self.isCommStatesCovered = any(sStruct.locations == UAVLocation.COMMS)
+        isCommStatesCovered = any(sStruct.locations == UAVLocation.COMMS)
 
         surveillanceBool = (sStruct.locations == UAVLocation.SURVEIL)
-        self.numHealthySurveil = sum(logical_and(surveillanceBool, sStruct.sensor))
+        numHealthySurveil = sum(logical_and(surveillanceBool, sStruct.sensor))
 
         totalStepReward = 0
 
@@ -329,10 +349,10 @@ class PST(Domain):
         self.state = ns.copy()
 
         ##### Compute reward #####
-        if self.isCommStatesCovered:
-            totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, self.numHealthySurveil)
+        if isCommStatesCovered:
+            totalStepReward += self.SURVEIL_REWARD * min(self.NUM_TARGET, numHealthySurveil)
         if self.isTerminal(): totalStepReward += self.CRASH_REWARD
-        totalStepReward += self.FUEL_BURN_REWARD_COEFF * self.fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
+        totalStepReward += self.FUEL_BURN_REWARD_COEFF * fuelUnitsBurned + self.MOVE_REWARD_COEFF * distanceTraveled # Presently movement penalty is set to 0
         return totalStepReward,ns,self.isTerminal(), self.possibleActions()
 
     def s0(self):
@@ -382,8 +402,11 @@ class PST(Domain):
 
     def possibleActions(self):
         s = self.state
+        pp = self.possible_action_cache.get(tuple(s), None)
+        if pp is not None:
+            return pp
+
         # return the id of possible actions
-        # find empty blocks (nothing on top)
         validActions = [] # Contains a list of uav_actions lists, e.g. [[0,1,2],[0,1],[1,2]] with the index corresponding to a uav.
         # First, enumerate the possible actions for each uav
         sStruct = self.state2Struct(s)
@@ -413,7 +436,9 @@ class PST(Domain):
                 validActions.append([uav_actions])
             else:
                 validActions.append(uav_actions)
-        return array(self.vecList2id(validActions, UAVAction.SIZE)) # TODO place this in tools
+        pa = np.array(self.vecList2id(validActions, UAVAction.SIZE))
+        self.possible_action_cache[tuple(s)] = pa
+        return pa
 
     # TODO place this in Tools
     def vecList2id(self,x,maxValue):
@@ -456,8 +481,10 @@ class PST(Domain):
             else:
                 self.vecList2idHelper(x,actionIDs,ind+1,partialActionAssignment, maxValue,limits) # TODO remove self
 
-    def isTerminal(self):
-        sStruct = self.state2Struct(self.state)
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
+        sStruct = self.state2Struct(s)
         return any(logical_and(sStruct.fuel <= 0, sStruct.locations != UAVLocation.REFUEL))
 
 class UAVLocation:

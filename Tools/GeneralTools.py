@@ -516,10 +516,13 @@ def vec2id2(x,limits):
     lim_prod = cumprod(limits[:-1])
     return x[0] + sum(map(lambda (x,y):x*y,zip(x[1:],lim_prod)))
 def vec2id(x,limits):
-    # returns a unique id by calculating the enumerated number corresponding to a vector given the number of bins in each dimension
-    # I use a recursive calculation to save time by looping once backward on the array = O(n)
-    # for example:
-    # vec2id([0,1],[5,10]) = 5
+    """returns a unique id by calculating the enumerated number corresponding
+    to a vector given the number of bins in each dimension
+    I use a recursive calculation to save time by looping once backward on the array = O(n)
+    for example:
+    >>> vec2id([0,1],[5,10]) = 5
+
+    """
     if isinstance(x,int): return x
     _id = 0
     for d in arange(len(x)-1,-1,-1):
@@ -527,6 +530,7 @@ def vec2id(x,limits):
         _id += x[d]
 
     return _id
+
 ######################################################
 def id2vec(_id,limits):
     #returns the vector corresponding to an id given the number of buckets in each dimension (invers of vec2id)

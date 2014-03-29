@@ -3,7 +3,7 @@ import numpy as np
 import Tools
 from copy import copy
 from Tools.progressbar import ProgressBar
-
+from collections import Counter
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -320,6 +320,94 @@ Gamma:      {self.gamma}
             rewards.append(r)
 
         return np.array(next_states), np.array(rewards)
+
+
+class BigDiscreteDomain(object):
+
+    @property
+    def num_dim(self):
+        return self.statespace_limits.shape[0]
+
+    batch_V_sampling = 1
+
+    """
+    def num_V_batches(self, policy, num_traj,  discretization):
+        xtest, stationary_dis = self.test_states(policy, discretization=discretization, num_traj=num_traj)
+        return int(np.ceil(float(xtest.shape[1]) / self.batch_V_sampling))
+
+    def precompute_V_batch_cache(self, discretization, policy, max_len_traj, num_traj, batch):
+        xtest, stationary_dis = self.test_states(policy, discretization=discretization, num_traj=num_traj)
+        rng = slice(batch * self.batch_V_sampling, min((batch + 1) * self.batch_V_sampling, xtest.shape[1]))
+        print "Compute batch", batch, "with indices", rng
+        # no need to return stuff. should be cached anyway
+        self.sample_V_batch(xtest[:,rng], policy, num_traj, max_len_traj)
+
+    """
+
+    def V(self, policy, discretization=None, max_len_traj=200, num_traj=1000, num_traj_stationary=1000):
+        stat_dis = self.stationary_distribution(policy, num_traj=num_traj_stationary)
+        #xtest, stationary_dis = self.test_states(policy, discretization=discretization, num_traj=num_traj_stationary)
+        stationary_dis = np.zeros(len(stat_dis), dtype="int")
+        R = np.zeros(len(stat_dis))
+        xtest = np.zeros((self.num_dim, len(stat_dis)), dtype="int64")
+        xtest_term = np.zeros(xtest.shape[1], dtype="bool")
+        if self.batch_V_sampling == 1:
+            with ProgressBar() as p:
+                i = 0
+                for k, count in stat_dis.iteritems():
+                    xtest[:,i] = np.array(k)
+                    stationary_dis[i] = count
+                    p.update(i, xtest.shape[1], "Sample V")
+                    if self.isTerminal(xtest[:,i]):
+                        R[i] = 0.
+                        xtest_term[i] = True
+                    else:
+                        R[i] = self.sample_V(xtest[:,i], policy, num_traj, max_len_traj)
+                    i += 1
+        else:
+            # batch mode to be able to do caching with smaller batches and
+            # precompute V in parallel with cluster jobs
+            for k, count in stat_dis.iteritems():
+                xtest[:,i] = np.array(k)
+                stationary_dis[i] = count
+                i += 1
+            for i in xrange(0, xtest.shape[1], self.batch_V_sampling):
+                rng = slice(i * self.batch_V_sampling, min((i + 1) * self.batch_V_sampling, xtest.shape[1]))
+
+                R[rng], xtest_term[rng] = self.sample_V_batch(xtest[:,rng], policy, num_traj, max_len_traj)
+        return R, xtest, xtest_term, stationary_dis
+    """
+    def sample_V_batch(self, xtest, policy, num_traj, max_len_traj):
+        R = np.zeros(xtest.shape[1])
+        xtest_term = np.zeros(xtest.shape[1], dtype="bool")
+        with ProgressBar() as p:
+            for i in xrange(xtest.shape[1]):
+                p.update(i, xtest.shape[1], "Sample V batch")
+                if self.isTerminal(xtest[:,i]):
+                    R[i] = 0.
+                    xtest_term[i] = True
+                else:
+                    R[i] = self.sample_V(xtest[:,i], policy, num_traj, max_len_traj)
+        return R, xtest_term
+    """
+    def sample_V(self, s, policy, num_traj, max_len_traj):
+        ret = 0.
+        for i in xrange(num_traj):
+            _, _, rt = self.sample_trajectory(s, policy, max_len_traj)
+            ret += np.sum(rt * np.power(self.gamma, np.arange(len(rt))))
+        return ret / num_traj
+
+    def stationary_distribution(self, policy, num_traj=1000):
+        counts = Counter()
+
+        for i in xrange(num_traj):
+            self.s0()
+            s, _, _ = self.sample_trajectory(self.state, policy, self.episodeCap)
+            for j in xrange(s.shape[0]):
+                counts[tuple(s[j,:])] += 1
+        return counts
+
+
 
 class ContinuousDomain(object):
 
