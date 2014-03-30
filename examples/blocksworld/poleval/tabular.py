@@ -19,16 +19,15 @@ param_space = {'lambda_': hp.uniform("lambda_", 0., 1.),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/tab",
-                    boyan_N0=10000.,
-                    initial_alpha=0.1,
-                    lambda_=0.):
+                    boyan_N0=9312.,
+                    initial_alpha=0.19433,
+                    lambda_=0.152):
     logger = Logger()
     max_steps = 1000000
 
     domain = BlocksWorld(blocks=6, gamma=0.95, logger=logger, noise=0.1)
-    representation = IncrementalTabular(domain, logger=logger)
+    representation = Tabular(domain, logger=logger)
     pol = OptimalBlocksWorldPolicy(domain, random_action_prob=0.3)
-    domain.policy = pol
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha, alpha_decay_mode="boyan")
     experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20,
