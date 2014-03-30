@@ -19,11 +19,11 @@ param_space = {"num_rbfs": hp.qloguniform("num_rbfs", np.log(1e1), np.log(1e4), 
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/rbfs",
-                    boyan_N0=427.1237,
-                    initial_alpha=0.05965,
+                    boyan_N0=370.8994,
+                    initial_alpha=0.0502114613,
                     resolution=9.,
-                    num_rbfs=933.,
-                    lambda_=0.435932):
+                    num_rbfs=951.0,
+                    lambda_=0.5022861):
     logger = Logger()
     max_steps = 100000
     domain = FiniteCartPoleSwingUpFriction(logger=logger)

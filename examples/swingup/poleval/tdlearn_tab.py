@@ -14,15 +14,16 @@ from ValueEstimators.Forest import Forest
 from Experiments.PolicyEvaluationExperiment import PolicyEvaluationExperiment
 
 param_space = {'lambda_': hp.uniform("lambda_", 0., 1.),
+               'discretization': hp.quniform("discretization", 5, 40, 1),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
                'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/tab",
-                    boyan_N0=3243.266410,
-                    initial_alpha=0.191, #0.6633,
-                    discretization=16.,
-                    lambda_=0.81140): #1953):
+                    boyan_N0=1378.86965,
+                    initial_alpha=0.0932996, #0.6633,
+                    discretization=5,
+                    lambda_=0.6433850): #1953):
     logger = Logger()
     max_steps = 100000
     domain = FiniteCartPoleSwingUpFriction(logger=logger)

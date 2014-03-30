@@ -17,11 +17,11 @@ param_space = {'discretization': hp.quniform("discretization", 5, 40, 1),
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
-                    discretization=16,
-                    discover_threshold=0.42878655,
+                    discretization=21,
+                    discover_threshold=1.3763480,
                     lambda_=0.0,
-                    boyan_N0=1375.098,
-                    initial_alpha=0.6329):
+                    boyan_N0=33697.309,
+                    initial_alpha=0.41957):
     logger = Logger()
     max_steps = 100000
     sparsify = 1
