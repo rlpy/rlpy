@@ -1,6 +1,6 @@
 
 
-from Tabular import Tabular, QTabular
+from Tabular import Tabular, QTabular, HashedTabular, QHashedTabular
 from IncrementalTabular import IncrementalTabular, QIncrementalTabular
 from IndependentDiscretization import IndependentDiscretization, QIndependentDiscretization
 from IndependentDiscretization import IndependentDiscretizationCompact, QIndependentDiscretizationCompact
