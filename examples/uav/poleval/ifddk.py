@@ -18,11 +18,11 @@ param_space = {
 
 
 def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
-                    discover_threshold=100., #0.42878655,
-                    lambda_=0.701309,
-                    kappa=1e-7,
-                    boyan_N0=1375.098,
-                    initial_alpha=0.016329):
+                    discover_threshold=17.9708712, #0.42878655,
+                    lambda_=0.57053162,
+                    kappa=7.6e-9,
+                    boyan_N0=78454.41838,
+                    initial_alpha=0.16240166):
     logger = Logger()
     max_steps = 500000
     sparsify = 1

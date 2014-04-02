@@ -22,7 +22,7 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/poleval/ifdd/",
     sparsify = 1
     domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
     pol = StoredPolicy(filename="__rlpy_location__/Policies/PST_4UAV_mediocre_policy_nocache.pck")
-    representation = HashedTabular(domain, logger, memory=20000, safety="super")
+    representation = HashedTabular(domain, logger, memory=40000, safety="super")
     estimator = TDLearning(representation=representation, lambda_=lambda_,
                            boyan_N0=boyan_N0, initial_alpha=initial_alpha, alpha_decay_mode="boyan")
     experiment = PolicyEvaluationExperiment(estimator, domain, pol, max_steps=max_steps, num_checks=20,
