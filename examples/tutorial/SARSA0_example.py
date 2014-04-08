@@ -10,7 +10,7 @@ Tests the agent on the GridWorld domain.
 __author__ = "Robert H. Klein"
 from Domains import GridWorld
 from Tools import Logger
-from Agents import Q_Learning
+from Agents import SARSA0
 from Representations import Tabular
 from Policies import eGreedy
 from Experiments import Experiment

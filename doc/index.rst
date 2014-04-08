@@ -28,6 +28,7 @@ Documentation
    big_picture
    install
    tutorial
+   make_agent
    faq
    api/index
 
