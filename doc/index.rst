@@ -29,6 +29,9 @@ Documentation
    install
    tutorial
    make_agent
+   make_rep
+   make_domain
+   make_policy
    faq
    api/index
 

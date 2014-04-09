@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 """
-Agent Tutorial for RLPy
-=================================
+Representation Tutorial for RLPy
+================================
 
-Assumes you have created the SARSA0.py agent according to the tutorial and
-placed it in the Agents/ directory.
-Tests the agent on the GridWorld domain.
+Assumes you have created the IncrTabularTut.py agent according to the tutorial and
+placed it in the Representations/ directory.
+Tests the Representation on the GridWorld domain usin SARSA
 """
 __author__ = "Robert H. Klein"
 from Domains import GridWorld
 from Tools import Logger
-from Agents import SARSA0
-from Representations import Tabular
+from Agents import SARSA
+from Representations import IncrTabularTut
 from Policies import eGreedy
 from Experiments import Experiment
 import os
 
 
-def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
+def make_experiment(id=1, path="./Results/Tutorial/gridworld-IncrTabularTut"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -34,13 +34,13 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
-    representation  = Tabular(domain, logger, discretization=20)
+    representation  = IncrTabularTut(domain, logger)
 
     ## Policy
     policy = eGreedy(representation, logger, epsilon=0.2)
 
     ## Agent
-    agent = SARSA0(representation=representation, policy=policy,
+    agent = SARSA(representation=representation, policy=policy,
                        domain=domain, logger=logger,
                        learning_rate=0.1)
     checks_per_policy = 100

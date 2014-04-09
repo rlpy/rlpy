@@ -17,7 +17,7 @@ In a typical Experiment, the Agent interacts with the Domain in discrete
 timesteps.
 At each Experiment timestep the Agent receives some observations from the Domain
 which it uses to update the value function Representation of the Domain
-(ie, on each call to its :py:meth:`~Agents.Agent.Agent.learn` function).
+(ie, on each call to its :func:`~Agents.Agent.Agent.learn` function).
 The Policy is used to select an action to perform.
 This process (observe, update, act) repeats until some goal or fail state,
 determined by the Domain, is reached. At this point the
@@ -39,7 +39,7 @@ Requirements
     __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann", 
                     "William Dabney", "Jonathan P. How"]
     __license__ = "BSD 3-Clause"
-    __author__ = "Christoph Dann"
+    __author__ = "Tim Beaver"
 
 Fill in the appropriate ``__author__`` name and ``__credits__`` as needed.
 Note that RLPy requires the BSD 3-Clause license.
@@ -54,11 +54,22 @@ Note that RLPy requires the BSD 3-Clause license.
   Policy, and Domain XX Remove additional params eg boyan? XX in the 
   ``__init__()`` function
 
-* Your code should be appropriately handle the case where ``logger=None`` is 
+* Your code should appropriately handle the case where ``logger=None`` is 
   passed to ``__init__()``.
 
-* The new learning agent need only define the :func:`~Agents.Agent.Agent.learn` function, (see
-  linked documentation) which is called on every timestep.
+* Once completed, the className of the new agent must be added to the
+  ``__init__.py`` file in the ``Agents/`` directory.
+  (This allows other files to import the new agent).
+
+* After your agent is complete, you should define a unit test XX Add info here XX
+
+REQUIRED Instance Variables
+"""""""""""""""""""""""""""
+---
+
+REQUIRED Functions
+""""""""""""""""""
+:func:`~Agents.Agent.Agent.learn` - called on every timestep (see documentation)
 
   .. Note:: 
 
@@ -75,12 +86,6 @@ Note that RLPy requires the BSD 3-Clause license.
       at its end.  This allows adaptive representations to add new features
       (no effect on fixed ones).
 
-* Once completed, the className of the new agent must be added to the
-  ``__init__.py`` file in the ``Agents/`` directory.
-  (This allows other files to import the new agent).
-
-* After your agent is complete, you should define a unit test XX Add info here XX
-
 
 Additional Information
 ----------------------
@@ -90,9 +95,9 @@ Additional Information
   Your code should be appropriately handle the case where ``logger=None`` is 
   passed to ``__init__()``.
 
-* You should write values assigned to custom parameters when ``__init__()`` is called.
+* You should log values assigned to custom parameters when ``__init__()`` is called.
 
-* See :class:`~Agents.Agent.Agent` for functions provided by the ``Agent`` superclass.
+* See :class:`~Agents.Agent.Agent` for functions provided by the superclass.
 
 
 
@@ -100,11 +105,11 @@ Example: Creating the ``SARSA0`` Agent
 --------------------------------------
 In this example, we will create the standard SARSA learning agent (without 
 eligibility traces (ie the λ parameter= 0 always)).
-This algorithm first computes the Temporal Difference Error
-(see, `Sutton and Barto's *Reinforcement Learning* (1998) <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node60.html>`_ 
-or `Wikipedia: <http://en.wikipedia.org/wiki/Temporal_difference_learning>`_),
+This algorithm first computes the Temporal Difference Error,
 essentially the difference between the prediction under the current 
-value function and what was actually observed.
+value function and what was actually observed
+(see e.g. `Sutton and Barto's *Reinforcement Learning* (1998) <http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node60.html>`_ 
+or `Wikipedia <http://en.wikipedia.org/wiki/Temporal_difference_learning>`_).
 It then updates the representation by summing the current function with 
 this TD error, weighted by a factor called the *learning rate*.
 
@@ -121,23 +126,28 @@ this TD error, weighted by a factor called the *learning rate*.
        from Agent import Agent
        import numpy
 
-#. Declare the class, create needed members variables, and write a 
-   docstring description::
+#. Declare the class, create needed members variables (here a learning rate),
+   described above) and write a docstring description::
+
        class SARSA0(Agent):
            """
            Standard SARSA algorithm without eligibility trace (ie lambda=0)
            """
            learning_rate = 0 # The weight on TD updates ('alpha' in the paper)
-#. Copy the __init__ declaration from ``Agent.py``, add the learning_rate
-   parameter, and log the passed value::
+
+#. Copy the __init__ declaration from ``Agent.py``, add needed parameters
+   (here the learning_rate) and log them.  Then call the superclass constructor::
+
        def __init__(self, logger, representation, policy, domain, learning_rate=0.1):
            self.learning_rate = learning_rate
            super(SARSA0,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
            if logger:
                self.logger.log("Learning rate:\t\t%0.2f" % learning_rate)
 
-#. Copy the learn() declaration, compute the td-error, and use it to update
+#. Copy the learn() declaration and implement accordingly.
+   Here, compute the td-error, and use it to update
    the value function estimate (by adjusting feature weights)::
+
       def learn(self,s,p_actions, a, r, ns, np_actions, na,terminal):
    
            # The previous state could never be terminal
@@ -175,10 +185,15 @@ this TD error, weighted by a factor called the *learning rate*.
            if terminal:
                self.episodeTerminated()
 
+.. note::
+
+    You can and should define helper functions in your agents as needed, and 
+    arrange class heirarchy. (See eg TDControlAgent.py)
+
 
 That's it! Now add your new agent to ``Agents/__init__.py``::
 
-    ``from SARSA0 import SARSA0``
+    from SARSA0 import SARSA0
 
 Finally, create a unit test for your agent XX XX.
 
