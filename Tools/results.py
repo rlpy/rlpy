@@ -25,7 +25,7 @@ default_labels = {"learning_steps": "Learning Steps",
                   "rmse": "Root Mean Squared Error",
                   "num_features": "Number of Features",
                   "discounted_return": "Discounted Return",
-                  "learning_time": "Computation Time"}
+                  "learning_time": "Computation Time in s"}
 #: default colors used for plotting
 default_colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'purple']
 #: default markers used for plotting
