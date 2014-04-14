@@ -4,7 +4,7 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
@@ -12,9 +12,13 @@ from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
 
-import random,util,math
+import random
+import util
+import math
+
 
 class QLearningAgent(ReinforcementAgent):
+
     """
       Q-Learning Agent
 
@@ -34,6 +38,7 @@ class QLearningAgent(ReinforcementAgent):
         - self.getLegalActions(state)
           which returns legal actions for a state
     """
+
     def __init__(self, **args):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
@@ -48,7 +53,6 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
-
 
     def computeValueFromQValues(self, state):
         """
@@ -102,15 +106,17 @@ class QLearningAgent(ReinforcementAgent):
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
-        
+
     def getValue(self, state):
         return self.computeValueFromQValues(state)
 
 
 class PacmanQAgent(QLearningAgent):
+
     "Exactly the same as QLearningAgent, but with different default parameters"
 
-    def __init__(self, epsilon=0.05,gamma=0.8,alpha=0.2, numTraining=0, **args):
+    def __init__(self, epsilon=0.05, gamma=0.8,
+                 alpha=0.2, numTraining=0, **args):
         """
         These default parameters can be changed from the pacman.py command line.
         For example, to change the exploration rate, try:
@@ -134,12 +140,13 @@ class PacmanQAgent(QLearningAgent):
         informs parent of action for Pacman.  Do not change or remove this
         method.
         """
-        action = QLearningAgent.getAction(self,state)
-        self.doAction(state,action)
+        action = QLearningAgent.getAction(self, state)
+        self.doAction(state, action)
         return action
 
 
 class ApproximateQAgent(PacmanQAgent):
+
     """
        ApproximateQLearningAgent
 
@@ -147,6 +154,7 @@ class ApproximateQAgent(PacmanQAgent):
        and update.  All other QLearningAgent functions
        should work as is.
     """
+
     def __init__(self, extractor='IdentityExtractor', **args):
         self.featExtractor = util.lookup(extractor, globals())()
         PacmanQAgent.__init__(self, **args)

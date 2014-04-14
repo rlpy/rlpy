@@ -13,6 +13,7 @@ __author__ = "Christoph Dann"
 
 
 class BicycleBalancing(Domain):
+
     """
     Simulation of balancing a bicycle.
 
@@ -45,18 +46,25 @@ class BicycleBalancing(Domain):
     .. warning::
         This domain is tested only marginally, use with a care.
     """
-    state_names = (r"$\omega$", r"$\dot{\omega}$", r"$\theta$", r"$\dot{\theta}$", r"$\psi")
+    state_names = (
+        r"$\omega$",
+        r"$\dot{\omega}$",
+        r"$\theta$",
+        r"$\dot{\theta}$",
+        r"$\psi")
     gamma = 0.98
     continuous_dims = np.arange(5)
-    show_domain_every = 20  #: only update the graphs in showDomain every x steps
+    #: only update the graphs in showDomain every x steps
+    show_domain_every = 20
     actions = np.array(list(product([-2, 0, 2], [-.02, 0., .02])))
     actions_num = len(actions)
     episodeCap = 50000  #: Total episode duration is ``episodeCap * dt`` sec.
-    episode_data = np.zeros((6, episodeCap + 1))  # store samples of current episode for drawing
+    # store samples of current episode for drawing
+    episode_data = np.zeros((6, episodeCap + 1))
     dt = 0.01  #: Frequency is ``1 / dt``.
-    statespace_limits = np.array([[-np.pi*12/180, np.pi*12/180],
+    statespace_limits = np.array([[-np.pi * 12 / 180, np.pi * 12 / 180],
                                   [-np.pi, np.pi],
-                                  [-np.pi*80/180, np.pi*80/180],
+                                  [-np.pi * 80 / 180, np.pi * 80 / 180],
                                   [-np.pi, np.pi],
                                   [-np.pi, np.pi]])
 
@@ -77,10 +85,10 @@ class BicycleBalancing(Domain):
         M = M_c + M_p
         r = 0.34
         dsigma = v / r
-        I = 13/3. * M_c * h**2 + M_p * (h + d_CM)**2
-        I_dc = M_d * r**2
-        I_dv = 3 / 2. * M_d * r**2
-        I_dl = M_d / 2 * r**2
+        I = 13 / 3. * M_c * h ** 2 + M_p * (h + d_CM) ** 2
+        I_dc = M_d * r ** 2
+        I_dv = 3 / 2. * M_d * r ** 2
+        I_dl = M_d / 2 * r ** 2
         l = 1.11
 
         w = self.random_state.uniform(-0.02, 0.02)
@@ -88,22 +96,27 @@ class BicycleBalancing(Domain):
         phi = omega + np.arctan(d + w) / h
         invr_f = np.abs(np.sin(theta)) / l
         invr_b = np.abs(np.tan(theta)) / l
-        invr_CM = ((l - c) ** 2 + invr_b ** (-2)) ** (-.5) if theta != 0. else 0.
+        invr_CM = ((l - c) ** 2 + invr_b ** (-2)
+                   ) ** (-.5) if theta != 0. else 0.
 
         nomega = omega + self.dt * domega
-        ndomega = domega + self.dt * (M*h*g*np.sin(phi) - np.cos(phi) *
+        ndomega = domega + self.dt * (M * h * g * np.sin(phi) - np.cos(phi) *
                                       (I_dc * dsigma * dtheta +
-                                       np.sign(theta) * v**2*(M_d * r * (invr_f + invr_b) + M*h*invr_CM))) / I
+                                       np.sign(theta) * v ** 2 * (M_d * r * (invr_f + invr_b) + M * h * invr_CM))) / I
         out = theta + self.dt * dtheta
-        ntheta = out if abs(out) <= (80. / 180) * np.pi else np.sign(out)*(80./180)*np.pi
-        ndtheta = dtheta + self.dt * (T - I_dv * dsigma * domega) / I_dl if abs(out) <= (80./180)*np.pi else 0.
+        ntheta = out if abs(out) <= (80. / 180) * \
+            np.pi else np.sign(out) * (80. / 180) * np.pi
+        ndtheta = dtheta + self.dt * \
+            (T - I_dv * dsigma * domega) / \
+            I_dl if abs(out) <= (80. / 180) * np.pi else 0.
         npsi = psi + self.dt * np.sign(theta) * v * invr_b
-        
-        # Where are these three lines from? Having a hard time finding them in the paper referenced
+
+        # Where are these three lines from? Having a hard time finding them in
+        # the paper referenced
         npsi = npsi % (2 * np.pi)
         if npsi > np.pi:
             npsi -= 2 * np.pi
-            
+
         ns = np.array([nomega, ndomega, ntheta, ndtheta, npsi])
         self.state = ns
 
@@ -141,7 +154,6 @@ class BicycleBalancing(Domain):
         if self.t % self.show_domain_every != 0 and not self.t >= self.episodeCap:
             return
 
-
         n = self.state_space_dims + 1
         names = list(self.state_names) + ["Action"]
         colors = ["m", "c", "b", "r", "g", "k"]
@@ -149,14 +161,18 @@ class BicycleBalancing(Domain):
         plt.figure("Domain", figsize=(12, 10))
         if handles is None:
             handles = []
-            f, axes = plt.subplots(n, sharex=True, num="Domain", figsize=(12, 10))
+            f, axes = plt.subplots(
+                n, sharex=True, num="Domain", figsize=(12, 10))
             f.subplots_adjust(hspace=0.1)
             for i in range(n):
                 ax = axes[i]
-                d = np.arange(self.episodeCap + 1)*5
+                d = np.arange(self.episodeCap + 1) * 5
                 ax.set_ylabel(names[i])
                 ax.locator_params(tight=True, nbins=4)
-                handles.append(ax.plot(d, self.episode_data[i], color=colors[i])[0])
+                handles.append(
+                    ax.plot(d,
+                            self.episode_data[i],
+                            color=colors[i])[0])
             self._state_graph_handles = handles
             ax.set_xlabel("Days")
         for i in range(n):
@@ -168,10 +184,11 @@ class BicycleBalancing(Domain):
 
 
 class BicycleRiding(BicycleBalancing):
+
     def _reward(self, s):
         ns = self.state
         psi = s[-1]
         npsi = ns[-1]
         if self.isTerminal():
             return -1.
-        return 0.1*(psi - npsi)
+        return 0.1 * (psi - npsi)

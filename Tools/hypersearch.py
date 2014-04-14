@@ -13,6 +13,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 
+
 def dummy_f():
     pass
 
@@ -39,7 +40,7 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
         print "Loaded existing trials"
         if old_trials.setting == trials.setting and trials.ids == old_trials.ids:
             trials = old_trials
-    n_queued = trials.count_by_state_unsynced(hyperopt.JOB_STATES) 
+    n_queued = trials.count_by_state_unsynced(hyperopt.JOB_STATES)
 
     def get_queue_len():
         trials.count_by_state_unsynced(hyperopt.base.JOB_STATE_NEW)
@@ -64,8 +65,8 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
                     qlen = get_queue_len()
                 else:
                     break
-        
-        with open(trial_path,'w') as f:
+
+        with open(trial_path, 'w') as f:
             pickle.dump(trials, f)
         # -- wait for workers to fill in the trials
         time.sleep(poll_interval_secs)
@@ -78,6 +79,7 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
 
 
 class CondorTrials(hyperopt.Trials):
+
     """
     modified trail class specifically designed to run RLPy experiments
     in parallel on a htcondor job scheduling system
@@ -128,7 +130,11 @@ class CondorTrials(hyperopt.Trials):
         return {a: b[0] for a, b in vals.items()}
 
     def make_full_path(self, hyperparam):
-        return os.path.join(self.path, "-".join([str(v) for v in hyperparam.values()]))
+        return (
+            os.path.join(
+                self.path,
+                "-".join([str(v) for v in hyperparam.values()]))
+        )
 
     def update_trials(self, trials):
         count = 0
@@ -146,7 +152,7 @@ class CondorTrials(hyperopt.Trials):
                     count += 1
                 #trial["state"] = hyperopt.JOB_STATE_RUNNING
 
-                #elif trial["state"] == hyperopt.JOB_STATE_RUNNING:
+                # elif trial["state"] == hyperopt.JOB_STATE_RUNNING:
                 # check if all results files are there and set to ok
                 hyperparam = self.unwrap_hyperparam(trial["misc"]["vals"])
                 full_path = self.make_full_path(hyperparam)
@@ -195,9 +201,10 @@ def import_param_space(filename):
     return vars["param_space"]
 
 
-def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_point=30,
-                         parallelization="sequential",
-                         objective="max_reward", max_concurrent_jobs=100):
+def find_hyperparameters(
+        setting, path, space=None, max_evals=100, trials_per_point=30,
+        parallelization="sequential",
+        objective="max_reward", max_concurrent_jobs=100):
     """
     This function does hyperparameter optimization for RLPy experiments with the
     hyperopt library.
@@ -235,7 +242,9 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
         """function to optimize by hyperopt"""
 
         # "temporary" directory to use
-        full_path = os.path.join(path, "-".join([str(v) for v in hyperparam.values()]))
+        full_path = os.path.join(
+            path,
+            "-".join([str(v) for v in hyperparam.values()]))
 
         # execute experiment
         rt.run(setting, location=full_path, ids=range(1, trials_per_point + 1),
@@ -245,15 +254,15 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
         res = tres.load_results(full_path)
 
         if objective == "max_steps":
-            m,s,n = tres.avg_quantity(res, "steps")
+            m, s, n = tres.avg_quantity(res, "steps")
             val = -m
             std = s[-1]
         elif objective == "min_steps":
-            m,s,n = tres.avg_quantity(res, "steps")
+            m, s, n = tres.avg_quantity(res, "steps")
             val = m
             std = s[-1]
         elif objective == "max_reward":
-            m,s,n = tres.avg_quantity(res, "return")
+            m, s, n = tres.avg_quantity(res, "return")
             val = -m
             std = s[-1]
         else:
@@ -293,7 +302,7 @@ def find_hyperparameters(setting, path, space=None, max_evals=100, trials_per_po
         best = hyperopt.fmin(f, space=space, algo=hyperopt.tpe.suggest,
                              max_evals=max_evals, trials=trials)
 
-    with open(os.path.join(path, 'trials.pck'),'w') as f:
+    with open(os.path.join(path, 'trials.pck'), 'w') as f:
         pickle.dump(trials, f)
 
     return best, trials

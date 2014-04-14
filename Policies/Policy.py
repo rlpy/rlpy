@@ -9,7 +9,9 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
+
 class Policy(object):
+
     """The Policy determines the discrete action that an
     :py:class:`~Agents.Agent.Agent` will take  given its
     :py:class:`~Representations.Representation.Representation`.
@@ -30,19 +32,19 @@ class Policy(object):
     """
 
     representation = None
-    DEBUG          = False
+    DEBUG = False
 
-    def __init__(self,representation,logger):
+    def __init__(self, representation, logger):
         """
         :param representation: the :py:class:`~Representations.Representation.Representation`
             to use in learning the value function.
 
         """
         self.representation = representation
-        ## An object to record the print outs in a file
-        self.logger         = logger
+        # An object to record the print outs in a file
+        self.logger = logger
 
-    def pi(self,s, terminal, p_actions):
+    def pi(self, s, terminal, p_actions):
         """
         *Abstract Method:*\n Select an action given a state.
 
@@ -59,10 +61,8 @@ class Policy(object):
         pass
     # [turnOffExploration code]
 
-
-    ## \b ABSTRACT \b METHOD: Turn exploration on. See code
+    # \b ABSTRACT \b METHOD: Turn exploration on. See code
     # \ref Policy_turnOnExploration "Here".
-
     # [turnOnExploration code]
     def turnOnExploration(self):
         """
@@ -97,38 +97,36 @@ class Policy(object):
         See :py:meth:`Agents.Agent.Agent.Q_MC` and :py:meth:`Agents.Agent.Agent.MC_episode`
         """
         domain = self.representation.domain
-        S   = empty((samples,self.representation.domain.state_space_dims),dtype = type(domain.s0()))
-        A   = empty((samples,1),dtype='uint16')
-        NS  = S.copy()
-        T   = A.copy()
-        R   = empty((samples,1))
+        S = empty(
+            (samples,
+             self.representation.domain.state_space_dims),
+            dtype=type(domain.s0()))
+        A = empty((samples, 1), dtype='uint16')
+        NS = S.copy()
+        T = A.copy()
+        R = empty((samples, 1))
 
-        sample      = 0
-        eps_length  = 0
-        terminal    = True # So the first sample forces initialization of s and a
+        sample = 0
+        eps_length = 0
+        # So the first sample forces initialization of s and a
+        terminal = True
         while sample < samples:
             if terminal or eps_length > self.representation.domain.episodeCap:
                 s = domain.s0()
                 a = self.pi(s)
 
-            #Transition
-            r,ns,terminal = domain.step(a)
-            #Collect Samples
-            S[sample]   = s
-            A[sample]   = a
-            NS[sample]  = ns
-            T[sample]   = terminal
-            R[sample]   = r
+            # Transition
+            r, ns, terminal = domain.step(a)
+            # Collect Samples
+            S[sample] = s
+            A[sample] = a
+            NS[sample] = ns
+            T[sample] = terminal
+            R[sample] = r
 
             sample += 1
             eps_length += 1
             s = ns
             a = self.pi(s)
 
-        return S,A,NS,R,T
-
-
-
-
-
-
+        return S, A, NS, R, T

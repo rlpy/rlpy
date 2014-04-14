@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-            "William Dabney", "Jonathan P. How"]
+               "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 __author__ = "Christoph Dann"
 
 
 class PuddleWorld(Domain):
+
     """
     Implementation of the puddle world benchmark as described in references
     below.
@@ -44,7 +45,8 @@ class PuddleWorld(Domain):
     continuous_dims = np.arange(2)
     statespace_limits = np.array([[0., 1.]] * 2)
 
-    actions = 0.05 * np.array([[1, 0], [0, 1], [-1, 0], [0, -1]], dtype="float")
+    actions = 0.05 * \
+        np.array([[1, 0], [0, 1], [-1, 0], [0, -1]], dtype="float")
     actions_num = 4
 
     def __init__(self, logger=None, noise_level=.01, gamma=1.):
@@ -104,7 +106,7 @@ class PuddleWorld(Domain):
 
     def showDomain(self, a=None):
         s = self.state
-        #Draw the environment
+        # Draw the environment
         if self.domain_fig is None:
             self.domain_fig = plt.figure("Domain")
             self.reward_im = plt.imshow(self.reward_map, extent=(0, 1, 0, 1),
@@ -122,8 +124,16 @@ class PuddleWorld(Domain):
             for j, y in enumerate(np.linspace(0, 1, 100)):
                 a[0] = x
                 a[1] = y
-                self.val_map[j, i] = representation.V(a, self.isTerminal(a), self.possibleActions())
-                self.pi_map[j, i] = representation.bestAction(a, self.isTerminal(a), self.possibleActions())
+                self.val_map[j,
+                             i] = representation.V(
+                    a,
+                    self.isTerminal(a),
+                    self.possibleActions())
+                self.pi_map[j,
+                            i] = representation.bestAction(
+                    a,
+                    self.isTerminal(a),
+                    self.possibleActions())
 
         if self.valfun_fig is None:
             self.valfun_fig = plt.figure("Value Function")
@@ -150,6 +160,7 @@ class PuddleWorld(Domain):
 
 
 class PuddleGapWorld(PuddleWorld):
+
     def _reward(self, s):
         r = super(PuddleGapWorld, self)._reward(s)
         if s[1] < .67 and s[1] >= .6:

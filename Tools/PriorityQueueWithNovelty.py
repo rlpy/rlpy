@@ -10,6 +10,7 @@ __license__ = "BSD 3-Clause"
 
 
 class PriorityQueueWithNovelty(object):
+
     """This is a priority queue where it is sorted based on priority and then then novelty of elements
     First Order: The Lower the priority the better
     Second Order: The newer the item the better
@@ -24,6 +25,7 @@ class PriorityQueueWithNovelty(object):
 
     Adopted from http://stackoverflow.com/questions/9289614/how-to-put-items-into-priority-queues
     """
+
     def __init__(self):
         self._h = []
         self.counter = 0

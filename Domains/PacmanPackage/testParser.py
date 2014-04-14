@@ -4,15 +4,16 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
 import re
 import sys
 
+
 class TestParser(object):
-    
+
     def __init__(self, path):
         # save the path to the test file
         self.path = path
@@ -33,7 +34,7 @@ class TestParser(object):
         test = {}
         with open(self.path) as handle:
             raw_lines = handle.read().split('\n')
-        
+
         test_text = self.removeComments(raw_lines)
         test['__raw_lines__'] = raw_lines
         test['path'] = self.path
@@ -68,7 +69,7 @@ class TestParser(object):
             sys.exit(1)
         return test
 
-    
+
 def emitTestDict(testDict, handle):
     for kind, data in testDict['__emit__']:
         if kind == "raw":

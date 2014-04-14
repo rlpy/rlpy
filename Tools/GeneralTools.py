@@ -1,5 +1,6 @@
 """General Tools for use throughout RLPy"""
 
+
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -10,11 +11,11 @@ def module_exists(module_name):
 
 from multiprocessing import Pool
 from operator import *
-from numpy  import *
+from numpy import *
 import sys
 import numpy
-#print "Numpy version:", numpy.__version__
-#print "Python version:", sys.version_info
+# print "Numpy version:", numpy.__version__
+# print "Python version:", sys.version_info
 import itertools
 import platform
 import pdb
@@ -28,13 +29,14 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
-
 __rlpy_location__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:
     import matplotlib.backends._tkagg
-    matplotlib_backend = 'tkagg' # 'WX' 'QTAgg' 'QT4Agg'
+    matplotlib_backend = 'tkagg'  # 'WX' 'QTAgg' 'QT4Agg'
 except ImportError:
-    matplotlib_backend = 'qt4agg' # Anaconda is built with QT4 backend support on Windows
+    # Anaconda is built with QT4 backend support on Windows
+    matplotlib_backend = 'qt4agg'
+
 
 def available_matplotlib_backends():
     def is_backend_module(fname):
@@ -48,7 +50,8 @@ def available_matplotlib_backends():
     # get the directory where the backends live
     backends_dir = os.path.dirname(matplotlib.backends.__file__)
 
-    # filter all files in that directory to identify all files which provide a backend
+    # filter all files in that directory to identify all files which provide a
+    # backend
     backend_fnames = filter(is_backend_module, os.listdir(backends_dir))
 
     backends = [backend_fname_formatter(fname) for fname in backend_fnames]
@@ -67,15 +70,15 @@ if module_exists('matplotlib'):
         print "Available backends:", mpl_backends
     from matplotlib import pylab as pl
     import matplotlib.ticker as ticker
-    from matplotlib import rc,colors
+    from matplotlib import rc, colors
     import matplotlib.patches as mpatches
     import matplotlib.path as mpath
     import matplotlib.cm as cm
     from matplotlib import lines
     from mpl_toolkits.mplot3d import axes3d
-    from matplotlib import lines # for plotting lines in pendulum and PST
-    from matplotlib.mlab import rk4 # for integration in pendulum
-    from matplotlib.patches import ConnectionStyle # for cartpole
+    from matplotlib import lines  # for plotting lines in pendulum and PST
+    from matplotlib.mlab import rk4  # for integration in pendulum
+    from matplotlib.patches import ConnectionStyle  # for cartpole
     pl.ion()
 else:
     print 'matplotlib is not available => No Graphics'
@@ -98,17 +101,21 @@ from scipy.sparse import linalg as slinalg
 from scipy import sparse as sp
 from time import *
 from hashlib import sha1
-import datetime, csv
+import datetime
+import csv
 from string import *
 #from Sets import ImmutableSet
-from itertools  import *
+from itertools import *
 from heapq import *
 from copy import deepcopy
-import os, sys, multiprocessing
+import os
+import sys
+import multiprocessing
 from os import path
 from decimal import Decimal
-# If running on an older version of numpy, check to make sure we have defined all required functions.
-import numpy # We need to be able to reference numpy by name
+# If running on an older version of numpy, check to make sure we have
+# defined all required functions.
+import numpy  # We need to be able to reference numpy by name
 from select import select
 
 
@@ -116,20 +123,24 @@ def discrete_sample(p):
     cp = numpy.cumsum(p)
     return numpy.sum(cp <= numpy.random.rand(1))
 
-def matrix_mult(A,B):
+
+def matrix_mult(A, B):
     # TO BE COMPLETED!
-    # This function is defined due to many frustration with the dot, * operators that behave differently based on the input values: sparse.matrix, matrix, ndarray and array
+    # This function is defined due to many frustration with the dot, *
+    # operators that behave differently based on the input values:
+    # sparse.matrix, matrix, ndarray and array
     if len(A.shape) == 1:
-        A = A.reshape(1,-1)
+        A = A.reshape(1, -1)
     if len(B.shape) == 1:
-        B = B.reshape(1,-1)
-    n1,m1 = A.shape
-    n2,m2 = B.shape
+        B = B.reshape(1, -1)
+    n1, m1 = A.shape
+    n2, m2 = B.shape
     if m1 != n2:
-        print "Incompatible dimensions: %dx%d and %dx%d" % (n1,m2,n2,m2)
+        print "Incompatible dimensions: %dx%d and %dx%d" % (n1, m2, n2, m2)
         return None
     else:
         return A.dot(B)
+
 
 def cartesian(arrays, out=None):
     """
@@ -174,21 +185,24 @@ def cartesian(arrays, out=None):
         out = zeros([n, len(arrays)], dtype=dtype)
 
     m = n / arrays[0].size
-    out[:,0] = numpy.repeat(arrays[0], m)
+    out[:, 0] = numpy.repeat(arrays[0], m)
     if arrays[1:]:
-        cartesian(arrays[1:], out=out[0:m,1:])
+        cartesian(arrays[1:], out=out[0:m, 1:])
         for j in xrange(1, arrays[0].size):
-            out[j*m:(j+1)*m,1:] = out[0:m,1:]
+            out[j * m:(j + 1) * m, 1:] = out[0:m, 1:]
     return out
 
-#if numpy.version.version < '2.6.0': # Missing count_nonzero
+# if numpy.version.version < '2.6.0': # Missing count_nonzero
+
+
 def count_nonzero(arr):
     # NOTE that the count_nonzero function below moves recursively through any sublists,
     # such that only individual elements are examined.
     # Some versions of numpy's count_nonzero only strictly compare each element;
     # e.g. numpy.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) might return 2, while
     # Tools.count_nonzero([[1,2,3,4,5], [6,7,8,9]]) returns 9.
-    # The latter is the desired functionality, irrelevant when single arrays/lists are passed.
+    # The latter is the desired functionality, irrelevant when single
+    # arrays/lists are passed.
     nnz = 0
 
     # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
@@ -197,19 +211,24 @@ def count_nonzero(arr):
         return arr.getnnz()
 
     if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
-        nonzero_indices = arr.nonzero() # Tuple of length = # dimensions (usu. 2) containing indices of nonzero elements
-        nnz = size(nonzero_indices[0]) # Find # of indices in the vector corresponding to any of the dimensions (all have same length)
+        # Tuple of length = # dimensions (usu. 2) containing indices of nonzero
+        # elements
+        nonzero_indices = arr.nonzero()
+        # Find # of indices in the vector corresponding to any of the
+        # dimensions (all have same length)
+        nnz = size(nonzero_indices[0])
         return nnz
 
-    if isinstance(arr,ndarray):
-        #return sum([1 for x in arr.ravel() if x != 0])
+    if isinstance(arr, ndarray):
+        # return sum([1 for x in arr.ravel() if x != 0])
         return numpy.count_nonzero(arr.ravel())
 
-    if isinstance(arr,list):
+    if isinstance(arr, list):
         for el in arr:
             if isinstance(el, list):
                 nnz += count_nonzero(el)
-            elif el != 0: nnz+=1
+            elif el != 0:
+                nnz += 1
         return nnz
 
     print "In tools.py attempted count_nonzero with unsupported type of", type(arr)
@@ -232,86 +251,113 @@ def count_nonzero(arr):
 # Todo:
 # Replace vstack and hstack with the trick mentioned here:
 # http://stackoverflow.com/questions/4923617/efficient-numpy-2d-array-construction-from-1d-array
-# if undo redo does not work in eclipse, you may have an uninfinished process. Kill all
+# if undo redo does not work in eclipse, you may have an uninfinished
+# process. Kill all
 
-def randint(low,high,m=1,n=1):
-    return random.randint(low,high+1,size=(m,n))
+
+def randint(low, high, m=1, n=1):
+    return random.randint(low, high + 1, size=(m, n))
+
+
 def randSet(x):
-    #Returns a random element of a list uniformly.
+    # Returns a random element of a list uniformly.
     #i = random.random_integers(0,size(x)-1)
-    i = randint(0,size(x)-1)[0,0]
+    i = randint(0, size(x) - 1)[0, 0]
 #    print x
 #    print('in randSet: %d' % i)
     return x[i]
+
+
 def closestDiscretization(x, bins, limits):
-    #Return the closest point to x based on the discretization defined by the number of bins and limits
+    # Return the closest point to x based on the discretization defined by the number of bins and limits
     # equivalent to state2bin(x) / (bins-1) * width + limits[0]
     #width = limits[1]-limits[0]
-    #return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
-    return bin2state(state2bin(x,bins,limits),bins,limits)
-def bin2state(bin,bins,limits):
+    # return round((x-limits[0])*bins/(width*1.)) / bins * width + limits[0]
+    return bin2state(state2bin(x, bins, limits), bins, limits)
+
+
+def bin2state(bin, bins, limits):
     # inverse of state2bin function
-    # Given a bin number and the number of the bins and the limits on a single dimension it return the corresponding value in the middle of the bin
-    bin_width = (limits[1] - limits[0])/(bins*1.)
-    return bin*bin_width+bin_width/2.0+limits[0]
-def state2bin(s,bins,limits):
+    # Given a bin number and the number of the bins and the limits on a single
+    # dimension it return the corresponding value in the middle of the bin
+    bin_width = (limits[1] - limits[0]) / (bins * 1.)
+    return bin * bin_width + bin_width / 2.0 + limits[0]
+
+
+def state2bin(s, bins, limits):
     # return the bin number corresponding to state s given a state it returns a vector with the same dimensionality of s
     # note that s can be continuous.
     # examples:
     # s = 0, limits = [-1,5], bins = 6 => 1
     # s = .001, limits = [-1,5], bins = 6 => 1
     # s = .4, limits = [-.5,.5], bins = 3 => 2
-    # each element of the returned valued is the zero-indexed bin number corresponding to s
+    # each element of the returned valued is the zero-indexed bin number
+    # corresponding to s
     if s == limits[1]:
-        return bins-1
-    width = limits[1]-limits[0]
+        return bins - 1
+    width = limits[1] - limits[0]
     if s > limits[1]:
-        print 'Tools.py: WARNING: ',s,' > ',limits[1],'. Using the chopped value of s'
+        print 'Tools.py: WARNING: ', s, ' > ', limits[1], '. Using the chopped value of s'
         print 'Ignoring', limits[1] - s
         s = limits[1]
     elif s < limits[0]:
-        print 'Tools.py: WARNING: ',s,' < ',limits[0],'. Using the chopped value of s'
+        print 'Tools.py: WARNING: ', s, ' < ', limits[0], '. Using the chopped value of s'
 #        print("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
         s = limits[0]
-    return int((s-limits[0])*bins/(width*1.))
+    return int((s - limits[0]) * bins / (width * 1.))
+
+
 def deltaT(start_time):
-    return clock()-start_time
+    return clock() - start_time
+
+
 def hhmmss(t):
-    #Return a string of hhmmss
+    # Return a string of hhmmss
     return str(datetime.timedelta(seconds=round(t)))
+
+
 def className(obj):
     # return the name of a class
     return obj.__class__.__name__
-def scale(x,m,M):
+
+
+def scale(x, m, M):
     # given an array return the scaled version of the array.
     # positive numbers are scaled [0,M] -> [0,1]
     # negative numbers are scaled [m,0] -> [-1,0]
-    pos_ind = where(x>0)
-    #x(pos_ind) = x(pos_ind)
+    pos_ind = where(x > 0)
+    # x(pos_ind) = x(pos_ind)
+
+
 def createColorMaps():
-    #Make Grid World ColorMap
-    mycmap = colors.ListedColormap(['w', '.75','b','g','r','k'], 'GridWorld')
+    # Make Grid World ColorMap
+    mycmap = colors.ListedColormap(
+        ['w', '.75', 'b', 'g', 'r', 'k'], 'GridWorld')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['r','k'], 'fiftyChainActions')
+    mycmap = colors.ListedColormap(['r', 'k'], 'fiftyChainActions')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['b','r'], 'FlipBoard')
+    mycmap = colors.ListedColormap(['b', 'r'], 'FlipBoard')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['w','.75','b','r'], 'IntruderMonitoring')
+    mycmap = colors.ListedColormap(
+        ['w', '.75', 'b', 'r'], 'IntruderMonitoring')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['w','b','g','r','m',(1,1,0),'k'], 'BlocksWorld')
+    mycmap = colors.ListedColormap(
+        ['w', 'b', 'g', 'r', 'm', (1, 1, 0), 'k'], 'BlocksWorld')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['.5','k'], 'Actions')
+    mycmap = colors.ListedColormap(['.5', 'k'], 'Actions')
     cm.register_cmap(cmap=mycmap)
-    #mycmap = make_colormap({0:(.8,.7,0), 1: 'w', 2:(0,0,1)})  # orange to blue
-    mycmap = make_colormap({0:'r', 1: 'w', 2:'g'})  # red to blue
-    cm.register_cmap(cmap=mycmap,name='ValueFunction')
-    mycmap = colors.ListedColormap(['r','w','k'], 'InvertedPendulumActions')
+    # mycmap = make_colormap({0:(.8,.7,0), 1: 'w', 2:(0,0,1)})  # orange to
+    # blue
+    mycmap = make_colormap({0: 'r', 1: 'w', 2: 'g'})  # red to blue
+    cm.register_cmap(cmap=mycmap, name='ValueFunction')
+    mycmap = colors.ListedColormap(['r', 'w', 'k'], 'InvertedPendulumActions')
     cm.register_cmap(cmap=mycmap)
 
-    mycmap = colors.ListedColormap(['r','w','k'], 'MountainCarActions')
+    mycmap = colors.ListedColormap(['r', 'w', 'k'], 'MountainCarActions')
     cm.register_cmap(cmap=mycmap)
-    mycmap = colors.ListedColormap(['r','w','k','b'], '4Actions')
+    mycmap = colors.ListedColormap(['r', 'w', 'k', 'b'], '4Actions')
     cm.register_cmap(cmap=mycmap)
+
 
 def make_colormap(colors):
     """
@@ -331,16 +377,16 @@ def make_colormap(colors):
     n = len(z)
     z1 = min(z)
     zn = max(z)
-    x0 = (z - z1) / ((zn - z1)*1.)
+    x0 = (z - z1) / ((zn - z1) * 1.)
 
     CC = ColorConverter()
     R = []
     G = []
     B = []
     for i in arange(n):
-        #i'th color at level z[i]:
+        # i'th color at level z[i]:
         Ci = colors[z[i]]
-        if type(Ci) == str:
+        if isinstance(Ci, str):
             # a hex string of form '#ff0000' for example (for red)
             RGB = CC.to_rgb(Ci)
         else:
@@ -351,40 +397,51 @@ def make_colormap(colors):
         B.append(RGB[2])
 
     cmap_dict = {}
-    cmap_dict['red'] = [(x0[i],R[i],R[i]) for i in arange(len(R))]
-    cmap_dict['green'] = [(x0[i],G[i],G[i]) for i in arange(len(G))]
-    cmap_dict['blue'] = [(x0[i],B[i],B[i]) for i in arange(len(B))]
-    mymap = LinearSegmentedColormap('mymap',cmap_dict)
+    cmap_dict['red'] = [(x0[i], R[i], R[i]) for i in arange(len(R))]
+    cmap_dict['green'] = [(x0[i], G[i], G[i]) for i in arange(len(G))]
+    cmap_dict['blue'] = [(x0[i], B[i], B[i]) for i in arange(len(B))]
+    mymap = LinearSegmentedColormap('mymap', cmap_dict)
     return mymap
+
+
 def showcolors(cmap):
     from pylab import colorbar, clf, axes, linspace, pcolor, \
-         meshgrid, show, axis, title
-    #from scitools.easyviz.matplotlib_ import colorbar, clf, axes, linspace,\
+        meshgrid, show, axis, title
+    # from scitools.easyviz.matplotlib_ import colorbar, clf, axes, linspace,\
                  #pcolor, meshgrid, show, colormap
     clf()
-    x = linspace(0,1,21)
-    X,Y = meshgrid(x,x)
-    pcolor(X,Y,0.5*(X+Y), cmap=cmap, edgecolors='k')
+    x = linspace(0, 1, 21)
+    X, Y = meshgrid(x, x)
+    pcolor(X, Y, 0.5 * (X + Y), cmap=cmap, edgecolors='k')
     axis('equal')
     colorbar()
     title('Plot of x+y using colormap')
-def schlieren_colormap(color=[0,0,0]):
+
+
+def schlieren_colormap(color=[0, 0, 0]):
     """
     For Schlieren plots:
     """
     from numpy import linspace, array
-    if color=='k': color = [0,0,0]
-    if color=='r': color = [1,0,0]
-    if color=='b': color = [0,0,1]
-    if color=='g': color = [0,0.5,0]
-    if color=='y': color = [1,1,0]
-    color = array([1,1,1]) - array(color)
-    s  = linspace(0,1,20)
+    if color == 'k':
+        color = [0, 0, 0]
+    if color == 'r':
+        color = [1, 0, 0]
+    if color == 'b':
+        color = [0, 0, 1]
+    if color == 'g':
+        color = [0, 0.5, 0]
+    if color == 'y':
+        color = [1, 1, 0]
+    color = array([1, 1, 1]) - array(color)
+    s = linspace(0, 1, 20)
     colors = {}
     for key in s:
-        colors[key] = array([1,1,1]) - key**10 * color
+        colors[key] = array([1, 1, 1]) - key ** 10 * color
     schlieren_colors = make_colormap(colors)
     return schlieren_colors
+
+
 def make_amrcolors(nlevels=4):
     """
     Make lists of colors useful for distinguishing different grids when
@@ -401,13 +458,13 @@ def make_amrcolors(nlevels=4):
     # For 4 or less levels:
     linecolors = ['k', 'b', 'r', 'g']
     # Set bgcolors to white, then light shades of blue, red, green:
-    bgcolors = ['#ffffff','#ddddff','#ffdddd','#ddffdd']
+    bgcolors = ['#ffffff', '#ddddff', '#ffdddd', '#ddffdd']
     # Set bgcolors to light shades of yellow, blue, red, green:
-    #bgcolors = ['#ffffdd','#ddddff','#ffdddd','#ddffdd']
+    # bgcolors = ['#ffffdd','#ddddff','#ffdddd','#ddffdd']
 
     if nlevels > 4:
-        linecolors = 4*linecolors  # now has length 16
-        bgcolors = 4*bgcolors
+        linecolors = 4 * linecolors  # now has length 16
+        bgcolors = 4 * bgcolors
     if nlevels <= 16:
         linecolors = linecolors[:nlevels]
         bgcolors = bgcolors[:nlevels]
@@ -415,56 +472,81 @@ def make_amrcolors(nlevels=4):
         print "*** Warning, suggest nlevels <= 16"
 
     return (linecolors, bgcolors)
-def linearMap(x,a,b,A=0,B=1):
+
+
+def linearMap(x, a, b, A=0, B=1):
     # This function takes scalar X in range [a1,b1] and maps it to [A1,B1]
     # values oout of a and b are clipped to boundaries
     if a == b:
         res = B
     else:
-        res = (x-a)/(1.*(b-a))*(B-A)+A
-    if res < A: res = A
-    if res > B: res = B
+        res = (x - a) / (1. * (b - a)) * (B - A) + A
+    if res < A:
+        res = A
+    if res > B:
+        res = B
     return res
-def generalDot(x,y):
+
+
+def generalDot(x, y):
     if sp.issparse(x):
         #active_indices = x.nonzero()[0].flatten()
         return x.multiply(y).sum()
     else:
-        return dot(x,y)
+        return dot(x, y)
+
+
 def normpdf(x, mu, sigma):
-    return stats.norm.pdf(x,mu,sigma)
+    return stats.norm.pdf(x, mu, sigma)
+
+
 def factorial(x):
     return misc.factorial(x)
-def nchoosek(n,k):
-    return misc.comb(n,k)
-def findElem(x,A):
+
+
+def nchoosek(n, k):
+    return misc.comb(n, k)
+
+
+def findElem(x, A):
     if x in A:
         return A.index(x)
     else:
         return []
-def findElemArray1D(x,A): # Returns an array of indices in x where x[i] == A
-    res = where(A==x)
+
+
+def findElemArray1D(x, A):  # Returns an array of indices in x where x[i] == A
+    res = where(A == x)
     if len(res[0]):
         return res[0].flatten()
     else:
         return []
-def findElemArray2D(x,A):
+
+
+def findElemArray2D(x, A):
     # Find the index of element x in array A
-    res = where(A==x)
+    res = where(A == x)
     if len(res[0]):
         return res[0].flatten(), res[1].flatten()
     else:
         return [], []
-def findRow(r,X):
+
+
+def findRow(r, X):
     # return the indices of X that are equal to r.
     # r and X must have the same number of columns
-    #return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
-    #return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
-    ind = nonzero(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))]))
+    # return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
+    # return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
+    ind = nonzero(logical_and.reduce([X[:, i] == r[i]
+                  for i in arange(len(r))]))
     return ind[0]
+
+
 def decimals(x):
     # Returns the number of decimal points required to capture X
-     return -Decimal(str(x)).as_tuple().exponent
+    return -Decimal(str(x)).as_tuple().exponent
+
+
 def perms(X):
     # Returns all permutations
     # X = [2 3]
@@ -472,84 +554,102 @@ def perms(X):
     # X = [[1,3],[2,3]]
     # res = [[1,2],[1,3],[3,2],[3,3]
     # Outputs are in numpy array format
-    allPerms, _ = perms_r(X, perm_sample= array([]) , allPerms = None,ind = 0)
+    allPerms, _ = perms_r(X, perm_sample=array([]), allPerms=None, ind=0)
     return allPerms
 ######################################################
-def perms_r(X, perm_sample= array([]) , allPerms = None,ind = 0):
+
+
+def perms_r(X, perm_sample=array([]), allPerms=None, ind=0):
     if allPerms is None:
-        #Get memory
+        # Get memory
         if isinstance(X[0], list):
-            size        = prod([len(x) for x in X])
+            size = prod([len(x) for x in X])
         else:
-            size        = prod(X, dtype=integer)
-        allPerms    = zeros((size,len(X)))
+            size = prod(X, dtype=integer)
+        allPerms = zeros((size, len(X)))
     if len(X) == 0:
-        allPerms[ind,:] = perm_sample
+        allPerms[ind, :] = perm_sample
         perm_sample = array([])
-        ind = ind + 1;
+        ind = ind + 1
     else:
         if isinstance(X[0], list):
             for x in X[0]:
-                allPerms, ind = perms_r(X[1:],hstack((perm_sample, [x])), allPerms, ind)
+                allPerms, ind = perms_r(
+                    X[1:], hstack((perm_sample, [x])), allPerms, ind)
         else:
             for x in arange(X[0]):
-                allPerms, ind = perms_r(X[1:],hstack((perm_sample, [x])), allPerms, ind)
+                allPerms, ind = perms_r(
+                    X[1:], hstack((perm_sample, [x])), allPerms, ind)
     return allPerms, ind
 ######################################################
-def vec2id2(x,limits):
-    #returns a unique id by calculating the enumerated number corresponding to a vector given the number of bins in each dimension
+
+
+def vec2id2(x, limits):
+    # returns a unique id by calculating the enumerated number corresponding to a vector given the number of bins in each dimension
     # Slower than the other implementation by a factor of 2
-    if isinstance(x,int): return x
+    if isinstance(x, int):
+        return x
     lim_prod = cumprod(limits[:-1])
-    return x[0] + sum(map(lambda (x,y):x*y,zip(x[1:],lim_prod)))
-def vec2id(x,limits):
+    return x[0] + sum(map(lambda x_y: x_y[0] * x_y[1], zip(x[1:], lim_prod)))
+
+
+def vec2id(x, limits):
     # returns a unique id by calculating the enumerated number corresponding to a vector given the number of bins in each dimension
     # I use a recursive calculation to save time by looping once backward on the array = O(n)
     # for example:
     # vec2id([0,1],[5,10]) = 5
-    if isinstance(x,int): return x
+    if isinstance(x, int):
+        return x
     _id = 0
-    for d in arange(len(x)-1,-1,-1):
+    for d in arange(len(x) - 1, -1, -1):
         _id *= limits[d]
         _id += x[d]
 
     return _id
 ######################################################
-def id2vec(_id,limits):
-    #returns the vector corresponding to an id given the number of buckets in each dimension (invers of vec2id)
+
+
+def id2vec(_id, limits):
+    # returns the vector corresponding to an id given the number of buckets in each dimension (invers of vec2id)
     # for example:
     # id2vec(5,[5,10]) = [0,1]
     prods = cumprod(limits)
     s = [0] * len(limits)
-    for d in arange(len(prods)-1,0,-1):
+    for d in arange(len(prods) - 1, 0, -1):
 #       s[d] = _id / prods[d-1]
 #       _id %= prods[d-1]
-        s[d], _id = divmod(_id, prods[d-1])
+        s[d], _id = divmod(_id, prods[d - 1])
     s[0] = _id
     return s
-def bound_vec(X,limits):
-    #Input:
+
+
+def bound_vec(X, limits):
+    # Input:
     # given X as 1-by-n array
     # limits as 2-by-n array
     # Output:
     # array where each element is bounded between the corresponding bounds in the limits
     # i.e limits[i,0] <= output[i] <= limits[i,1]
-    MIN = limits[:,0]
-    MAX = limits[:,1]
-    X   = vstack((X,MIN))
-    X   = amax(X,axis=0)
-    X   = vstack((X,MAX))
-    X   = amin(X,axis=0)
+    MIN = limits[:, 0]
+    MAX = limits[:, 1]
+    X = vstack((X, MIN))
+    X = amax(X, axis=0)
+    X = vstack((X, MAX))
+    X = amin(X, axis=0)
     return X
-def bound(x,m,M = None):
-    #x should all be scalar
-    #m can be scalar or a [min,max] format
-    if M == None:
+
+
+def bound(x, m, M=None):
+    # x should all be scalar
+    # m can be scalar or a [min,max] format
+    if M is None:
         M = m[1]
         m = m[0]
     # bound x between min (m) and Max (M)
-    return min(max(x,m),M)
-def wrap(x,m,M):
+    return min(max(x, m), M)
+
+
+def wrap(x, m, M):
     # wrap m between min (m) and Max (M)
     diff = M - m
     while x > M:
@@ -557,66 +657,88 @@ def wrap(x,m,M):
     while x < m:
         x = x + diff
     return x
-def shout(obj,s=''):
-    # Print the name of the object and then the message. Use to remember to comment prints
+
+
+def shout(obj, s=''):
+    # Print the name of the object and then the message. Use to remember to
+    # comment prints
     print "In " + className(obj) + " :" + str(s)
-def powerset(iterable, ascending = 1):
+
+
+def powerset(iterable, ascending=1):
     s = list(iterable)
     if ascending:
-        return chain.from_iterable(combinations(s, r) for r in arange(len(s)+1))
+        return (
+            chain.from_iterable(combinations(s, r) for r in arange(len(s) + 1))
+        )
     else:
-        return chain.from_iterable(combinations(s, r) for r in arange(len(s)+1,-1,-1))
+        return (
+            chain.from_iterable(combinations(s, r)
+                                for r in arange(len(s) + 1, -1, -1))
+        )
+
+
 def printClass(obj):
-        print className(obj)
-        print '======================================='
-        for property, value in vars(obj).iteritems():
-            print property, ": ", value
+    print className(obj)
+    print '======================================='
+    for property, value in vars(obj).iteritems():
+        print property, ": ", value
+
+
 def normalize(x):
     # normalize numpy array x
-    return x/sum([e**2 for e in x])
-def addNewElementForAllActions(x,a,newElem = None):
-        # When features are expanded several parameters such as the weight vector should expand. Since we are adding the new feature for all actions
-        # these vectors should expand by size of the action as for each action phi(s) is expand by 1 element.
-        # Because we later stack all of them we need this function to insert the new element in proper locations
-        # Add a new 0 weight corresponding to the new added feature for all actions.
-        # new elem = None means just insert zeros for new elements. x is a numpy array
-        # example:
-        # x = [1,2,3,4], a = 2, newElem = None => [1,2,0,3,4,0]
-        # x = [1,2,3], a = 3, newElem = [1,1,1] => [1,1,2,1,3,1]
-        if newElem is None:
-            newElem = zeros((a,1))
-        if len(x) == 0:
-            return newElem.flatten()
-        else:
-            x   = x.reshape(a,-1) # -1 means figure the other dimension yourself
-            x   = hstack((x,newElem))
-            x   = x.reshape(1,-1).flatten()
-            return x
-def solveLinear(A,b):
+    return x / sum([e ** 2 for e in x])
+
+
+def addNewElementForAllActions(x, a, newElem=None):
+    # When features are expanded several parameters such as the weight vector should expand. Since we are adding the new feature for all actions
+    # these vectors should expand by size of the action as for each action phi(s) is expand by 1 element.
+    # Because we later stack all of them we need this function to insert the new element in proper locations
+    # Add a new 0 weight corresponding to the new added feature for all actions.
+    # new elem = None means just insert zeros for new elements. x is a numpy array
+    # example:
+    # x = [1,2,3,4], a = 2, newElem = None => [1,2,0,3,4,0]
+    # x = [1,2,3], a = 3, newElem = [1,1,1] => [1,1,2,1,3,1]
+    if newElem is None:
+        newElem = zeros((a, 1))
+    if len(x) == 0:
+        return newElem.flatten()
+    else:
+        x = x.reshape(a, -1)  # -1 means figure the other dimension yourself
+        x = hstack((x, newElem))
+        x = x.reshape(1, -1).flatten()
+        return x
+
+
+def solveLinear(A, b):
     # Solve the linear equation Ax=b.
     # return x and the time for solve
-    error = inf # just to be safe, initialize error variable here
+    error = inf  # just to be safe, initialize error variable here
     if sp.issparse(A):
-        #print 'sparse', type(A)
+    # print 'sparse', type(A)
         start_log_time = clock()
-        result  = slinalg.spsolve(A,b)
+        result = slinalg.spsolve(A, b)
         solve_time = deltaT(start_log_time)
-        error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
-        #For extensive comparision of methods refer to InversionComparison.txt
+        error = linalg.norm((A * result.reshape(-1, 1) - b.reshape(-1, 1))[0])
+        # For extensive comparision of methods refer to InversionComparison.txt
     else:
-        #print 'not sparse, type',type(A)
+        # print 'not sparse, type',type(A)
         if sp.issparse(A):
             A = A.todense()
         # Regularize A
-        #result = linalg.lstsq(A,b); result = result[0] # Extract just the answer
+        # result = linalg.lstsq(A,b); result = result[0] # Extract just the
+        # answer
         start_log_time = clock()
-        result = linalg.solve(A,b)
+        result = linalg.solve(A, b)
         solve_time = deltaT(start_log_time)
 
-        if isinstance(A, numpy.matrixlib.defmatrix.matrix): # use numpy matrix multiplication
-            error = linalg.norm((A*result.reshape(-1,1) - b.reshape(-1,1))[0])
-        elif isinstance(A, numpy.ndarray): # use array multiplication
-            error = linalg.norm((dot(A, result.reshape(-1,1)) - b.reshape(-1,1))[0])
+        # use numpy matrix multiplication
+        if isinstance(A, numpy.matrixlib.defmatrix.matrix):
+            error = linalg.norm(
+                (A * result.reshape(-1, 1) - b.reshape(-1, 1))[0])
+        elif isinstance(A, numpy.ndarray):  # use array multiplication
+            error = linalg.norm(
+                (dot(A, result.reshape(-1, 1)) - b.reshape(-1, 1))[0])
         else:
             print 'Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.'
             sys.exit(1)
@@ -624,140 +746,186 @@ def solveLinear(A,b):
     if error > RESEDUAL_THRESHOLD:
         print "||Ax-b|| = %0.1f" % error
     return result.ravel(), solve_time
+
+
 def rows(A):
     # return the rows of matrix A
     r, c = A.shape
     return r
+
+
 def cols(A):
     # return the rows of matrix A
     r, c = A.shape
     return c
+
+
 def rank(A, eps=1e-12):
     u, s, v = linalg.svd(A)
     return len([x for x in s if abs(x) > eps])
+
+
 def easy2read(A, _precision=3):
-    # returns an array easy to read (used for debugging mainly. _precision is the number of decimal digits
+    # returns an array easy to read (used for debugging mainly. _precision is
+    # the number of decimal digits
     return array_repr(A, precision=_precision, suppress_small=True)
-def fromAtoB(x1,y1,x2,y2,color = 'k', connectionstyle="arc3,rad=-0.4",shrinkA=10,shrinkB=10,arrowstyle="fancy",ax = None):
-    #draw an arrow from point A=(x1,y1) to point B=(x2,y2)
+
+
+def fromAtoB(x1, y1, x2, y2, color='k', connectionstyle="arc3,rad=-0.4",
+             shrinkA=10, shrinkB=10, arrowstyle="fancy", ax=None):
+    # draw an arrow from point A=(x1,y1) to point B=(x2,y2)
     # ax is optional to specifify the axis used for drawing
     if ax is None:
         return pl.annotate("",
-                xy=(x2,y2), xycoords='data',
-                xytext=(x1,y1), textcoords='data',
-                arrowprops=dict(arrowstyle=arrowstyle, #linestyle="dashed",
-                                color= color,
-                                shrinkA=shrinkA, shrinkB=shrinkB,
-                                patchA=None,
-                                patchB=None,
-                                connectionstyle=connectionstyle),
-                )
+                           xy=(x2, y2), xycoords='data',
+                           xytext=(x1, y1), textcoords='data',
+                           arrowprops=dict(
+                               arrowstyle=arrowstyle,  # linestyle="dashed",
+                               color=color,
+                               shrinkA=shrinkA, shrinkB=shrinkB,
+                               patchA=None,
+                               patchB=None,
+                               connectionstyle=connectionstyle),
+                           )
     else:
         return ax.annotate("",
-                xy=(x2,y2), xycoords='data',
-                xytext=(x1,y1), textcoords='data',
-                arrowprops=dict(arrowstyle=arrowstyle, #linestyle="dashed",
-                                color= color,
-                                shrinkA=shrinkA, shrinkB=shrinkB,
-                                patchA=None,
-                                patchB=None,
-                                connectionstyle=connectionstyle),
-                )
+                           xy=(x2, y2), xycoords='data',
+                           xytext=(x1, y1), textcoords='data',
+                           arrowprops=dict(
+                               arrowstyle=arrowstyle,  # linestyle="dashed",
+                               color=color,
+                               shrinkA=shrinkA, shrinkB=shrinkB,
+                               patchA=None,
+                               patchB=None,
+                               connectionstyle=connectionstyle),
+                           )
 
-def drawHist(data,bins=50,fig=101):
-    hist, bins = histogram(data,bins = bins)
-    width = 0.7*(bins[1]-bins[0])
-    center = (bins[:-1]+bins[1:])/2
+
+def drawHist(data, bins=50, fig=101):
+    hist, bins = histogram(data, bins=bins)
+    width = 0.7 * (bins[1] - bins[0])
+    center = (bins[:-1] + bins[1:]) / 2
     pl.figure(fig)
-    pl.bar(center, hist, align = 'center', width = width)
+    pl.bar(center, hist, align='center', width=width)
+
+
 def nonZeroIndex(A):
     # Given a 1D array it returns the list of non-zero index of the Array
     # [0,0,0,1] => [4]
     return A.nonzero()[0]
-def sp_matrix(m,n = 1, dtype = 'float'):
+
+
+def sp_matrix(m, n=1, dtype='float'):
     # returns a sparse matrix with m rows and n columns, with the dtype
     # We use dok_matrix for sparse matrixies
-    return sp.csr_matrix((m,n),dtype=dtype)
+    return sp.csr_matrix((m, n), dtype=dtype)
+
+
 def sp_dot_array(sp_m, A):
-    #Efficient dot product of matrix sp_m in shape of 1-by-p and array A with p elements
+    # Efficient dot product of matrix sp_m in shape of 1-by-p and array A with
+    # p elements
     assert sp_m.shape[1] == len(A)
     ind = sp_m.nonzero()[1]
     if len(ind) == 0:
         return 0
     if sp_m.dtype == 'bool':
-        #Just sum the corresponding indexes of theta
+        # Just sum the corresponding indexes of theta
         return sum(A[ind])
     else:
         # Multiply by feature values since they are not binary
 
-        return sum([A[i]*sp_m[0,i] for i in ind])
+        return sum([A[i] * sp_m[0, i] for i in ind])
+
+
 def sp_dot_sp(sp_1, sp_2):
-    #Efficient dot product of matrix sp_m in shape of p-by-1 and array A with p elements
-    assert sp_1.shape[0] == sp_2.shape[0] and sp_1.shape[1] == 1 and sp_2.shape[1] == 1
+    # Efficient dot product of matrix sp_m in shape of p-by-1 and array A with
+    # p elements
+    assert sp_1.shape[
+        0] == sp_2.shape[
+        0] and sp_1.shape[
+        1] == 1 and sp_2.shape[
+        1] == 1
     ind_1 = sp_1.nonzero()[0]
     ind_2 = sp_2.nonzero()[0]
-    if len(ind_1)*len(ind_2) == 0:
+    if len(ind_1) * len(ind_2) == 0:
         return 0
 
-    ind = intersect1d(ind_1,ind_2)
+    ind = intersect1d(ind_1, ind_2)
     # See if they are boolean
     if sp_1.dtype == bool and sp_2.dtype == bool:
         return len(ind)
     sp_bool = None
     if sp_1.dtype == bool:
         sp_bool = sp_1
-        sp      = sp_2
+        sp = sp_2
     if sp_2.dtype == bool:
         sp_bool = sp_2
-        sp      = sp_1
+        sp = sp_1
     if sp_bool is None:
         # Multiply by feature values since they are not binary
-        return sum([sp_1[i,0]*sp_2[i,0] for i in ind])
+        return sum([sp_1[i, 0] * sp_2[i, 0] for i in ind])
     else:
-        return sum([sp[i,0] for i in ind])
-def sp_add2_array(sp,A):
+        return sum([sp[i, 0] for i in ind])
+
+
+def sp_add2_array(sp, A):
     # sp is a sparse matrix p-by-1
     # A is an array of len p
     # this function return an array corresponding to A+sp
     ind = sp.nonzero()[0]
     for i in ind:
-        A[i] += sp[i,0]
+        A[i] += sp[i, 0]
     return A
+
+
 def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
 
-    path,char,filename = fullfilename.rpartition('/')
+    path, char, filename = fullfilename.rpartition('/')
     if not os.path.exists(path):
         os.makedirs(path)
-def hasFunction(object,methodname):
+
+
+def hasFunction(object, methodname):
     method = getattr(object, methodname, None)
     return callable(method)
-def pretty(X,format='%0.3f'):
+
+
+def pretty(X, format='%0.3f'):
     # convert a numpy array in given format to str
     # [1,2,3], %0.3f => 1.000    2.000    3.000
     format = format + '\t'
-    return ''.join(format% x for x in X)
+    return ''.join(format % x for x in X)
+
+
 def regularize(A):
     # Adds REGULARIZATION*I To A. This is often done before calling the linearSolver
     # A has to be square matrix
-    x,y = A.shape
-    assert x==y # Square matrix
+    x, y = A.shape
+    assert x == y  # Square matrix
     if sp.issparse(A):
-        A = A + REGULARIZATION*sp.eye(x,x)
-        #print 'REGULARIZE', type(A)
+        A = A + REGULARIZATION * sp.eye(x, x)
+        # print 'REGULARIZE', type(A)
     else:
-        #print 'REGULARIZE', type(A)
+        # print 'REGULARIZE', type(A)
         for i in arange(x):
-            A[i,i] += REGULARIZATION
+            A[i, i] += REGULARIZATION
     return A
+
+
 def sparsity(A):
     # Returns the percent [0-100] of elements of A that are 0
-    return (1-count_nonzero(A)/(prod(A.shape)*1.))*100
-def printMatrix(A,type='int'):
-    #print a matrix in a desired format
-    print array(A,dtype=type)
-def incrementalAverageUpdate(avg,sample,sample_number):
-    return avg+(sample-avg)/(sample_number*1.)
+    return (1 - count_nonzero(A) / (prod(A.shape) * 1.)) * 100
+
+
+def printMatrix(A, type='int'):
+    # print a matrix in a desired format
+    print array(A, dtype=type)
+
+
+def incrementalAverageUpdate(avg, sample, sample_number):
+    return avg + (sample - avg) / (sample_number * 1.)
+
 
 def isOnCluster():
     """
@@ -766,9 +934,12 @@ def isOnCluster():
     """
     return False
 
+
 def rootMeanSquareError(X):
-    return sqrt(mean(X**2))
-def padZeros(X,L):
+    return sqrt(mean(X ** 2))
+
+
+def padZeros(X, L):
     # X is a 1D numpy array
     # L is an int
     # if len(X) < L pad zeros to X so it will have length L
@@ -778,6 +949,7 @@ def padZeros(X,L):
         return new_X
     else:
         return X
+
 
 def expectedPhiNS(p_vec, ns_vec, representation):
     # Primarily for use with domain.expectedStep()
@@ -794,14 +966,14 @@ def expectedPhiNS(p_vec, ns_vec, representation):
     #  t: k-by-1    terminal values
 
 
-def allExpectedPhiNS(domain, representation, policy, allStates = None):
+def allExpectedPhiNS(domain, representation, policy, allStates=None):
     # Returns Phi' matrix with dimensions n x k,
     # n: number of possible states, and
     # k: number of features
-    if allStates == None:
+    if allStates is None:
         allStates = domain.allStates()
     allExpPhiNS = zeros((len(allStates), representation.features_num))
-    for i,s in enumerate(allStates):
+    for i, s in enumerate(allStates):
 #         print s
 #         print policy.pi(s)
 #         print 'looping',i, policy.pi(s)
@@ -809,6 +981,7 @@ def allExpectedPhiNS(domain, representation, policy, allStates = None):
         p_vec, r_vec, ns_vec, t_vec = domain.expectedStep(s, policy.pi(s))
         allExpPhiNS[i][:] = expectedPhiNS(p_vec, ns_vec, representation)
     return allExpPhiNS
+
 
 def rk4(derivs, y0, t, *args, **kwargs):
     """
@@ -861,39 +1034,39 @@ def rk4(derivs, y0, t, *args, **kwargs):
     scipy.integrate tools rather than this function.
     """
 
-    try: Ny = len(y0)
+    try:
+        Ny = len(y0)
     except TypeError:
-        yout = np.zeros( (len(t),), np.float_)
+        yout = np.zeros((len(t),), np.float_)
     else:
-        yout = np.zeros( (len(t), Ny), np.float_)
-
+        yout = np.zeros((len(t), Ny), np.float_)
 
     yout[0] = y0
     i = 0
 
-    for i in np.arange(len(t)-1):
+    for i in np.arange(len(t) - 1):
 
         thist = t[i]
-        dt = t[i+1] - thist
-        dt2 = dt/2.0
+        dt = t[i + 1] - thist
+        dt2 = dt / 2.0
         y0 = yout[i]
 
         k1 = np.asarray(derivs(y0, thist, *args, **kwargs))
-        k2 = np.asarray(derivs(y0 + dt2*k1, thist+dt2, *args, **kwargs))
-        k3 = np.asarray(derivs(y0 + dt2*k2, thist+dt2, *args, **kwargs))
-        k4 = np.asarray(derivs(y0 + dt*k3, thist+dt, *args, **kwargs))
-        yout[i+1] = y0 + dt/6.0*(k1 + 2*k2 + 2*k3 + k4)
+        k2 = np.asarray(derivs(y0 + dt2 * k1, thist + dt2, *args, **kwargs))
+        k3 = np.asarray(derivs(y0 + dt2 * k2, thist + dt2, *args, **kwargs))
+        k4 = np.asarray(derivs(y0 + dt * k3, thist + dt, *args, **kwargs))
+        yout[i + 1] = y0 + dt / 6.0 * (k1 + 2 * k2 + 2 * k3 + k4)
     return yout
 
 
 # Setup the latdex path
-#if sys.platform == 'darwin':
+# if sys.platform == 'darwin':
     #os.environ['PATH'] += ':' + TEXPATH
-#if sys.platform == 'win32':
+# if sys.platform == 'win32':
 #    print os.environ['PATH']
     #os.environ['PATH'] += ';' + TEXPATH
 
-#def isLatexConfigured():
+# def isLatexConfigured():
 #    return False
 #    try:
 #        pl.subplot(1,3,2)
@@ -906,28 +1079,28 @@ def rk4(derivs, y0, t, *args, **kwargs):
 #        print "Matplotlib failed to plot, likely due to a Latex problem."
 #        print "Check that your TEXPATH is set correctly in config.py,"
 #        print "and that latex is installed correctly."
-#        print "\nDisabling latex functionality, using matplotlib native fonts."
+# print "\nDisabling latex functionality, using matplotlib native fonts."
 
 if module_exists('matplotlib'):
     createColorMaps()
-    rc('font',family='serif', size=15, weight="bold", **{"sans-serif":["Helvetica"]})
+    rc('font', family='serif', size=15,
+       weight="bold", **{"sans-serif": ["Helvetica"]})
     rc("axes", labelsize=15)
     rc("xtick", labelsize=15)
     rc("ytick", labelsize=15)
-    #rc('text',usetex=False)
+    # rc('text',usetex=False)
 
     # Try to use latex fonts, if available
-    #rc('text',usetex=True)
+    # rc('text',usetex=True)
 
-#Colors
-PURPLE  = '\033[95m'
-BLUE    = '\033[94m'
-GREEN   = '\033[92m'
-YELLOW  = '\033[93m'
-RED     = '\033[91m'
+# Colors
+PURPLE = '\033[95m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+RED = '\033[91m'
 NOCOLOR = '\033[0m'
 RESEDUAL_THRESHOLD = 1e-7
 REGULARIZATION = 1e-6
 FONTSIZE = 15
-SEP_LINE = "="*60
-
+SEP_LINE = "=" * 60

@@ -19,7 +19,3 @@ except ImportError:
     FastKiFDD = KernelizediFDD
 from LocalBases import RandomLocalBases
 from LocalBases import NonparametricLocalBases
-
-
-
-

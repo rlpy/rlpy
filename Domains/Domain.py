@@ -9,6 +9,7 @@ __license__ = "BSD 3-Clause"
 
 
 class Domain(object):
+
     """
     The Domain controls the environment in which the
     :py:class:`~Agents.Agent.Agent` resides as well as the reward function the
@@ -76,7 +77,9 @@ class Domain(object):
             logger = Tools.Logger()
         self.logger = logger
         self.state_space_dims = len(self.statespace_limits)
-        self.gamma = float(self.gamma)  # To make sure type of gamma is float. This will later on be used in LSPI to force A matrix to be float
+        # To make sure type of gamma is float. This will later on be used in
+        # LSPI to force A matrix to be float
+        self.gamma = float(self.gamma)
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
         # The original limits will be saved in self.discrete_statespace_limits
         self._extendDiscreteDimensions()
@@ -108,7 +111,7 @@ Gamma:      {self.gamma}
         See :py:meth:`~Domains.Domain.Domain.showDomain()` and
         :py:meth:`~Domains.Domain.Domain.showLearning()`,
         both called by this method.
-        
+
         .. note::
             Some domains override this function to allow an optional *s*
             parameter to be passed, which overrides the *self.state* internal
@@ -177,7 +180,6 @@ Gamma:      {self.gamma}
         """
         return np.arange(self.actions_num)
 
-
     # TODO: change 'a' to be 'aID' to make it clearer when we refer to
     # actions vs. integer IDs of actions?  They aren't always interchangeable.
     def step(self, a):
@@ -243,7 +245,6 @@ Gamma:      {self.gamma}
             if d not in self.continuous_dims:
                 self.statespace_limits[d, 0] += -.5
                 self.statespace_limits[d, 1] += +.5
-
 
     def sampleStep(self, a, num_samples):
         """

@@ -4,7 +4,7 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
@@ -27,7 +27,7 @@ class Question(object):
         self.maxPoints = int(questionDict['max_points'])
         self.testCases = []
         self.display = display
-    
+
     def getDisplay(self):
         return self.display
 
@@ -36,17 +36,20 @@ class Question(object):
 
     # Note that 'thunk' must be a function which accepts a single argument,
     # namely a 'grading' object
-    def addTestCase(self, testCase, thunk):        
+    def addTestCase(self, testCase, thunk):
         self.testCases.append((testCase, thunk))
 
     def execute(self, grades):
         self.raiseNotDefined()
 
 # Question in which all test cases must be passed in order to receive credit
+
+
 class PassAllTestsQuestion(Question):
 
     def execute(self, grades):
-        # TODO: is this the right way to use grades?  The autograder doesn't seem to use it.            
+        # TODO: is this the right way to use grades?  The autograder doesn't
+        # seem to use it.
         testsFailed = False
         grades.assignZeroCredit()
         for _, f in self.testCases:
@@ -56,26 +59,28 @@ class PassAllTestsQuestion(Question):
             grades.fail("Tests failed.")
         else:
             grades.assignFullCredit()
-            
+
 
 # Question in which predict credit is given for test cases with a ``points'' property.
 # All other tests are mandatory and must be passed.
 class HackedPartialCreditQuestion(Question):
 
     def execute(self, grades):
-        # TODO: is this the right way to use grades?  The autograder doesn't seem to use it.            
+        # TODO: is this the right way to use grades?  The autograder doesn't
+        # seem to use it.
         grades.assignZeroCredit()
-        
+
         points = 0
         passed = True
         for testCase, f in self.testCases:
             testResult = f(grades)
             if "points" in testCase.testDict:
-                if testResult: points += float(testCase.testDict["points"])                
+                if testResult:
+                    points += float(testCase.testDict["points"])
             else:
-                passed = passed and testResult        
-        
-        ## FIXME: Below terrible hack to match q3's logic
+                passed = passed and testResult
+
+        # FIXME: Below terrible hack to match q3's logic
         if int(points) == self.maxPoints and not passed:
             grades.assignZeroCredit()
         else:
@@ -83,6 +88,7 @@ class HackedPartialCreditQuestion(Question):
 
 
 class Q6PartialCreditQuestion(Question):
+
     """Fails any test which returns False, otherwise doesn't effect the grades object.
     Partial credit tests will add the required points."""
 
@@ -94,35 +100,34 @@ class Q6PartialCreditQuestion(Question):
             results.append(f(grades))
         if False in results:
             grades.assignZeroCredit()
-            
+
+
 class PartialCreditQuestion(Question):
+
     """Fails any test which returns False, otherwise doesn't effect the grades object.
     Partial credit tests will add the required points."""
 
     def execute(self, grades):
         grades.assignZeroCredit()
-        
+
         for _, f in self.testCases:
             if not f(grades):
                 grades.assignZeroCredit()
                 grades.fail("Tests failed.")
                 return False
-            
 
 
 class NumberPassedQuestion(Question):
+
     """Grade is the number of test cases passed."""
 
     def execute(self, grades):
         grades.addPoints([f(grades) for _, f in self.testCases].count(True))
 
 
-
-
-
-# Template modeling a generic test case 
+# Template modeling a generic test case
 class TestCase(object):
-    
+
     def raiseNotDefined(self):
         print 'Method not implemented: %s' % inspect.stack()[1][3]
         sys.exit(1)
@@ -138,7 +143,7 @@ class TestCase(object):
 
     def __str__(self):
         self.raiseNotDefined()
-        
+
     def execute(self, grades, moduleDict, solutionDict):
         self.raiseNotDefined()
 
@@ -163,23 +168,24 @@ class TestCase(object):
         for line in self.messages:
             grades.addMessage('    %s' % (line,))
         return False
-    
+
     # This should really be question level?
     #
     def testPartial(self, grades, points, maxPoints):
         grades.addPoints(points)
         extraCredit = max(0, points - maxPoints)
         regularCredit = points - extraCredit
-        
-        grades.addMessage('%s: %s (%s of %s points)' % ("PASS" if points >= maxPoints else "FAIL", self.path, regularCredit, maxPoints))
+
+        grades.addMessage(
+            '%s: %s (%s of %s points)' %
+            ("PASS" if points >= maxPoints else "FAIL", self.path, regularCredit, maxPoints))
         if extraCredit > 0:
             grades.addMessage('EXTRA CREDIT: %s points' % (extraCredit,))
-        
+
         for line in self.messages:
             grades.addMessage('    %s' % (line,))
-        
-        return True
-        
-    def addMessage(self, message):
-        self.messages.extend(message.split('\n'))        
 
+        return True
+
+    def addMessage(self, message):
+        self.messages.extend(message.split('\n'))

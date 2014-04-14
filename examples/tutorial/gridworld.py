@@ -27,17 +27,17 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-qlearning"):
     """
     logger = Logger()
 
-    ## Domain:
+    # Domain:
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
-    ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    # Representation
+    representation = Tabular(domain, logger, discretization=20)
 
-    ## Policy
+    # Policy
     policy = eGreedy(representation, logger, epsilon=0.2)
 
-    ## Agent
+    # Agent
     agent = Q_Learning(representation=representation, policy=policy,
                        domain=domain, logger=logger,
                        initial_alpha=0.1,

@@ -10,6 +10,7 @@ from Policies import GibbsPolicy
 from Experiments import MDPSolverExperiment
 import os
 
+
 def make_experiment(id=1, path="./Results/Temp", show=False):
     """
     Each file specifying an experimental setup should contain a
@@ -20,19 +21,25 @@ def make_experiment(id=1, path="./Results/Temp", show=False):
     @param path: output directory where logs and results are stored
     """
 
-    ## Logging
+    # Logging
     logger = Logger()
 
-    ## Domain:
+    # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
-    ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    # Representation
+    representation = Tabular(domain, logger, discretization=20)
 
-    ## Agent
-    agent = PolicyIteration(id, representation, domain, logger, project_path=path, show=show)
+    # Agent
+    agent = PolicyIteration(
+        id,
+        representation,
+        domain,
+        logger,
+        project_path=path,
+        show=show)
 
     return MDPSolverExperiment(agent, domain)
 
@@ -40,4 +47,3 @@ if __name__ == '__main__':
     path = "./Results/Temp/{domain}/{agent}/{representation}/"
     experiment = make_experiment(1, path=path)
     experiment.run(show=True)
-

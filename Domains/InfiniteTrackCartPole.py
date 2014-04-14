@@ -71,7 +71,7 @@ class InfTrackCartPole(CartPoleBase):
     __author__ = "Robert H. Klein"
 
     #: Default limits on theta
-    ANGLE_LIMITS = [-np.pi/15.0, np.pi/15.0]
+    ANGLE_LIMITS = [-np.pi / 15.0, np.pi / 15.0]
     #: Default limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
     #: m - Default limits on cart position (this state is ignored by the agent)
@@ -148,8 +148,8 @@ class InfTrackCartPole(CartPoleBase):
     def showLearning(self, representation):
         (thetas, theta_dots) = self._setup_learning(representation)
 
-        pi = np.zeros( (len(theta_dots), len(thetas)),'uint8' )
-        V = np.zeros( (len(theta_dots), len(thetas)) )
+        pi = np.zeros((len(theta_dots), len(thetas)), 'uint8')
+        V = np.zeros((len(theta_dots), len(thetas)))
 
         for row, thetaDot in enumerate(theta_dots):
             for col, theta in enumerate(thetas):
@@ -161,16 +161,17 @@ class InfTrackCartPole(CartPoleBase):
                 # Array of all possible actions at state s
                 As = self.possibleActions(s=s)
                 # If multiple optimal actions, pick one randomly
-                a = np.random.choice(As[Qs.max()==Qs])
-                # Assign pi to be an optimal action (which maximizes Q-function)
+                a = np.random.choice(As[Qs.max() == Qs])
+                # Assign pi to be an optimal action (which maximizes
+                # Q-function)
                 pi[row, col] = a
                 # Assign V to be the value of the Q-function under optimal
                 # action
-                V[row,col] = max(Qs)
+                V[row, col] = max(Qs)
 
         self._plot_policy(pi)
         self._plot_valfun(V)
-        
+
 #         plt.draw()
 
 
@@ -198,7 +199,7 @@ class InfCartPoleBalance(InfTrackCartPole):
     #: Reward received when the pendulum falls below the horizontal
     FELL_REWARD = -1
     #: Limit on theta (Note that this may affect your representation's discretization)
-    ANGLE_LIMITS = [-np.pi/2.0, np.pi/2.0]
+    ANGLE_LIMITS = [-np.pi / 2.0, np.pi / 2.0]
     #: Limits on pendulum rate, per 1Link of Lagoudakis & Parr
     ANGULAR_RATE_LIMITS = [
         -2., 2.]  # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
@@ -214,7 +215,7 @@ class InfCartPoleBalance(InfTrackCartPole):
         # Returns the initial state, pendulum vertical
         # Initial state is uniformly random between [-.2,.2] for both
         # dimensions
-        self.state = (self.random_state.rand(2)*2-1)*0.2
+        self.state = (self.random_state.rand(2) * 2 - 1) * 0.2
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def _getReward(self, a, s=None):
@@ -228,7 +229,10 @@ class InfCartPoleBalance(InfTrackCartPole):
     def isTerminal(self, s=None):
         if s is None:
             s = self.state
-        return not (-np.pi/2.0 < s[StateIndex.THETA] < np.pi/2.0)  # per L & P 2003
+        return (
+            # per L & P 2003
+            not (-np.pi / 2.0 < s[StateIndex.THETA] < np.pi / 2.0)
+        )
 
 
 class InfCartPoleSwingUp(InfTrackCartPole):
@@ -248,11 +252,11 @@ class InfCartPoleSwingUp(InfTrackCartPole):
     __author__ = "Robert H. Klein"
 
     #: Goal region for reward
-    GOAL_LIMITS = [-np.pi/6, np.pi/6]
+    GOAL_LIMITS = [-np.pi / 6, np.pi / 6]
     #: Limits on theta
     ANGLE_LIMITS = [-np.pi, np.pi]
     #: Limits on pendulum rate
-    ANGULAR_RATE_LIMITS = [-3*np.pi, 3*np.pi]
+    ANGULAR_RATE_LIMITS = [-3 * np.pi, 3 * np.pi]
     #: Max number of steps per trajectory
     episodeCap = 300
     #: Discount factor
@@ -276,7 +280,12 @@ class InfCartPoleSwingUp(InfTrackCartPole):
         """
         if s is None:
             s = self.state
-        return self.GOAL_REWARD if self.GOAL_LIMITS[0] < s[StateIndex.THETA] < self.GOAL_LIMITS[1] else 0
+        return (
+            self.GOAL_REWARD if self.GOAL_LIMITS[
+                0] < s[
+                StateIndex.THETA] < self.GOAL_LIMITS[
+                1] else 0
+        )
 
     def isTerminal(self, s=None):
         return False

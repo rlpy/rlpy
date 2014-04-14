@@ -13,6 +13,7 @@ __author__ = "Christoph Dann"
 
 
 class NaturalActorCritic(Agent):
+
     """
     the step-based Natural Actor Critic algorithm
     as described in algorithm 1 of
@@ -20,7 +21,8 @@ class NaturalActorCritic(Agent):
         Neurocomputing 71, 1180-1190 (2008).
     """
 
-    min_cos = np.cos(np.pi/180.)  # minimum for the cosine of the current and last gradient
+    # minimum for the cosine of the current and last gradient
+    min_cos = np.cos(np.pi / 180.)
 
     def __init__(self, representation, policy, domain, logger, forgetting_rate,
                  min_steps_between_updates, max_steps_between_updates, lam,
@@ -93,7 +95,8 @@ class NaturalActorCritic(Agent):
                 # update policy
                 self.policy.theta = self.policy.theta + self.alpha * w
                 self.last_w = w
-                self.logger.log("Policy updated, norm of gradient {}".format(np.linalg.norm(w)))
+                self.logger.log(
+                    "Policy updated, norm of gradient {}".format(np.linalg.norm(w)))
                 # forget statistics
                 self.z *= 1. - self.forgetting_rate
                 self.A *= 1. - self.forgetting_rate
@@ -109,8 +112,7 @@ class NaturalActorCritic(Agent):
         """
         if hasattr(self, "last_w"):
             cos = np.dot(w, self.last_w) / np.linalg.norm(w) \
-                    / np.linalg.norm(self.last_w)
+                / np.linalg.norm(self.last_w)
             return cos < self.min_cos
         else:
             return False
-

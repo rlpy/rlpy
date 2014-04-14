@@ -10,6 +10,7 @@ __author__ = "Alborz Geramifard"
 
 
 class Agent(object):
+
     """
     The Agent receives observations from the Domain and performs actions to
     obtain some goal.
@@ -39,38 +40,39 @@ class Agent(object):
 
     """
     # The Representation to be used by the Agent
-    representation      = None
+    representation = None
     # The domain the agent interacts with
-    domain              = None
+    domain = None
     # The policy to be used by the agent
-    policy              = None
+    policy = None
     # The initial learning rate. Note that initial_alpha should be set to
     # 1 for automatic learning rate; otherwise, initial_alpha will act as
     # a permanent upper-bound on alpha.
-    initial_alpha       = 0.1
+    initial_alpha = 0.1
     #: The learning rate
-    alpha               = 0
-    #: Only used in the 'dabney' method of learning rate update. 
-    #: This value is updated in the updateAlpha method. We use the rate 
+    alpha = 0
+    #: Only used in the 'dabney' method of learning rate update.
+    #: This value is updated in the updateAlpha method. We use the rate
     #: calculated by [Dabney W 2012]: http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-    candid_alpha        = 0
+    candid_alpha = 0
     #: The eligibility trace, which marks states as eligible for a learning
     #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
     #: parameter lambda is set. See:
     #: http://www.incompleteideas.net/sutton/book/7/node1.html
-    eligibility_trace   = []
+    eligibility_trace = []
     #: A simple object that records the prints in a file
-    logger              = None
+    logger = None
     #: Used by some alpha_decay modes
-    episode_count       = 0
+    episode_count = 0
     # Decay mode of learning rate. Options are determined by valid_decay_modes.
-    alpha_decay_mode    = 'dabney'
+    alpha_decay_mode = 'dabney'
     # Valid selections for the ``alpha_decay_mode``.
-    valid_decay_modes   = ['dabney','boyan','const','boyan_const']
+    valid_decay_modes = ['dabney', 'boyan', 'const', 'boyan_const']
     #  The N0 parameter for boyan learning rate decay
-    boyan_N0            = 1000
+    boyan_N0 = 1000
 
-    def __init__(self,representation,policy,domain,logger,initial_alpha = 0.1,alpha_decay_mode = 'dabney', boyan_N0 = 1000):
+    def __init__(self, representation, policy, domain, logger,
+                 initial_alpha=0.1, alpha_decay_mode='dabney', boyan_N0=1000):
         """
         :param representation: the :py:class:`~Representation.Representation.Representation`
             to use in learning the value function.
@@ -87,24 +89,27 @@ class Agent(object):
 
         """
         self.representation = representation
-        self.policy     = policy
-        self.domain     = domain
-        self.logger     = logger
+        self.policy = policy
+        self.domain = domain
+        self.logger = logger
         self.initial_alpha = initial_alpha
-        self.alpha      = initial_alpha
+        self.alpha = initial_alpha
         self.alpha_decay_mode = alpha_decay_mode.lower()
-        self.boyan_N0   = boyan_N0
+        self.boyan_N0 = boyan_N0
         if self.logger:
             self.logger.line()
-            self.logger.log("Agent:\t\t"+str(className(self)))
-            self.logger.log("Policy:\t\t"+str(className(self.policy)))
-            if self.alpha_decay_mode == 'boyan': self.logger.log("boyan_N0:\t%.1f"%self.boyan_N0)
+            self.logger.log("Agent:\t\t" + str(className(self)))
+            self.logger.log("Policy:\t\t" + str(className(self.policy)))
+            if self.alpha_decay_mode == 'boyan':
+                self.logger.log("boyan_N0:\t%.1f" % self.boyan_N0)
         # Check to make sure selected alpha_decay mode is valid
         if not self.alpha_decay_mode in self.valid_decay_modes:
-            errMsg = "Invalid decay mode selected:"+self.alpha_decay -_mode+".\nValid choices are: "+str(self.valid_decay_modes)
+            errMsg = "Invalid decay mode selected:" + self.alpha_decay - \
+                _mode + ".\nValid choices are: " + str(self.valid_decay_modes)
             if self.logger:
                 self.logger.log(errMsg)
-            else: shout(errMsg)
+            else:
+                shout(errMsg)
             sys.exit(1)
         # Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
         # initial_alpha will act as a permanent upper-bound on alpha.
@@ -112,7 +117,7 @@ class Agent(object):
             self.initial_alpha = 1.0
             self.alpha = 1.0
 
-    def learn(self,s,p_actions, a,r,ns, np_actions, na,terminal):
+    def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """
         This function receives observations of a single transition and
         learns from it.
@@ -131,8 +136,8 @@ class Agent(object):
         """
         return NotImplementedError
 
-
-    def updateAlpha(self,phi_s, phi_prime_s, eligibility_trace_s, gamma, nnz, terminal):
+    def updateAlpha(self, phi_s, phi_prime_s,
+                    eligibility_trace_s, gamma, nnz, terminal):
         """Computes a new learning rate (alpha) for the agent based on
         ``self.alpha_decay_mode``.
 
@@ -147,30 +152,42 @@ class Agent(object):
 
         if self.alpha_decay_mode == 'dabney':
         # We only update alpha if this step is non-terminal; else phi_prime becomes
-        # zero and the dot product below becomes very large, creating a very small alpha
+        # zero and the dot product below becomes very large, creating a very
+        # small alpha
             if not terminal:
-                #Automatic learning rate: [Dabney W. 2012]
-                self.candid_alpha    = abs(dot(gamma*phi_prime_s-phi_s,eligibility_trace_s)) #http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
-                self.candid_alpha    = 1/(self.candid_alpha*1.) if self.candid_alpha != 0 else inf
-                self.alpha          = min(self.alpha,self.candid_alpha)
+                # Automatic learning rate: [Dabney W. 2012]
+                # http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
+                self.candid_alpha = abs(
+                    dot(gamma * phi_prime_s - phi_s, eligibility_trace_s))
+                self.candid_alpha    = 1 / \
+                    (self.candid_alpha * 1.) if self.candid_alpha != 0 else inf
+                self.alpha = min(self.alpha, self.candid_alpha)
             # else we take no action
         elif self.alpha_decay_mode == 'boyan':
-            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
-            self.alpha /= sum(abs(phi_s)) # divide by l1 of the features; note that this method is only called if phi_s != 0
+            # New little change from not having +1 for episode count
+            self.alpha = self.initial_alpha * \
+                (self.boyan_N0 + 1.) / \
+                (self.boyan_N0 + (self.episode_count + 1) ** 1.1)
+            # divide by l1 of the features; note that this method is only
+            # called if phi_s != 0
+            self.alpha /= sum(abs(phi_s))
         elif self.alpha_decay_mode == 'boyan_const':
-            self.alpha = self.initial_alpha * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1) #New little change from not having +1 for episode count
+            # New little change from not having +1 for episode count
+            self.alpha = self.initial_alpha * \
+                (self.boyan_N0 + 1.) / \
+                (self.boyan_N0 + (self.episode_count + 1) ** 1.1)
         elif self.alpha_decay_mode == "const":
             self.alpha = self.initial_alpha
         else:
             shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")
 
-    def MC_episode(self,s=None,a=None, tolerance = 0):
+    def MC_episode(self, s=None, a=None, tolerance=0):
         """
         Run a single monte-carlo simulation episode from state *s* with action
         *a* following the current policy of the agent.
         See :py:meth:`~Agents.Agent.Agent.Q_MC`.
-        
+
         :param s: The state used in the simulation
         :param a: The action used in the simulation
         :param tolerance: If the tolerance is set to a non-zero value, episodes
@@ -182,45 +199,47 @@ class Agent(object):
         :return eps_discounted_return: Sum of discounted rewards.
 
         """
-        eps_length              = 0
-        eps_return              = 0
-        eps_discounted_return   = 0
-        eps_term                = 0
-        if s is None: s = self.domain.s0()
-        if a is None: a = self.policy.pi(s)
+        eps_length = 0
+        eps_return = 0
+        eps_discounted_return = 0
+        eps_term = 0
+        if s is None:
+            s = self.domain.s0()
+        if a is None:
+            a = self.policy.pi(s)
         while not eps_term and eps_length < self.domain.episodeCap:
-            r,ns,eps_term       = self.domain.step(a)
-            s                   = ns
-            eps_return          += r
-            eps_discounted_return += self.representation.domain.gamma**eps_length * r
-            eps_length          += 1
-            a                   = self.policy.pi(s)
-            if self.representation.domain.gamma**eps_length < tolerance:
+            r, ns, eps_term = self.domain.step(a)
+            s = ns
+            eps_return += r
+            eps_discounted_return += self.representation.domain.gamma ** eps_length * \
+                r
+            eps_length += 1
+            a = self.policy.pi(s)
+            if self.representation.domain.gamma ** eps_length < tolerance:
                 break
         return eps_return, eps_length, eps_term, eps_discounted_return
 
-
-    def Q_MC(self,s,a,MC_samples = 1000, tolerance = 0):
+    def Q_MC(self, s, a, MC_samples=1000, tolerance=0):
         """
         Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a).
         See :py:meth:`~Agents.Agent.Agent.MC_episode`.
-        
+
         :param s: The state used in the simulation
         :param a: The action used in the simulation
         :param tolerance: If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
         :param MC_samples: Number of samples to be used to evaluated the Q value
         :return: Q_avg, Averaged sum of discounted rewards = estimate of the Q.
-      	
+
         """
 
         Q_avg = 0
         for i in arange(MC_samples):
-            #print "MC Sample:", i
-            _,_,_,Q = self.MC_episode(s,a,tolerance)
-            Q_avg = incrementalAverageUpdate(Q_avg,Q,i+1)
+            # print "MC Sample:", i
+            _, _, _, Q = self.MC_episode(s, a, tolerance)
+            Q_avg = incrementalAverageUpdate(Q_avg, Q, i + 1)
         return Q_avg
 
-    def evaluate(self,samples, MC_samples, output_file):
+    def evaluate(self, samples, MC_samples, output_file):
         """
         Evaluate the current policy for fixed number of samples and store them
         in a numpy 2-d array: (#samples) x (|S|+2), where the two appended
@@ -230,27 +249,31 @@ class Agent(object):
         :param samples: The number of samples (s,a)
         :param MC_samples: The number of MC simulations used to estimate Q(s,a)
         :param output_file: The file in which the data is saved.
-        
+
         :return: the data generated and stored in the output_file
-        
+
         """
 
-        tolerance       = 1e-10 #if gamma^steps falls bellow this number the MC-Chain will terminate since it will not have much impact in evaluation of Q
-        cols            = self.domain.state_space_dims + 2
-        DATA            = empty((samples,cols))
-        terminal        = True
-        steps           = 0
+        # if gamma^steps falls bellow this number the MC-Chain will terminate
+        # since it will not have much impact in evaluation of Q
+        tolerance = 1e-10
+        cols = self.domain.state_space_dims + 2
+        DATA = empty((samples, cols))
+        terminal = True
+        steps = 0
         while steps < samples:
-            s = self.domain.s0() if terminal or steps % self.domain.episodeCap == 0 else s
+            s = self.domain.s0(
+            ) if terminal or steps % self.domain.episodeCap == 0 else s
             a = self.policy.pi(s)
 
-            #Store the corresponding Q
-            Q = self.Q_MC(s,a,MC_samples, tolerance)
-            DATA[steps,:] = hstack((s,[a, Q]))
-            r,s,terminal = self.domain.step(a)
+            # Store the corresponding Q
+            Q = self.Q_MC(s, a, MC_samples, tolerance)
+            DATA[steps, :] = hstack((s, [a, Q]))
+            r, s, terminal = self.domain.step(a)
             steps += 1
 
-            self.logger.log("Sample "+ str(steps)+":"+ str(s)+" "+str(a)+" "+str(Q))
+            self.logger.log(
+                "Sample " + str(steps) + ":" + str(s) + " " + str(a) + " " + str(Q))
 
         save(output_file, DATA)
         return DATA
@@ -265,13 +288,15 @@ class Agent(object):
             transition led to terminal state.
 
         """
-        #Increase the number of episodes
+        # Increase the number of episodes
         self.episode_count += 1
 
-        #Update the eligibility traces if they exist:
+        # Update the eligibility traces if they exist:
         # Set eligibility Traces to zero if it is end of the episode
         if hasattr(self, 'eligibility_trace'):
             if self.lambda_:
-                self.eligibility_trace  = zeros(self.representation.features_num*self.domain.actions_num)
-                self.eligibility_trace_s = zeros(self.representation.features_num)
-
+                self.eligibility_trace = zeros(
+                    self.representation.features_num *
+                    self.domain.actions_num)
+                self.eligibility_trace_s = zeros(
+                    self.representation.features_num)

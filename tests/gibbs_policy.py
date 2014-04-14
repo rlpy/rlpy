@@ -29,11 +29,11 @@ def test_fdcheck_dlogpi():
         s = np.array([np.random.randint(4), np.random.randint(5)])
         a = np.random.choice(domain.possibleActions(s))
         for theta in thetas:
-            #print "s", s
-            #print "a", a
-            #print "f", f(theta, s, a)
-            #print "df", df(theta, s, a)
-            #print "df_approx", df_approx(theta, s, a)
+            # print "s", s
+            # print "a", a
+            # print "f", f(theta, s, a)
+            # print "df", df(theta, s, a)
+            # print "df_approx", df_approx(theta, s, a)
             error = check_grad(f, df, theta, s, a)
             print error
             assert np.abs(error) < 1e-6

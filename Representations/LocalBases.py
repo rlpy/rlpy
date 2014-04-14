@@ -20,6 +20,7 @@ __license__ = "BSD 3-Clause"
 
 
 class LocalBases(Representation):
+
     """
     abstract base class for representations that use local basis functions
     """
@@ -55,17 +56,26 @@ class LocalBases(Representation):
             d1, d2 = self.domain.continuous_dims[:2]
         plt.figure("Feature Dimensions {} and {}".format(d1, d2))
         for i in xrange(self.centers.shape[0]):
-            plt.plot([self.centers[i, d1]], [self.centers[i, d2]], "r", marker="x")
+            plt.plot([self.centers[i, d1]],
+                     [self.centers[i, d2]], "r", marker="x")
         plt.draw()
 
 
 class NonparametricLocalBases(LocalBases):
-    def __init__(self, domain, logger, kernel, max_similarity=0.9, resolution=5, **kwargs):
+
+    def __init__(self, domain, logger, kernel,
+                 max_similarity=0.9, resolution=5, **kwargs):
         self.max_similarity = max_similarity
         self.common_width = (domain.statespace_limits[:, 1]
                              - domain.statespace_limits[:, 0]) / resolution
         self.features_num = 0
-        super(NonparametricLocalBases, self).__init__(domain, logger, kernel, **kwargs)
+        super(
+            NonparametricLocalBases,
+            self).__init__(
+            domain,
+            logger,
+            kernel,
+            **kwargs)
 
     def pre_discover(self, s, terminal, a, sn, terminaln):
         norm = self.normalization
@@ -88,9 +98,12 @@ class NonparametricLocalBases(LocalBases):
         self.features_num += 1
         self.centers = np.vstack((self.centers, center))
         self.widths = np.vstack((self.widths, self.common_width))
-        #TODO if normalized, use Q estimate for center to fill theta
+        # TODO if normalized, use Q estimate for center to fill theta
         new = np.zeros((self.domain.actions_num, 1))
-        self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, new)
+        self.theta = addNewElementForAllActions(
+            self.theta,
+            self.domain.actions_num,
+            new)
 
 
 class RandomLocalBases(LocalBases):
@@ -100,13 +113,21 @@ class RandomLocalBases(LocalBases):
         self.features_num = num
         dim_widths = (domain.statespace_limits[:, 1]
                       - domain.statespace_limits[:, 0])
-        super(RandomLocalBases, self).__init__(domain, logger, kernel, **kwargs)
+        super(
+            RandomLocalBases,
+            self).__init__(
+            domain,
+            logger,
+            kernel,
+            **kwargs)
         rand_stream = np.random.RandomState(seed=seed)
         self.centers = np.zeros((num, len(dim_widths)))
         self.widths = np.zeros((num, len(dim_widths)))
         for i in xrange(num):
             for d in xrange(len(dim_widths)):
-                self.centers[i, d] = rand_stream.uniform(domain.statespace_limits[d, 0],
-                                                         domain.statespace_limits[d, 1])
-                self.widths[i, d] = rand_stream.uniform(dim_widths[d] / resolution_max,
-                                                        dim_widths[d] / resolution_min)
+                self.centers[i, d] = rand_stream.uniform(
+                    domain.statespace_limits[d, 0],
+                    domain.statespace_limits[d, 1])
+                self.widths[i, d] = rand_stream.uniform(
+                    dim_widths[d] / resolution_max,
+                    dim_widths[d] / resolution_min)

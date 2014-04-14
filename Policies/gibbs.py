@@ -11,6 +11,7 @@ __license__ = "BSD 3-Clause"
 
 
 class GibbsPolicy(Policy):
+
     """
     Gibbs policy for finite number of actions
 

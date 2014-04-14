@@ -34,21 +34,21 @@ class Pacman(Domain):
     and given by (2 + 3*ng + nf + nc).
 
     **ACTIONS:** Move Pacman [up, down, left, right, stay]
-    
+
     **REWARD:** See the Berkeley project website below for more info.
-    
+
     .. note::
         The visualization runs as fast as your CPU will permit; to slow things
         down so gameplay is actually visible, de-comment time.sleep()
         in the showDomain() method.
-    
+
     **REFERENCE:** This domain is an RLPy wrapper for the implementation
     from the `BerkeleyX/CS188.1x course project 3 <https://courses.edx.org/courses/BerkeleyX/CS188.1x/2013_Spring/courseware/Week_9/Project_3_Reinforcement/>`_
 
     See the original `source code (zipped) <https://courses.edx.org/static/content-berkeley-cs188x~2013_Spring/projects/reinforcement/reinforcement.zip>`_
 
     For more details of the domain see the original package in the `Domains/PacmanPackage` folder.
-    
+
     """
 
     _max_scared_time = 39
@@ -60,7 +60,7 @@ class Pacman(Domain):
     #: location of layouts shipped with rlpy
     default_layout_dir = os.path.join(
         __rlpy_location__, "Domains", "PacmanPackage",
-                                      "layouts")
+        "layouts")
 
     def __init__(self, noise=.1, logger=None, timeout=30,
                  layoutFile=os.path.join(
@@ -131,7 +131,7 @@ class Pacman(Domain):
         # set ghost position
         num_ghosts = len(agent_states) - 1
         for i in range(1, num_ghosts + 1):
-            part_s = s[(3*i)-1:3*i]
+            part_s = s[(3 * i) - 1:3 * i]
             agent_states[i].configuration.pos = (part_s[0], part_s[1])
             agent_states[i].scaredTimer = part_s[2]
 
@@ -170,8 +170,8 @@ class Pacman(Domain):
         # import ipdb; ipdb.set_trace()
         # get ghost info
         for i in range(num_ghosts):
-            s[2 + i*3: 2 + i*3+2] = agent_states[i + 1].configuration.pos
-            s[2 + i*3 + 2] = agent_states[i + 1].scaredTimer
+            s[2 + i * 3: 2 + i * 3 + 2] = agent_states[i + 1].configuration.pos
+            s[2 + i * 3 + 2] = agent_states[i + 1].scaredTimer
         # get food and capsules status
         i = 2 + num_ghosts * 3
         x = 0
@@ -193,7 +193,7 @@ class Pacman(Domain):
     state = property(_get_state, _set_state)
 
     def showDomain(self, a, s=None):
-        if s != None:
+        if s is not None:
             errStr = 'ERROR: In Pacman.py, attempted to pass a state (s)'\
                 'to showDomain(); Pacman only supports internal states.'\
                 'If you do pass a state parameter, ensure it is set to None.'
@@ -221,7 +221,7 @@ class Pacman(Domain):
             self.gameDisplay.update(s.data)
             s._foodEaten = None
             s._capsuleEaten = None
-#         time.sleep(0.1) # Sleep for 0.1 sec
+# time.sleep(0.1) # Sleep for 0.1 sec
 
     def step(self, a):
         """

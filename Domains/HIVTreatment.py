@@ -12,6 +12,7 @@ __author__ = "Christoph Dann"
 
 
 class HIVTreatment(Domain):
+
     """
     Simulation of HIV Treatment. The aim is to find an optimal drug schedule.
 
@@ -34,7 +35,7 @@ class HIVTreatment(Domain):
     * *3*: RTI and PI active
 
     **REFERENCE:**
-    
+
     .. seealso::
         Ernst, D., Stan, G., Gonc, J. & Wehenkel, L.
         Clinical data based optimal STI strategies for HIV:
@@ -51,8 +52,10 @@ class HIVTreatment(Domain):
     episodeCap = 200  #: total of 1000 days with a measurement every 5 days
     dt = 5  #: measurement every 5 days
     logspace = True  #: whether observed states are in log10 space or not
-    show_domain_every = 20  #: only update the graphs in showDomain every x steps
-    episode_data = np.zeros((7, episodeCap + 1))  # store samples of current episode for drawing
+    #: only update the graphs in showDomain every x steps
+    show_domain_every = 20
+    # store samples of current episode for drawing
+    episode_data = np.zeros((7, episodeCap + 1))
 
     if logspace:
         statespace_limits = np.array([[-5, 8]] * 6)
@@ -61,14 +64,15 @@ class HIVTreatment(Domain):
 
     def step(self, a):
         self.t += 1
-        #if self.logspace:
+        # if self.logspace:
         #    s = np.power(10, s)
 
         eps1, eps2 = self.actions[a]
-        ns = odeint(dsdt, self.state, [0, self.dt], args=(eps1, eps2), mxstep=1000)[-1]
+        ns = odeint(dsdt, self.state, [0, self.dt],
+                    args=(eps1, eps2), mxstep=1000)[-1]
         T1, T2, T1s, T2s, V, E = ns
         # the reward function penalizes treatment because of side-effects
-        reward = - 0.1 * V - 2e4 * eps1 ** 2 - 2e3 * eps2  ** 2 + 1e3 * E
+        reward = - 0.1 * V - 2e4 * eps1 ** 2 - 2e3 * eps2 ** 2 + 1e3 * E
         self.state = ns.copy()
         if self.logspace:
             ns = np.log10(ns)
@@ -100,7 +104,6 @@ class HIVTreatment(Domain):
         if self.t % self.show_domain_every != 0 and not self.t >= self.episodeCap:
             return
 
-
         n = self.state_space_dims + 1
         names = list(self.state_names) + ["Action"]
         colors = ["b", "b", "b", "b", "r", "g", "k"]
@@ -108,14 +111,18 @@ class HIVTreatment(Domain):
         plt.figure("Domain", figsize=(12, 10))
         if handles is None:
             handles = []
-            f, axes = plt.subplots(n, sharex=True, num="Domain", figsize=(12, 10))
+            f, axes = plt.subplots(
+                n, sharex=True, num="Domain", figsize=(12, 10))
             f.subplots_adjust(hspace=0.1)
             for i in range(n):
                 ax = axes[i]
-                d = np.arange(self.episodeCap + 1)*5
+                d = np.arange(self.episodeCap + 1) * 5
                 ax.set_ylabel(names[i])
                 ax.locator_params(tight=True, nbins=4)
-                handles.append(ax.plot(d, self.episode_data[i], color=colors[i])[0])
+                handles.append(
+                    ax.plot(d,
+                            self.episode_data[i],
+                            color=colors[i])[0])
             self._state_graph_handles = handles
             ax.set_xlabel("Days")
         for i in range(n):
@@ -163,14 +170,15 @@ def dsdt(s, t, eps1, eps2):
     dT1s = tmp1 - delta * T1s - m1 * E * T1s
     dT2s = tmp2 - delta * T2s - m2 * E * T2s
     dV = (1. - eps2) * NT * delta * (T1s + T2s) - c * V \
-            - ((1. - eps1) * rho1 * k1 * T1 + (1. - f * eps1) * rho2 * k2 * T2) * V
+        - ((1. - eps1) * rho1 * k1 * T1 +
+           (1. - f * eps1) * rho2 * k2 * T2) * V
     dE = lambdaE + bE * (T1s + T2s) / (T1s + T2s + Kb) * E \
-            - d_E * (T1s + T2s) / (T1s + T2s + Kd) * E - deltaE * E
+        - d_E * (T1s + T2s) / (T1s + T2s + Kd) * E - deltaE * E
 
     return np.array([dT1, dT2, dT1s, dT2s, dV, dE])
 
 try:
     from HIVTreatment_dynamics import dsdt
-except Exception, e:
+except Exception as e:
     print e
     print "Cython extension for HIVTreatment dynamics not available, expect slow runtime"

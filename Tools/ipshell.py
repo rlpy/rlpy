@@ -6,6 +6,8 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 
 _ip_shell = None
+
+
 def ipshell():
     if _ip_shell is not None:
         return _ip_shell
@@ -36,9 +38,12 @@ def ipshell():
     return ipshell
 
 import signal
+
+
 def interrupted(signum, frame):
     import ipdb
     ipdb.set_trace()
+
 
 def ipdb_on_SIGURG():
     signal.signal(signal.SIGURG, interrupted)

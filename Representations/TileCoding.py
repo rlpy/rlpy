@@ -9,7 +9,9 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 
+
 class TileCoding(Representation):
+
     """
     Tile Coding Representation with Hashing Trick
     based on http://incompleteideas.net/rlai.cs.ualberta.ca/RLAI/RLtoolkit/tiles.html
@@ -71,62 +73,75 @@ class TileCoding(Representation):
         super(TileCoding, self).__init__(domain, logger)
         try:
             self.num_tilings = tuple(num_tilings)
-        except TypeError,e:
+        except TypeError as e:
             self.num_tilings = [num_tilings]
         try:
             self.dimensions = tuple(dimensions)
-        except TypeError,e:
+        except TypeError as e:
             self.dimensions = [dimensions]
 
         if resolutions is not None:
             try:
                 resolutions = tuple(resolutions)
-            except TypeError,e:
+            except TypeError as e:
                 resolutions = (resolutions, )
 
         if resolution_matrix is None:
             # we first need to construct the resolution matrix
-            resolution_matrix = np.zeros((len(self.dimensions), self.domain.statespace_limits.shape[0]))
-            for i,s in enumerate(self.dimensions):
+            resolution_matrix = np.zeros(
+                (len(self.dimensions), self.domain.statespace_limits.shape[0]))
+            for i, s in enumerate(self.dimensions):
                 for d in s:
-                    res[i,d] = resolutions[i]
+                    res[i, d] = resolutions[i]
         resolution_matrix = resolution_matrix.astype("float")
         resolution_matrix[resolution_matrix == 0] = 1e-50
-        self.scaling_matrix = (self.domain.statespace_limits[:,1] -
-                               self.domain.statespace_limits[:,0]) / resolution_matrix
+        self.scaling_matrix = (self.domain.statespace_limits[:, 1] -
+                               self.domain.statespace_limits[:, 0]) / resolution_matrix
 
         # now only hashing stuff
-        self.seed=seed
+        self.seed = seed
         self.safety = safety
         if safety == "super":
-            size = self.domain.state_space_dims+1
-            self.check_data = -np.ones((self.features_num, size), dtype=np.long)
+            size = self.domain.state_space_dims + 1
+            self.check_data = - \
+                np.ones((self.features_num, size), dtype=np.long)
         elif safety == "lazy":
             size = 1
         else:
             self.check_data = -np.ones((self.features_num), dtype=np.long)
         self.counts = np.zeros(self.features_num, dtype=np.long)
         self.collisions = 0
-        self.R = np.random.RandomState(seed).randint(self.BIG_INT / 4  ,size=self.features_num).astype(np.int)
+        self.R = np.random.RandomState(
+            seed).randint(
+            self.BIG_INT / 4,
+            size=self.features_num).astype(
+            np.int)
 
         if safety == "none":
             try:
                 import hashing as h
                 f = lambda self, A: h.physical_addr(A, self.R, self.check_data,
-                                                   self.counts)[0]
-                self._physical_addr = type(TileCoding._physical_addr)(f, self, TileCoding)
+                                                    self.counts)[0]
+                self._physical_addr = type(
+                    TileCoding._physical_addr)(
+                    f,
+                    self,
+                    TileCoding)
                 print "Use cython extension for TileCoding hashing trick"
-            except Exception, e:
+            except Exception as e:
                 print e
                 print "Cython extension for TileCoding hashing trick not available"
 
     def phi_nonTerminal(self, s):
 
         phi = np.zeros((self.features_num))
-        sn = np.empty((len(s)+1), dtype="int")
+        sn = np.empty((len(s) + 1), dtype="int")
         for e, n_t in enumerate(self.num_tilings):
-            sn[0] = e # first dimension is used to avoid collisions between different tilings
-            sn[1:] = (s - self.domain.statespace_limits[:,0]) / self.scaling_matrix[e]
+            # first dimension is used to avoid collisions between different
+            # tilings
+            sn[0] = e
+            sn[1:] = (s - self.domain.statespace_limits[:, 0]) / \
+                self.scaling_matrix[e]
             for i in range(n_t):
                 # compute "virtual" address
                 A = sn - np.mod(sn - i, n_t)
@@ -135,14 +150,16 @@ class TileCoding(Representation):
                 phi[j] = 1
         return phi
 
-
     def _hash(self, A, increment=449, max=None):
         """
         hashing without collision detection
         """
         # TODO implement in cython if speed needs to be improved
-        max = self.features_num if max == None else max
-        return int(self.R[np.mod(A + np.arange(len(A))*increment, self.features_num)].sum()) % max
+        max = self.features_num if max is None else max
+        return (
+            int(self.R[np.mod(A + np.arange(len(A)) * increment, self.features_num)]
+                .sum()) % max
+        )
 
     def _physical_addr(self, A):
         """
@@ -156,7 +173,7 @@ class TileCoding(Representation):
             check_val = A
         else:
             # use second hash
-            check_val = self._hash(A, increment = 457, max = self.BIG_INT)
+            check_val = self._hash(A, increment=457, max=self.BIG_INT)
 
         if self.counts[h1] == 0:
             # first time, set up data
@@ -171,7 +188,7 @@ class TileCoding(Representation):
             self.collisions += 1
             return h1
         else:
-            h2 = 1 + 2 * self._hash(A, max = self.BIG_INT / 4)
+            h2 = 1 + 2 * self._hash(A, max=self.BIG_INT / 4)
             for i in xrange(self.features_num):
                 h1 = (h1 + h2) % self.features_num
                 if self.counts[h1] == 0 or np.all(self.check_data[h1] == check_val):
@@ -189,7 +206,7 @@ class TileCoding(Representation):
 if __name__ == "__main__":
     from Domains.acrobot_back import Acrobot
     domain = Acrobot(None)
-    resolution_mat = .5 * np.ones((2,4))
+    resolution_mat = .5 * np.ones((2, 4))
     tile_matrix = array(mat("""
     48 48 48 48;
     1 18 18 18; 18 1 18 18; 18 18 1 18; 18 18 18 1;
@@ -197,12 +214,11 @@ if __name__ == "__main__":
     1 1 1 18; 1 1 18 1; 1 18 1 1; 18 1 1 1"""), dtype="float")
     resolution_mat = tile_matrix
     resolution_mat[resolution_mat == 1] = 0.5
-    t = TileCoding(num_tilings=[12, 3, 3, 3, 3]+[2]*6+[3]*4, memory=2000, logger=Logger(),
-                   domain=domain, resolution_matrix=resolution_mat)
+    t = TileCoding(
+        num_tilings=[12, 3, 3, 3, 3] + [2] * 6 + [3] * 4, memory=2000, logger=Logger(),
+        domain=domain, resolution_matrix=resolution_mat)
     for i in np.linspace(-1, 1, 20):
         print i
-        a = np.nonzero(t.phi_nonTerminal(np.array([np.pi*i,0.,0.,0.])))[0]
+        a = np.nonzero(t.phi_nonTerminal(np.array([np.pi * i, 0., 0., 0.])))[0]
         sort(a)
         print a
-
-

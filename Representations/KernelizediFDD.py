@@ -24,7 +24,8 @@ class KernelizedFeature(object):
     # center gives the highest output of this feature
     center = None
 
-    def __init__(self, center, dim, kernel, index=-1, base_ids=None, kernel_args=[]):
+    def __init__(self, center, dim, kernel, index=-1,
+                 base_ids=None, kernel_args=[]):
         self.index = index
         self.kernel_args = kernel_args
         self.center = center
@@ -37,7 +38,8 @@ class KernelizedFeature(object):
 
     def __str__(self):
         res = "{" + ", ".join(sorted([str(i) for i in self.base_ids])) + "}  "
-        res += ", ".join(["s{}={:.3g}".format(d + 1, self.center[d]) for d in self.dim])
+        res += ", ".join(["s{}={:.3g}".format(d + 1, self.center[d])
+                         for d in self.dim])
         return res
 
     def output(self, s):
@@ -45,6 +47,7 @@ class KernelizedFeature(object):
 
 
 class Candidate(object):
+
     """
     candidate feature as a combination of two existing features
     """
@@ -60,12 +63,14 @@ class Candidate(object):
 
 
 class KernelizediFDD(Representation):
+
     """
     Kernelized version of iFDD
     """
     features = []
     candidates = {}
-    base_id_sets = set()  # contains a set for each feature indicating the ids of
+    # contains a set for each feature indicating the ids of
+    base_id_sets = set()
                        # 1-dim features it refines
     base_feature_ids = []
     max_relevance = 0.
@@ -86,7 +91,10 @@ class KernelizediFDD(Representation):
 
     def show_features(self):
         l = self.sorted_ids.toList()[:]
-        key = lambda x: (len(self.features[x].base_ids), tuple(self.features[x].dim), tuple(self.features[x].center[self.features[x].dim]))
+        key = lambda x: (
+            len(self.features[x].base_ids),
+            tuple(self.features[x].dim),
+            tuple(self.features[x].center[self.features[x].dim]))
         l.sort(key=key)
         for i in l:
             f = self.features[i]
@@ -106,7 +114,10 @@ class KernelizediFDD(Representation):
             idx = self.domain.continuous_dims
 
         feat_list = range(self.features_num)
-        key = lambda x: (len(self.features[x].base_ids), tuple(self.features[x].dim), tuple(self.features[x].center[self.features[x].dim]))
+        key = lambda x: (
+            len(self.features[x].base_ids),
+            tuple(self.features[x].dim),
+            tuple(self.features[x].center[self.features[x].dim]))
         feat_list.sort(key=key)
         last_i = -1
         for k in feat_list:
@@ -117,7 +128,14 @@ class KernelizediFDD(Representation):
                 if last_i in idx:
                     plt.draw()
                 if cur_i in idx:
-                    xi = np.linspace(self.domain.statespace_limits[cur_i, 0], self.domain.statespace_limits[cur_i, 1], 200)
+                    xi = np.linspace(
+                        self.domain.statespace_limits[
+                            cur_i,
+                            0],
+                        self.domain.statespace_limits[
+                            cur_i,
+                            1],
+                        200)
                     x = np.zeros((200, self.domain.statespace_limits.shape[0]))
                     x[:, cur_i] = xi
                     plt.figure("Feature Dimension {}".format(cur_i))
@@ -146,7 +164,10 @@ class KernelizediFDD(Representation):
         idx.sort()
 
         feat_list = range(self.features_num)
-        key = lambda x: (len(self.features[x].base_ids), tuple(self.features[x].dim), tuple(self.features[x].center[self.features[x].dim]))
+        key = lambda x: (
+            len(self.features[x].base_ids),
+            tuple(self.features[x].dim),
+            tuple(self.features[x].center[self.features[x].dim]))
         feat_list.sort(key=key)
         last_i = -1
         last_j = -1
@@ -161,10 +182,25 @@ class KernelizediFDD(Representation):
                 if last_i in idx and last_j in idx:
                     plt.draw()
                 if cur_i in idx and cur_j in idx:
-                    xi = np.linspace(self.domain.statespace_limits[cur_i, 0], self.domain.statespace_limits[cur_i, 1], 100)
-                    xj = np.linspace(self.domain.statespace_limits[cur_j, 0], self.domain.statespace_limits[cur_j, 1], 100)
+                    xi = np.linspace(
+                        self.domain.statespace_limits[
+                            cur_i,
+                            0],
+                        self.domain.statespace_limits[
+                            cur_i,
+                            1],
+                        100)
+                    xj = np.linspace(
+                        self.domain.statespace_limits[
+                            cur_j,
+                            0],
+                        self.domain.statespace_limits[
+                            cur_j,
+                            1],
+                        100)
                     X, Y = np.meshgrid(xi, xj)
-                    plt.figure("Feature Dimensions {} and {}".format(cur_i, cur_j))
+                    plt.figure(
+                        "Feature Dimensions {} and {}".format(cur_i, cur_j))
             if cur_i in idx and cur_j in idx:
                 Z = np.zeros_like(X)
                 for m in xrange(100):
@@ -195,7 +231,10 @@ class KernelizediFDD(Representation):
         idx.sort()
 
         feat_list = range(self.features_num)
-        key = lambda x: (len(self.features[x].base_ids), tuple(self.features[x].dim), tuple(self.features[x].center[self.features[x].dim]))
+        key = lambda x: (
+            len(self.features[x].base_ids),
+            tuple(self.features[x].dim),
+            tuple(self.features[x].center[self.features[x].dim]))
         feat_list.sort(key=key)
         last_i = -1
         last_j = -1
@@ -210,9 +249,14 @@ class KernelizediFDD(Representation):
                 if last_i in idx and last_j in idx:
                     plt.draw()
                 if cur_i in idx and cur_j in idx:
-                    plt.figure("Feature Dimensions {} and {}".format(cur_i, cur_j))
+                    plt.figure(
+                        "Feature Dimensions {} and {}".format(cur_i, cur_j))
             if cur_i in idx and cur_j in idx:
-                plt.plot([self.features[k].center[cur_i]], [self.features[k].center[cur_j]], "r", marker="x")
+                plt.plot(
+                    [self.features[k].center[cur_i]],
+                    [self.features[k].center[cur_j]],
+                    "r",
+                    marker="x")
             last_i = cur_i
             last_j = cur_j
         plt.draw()
@@ -271,7 +315,8 @@ class KernelizediFDD(Representation):
         discovered = 0
         Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
         # indices of active features
-        active_indices = list(np.where(phi_s_unnorm > self.active_threshold)[0])
+        active_indices = list(
+            np.where(phi_s_unnorm > self.active_threshold)[0])
         # "active indices", active_indices
         # gather all dimensions regarded by active features
         active_dimensions = np.zeros((len(s)), dtype="int")
@@ -291,10 +336,17 @@ class KernelizediFDD(Representation):
         if discovered:
             phi_s = self.phi(s, terminal)
         la = len(active_indices)
-        if la * (la - 1)  <  len(self.candidates):
+        if la * (la - 1) < len(self.candidates):
             for ind, cand in self.candidates.items():
                 g, h = ind
-                rel = self.update_relevance_stat(cand, g, h, td_error, s, a, phi_s)
+                rel = self.update_relevance_stat(
+                    cand,
+                    g,
+                    h,
+                    td_error,
+                    s,
+                    a,
+                    phi_s)
                 self.max_relevance = max(rel, self.max_relevance)
                 # add if relevance is high enough
                 if rel > self.discover_threshold:
@@ -309,7 +361,14 @@ class KernelizediFDD(Representation):
                 cand = self.candidates.get((g, h))
                 if cand is None:
                     continue
-                rel = self.update_relevance_stat(cand, g, h, td_error, s, a, phi_s)
+                rel = self.update_relevance_stat(
+                    cand,
+                    g,
+                    h,
+                    td_error,
+                    s,
+                    a,
+                    phi_s)
                 self.max_relevance = max(rel, self.max_relevance)
                 # add if relevance is high enough
                 if rel > self.discover_threshold:
@@ -320,29 +379,35 @@ class KernelizediFDD(Representation):
             self.max_relevance = 0.
         return discovered
 
-    def update_relevance_stat(self, candidate, index1, index2, td_error, s, a, phi_s):
+    def update_relevance_stat(
+            self, candidate, index1, index2, td_error, s, a, phi_s):
         """
         make sure that inputs are ordered, i.e.,index1 <= index2!
         returns the relevance of a potential feature combination
         """
         candidate.td_error_sum += phi_s[index1] * phi_s[index2] * td_error
-        candidate.activation_count += phi_s[index1]**2 * phi_s[index2]**2
+        candidate.activation_count += phi_s[index1] ** 2 * phi_s[index2] ** 2
         if candidate.activation_count == 0.:
             return 0.
-        rel = np.abs(candidate.td_error_sum) / np.sqrt(candidate.activation_count)
+        rel = np.abs(candidate.td_error_sum) / \
+            np.sqrt(candidate.activation_count)
         return rel
 
     def add_base_feature(self, center, dim, Q):
         """
         adds a new 1-dimensional feature and returns its index
         """
-        new_f = KernelizedFeature(center=center, dim=[dim], kernel_args=self.kernel_args,
-                                  kernel=self.kernel, index=self.features_num)
+        new_f = KernelizedFeature(
+            center=center, dim=[dim], kernel_args=self.kernel_args,
+            kernel=self.kernel, index=self.features_num)
         self.features.append(new_f)
 
         self.base_id_sets.add(new_f.base_ids)
         self.sorted_ids.push(-1, self.features_num)
-        self.logger.debug("Added Feature {} {}".format(self.features_num, new_f))
+        self.logger.debug(
+            "Added Feature {} {}".format(
+                self.features_num,
+                new_f))
 
         # add combinations with all existing features as candidates
         new_cand = {(f, self.features_num): Candidate(f, self.features_num)
@@ -355,9 +420,14 @@ class KernelizediFDD(Representation):
 
         # add parameter dimension
         if self.normalization:
-            self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, Q)
+            self.theta = addNewElementForAllActions(
+                self.theta,
+                self.domain.actions_num,
+                Q)
         else:
-            self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num)
+            self.theta = addNewElementForAllActions(
+                self.theta,
+                self.domain.actions_num)
         return self.features_num - 1
 
     def add_refined_feature(self, index1, index2, Q):
@@ -395,13 +465,21 @@ class KernelizediFDD(Representation):
         for c, _ in new_cand.keys():
             self.base_id_sets.add(new_base_ids | self.features[c].base_ids)
         self.candidates.update(new_cand)
-        self.logger.debug("Added refined feature {} {}".format(self.features_num, new_f))
+        self.logger.debug(
+            "Added refined feature {} {}".format(
+                self.features_num,
+                new_f))
         self.logger.debug("{} candidates".format(len(self.candidates)))
         self.features_num += 1
         if self.normalization:
-            self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, Q)
+            self.theta = addNewElementForAllActions(
+                self.theta,
+                self.domain.actions_num,
+                Q)
         else:
-            self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num)
+            self.theta = addNewElementForAllActions(
+                self.theta,
+                self.domain.actions_num)
 
         return self.features_num - 1
 
@@ -416,29 +494,35 @@ try:
     from FastCythonKiFDD import FastCythonKiFDD
 
     class FastKiFDD(Representation, FastCythonKiFDD):
-        def __init__(self, domain, kernel, active_threshold, discover_threshold,
-                    logger=None, kernel_args=[], normalization=True, sparsify=True,
-                    max_active_base_feat=2, max_base_feat_sim=0.7):
+
+        def __init__(
+                self, domain, kernel, active_threshold, discover_threshold,
+                logger=None, kernel_args=[], normalization=True, sparsify=True,
+                max_active_base_feat=2, max_base_feat_sim=0.7):
             super(FastKiFDD, self).__init__(domain, logger)
             self.kernel = kernel
-            #assert(normalization)
+            # assert(normalization)
             #self.normalization = normalization
             #assert(kernel == gaussian_kernel)
             logger.log(str(self))
+
         def phi_nonTerminal(self, s):
             return FastCythonKiFDD.phi_nonTerminal(self, s)
 
         def post_discover(self, s, terminal, a, td_error, phi_s):
 
             Q = self.Qs(s, terminal, phi_s=phi_s).reshape(-1, 1)
-            discovered =  FastCythonKiFDD.discover(self, s, a, td_error, phi_s)
+            discovered = FastCythonKiFDD.discover(self, s, a, td_error, phi_s)
             self.features_num += discovered
             if discovered > 0:
                 if self.normalization:
                     new = Q * np.ones((self.domain.actions_num, discovered))
                 else:
                     new = np.zeros((self.domain.actions_num, discovered))
-                self.theta = addNewElementForAllActions(self.theta, self.domain.actions_num, new)
+                self.theta = addNewElementForAllActions(
+                    self.theta,
+                    self.domain.actions_num,
+                    new)
             return discovered
 
         def __str__(self):
@@ -451,7 +535,8 @@ try:
     """.format(self=self)
             return res
 
-        def plot_1d_phi(self, dimension_idx, s, resolution=100, omit_constant=True):
+        def plot_1d_phi(self, dimension_idx, s,
+                        resolution=100, omit_constant=True):
             """Creates a plot for each specified dimension of the state space and shows
             dimension_idx: either a single dimension index (int) or a list of indices.
             """
@@ -461,17 +546,24 @@ try:
 
             for cur_i in idx:
                 cur_s = s.copy()
-                xi = np.linspace(self.domain.statespace_limits[cur_i, 0], self.domain.statespace_limits[cur_i, 1], resolution)
+                xi = np.linspace(
+                    self.domain.statespace_limits[
+                        cur_i,
+                        0],
+                    self.domain.statespace_limits[
+                        cur_i,
+                        1],
+                    resolution)
                 Phi = np.zeros((resolution, self.features_num))
-                for k,x in enumerate(xi):
+                for k, x in enumerate(xi):
                     cur_s[cur_i] = x
                     Phi[k] = self.phi_nonTerminal(cur_s)
                 plt.figure("Feature Dimension {}".format(cur_i))
                 for f in range(self.features_num):
-                    if omit_constant and Phi[:,f].min() == Phi[:,f].max():
+                    if omit_constant and Phi[:, f].min() == Phi[:, f].max():
                         continue
-                    plt.plot(xi, Phi[:,f], label="id {}".format(f))
+                    plt.plot(xi, Phi[:, f], label="id {}".format(f))
             plt.draw()
-except Exception, e:
+except Exception as e:
     print e
     print "Fast KiFDD is not available, C++ Extensions not build"

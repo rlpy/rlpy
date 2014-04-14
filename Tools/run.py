@@ -52,7 +52,9 @@ if sys.platform.startswith("win") or sys.platform.startswith("cygwin"):
 else:
     devnull = "/dev/null"
 
-def run_profiled(make_exp_fun, profile_location="Profiling", out="Test.pdf", **kwargs):
+
+def run_profiled(make_exp_fun, profile_location="Profiling",
+                 out="Test.pdf", **kwargs):
     """run an experiment (without storing its results) and profiles the execution.
     A gprof file is created and a pdf with a graphical visualization of the most
     time-consuming functions in the experiment execution
@@ -73,25 +75,30 @@ def run_profiled(make_exp_fun, profile_location="Profiling", out="Test.pdf", **k
     p.sort_stats('time').print_stats(5)
 
     if(platform.system() == 'Windows'):
-        #Load the STATS and prepare the dot file for graphvis
-        command = '.\Profiling\gprof2dot.py -f pstats {dat_fn} > {dot_fn}'.format(dat_fn=dat_fn, dot_fn=dot_fn)
+        # Load the STATS and prepare the dot file for graphvis
+        command = '.\Profiling\gprof2dot.py -f pstats {dat_fn} > {dot_fn}'.format(
+            dat_fn=dat_fn,
+            dot_fn=dot_fn)
         os.system(command)
 
     else:
-        #Load the STATS and prepare the dot file for graphvis
-        command = '/usr/bin/env python ./Profiling/gprof2dot.py -f pstats {dat_fn} > {dot_fn}'.format(dat_fn=dat_fn, dot_fn=dot_fn)
+        # Load the STATS and prepare the dot file for graphvis
+        command = '/usr/bin/env python ./Profiling/gprof2dot.py -f pstats {dat_fn} > {dot_fn}'.format(
+            dat_fn=dat_fn,
+            dot_fn=dot_fn)
         os.system(command)
 
-    #Call Graphvis to generate the pdf
-    command = 'dot -T pdf {dot_fn} -o {pdf_fn}'.format(dot_fn=dot_fn, pdf_fn=pdf_fn)
+    # Call Graphvis to generate the pdf
+    command = 'dot -T pdf {dot_fn} -o {pdf_fn}'.format(dot_fn=dot_fn,
+                                                       pdf_fn=pdf_fn)
     os.system(command)
 
 
 def get_finished_ids(path):
     """returns all experiment ids for which the result file exists in
     the given directory"""
-    l = [int(re.findall("([0-9]*)-results.json", p)[0]) for p in glob.glob(os.path.join(path, "*-results.json"))]
-    l.sort()
+    l = sorted([int(re.findall("([0-9]*)-results.json", p)[0])
+               for p in glob.glob(os.path.join(path, "*-results.json"))])
     return l
 
 
@@ -121,7 +128,8 @@ def prepare_directory(setting, path, **hyperparam):
     :param \**hyperparam: all hyperparameters passed to the setting's make_experiment
     :return filename of the file to execute in path"""
     # create file to execute
-    variables = "hyper_param = dict(" + ",\n".join(["{}={}".format(k, repr(v)) for k, v in hyperparam.items()]) + ")"
+    variables = "hyper_param = dict(" + ",\n".join(["{}={}".format(k, repr(v))
+                                                    for k, v in hyperparam.items()]) + ")"
     final_path = path
     if not os.path.exists(final_path):
         os.makedirs(final_path)
@@ -182,7 +190,14 @@ def _run_helper(fn, id, verbose):
     else:
         out = "> " + devnull
     path, filen = os.path.split(fn)
-    subprocess.Popen("python {} {} {}".format(filen, id + 1, out), shell=True, cwd=path).wait()
+    subprocess.Popen(
+        "python {} {} {}".format(
+            filen,
+            id + 1,
+            out),
+        shell=True,
+        cwd=path).wait(
+    )
 
 
 def run_joblib(fn, ids, n_jobs=-2, verbose=10):
@@ -192,7 +207,8 @@ def run_joblib(fn, ids, n_jobs=-2, verbose=10):
     return exit_codes
 
 
-def run_condor(fn, ids, force_rerun=False, block=False, verbose=10, poll_duration=30):
+def run_condor(fn, ids,
+               force_rerun=False, block=False, verbose=10, poll_duration=30):
     # create condor subdirectory
     dir = os.path.dirname(fn)
     fn = os.path.basename(fn)
@@ -216,7 +232,8 @@ def run_condor(fn, ids, force_rerun=False, block=False, verbose=10, poll_duratio
             for id in ids:
                 f.write(condor_submit_template_each_job.format(fn=fn, id=id))
 
-        exit_code = os.system("cd {dir} && condor_submit condor/submit".format(dir=dir))
+        exit_code = os.system(
+            "cd {dir} && condor_submit condor/submit".format(dir=dir))
         if verbose:
             print "Jobs submitted with exit code", exit_code
     else:

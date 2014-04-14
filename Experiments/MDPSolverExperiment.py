@@ -14,8 +14,9 @@ __license__ = "BSD 3-Clause"
 
 
 class MDPSolverExperiment(Experiment):
+
     """
-    The MDPSolver Experiment connects an MDPSolver and Domain, and runs the MDPSolver's 
+    The MDPSolver Experiment connects an MDPSolver and Domain, and runs the MDPSolver's
     solve method to start solving the MDP.
     """
 
@@ -27,7 +28,6 @@ class MDPSolverExperiment(Experiment):
     def __init__(self, agent, domain, **kwargs):
         self.agent = agent
         self.domain = domain
-
 
     def run(self, debug_on_sigurg=False):
         """

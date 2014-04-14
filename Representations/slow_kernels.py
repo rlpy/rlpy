@@ -16,7 +16,9 @@ def truncated_gaussian_kernel(x, y, dim, sigma, threshold):
 
 
 def discretization_kernel(x, y, dim, sigma):
-    return np.all(np.floor(x[dim] / sigma[dim]) == np.floor(y[dim] / sigma[dim]))
+    return (
+        np.all(np.floor(x[dim] / sigma[dim]) == np.floor(y[dim] / sigma[dim]))
+    )
 
 
 def linf_kernel(x, y, dim, sigma):

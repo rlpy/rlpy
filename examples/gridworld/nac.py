@@ -10,7 +10,9 @@ from Policies import GibbsPolicy
 from Experiments import Experiment
 import os
 
-def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
+
+def make_experiment(
+        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -24,23 +26,23 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     max_steps = 10000
     num_policy_checks = 10
 
-    ## Logging
+    # Logging
     logger = Logger()
 
-    ## Domain:
+    # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3, logger=logger)
 
-    ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    # Representation
+    representation = Tabular(domain, logger, discretization=20)
 
-    ## Policy
+    # Policy
     policy = GibbsPolicy(representation, logger)
 
-    ## Agent
+    # Agent
     agent = NaturalActorCritic(representation, policy, domain,
-                 logger, 0.3, 100, 1000, .7, 0.1)
+                               logger, 0.3, 100, 1000, .7, 0.1)
 
     experiment = Experiment(**locals())
     return experiment

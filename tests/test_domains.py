@@ -11,6 +11,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
 __license__ = "BSD 3-Clause"
 
+
 def test_random_trajectory():
     for d in Domains.__dict__.values():
         if d == Domains.Domain:
@@ -34,8 +35,8 @@ def check_random_trajectory(domain_class):
     """
     np.random.seed(1)
     domain = domain_class()
-    terminal    = True
-    steps       = 0
+    terminal = True
+    steps = 0
     T = 1000
     while steps < T:
         if terminal:

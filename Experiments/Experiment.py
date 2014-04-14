@@ -17,6 +17,7 @@ __license__ = "BSD 3-Clause"
 
 
 class Experiment(object):
+
     """
     The Experiment controls the training, testing, and evaluation of the
     agent. Reinforcement learning is based around
@@ -75,12 +76,13 @@ class Experiment(object):
     logger = None
 
     max_steps = 0  # Total number of interactions
-    # Number of Performance Checks uniformly scattered along timesteps of the experiment
+    # Number of Performance Checks uniformly scattered along timesteps of the
+    # experiment
     num_policy_checks = 0
     log_interval = 0  # Number of seconds between log prints to console
 
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
-    performance_log_template ='{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
+    performance_log_template = '{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
 
     def __init__(self, agent, domain, logger, id=1, max_steps=max_steps,
                  num_policy_checks=10, log_interval=1, path='Results/Temp',
@@ -119,17 +121,21 @@ class Experiment(object):
         self.logger.log("Experiment:\t\t%s" % className(self))
         self._update_path(path)
         if stat_bins_per_state_dim > 0:
-            self.state_counts_learn = np.zeros((domain.statespace_limits.shape[0],
-                                                stat_bins_per_state_dim), dtype=np.long)
-            self.state_counts_perf = np.zeros((domain.statespace_limits.shape[0],
-                                               stat_bins_per_state_dim), dtype=np.long)
+            self.state_counts_learn = np.zeros(
+                (domain.statespace_limits.shape[0],
+                 stat_bins_per_state_dim), dtype=np.long)
+            self.state_counts_perf = np.zeros(
+                (domain.statespace_limits.shape[0],
+                 stat_bins_per_state_dim), dtype=np.long)
 
     def _update_path(self, path):
 
         # compile and create output path
         self.full_path = self.compile_path(path)
         checkNCreateDirectory(self.full_path + '/')
-        self.logger.log("Output:\t\t\t%s/%s" % (self.full_path, self.output_filename))
+        self.logger.log(
+            "Output:\t\t\t%s/%s" %
+            (self.full_path, self.output_filename))
         self.logger.setOutput("%s/%d-out.txt" % (self.full_path, self.id))
 
     def seed_components(self):
@@ -139,9 +145,11 @@ class Experiment(object):
         """
         self.output_filename = '{:0>3}-results.json'.format(self.id)
         np.random.seed(self.randomSeeds[self.id - 1])
-        self.domain.random_state = np.random.RandomState(self.randomSeeds[self.id - 1])
+        self.domain.random_state = np.random.RandomState(
+            self.randomSeeds[self.id - 1])
         # make sure the performance_domain has a different seed
-        self.performance_domain.random_state = np.random.RandomState(self.randomSeeds[self.id + 20])
+        self.performance_domain.random_state = np.random.RandomState(
+            self.randomSeeds[self.id + 20])
 
     def performanceRun(self, total_steps, visualize=False):
         """
@@ -174,13 +182,15 @@ class Experiment(object):
             # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
-            eps_discount_return += self.performance_domain.gamma ** eps_length * r
+            eps_discount_return += self.performance_domain.gamma ** eps_length * \
+                r
             eps_length += 1
         if visualize:
             self.performance_domain.showDomain(a)
         self.agent.policy.turnOnExploration()
         # This hidden state is for domains (such as the noise in the helicopter domain) that include unobservable elements that are evolving over time
-        # Ideally the domain should be formulated as a POMDP but we are trying to accomodate them as an MDP
+        # Ideally the domain should be formulated as a POMDP but we are trying
+        # to accomodate them as an MDP
 
         return eps_return, eps_length, eps_term, eps_discount_return
 
@@ -200,15 +210,16 @@ class Experiment(object):
             counts = self.state_counts_perf
         else:
             return
-        rng = self.domain.statespace_limits[:,1] - self.domain.statespace_limits[:,0]
+        rng = self.domain.statespace_limits[:, 1] - \
+            self.domain.statespace_limits[:, 0]
         d = counts.shape[-1] - 2
-        s_norm = s - self.domain.statespace_limits[:,0]
+        s_norm = s - self.domain.statespace_limits[:, 0]
         idx = np.floor(s_norm / rng * d).astype("int")
         idx += 1
         idx[idx < 0] = 0
         idx[idx >= d + 2] = d + 1
         #import ipdb; ipdb.set_trace()
-        counts[range(counts.shape[0]),idx] += 1
+        counts[range(counts.shape[0]), idx] += 1
 
     def run_from_commandline(self):
         """
@@ -216,18 +227,23 @@ class Experiment(object):
         """
 
         parser = argparse.ArgumentParser("Run rlpy experiments")
-        parser.add_argument("-v", "--show-plot", default=False, action="store_true",
-                             help="show a plot at the end with the results of the assessment runs")
+        parser.add_argument(
+            "-v", "--show-plot", default=False, action="store_true",
+            help="show a plot at the end with the results of the assessment runs")
         parser.add_argument("-w", "--save", default=False, action="store_true",
-                             help="save results to disk")
-        parser.add_argument("-p", "--visualize-performance", default=False, action="store_true",
-                             help="visualize the interaction with the domain during assessment trials")
-        parser.add_argument("-s", "--visualize-steps",default=False, action="store_true",
-                             help="visualize steps during learning")
-        parser.add_argument("-l", "--visualize-learning",default=False, action="store_true",
-                             help="visualize learning progress")
-        parser.add_argument("-d", "--debug",default=False, action="store_true",
-                            help="enter pdb debugger when receiving SIGURG signal")
+                            help="save results to disk")
+        parser.add_argument(
+            "-p", "--visualize-performance", default=False, action="store_true",
+            help="visualize the interaction with the domain during assessment trials")
+        parser.add_argument(
+            "-s", "--visualize-steps", default=False, action="store_true",
+            help="visualize steps during learning")
+        parser.add_argument(
+            "-l", "--visualize-learning", default=False, action="store_true",
+            help="visualize learning progress")
+        parser.add_argument(
+            "-d", "--debug", default=False, action="store_true",
+            help="enter pdb debugger when receiving SIGURG signal")
         parser.add_argument("--seed", type=int)
         parser.add_argument("--path", type=str)
         args = parser.parse_args()
@@ -243,7 +259,6 @@ class Experiment(object):
             self.save()
         if args.show_plot:
             self.plot()
-
 
     def run(self, visualize_performance=0, visualize_learning=False,
             visualize_steps=False, debug_on_sigurg=False):
@@ -281,17 +296,19 @@ class Experiment(object):
 
         self.result = defaultdict(list)
         self.result["seed"] = self.id
-        total_steps         = 0
-        eps_steps           = 0
-        eps_return          = 0
-        episode_number      = 0
+        total_steps = 0
+        eps_steps = 0
+        eps_return = 0
+        episode_number = 0
 
         # show policy or value function of initial policy
         if visualize_learning:
             self.domain.showLearning(self.agent.representation)
 
-        start_log_time      = clock()  # Used to bound the number of logs in the file
-        self.start_time     = clock()  # Used to show the total time took the process
+        # Used to bound the number of logs in the file
+        start_log_time = clock()
+        # Used to show the total time took the process
+        self.start_time = clock()
         self.elapsed_time = 0
         # do a first evaluation to get the quality of the inital policy
         self.evaluate(total_steps, episode_number, visualize_performance)
@@ -305,48 +322,59 @@ class Experiment(object):
                 if visualize_steps:
                     self.domain.show(a, self.agent.representation)
 
-                # Output the current status if certain amount of time has been passed
-                eps_return      = 0
-                eps_steps       = 0
+                # Output the current status if certain amount of time has been
+                # passed
+                eps_return = 0
+                eps_steps = 0
                 episode_number += 1
             # Act,Step
-            r, ns, terminal, np_actions   = self.domain.step(a)
+            r, ns, terminal, np_actions = self.domain.step(a)
 
             self._gather_transition_statistics(s, a, ns, r, learning=True)
-            na              = self.agent.policy.pi(ns, terminal, np_actions)
+            na = self.agent.policy.pi(ns, terminal, np_actions)
 
-            total_steps     += 1
-            eps_steps       += 1
-            eps_return      += r
+            total_steps += 1
+            eps_steps += 1
+            eps_return += r
 
             # Print Current performance
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.log_interval:
-                start_log_time  = clock()
-                elapsedTime     = deltaT(self.start_time)
-                self.logger.log(self.log_template.format(total_steps=total_steps,
-                                                         elapsed=hhmmss(elapsedTime),
-                                                         remaining=hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps),
-                                                         totreturn=eps_return,
-                                                         steps=eps_steps,
-                                                         num_feat=self.agent.representation.features_num))
+                start_log_time = clock()
+                elapsedTime = deltaT(self.start_time)
+                self.logger.log(
+                    self.log_template.format(total_steps=total_steps,
+                                             elapsed=hhmmss(
+                                                 elapsedTime),
+                                             remaining=hhmmss(
+                                                 elapsedTime * (
+                                                     self.max_steps - total_steps) / total_steps),
+                                             totreturn=eps_return,
+                                             steps=eps_steps,
+                                             num_feat=self.agent.representation.features_num))
 
             # learning
             self.agent.learn(s, p_actions, a, r, ns, np_actions, na, terminal)
-            s, a, p_actions          = ns, na, np_actions
+            s, a, p_actions = ns, na, np_actions
             # Visual
             if visualize_steps:
                 self.domain.show(a, self.agent.representation)
 
             # Check Performance
             if total_steps % (self.max_steps / self.num_policy_checks) == 0:
-                self.elapsed_time = deltaT(self.start_time) - self.total_eval_time
+                self.elapsed_time = deltaT(
+                    self.start_time) - self.total_eval_time
 
                 # show policy or value function
                 if visualize_learning:
                     self.domain.showLearning(self.agent.representation)
 
-                self.evaluate(total_steps, episode_number, visualize_performance)
-                self.total_eval_time += deltaT(self.start_time) - self.elapsed_time - self.total_eval_time
+                self.evaluate(
+                    total_steps,
+                    episode_number,
+                    visualize_performance)
+                self.total_eval_time += deltaT(self.start_time) - \
+                    self.elapsed_time - \
+                    self.total_eval_time
                 start_log_time = clock()
 
         # Visual
@@ -378,7 +406,8 @@ class Experiment(object):
         performance_term = 0.
         performance_discounted_return = 0.
         for j in xrange(self.checks_per_policy):
-            p_ret, p_step, p_term, p_dret = self.performanceRun(total_steps, visualize=visualize > j)
+            p_ret, p_step, p_term, p_dret = self.performanceRun(
+                total_steps, visualize=visualize > j)
             performance_return += p_ret
             performance_steps += p_step
             performance_term += p_term
@@ -390,7 +419,8 @@ class Experiment(object):
         self.result["learning_steps"].append(total_steps)
         self.result["return"].append(performance_return)
         self.result["learning_time"].append(self.elapsed_time)
-        self.result["num_features"].append(self.agent.representation.features_num)
+        self.result["num_features"].append(
+            self.agent.representation.features_num)
         self.result["steps"].append(performance_steps)
         self.result["terminated"].append(performance_term)
         self.result["learning_episode"].append(episode_number)
@@ -398,15 +428,18 @@ class Experiment(object):
         # reset start time such that performanceRuns don't count
         self.start_time = clock() - elapsedTime
         if total_steps > 0:
-            remaining = hhmmss(elapsedTime*(self.max_steps-total_steps)/total_steps)
+            remaining = hhmmss(
+                elapsedTime * (self.max_steps - total_steps) / total_steps)
         else:
             remaining = "?"
-        self.logger.log(self.performance_log_template.format(total_steps=total_steps,
-                                                             elapsed=hhmmss(elapsedTime),
-                                                             remaining=remaining,
-                                                             totreturn=performance_return,
-                                                             steps=performance_steps,
-                                                             num_feat=self.agent.representation.features_num))
+        self.logger.log(
+            self.performance_log_template.format(total_steps=total_steps,
+                                                 elapsed=hhmmss(
+                                                     elapsedTime),
+                                                 remaining=remaining,
+                                                 totreturn=performance_return,
+                                                 steps=performance_steps,
+                                                 num_feat=self.agent.representation.features_num))
 
         random.set_state(random_state)
         #self.domain.rand_state = random_state_domain
@@ -414,7 +447,7 @@ class Experiment(object):
     def save(self):
         """Saves the experimental results to the ``results.json`` file
         """
-        results_fn = os.path.join(self.full_path,self.output_filename)
+        results_fn = os.path.join(self.full_path, self.output_filename)
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
         with open(results_fn, "w") as f:
@@ -425,7 +458,7 @@ class Experiment(object):
         If the results could not be found, the function returns ``None``
         and the results array otherwise.
         """
-        results_fn = os.path.join(self.full_path,self.output_filename)
+        results_fn = os.path.join(self.full_path, self.output_filename)
         self.results = Tools.results.load_single(results_fn)
         return self.results
 
@@ -439,19 +472,21 @@ class Experiment(object):
         performance_fig = pl.figure("Performance")
         res = self.result
         plt.plot(res[x], res[y], '-bo', lw=3, markersize=10)
-        plt.xlim(0, res[x][-1]*1.01)
+        plt.xlim(0, res[x][-1] * 1.01)
         y_arr = np.array(res[y])
         m = y_arr.min()
         M = y_arr.max()
-        delta = M-m
+        delta = M - m
         if delta > 0:
-            plt.ylim(m-.1*delta-.1, M+.1*delta+.1)
+            plt.ylim(m - .1 * delta - .1, M + .1 * delta + .1)
         xlabel = labels[x] if x in labels else x
         ylabel = labels[y] if y in labels else y
         plt.xlabel(xlabel, fontsize=16)
         plt.ylabel(ylabel, fontsize=16)
         if save:
-            path = os.path.join(self.full_path, "{:3}-performance.pdf".format(self.id))
+            path = os.path.join(
+                self.full_path,
+                "{:3}-performance.pdf".format(self.id))
             performance_fig.savefig(path, transparent=True, pad_inches=.1)
         plt.ioff()
         plt.show()
@@ -479,5 +514,3 @@ class Experiment(object):
                     print "Warning: Could not interpret path variable", repr(v)
 
         return path.format(**replacements)
-
-

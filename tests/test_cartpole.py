@@ -12,16 +12,18 @@ def test_cartpole():
         print "use old Cartpole class!"
         from Domains import Pendulum_InvertedBalance as InfCartPoleBalance
 
-    yield check_traj, InfCartPoleBalance, os.path.join(__rlpy_location__,"tests",
-                                                "traj_InfiniteCartpoleBalance.pck")
+    yield check_traj, InfCartPoleBalance, os.path.join(
+        __rlpy_location__, "tests",
+        "traj_InfiniteCartpoleBalance.pck")
     try:
         from Domains import FiniteCartPoleBalanceOriginal
     except ImportError:
         print "use old Cartpole class!"
         from Domains import CartPoleBalanceOriginal as FiniteCartPoleBalanceOriginal
 
-    yield check_traj, FiniteCartPoleBalanceOriginal, os.path.join(__rlpy_location__,"tests",
-                                                "traj_FiniteCartpoleBalanceOriginal.pck")
+    yield check_traj, FiniteCartPoleBalanceOriginal, os.path.join(
+        __rlpy_location__, "tests",
+        "traj_FiniteCartpoleBalanceOriginal.pck")
 
 
 def check_traj(domain_class, filename):
@@ -38,7 +40,7 @@ def check_traj(domain_class, filename):
         print "Terminal", e1[1], e2[1]
         eq_(e1[1], e2[1])  # terminal
         eq_(len(e1[2]), len(e2[2]))
-        assert np.all([a == b for a,b in zip(e1[2],e2[2])])  # p_actions
+        assert np.all([a == b for a, b in zip(e1[2], e2[2])])  # p_actions
 
 
 def save_trajectory(domain_class, filename):

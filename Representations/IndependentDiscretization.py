@@ -12,29 +12,36 @@ __author__ = "Alborz Geramifard"
 
 class IndependentDiscretization(Representation):
 
-    def __init__(self,domain,logger,discretization = 20):
-        self.setBinsPerDimension(domain,discretization)
+    def __init__(self, domain, logger, discretization=20):
+        self.setBinsPerDimension(domain, discretization)
         self.features_num = int(sum(self.bins_per_dim))
-        self.maxFeatureIDperDimension = np.cumsum(self.bins_per_dim)-1
-        super(IndependentDiscretization,self).__init__(domain,logger,discretization)
+        self.maxFeatureIDperDimension = np.cumsum(self.bins_per_dim) - 1
+        super(
+            IndependentDiscretization,
+            self).__init__(
+            domain,
+            logger,
+            discretization)
 
-    def phi_nonTerminal(self,s):
-        F_s                                 = np.zeros(self.features_num,'bool')
-        F_s[self.activeInitialFeatures(s)]  = 1
+    def phi_nonTerminal(self, s):
+        F_s = np.zeros(
+            self.features_num,
+            'bool')
+        F_s[self.activeInitialFeatures(s)] = 1
         return F_s
 
-    def getDimNumber(self,f):
+    def getDimNumber(self, f):
         # Returns the dimension number corresponding to this feature
-        dim     = searchsorted(self.maxFeatureIDperDimension,f)
+        dim = searchsorted(self.maxFeatureIDperDimension, f)
         return dim
 
-    def getFeatureName(self,id):
+    def getFeatureName(self, id):
         if hasattr(self.domain, 'DimNames'):
-            dim     = np.searchsorted(self.maxFeatureIDperDimension,id)
-            #Find the index of the feature in the corresponding dimension
+            dim = np.searchsorted(self.maxFeatureIDperDimension, id)
+            # Find the index of the feature in the corresponding dimension
             index_in_dim = id
             if dim != 0:
-                index_in_dim = id - self.maxFeatureIDperDimension[dim-1]
+                index_in_dim = id - self.maxFeatureIDperDimension[dim - 1]
             print self.domain.DimNames[dim]
             f_name = self.domain.DimNames[dim] + '=' + str(index_in_dim)
 

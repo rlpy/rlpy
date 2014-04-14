@@ -15,7 +15,7 @@ __license__ = "BSD 3-Clause"
 
 def _thousands(x, pos):
     'The two args are the value and tick position'
-    return '%1.0fk' % (x*1e-3)
+    return '%1.0fk' % (x * 1e-3)
 
 thousands_formatter = FuncFormatter(_thousands)
 
@@ -27,12 +27,26 @@ default_labels = {"learning_steps": "Learning Steps",
 #: default colors used for plotting
 default_colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'purple']
 #: default markers used for plotting
-default_markers = ['o', 'v', '8', 's', 'p', '*', '<', 'h', '^', 'H', 'D', '>', 'd']
+default_markers = [
+    'o',
+    'v',
+    '8',
+    's',
+    'p',
+    '*',
+    '<',
+    'h',
+    '^',
+    'H',
+    'D',
+    '>',
+    'd']
 
 
 def thousand_format_xaxis():
     """set the xaxis labels to have a ...k format"""
     plt.gca().xaxis.set_major_formatter(thousands_formatter)
+
 
 def load_single(filename):
     """
@@ -113,7 +127,7 @@ def avg_quantity(results, quantity, pad=False):
                     num[i] += 1
                 else:
                     last_values[k] = 0.
-            std[i] += (last_values[k] - mean[i])**2
+            std[i] += (last_values[k] - mean[i]) ** 2
         if num[i] > 0:
 
             std[i] /= num[i]
@@ -146,6 +160,7 @@ def add_first_close_entries(results, new_label="95_time",
 
 
 class MultiExperimentResults(object):
+
     """provides tools to analyze, compare, load and plot results of several
     different experiments each stored in a separate path"""
 
@@ -162,9 +177,10 @@ class MultiExperimentResults(object):
         for label, path in paths.iteritems():
             self.data[label] = load_results(path)
 
-    def plot_avg_sem(self, x, y, pad_x=False, pad_y=False, xbars=False, ybars=True,
-                     colors=None, markers=None, xerror_every=1,
-                     legend=True, **kwargs):
+    def plot_avg_sem(
+            self, x, y, pad_x=False, pad_y=False, xbars=False, ybars=True,
+            colors=None, markers=None, xerror_every=1,
+            legend=True, **kwargs):
         """
         plots quantity y over x (means and standard error of the mean).
         The quantities are specified by their id strings,
@@ -180,12 +196,15 @@ class MultiExperimentResults(object):
 
         return the figure handle of the created plot
         """
-        style = {"linewidth": 2, "alpha": .7, "linestyle": "-", "markersize": 7,
-                 }
+        style = {
+            "linewidth": 2, "alpha": .7, "linestyle": "-", "markersize": 7,
+        }
         if colors is None:
-            colors = dict([(l, default_colors[i % len(default_colors)]) for i, l in enumerate(self.data.keys())])
+            colors = dict([(l, default_colors[i % len(default_colors)])
+                          for i, l in enumerate(self.data.keys())])
         if markers is None:
-            markers = dict([(l, default_markers[i % len(default_markers)]) for i, l in enumerate(self.data.keys())])
+            markers = dict([(l, default_markers[i % len(default_markers)])
+                           for i, l in enumerate(self.data.keys())])
         style.update(kwargs)
         min_ = np.inf
         max_ = - np.inf
@@ -214,7 +233,7 @@ class MultiExperimentResults(object):
                 min_ = min(y_mean.min(), min_)
 
         # adjust visible space
-        y_lim = [min_-.1*abs(max_-min_),max_+.1*abs(max_-min_)]
+        y_lim = [min_ - .1 * abs(max_ - min_), max_ + .1 * abs(max_ - min_)]
         if min_ != max_:
             plt.ylim(y_lim)
 
@@ -235,4 +254,8 @@ class MultiExperimentResults(object):
 
 
 def save_figure(figure, filename):
-    figure.savefig(filename, transparent=True, pad_inches=.1, bbox_inches='tight')
+    figure.savefig(
+        filename,
+        transparent=True,
+        pad_inches=.1,
+        bbox_inches='tight')

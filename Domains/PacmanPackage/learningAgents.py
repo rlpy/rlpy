@@ -4,15 +4,19 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
 from game import Directions, Agent, Actions
 
-import random,util,time
+import random
+import util
+import time
+
 
 class ValueEstimationAgent(Agent):
+
     """
       Abstract agent which assigns values to (state,action)
       Q-Values for an environment. As well as a value to a
@@ -29,7 +33,7 @@ class ValueEstimationAgent(Agent):
       Q-Values while acting in the environment.
     """
 
-    def __init__(self, alpha=1.0, epsilon=0.05, gamma=0.8, numTraining = 10):
+    def __init__(self, alpha=1.0, epsilon=0.05, gamma=0.8, numTraining=10):
         """
         Sets options, which can be passed in via the Pacman command line using -a alpha=0.5,...
         alpha    - learning rate
@@ -80,7 +84,9 @@ class ValueEstimationAgent(Agent):
         """
         util.raiseNotDefined()
 
+
 class ReinforcementAgent(ValueEstimationAgent):
+
     """
       Abstract Reinforcemnt Agent: A ValueEstimationAgent
             which estimates Q-Values (as well as policies) from experience
@@ -109,7 +115,7 @@ class ReinforcementAgent(ValueEstimationAgent):
     #    Read These Functions          #
     ####################################
 
-    def getLegalActions(self,state):
+    def getLegalActions(self, state):
         """
           Get the actions available for a given
           state. This is what you should use to
@@ -117,7 +123,7 @@ class ReinforcementAgent(ValueEstimationAgent):
         """
         return self.actionFn(state)
 
-    def observeTransition(self, state,action,nextState,deltaReward):
+    def observeTransition(self, state, action, nextState, deltaReward):
         """
             Called by environment to inform agent that a transition has
             been observed. This will result in a call to self.update
@@ -126,7 +132,7 @@ class ReinforcementAgent(ValueEstimationAgent):
             NOTE: Do *not* override or call this function
         """
         self.episodeRewards += deltaReward
-        self.update(state,action,nextState,deltaReward)
+        self.update(state, action, nextState, deltaReward)
 
     def startEpisode(self):
         """
@@ -156,7 +162,8 @@ class ReinforcementAgent(ValueEstimationAgent):
     def isInTesting(self):
         return not self.isInTraining()
 
-    def __init__(self, actionFn = None, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1):
+    def __init__(self, actionFn=None, numTraining=100,
+                 epsilon=0.5, alpha=0.5, gamma=1):
         """
         actionFn: Function which takes a state and returns the list of legal actions
 
@@ -165,7 +172,7 @@ class ReinforcementAgent(ValueEstimationAgent):
         gamma    - discount factor
         numTraining - number of training episodes, i.e. no learning after these many episodes
         """
-        if actionFn == None:
+        if actionFn is None:
             actionFn = lambda state: state.getLegalActions()
         self.actionFn = actionFn
         self.episodesSoFar = 0
@@ -188,7 +195,7 @@ class ReinforcementAgent(ValueEstimationAgent):
     def setDiscount(self, discount):
         self.discount = discount
 
-    def doAction(self,state,action):
+    def doAction(self, state, action):
         """
             Called by inherited class when
             an action is taken in a state
@@ -206,7 +213,11 @@ class ReinforcementAgent(ValueEstimationAgent):
         """
         if not self.lastState is None:
             reward = state.getScore() - self.lastState.getScore()
-            self.observeTransition(self.lastState, self.lastAction, state, reward)
+            self.observeTransition(
+                self.lastState,
+                self.lastAction,
+                state,
+                reward)
         return state
 
     def registerInitialState(self, state):
@@ -219,7 +230,11 @@ class ReinforcementAgent(ValueEstimationAgent):
           Called by Pacman game at the terminal state
         """
         deltaReward = state.getScore() - self.lastState.getScore()
-        self.observeTransition(self.lastState, self.lastAction, state, deltaReward)
+        self.observeTransition(
+            self.lastState,
+            self.lastAction,
+            state,
+            deltaReward)
         self.stopEpisode()
 
         # Make sure we have this var
@@ -236,19 +251,20 @@ class ReinforcementAgent(ValueEstimationAgent):
             if self.episodesSoFar <= self.numTraining:
                 trainAvg = self.accumTrainRewards / float(self.episodesSoFar)
                 print '\tCompleted %d out of %d training episodes' % (
-                       self.episodesSoFar,self.numTraining)
+                    self.episodesSoFar, self.numTraining)
                 print '\tAverage Rewards over all training: %.2f' % (
-                        trainAvg)
+                    trainAvg)
             else:
-                testAvg = float(self.accumTestRewards) / (self.episodesSoFar - self.numTraining)
+                testAvg = float(self.accumTestRewards) / \
+                    (self.episodesSoFar - self.numTraining)
                 print '\tCompleted %d test episodes' % (self.episodesSoFar - self.numTraining)
                 print '\tAverage Rewards over testing: %.2f' % testAvg
-            print '\tAverage Rewards for last %d episodes: %.2f'  % (
-                    NUM_EPS_UPDATE,windowAvg)
+            print '\tAverage Rewards for last %d episodes: %.2f' % (
+                NUM_EPS_UPDATE, windowAvg)
             print '\tEpisode took %.2f seconds' % (time.time() - self.episodeStartTime)
             self.lastWindowAccumRewards = 0.0
             self.episodeStartTime = time.time()
 
         if self.episodesSoFar == self.numTraining:
             msg = 'Training Done (turning off epsilon and alpha)'
-            print '%s\n%s' % (msg,'-' * len(msg))
+            print '%s\n%s' % (msg, '-' * len(msg))
