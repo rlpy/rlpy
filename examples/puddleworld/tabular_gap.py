@@ -2,15 +2,15 @@
 Cart-pole balancing with continuous / Kernelized iFDD
 """
 
-from Tools import Logger
-from Domains.PuddleWorld import PuddleGapWorld, PuddleWorld
-from Agents import SARSA, Q_Learning
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains.PuddleWorld import PuddleGapWorld, PuddleWorld
+from rlpy.Agents import SARSA, Q_Learning
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
-from Representations import FastKiFDD
+from rlpy.Representations import FastKiFDD
 
 param_space = {
     # 'kernel_resolution': hp.loguniform("kernel_resolution", np.log(3), np.log(100)),

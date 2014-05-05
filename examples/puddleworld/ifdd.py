@@ -4,12 +4,12 @@ Cart-pole balancing with iFDD+
 
 import sys
 import os
-from Tools import Logger
-from Domains import PuddleWorld
-from Agents import SARSA, Q_LEARNING
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains import PuddleWorld
+from rlpy.Agents import SARSA, Q_LEARNING
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 

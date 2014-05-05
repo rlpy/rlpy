@@ -1,12 +1,12 @@
-from Tools import Logger
-from Domains.Bicycle import BicycleBalancing, BicycleRiding
-from Agents import Q_Learning
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains.Bicycle import BicycleBalancing, BicycleRiding
+from rlpy.Agents import Q_Learning
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
-from Representations import FastKiFDD
+from rlpy.Representations import FastKiFDD
 
 param_space = {
     'kernel_resolution':
@@ -58,7 +58,7 @@ def make_experiment(
     return experiment
 
 if __name__ == '__main__':
-    from Tools.run import run_profiled
+    from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
     experiment.run(visualize_learning=True,

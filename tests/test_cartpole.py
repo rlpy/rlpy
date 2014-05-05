@@ -1,28 +1,28 @@
 import numpy as np
 import pickle
 from nose.tools import eq_
-from Tools import __rlpy_location__
+from rlpy.Tools import __rlpy_location__
 import os
 
 
 def test_cartpole():
     try:
-        from Domains import InfCartPoleBalance
+        from rlpy.Domains import InfCartPoleBalance
     except ImportError:
         print "use old Cartpole class!"
-        from Domains import Pendulum_InvertedBalance as InfCartPoleBalance
+        from rlpy.Domains import Pendulum_InvertedBalance as InfCartPoleBalance
 
     yield check_traj, InfCartPoleBalance, os.path.join(
-        __rlpy_location__, "tests",
+        __rlpy_location__,"..", "tests",
         "traj_InfiniteCartpoleBalance.pck")
     try:
-        from Domains import FiniteCartPoleBalanceOriginal
+        from rlpy.Domains import FiniteCartPoleBalanceOriginal
     except ImportError:
         print "use old Cartpole class!"
-        from Domains import CartPoleBalanceOriginal as FiniteCartPoleBalanceOriginal
+        from rlpy.Domains import CartPoleBalanceOriginal as FiniteCartPoleBalanceOriginal
 
     yield check_traj, FiniteCartPoleBalanceOriginal, os.path.join(
-        __rlpy_location__, "tests",
+        __rlpy_location__, "..","tests",
         "traj_FiniteCartpoleBalanceOriginal.pck")
 
 

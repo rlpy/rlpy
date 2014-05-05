@@ -2,12 +2,12 @@
 
 __author__ = "William Dabney"
 
-from Domains import GridWorld
-from Tools import Logger
-from MDPSolvers import PolicyIteration
-from Representations import Tabular
-from Policies import GibbsPolicy
-from Experiments import MDPSolverExperiment
+from rlpy.Domains import GridWorld
+from rlpy.Tools import Logger
+from rlpy.MDPSolvers import PolicyIteration
+from rlpy.Representations import Tabular
+from rlpy.Policies import GibbsPolicy
+from rlpy.Experiments import MDPSolverExperiment
 import os
 
 

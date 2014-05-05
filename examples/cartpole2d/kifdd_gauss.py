@@ -2,12 +2,12 @@
 Cart-pole balancing with continuous / Kernelized iFDD
 """
 
-from Tools import Logger
-from Domains import InfCartPoleBalance
-from Agents import SARSA, Q_LEARNING
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains import InfCartPoleBalance
+from rlpy.Agents import SARSA, Q_LEARNING
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 

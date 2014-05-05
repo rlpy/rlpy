@@ -2,12 +2,12 @@
 
 __author__ = "William Dabney"
 
-from Domains import GridWorld
-from Tools import Logger
-from Agents import NaturalActorCritic
-from Representations import Tabular
-from Policies import GibbsPolicy
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Tools import Logger
+from rlpy.Agents import NaturalActorCritic
+from rlpy.Representations import Tabular
+from rlpy.Policies import GibbsPolicy
+from rlpy.Experiments import Experiment
 import os
 
 

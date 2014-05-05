@@ -1,8 +1,8 @@
-from Domains import GridWorld
-from Representations import Tabular
+from rlpy.Domains import GridWorld
+from rlpy.Representations import Tabular
 from scipy.optimize import check_grad, approx_fprime
-from Tools import Logger
-from Policies.gibbs import GibbsPolicy
+from rlpy.Tools import Logger
+from rlpy.Policies.gibbs import GibbsPolicy
 import numpy as np
 
 

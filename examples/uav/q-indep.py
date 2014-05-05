@@ -1,9 +1,9 @@
-from Tools import Logger
-from Domains import PST
-from Agents import Q_Learning
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains import PST
+from rlpy.Agents import Q_Learning
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 
@@ -32,7 +32,7 @@ def make_experiment(
     return experiment
 
 if __name__ == '__main__':
-    from Tools.run import run_profiled
+    from rlpy.Tools.run import run_profiled
     run_profiled(make_experiment)
     #experiment = make_experiment(1)
     # experiment.run()

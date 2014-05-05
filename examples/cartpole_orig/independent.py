@@ -1,12 +1,12 @@
 """
 Cart-pole balancing with independent discretization
 """
-from Tools import Logger
-from Domains.FiniteTrackCartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
-from Agents import SARSA, Q_LEARNING
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains.FiniteTrackCartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
+from rlpy.Agents import SARSA, Q_LEARNING
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 
@@ -38,7 +38,7 @@ def make_experiment(
     return experiment
 
 if __name__ == '__main__':
-    from Tools.run import run_profiled
+    from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
     experiment.run(visualize_learning=True)

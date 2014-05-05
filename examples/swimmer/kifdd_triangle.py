@@ -1,13 +1,13 @@
-from Tools import Logger
-from Domains import Swimmer
-from Agents import Q_Learning, SARSA
-from Representations import *
-from Policies import eGreedy
-from Policies.SwimmerPolicy import SwimmerPolicy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains import Swimmer
+from rlpy.Agents import Q_Learning, SARSA
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Policies.SwimmerPolicy import SwimmerPolicy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
-from Representations import FastKiFDD
+from rlpy.Representations import FastKiFDD
 
 param_space = {
     'kernel_resolution':
@@ -61,13 +61,13 @@ def make_experiment(
     return experiment
 
 if __name__ == '__main__':
-    from Tools.run import run_profiled
+    from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
     experiment.run(visualize_performance=1, visualize_learning=True)
     # experiment.plot()
     # experiment.save()
-    from Tools import plt
+    from rlpy.Tools import plt
     plt.figure()
     for i in range(9):
         plt.plot(experiment.state_counts_learn[i], label="Dim " + str(i))

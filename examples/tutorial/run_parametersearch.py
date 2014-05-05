@@ -1,4 +1,4 @@
-from Tools.hypersearch import find_hyperparameters
+from rlpy.Tools.hypersearch import find_hyperparameters
 best, trials = find_hyperparameters(
     "examples/tutorial/infTrackCartPole_rbfs.py",
     "./Results/Tutorial/InfTrackCartPole/RBFs_hypersearch",

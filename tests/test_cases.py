@@ -3,7 +3,7 @@
 import numpy as np
 from nose.tools import ok_, eq_
 import glob
-from Tools.run import read_setting_content
+from rlpy.Tools.run import read_setting_content
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",

@@ -1,12 +1,12 @@
 """
 Cart-pole balancing with independent discretization
 """
-from Tools import Logger
-from Domains import InfCartPoleBalance
-from Agents import Q_Learning
-from Representations import *
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Tools import Logger
+from rlpy.Domains import InfCartPoleBalance
+from rlpy.Agents import Q_Learning
+from rlpy.Representations import *
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
 

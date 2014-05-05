@@ -7,12 +7,12 @@ This file contains a very basic example of a RL experiment:
 A simple Grid-World.
 """
 __author__ = "Robert H. Klein"
-from Domains import GridWorld
-from Tools import Logger
-from Agents import Q_Learning
-from Representations import Tabular
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Tools import Logger
+from rlpy.Agents import Q_Learning
+from rlpy.Representations import Tabular
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import os
 
 
