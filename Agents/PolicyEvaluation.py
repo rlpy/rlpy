@@ -1,5 +1,8 @@
 """BROKEN"""
-from LSPI import *
+from .LSPI import LSPI
+import Tools
+import numy as np
+import os.path
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -16,7 +19,7 @@ class PolicyEvaluation(LSPI):
             self, representation, policy, domain, logger, sample_window=100,
             accuracy_test_samples=10000, MC_samples=100, target_path='.', re_iterations=100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' % (target_path,
-                                                          className(domain))
+                                                          Tools.className(domain))
         # Number of iterations over LSPI and iFDD
         self.re_iterations = re_iterations
         super(
@@ -44,17 +47,17 @@ class PolicyEvaluation(LSPI):
                     self.compare_with_me)
             else:
                 _, _, shortPolicyFile = self.compare_with_me.rpartition('/')
-                DATA = load(self.compare_with_me)
+                DATA = np.load(self.compare_with_me)
                 self.logger.log('PE File:\t\t\t%s' % shortPolicyFile)
-            self.S = DATA[:, arange(self.domain.state_space_dims)]
-            self.A = DATA[:, self.domain.state_space_dims].astype(uint16)
+            self.S = DATA[:, np.arange(self.domain.state_space_dims)]
+            self.A = DATA[:, self.domain.state_space_dims].astype(np.uint16)
             self.Q_MC = DATA[:, self.domain.state_space_dims + 1]
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         self.process(s, a, r, ns, na, terminal)
         if self.samples_count == self.max_window - 1:
             STATS = []
-            start_time = clock()
+            start_time = Tools.clock()
             # Representation expansion iteration. Only used if the
             # representation can be expanded
             re_iteration = 0
@@ -70,10 +73,10 @@ class PolicyEvaluation(LSPI):
                               PE_error,
                              # Policy Evaluation Error
                               # Time since start
-                              deltaT(start_time)
+                              Tools.deltaT(start_time)
                               ])
 
-                if not hasFunction(self.representation, 'batchDiscover'):
+                if not Tools.hasFunction(self.representation, 'batchDiscover'):
                     break
                 re_iteration += 1
                 self.logger.log(
@@ -83,7 +86,7 @@ class PolicyEvaluation(LSPI):
                     td_errors,
                     self.all_phi_s,
                     self.data_s)
-            self.STATS = array(STATS).T  # Experiment will save this later
+            self.STATS = np.array(STATS).T  # Experiment will save this later
             self.samples_count = 0
         if terminal:
             self.episodeTerminated()
@@ -99,7 +102,7 @@ class PolicyEvaluation(LSPI):
 
             self.LSTD()
             td_errors = self.calculateTDErrors()
-            PE_error = linalg.norm(td_errors)
+            PE_error = np.linalg.norm(td_errors)
 
             # Start Calculating the Policy Evaluation Error
 #            PE_error_time_start = clock()
@@ -113,5 +116,5 @@ class PolicyEvaluation(LSPI):
 #            Q                   = all_test_phi_s_a * self.representation.theta.reshape(-1,1) if sp.issparse(all_test_phi_s_a) else dot(all_test_phi_s_a,self.representation.theta)
 #            PE_error            = linalg.norm(Q.ravel()-self.Q_MC)
 #            self.logger.log("||Delta V|| = %f" % PE_error)
-            self.logger.log("||TD-Errors|| = %f " % linalg.norm(td_errors))
+            self.logger.log("||TD-Errors|| = %f " % np.linalg.norm(td_errors))
             return PE_error, td_errors

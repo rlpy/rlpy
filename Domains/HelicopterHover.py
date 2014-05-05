@@ -129,7 +129,7 @@ class HelicopterHoverExtended(Domain):
         if len(s) <= 12:
             w = np.sqrt(1. - np.sum(s[9:12] ** 2))
         else:
-            w = s[9.]
+            w = s[9]
 
         return np.abs(w) < self.MIN_QW_BEFORE_HITTING_TERMINAL_STATE
 

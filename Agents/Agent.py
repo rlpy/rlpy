@@ -1,6 +1,7 @@
-"""Standard Control Agent"""
+"""Standard Control Agent. """
 
-from Tools import *
+from Tools import className, incrementalAverageUpdate
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -11,7 +12,8 @@ __author__ = "Alborz Geramifard"
 
 class Agent(object):
 
-    """
+    """Learning Agent for obtaining good policices.
+
     The Agent receives observations from the Domain and performs actions to
     obtain some goal.
 
@@ -39,6 +41,7 @@ class Agent(object):
         All new agent implementations should inherit from this class.
 
     """
+
     # The Representation to be used by the Agent
     representation = None
     # The domain the agent interacts with
@@ -73,7 +76,8 @@ class Agent(object):
 
     def __init__(self, representation, policy, domain, logger,
                  initial_alpha=0.1, alpha_decay_mode='dabney', boyan_N0=1000):
-        """
+        """initialization.
+
         :param representation: the :py:class:`~Representation.Representation.Representation`
             to use in learning the value function.
         :param policy: the :py:class:`~Policies.Policy.Policy` to use when selecting actions.
@@ -104,15 +108,12 @@ class Agent(object):
                 self.logger.log("boyan_N0:\t%.1f" % self.boyan_N0)
         # Check to make sure selected alpha_decay mode is valid
         if not self.alpha_decay_mode in self.valid_decay_modes:
-            errMsg = "Invalid decay mode selected:" + self.alpha_decay - \
-                _mode + ".\nValid choices are: " + str(self.valid_decay_modes)
+            errMsg = "Invalid decay mode selected:" + self.alpha_decay_mode \
+                    + ".\nValid choices are: " + str(self.valid_decay_modes)
             if self.logger:
                 self.logger.log(errMsg)
-            else:
-                shout(errMsg)
-            sys.exit(1)
-        # Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
-        # initial_alpha will act as a permanent upper-bound on alpha.
+        #  Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
+        #  initial_alpha will act as a permanent upper-bound on alpha.
         if self.alpha_decay_mode == 'dabney':
             self.initial_alpha = 1.0
             self.alpha = 1.0
@@ -158,9 +159,9 @@ class Agent(object):
                 # Automatic learning rate: [Dabney W. 2012]
                 # http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
                 self.candid_alpha = abs(
-                    dot(gamma * phi_prime_s - phi_s, eligibility_trace_s))
+                    np.dot(gamma * phi_prime_s - phi_s, eligibility_trace_s))
                 self.candid_alpha    = 1 / \
-                    (self.candid_alpha * 1.) if self.candid_alpha != 0 else inf
+                    (self.candid_alpha * 1.) if self.candid_alpha != 0 else np.inf
                 self.alpha = min(self.alpha, self.candid_alpha)
             # else we take no action
         elif self.alpha_decay_mode == 'boyan':
@@ -179,7 +180,6 @@ class Agent(object):
         elif self.alpha_decay_mode == "const":
             self.alpha = self.initial_alpha
         else:
-            shout("Unrecognized decay mode")
             self.logger.log("Unrecognized decay mode ")
 
     def MC_episode(self, s=None, a=None, tolerance=0):
@@ -233,7 +233,7 @@ class Agent(object):
         """
 
         Q_avg = 0
-        for i in arange(MC_samples):
+        for i in np.arange(MC_samples):
             # print "MC Sample:", i
             _, _, _, Q = self.MC_episode(s, a, tolerance)
             Q_avg = incrementalAverageUpdate(Q_avg, Q, i + 1)
@@ -258,24 +258,24 @@ class Agent(object):
         # since it will not have much impact in evaluation of Q
         tolerance = 1e-10
         cols = self.domain.state_space_dims + 2
-        DATA = empty((samples, cols))
+        DATA = np.empty((samples, cols))
         terminal = True
         steps = 0
+        s = 0.  # will be overwritten anyway
         while steps < samples:
-            s = self.domain.s0(
-            ) if terminal or steps % self.domain.episodeCap == 0 else s
+            s = self.domain.s0() if terminal or steps % self.domain.episodeCap == 0 else s
             a = self.policy.pi(s)
 
             # Store the corresponding Q
             Q = self.Q_MC(s, a, MC_samples, tolerance)
-            DATA[steps, :] = hstack((s, [a, Q]))
+            DATA[steps, :] = np.hstack((s, [a, Q]))
             r, s, terminal = self.domain.step(a)
             steps += 1
 
             self.logger.log(
                 "Sample " + str(steps) + ":" + str(s) + " " + str(a) + " " + str(Q))
 
-        save(output_file, DATA)
+        np.save(output_file, DATA)
         return DATA
 
     def episodeTerminated(self):
@@ -295,8 +295,8 @@ class Agent(object):
         # Set eligibility Traces to zero if it is end of the episode
         if hasattr(self, 'eligibility_trace'):
             if self.lambda_:
-                self.eligibility_trace = zeros(
+                self.eligibility_trace = np.zeros(
                     self.representation.features_num *
                     self.domain.actions_num)
-                self.eligibility_trace_s = zeros(
+                self.eligibility_trace_s = np.zeros(
                     self.representation.features_num)

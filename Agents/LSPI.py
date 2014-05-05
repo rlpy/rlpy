@@ -1,6 +1,8 @@
-"""Least-Squares Policy Iteration [Lagoudakis and Parr 2003]"""
-from Agent import Agent
-from Tools import *
+"""Least-Squares Policy Iteration [Lagoudakis and Parr 2003]."""
+from .Agent import Agent
+import Tools
+import numpy as np
+from scipy import sparse as sp
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -70,18 +72,18 @@ class LSPI(Agent):
         self.use_sparse = use_sparse
 
         # Take memory for stored values
-        self.data_s = zeros((max_window, domain.state_space_dims))
-        self.data_ns = zeros((max_window, domain.state_space_dims))
-        self.data_a = zeros((max_window, 1), dtype=uint32)
-        self.data_na = zeros((max_window, 1), dtype=uint32)
-        self.data_r = zeros((max_window, 1))
+        self.data_s = np.zeros((max_window, domain.state_space_dims))
+        self.data_ns = np.zeros((max_window, domain.state_space_dims))
+        self.data_a = np.zeros((max_window, 1), dtype=np.uint32)
+        self.data_na = np.zeros((max_window, 1), dtype=np.uint32)
+        self.data_r = np.zeros((max_window, 1))
 
         # Make A and r incrementally if the representation can not expand
         self.fixedRep = not representation.isDynamic
         if self.fixedRep:
             f_size = representation.features_num * domain.actions_num
-            self.b = zeros((f_size, 1))
-            self.A = zeros((f_size, f_size))
+            self.b = np.zeros((f_size, 1))
+            self.A = np.zeros((f_size, f_size))
 
             # Cache calculated phi vectors
             if self.use_sparse:
@@ -92,18 +94,16 @@ class LSPI(Agent):
                 self.all_phi_s_a = sp.lil_matrix((max_window, f_size))
                 self.all_phi_ns_na = sp.lil_matrix((max_window, f_size))
             else:
-                self.all_phi_s = zeros(
+                self.all_phi_s = np.zeros(
                     (max_window, representation.features_num))
-                self.all_phi_ns = zeros(
+                self.all_phi_ns = np.zeros(
                     (max_window, representation.features_num))
-                self.all_phi_s_a = zeros((max_window, f_size))
-                self.all_phi_ns_na = zeros((max_window, f_size))
+                self.all_phi_s_a = np.zeros((max_window, f_size))
+                self.all_phi_ns_na = np.zeros((max_window, f_size))
 
         super(LSPI, self).__init__(representation, policy, domain, logger)
         if logger:
-                self.logger.log(
-                    'Max LSPI Iterations:\t%d' %
-                    self.lspi_iterations)
+                self.logger.log('Max LSPI Iterations:\t%d' % self.lspi_iterations)
                 self.logger.log('Max Data Size:\t\t%d' % self.max_window)
                 self.logger.log(
                     'Steps Between LSPI run:\t%d' %
@@ -141,10 +141,10 @@ class LSPI(Agent):
 
         Returns the TD error for each sample based on the latest weights and next actions.
         """
-        start_time = clock()
+        start_time = Tools.clock()
         weight_diff = self.epsilon + 1  # So that the loop starts
         lspi_iteration = 0
-        self.best_performance = -inf
+        self.best_performance = -np.inf
         self.logger.log('Running Policy Iteration:')
 
         # We save action_mask on the first iteration (used for batchBestAction) to reuse it and boost the speed
@@ -152,15 +152,13 @@ class LSPI(Agent):
         # each state
         action_mask = None
         gamma = self.domain.gamma
-        W = self.representation.theta
-        F1          = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :]) if self.use_sparse else self.all_phi_s_a[:self.samples_count,:]
-        R           = self.data_r[:self.samples_count, :]
+        F1 = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :]) if self.use_sparse else self.all_phi_s_a[:self.samples_count,:]
         while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
 
             # Find the best action for each state given the current value function
             # Notice if actions have the same value the first action is
             # selected in the batch mode
-            iteration_start_time = clock()
+            iteration_start_time = Tools.clock()
             bestAction, self.all_phi_ns_new_na, action_mask = self.representation.batchBestAction(self.data_ns[:self.samples_count, :], self.all_phi_ns, action_mask, self.use_sparse)
 
             # Recalculate A matrix (b remains the same)
@@ -170,10 +168,10 @@ class LSPI(Agent):
                 A = F1.T * (F1 - gamma * F2)
             else:
                 F2  = self.all_phi_ns_new_na[:self.samples_count, :]
-                A = dot(F1.T, F1 - gamma * F2)
+                A = np.dot(F1.T, F1 - gamma * F2)
 
-            A = regularize(A)
-            new_theta, solve_time = solveLinear(A, self.b)
+            A = Tools.regularize(A)
+            new_theta, solve_time = Tools.solveLinear(A, self.b)
 
             # Calculate TD_Errors
             ####################
@@ -181,42 +179,42 @@ class LSPI(Agent):
 
             # Calculate the weight difference. If it is big enough update the
             # theta
-            weight_diff = linalg.norm(self.representation.theta - new_theta)
+            weight_diff = np.linalg.norm(self.representation.theta - new_theta)
             if weight_diff > self.epsilon:
                 self.representation.theta = new_theta
 
             self.logger.log(
                 "%d: %0.0f(s), ||w1-w2|| = %0.4f, Sparsity=%0.1f%%, %d Features" % (lspi_iteration + 1,
-                                                                                    deltaT(
+                                                                                    Tools.deltaT(
                                                                                         iteration_start_time),
                                                                                     weight_diff,
-                                                                                    sparsity(
+                                                                                    Tools.sparsity(
                                                                                         A),
                                                                                     self.representation.features_num))
             lspi_iteration += 1
 
         self.logger.log(
             'Total Policy Iteration Time = %0.0f(s)' %
-            deltaT(start_time))
+            Tools.deltaT(start_time))
         return td_errors
 
     def LSTD(self):
         """Run the LSTD algorithm on the collected data, and update the
         policy parameters.
         """
-        start_time = clock()
+        start_time = Tools.clock()
         #self.logger.log('Running LSTD:')
 
         if not self.fixedRep:
             # build phi_s and phi_ns for all samples
             p = self.samples_count
             n = self.representation.features_num
-            self.all_phi_s = empty(
+            self.all_phi_s = np.empty(
                 (p, n), dtype=self.representation.featureType())
-            self.all_phi_ns = empty(
+            self.all_phi_ns = np.empty(
                 (p, n), dtype=self.representation.featureType())
 
-            for i in arange(self.samples_count):
+            for i in np.arange(self.samples_count):
                 self.all_phi_s[i, :]  = self.representation.phi(self.data_s[i])
                 self.all_phi_ns[i, :] = self.representation.phi(self.data_ns[i])
 
@@ -235,23 +233,23 @@ class LSPI(Agent):
                 self.b = (F1.T * R).reshape(-1, 1)
                 self.A = F1.T * (F1 - gamma * F2)
             else:
-                self.b = dot(F1.T, R).reshape(-1, 1)
-                self.A = dot(F1.T, F1 - gamma * F2)
+                self.b = np.dot(F1.T, R).reshape(-1, 1)
+                self.A = np.dot(F1.T, F1 - gamma * F2)
 
-        A = regularize(self.A)
+        A = Tools.regularize(self.A)
 
         # Calculate theta
-        self.representation.theta, solve_time = solveLinear(A, self.b)
+        self.representation.theta, solve_time = Tools.solveLinear(A, self.b)
 
         # log solve time only if takes more than 1 second
         if solve_time > 1:
             self.logger.log(
                 'Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' %
-                (deltaT(start_time), solve_time))
+                (Tools.deltaT(start_time), solve_time))
         else:
             self.logger.log(
                 'Total LSTD Time = %0.0f(s)' %
-                (deltaT(start_time)))
+                (Tools.deltaT(start_time)))
 
     def process(self, s, a, r, ns, na, terminal):
         """Process one transition instance."""
@@ -275,11 +273,11 @@ class LSPI(Agent):
             else:
                 # This is because the current s,a will be the previous ns, na
                 if self.use_sparse:
-                    phi_s       = self.all_phi_ns[self.samples_count-1, :].todense()
-                    phi_s_a     = self.all_phi_ns_na[self.samples_count-1, :].todense()
+                    phi_s = self.all_phi_ns[self.samples_count - 1, :].todense()
+                    phi_s_a = self.all_phi_ns_na[self.samples_count - 1, :].todense()
                 else:
-                    phi_s       = self.all_phi_ns[self.samples_count-1, :]
-                    phi_s_a     = self.all_phi_ns_na[self.samples_count-1, :]
+                    phi_s = self.all_phi_ns[self.samples_count - 1, :]
+                    phi_s_a = self.all_phi_ns_na[self.samples_count - 1, :]
 
             phi_ns = self.representation.phi(ns, terminal)
             phi_ns_na = self.representation.phi_sa(
@@ -313,11 +311,11 @@ class LSPI(Agent):
             F2      = sp.csr_matrix(self.all_phi_ns_na[:self.samples_count, :])
             answer = (
                 R + (gamma * F2 - F1) * self.representation.theta.reshape(-1, 1))
-            return squeeze(asarray(answer))
+            return np.squeeze(np.asarray(answer))
         else:
             F1 = self.all_phi_s_a[:self.samples_count, :]
             F2 = self.all_phi_ns_na[:self.samples_count, :]
-            return R.ravel() + dot(gamma * F2 - F1, self.representation.theta)
+            return R.ravel() + np.dot(gamma * F2 - F1, self.representation.theta)
 
     def representationExpansionLSPI(self):
         re_iteration = 0
@@ -333,7 +331,7 @@ class LSPI(Agent):
         while added_feature and re_iteration <= self.re_iterations:
             re_iteration += 1
             # Some Prints
-            if hasFunction(self.representation, 'batchDiscover'):
+            if Tools.hasFunction(self.representation, 'batchDiscover'):
                 self.logger.log(
                     '-----------------\nRepresentation Expansion iteration #%d\n-----------------' %
                     re_iteration)
@@ -343,7 +341,7 @@ class LSPI(Agent):
             # loop
             td_errors = self.policyIteration()
             # Add new Features
-            if hasFunction(self.representation, 'batchDiscover'):
+            if Tools.hasFunction(self.representation, 'batchDiscover'):
                 added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s[:self.samples_count, :], self.data_s[:self.samples_count,:])
             else:
                 #self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))

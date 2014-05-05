@@ -88,7 +88,7 @@ class NaturalActorCritic(Agent):
         if self.steps_between_updates > self.min_steps_between_updates:
             A = regularize(self.A)
             param, time = solveLinear(A, self.b)
-            v = param[:k]  # parameters of the value function representation
+            #  v = param[:k]  # parameters of the value function representation
             w = param[k:]  # natural gradient estimate
 
             if self._gradient_sane(w) or self.steps_between_updates > self.max_steps_between_updates:

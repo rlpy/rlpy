@@ -126,8 +126,7 @@ class MDPSolver(object):
         s_index = vec2id(
             self.representation.binState(s),
             self.representation.bins_per_dim)
-        theta_index                             = self.representation.agg_states_num * \
-            a + s_index
+        theta_index = int(self.representation.agg_states_num * a + s_index)
         self.representation.theta[theta_index] = Q
 
     def performanceRun(self):
