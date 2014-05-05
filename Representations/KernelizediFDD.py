@@ -88,7 +88,10 @@ class KernelizediFDD(Representation):
         self.sorted_ids = PriorityQueueWithNovelty()
         self.max_active_base_feat = max_active_base_feat
         self.max_base_feat_sim = max_base_feat_sim
-
+        self.candidates = {}
+        self.features = []
+        self.base_features_ids = []
+        self.max_relevance = 0.
     def show_features(self):
         l = self.sorted_ids.toList()[:]
         key = lambda x: (
