@@ -1,6 +1,8 @@
 """Network administrator task."""
 
-from rlpy.Tools import *
+from rlpy.Tools import plt, nx, tile
+import numpy as np
+import csv
 from .Domain import Domain
 import os
 from rlpy.Tools import __rlpy_location__
@@ -15,6 +17,8 @@ __author__ = ["Robert H. Klein", "Alborz Geramifard"]
 class SystemAdministrator(Domain):
 
     """
+    Simulation of system of network computers.
+
     Computers in a network randomly fail and influence the probability
     of connected machines failing as well - the system administrator must work
     to keep as many machines running as possible, but she can only fix one
@@ -54,6 +58,7 @@ class SystemAdministrator(Domain):
         Efficient Solution Algorithms for Factored MDPs.  Journal of Artificial
         Intelligence Research (2003) Issue 19, p 399-468.
     """
+
     # Each cell corresponds to a computer; contents of cell is a list of
     # neighbors connected to that computer
     NEIGHBORS = []
@@ -163,9 +168,9 @@ class SystemAdministrator(Domain):
                 self.networkPos,
                 edges_color="k")
             nx.draw_networkx_labels(self.networkGraph, self.networkPos)
-            pl.show()
+            plt.show()
         else:
-            pl.clf()
+            plt.clf()
             blackEdges = []
             redEdges = []
             greenNodes = []
@@ -214,7 +219,7 @@ class SystemAdministrator(Domain):
                     width=2,
                     style='dotted')
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
-        pl.draw()
+        plt.draw()
 
     def step(self, a):
         # ns = s[:] # make copy of state so as not to affect original mid-step
@@ -244,7 +249,7 @@ class SystemAdministrator(Domain):
                 else:
                     if(self.random_state.random_sample() < self.P_SELF_REPAIR):
                         ns[computer_id] = self.RUNNING
-        if (self.IS_RING and s[0] == self.RUNNING):
+        if (self.IS_RING and self.state[0] == self.RUNNING):
             # Per Guestrin, Koller, Parr 2003, rings have enforced asymmetry on
             # one machine
             totalRebootReward += 1
@@ -258,8 +263,8 @@ class SystemAdministrator(Domain):
 
     def s0(self):
         # Omits final index
-        self.state = array(
-            [self.RUNNING for dummy in arange(0, self.state_space_dims)])
+        self.state = np.array(
+            [self.RUNNING for dummy in xrange(0, self.state_space_dims)])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def possibleActions(self):
@@ -269,7 +274,7 @@ class SystemAdministrator(Domain):
             compstatus in enumerate(
                 s) if compstatus == self.BROKEN]
         possibleActs.append(self.computers_num)  # append the no-op action
-        return array(possibleActs)
+        return np.array(possibleActs)
 
     def setUniqueEdges(self, neighborsList):
         """
@@ -316,4 +321,4 @@ class SystemAdministrator(Domain):
             else:
                 self.NEIGHBORS[d] = [s]
         for i in range(self.computers_num):
-            self.NEIGHBORS[i] = array(self.NEIGHBORS[i])
+            self.NEIGHBORS[i] = np.array(self.NEIGHBORS[i])

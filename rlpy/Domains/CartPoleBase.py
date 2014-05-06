@@ -453,7 +453,6 @@ class CartPoleBase(Domain):
         pendulumBobX = curX + self.LENGTH * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
 
-        r = self._getReward(a, s=s)
 #         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG:
             print 'Pendulum Position: ', pendulumBobX, pendulumBobY

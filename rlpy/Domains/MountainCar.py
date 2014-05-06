@@ -1,8 +1,9 @@
 """Classic mountain car task."""
 
-from rlpy.Tools import *
+from rlpy.Tools import plt, bound, fromAtoB
+from rlpy.Tools import lines
 from .Domain import Domain
-import matplotlib.pyplot as plt
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -26,6 +27,7 @@ class MountainCar(Domain):
     **REFERENCE:**
     Based on `RL-Community Java Implementation <http://library.rl-community.org/wiki/Mountain_Car_(Java)>`_
     """
+
     actions_num = 3
     state_space_dims = 2
     continuous_dims = [0, 1]
@@ -34,7 +36,7 @@ class MountainCar(Domain):
     XMAX = 0.6  #: Upper bound on domain position
     XDOTMIN = -0.07  # : Lower bound on car velocity
     XDOTMAX = 0.07  #: Upper bound on car velocity
-    INIT_STATE = array([-0.5, 0.0])  # : Initial car state
+    INIT_STATE = np.array([-0.5, 0.0])  # : Initial car state
     STEP_REWARD = -1  # : Penalty for each step taken before reaching the goal
     GOAL_REWARD = 0  #: Reward for reach the goal.
     #: X-Position of the goal location (Should be at/near hill peak)
@@ -65,14 +67,14 @@ class MountainCar(Domain):
         :param noise: Magnitude of noise (times accelerationFactor) in stochastic velocity changes
 
         """
-        self.statespace_limits = array(
+        self.statespace_limits = np.array(
             [[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
         self.Noise = noise
         # Visual stuff:
-        self.xTicks = linspace(0, self.X_discretization - 1, 5)
-        self.xTicksLabels = linspace(self.XMIN, self.XMAX, 5)
-        self.yTicks = linspace(0, self.XDot_discretization - 1, 5)
-        self.yTicksLabels = linspace(self.XDOTMIN, self.XDOTMAX, 5)
+        self.xTicks = np.linspace(0, self.X_discretization - 1, 5)
+        self.xTicksLabels = np.linspace(self.XMIN, self.XMAX, 5)
+        self.yTicks = np.linspace(0, self.XDot_discretization - 1, 5)
+        self.yTicksLabels = np.linspace(self.XDOTMIN, self.XDOTMAX, 5)
         self.MIN_RETURN     = self.STEP_REWARD * \
             (1 - self.gamma ** self.episodeCap) / \
             (1 - self.gamma) if self.gamma != 1 else self.STEP_REWARD * \
@@ -91,7 +93,7 @@ class MountainCar(Domain):
             2 * (self.random_state.rand() - .5)
         velocity += (noise +
                      self.actions[a] * self.accelerationFactor +
-                     cos(self.hillPeakFrequency * position) * self.gravityFactor)
+                     np.cos(self.hillPeakFrequency * position) * self.gravityFactor)
         velocity = bound(velocity, self.XDOTMIN, self.XDOTMAX)
         position += velocity
         position = bound(position, self.XMIN, self.XMAX)
@@ -99,7 +101,7 @@ class MountainCar(Domain):
             velocity = 0  # Bump into wall
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
-        ns = array([position, velocity])
+        ns = np.array([position, velocity])
         self.state = ns.copy()
         return r, ns, terminal, self.possibleActions()
 
@@ -124,8 +126,8 @@ class MountainCar(Domain):
         if self.domain_fig is None:  # Need to initialize the figure
             self.domain_fig = plt.figure("Mountain Car Domain")
             # plot mountain
-            mountain_x = linspace(self.XMIN, self.XMAX, 1000)
-            mountain_y = sin(3 * mountain_x)
+            mountain_x = np.linspace(self.XMIN, self.XMAX, 1000)
+            mountain_y = np.sin(3 * mountain_x)
             plt.gca(
             ).fill_between(mountain_x,
                            min(mountain_y) - self.CAR_HEIGHT * 2,
@@ -139,19 +141,19 @@ class MountainCar(Domain):
             self.car = lines.Line2D([], [], linewidth=20, color='b', alpha=.8)
             plt.gca().add_line(self.car)
             # Goal
-            plt.plot(self.GOAL, sin(3 * self.GOAL), 'yd', markersize=10.0)
+            plt.plot(self.GOAL, np.sin(3 * self.GOAL), 'yd', markersize=10.0)
             plt.axis('off')
             plt.gca().set_aspect('1')
         self.domain_fig = plt.figure("Mountain Car Domain")
         #pos = 0
         #a = 0
         car_middle_x = pos
-        car_middle_y = sin(3 * pos)
-        slope = arctan(3 * cos(3 * pos))
-        car_back_x = car_middle_x - self.CAR_WIDTH * cos(slope) / 2.
-        car_front_x = car_middle_x + self.CAR_WIDTH * cos(slope) / 2.
-        car_back_y = car_middle_y - self.CAR_WIDTH * sin(slope) / 2.
-        car_front_y = car_middle_y + self.CAR_WIDTH * sin(slope) / 2.
+        car_middle_y = np.sin(3 * pos)
+        slope = np.arctan(3 * np.cos(3 * pos))
+        car_back_x = car_middle_x - self.CAR_WIDTH * np.cos(slope) / 2.
+        car_front_x = car_middle_x + self.CAR_WIDTH * np.cos(slope) / 2.
+        car_back_y = car_middle_y - self.CAR_WIDTH * np.sin(slope) / 2.
+        car_front_y = car_middle_y + self.CAR_WIDTH * np.sin(slope) / 2.
         self.car.set_data([car_back_x, car_front_x], [car_back_y, car_front_y])
         # wheels
         # plott(x(1)-0.05,sin(3*(x(1)-0.05))+0.06,'ok','markersize',12,'MarkerFaceColor',[.5 .5 .5]);
@@ -161,13 +163,12 @@ class MountainCar(Domain):
             self.actionArrow.remove()
             self.actionArrow = None
 
-        SHIFT = .1
         if self.actions[a] > 0:
             self.actionArrow = fromAtoB(
                 car_front_x, car_front_y,
                 car_front_x + self.ARROW_LENGTH *
-                cos(slope), car_front_y +
-                self.ARROW_LENGTH * sin(slope),
+                np.cos(slope), car_front_y +
+                self.ARROW_LENGTH * np.sin(slope),
                 #car_front_x + self.CAR_WIDTH*cos(slope)/2., car_front_y + self.CAR_WIDTH*sin(slope)/2.+self.CAR_HEIGHT,
                 'k', "arc3,rad=0",
                 0, 0, 'simple'
@@ -176,8 +177,8 @@ class MountainCar(Domain):
             self.actionArrow = fromAtoB(
                 car_back_x, car_back_y,
                 car_back_x - self.ARROW_LENGTH *
-                cos(slope), car_back_y -
-                self.ARROW_LENGTH * sin(slope),
+                np.cos(slope), car_back_y -
+                self.ARROW_LENGTH * np.sin(slope),
                 #car_front_x + self.CAR_WIDTH*cos(slope)/2., car_front_y + self.CAR_WIDTH*sin(slope)/2.+self.CAR_HEIGHT,
                 'r', "arc3,rad=0",
                 0, 0, 'simple'
@@ -185,11 +186,11 @@ class MountainCar(Domain):
         plt.draw()
 
     def showLearning(self, representation):
-        pi = zeros(
+        pi = np.zeros(
             (self.X_discretization,
              self.XDot_discretization),
             'uint8')
-        V = zeros((self.X_discretization, self.XDot_discretization))
+        V = np.zeros((self.X_discretization, self.XDot_discretization))
 
         if self.valueFunction_fig is None:
             self.valueFunction_fig = plt.figure("Value Function")
@@ -221,8 +222,8 @@ class MountainCar(Domain):
             plt.ylabel(r"$\dot x$")
             plt.show()
 
-        for row, xDot in enumerate(linspace(self.XDOTMIN, self.XDOTMAX, self.XDot_discretization)):
-            for col, x in enumerate(linspace(self.XMIN, self.XMAX, self.X_discretization)):
+        for row, xDot in enumerate(np.linspace(self.XDOTMIN, self.XDOTMAX, self.XDot_discretization)):
+            for col, x in enumerate(np.linspace(self.XMIN, self.XMAX, self.X_discretization)):
                 s = [x, xDot]
                 Qs = representation.Qs(s, False)
                 As = self.possibleActions()

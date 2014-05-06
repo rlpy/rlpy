@@ -1,11 +1,9 @@
 """RC-Car domain"""
 
-from rlpy.Tools import *
+from rlpy.Tools import plt, bound, wrap, mpatches, id2vec
+import matplotlib as mpl
 from .Domain import Domain
-
-#######################################################################
-# \author Developed by Alborz Geramifard March 14th 2013 at MIT
-#######################################################################
+import numpy as np
 
 __author__ = "Alborz Geramifard"
 
@@ -37,9 +35,10 @@ class RCCar(Domain):
         http://planning.cs.uiuc.edu/node658.html
 
     """
+
     actions_num = 9
     state_space_dims = 4
-    continuous_dims = arange(state_space_dims)
+    continuous_dims = np.arange(state_space_dims)
 
     ROOM_WIDTH = 3  # in meters
     ROOM_HEIGHT = 2  # in meters
@@ -48,17 +47,17 @@ class RCCar(Domain):
     YMIN = -ROOM_HEIGHT / 2.0
     YMAX = ROOM_HEIGHT / 2.0
     ACCELERATION = .1
-    TURN_ANGLE = pi / 6
+    TURN_ANGLE = np.pi / 6
     SPEEDMIN = -.3
     SPEEDMAX = .3
-    HEADINGMIN = -pi
-    HEADINGMAX = pi
-    INIT_STATE = array([0.0, 0.0, 0.0, 0.0])
+    HEADINGMIN = -np.pi
+    HEADINGMAX = np.pi
+    INIT_STATE = np.array([0.0, 0.0, 0.0, 0.0])
     STEP_REWARD = -1
     GOAL_REWARD = 0
     GOAL = [.5, .5]
     GOAL_RADIUS = .1
-    actions = outer([-1, 0, 1], [-1, 0, 1])
+    actions = np.outer([-1, 0, 1], [-1, 0, 1])
     gamma = .9
     episodeCap = 10000
     delta_t = .1  # time between steps
@@ -76,7 +75,7 @@ class RCCar(Domain):
     car_fig = None
 
     def __init__(self, noise=0, logger=None):
-        self.statespace_limits = array(
+        self.statespace_limits = np.array(
             [[self.XMIN,
               self.XMAX],
              [self.YMIN,
@@ -97,11 +96,11 @@ class RCCar(Domain):
         turn -= 1                # Mapping turn to [-1, 0 1]
 
         # Calculate next state
-        nx = x + speed * cos(heading) * self.delta_t
-        ny = y + speed * sin(heading) * self.delta_t
+        nx = x + speed * np.cos(heading) * self.delta_t
+        ny = y + speed * np.sin(heading) * self.delta_t
         nspeed = speed + acc * self.ACCELERATION * self.delta_t
         nheading    = heading + speed / self.CAR_LENGTH * \
-            tan(turn * self.TURN_ANGLE) * self.delta_t
+            np.tan(turn * self.TURN_ANGLE) * self.delta_t
 
         # Bound values
         nx = bound(nx, self.XMIN, self.XMAX)
@@ -113,7 +112,7 @@ class RCCar(Domain):
         if nx == self.XMIN or nx == self.XMAX or ny == self.YMIN or ny == self.YMAX:
             nspeed = 0
 
-        ns = array([nx, ny, nspeed, nheading])
+        ns = np.array([nx, ny, nspeed, nheading])
         self.state = ns.copy()
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
@@ -124,7 +123,7 @@ class RCCar(Domain):
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
-        return linalg.norm(self.state[0:2] - self.GOAL) < self.GOAL_RADIUS
+        return np.linalg.norm(self.state[0:2] - self.GOAL) < self.GOAL_RADIUS
 
     def showDomain(self, a):
         s = self.state
@@ -133,21 +132,21 @@ class RCCar(Domain):
         car_xmin = x - self.REAR_WHEEL_RELATIVE_LOC
         car_ymin = y - self.CAR_WIDTH / 2.
         if self.domain_fig is None:  # Need to initialize the figure
-            self.domain_fig = pl.figure()
+            self.domain_fig = plt.figure()
             # Goal
-            pl.gca(
+            plt.gca(
             ).add_patch(
-                pl.Circle(
+                plt.Circle(
                     self.GOAL,
                     radius=self.GOAL_RADIUS,
                     color='g',
                     alpha=.4))
-            pl.xlim([self.XMIN, self.XMAX])
-            pl.ylim([self.YMIN, self.YMAX])
-            pl.gca().set_aspect('1')
+            plt.xlim([self.XMIN, self.XMAX])
+            plt.ylim([self.YMIN, self.YMAX])
+            plt.gca().set_aspect('1')
         # Car
         if self.car_fig is not None:
-            pl.gca().patches.remove(self.car_fig)
+            plt.gca().patches.remove(self.car_fig)
 
         self.car_fig = mpatches.Rectangle(
             [car_xmin,
@@ -156,8 +155,8 @@ class RCCar(Domain):
             self.CAR_WIDTH,
             alpha=.4)
         rotation = mpl.transforms.Affine2D().rotate_deg_around(
-            x, y, heading * 180 / pi) + pl.gca().transData
+            x, y, heading * 180 / np.pi) + plt.gca().transData
         self.car_fig.set_transform(rotation)
-        pl.gca().add_patch(self.car_fig)
+        plt.gca().add_patch(self.car_fig)
 
-        pl.draw()
+        plt.draw()
