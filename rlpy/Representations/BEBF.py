@@ -1,8 +1,9 @@
-"""Bellman-Error Basis Function Representation"""
+"""Bellman-Error Basis Function Representation."""
 
-#from scipy.interpolate import Rbf
-from rlpy.Tools import *
-from .Representation import *
+#from rlpy.Tools import
+import numpy as np
+from .Representation import Representation
+from rlpy.Tools import svm
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -84,11 +85,11 @@ class BEBF(Representation):
         pass
 
     def phi_nonTerminal(self, s):
-        F_s = zeros(self.features_num)
+        F_s = np.zeros(self.features_num)
         # From IndependentDiscretization
         F_s[self.activeInitialFeatures(s)] = 1
         bebf_features_num = self.features_num - self.initial_features_num
-        for features_ind, F_s_ind in enumerate(arange(bebf_features_num) + self.initial_features_num):
+        for features_ind, F_s_ind in enumerate(np.arange(bebf_features_num) + self.initial_features_num):
             F_s[F_s_ind] = self.features[features_ind].predict(s)
 #        print 's,F_s',s,F_s
 #        shout('F_s:',F_s)
@@ -104,16 +105,10 @@ class BEBF(Representation):
         addedFeature = False
         # PLACEHOLDER for norm of function
         norm = max(abs(td_errors))  # Norm of function
-        for j in arange(self.maxBatchDicovery):
-#            print 's'
-#            print 'tderr',td_errors[0:20]
+        for j in xrange(self.maxBatchDicovery):
             self.features.append(self.getFunctionApproximation(s, td_errors))
-            if self.debug:
-                shout('s', s)
-                shout('td_errors', td_errors)
             self.logger.log('Norm: %0.4f' % norm)
             if norm > self.batchThreshold:
-#                print 'added feature'
                 self.addNewWeight()
                 addedFeature = True
                 self.features_num += 1
@@ -126,22 +121,3 @@ class BEBF(Representation):
 
     def featureType(self):
         return float
-
-if __name__ == '__main__':
-    STDOUT_FILE = 'out.txt'
-    JOB_ID = 1
-    OUT_PATH = 'Results/Temp'
-#    logger              = Logger('%s/%d-%s'%(OUT_PATH,JOB_ID,STDOUT_FILE))
-    logger = Logger()
-    discovery_threshold = 1
-    from Domains import GridWorld
-    domain = GridWorld()
-    rep = BEBF(domain, logger, debug=1, batchThreshold=10 ** -5)
-    rep.theta = arange(rep.features_num * domain.actions_num) * 10
-    print 'initial features'
-    print rep.features_num, '---', rep.features
-    s = domain.s0()
-    a = domain.possibleActions(s)
-    a = a[0]
-    r, ns, terminal = domain.step(a)
-    print 'step 2 r,ns', r, ns

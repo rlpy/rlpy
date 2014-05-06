@@ -1,7 +1,6 @@
 """Policy base class"""
 
-from rlpy.Tools import className, Logger
-#from Representations import *
+from rlpy.Tools import className
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",

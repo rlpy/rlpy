@@ -1,6 +1,6 @@
 """epsilon-Greedy Policy"""
 
-from .Policy import *
+from .Policy import Policy
 import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -11,6 +11,14 @@ __author__ = "Alborz Geramifard"
 
 
 class eGreedy(Policy):
+    """
+    Greedy policy with epsilon-probability for uniformly random exploration.
+
+    The policy acts greedily according to the value function with probability
+    1-epsilon and choses a uniformly random action otherwise.
+
+    """
+
     epsilon = None
     old_epsilon = None
     # This boolean variable is used to avoid random selection among actions
