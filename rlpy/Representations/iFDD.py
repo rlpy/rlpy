@@ -1,17 +1,14 @@
 """Incremental Feature Dependency Discovery"""
 # iFDD implementation based on ICML 2011 paper
 
-import sys
-import os
-from Queue import PriorityQueue
 from copy import deepcopy
 import numpy as np
 
-from rlpy.Tools import *
-from rlpy.Domains import *
-from .Representation import *
-from .IndependentDiscretization import *
-from .IndependentDiscretizationCompactBinary import *
+from rlpy.Tools import printClass, PriorityQueueWithNovelty, className
+from rlpy.Tools import powerset, combinations, addNewElementForAllActions
+from rlpy.Tools import plt
+from .Representation import Representation
+
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -75,7 +72,7 @@ class iFDD_potential(object):
 
     def __deepcopy__(self, memo):
         new_p = iFDD_potential(self.f_set, self.p1, self.p2)
-        mew_p.cumtderr = self.cumtderr
+        new_p.cumtderr = self.cumtderr
         new_p.cumabstderr = self.cumabstderr
         return new_p
 
@@ -121,7 +118,7 @@ class iFDD(Representation):
     initial_representation = None
     # Helper parameter to get a sense of appropriate threshold on the
     # relevance for discovery
-    maxRelevance = -inf
+    maxRelevance = -np.inf
     # As Christoph mentioned adding new features may affect the phi for all
     # states. This idea was to make sure both conditions for generating active
     # features generate the same result.
@@ -163,10 +160,10 @@ class iFDD(Representation):
 
     def phi_nonTerminal(self, s):
         """ Based on Tuna's Master Thesis 2012 """
-        F_s = zeros(self.features_num, 'bool')
+        F_s = np.zeros(self.features_num, 'bool')
         F_s_0 = self.initial_representation.phi_nonTerminal(
             s)
-        activeIndices = where(F_s_0 != 0)[0]
+        activeIndices = np.where(F_s_0 != 0)[0]
         if self.useCache:
             finalActiveIndices = self.cache.get(frozenset(activeIndices))
             if finalActiveIndices is None:
@@ -310,7 +307,7 @@ class iFDD(Representation):
             relevance = potential.cumabstderr
 
         if relevance >= self.discovery_threshold:
-            self.maxRelevance = -inf
+            self.maxRelevance = -np.inf
             self.addFeature(potential)
             return True
         else:
@@ -339,7 +336,7 @@ class iFDD(Representation):
         self.hashed_s = None
 
     def addInitialFeatures(self):
-        for i in arange(self.initial_representation.features_num):
+        for i in xrange(self.initial_representation.features_num):
             feature = iFDD_feature(i)
             # shout(self,self.iFDD_features[frozenset([i])].index)
             self.iFDD_features[frozenset([i])] = feature
@@ -389,28 +386,27 @@ class iFDD(Representation):
         # self.batchThreshold is the minimum relevance value for the feature to
         # be expanded
         SHOW_PLOT = 0  # Shows the histogram of relevances
-        max_excitement = 0
         maxDiscovery = self.maxBatchDicovery
         n = self.features_num  # number of features
         p = len(td_errors)  # Number of samples
-        counts = zeros((n, n))
-        relevances = zeros((n, n))
-        for i in arange(p):
-            phiphiT     = outer(phi[i, :], phi[i,:])
+        counts = np.zeros((n, n))
+        relevances = np.zeros((n, n))
+        for i in xrange(p):
+            phiphiT = np.outer(phi[i, :], phi[i,:])
             if self.iFDDPlus:
                 relevances += phiphiT * td_errors[i]
             else:
                 relevances += phiphiT * abs(td_errors[i])
             counts += phiphiT
         # Remove Diagonal and upper part of the relevances as they are useless
-        relevances = triu(relevances, 1)
-        non_zero_index = nonzero(relevances)
+        relevances = np.triu(relevances, 1)
+        non_zero_index = np.nonzero(relevances)
         if self.iFDDPlus:
             # Calculate relevances based on theoretical results of ICML 2013
             # potential submission
-            relevances[non_zero_index] = divide(
-                abs(relevances[non_zero_index]),
-                sqrt(counts[non_zero_index]))
+            relevances[non_zero_index] = np.divide(
+                np.abs(relevances[non_zero_index]),
+                np.sqrt(counts[non_zero_index]))
         else:
             # Based on Geramifard11_ICML Paper
             relevances[non_zero_index] = relevances[non_zero_index]
@@ -427,21 +423,21 @@ class iFDD(Representation):
         if SHOW_PLOT:
             e_vec = relevances.flatten()
             e_vec = e_vec[e_vec != 0]
-            e_vec = sort(e_vec)
-            pl.ioff()
-            pl.plot(e_vec, linewidth=3)
-            pl.show()
+            e_vec = np.sort(e_vec)
+            plt.ioff()
+            plt.plot(e_vec, linewidth=3)
+            plt.show()
 
         # Sort based on relevances
         # We want high to low hence the reverse: [::-1]
-        sortedIndices = argsort(relevances)[::-1]
-        max_relevance = relevances[sortedIndices[0]];
+        sortedIndices = np.argsort(relevances)[::-1]
+        max_relevance = relevances[sortedIndices[0]]
         # Add top <maxDiscovery> features
         self.logger.log(
             "iFDD Batch: Max Relevance = {0:g}".format(max_relevance))
         added_feature = False
         new_features = 0
-        for j in arange(len(relevances)):
+        for j in xrange(len(relevances)):
             if new_features >= maxDiscovery:
                 break
             max_index = sortedIndices[j]
@@ -451,7 +447,7 @@ class iFDD(Representation):
             if relevance > self.batchThreshold:
                 # print "Inspecting",
                 # f1,f2,'=>',self.getStrFeatureSet(f1),self.getStrFeatureSet(f2)
-                if self.inspectPair(f1, f2, inf):
+                if self.inspectPair(f1, f2, np.inf):
                     self.logger.log(
                         'New Feature %d: %s, Relevance = %0.3f' %
                         (self.features_num - 1, self.getStrFeatureSet(self.features_num - 1), relevances[max_index]))
@@ -468,9 +464,9 @@ class iFDD(Representation):
 
     def showFeatures(self):
         print "Features:"
-        print join(["-"] * 30)
+        print "-" * 30
         print " index\t| f_set\t| p1\t| p2\t | Weights (per action)"
-        print join(["-"] * 30)
+        print "-" * 30
         for feature in reversed(self.sortediFDDFeatures.toList()):
         # for feature in self.iFDD_features.itervalues():
             # print " %d\t| %s\t| %s\t| %s\t| %s" %
@@ -479,11 +475,11 @@ class iFDD(Representation):
 
     def showPotentials(self):
         print "Potentials:"
-        print join(["-"] * 30)
+        print "-" * 30
         print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
-        print join(["-"] * 30)
+        print "-" * 30
         for _, potential in self.iFDD_potentials.iteritems():
-            print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index, str(sort(list(potential.f_set))), potential.relevance, potential.count, potential.p1, potential.p2)
+            print " %d\t| %s\t| %0.2f\t| %d\t| %s\t| %s" % (potential.index, str(np.sort(list(potential.f_set))), potential.relevance, potential.count, potential.p1, potential.p2)
 
     def showCache(self):
         if self.useCache:
@@ -491,9 +487,9 @@ class iFDD(Representation):
             if len(self.cache) == 0:
                 print 'EMPTY!'
                 return
-            print join(["-"] * 30)
+            print "-" * 30
             print " initial\t| Final"
-            print join(["-"] * 30)
+            print "-" * 30
             for initial, active in self.cache.iteritems():
                 print " %s\t| %s" % (str(list(initial)), active)
 

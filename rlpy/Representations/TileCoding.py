@@ -1,6 +1,5 @@
 """Tile Coding Representation"""
 
-from rlpy.Tools import *
 import numpy as np
 from .Representation import Representation
 
@@ -13,8 +12,10 @@ __license__ = "BSD 3-Clause"
 class TileCoding(Representation):
 
     """
-    Tile Coding Representation with Hashing Trick
+    Tile Coding Representation with Hashing Trick.
+
     based on http://incompleteideas.net/rlai.cs.ualberta.ca/RLAI/RLtoolkit/tiles.html
+
     """
 
     BIG_INT = 2147483647
@@ -53,8 +54,7 @@ class TileCoding(Representation):
         tiling i in dimension j. A resolution < 0 in a dimension maps all possible
         values to the same tile.
         The resolution matrix for the example above is
-        >>> resolution_matrix = np.array([[4, 4, 0.5, 0.5], [0.5, 6, 6, 6]],
-                                                              dtype="float")
+        >>> resolution_matrix = np.array([[4, 4, 0.5, 0.5], [0.5, 6, 6, 6]], dtype="float")
 
         @param num_tilings: number of tilings; single integer for one type of tiling or
                      a list for several tiling types; see example above.
@@ -92,7 +92,7 @@ class TileCoding(Representation):
                 (len(self.dimensions), self.domain.statespace_limits.shape[0]))
             for i, s in enumerate(self.dimensions):
                 for d in s:
-                    res[i, d] = resolutions[i]
+                    resolution_matrix[i, d] = resolutions[i]
         resolution_matrix = resolution_matrix.astype("float")
         resolution_matrix[resolution_matrix == 0] = 1e-50
         self.scaling_matrix = (self.domain.statespace_limits[:, 1] -
@@ -122,11 +122,7 @@ class TileCoding(Representation):
                 import hashing as h
                 f = lambda self, A: h.physical_addr(A, self.R, self.check_data,
                                                     self.counts)[0]
-                self._physical_addr = type(
-                    TileCoding._physical_addr)(
-                    f,
-                    self,
-                    TileCoding)
+                self._physical_addr = type(TileCoding._physical_addr)(f, self, TileCoding)
                 print "Use cython extension for TileCoding hashing trick"
             except Exception as e:
                 print e
@@ -201,24 +197,3 @@ class TileCoding(Representation):
 
     def featureType(self):
         return bool
-
-
-if __name__ == "__main__":
-    from Domains.acrobot_back import Acrobot
-    domain = Acrobot(None)
-    resolution_mat = .5 * np.ones((2, 4))
-    tile_matrix = array(mat("""
-    48 48 48 48;
-    1 18 18 18; 18 1 18 18; 18 18 1 18; 18 18 18 1;
-    1 1 12 12; 1 12 12 1; 1 12 1 12; 12 1 1 12; 12 1 12 1; 12 12 1 1;
-    1 1 1 18; 1 1 18 1; 1 18 1 1; 18 1 1 1"""), dtype="float")
-    resolution_mat = tile_matrix
-    resolution_mat[resolution_mat == 1] = 0.5
-    t = TileCoding(
-        num_tilings=[12, 3, 3, 3, 3] + [2] * 6 + [3] * 4, memory=2000, logger=Logger(),
-        domain=domain, resolution_matrix=resolution_mat)
-    for i in np.linspace(-1, 1, 20):
-        print i
-        a = np.nonzero(t.phi_nonTerminal(np.array([np.pi * i, 0., 0., 0.])))[0]
-        sort(a)
-        print a

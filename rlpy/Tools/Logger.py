@@ -1,6 +1,6 @@
 """Used for logging information from the agent, domain, experiment, etc."""
 
-from .GeneralTools import *
+from .GeneralTools import checkNCreateDirectory
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -37,4 +37,4 @@ class Logger(object):
         return  # self.log(str)
 
     def line(self):
-        self.log(SEP_LINE)
+        self.log(20 * "=")

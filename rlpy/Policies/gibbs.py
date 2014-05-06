@@ -1,8 +1,8 @@
 """Gibbs policy"""
 
-from .Policy import Policy, Logger
+from .Policy import Policy
 import numpy as np
-from rlpy.Tools import randSet, discrete_sample
+from rlpy.Tools import discrete_sample
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",

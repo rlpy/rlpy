@@ -1,8 +1,6 @@
 """Radial Basis Function Representation"""
 
-import os
-from rlpy.Tools import *
-from rlpy.Domains import *
+from rlpy.Tools import perms
 from .Representation import Representation
 import numpy as np
 
@@ -19,10 +17,9 @@ class RBF(Representation):
     #: The std dev of the RBFs (uniformly selected between [0, dimension width]
     rbfs_sigma = None
 
-    def __init__(
-            self, domain, logger, num_rbfs=None, id=1, state_dimensions=None,
-            const_feature=True, resolution_min=2., resolution_max=None,
-            seed=1, normalize=False, grid_bins=None, include_border=False):
+    def __init__(self, domain, logger, num_rbfs=None, state_dimensions=None,
+                 const_feature=True, resolution_min=2., resolution_max=None,
+                 seed=1, normalize=False, grid_bins=None, include_border=False):
 
         if resolution_max is None:
             resolution_max = resolution_min
@@ -48,7 +45,7 @@ class RBF(Representation):
                           - domain.statespace_limits[state_dimensions, 0])
             # super(RBF,self).__init__(domain,logger)
             rand_stream = np.random.RandomState(seed=seed)
-            for i in arange(num_rbfs):
+            for i in xrange(num_rbfs):
                 for d in state_dimensions:
                     self.rbfs_mu[i, d] = rand_stream.uniform(
                         domain.statespace_limits[d, 0],
@@ -66,17 +63,17 @@ class RBF(Representation):
         super(RBF, self).__init__(domain, logger)
 
     def phi_nonTerminal(self, s):
-        F_s = ones(self.features_num)
+        F_s = np.ones(self.features_num)
         if self.state_dimensions is not None:
             s = s[self.state_dimensions]
 
-        exponent = sum(
+        exponent = np.sum(
             0.5 * ((s - self.rbfs_mu) / self.rbfs_sigma) ** 2,
             axis=1)
         if self.const_feature:
-            F_s[:-1] = exp(-exponent)
+            F_s[:-1] = np.exp(-exponent)
         else:
-            F_s[:] = exp(-exponent)
+            F_s[:] = np.exp(-exponent)
 
         if self.normalize and F_s.sum() != 0.:
             F_s /= F_s.sum()
@@ -106,13 +103,15 @@ class RBF(Representation):
         # Find centers in each dimension
         domain = self.domain
         dims = domain.state_space_dims
-        rbfs_num = prod(
-            bins_per_dimension[:] + 1) if IncludeBorders else prod(bins_per_dimension[:] - 1)
+        if IncludeBorders:
+            rbfs_num = np.prod(bins_per_dimension[:] + 1)
+        else:
+            rbfs_num = np.prod(bins_per_dimension[:] - 1)
         all_centers = []
-        for d in arange(dims):
-            centers = linspace(domain.statespace_limits[d, 0],
-                               domain.statespace_limits[d, 1],
-                               bins_per_dimension[d] + 1)
+        for d in xrange(dims):
+            centers = np.linspace(domain.statespace_limits[d, 0],
+                                  domain.statespace_limits[d, 1],
+                                  bins_per_dimension[d] + 1)
             if not IncludeBorders:
                 centers = centers[1:-1]  # Exclude the beginning and ending
             all_centers.append(centers.tolist())
