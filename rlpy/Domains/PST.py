@@ -1,6 +1,7 @@
 """Persistent search and track mission domain."""
 
-from rlpy.Tools import plt, vec2id, tile, mpatches, lines, sleep, id2vec
+from time import sleep
+from rlpy.Tools import plt, vec2id, mpatches, lines, id2vec
 from .Domain import Domain
 import numpy as np
 
@@ -171,10 +172,10 @@ class PST(Domain):
         self.states_num = NUM_UAV * UAVIndex.SIZE
         # Number of Actions: ADVANCE, RETREAT, LOITER
         self.actions_num = pow(UAVAction.SIZE, NUM_UAV)
-        locations_lim = np.array(tile([0, UAVLocation.SIZE - 1], (NUM_UAV, 1)))
-        fuel_lim = np.array(tile([0, self.FULL_FUEL], (NUM_UAV, 1)))
-        actuator_lim = np.array(tile([0, ActuatorState.SIZE - 1], (NUM_UAV, 1)))
-        sensor_lim = np.array(tile([0, SensorState.SIZE - 1], (NUM_UAV, 1)))
+        locations_lim = np.array(np.tile([0, UAVLocation.SIZE - 1], (NUM_UAV, 1)))
+        fuel_lim = np.array(np.tile([0, self.FULL_FUEL], (NUM_UAV, 1)))
+        actuator_lim = np.array(np.tile([0, ActuatorState.SIZE - 1], (NUM_UAV, 1)))
+        sensor_lim = np.array(np.tile([0, SensorState.SIZE - 1], (NUM_UAV, 1)))
         # Limits of each dimension of the state space. Each row corresponds to
         # one dimension and has two elements [min, max]
         self.statespace_limits = np.vstack(
@@ -579,7 +580,7 @@ class PST(Domain):
         curActionList = []
         lenX = len(x)
         # eg [3,3,3,3] # TODO redundant computation
-        limits = tile(maxValue, (1, lenX))[0]
+        limits = np.tile(maxValue, (1, lenX))[0]
         self.vecList2idHelper(
             x,
             actionIDs,

@@ -1,9 +1,8 @@
-"""MDP Solver base class"""
+"""MDP Solver base class."""
 
-from rlpy.Policies import *
-from rlpy.Tools import *
-from rlpy.Representations import *
-
+import numpy as np
+from rlpy.Tools import className, hasFunction, printClass
+from rlpy.Tools import vec2id, checkNCreateDirectory, deltaT
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -64,7 +63,7 @@ class MDPSolver(object):
     show = None          # Show the learning if possible?
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=inf,
+            self, job_id, representation, domain, logger, planning_time=np.inf,
             convergence_threshold=.005, ns_samples=100, project_path='.', log_interval=5000, show=False):
         self.id = job_id
         self.representation = representation
@@ -78,9 +77,9 @@ class MDPSolver(object):
         self.convergence_threshold = convergence_threshold
 
         # Set random seed for this job id
-        random.seed(self.mainSeed)
-        self.randomSeeds = randint(1, self.mainSeed, self.maxRuns, 1)
-        random.seed(self.randomSeeds[self.id - 1, 0])
+        np.random.seed(self.mainSeed)
+        self.randomSeeds = np.random.randint(1, self.mainSeed, (self.maxRuns, 1))
+        np.random.seed(self.randomSeeds[self.id - 1, 0])
         self.logger.setOutput("%s/%d-out.txt" % (self.project_path, self.id))
         if self.logger:
             self.logger.line()
@@ -98,7 +97,7 @@ class MDPSolver(object):
     def solve(self):
         """Solve the domain MDP."""
         # Abstract
-        self.result = array(self.result).T
+        self.result = np.array(self.result).T
         self.logger.log(
             'Value of S0 is = %0.5f' %
             self.representation.V(*self.domain.s0()))
@@ -138,7 +137,6 @@ class MDPSolver(object):
         eps_discounted_return = 0
 
         s, eps_term, p_actions = self.domain.s0()
-        terminal = False
         # if self.visualize_performance:
         #    self.domain.showLearning(self.representation)
 
@@ -156,7 +154,7 @@ class MDPSolver(object):
 
     def saveStats(self):
         checkNCreateDirectory(self.project_path + '/')
-        savetxt(
+        np.savetxt(
             '%s/%d-results.txt' %
             (self.project_path, self.id), self.result, fmt='%.18e', delimiter='\t')
 

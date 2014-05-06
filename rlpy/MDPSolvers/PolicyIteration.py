@@ -4,9 +4,10 @@ state space. Once the errors are bounded, the policy is changed.
 """
 
 from .MDPSolver import MDPSolver
-from rlpy.Tools import *
+from rlpy.Tools import className, deltaT, hhmmss, clock
+from copy import deepcopy
 from rlpy.Policies import eGreedy
-from rlpy.Representations import Tabular
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -17,7 +18,8 @@ __author__ = "Alborz Geramifard"
 
 class PolicyIteration(MDPSolver):
 
-    """Policy Iteration MDP Solver.
+    """
+    Policy Iteration MDP Solver.
 
     Args:
         job_id (int):   Job ID number used for running multiple jobs on a cluster.
@@ -41,10 +43,11 @@ class PolicyIteration(MDPSolver):
         show (bool):    Enable visualization?
 
         max_PE_iterations (int):    Maximum number of Policy evaluation iterations to run.
+
     """
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=inf, convergence_threshold=.005,
+            self, job_id, representation, domain, logger, planning_time=np.inf, convergence_threshold=.005,
             ns_samples=100, project_path='.', log_interval=5000, show=False, max_PE_iterations=10):
         super(
             PolicyIteration,
@@ -94,7 +97,7 @@ class PolicyIteration(MDPSolver):
             while not converged and self.hasTime() and policy_evaluation_iteration < self.max_PE_iterations:
                 policy_evaluation_iteration += 1
                 # Sweep The State Space
-                for i in arange(0, no_of_states):
+                for i in xrange(0, no_of_states):
                     if not self.hasTime():
                         break
                     s = self.representation.stateID2state(i)
@@ -116,10 +119,10 @@ class PolicyIteration(MDPSolver):
                                 (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
 
                 # check for convergence
-                theta_change = linalg.norm(
+                theta_change = np.linalg.norm(
                     policy.representation.theta -
                     self.representation.theta,
-                    inf)
+                    np.inf)
                 converged = theta_change < self.convergence_threshold
                 self.logger.log(
                     'PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' %
@@ -134,7 +137,6 @@ class PolicyIteration(MDPSolver):
 
             # Policy Improvement:
             policy_improvement_iteration += 1
-            new_policy = zeros(no_of_states)
             policyChanged = 0
             i = 0
             while i < no_of_states and self.hasTime():

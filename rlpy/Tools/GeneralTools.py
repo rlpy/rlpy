@@ -9,18 +9,12 @@ def module_exists(module_name):
     else:
         return True
 
-from multiprocessing import Pool
-from operator import *
-from numpy import *
 import sys
-import numpy
+import numpy as np
 # print "Numpy version:", numpy.__version__
 # print "Python version:", sys.version_info
-import itertools
-import platform
-import pdb
 import os
-np = numpy
+
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -90,38 +84,32 @@ else:
 
 if module_exists('sklearn'):
     from sklearn import svm
-    from sklearn.gaussian_process import GaussianProcess
 else:
     'sklearn is not available => No BEBF representation available'
-import glob
 from scipy import stats
 from scipy import misc
 from scipy import linalg
 from scipy.sparse import linalg as slinalg
 from scipy import sparse as sp
-from time import *
+from time import clock
 from hashlib import sha1
 import datetime
 import csv
-from string import *
+from string import lower
 #from Sets import ImmutableSet
-from itertools import *
-from heapq import *
-from copy import deepcopy
-import os
-import sys
+#from heapq import *
 import multiprocessing
 from os import path
 from decimal import Decimal
 # If running on an older version of numpy, check to make sure we have
 # defined all required functions.
-import numpy  # We need to be able to reference numpy by name
+import numpy as np  # We need to be able to reference numpy by name
 from select import select
-
+from itertools import combinations, chain
 
 def discrete_sample(p):
-    cp = numpy.cumsum(p)
-    return numpy.sum(cp <= numpy.random.rand(1))
+    cp = np.cumsum(p)
+    return np.sum(cp <= np.random.rand(1))
 
 
 def matrix_mult(A, B):
@@ -177,15 +165,15 @@ def cartesian(arrays, out=None):
 
     """
 
-    arrays = [numpy.asarray(x) for x in arrays]
+    arrays = [np.asarray(x) for x in arrays]
     dtype = arrays[0].dtype
 
-    n = prod([x.size for x in arrays])
+    n = np.prod([x.size for x in arrays])
     if out is None:
-        out = zeros([n, len(arrays)], dtype=dtype)
+        out = np.zeros([n, len(arrays)], dtype=dtype)
 
     m = n / arrays[0].size
-    out[:, 0] = numpy.repeat(arrays[0], m)
+    out[:, 0] = np.repeat(arrays[0], m)
     if arrays[1:]:
         cartesian(arrays[1:], out=out[0:m, 1:])
         for j in xrange(1, arrays[0].size):
@@ -210,23 +198,23 @@ def count_nonzero(arr):
     if sp.issparse(arr):
         return arr.getnnz()
 
-    if isinstance(arr, numpy.matrixlib.defmatrix.matrix):
+    if isinstance(arr, np.matrixlib.defmatrix.matrix):
         # Tuple of length = # dimensions (usu. 2) containing indices of nonzero
         # elements
         nonzero_indices = arr.nonzero()
         # Find # of indices in the vector corresponding to any of the
         # dimensions (all have same length)
-        nnz = size(nonzero_indices[0])
+        nnz = np.size(nonzero_indices[0])
         return nnz
 
-    if isinstance(arr, ndarray):
+    if isinstance(arr, np.ndarray):
         # return sum([1 for x in arr.ravel() if x != 0])
-        return numpy.count_nonzero(arr.ravel())
+        return np.count_nonzero(arr.ravel())
 
     if isinstance(arr, list):
         for el in arr:
             if isinstance(el, list):
-                nnz += count_nonzero(el)
+                nnz += np.count_nonzero(el)
             elif el != 0:
                 nnz += 1
         return nnz
@@ -256,15 +244,13 @@ def count_nonzero(arr):
 
 
 def randint(low, high, m=1, n=1):
-    return random.randint(low, high + 1, size=(m, n))
+    return np.random.randint(low, high + 1, size=(m, n))
 
 
 def randSet(x):
     # Returns a random element of a list uniformly.
     #i = random.random_integers(0,size(x)-1)
-    i = randint(0, size(x) - 1)[0, 0]
-#    print x
-#    print('in randSet: %d' % i)
+    i = np.random.randint(0, len(x) - 1)
     return x[i]
 
 
@@ -321,14 +307,6 @@ def className(obj):
     return obj.__class__.__name__
 
 
-def scale(x, m, M):
-    # given an array return the scaled version of the array.
-    # positive numbers are scaled [0,M] -> [0,1]
-    # negative numbers are scaled [m,0] -> [-1,0]
-    pos_ind = where(x > 0)
-    # x(pos_ind) = x(pos_ind)
-
-
 def createColorMaps():
     # Make Grid World ColorMap
     mycmap = colors.ListedColormap(
@@ -371,9 +349,8 @@ def make_colormap(colors):
     """
 
     from matplotlib.colors import LinearSegmentedColormap, ColorConverter
-    from numpy import sort
 
-    z = sort(colors.keys())
+    z = np.sort(colors.keys())
     n = len(z)
     z1 = min(z)
     zn = max(z)
@@ -383,7 +360,7 @@ def make_colormap(colors):
     R = []
     G = []
     B = []
-    for i in arange(n):
+    for i in xrange(n):
         # i'th color at level z[i]:
         Ci = colors[z[i]]
         if isinstance(Ci, str):
@@ -397,32 +374,27 @@ def make_colormap(colors):
         B.append(RGB[2])
 
     cmap_dict = {}
-    cmap_dict['red'] = [(x0[i], R[i], R[i]) for i in arange(len(R))]
-    cmap_dict['green'] = [(x0[i], G[i], G[i]) for i in arange(len(G))]
-    cmap_dict['blue'] = [(x0[i], B[i], B[i]) for i in arange(len(B))]
+    cmap_dict['red'] = [(x0[i], R[i], R[i]) for i in xrange(len(R))]
+    cmap_dict['green'] = [(x0[i], G[i], G[i]) for i in xrange(len(G))]
+    cmap_dict['blue'] = [(x0[i], B[i], B[i]) for i in xrange(len(B))]
     mymap = LinearSegmentedColormap('mymap', cmap_dict)
     return mymap
 
 
 def showcolors(cmap):
-    from pylab import colorbar, clf, axes, linspace, pcolor, \
-        meshgrid, show, axis, title
-    # from scitools.easyviz.matplotlib_ import colorbar, clf, axes, linspace,\
-                 #pcolor, meshgrid, show, colormap
-    clf()
-    x = linspace(0, 1, 21)
-    X, Y = meshgrid(x, x)
-    pcolor(X, Y, 0.5 * (X + Y), cmap=cmap, edgecolors='k')
-    axis('equal')
-    colorbar()
-    title('Plot of x+y using colormap')
+    plt.clf()
+    x = np.linspace(0, 1, 21)
+    X, Y = np.meshgrid(x, x)
+    plt.pcolor(X, Y, 0.5 * (X + Y), cmap=cmap, edgecolors='k')
+    plt.axis('equal')
+    plt.colorbar()
+    plt.title('Plot of x+y using colormap')
 
 
 def schlieren_colormap(color=[0, 0, 0]):
     """
     For Schlieren plots:
     """
-    from numpy import linspace, array
     if color == 'k':
         color = [0, 0, 0]
     if color == 'r':
@@ -433,11 +405,11 @@ def schlieren_colormap(color=[0, 0, 0]):
         color = [0, 0.5, 0]
     if color == 'y':
         color = [1, 1, 0]
-    color = array([1, 1, 1]) - array(color)
-    s = linspace(0, 1, 20)
+    color = np.array([1, 1, 1]) - np.array(color)
+    s = np.linspace(0, 1, 20)
     colors = {}
     for key in s:
-        colors[key] = array([1, 1, 1]) - key ** 10 * color
+        colors[key] = np.array([1, 1, 1]) - key ** 10 * color
     schlieren_colors = make_colormap(colors)
     return schlieren_colors
 
@@ -493,7 +465,7 @@ def generalDot(x, y):
         #active_indices = x.nonzero()[0].flatten()
         return x.multiply(y).sum()
     else:
-        return dot(x, y)
+        return np.dot(x, y)
 
 
 def normpdf(x, mu, sigma):
@@ -516,7 +488,7 @@ def findElem(x, A):
 
 
 def findElemArray1D(x, A):  # Returns an array of indices in x where x[i] == A
-    res = where(A == x)
+    res = np.where(A == x)
     if len(res[0]):
         return res[0].flatten()
     else:
@@ -525,7 +497,7 @@ def findElemArray1D(x, A):  # Returns an array of indices in x where x[i] == A
 
 def findElemArray2D(x, A):
     # Find the index of element x in array A
-    res = where(A == x)
+    res = np.where(A == x)
     if len(res[0]):
         return res[0].flatten(), res[1].flatten()
     else:
@@ -537,14 +509,10 @@ def findRow(r, X):
     # r and X must have the same number of columns
     # return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
     # return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
-    ind = nonzero(logical_and.reduce([X[:, i] == r[i]
-                  for i in arange(len(r))]))
+    ind = np.nonzero(np.logical_and.reduce([X[:, i] == r[i] for i in xrange(len(r))]))
     return ind[0]
 
 
-def decimals(x):
-    # Returns the number of decimal points required to capture X
-    return -Decimal(str(x)).as_tuple().exponent
 
 
 def perms(X):
@@ -554,32 +522,33 @@ def perms(X):
     # X = [[1,3],[2,3]]
     # res = [[1,2],[1,3],[3,2],[3,3]
     # Outputs are in numpy array format
-    allPerms, _ = perms_r(X, perm_sample=array([]), allPerms=None, ind=0)
+    allPerms, _ = perms_r(X, perm_sample=np.array([]), allPerms=None, ind=0)
+
     return allPerms
 ######################################################
 
 
-def perms_r(X, perm_sample=array([]), allPerms=None, ind=0):
+def perms_r(X, perm_sample=np.array([]), allPerms=None, ind=0):
     if allPerms is None:
         # Get memory
         if isinstance(X[0], list):
-            size = prod([len(x) for x in X])
+            size = np.prod([len(x) for x in X])
         else:
-            size = prod(X, dtype=integer)
-        allPerms = zeros((size, len(X)))
+            size = np.prod(X, dtype=np.int)
+        allPerms = np.zeros((size, len(X)))
     if len(X) == 0:
         allPerms[ind, :] = perm_sample
-        perm_sample = array([])
+        perm_sample = np.array([])
         ind = ind + 1
     else:
         if isinstance(X[0], list):
             for x in X[0]:
                 allPerms, ind = perms_r(
-                    X[1:], hstack((perm_sample, [x])), allPerms, ind)
+                    X[1:], np.hstack((perm_sample, [x])), allPerms, ind)
         else:
-            for x in arange(X[0]):
+            for x in xrange(X[0]):
                 allPerms, ind = perms_r(
-                    X[1:], hstack((perm_sample, [x])), allPerms, ind)
+                    X[1:], np.hstack((perm_sample, [x])), allPerms, ind)
     return allPerms, ind
 ######################################################
 
@@ -589,7 +558,7 @@ def vec2id2(x, limits):
     # Slower than the other implementation by a factor of 2
     if isinstance(x, int):
         return x
-    lim_prod = cumprod(limits[:-1])
+    lim_prod = np.cumprod(limits[:-1])
     return x[0] + sum(map(lambda x_y: x_y[0] * x_y[1], zip(x[1:], lim_prod)))
 
 
@@ -601,7 +570,7 @@ def vec2id(x, limits):
     if isinstance(x, int):
         return x
     _id = 0
-    for d in arange(len(x) - 1, -1, -1):
+    for d in xrange(len(x) - 1, -1, -1):
         _id *= limits[d]
         _id += x[d]
 
@@ -613,9 +582,9 @@ def id2vec(_id, limits):
     # returns the vector corresponding to an id given the number of buckets in each dimension (invers of vec2id)
     # for example:
     # id2vec(5,[5,10]) = [0,1]
-    prods = cumprod(limits)
+    prods = np.cumprod(limits)
     s = [0] * len(limits)
-    for d in arange(len(prods) - 1, 0, -1):
+    for d in xrange(len(prods) - 1, 0, -1):
 #       s[d] = _id / prods[d-1]
 #       _id %= prods[d-1]
         s[d], _id = divmod(_id, prods[d - 1])
@@ -632,10 +601,10 @@ def bound_vec(X, limits):
     # i.e limits[i,0] <= output[i] <= limits[i,1]
     MIN = limits[:, 0]
     MAX = limits[:, 1]
-    X = vstack((X, MIN))
-    X = amax(X, axis=0)
-    X = vstack((X, MAX))
-    X = amin(X, axis=0)
+    X = np.vstack((X, MIN))
+    X = np.amax(X, axis=0)
+    X = np.vstack((X, MAX))
+    X = np.amin(X, axis=0)
     return X
 
 
@@ -659,22 +628,16 @@ def wrap(x, m, M):
     return x
 
 
-def shout(obj, s=''):
-    # Print the name of the object and then the message. Use to remember to
-    # comment prints
-    print "In " + className(obj) + " :" + str(s)
-
-
 def powerset(iterable, ascending=1):
     s = list(iterable)
     if ascending:
         return (
-            chain.from_iterable(combinations(s, r) for r in arange(len(s) + 1))
+            chain.from_iterable(combinations(s, r) for r in xrange(len(s) + 1))
         )
     else:
         return (
             chain.from_iterable(combinations(s, r)
-                                for r in arange(len(s) + 1, -1, -1))
+                                for r in xrange(len(s) + 1, -1, -1))
         )
 
 
@@ -700,12 +663,12 @@ def addNewElementForAllActions(x, a, newElem=None):
     # x = [1,2,3,4], a = 2, newElem = None => [1,2,0,3,4,0]
     # x = [1,2,3], a = 3, newElem = [1,1,1] => [1,1,2,1,3,1]
     if newElem is None:
-        newElem = zeros((a, 1))
+        newElem = np.zeros((a, 1))
     if len(x) == 0:
         return newElem.flatten()
     else:
         x = x.reshape(a, -1)  # -1 means figure the other dimension yourself
-        x = hstack((x, newElem))
+        x = np.hstack((x, newElem))
         x = x.reshape(1, -1).flatten()
         return x
 
@@ -713,7 +676,7 @@ def addNewElementForAllActions(x, a, newElem=None):
 def solveLinear(A, b):
     # Solve the linear equation Ax=b.
     # return x and the time for solve
-    error = inf  # just to be safe, initialize error variable here
+    error = np.inf  # just to be safe, initialize error variable here
     if sp.issparse(A):
     # print 'sparse', type(A)
         start_log_time = clock()
@@ -733,12 +696,12 @@ def solveLinear(A, b):
         solve_time = deltaT(start_log_time)
 
         # use numpy matrix multiplication
-        if isinstance(A, numpy.matrixlib.defmatrix.matrix):
-            error = linalg.norm(
+        if isinstance(A, np.matrixlib.defmatrix.matrix):
+            error = np.linalg.norm(
                 (A * result.reshape(-1, 1) - b.reshape(-1, 1))[0])
-        elif isinstance(A, numpy.ndarray):  # use array multiplication
-            error = linalg.norm(
-                (dot(A, result.reshape(-1, 1)) - b.reshape(-1, 1))[0])
+        elif isinstance(A, np.ndarray):  # use array multiplication
+            error = np.linalg.norm(
+                (np.dot(A, result.reshape(-1, 1)) - b.reshape(-1, 1))[0])
         else:
             print 'Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.'
             sys.exit(1)
@@ -748,27 +711,9 @@ def solveLinear(A, b):
     return result.ravel(), solve_time
 
 
-def rows(A):
-    # return the rows of matrix A
-    r, c = A.shape
-    return r
-
-
-def cols(A):
-    # return the rows of matrix A
-    r, c = A.shape
-    return c
-
-
 def rank(A, eps=1e-12):
     u, s, v = linalg.svd(A)
     return len([x for x in s if abs(x) > eps])
-
-
-def easy2read(A, _precision=3):
-    # returns an array easy to read (used for debugging mainly. _precision is
-    # the number of decimal digits
-    return array_repr(A, precision=_precision, suppress_small=True)
 
 
 def fromAtoB(x1, y1, x2, y2, color='k', connectionstyle="arc3,rad=-0.4",
@@ -802,11 +747,11 @@ def fromAtoB(x1, y1, x2, y2, color='k', connectionstyle="arc3,rad=-0.4",
 
 
 def drawHist(data, bins=50, fig=101):
-    hist, bins = histogram(data, bins=bins)
+    hist, bins = np.histogram(data, bins=bins)
     width = 0.7 * (bins[1] - bins[0])
     center = (bins[:-1] + bins[1:]) / 2
-    pl.figure(fig)
-    pl.bar(center, hist, align='center', width=width)
+    plt.figure(fig)
+    plt.bar(center, hist, align='center', width=width)
 
 
 def nonZeroIndex(A):
@@ -850,7 +795,7 @@ def sp_dot_sp(sp_1, sp_2):
     if len(ind_1) * len(ind_2) == 0:
         return 0
 
-    ind = intersect1d(ind_1, ind_2)
+    ind = np.intersect1d(ind_1, ind_2)
     # See if they are boolean
     if sp_1.dtype == bool and sp_2.dtype == bool:
         return len(ind)
@@ -881,9 +826,9 @@ def sp_add2_array(sp, A):
 def checkNCreateDirectory(fullfilename):
     # See if a fullfilename exists if not create the required directory
 
-    path, char, filename = fullfilename.rpartition('/')
-    if not os.path.exists(path):
-        os.makedirs(path)
+    path_, _, _ = fullfilename.rpartition('/')
+    if not os.path.exists(path_):
+        os.makedirs(path_)
 
 
 def hasFunction(object, methodname):
@@ -908,35 +853,23 @@ def regularize(A):
         # print 'REGULARIZE', type(A)
     else:
         # print 'REGULARIZE', type(A)
-        for i in arange(x):
+        for i in xrange(x):
             A[i, i] += REGULARIZATION
     return A
 
 
 def sparsity(A):
     # Returns the percent [0-100] of elements of A that are 0
-    return (1 - count_nonzero(A) / (prod(A.shape) * 1.)) * 100
+    return (1 - np.count_nonzero(A) / (np.prod(A.shape) * 1.)) * 100
 
 
 def printMatrix(A, type='int'):
     # print a matrix in a desired format
-    print array(A, dtype=type)
+    print np.array(A, dtype=type)
 
 
 def incrementalAverageUpdate(avg, sample, sample_number):
     return avg + (sample - avg) / (sample_number * 1.)
-
-
-def isOnCluster():
-    """
-    .. warning::
-        deprecated
-    """
-    return False
-
-
-def rootMeanSquareError(X):
-    return sqrt(mean(X ** 2))
 
 
 def padZeros(X, L):
@@ -944,7 +877,7 @@ def padZeros(X, L):
     # L is an int
     # if len(X) < L pad zeros to X so it will have length L
     if len(X) < L:
-        new_X = zeros(L)
+        new_X = np.zeros(L)
         new_X[:len(X)] = X
         return new_X
     else:
@@ -956,7 +889,7 @@ def expectedPhiNS(p_vec, ns_vec, representation):
     # Takes p_vec, probability of each state outcome in ns_vec,
     # Returns a vector of length features_num which is the expectation
     # over all possible outcomes.
-    expPhiNS = zeros(representation.features_num)
+    expPhiNS = np.zeros(representation.features_num)
     for i, ns in enumerate(ns_vec):
         expPhiNS += p_vec[i] * representation.phi_nonTerminal(ns)
     return expPhiNS
@@ -972,7 +905,7 @@ def allExpectedPhiNS(domain, representation, policy, allStates=None):
     # k: number of features
     if allStates is None:
         allStates = domain.allStates()
-    allExpPhiNS = zeros((len(allStates), representation.features_num))
+    allExpPhiNS = np.zeros((len(allStates), representation.features_num))
     for i, s in enumerate(allStates):
 #         print s
 #         print policy.pi(s)

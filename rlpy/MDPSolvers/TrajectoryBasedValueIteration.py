@@ -5,8 +5,8 @@
 The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
 """
 from .MDPSolver import MDPSolver
-from rlpy.Tools import *
-from rlpy.Representations import Tabular
+from rlpy.Tools import deltaT, hhmmss, randSet, className, clock
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -53,7 +53,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
     MIN_CONVERGED_TRAJECTORIES = 5
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=inf, convergence_threshold=.005,
+            self, job_id, representation, domain, logger, planning_time=np.inf, convergence_threshold=.005,
             ns_samples=100, project_path='.', log_interval=500, show=False, epsilon=.1):
         super(
             TrajectoryBasedValueIteration,
@@ -99,7 +99,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
             a = self.representation.bestAction(
                 s,
                 terminal,
-                p_actions) if random.rand(
+                p_actions) if np.random.rand(
             ) > self.epsilon else randSet(
                 p_actions)
             while not terminal and step < self.domain.episodeCap and self.hasTime():
@@ -113,7 +113,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
                     terminal,
                     a,
                     phi_s)
-                old_Q = dot(phi_s_a, self.representation.theta)
+                old_Q = np.dot(phi_s_a, self.representation.theta)
                 bellman_error = new_Q - old_Q
                 # print s, old_Q, new_Q, bellman_error
                 self.representation.theta   += self.alpha * \
@@ -136,7 +136,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
                 a = self.representation.bestAction(
                     s,
                     terminal,
-                    p_actions) if random.rand(
+                    p_actions) if np.random.rand(
                 ) > self.epsilon else randSet(
                     p_actions)
 

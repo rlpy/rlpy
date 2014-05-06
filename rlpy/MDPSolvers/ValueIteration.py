@@ -3,8 +3,8 @@ Performs full Bellman Backup on a given s,a pair by sweeping through the state s
 """
 
 from .MDPSolver import MDPSolver
-from rlpy.Tools import *
-from rlpy.Representations import Tabular
+from rlpy.Tools import hhmmss, deltaT, className, clock
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -62,14 +62,13 @@ class ValueIteration(MDPSolver):
 
         no_of_states = self.representation.agg_states_num
         # used to track the performance improvement.
-        prev_return = inf
         bellmanUpdates = 0
         converged = False
         iteration = 0
         while self.hasTime() and not converged:
             prev_theta = self.representation.theta.copy()
             # Sweep The State Space
-            for i in arange(0, no_of_states):
+            for i in xrange(0, no_of_states):
                 if not self.hasTime():
                     break
                 s = self.representation.stateID2state(i)
@@ -89,10 +88,10 @@ class ValueIteration(MDPSolver):
 
             # check for convergence
             iteration += 1
-            theta_change = linalg.norm(
+            theta_change = np.linalg.norm(
                 prev_theta -
                 self.representation.theta,
-                inf)
+                np.inf)
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             converged = theta_change < self.convergence_threshold

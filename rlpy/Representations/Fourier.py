@@ -1,7 +1,7 @@
 """Fourier representation"""
 
 from .Representation import Representation
-from rlpy.Tools import indices, pi, cos, dot
+from numpy import indices, pi, cos, dot
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",

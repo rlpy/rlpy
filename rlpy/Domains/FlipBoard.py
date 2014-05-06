@@ -1,5 +1,5 @@
 """Flipboard domain."""
-from rlpy.Tools import plt, id2vec, tile
+from rlpy.Tools import plt, id2vec
 from .Domain import Domain
 import numpy as np
 
@@ -42,7 +42,7 @@ class FlipBoard(Domain):
     STEP_REWARD = -1
     episodeCap = 100               # Set by the domain = min(100,rows*cols)
     actions_num = BOARD_SIZE ** 2
-    statespace_limits = tile([0, 1], (BOARD_SIZE ** 2, 1))
+    statespace_limits = np.tile([0, 1], (BOARD_SIZE ** 2, 1))
 
     # Visual Stuff
     domain_fig = None

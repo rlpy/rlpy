@@ -2,7 +2,7 @@
 from rlpy.Tools import plt, FONTSIZE, linearMap
 import numpy as np
 from .Domain import Domain
-from rlpy.Tools import __rlpy_location__, tile, findElemArray1D, perms
+from rlpy.Tools import __rlpy_location__, findElemArray1D, perms
 import os
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -367,7 +367,7 @@ class GridWorld(Domain):
         p = np.ones((k, 1)) * self.NOISE / (k * 1.)
         p[intended_action_index, 0] += 1 - self.NOISE
         # Make next states
-        ns = tile(s, (k, 1)).astype(int)
+        ns = np.tile(s, (k, 1)).astype(int)
         actions = self.ACTIONS[actions]
         ns += actions
         # Make next possible actions

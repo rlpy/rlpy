@@ -1,6 +1,6 @@
 """Network administrator task."""
 
-from rlpy.Tools import plt, nx, tile
+from rlpy.Tools import plt, nx
 import numpy as np
 import csv
 from .Domain import Domain
@@ -112,7 +112,7 @@ class SystemAdministrator(Domain):
         self.actions_num = self.computers_num + 1
         # Limits of each dimension of the state space. Each row corresponds to
         # one dimension and has two elements [min, max]
-        self.statespace_limits = tile(
+        self.statespace_limits = np.tile(
             [0, self._NUM_VALUES - 1], (self.computers_num, 1))
         super(SystemAdministrator, self).__init__(logger)
         if self.logger:

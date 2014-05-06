@@ -4,7 +4,7 @@ from rlpy.Tools import plt, id2vec, bound_vec
 import numpy as np
 from .Domain import Domain
 import os
-from rlpy.Tools import __rlpy_location__, tile, FONTSIZE
+from rlpy.Tools import __rlpy_location__, FONTSIZE
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -89,7 +89,7 @@ class IntruderMonitoring(Domain):
 
         _statespace_limits = np.vstack(
             [[0, self.ROWS - 1], [0, self.COLS - 1]])
-        self.statespace_limits = tile(
+        self.statespace_limits = np.tile(
             _statespace_limits, ((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS), 1))
         #self.statespace_limits_non_extended     = tile(_statespace_limits,((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS),1))
 
@@ -171,7 +171,7 @@ class IntruderMonitoring(Domain):
         # 1. tile the [R,C] for all actions
         # 2. add all actions to the results
         # 3. Find feasible rows and add them as possible actions
-        tile_s = tile(s, [len(self.ACTIONS_PER_AGENT), 1])
+        tile_s = np.tile(s, [len(self.ACTIONS_PER_AGENT), 1])
         next_states = tile_s + self.ACTIONS_PER_AGENT
         next_states_rows = next_states[:, 0]
         next_states_cols = next_states[:, 1]

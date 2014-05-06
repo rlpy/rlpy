@@ -1,8 +1,8 @@
 """BlocksWorld domain, stacking of blocks to form a tower."""
 
 from .Domain import Domain
-from rlpy.Tools import id2vec, vec2id, findElemArray1D, setdiff1d
-from rlpy.Tools import nchoosek, tile, factorial, findElemArray2D, plt, FONTSIZE
+from rlpy.Tools import id2vec, vec2id, findElemArray1D
+from rlpy.Tools import nchoosek, factorial, findElemArray2D, plt, FONTSIZE
 import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -72,7 +72,7 @@ class BlocksWorld(Domain):
         self.gamma = 1
         # Block i is on top of what? if block i is on top of block i => block i
         # is on top of table
-        self.statespace_limits = tile([0, blocks - 1], (blocks, 1))
+        self.statespace_limits = np.tile([0, blocks - 1], (blocks, 1))
         # This is the true size of the state space refer to [Geramifard11_ICML]
         self.real_states_num = sum(
             [nchoosek(blocks,
@@ -176,7 +176,7 @@ class BlocksWorld(Domain):
         # returns the block on top of block A. Return [] if nothing is on top
         # of A
         on_A = findElemArray1D(A, s)
-        on_A = setdiff1d(on_A, [A])  # S[i] = i is the key for i is on table.
+        on_A = np.setdiff1d(on_A, [A])  # S[i] = i is the key for i is on table.
         return on_A
 
     def clear(self, A, s):

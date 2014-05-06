@@ -1,14 +1,19 @@
-"""Standard Experiment for Learning Control in RL"""
-from rlpy.Tools import *
+"""Standard Experiment for Learning Control in RL."""
+
+from rlpy.Tools import plt
 import numpy as np
-from copy import copy, deepcopy
+from copy import deepcopy
 import re
-import rlpy.Tools.ipshell
 import argparse
-import json
+from rlpy.Tools import deltaT, clock, hhmmss
+from rlpy.Tools import className, checkNCreateDirectory
+from rlpy.Tools import printClass
 import rlpy.Tools.results
+from rlpy.Tools import lower
+import os
+import rlpy.Tools.ipshell
+import json
 from collections import defaultdict
-import matplotlib.pyplot as plt
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -290,7 +295,7 @@ class Experiment(object):
 
         """
         if debug_on_sigurg:
-            Tools.ipshell.ipdb_on_SIGURG()
+            rlpy.Tools.ipshell.ipdb_on_SIGURG()
         self.performance_domain = deepcopy(self.domain)
         self.seed_components()
 
@@ -441,7 +446,7 @@ class Experiment(object):
                                                  steps=performance_steps,
                                                  num_feat=self.agent.representation.features_num))
 
-        random.set_state(random_state)
+        np.random.set_state(random_state)
         #self.domain.rand_state = random_state_domain
 
     def save(self):
@@ -459,7 +464,7 @@ class Experiment(object):
         and the results array otherwise.
         """
         results_fn = os.path.join(self.full_path, self.output_filename)
-        self.results = Tools.results.load_single(results_fn)
+        self.results = rlpy.Tools.results.load_single(results_fn)
         return self.results
 
     def plot(self, y="return", x="learning_steps", save=False):
@@ -468,8 +473,8 @@ class Experiment(object):
         For more advanced plotting of results consider
         :py:class:`Tools.Merger.Merger`.
         """
-        labels = Tools.results.default_labels
-        performance_fig = pl.figure("Performance")
+        labels = rlpy.Tools.results.default_labels
+        performance_fig = plt.figure("Performance")
         res = self.result
         plt.plot(res[x], res[y], '-bo', lw=3, markersize=10)
         plt.xlim(0, res[x][-1] * 1.01)

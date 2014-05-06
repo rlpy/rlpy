@@ -9,9 +9,12 @@
 """
 
 from .MDPSolver import MDPSolver
-from rlpy.Tools import *
-from rlpy.Representations import Tabular
+from rlpy.Tools import className, hhmmss, deltaT, randSet
 from rlpy.Policies import eGreedy
+import numpy as np
+from rlpy.Tools import solveLinear, regularize, clock, padZeros
+from copy import deepcopy
+from rlpy.Tools import hasFunction
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -61,7 +64,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
     MIN_CONVERGED_TRAJECTORIES = 5
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=inf, convergence_threshold=.005,
+            self, job_id, representation, domain, logger, planning_time=np.inf, convergence_threshold=.005,
             ns_samples=100, project_path='.', log_interval=500, show=False, epsilon=.1, max_PE_iterations=10):
         super(
             TrajectoryBasedPolicyIteration,
@@ -117,7 +120,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 a = policy.pi(
                     s,
                     terminal,
-                    p_actions) if random.rand(
+                    p_actions) if np.random.rand(
                 ) > self.epsilon else randSet(
                     p_actions)
                 while not terminal and step < self.domain.episodeCap and self.hasTime():
@@ -140,7 +143,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                         terminal,
                         a,
                         phi_s=phi_s)
-                    old_Q = dot(phi_s_a, self.representation.theta)
+                    old_Q = np.dot(phi_s_a, self.representation.theta)
                     bellman_error = new_Q - old_Q
 
                     self.representation.theta   += self.alpha * \
@@ -158,9 +161,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                         'discover',
                         None)  # None is the default value if the discover is not an attribute
                     if discover_func and callable(discover_func):
-                        discovered = self.representation.discover(
-                            phi_s,
-                            bellman_error)
+                        self.representation.post_discover(phi_s, bellman_error)
                         # if discovered:
                         # print "Features = %d" %
                         # self.representation.features_num
@@ -170,7 +171,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     a = policy.pi(
                         s,
                         terminal,
-                        p_actions) if random.rand(
+                        p_actions) if np.random.rand(
                     ) > self.epsilon else randSet(
                         p_actions)
 
@@ -200,7 +201,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             paddedTheta = padZeros(
                 policy.representation.theta,
                 len(self.representation.theta))
-            delta_theta = linalg.norm(paddedTheta - self.representation.theta)
+            delta_theta = np.linalg.norm(paddedTheta - self.representation.theta)
             converged = delta_theta < self.convergence_threshold
 
             # Update the underlying value function of the policy
@@ -265,20 +266,19 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 self.samples_num)
             samples += self.samples_num
             #  2. Calculate A and b estimates
-            L1 = self.samples_num
             a_num = self.domain.actions_num
             n = self.representation.features_num
             gamma = self.domain.gamma
 
-            self.A = zeros((n * a_num, n * a_num))
-            self.b = zeros((n * a_num, 1))
-            for i in arange(self.samples_num):
+            self.A = np.zeros((n * a_num, n * a_num))
+            self.b = np.zeros((n * a_num, 1))
+            for i in xrange(self.samples_num):
                 phi_s_a = self.representation.phi_sa(
                     S[i], Actions[i, 0]).reshape((-1, 1))
                 E_phi_ns_na = self.calculate_expected_phi_ns_na(
                     S[i], Actions[i, 0], self.ns_samples).reshape((-1, 1))
                 d = phi_s_a - gamma * E_phi_ns_na
-                self.A += outer(phi_s_a, d.T)
+                self.A += np.outer(phi_s_a, d.T)
                 self.b += phi_s_a * R[i, 0]
 
             #  3. calculate new_theta, and delta_theta
@@ -288,10 +288,10 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 self.logger.log(
                     '#%d: Finished Policy Evaluation. Solve Time = %0.2f(s)' %
                     (iteration, solve_time))
-            delta_theta = linalg.norm(
+            delta_theta = np.linalg.norm(
                 new_theta -
                 self.representation.theta,
-                inf)
+                np.inf)
             converged = delta_theta < self.convergence_threshold
             self.representation.theta = new_theta
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
@@ -322,15 +322,15 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         # and a. Eqns 2.20 and 2.25 in [Geramifard et. al. 2012 FTML draft]
         if hasFunction(self.domain, 'expectedStep'):
             p, r, ns, t = self.domain.expectedStep(s, a)
-            phi_ns_na = zeros(
+            phi_ns_na = np.zeros(
                 self.representation.features_num *
                 self.domain.actions_num)
-            for j in arange(len(p)):
+            for j in xrange(len(p)):
                 na = self.policy.pi(ns[j])
                 phi_ns_na += p[j] * self.representation.phi_sa(ns[j], na)
         else:
             next_states, rewards = self.domain.sampleStep(s, a, ns_samples)
-            phi_ns_na = mean(
+            phi_ns_na = np.mean(
                 [self.representation.phisa(next_states[i],
-                                           self.policy(next_states[i])) for i in arange(ns_samples)])
+                                           self.policy.pi(next_states[i])) for i in xrange(ns_samples)])
         return phi_ns_na
