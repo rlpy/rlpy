@@ -1,6 +1,7 @@
-"""Flipboard domain"""
-from rlpy.Tools import *
+"""Flipboard domain."""
+from rlpy.Tools import plt, id2vec, tile
 from .Domain import Domain
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -12,7 +13,8 @@ __author__ = "Alborz Geramifard"
 class FlipBoard(Domain):
 
     """
-    A domain based on the last puzzle of Doors and Rooms Game stage 5-3
+    A domain based on the last puzzle of Doors and Rooms Game stage 5-3.
+
     The goal of the game is to get all elements of a 4x4 board
     to have value 1.
 
@@ -34,6 +36,7 @@ class FlipBoard(Domain):
         `gameday inc. Doors and Rooms game <http://bit.ly/SYqdZI>`_
 
     """
+
     gamma = 1
     BOARD_SIZE = 4
     STEP_REWARD = -1
@@ -56,16 +59,16 @@ class FlipBoard(Domain):
         s = self.state
         # Draw the environment
         if self.domain_fig is None:
-            self.move_fig = pl.subplot(111)
+            self.move_fig = plt.subplot(111)
             s = s.reshape((self.BOARD_SIZE, self.BOARD_SIZE))
-            self.domain_fig = pl.imshow(
+            self.domain_fig = plt.imshow(
                 s,
                 cmap='FlipBoard',
                 interpolation='nearest',
                 vmin=0,
                 vmax=1)
-            pl.xticks(arange(self.BOARD_SIZE), fontsize=FONTSIZE)
-            pl.yticks(arange(self.BOARD_SIZE), fontsize=FONTSIZE)
+            plt.xticks(np.arange(self.BOARD_SIZE), fontsize=FONTSIZE)
+            plt.yticks(np.arange(self.BOARD_SIZE), fontsize=FONTSIZE)
             # pl.tight_layout()
             a_row, a_col = id2vec(a, [self.BOARD_SIZE, self.BOARD_SIZE])
             self.move_fig = self.move_fig.plot(
@@ -73,25 +76,25 @@ class FlipBoard(Domain):
                 a_row,
                 'kx',
                 markersize=30.0)
-            pl.show()
+            plt.show()
         a_row, a_col = id2vec(a, [self.BOARD_SIZE, self.BOARD_SIZE])
         self.move_fig.pop(0).remove()
         # print a_row,a_col
         # Instead of '>' you can use 'D', 'o'
-        self.move_fig = pl.plot(a_col, a_row, 'kx', markersize=30.0)
+        self.move_fig = plt.plot(a_col, a_row, 'kx', markersize=30.0)
         s = s.reshape((self.BOARD_SIZE, self.BOARD_SIZE))
         self.domain_fig.set_data(s)
-        pl.draw()
+        plt.draw()
         # raw_input()
 
     def step(self, a):
         ns = self.state.copy()
-        ns = reshape(ns, (self.BOARD_SIZE, -1))
+        ns = np.reshape(ns, (self.BOARD_SIZE, -1))
         a_row, a_col = id2vec(a, [self.BOARD_SIZE, self.BOARD_SIZE])
         # print a_row, a_col
         # print ns
-        ns[a_row, :] =  logical_not(ns[a_row,:])
-        ns[:, a_col] = logical_not(ns[:, a_col])
+        ns[a_row, :] = np.logical_not(ns[a_row,:])
+        ns[:, a_col] = np.logical_not(ns[:, a_col])
         ns[a_row, a_col] = not ns[a_row, a_col]
         if self.isTerminal():
             terminal = True
@@ -105,12 +108,11 @@ class FlipBoard(Domain):
         return r, ns, terminal, self.possibleActions()
 
     def s0(self):
-        self.state = array([[1, 0, 0, 0],
-                            [0, 0, 0, 0],
-                            [0, 1, 0, 0],
-                            [0, 0, 1, 0]
-                            ], dtype='bool').flatten()
+        self.state = np.array([[1, 0, 0, 0],
+                               [0, 0, 0, 0],
+                               [0, 1, 0, 0],
+                               [0, 0, 1, 0]], dtype='bool').flatten()
         return self.state, self.isTerminal(), self.possibleActions()
 
     def isTerminal(self):
-        return count_nonzero(self.state) == self.BOARD_SIZE ** 2
+        return np.count_nonzero(self.state) == self.BOARD_SIZE ** 2

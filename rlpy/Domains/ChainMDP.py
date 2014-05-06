@@ -1,5 +1,5 @@
-"""Simple Chain MDP domain"""
-from rlpy.Tools import *
+"""Simple Chain MDP domain."""
+from rlpy.Tools import plt, mpatches, fromAtoB
 from .Domain import Domain
 import numpy as np
 
@@ -13,7 +13,8 @@ __author__ = "Alborz Geramifard"
 class ChainMDP(Domain):
 
     """
-    A simple Chain MDP.\n
+    A simple Chain MDP.
+
     **STATE:** s0 <-> s1 <-> ... <-> sn \n
     **ACTIONS:** are left [0] and right [1]. \n
 
@@ -32,6 +33,7 @@ class ChainMDP(Domain):
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.
     """
+
     #: Reward for each timestep spent in the goal region
     GOAL_REWARD = 0
     #: Reward for each timestep
@@ -62,7 +64,7 @@ class ChainMDP(Domain):
         self.chainSize = chainSize
         self.start = 0
         self.goal = chainSize - 1
-        self.statespace_limits = array([[0, chainSize - 1]])
+        self.statespace_limits = np.array([[0, chainSize - 1]])
         self.episodeCap = 2 * chainSize
         super(ChainMDP, self).__init__(logger)
 
@@ -71,7 +73,7 @@ class ChainMDP(Domain):
         s = self.state
         s = s[0]
         if self.circles is None:
-            fig = pl.figure(1, (self.chainSize * 2, 2))
+            fig = plt.figure(1, (self.chainSize * 2, 2))
             ax = fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
             ax.set_xlim(0, self.chainSize * 2)
             ax.set_ylim(0, 2)
@@ -81,8 +83,8 @@ class ChainMDP(Domain):
             ax.xaxis.set_visible(False)
             ax.yaxis.set_visible(False)
             self.circles = [mpatches.Circle((1 + 2 * i, self.Y), self.RADIUS, fc="w")
-                            for i in arange(self.chainSize)]
-            for i in arange(self.chainSize):
+                            for i in xrange(self.chainSize)]
+            for i in xrange(self.chainSize):
                 ax.add_patch(self.circles[i])
                 if i != self.chainSize - 1:
                     fromAtoB(
@@ -108,11 +110,11 @@ class ChainMDP(Domain):
                     self.SHIFT,
                     'r',
                     connectionstyle='arc3,rad=-1.2')
-                pl.show()
+                plt.show()
 
         [p.set_facecolor('w') for p in self.circles]
         self.circles[s].set_facecolor('k')
-        pl.draw()
+        plt.draw()
 
     def step(self, a):
         s = self.state[0]
@@ -120,7 +122,7 @@ class ChainMDP(Domain):
             ns = max(0, s - 1)
         if a == 1:
             ns = min(self.chainSize - 1, s + 1)
-        self.state = array([ns])
+        self.state = np.array([ns])
 
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD

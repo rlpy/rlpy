@@ -1,10 +1,10 @@
 """Intruder monitoring task."""
 
-from rlpy.Tools import *
+from rlpy.Tools import plt, id2vec, bound_vec
+import numpy as np
 from .Domain import Domain
-import time
 import os
-from rlpy.Tools import __rlpy_location__
+from rlpy.Tools import __rlpy_location__, tile, FONTSIZE
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -50,10 +50,6 @@ class IntruderMonitoring(Domain):
     do not enter the danger zones without attendance of an agent.
 
     """
-#     **REFERENCE:**
-#
-#     .. seealso::
-#         [[]]
 
     map = None
         #: Number of rows and columns of the map
@@ -69,9 +65,9 @@ class IntruderMonitoring(Domain):
     episodeCap = 100              # Episode Cap
 
     # Constants in the map
-    EMPTY, INTRUDER, AGENT, DANGER = arange(4)
+    EMPTY, INTRUDER, AGENT, DANGER = xrange(4)
         #: Actions: Up, Down, Left, Right, Null
-    ACTIONS_PER_AGENT = array([[-1, 0], [+1, 0], [0, -1], [0, +1], [0, 0], ])
+    ACTIONS_PER_AGENT = np.array([[-1, 0], [+1, 0], [0, -1], [0, +1], [0, 0], ])
 
     # Visual Variables
     domain_fig = None
@@ -91,7 +87,7 @@ class IntruderMonitoring(Domain):
         self.state_space_dims                   = 2 * \
             (self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS)
 
-        _statespace_limits = vstack(
+        _statespace_limits = np.vstack(
             [[0, self.ROWS - 1], [0, self.COLS - 1]])
         self.statespace_limits = tile(
             _statespace_limits, ((self.NUMBER_OF_AGENTS + self.NUMBER_OF_INTRUDERS), 1))
@@ -108,19 +104,19 @@ class IntruderMonitoring(Domain):
 
     def setupMap(self, mapname):
         # Load the map as an array
-        self.map = loadtxt(mapname, dtype=uint8)
+        self.map = np.loadtxt(mapname, dtype=np.uint8)
         if self.map.ndim == 1:
-            self.map = self.map[newaxis, :]
-        self.ROWS, self.COLS = shape(self.map)
+            self.map = self.map[np.newaxis, :]
+        self.ROWS, self.COLS = np.shape(self.map)
 
         R, C = (self.map == self.AGENT).nonzero()
-        self.agents_initial_locations = vstack([R, C]).T
+        self.agents_initial_locations = np.vstack([R, C]).T
         self.NUMBER_OF_AGENTS = len(self.agents_initial_locations)
         R, C = (self.map == self.INTRUDER).nonzero()
-        self.intruders_initial_locations = vstack([R, C]).T
+        self.intruders_initial_locations = np.vstack([R, C]).T
         self.NUMBER_OF_INTRUDERS = len(self.intruders_initial_locations)
         R, C = (self.map == self.DANGER).nonzero()
-        self.danger_zone_locations = vstack([R, C]).T
+        self.danger_zone_locations = np.vstack([R, C]).T
         self.NUMBER_OF_DANGER_ZONES = len(self.danger_zone_locations)
 
     def step(self, a):
@@ -131,21 +127,21 @@ class IntruderMonitoring(Domain):
         s = self.state
 
         # Move all agents based on the taken action
-        agents = array(s[:self.NUMBER_OF_AGENTS * 2].reshape(-1, 2))
+        agents = np.array(s[:self.NUMBER_OF_AGENTS * 2].reshape(-1, 2))
         actions = id2vec(a, self.ACTION_LIMITS)
         actions = self.ACTIONS_PER_AGENT[actions]
         agents += actions
 
         # Generate actions for each intruder based on the function
         # IntruderPolicy
-        intruders = array(s[self.NUMBER_OF_AGENTS * 2:].reshape(-1, 2))
+        intruders = np.array(s[self.NUMBER_OF_AGENTS * 2:].reshape(-1, 2))
         actions = [self.IntruderPolicy(intruders[i])
-                   for i in arange(self.NUMBER_OF_INTRUDERS)]
+                   for i in xrange(self.NUMBER_OF_INTRUDERS)]
         actions = self.ACTIONS_PER_AGENT[actions]
         intruders += actions
 
         # Put all info in one big vector
-        ns = hstack((agents.ravel(), intruders.ravel()))
+        ns = np.hstack((agents.ravel(), intruders.ravel()))
         # Saturate states so that if actions forced agents to move out of the
         # grid world they bound back
         ns = bound_vec(ns, self.discrete_statespace_limits)
@@ -154,10 +150,10 @@ class IntruderMonitoring(Domain):
         intruders = ns[self.NUMBER_OF_AGENTS * 2:].reshape(-1, 2)
 
         # Reward Calculation
-        map = zeros((self.ROWS, self.COLS), 'bool')
+        map = np.zeros((self.ROWS, self.COLS), 'bool')
         map[intruders[:, 0], intruders[:, 1]] = True
         map[agents[:, 0], agents[:, 1]] = False
-        intrusion_counter = count_nonzero(
+        intrusion_counter = np.count_nonzero(
             map[self.danger_zone_locations[:, 0], self.danger_zone_locations[:, 1]])
         r = intrusion_counter * self.INTRUSION_PENALTY
         ns = bound_vec(ns, self.discrete_statespace_limits)
@@ -166,7 +162,7 @@ class IntruderMonitoring(Domain):
         return r, ns, False, self.possibleActions()
 
     def s0(self):
-        self.state = hstack(
+        self.state = np.hstack(
             [self.agents_initial_locations.ravel(),
              self.intruders_initial_locations.ravel()])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
@@ -179,26 +175,26 @@ class IntruderMonitoring(Domain):
         next_states = tile_s + self.ACTIONS_PER_AGENT
         next_states_rows = next_states[:, 0]
         next_states_cols = next_states[:, 1]
-        possibleActions1 = logical_and(
+        possibleActions1 = np.logical_and(
             0 <= next_states_rows,
             next_states_rows < self.ROWS)
-        possibleActions2 = logical_and(
+        possibleActions2 = np.logical_and(
             0 <= next_states_cols,
             next_states_cols < self.COLS)
-        possibleActions, _ = logical_and(
+        possibleActions, _ = np.logical_and(
             possibleActions1, possibleActions2).reshape(-1, 1).nonzero()
         return possibleActions
 
     def printDomain(self, s, a):
         print '--------------'
 
-        for i in arange(0, self.NUMBER_OF_AGENTS):
+        for i in xrange(0, self.NUMBER_OF_AGENTS):
             s_a = s[i * 2:i * 2 + 2]
             aa = id2vec(a, self.ACTION_LIMITS)
             # print 'Agent {} X: {} Y: {}'.format(i,s_a[0],s_a[1])
             print 'Agent {} Location: {} Action {}'.format(i, s_a, aa)
         offset = 2 * self.NUMBER_OF_AGENTS
-        for i in arange(0, self.NUMBER_OF_INTRUDERS):
+        for i in xrange(0, self.NUMBER_OF_INTRUDERS):
             s_i = s[offset + i * 2:offset + i * 2 + 2]
             # print 'Intruder {} X: {} Y: {}'.format(i,s_i[0],s_i[1])
             print 'Intruder', s_i
@@ -213,22 +209,22 @@ class IntruderMonitoring(Domain):
         s = self.state
         # Draw the environment
         if self.domain_fig is None:
-            self.domain_fig = pl.imshow(
+            self.domain_fig = plt.imshow(
                 self.map,
                 cmap='IntruderMonitoring',
                 interpolation='nearest',
                 vmin=0,
                 vmax=3)
-            pl.xticks(arange(self.COLS), fontsize=FONTSIZE)
-            pl.yticks(arange(self.ROWS), fontsize=FONTSIZE)
-            pl.show()
+            plt.xticks(np.arange(self.COLS), fontsize=FONTSIZE)
+            plt.yticks(np.arange(self.ROWS), fontsize=FONTSIZE)
+            plt.show()
         if self.ally_fig is not None:
             self.ally_fig.pop(0).remove()
             self.intruder_fig.pop(0).remove()
 
         s_ally = s[0:self.NUMBER_OF_AGENTS * 2].reshape((-1, 2))
         s_intruder = s[self.NUMBER_OF_AGENTS * 2:].reshape((-1, 2))
-        self.ally_fig = pl.plot(
+        self.ally_fig = plt.plot(
             s_ally[:,
                    1],
             s_ally[:,
@@ -238,7 +234,7 @@ class IntruderMonitoring(Domain):
             alpha=.7,
             markeredgecolor='k',
             markeredgewidth=2)
-        self.intruder_fig = pl.plot(
+        self.intruder_fig = plt.plot(
             s_intruder[:,
                        1],
             s_intruder[:,
@@ -249,4 +245,4 @@ class IntruderMonitoring(Domain):
             alpha=.7,
             markeredgecolor='k',
             markeredgewidth=2)
-        pl.draw()
+        plt.draw()

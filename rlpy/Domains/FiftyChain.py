@@ -1,5 +1,7 @@
-"""Fifty state chain"""
-from rlpy.Tools import *
+"""Fifty state chain."""
+
+from rlpy.Tools import plt, mpatches
+import numpy as np
 from .Domain import Domain
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -29,6 +31,7 @@ class FiftyChain(Domain):
         Least-squares policy iteration.  Journal of Machine Learning Research
         (2003) Issue 4.
     """
+
     #: Reward for each timestep spent in the goal region
     GOAL_REWARD = 1
     #: Indices of states with rewards
@@ -123,10 +126,10 @@ class FiftyChain(Domain):
     # Constants in the map
     def __init__(self, logger=None):
         self.start = 0
-        self.statespace_limits = array([[0, self.chainSize - 1]])
+        self.statespace_limits = np.array([[0, self.chainSize - 1]])
         super(FiftyChain, self).__init__(logger)
         # To catch errors
-        self.optimal_policy = array([-1 for dummy in range(0, self.chainSize)])
+        self.optimal_policy = np.array([-1 for dummy in xrange(0, self.chainSize)])
         self.storeOptimalPolicy()
         self.gamma = 0.8  # Set gamma to be 0.8 for this domain per L & P 2007
 
@@ -140,15 +143,15 @@ class FiftyChain(Domain):
            reward - this policy will be suboptimal for all other domains!
 
         """
-        self.optimal_policy[arange(self.GOAL_STATES[0])] = self.RIGHT
-        goalStateIndices = arange(1, len(self.GOAL_STATES))
+        self.optimal_policy[np.arange(self.GOAL_STATES[0])] = self.RIGHT
+        goalStateIndices = np.arange(1, len(self.GOAL_STATES))
         for i in goalStateIndices:
             goalState1 = self.GOAL_STATES[i - 1]
             goalState2 = self.GOAL_STATES[i]
-            averageState = int(mean([goalState1, goalState2]))
-            self.optimal_policy[arange(goalState1, averageState)] = self.LEFT
-            self.optimal_policy[arange(averageState, goalState2)] = self.RIGHT
-        self.optimal_policy[arange(
+            averageState = int(np.mean([goalState1, goalState2]))
+            self.optimal_policy[np.arange(goalState1, averageState)] = self.LEFT
+            self.optimal_policy[np.arange(averageState, goalState2)] = self.RIGHT
+        self.optimal_policy[np.arange(
             self.GOAL_STATES[-1],
             self.chainSize)] = self.LEFT
 
@@ -156,8 +159,8 @@ class FiftyChain(Domain):
         s = self.state
         # Draw the environment
         if self.circles is None:
-            self.domain_fig = pl.subplot(3, 1, 1)
-            pl.figure(1, (self.chainSize * 2 / 10.0, 2))
+            self.domain_fig = plt.subplot(3, 1, 1)
+            plt.figure(1, (self.chainSize * 2 / 10.0, 2))
             self.domain_fig.set_xlim(0, self.chainSize * 2 / 10.0)
             self.domain_fig.set_ylim(0, 2)
             self.domain_fig.add_patch(
@@ -171,23 +174,24 @@ class FiftyChain(Domain):
                             for i in range(self.chainSize)]
             for i in range(self.chainSize):
                 self.domain_fig.add_patch(self.circles[i])
-                pl.show()
-
-        [p.set_facecolor('w') for p in self.circles]
-        [self.circles[p].set_facecolor('g') for p in self.GOAL_STATES]
+                plt.show()
+        for p in self.circles:
+            p.set_facecolor('w')
+        for p in self.GOAL_STATES:
+            self.circles[p].set_facecolor('g')
         self.circles[s].set_facecolor('k')
-        pl.draw()
+        plt.draw()
 
     def showLearning(self, representation):
-        allStates = arange(0, self.chainSize)
-        X = arange(self.chainSize) * 2.0 / 10.0 - self.SHIFT
-        Y = ones(self.chainSize) * self.Y
-        DY = zeros(self.chainSize)
-        DX = zeros(self.chainSize)
-        C = zeros(self.chainSize)
+        allStates = np.arange(0, self.chainSize)
+        X = np.arange(self.chainSize) * 2.0 / 10.0 - self.SHIFT
+        Y = np.ones(self.chainSize) * self.Y
+        DY = np.zeros(self.chainSize)
+        DX = np.zeros(self.chainSize)
+        C = np.zeros(self.chainSize)
 
         if self.value_function_fig is None:
-            self.value_function_fig = pl.subplot(3, 1, 2)
+            self.value_function_fig = plt.subplot(3, 1, 2)
             self.V_star_line = self.value_function_fig.plot(
                 allStates,
                 self.V_star)
@@ -203,12 +207,12 @@ class FiftyChain(Domain):
                 'b--',
                 linewidth=3)
             # Maximum value function is sum of all possible rewards
-            pl.ylim([0, self.GOAL_REWARD * (len(self.GOAL_STATES) + 1)])
+            plt.ylim([0, self.GOAL_REWARD * (len(self.GOAL_STATES) + 1)])
 
-            self.policy_fig = pl.subplot(3, 1, 3)
+            self.policy_fig = plt.subplot(3, 1, 3)
             self.policy_fig.set_xlim(0, self.chainSize * 2 / 10.0)
             self.policy_fig.set_ylim(0, 2)
-            self.arrows = pl.quiver(
+            self.arrows = plt.quiver(
                 X,
                 Y,
                 DX,
@@ -232,7 +236,7 @@ class FiftyChain(Domain):
 
         self.V_approx_line.set_ydata(V)
         self.arrows.set_UVC(DX, DY, pi)
-        pl.draw()
+        plt.draw()
 
     def step(self, a):
         actionFailure = (
@@ -258,9 +262,9 @@ class FiftyChain(Domain):
         if s is None:
             s = self.state
         if self.using_optimal_policy:
-            return array([self.optimal_policy[s]])
+            return np.array([self.optimal_policy[s]])
         else:
-            return arange(self.actions_num)
+            return np.arange(self.actions_num)
 
     def L_inf_distance_to_V_star(self, representation):
         """
@@ -270,5 +274,5 @@ class FiftyChain(Domain):
         :return: the L-infinity distance between the parameter representation
             and the optimal one.
         """
-        V = array([representation.V(s) for s in arange(self.chainSize)])
-        return linalg.norm(V - self.V_star, inf)
+        V = np.array([representation.V(s) for s in xrange(self.chainSize)])
+        return np.linalg.norm(V - self.V_star, np.inf)

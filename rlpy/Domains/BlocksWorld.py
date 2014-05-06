@@ -1,7 +1,9 @@
-"""BlocksWorld domain, stacking of blocks to form a tower"""
+"""BlocksWorld domain, stacking of blocks to form a tower."""
 
 from .Domain import Domain
-from rlpy.Tools import *
+from rlpy.Tools import id2vec, vec2id, findElemArray1D, setdiff1d
+from rlpy.Tools import nchoosek, tile, factorial, findElemArray2D, plt, FONTSIZE
+import numpy as np
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -14,12 +16,14 @@ class BlocksWorld(Domain):
 
     """
     Classical BlocksWorld Domain [Winograd, 1971].
+
     The objective is to put blocks on top of each other in a specific order to form
     a tower. Initially all blocks are unstacked and are on the table.
     **STATE:**
     The state of the MDP is defined by n integer values [s_1 ... s_n]: si = j indicates
     that block i is on top of j (for compactness s_i = i indicates that the block i
-    is on the table). \n
+    is on the table).
+
     [0 1 2 3 4 0] => means all blocks on table except block 5 which is on top of block 0
 
     **ACTIONS:**
@@ -42,7 +46,9 @@ class BlocksWorld(Domain):
         Online discovery of feature dependencies.
         International Conference on Machine Learning (ICML), pages 881-888.
         ACM, June 2011
+
     """
+
     #: reward per step
     STEP_REWARD = -.001
     #: reward when the tower is completed
@@ -71,12 +77,12 @@ class BlocksWorld(Domain):
         self.real_states_num = sum(
             [nchoosek(blocks,
                       i) * factorial(blocks - i) * pow(i,
-                                                       blocks - i) for i in arange(blocks)])
+                                                       blocks - i) for i in xrange(blocks)])
         # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
-        self.GOAL_STATE = hstack(([0], arange(0, blocks - 1)))
+        self.GOAL_STATE = np.hstack(([0], np.arange(0, blocks - 1)))
         # Make Dimension Names
         self.DimNames = []
-        for a in arange(blocks):
+        for a in xrange(blocks):
             self.DimNames.append(['%d on' % a])
         super(BlocksWorld, self).__init__(logger)
         if logger:
@@ -86,8 +92,8 @@ class BlocksWorld(Domain):
     def showDomain(self, a=0):
         # Draw the environment
         s = self.state
-        world = zeros((self.blocks, self.blocks), 'uint8')
-        undrawn_blocks = arange(self.blocks)
+        world = np.zeros((self.blocks, self.blocks), 'uint8')
+        undrawn_blocks = np.arange(self.blocks)
         while len(undrawn_blocks):
             A = undrawn_blocks[0]
             B = s[A]
@@ -101,21 +107,21 @@ class BlocksWorld(Domain):
                     world[i + 1, j] = A + 1  # 0 is white thats why!
                 else:
                     # Put it in the back of the list
-                    undrawn_blocks = hstack((undrawn_blocks, [A]))
+                    undrawn_blocks = np.hstack((undrawn_blocks, [A]))
         if self.domain_fig is None:
-            self.domain_fig = pl.imshow(
+            self.domain_fig = plt.imshow(
                 world,
                 cmap='BlocksWorld',
                 origin='lower',
                 interpolation='nearest')  # ,vmin=0,vmax=self.blocks)
-            pl.xticks(arange(self.blocks), fontsize=FONTSIZE)
-            pl.yticks(arange(self.blocks), fontsize=FONTSIZE)
+            plt.xticks(np.arange(self.blocks), fontsize=FONTSIZE)
+            plt.yticks(np.arange(self.blocks), fontsize=FONTSIZE)
             # pl.tight_layout()
-            pl.axis('off')
-            pl.show()
+            plt.axis('off')
+            plt.show()
         else:
             self.domain_fig.set_data(world)
-            pl.draw()
+            plt.draw()
 
     def showLearning(self, representation):
         pass  # cant show 6 dimensional value function
@@ -141,21 +147,20 @@ class BlocksWorld(Domain):
 
     def s0(self):
         # all blocks on table
-        self.state = arange(self.blocks)
+        self.state = np.arange(self.blocks)
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def possibleActions(self):
         s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
-        empty_blocks = [b for b in arange(self.blocks) if self.clear(b, s)]
-        empty_num = len(empty_blocks)
+        empty_blocks = [b for b in xrange(self.blocks) if self.clear(b, s)]
         actions = [[a,
                     b] for a in empty_blocks for b in empty_blocks if not self.destination_is_table(
             a,
             b) or not self.on_table(a,
                                     s)]  # condition means if A sits on the table you can not pick it and put it on the table
-        return array([vec2id(x, [self.blocks, self.blocks]) for x in actions])
+        return np.array([vec2id(x, [self.blocks, self.blocks]) for x in actions])
 
     def validAction(self, s, A, B):
         # Returns true if B and A are both empty.
@@ -165,7 +170,7 @@ class BlocksWorld(Domain):
         )
 
     def isTerminal(self):
-        return array_equal(self.state, self.GOAL_STATE)
+        return np.array_equal(self.state, self.GOAL_STATE)
 
     def top(self, A, s):
         # returns the block on top of block A. Return [] if nothing is on top
@@ -204,10 +209,10 @@ class BlocksWorld(Domain):
         return s[A] == B
 
     def getActionPutAonTable(self, A):
-        return vec2id(array([A, A]), [self.blocks, self.blocks])
+        return vec2id(np.array([A, A]), [self.blocks, self.blocks])
 
     def getActionPutAonB(self, A, B):
-        return vec2id(array([A, B]), [self.blocks, self.blocks])
+        return vec2id(np.array([A, B]), [self.blocks, self.blocks])
 
     def expectedStep(self, s, a):
         # Returns k possible outcomes
@@ -222,10 +227,10 @@ class BlocksWorld(Domain):
         terminal1 = self.isTerminal(ns1)
         r1 = self.GOAL_REWARD if terminal1 else self.STEP_REWARD
         if self.destination_is_table(A, B):
-            p = array([1]).reshape((1, -1))
-            r = array([r1]).reshape((1, -1))
-            ns = array([ns1]).reshape((1, -1))
-            t = array([terminal1]).reshape((1, -1))
+            p = np.array([1]).reshape((1, -1))
+            r = np.array([r1]).reshape((1, -1))
+            ns = np.array([ns1]).reshape((1, -1))
+            t = np.array([terminal1]).reshape((1, -1))
             return p, r, ns, t
         else:
             # consider dropping the block
@@ -233,8 +238,8 @@ class BlocksWorld(Domain):
             ns2[A] = A  # Drop on table
             terminal2 = self.isTerminal(ns2)
             r2 = self.GOAL_REWARD if terminal2 else self.STEP_REWARD
-            p = array([1 - self.noise, self.noise]).reshape((2, 1))
-            r = array([r1, r2]).reshape((2, 1))
-            ns = array([[ns1], [ns2]]).reshape((2, -1))
-            t = array([terminal1, terminal2]).reshape((2, -1))
+            p = np.array([1 - self.noise, self.noise]).reshape((2, 1))
+            r = np.array([r1, r2]).reshape((2, 1))
+            ns = np.array([[ns1], [ns2]]).reshape((2, -1))
+            t = np.array([terminal1, terminal2]).reshape((2, -1))
             return p, r, ns, t
