@@ -51,9 +51,8 @@ def make_experiment(
                                normalization=True,
                                max_active_base_feat=10, max_base_feat_sim=max_base_feat_sim)
     policy = eGreedy(representation, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=1.,
-    # lambda_=0., alpha_decay_mode="boyan", boyan_N0=100)
-    agent = Q_LEARNING(lambda_=lambda_, initial_alpha=initial_alpha,
+    agent = Q_LEARNING(representation, policy, domain,
+                       lambda_=lambda_, initial_alpha=initial_alpha,
                        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

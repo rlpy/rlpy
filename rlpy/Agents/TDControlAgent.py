@@ -23,8 +23,7 @@ class TDControlAgent(Agent):
     #: eligibility trace using state only (no copy-paste), necessary for dabney decay mode
     eligibility_trace_s = []
 
-    def __init__(
-            self, representation, policy, domain, initial_alpha=.1,
+    def __init__(self, representation, policy, domain, initial_alpha=.1,
             lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000):
         self.eligibility_trace = np.zeros(
             representation.features_num *
