@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains import PST
 from rlpy.Agents import Greedy_GQ
 from rlpy.Representations import *
@@ -21,22 +20,21 @@ def make_experiment(
         lambda_=.8927,
         boyan_N0=2804.,
         initial_alpha=.2706):
-    logger = Logger()
     max_steps = 1000000
     num_policy_checks = 30
     checks_per_policy = 10
     sparsify = 1
     ifddeps = 1e-7
     beta_coef = 1e-6
-    domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    initial_rep = IndependentDiscretization(domain, logger)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    domain = PST(NUM_UAV=4, motionNoise=0)
+    initial_rep = IndependentDiscretization(domain)
+    representation = iFDD(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           # discretization=discretization,
                           useCache=True,
                           iFDDPlus=1 - ifddeps)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    agent = Greedy_GQ(representation, policy, domain, logger,
+    policy = eGreedy(representation, epsilon=0.1)
+    agent = Greedy_GQ(representation, policy, domain,
                       BetaCoef=beta_coef,
                       lambda_=lambda_, initial_alpha=initial_alpha,
                       alpha_decay_mode="boyan", boyan_N0=boyan_N0)

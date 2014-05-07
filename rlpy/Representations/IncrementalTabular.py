@@ -14,7 +14,7 @@ __author__ = "Alborz Geramifard"
 class IncrementalTabular(Representation):
     hash = None
 
-    def __init__(self, domain, logger, discretization=20):
+    def __init__(self, domain, discretization=20):
         self.hash = {}
         self.features_num = 0
         self.isDynamic = True
@@ -22,7 +22,6 @@ class IncrementalTabular(Representation):
             IncrementalTabular,
             self).__init__(
             domain,
-            logger,
             discretization)
 
     def phi_nonTerminal(self, s):
@@ -53,7 +52,6 @@ class IncrementalTabular(Representation):
     def __deepcopy__(self, memo):
         new_copy = IncrementalTabular(
             self.domain,
-            self.logger,
             self.discretization)
         new_copy.hash = deepcopy(self.hash)
         return new_copy

@@ -97,8 +97,7 @@ class SystemAdministrator(Domain):
 
     def __init__(
             self, networkmapname=os.path.join(
-                default_map_dir, "20MachTutorial.txt"),
-            logger=None):
+                default_map_dir, "20MachTutorial.txt")):
         """
         :param networkmapname: The name of the file to use as the computer
             network map.  Assumed to be located in the SystemAdministratorMaps
@@ -114,13 +113,7 @@ class SystemAdministrator(Domain):
         # one dimension and has two elements [min, max]
         self.statespace_limits = np.tile(
             [0, self._NUM_VALUES - 1], (self.computers_num, 1))
-        super(SystemAdministrator, self).__init__(logger)
-        if self.logger:
-            self.logger.log('Computers:\t%d' % self.computers_num)
-            self.logger.log('Edges:\t\t%s' % str(self.UNIQUE_EDGES))
-            self.logger.log('Neighbors:')
-            for i in range(self.computers_num):
-                self.logger.log('%d : %s' % (i, str(list(self.NEIGHBORS[i]))))
+        super(SystemAdministrator, self).__init__()
 
     def loadNetwork(self, path):
         """

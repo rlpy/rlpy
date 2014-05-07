@@ -4,7 +4,6 @@ Cart-pole balancing with iFDD+
 
 import sys
 import os
-from rlpy.Tools import Logger
 from rlpy.Domains import InfCartPoleBalance
 from rlpy.Agents import Greedy_GQ, SARSA, Q_Learning
 from rlpy.Representations import *
@@ -30,25 +29,23 @@ def make_experiment(
         boyan_N0=12335.665,
         initial_alpha=0.037282,
         discretization=6.):
-    logger = Logger()
     max_steps = 50000
     num_policy_checks = 20
     checks_per_policy = 10
     sparsify = True
     kappa = 1e-7
-    domain = InfCartPoleBalance(logger=logger)
+    domain = InfCartPoleBalance()
 
     initial_rep = IndependentDiscretization(
         domain,
-        logger,
         discretization=discretization)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    representation = iFDD(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           discretization=discretization,
                           useCache=True,
                           iFDDPlus=1 - kappa)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    agent = SARSA(representation, policy, domain, logger,
+    policy = eGreedy(representation, epsilon=0.1)
+    agent = SARSA(representation, policy, domain,
                   lambda_=lambda_,
                   initial_alpha=initial_alpha,
                   alpha_decay_mode="boyan", boyan_N0=boyan_N0)

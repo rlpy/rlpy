@@ -76,9 +76,9 @@ class KernelizediFDD(Representation):
     max_relevance = 0.
 
     def __init__(self, domain, kernel, active_threshold, discover_threshold,
-                 logger=None, kernel_args=[], normalization=True, sparsify=True,
+                 kernel_args=[], normalization=True, sparsify=True,
                  max_active_base_feat=2, max_base_feat_sim=0.7):
-        super(KernelizediFDD, self).__init__(domain, logger)
+        super(KernelizediFDD, self).__init__(domain)
         self.kernel = kernel
         self.kernel_args = kernel_args
         self.active_threshold = active_threshold
@@ -500,14 +500,13 @@ try:
 
         def __init__(
                 self, domain, kernel, active_threshold, discover_threshold,
-                logger=None, kernel_args=[], normalization=True, sparsify=True,
+                kernel_args=[], normalization=True, sparsify=True,
                 max_active_base_feat=2, max_base_feat_sim=0.7):
-            super(FastKiFDD, self).__init__(domain, logger)
+            super(FastKiFDD, self).__init__(domain)
             self.kernel = kernel
             # assert(normalization)
             #self.normalization = normalization
             #assert(kernel == gaussian_kernel)
-            logger.log(str(self))
 
         def phi_nonTerminal(self, s):
             return FastCythonKiFDD.phi_nonTerminal(self, s)

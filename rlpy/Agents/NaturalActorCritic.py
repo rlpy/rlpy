@@ -24,7 +24,7 @@ class NaturalActorCritic(Agent):
     # minimum for the cosine of the current and last gradient
     min_cos = np.cos(np.pi / 180.)
 
-    def __init__(self, representation, policy, domain, logger, forgetting_rate,
+    def __init__(self, representation, policy, domain, forgetting_rate,
                  min_steps_between_updates, max_steps_between_updates, lam,
                  alpha):
         """
@@ -33,7 +33,6 @@ class NaturalActorCritic(Agent):
         @param policy:  parametrized stochastic policy with parameters
                         policy.theta
         @param domain: domain to investigate
-        @param logger: logger used for output
         @param forgetting_rate: specifies the decay of previous statistics
                                 after a policy update; 1 = forget all
                                 0 = forget none
@@ -61,7 +60,7 @@ class NaturalActorCritic(Agent):
         self.z = np.zeros((self.n))
 
         super(NaturalActorCritic, self).__init__(representation, policy,
-                                                 domain, logger)
+                                                 domain)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
 
@@ -83,7 +82,7 @@ class NaturalActorCritic(Agent):
         if terminal:
             self.z[:] = 0.
         self.steps_between_updates += 1
-        #self.logger.log("Statistics updated")
+        self.logger.debug("Statistics updated")
 
         if self.steps_between_updates > self.min_steps_between_updates:
             A = regularize(self.A)
@@ -95,7 +94,7 @@ class NaturalActorCritic(Agent):
                 # update policy
                 self.policy.theta = self.policy.theta + self.alpha * w
                 self.last_w = w
-                self.logger.log(
+                self.logger.debug(
                     "Policy updated, norm of gradient {}".format(np.linalg.norm(w)))
                 # forget statistics
                 self.z *= 1. - self.forgetting_rate

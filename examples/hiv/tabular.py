@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains.HIVTreatment import HIVTreatment
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *
@@ -19,19 +18,17 @@ def make_experiment(
         lambda_=0.9,
         initial_alpha=.08,
         discretization=35):
-    logger = Logger()
     max_steps = 150000
     num_policy_checks = 30
     checks_per_policy = 1
 
-    domain = HIVTreatment(logger=logger)
+    domain = HIVTreatment()
     representation = IncrementalTabular(
         domain,
-        discretization=discretization,
-        logger=logger)
-    policy = eGreedy(representation, logger, epsilon=0.1)
+        discretization=discretization)
+    policy = eGreedy(representation, epsilon=0.1)
     agent = Q_Learning(
-        representation, policy, domain, logger, lambda_=0.9, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=0.9, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

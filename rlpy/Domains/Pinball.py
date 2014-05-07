@@ -48,7 +48,7 @@ class Pinball(Domain):
         "Domains",
         "PinballConfigs")
 
-    def __init__(self, noise=.1, episodeCap=1000, logger=None,
+    def __init__(self, noise=.1, episodeCap=1000,
                  configuration=os.path.join(default_config_dir, "pinball_simple_single.cfg")):
         """
         configuration:
@@ -59,7 +59,6 @@ class Pinball(Domain):
             with probability noise, a uniformly random action is executed
         """
         self.NOISE = noise
-        self.logger = logger
         self.configuration = configuration
         self.screen = None
         self.episodeCap = episodeCap
@@ -73,7 +72,7 @@ class Pinball(Domain):
         self.statespace_limits = np.array(
             [[0.0, 1.0], [0.0, 1.0], [-2.0, 2.0], [-2.0, 2.0]])
         self.continuous_dims = [4]
-        super(Pinball, self).__init__(self.logger)
+        super(Pinball, self).__init__()
         self.environment = PinballModel(
             self.configuration,
             random_state=self.random_state)

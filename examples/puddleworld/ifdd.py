@@ -4,7 +4,6 @@ Cart-pole balancing with iFDD+
 
 import sys
 import os
-from rlpy.Tools import Logger
 from rlpy.Domains import PuddleWorld
 from rlpy.Agents import SARSA, Q_LEARNING
 from rlpy.Representations import *
@@ -31,27 +30,25 @@ def make_experiment(
         boyan_N0=202.,
         initial_alpha=.7442,
         discretization=18.):
-    logger = Logger()
     max_steps = 40000
     num_policy_checks = 20
     checks_per_policy = 100
     sparsify = True
 
-    domain = PuddleWorld(logger=logger)
+    domain = PuddleWorld()
 
     initial_rep = IndependentDiscretization(
         domain,
-        logger,
         discretization=discretization)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    representation = iFDD(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           discretization=discretization,
                           useCache=True,
                           iFDDPlus=True)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=1.,
+    policy = eGreedy(representation, epsilon=0.1)
+    # agent           = SARSA(representation,policy,domain,initial_alpha=1.,
     # lambda_=0., alpha_decay_mode="boyan", boyan_N0=100)
-    agent = Q_LEARNING(representation, policy, domain, logger,
+    agent = Q_LEARNING(representation, policy, domain,
                        lambda_=lambda_, initial_alpha=initial_alpha,
                        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())

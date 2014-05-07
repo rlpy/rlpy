@@ -125,7 +125,7 @@ class iFDD(Representation):
     use_chirstoph_ordered_features = True
 
     def __init__(
-            self, domain, logger, discovery_threshold, initial_representation, sparsify=True,
+            self, domain, discovery_threshold, initial_representation, sparsify=True,
             discretization=20, debug=0, useCache=0, maxBatchDicovery=1, batchThreshold=0, iFDDPlus=1):
         self.iFDD_features = {}
         self.iFDD_potentials = {}
@@ -144,19 +144,7 @@ class iFDD(Representation):
         self.iFDDPlus = iFDDPlus
         self.isDynamic = True
         self.addInitialFeatures()
-        super(iFDD, self).__init__(domain, logger, discretization)
-        if self.logger:
-            self.logger.log(
-                "Initial Representation:\t%s" %
-                className(self.initial_representation))
-            self.logger.log("Plus:\t\t\t%d" % self.iFDDPlus)
-            self.logger.log("Sparsify:\t\t%d" % self.sparsify)
-            self.logger.log("Cached:\t\t\t%d" % self.useCache)
-            self.logger.log(
-                "Online Threshold:\t%0.3f" %
-                self.discovery_threshold)
-            self.logger.log("Batch Threshold:\t\t%0.3f" % self.batchThreshold)
-            self.logger.log("Max Batch Discovery:\t%d" % self.maxBatchDicovery)
+        super(iFDD, self).__init__(domain, discretization)
 
     def phi_nonTerminal(self, s):
         """ Based on Tuna's Master Thesis 2012 """
@@ -417,7 +405,7 @@ class iFDD(Representation):
         relevances = relevances[F1, F2]
         if len(relevances) == 0:
             # No feature to add
-            self.logger.log("iFDD Batch: Max Relevance = 0")
+            self.logger.debug("iFDD Batch: Max Relevance = 0")
             return False
 
         if SHOW_PLOT:
@@ -433,7 +421,7 @@ class iFDD(Representation):
         sortedIndices = np.argsort(relevances)[::-1]
         max_relevance = relevances[sortedIndices[0]]
         # Add top <maxDiscovery> features
-        self.logger.log(
+        self.logger.debug(
             "iFDD Batch: Max Relevance = {0:g}".format(max_relevance))
         added_feature = False
         new_features = 0
@@ -448,7 +436,7 @@ class iFDD(Representation):
                 # print "Inspecting",
                 # f1,f2,'=>',self.getStrFeatureSet(f1),self.getStrFeatureSet(f2)
                 if self.inspectPair(f1, f2, np.inf):
-                    self.logger.log(
+                    self.logger.debug(
                         'New Feature %d: %s, Relevance = %0.3f' %
                         (self.features_num - 1, self.getStrFeatureSet(self.features_num - 1), relevances[max_index]))
                     new_features += 1
@@ -498,7 +486,7 @@ class iFDD(Representation):
         if self.maxRelevance < newRelevance:
             self.maxRelevance = newRelevance
             if self.PRINT_MAX_RELEVANCE:
-                self.logger.log(
+                self.logger.debug(
                     "iFDD Batch: Max Relevance = {0:g}".format(newRelevance))
 
     def getFeature(self, f_id):
@@ -524,7 +512,6 @@ class iFDD(Representation):
     def __deepcopy__(self, memo):
         ifdd = iFDD(
             self.domain,
-            self.logger,
             self.discovery_threshold,
             self.initial_representation,
             self.sparsify,

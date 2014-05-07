@@ -24,8 +24,6 @@ class ValueIteration(MDPSolver):
 
         domain (Domain):    Domain (MDP) to solve.
 
-        logger (Logger):    Logger object to log information and debugging.
-
         planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
 
         convergence_threshold (float):  Threshold for determining if the value function has converged.
@@ -56,7 +54,7 @@ class ValueIteration(MDPSolver):
         # Check for Tabular Representation
         rep = self.representation
         if className(rep) != 'Tabular':
-            self.logger.log(
+            self.logger.error(
                 "Value Iteration works only with the tabular representation.")
             return 0
 
@@ -82,7 +80,7 @@ class ValueIteration(MDPSolver):
 
                     if bellmanUpdates % self.log_interval == 0:
                         performance_return, _, _, _ = self.performanceRun()
-                        self.logger.log(
+                        self.logger.info(
                             '[%s]: BellmanUpdates=%d, Return=%0.4f' %
                             (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
 
@@ -95,7 +93,7 @@ class ValueIteration(MDPSolver):
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             converged = theta_change < self.convergence_threshold
-            self.logger.log(
+            self.logger.info(
                 'PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return=%0.4f, Steps=%d' % (iteration,
                                                                                                    hhmmss(
                                                                                                        deltaT(
@@ -119,5 +117,5 @@ class ValueIteration(MDPSolver):
                                 ])
 
         if converged:
-            self.logger.log('Converged!')
+            self.logger.info('Converged!')
         super(ValueIteration, self).solve()

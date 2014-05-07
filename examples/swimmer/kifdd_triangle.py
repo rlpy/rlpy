@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains import Swimmer
 from rlpy.Agents import Q_Learning, SARSA
 from rlpy.Representations import *
@@ -29,7 +28,6 @@ def make_experiment(
         lambda_=0.5879,
         initial_alpha=0.1,
         kernel_resolution=10.7920):
-    logger = Logger()
     max_steps = 1000000
     num_policy_checks = 10
     checks_per_policy = 1
@@ -37,25 +35,24 @@ def make_experiment(
     max_base_feat_sim = 0.5
     sparsify = 10
 
-    domain = Swimmer(logger=logger)
+    domain = Swimmer()
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
     representation = FastKiFDD(domain, sparsify=sparsify,
                                kernel=gaussian_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,
-                               logger=logger,
                                discover_threshold=discover_threshold,
                                normalization=False,
                                max_active_base_feat=100,
                                max_base_feat_sim=max_base_feat_sim)
-    policy = SwimmerPolicy(representation, logger)
-    #policy = eGreedy(representation, logger, epsilon=0.1)
+    policy = SwimmerPolicy(representation)
+    #policy = eGreedy(representation, epsilon=0.1)
     stat_bins_per_state_dim = 20
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=initial_alpha,
+    # agent           = SARSA(representation,policy,domain,initial_alpha=initial_alpha,
     # lambda_=.0, alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     agent = SARSA(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

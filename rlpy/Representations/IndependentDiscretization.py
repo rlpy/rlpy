@@ -12,7 +12,7 @@ __author__ = "Alborz Geramifard"
 
 class IndependentDiscretization(Representation):
 
-    def __init__(self, domain, logger, discretization=20):
+    def __init__(self, domain, discretization=20):
         self.setBinsPerDimension(domain, discretization)
         self.features_num = int(sum(self.bins_per_dim))
         self.maxFeatureIDperDimension = np.cumsum(self.bins_per_dim) - 1
@@ -20,7 +20,6 @@ class IndependentDiscretization(Representation):
             IndependentDiscretization,
             self).__init__(
             domain,
-            logger,
             discretization)
 
     def phi_nonTerminal(self, s):

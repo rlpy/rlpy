@@ -124,10 +124,10 @@ class FiftyChain(Domain):
     RIGHT = 1
 
     # Constants in the map
-    def __init__(self, logger=None):
+    def __init__(self):
         self.start = 0
         self.statespace_limits = np.array([[0, self.chainSize - 1]])
-        super(FiftyChain, self).__init__(logger)
+        super(FiftyChain, self).__init__()
         # To catch errors
         self.optimal_policy = np.array([-1 for dummy in xrange(0, self.chainSize)])
         self.storeOptimalPolicy()

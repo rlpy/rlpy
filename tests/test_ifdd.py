@@ -1,14 +1,11 @@
 from rlpy.Representations import iFDD
 from rlpy.Representations import IndependentDiscretizationCompactBinary
 import rlpy.Domains
-from rlpy.Tools import Logger
 import numpy as np
 
 STDOUT_FILE = 'out.txt'
 JOB_ID = 1
 RANDOM_TEST = 0
-OUT_PATH = 'Results/Temp'
-logger = Logger()
 sparsify = True
 discovery_threshold = 1
 
@@ -17,8 +14,8 @@ def deterministic_test():
     discovery_threshold = 1
     sparsify = True
     domain = rlpy.Domains.SystemAdministrator()
-    initialRep = IndependentDiscretizationCompactBinary(domain, logger)
-    rep = iFDD(domain, logger, discovery_threshold, initialRep,
+    initialRep = IndependentDiscretizationCompactBinary(domain)
+    rep = iFDD(domain, discovery_threshold, initialRep,
                debug=0, useCache=1, sparsify=sparsify)
     rep.theta = np.arange(rep.features_num * domain.actions_num) * 10
     print 'Initial [0,1] => ',
@@ -84,10 +81,9 @@ def random_test():
     K = 5  # number of randomly activated features
     domain = Domains.PST()
     np.random.seed(999999999)
-    initialRep = IndependentDiscretizationCompactBinary(domain, logger)
+    initialRep = IndependentDiscretizationCompactBinary(domain)
     rep = iFDD(
         domain,
-        logger,
         discovery_threshold,
         initialRep,
         debug=0,

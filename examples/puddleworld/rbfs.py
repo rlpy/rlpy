@@ -1,7 +1,6 @@
 """
 Cart-pole balancing with independent discretization
 """
-from rlpy.Tools import Logger
 from rlpy.Domains import PuddleWorld
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *
@@ -25,18 +24,17 @@ def make_experiment(
         resolution=21.,
         num_rbfs=96.,
         lambda_=.1953):
-    logger = Logger()
     max_steps = 40000
     num_policy_checks = 20
     checks_per_policy = 100
 
-    domain = PuddleWorld(logger=logger)
-    representation = RBF(domain, num_rbfs=int(num_rbfs), logger=logger,
+    domain = PuddleWorld()
+    representation = RBF(domain, num_rbfs=int(num_rbfs),
                          resolution_max=resolution, resolution_min=resolution,
                          const_feature=False, normalize=True, seed=id)
-    policy = eGreedy(representation, logger, epsilon=0.1)
+    policy = eGreedy(representation, epsilon=0.1)
     agent = Q_Learning(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

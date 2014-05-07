@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains import PST
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *
@@ -17,15 +16,14 @@ def make_experiment(
         lambda_=0.,
         boyan_N0=3571.6541,
         initial_alpha=0.62267772):
-    logger = Logger()
     max_steps = 500000
     num_policy_checks = 30
     checks_per_policy = 10
     beta_coef = 1e-6
-    domain = PST(NUM_UAV=4, motionNoise=0, logger=logger)
-    representation = IndependentDiscretization(domain, logger)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    agent = Q_Learning(representation, policy, domain, logger,
+    domain = PST(NUM_UAV=4, motionNoise=0)
+    representation = IndependentDiscretization(domain)
+    policy = eGreedy(representation, epsilon=0.1)
+    agent = Q_Learning(representation, policy, domain,
                        lambda_=lambda_, initial_alpha=initial_alpha,
                        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())

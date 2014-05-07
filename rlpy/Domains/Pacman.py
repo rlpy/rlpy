@@ -62,7 +62,7 @@ class Pacman(Domain):
         __rlpy_location__, "Domains", "PacmanPackage",
         "layouts")
 
-    def __init__(self, noise=.1, logger=None, timeout=30,
+    def __init__(self, noise=.1, timeout=30,
                  layoutFile=os.path.join(
                      default_layout_dir, 'trickyClassic.lay'),
                  numGhostAgents=1000):
@@ -74,7 +74,6 @@ class Pacman(Domain):
             specified by the action
         """
         self.noise = noise
-        self.logger = logger
         # Specifies which Pacman world you want
         self.layoutFile = layoutFile
         # Puts the file in line stripped format
@@ -95,7 +94,7 @@ class Pacman(Domain):
         self.savedtimer = None
         self.gameDisplay = None
         self._set_statespace_limits()
-        super(Pacman, self).__init__(self.logger)
+        super(Pacman, self).__init__()
 
     def _set_statespace_limits(self):
         # Makes an array of limits for each dimension in the state vector.

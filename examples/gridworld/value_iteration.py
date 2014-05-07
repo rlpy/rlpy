@@ -3,7 +3,6 @@
 __author__ = "William Dabney"
 
 from rlpy.Domains import GridWorld
-from rlpy.Tools import Logger
 from rlpy.MDPSolvers import ValueIteration
 from rlpy.Representations import Tabular
 from rlpy.Policies import GibbsPolicy
@@ -21,23 +20,19 @@ def make_experiment(id=1, path="./Results/Temp", show=False):
     @param path: output directory where logs and results are stored
     """
 
-    # Logging
-    logger = Logger()
-
     # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
     # Representation
-    representation = Tabular(domain, logger, discretization=20)
+    representation = Tabular(domain, discretization=20)
 
     # Agent
     agent = ValueIteration(
         id,
         representation,
         domain,
-        logger,
         project_path=path,
         show=show)
 

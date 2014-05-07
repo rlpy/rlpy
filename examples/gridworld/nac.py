@@ -3,7 +3,6 @@
 __author__ = "William Dabney"
 
 from rlpy.Domains import GridWorld
-from rlpy.Tools import Logger
 from rlpy.Agents import NaturalActorCritic
 from rlpy.Representations import Tabular
 from rlpy.Policies import GibbsPolicy
@@ -26,23 +25,20 @@ def make_experiment(
     max_steps = 10000
     num_policy_checks = 10
 
-    # Logging
-    logger = Logger()
-
     # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
     # Representation
-    representation = Tabular(domain, logger, discretization=20)
+    representation = Tabular(domain, discretization=20)
 
     # Policy
-    policy = GibbsPolicy(representation, logger)
+    policy = GibbsPolicy(representation)
 
     # Agent
     agent = NaturalActorCritic(representation, policy, domain,
-                               logger, 0.3, 100, 1000, .7, 0.1)
+                               0.3, 100, 1000, .7, 0.1)
 
     experiment = Experiment(**locals())
     return experiment

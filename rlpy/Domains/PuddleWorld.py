@@ -49,10 +49,10 @@ class PuddleWorld(Domain):
         np.array([[1, 0], [0, 1], [-1, 0], [0, -1]], dtype="float")
     actions_num = 4
 
-    def __init__(self, logger=None, noise_level=.01, gamma=1.):
+    def __init__(self, noise_level=.01, gamma=1.):
         self.noise_level = noise_level
         self.gamma = gamma
-        super(PuddleWorld, self).__init__(logger)
+        super(PuddleWorld, self).__init__()
         self.reward_map = np.zeros((100, 100))
         self.val_map = np.zeros((100, 100))
         self.pi_map = np.zeros((100, 100))
@@ -62,8 +62,6 @@ class PuddleWorld(Domain):
                 a[0] = x
                 a[1] = y
                 self.reward_map[j, i] = self._reward(a)
-        if self.logger:
-            self.logger.log("Noise level:\t{0}".format(self.noise_level))
 
     def s0(self):
         self.state = self.random_state.rand(2)

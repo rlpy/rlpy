@@ -160,7 +160,7 @@ class PST(Domain):
     dist_between_locations = 0
 
     ###
-    def __init__(self, NUM_UAV=3, motionNoise=0, logger=None):
+    def __init__(self, NUM_UAV=3, motionNoise=0):
         """
         :param NUM_UAV: the number of UAVs in the domain
         :param motionNoise: probability of taking the LOITER action instead of the one selected.
@@ -201,9 +201,7 @@ class PST(Domain):
         [self.DimNames.append('UAV%d-fuel' % i) for i in xrange(NUM_UAV)]
         [self.DimNames.append('UAV%d-act' % i) for i in xrange(NUM_UAV)]
         [self.DimNames.append('UAV%d-sen' % i) for i in xrange(NUM_UAV)]
-        super(PST, self).__init__(logger)
-        if self.logger:
-            self.logger.log("NUM_UAV:\t\t%d" % self.NUM_UAV)
+        super(PST, self).__init__()
 
     def showDomain(self, a=0):
         s = self.state

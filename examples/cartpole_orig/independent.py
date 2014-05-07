@@ -1,7 +1,6 @@
 """
 Cart-pole balancing with independent discretization
 """
-from rlpy.Tools import Logger
 from rlpy.Domains.FiniteTrackCartPole import FiniteCartPoleBalanceOriginal, FiniteCartPoleBalanceModern
 from rlpy.Agents import SARSA, Q_LEARNING
 from rlpy.Representations import *
@@ -20,19 +19,17 @@ def make_experiment(
         boyan_N0=235,
         initial_alpha=.05,
         discretization=5):
-    logger = Logger()
     max_steps = 30000
     num_policy_checks = 20
     checks_per_policy = 1
 
-    domain = FiniteCartPoleBalanceOriginal(logger=logger, good_reward=0.)
+    domain = FiniteCartPoleBalanceOriginal(good_reward=0.)
     representation = IndependentDiscretization(
         domain,
-        discretization=discretization,
-        logger=logger)
-    policy = eGreedy(representation, logger, epsilon=0.1)
+        discretization=discretization)
+    policy = eGreedy(representation, epsilon=0.1)
     agent = Q_LEARNING(
-        representation, policy, domain, logger, lambda_=0.9, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=0.9, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

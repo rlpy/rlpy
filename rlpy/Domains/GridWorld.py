@@ -76,7 +76,7 @@ class GridWorld(Domain):
         "GridWorldMaps")
 
     def __init__(self, mapname=os.path.join(default_map_dir, "4x5.txt"),
-                 noise=.1, episodeCap=None, logger=None):
+                 noise=.1, episodeCap=None):
         self.map = np.loadtxt(mapname, dtype=np.uint8)
         if self.map.ndim == 1:
             self.map = self.map[np.newaxis, :]
@@ -89,10 +89,7 @@ class GridWorld(Domain):
         # 2*self.ROWS*self.COLS, small values can cause problem for some
         # planning techniques
         self.episodeCap = 1000
-        super(GridWorld, self).__init__(logger)
-        if logger:
-            self.logger.log("Dims:\t\t%dx%d" % (self.ROWS, self.COLS))
-            self.logger.log("Movement Noise:\t%0.0f%%" % (self.NOISE * 100))
+        super(GridWorld, self).__init__()
 
     def showDomain(self, a=0, s=None):
         if s is None:

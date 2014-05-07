@@ -1,6 +1,8 @@
 """Domain base class"""
 import numpy as np
 import rlpy.Tools as Tools
+import logging
+from copy import copy, deepcopy
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -68,14 +70,11 @@ class Domain(object):
     #: A simple object that records the prints in a file
     logger = None
 
-    def __init__(self, logger=None):
+    def __init__(self):
 #        """
-#        :param logger: The Logger object to be used when recording output.
 #
 #        """
-        if logger is None:
-            logger = Tools.Logger()
-        self.logger = logger
+        self.logger = logging.getLogger("rlpy.Domains." + self.__class__.__name__)
         self.state_space_dims = len(self.statespace_limits)
         # To make sure type of gamma is float. This will later on be used in
         # LSPI to force A matrix to be float
@@ -273,3 +272,19 @@ Gamma:      {self.gamma}
             rewards.append(r)
 
         return np.array(next_states), np.array(rewards)
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            if k is "logger":
+                continue
+            setattr(result, k, deepcopy(v, memo))
+        return result

@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains import HelicopterHover
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *
@@ -28,7 +27,6 @@ def make_experiment(
         lambda_=0.5,
         initial_alpha=0.9,
         kernel_resolution=10):
-    logger = Logger()
     max_steps = 10000
     num_policy_checks = 30
     checks_per_policy = 1
@@ -36,24 +34,22 @@ def make_experiment(
     max_base_feat_sim = 0.5
     sparsify = 1
 
-    domain = HelicopterHover(logger=logger)
-    # domain = FiniteCartPoleBalanceModern(logger=logger)
+    domain = HelicopterHover()
+    # domain = FiniteCartPoleBalanceModern()
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
     representation = FastKiFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,
-                               logger=logger,
                                discover_threshold=discover_threshold,
                                normalization=True,
                                max_active_base_feat=10,
                                max_base_feat_sim=max_base_feat_sim)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=initial_alpha,
+    policy = eGreedy(representation, epsilon=0.1)
     # lambda_=.0, alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     agent = Q_Learning(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

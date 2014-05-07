@@ -50,7 +50,7 @@ class BEBF(Representation):
     # Initial number of features, initialized in __init__
     initial_features_num = 0
 
-    def __init__(self, domain, logger, discretization=20,
+    def __init__(self, domain, discretization=20,
                  debug=0, batchThreshold=10 ** -3, svm_epsilon=.1):
         self.setBinsPerDimension(domain, discretization)
         # Effectively initialize with IndependentDiscretization
@@ -63,9 +63,7 @@ class BEBF(Representation):
         self.svm_epsilon = svm_epsilon
         self.batchThreshold = batchThreshold
         self.addInitialFeatures()
-        super(BEBF, self).__init__(domain, logger, discretization)
-        self.logger.log("Max Batch Discovery:\t%d" % self.maxBatchDicovery)
-        self.logger.log("Norm Threshold:\t\t%0.3f" % self.batchThreshold)
+        super(BEBF, self).__init__(domain, discretization)
         self.isDynamic = True
         # @return: a function object corresponding to the
 
@@ -107,12 +105,11 @@ class BEBF(Representation):
         norm = max(abs(td_errors))  # Norm of function
         for j in xrange(self.maxBatchDicovery):
             self.features.append(self.getFunctionApproximation(s, td_errors))
-            self.logger.log('Norm: %0.4f' % norm)
             if norm > self.batchThreshold:
                 self.addNewWeight()
                 addedFeature = True
                 self.features_num += 1
-                self.logger.log(
+                self.logger.debug(
                     'Added feature. \t %d total feats' %
                     self.features_num)
             else:

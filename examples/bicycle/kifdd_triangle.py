@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains.Bicycle import BicycleBalancing, BicycleRiding
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *
@@ -28,7 +27,6 @@ def make_experiment(
         lambda_=0.43982644088,
         initial_alpha=0.920244401,
         kernel_resolution=11.6543336229):
-    logger = Logger()
     max_steps = 150000
     num_policy_checks = 30
     checks_per_policy = 1
@@ -36,23 +34,22 @@ def make_experiment(
     max_base_feat_sim = 0.5
     sparsify = 1
 
-    domain = BicycleRiding(logger=logger)
+    domain = BicycleRiding()
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
     representation = FastKiFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,
-                               logger=logger,
                                discover_threshold=discover_threshold,
                                normalization=True,
                                max_active_base_feat=10,
                                max_base_feat_sim=max_base_feat_sim)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=initial_alpha,
+    policy = eGreedy(representation, epsilon=0.1)
+    # agent           = SARSA(representation,policy,domain,initial_alpha=initial_alpha,
     # lambda_=.0, alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     agent = Q_Learning(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

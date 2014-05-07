@@ -8,7 +8,6 @@ A simple Grid-World.
 """
 __author__ = "Robert H. Klein"
 from rlpy.Domains import GridWorld
-from rlpy.Tools import Logger
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import Tabular
 from rlpy.Policies import eGreedy
@@ -25,21 +24,20 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-qlearning"):
     @param id: number used to seed the random number generators
     @param path: output directory where logs and results are stored
     """
-    logger = Logger()
 
     # Domain:
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
     # Representation
-    representation = Tabular(domain, logger, discretization=20)
+    representation = Tabular(domain, discretization=20)
 
     # Policy
-    policy = eGreedy(representation, logger, epsilon=0.2)
+    policy = eGreedy(representation, epsilon=0.2)
 
     # Agent
     agent = Q_Learning(representation=representation, policy=policy,
-                       domain=domain, logger=logger,
+                       domain=domain,
                        initial_alpha=0.1,
                        alpha_decay_mode="boyan", boyan_N0=100,
                        lambda_=0.)

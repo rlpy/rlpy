@@ -23,8 +23,6 @@ class LSPI(Agent):
         domain (Domain):    Domain the agent will be acting within. This is used to get the state
                             information and discount rate.
 
-        logger (Logger):    Logger class used for outputing information and debugging.
-
         max_window (int):   Maximum number of steps the agent will be run for,
                             which acts as the number of transitions to store.
 
@@ -61,7 +59,7 @@ class LSPI(Agent):
     re_iterations = 0
 
     def __init__(
-            self, representation, policy, domain, logger, max_window, steps_between_LSPI,
+            self, representation, policy, domain, max_window, steps_between_LSPI,
             lspi_iterations=5, epsilon=1e-3, re_iterations=100, use_sparse=False):
         self.samples_count = 0
         self.max_window = max_window
@@ -101,21 +99,7 @@ class LSPI(Agent):
                 self.all_phi_s_a = np.zeros((max_window, f_size))
                 self.all_phi_ns_na = np.zeros((max_window, f_size))
 
-        super(LSPI, self).__init__(representation, policy, domain, logger)
-        if logger:
-                self.logger.log('Max LSPI Iterations:\t%d' % self.lspi_iterations)
-                self.logger.log('Max Data Size:\t\t%d' % self.max_window)
-                self.logger.log(
-                    'Steps Between LSPI run:\t%d' %
-                    self.steps_between_LSPI)
-                self.logger.log(
-                    'Weight Difference tol.:\t%0.3f' %
-                    self.epsilon)
-                self.logger.log('Use Sparse:\t\t%d' % self.use_sparse)
-                if not self.fixedRep:
-                    self.logger.log(
-                        'Max Representation Expansion Iterations:\t%d' %
-                        self.re_iterations)
+        super(LSPI, self).__init__(representation, policy, domain)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """Iterative learning method for the agent.
@@ -145,7 +129,7 @@ class LSPI(Agent):
         weight_diff = self.epsilon + 1  # So that the loop starts
         lspi_iteration = 0
         self.best_performance = -np.inf
-        self.logger.log('Running Policy Iteration:')
+        self.logger.info('Running Policy Iteration:')
 
         # We save action_mask on the first iteration (used for batchBestAction) to reuse it and boost the speed
         # action_mask is a matrix that shows which actions are available for
@@ -183,7 +167,7 @@ class LSPI(Agent):
             if weight_diff > self.epsilon:
                 self.representation.theta = new_theta
 
-            self.logger.log(
+            self.logger.info(
                 "%d: %0.0f(s), ||w1-w2|| = %0.4f, Sparsity=%0.1f%%, %d Features" % (lspi_iteration + 1,
                                                                                     Tools.deltaT(
                                                                                         iteration_start_time),
@@ -193,7 +177,7 @@ class LSPI(Agent):
                                                                                     self.representation.features_num))
             lspi_iteration += 1
 
-        self.logger.log(
+        self.logger.info(
             'Total Policy Iteration Time = %0.0f(s)' %
             Tools.deltaT(start_time))
         return td_errors
@@ -203,7 +187,6 @@ class LSPI(Agent):
         policy parameters.
         """
         start_time = Tools.clock()
-        #self.logger.log('Running LSTD:')
 
         if not self.fixedRep:
             # build phi_s and phi_ns for all samples
@@ -243,11 +226,11 @@ class LSPI(Agent):
 
         # log solve time only if takes more than 1 second
         if solve_time > 1:
-            self.logger.log(
+            self.logger.info(
                 'Total LSTD Time = %0.0f(s), Solve Time = %0.0f(s)' %
                 (Tools.deltaT(start_time), solve_time))
         else:
-            self.logger.log(
+            self.logger.info(
                 'Total LSTD Time = %0.0f(s)' %
                 (Tools.deltaT(start_time)))
 
@@ -325,14 +308,14 @@ class LSPI(Agent):
             print "No features, hence no LSPI is necessary!"
             return
 
-        self.logger.log(
+        self.logger.info(
             "============================\nRunning LSPI with %d Samples\n============================" %
             self.samples_count)
         while added_feature and re_iteration <= self.re_iterations:
             re_iteration += 1
             # Some Prints
             if Tools.hasFunction(self.representation, 'batchDiscover'):
-                self.logger.log(
+                self.logger.info(
                     '-----------------\nRepresentation Expansion iteration #%d\n-----------------' %
                     re_iteration)
             # Run LSTD for first solution
@@ -344,7 +327,6 @@ class LSPI(Agent):
             if Tools.hasFunction(self.representation, 'batchDiscover'):
                 added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s[:self.samples_count, :], self.data_s[:self.samples_count,:])
             else:
-                #self.logger.log('%s does not have Batch Discovery!' % classname(self.representation))
                 added_feature = False
             # print 'L_inf distance to V*= ',
             # self.domain.L_inf_distance_to_V_star(self.representation)
@@ -352,7 +334,6 @@ class LSPI(Agent):
             # Run LSPI one last time with the new features
             self.LSTD()
             self.policyIteration()
-        self.logger.log("============================")
 
     def episodeTerminated(self):
         """This function adjusts all necessary elements of the agent at the end of

@@ -25,7 +25,7 @@ class IndependentDiscretizationCompactBinary(Representation):
 
     """
 
-    def __init__(self, domain, logger, discretization=20):
+    def __init__(self, domain, discretization=20):
         # Identify binary dimensions
         self.setBinsPerDimension(domain, discretization)
         nontwobuckets_dims = np.where(self.bins_per_dim != 2)[0]
@@ -46,10 +46,7 @@ class IndependentDiscretizationCompactBinary(Representation):
             IndependentDiscretizationCompactBinary,
             self).__init__(
             domain,
-            logger,
             discretization)
-        if self.logger:
-            self.logger.log("Binary Dimensions:\t%s" % str(self.binary_dims))
 
     def phi_nonTerminal(self, s):
         F_s = np.zeros(self.features_num, 'bool')

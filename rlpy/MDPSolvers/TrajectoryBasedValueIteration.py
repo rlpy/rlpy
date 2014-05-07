@@ -26,8 +26,6 @@ class TrajectoryBasedValueIteration(MDPSolver):
 
         domain (Domain):    Domain (MDP) to solve.
 
-        logger (Logger):    Logger object to log information and debugging.
-
         planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
 
         convergence_threshold (float):  Threshold for determining if the value function has converged.
@@ -53,14 +51,13 @@ class TrajectoryBasedValueIteration(MDPSolver):
     MIN_CONVERGED_TRAJECTORIES = 5
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=np.inf, convergence_threshold=.005,
+            self, job_id, representation, domain, planning_time=np.inf, convergence_threshold=.005,
             ns_samples=100, project_path='.', log_interval=500, show=False, epsilon=.1):
         super(
             TrajectoryBasedValueIteration,
             self).__init__(job_id,
                            representation,
                            domain,
-                           logger,
                            planning_time,
                            convergence_threshold,
                            ns_samples,
@@ -70,12 +67,6 @@ class TrajectoryBasedValueIteration(MDPSolver):
         self.epsilon = epsilon
         if className(representation) == 'Tabular':
             self.alpha = 1
-        else:
-            self.logger.log('alpha:\t\t\t%0.2f' % self.alpha)
-        self.logger.log('epsilon:\t\t\t%0.2f' % self.epsilon)
-        self.logger.log(
-            '# Trajectories used for convergance: %d' %
-            self.MIN_CONVERGED_TRAJECTORIES)
 
     def solve(self):
         """Solve the domain MDP."""
@@ -149,7 +140,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             converged = converged_trajectories >= self.MIN_CONVERGED_TRAJECTORIES
-            self.logger.log(
+            self.logger.info(
                 'PI #%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f, Return=%0.4f, Steps=%d, Features=%d' % (iteration,
                                                                                                                   hhmmss(
                                                                                                                       deltaT(
@@ -174,5 +165,5 @@ class TrajectoryBasedValueIteration(MDPSolver):
                                 ])
 
         if converged:
-            self.logger.log('Converged!')
+            self.logger.info('Converged!')
         super(TrajectoryBasedValueIteration, self).solve()

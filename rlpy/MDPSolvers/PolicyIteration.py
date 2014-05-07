@@ -28,8 +28,6 @@ class PolicyIteration(MDPSolver):
 
         domain (Domain):    Domain (MDP) to solve.
 
-        logger (Logger):    Logger object to log information and debugging.
-
         planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
 
         convergence_threshold (float):  Threshold for determining if the value function has converged.
@@ -47,14 +45,13 @@ class PolicyIteration(MDPSolver):
     """
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=np.inf, convergence_threshold=.005,
+            self, job_id, representation, domain, planning_time=np.inf, convergence_threshold=.005,
             ns_samples=100, project_path='.', log_interval=5000, show=False, max_PE_iterations=10):
         super(
             PolicyIteration,
             self).__init__(job_id,
                            representation,
                            domain,
-                           logger,
                            planning_time,
                            convergence_threshold,
                            ns_samples,
@@ -62,7 +59,7 @@ class PolicyIteration(MDPSolver):
                            log_interval,
                            show)
         self.max_PE_iterations = max_PE_iterations
-        self.logger.log('Max PE Iterations:\t%d' % self.max_PE_iterations)
+        self.logger.info('Max PE Iterations:\t%d' % self.max_PE_iterations)
 
     def solve(self):
         """Solve the domain MDP."""
@@ -73,7 +70,7 @@ class PolicyIteration(MDPSolver):
         # Check for Tabular Representation
         rep = self.representation
         if className(rep) != 'Tabular':
-            self.logger.log(
+            self.logger.error(
                 "Value Iteration works only with the tabular representation.")
             return 0
 
@@ -83,7 +80,6 @@ class PolicyIteration(MDPSolver):
         # Initialize the policy
         policy = eGreedy(
             deepcopy(self.representation),
-            self.logger,
             epsilon=0,
             forcedDeterministicAmongBestActions=True)  # Copy the representation so that the weight change during the evaluation does not change the policy
         policyChanged = True
@@ -114,7 +110,7 @@ class PolicyIteration(MDPSolver):
                         if bellmanUpdates % self.log_interval == 0:
                             performance_return, _, _, _ = self.performanceRun(
                             )
-                            self.logger.log(
+                            self.logger.info(
                                 '[%s]: BellmanUpdates=%d, Return=%0.4f' %
                                 (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
 
@@ -124,7 +120,7 @@ class PolicyIteration(MDPSolver):
                     self.representation.theta,
                     np.inf)
                 converged = theta_change < self.convergence_threshold
-                self.logger.log(
+                self.logger.info(
                     'PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' %
                     (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
                 if self.show:
@@ -153,7 +149,7 @@ class PolicyIteration(MDPSolver):
             policy.representation.theta = self.representation.theta.copy()
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
-            self.logger.log(
+            self.logger.info(
                 'PI #%d [%s]: BellmanUpdates=%d, Policy Change=%d, Return=%0.4f, Steps=%d' % (
                     policy_improvement_iteration,
                     hhmmss(
@@ -176,5 +172,5 @@ class PolicyIteration(MDPSolver):
                                 ])
 
         if converged:
-            self.logger.log('Converged!')
+            self.logger.info('Converged!')
         super(PolicyIteration, self).solve()

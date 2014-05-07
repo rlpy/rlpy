@@ -57,7 +57,7 @@ class ChainMDP(Domain):
     Y = 1
     actions_num = 2
 
-    def __init__(self, chainSize=2, logger=None):
+    def __init__(self, chainSize=2):
         """
         :param chainSize: Number of states \'n\' in the chain.
         """
@@ -66,7 +66,7 @@ class ChainMDP(Domain):
         self.goal = chainSize - 1
         self.statespace_limits = np.array([[0, chainSize - 1]])
         self.episodeCap = 2 * chainSize
-        super(ChainMDP, self).__init__(logger)
+        super(ChainMDP, self).__init__()
 
     def showDomain(self, a=0):
         # Draw the environment

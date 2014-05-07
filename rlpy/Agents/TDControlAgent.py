@@ -24,7 +24,7 @@ class TDControlAgent(Agent):
     eligibility_trace_s = []
 
     def __init__(
-            self, representation, policy, domain, logger, initial_alpha=.1,
+            self, representation, policy, domain, initial_alpha=.1,
             lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000):
         self.eligibility_trace = np.zeros(
             representation.features_num *
@@ -38,13 +38,9 @@ class TDControlAgent(Agent):
             representation,
             policy,
             domain,
-            logger,
             initial_alpha,
             alpha_decay_mode,
             boyan_N0)
-        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
-        self.logger.log("Decay mode:\t\t" + str(alpha_decay_mode))
-        self.logger.log("lambda:\t%0.2f" % lambda_)
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """needs to be implemented by children"""

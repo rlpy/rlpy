@@ -27,7 +27,7 @@ cdef class FastCythonKiFDD:
 
     cdef FastKiFDD *thisptr      # hold a C++ instance which we're wrapping
     def __cinit__(self, domain, kernel, active_threshold, discover_threshold,
-                 logger=None, kernel_args=[], normalization=True, sparsify=True,
+                 kernel_args=[], normalization=True, sparsify=True,
                  max_active_base_feat=2, max_base_feat_sim=0.7):
 
         cdef vector[double] kw

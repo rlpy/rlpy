@@ -1,6 +1,7 @@
 """Policy base class"""
 
 from rlpy.Tools import className
+import logging
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -33,7 +34,7 @@ class Policy(object):
     representation = None
     DEBUG = False
 
-    def __init__(self, representation, logger):
+    def __init__(self, representation):
         """
         :param representation: the :py:class:`~Representations.Representation.Representation`
             to use in learning the value function.
@@ -41,7 +42,7 @@ class Policy(object):
         """
         self.representation = representation
         # An object to record the print outs in a file
-        self.logger = logger
+        self.logger = logging.getLogger("rlpy.Policies." + self.__class__.__name__)
 
     def pi(self, s, terminal, p_actions):
         """

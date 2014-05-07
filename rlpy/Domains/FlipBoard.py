@@ -48,12 +48,8 @@ class FlipBoard(Domain):
     domain_fig = None
     move_fig = None
 
-    def __init__(self, logger=None):
-        super(FlipBoard, self).__init__(logger)
-        if logger:
-            self.logger.log(
-                "Board Size:\t\t%dx%d" %
-                (self.BOARD_SIZE, self.BOARD_SIZE))
+    def __init__(self):
+        super(FlipBoard, self).__init__()
 
     def showDomain(self, a=0):
         s = self.state

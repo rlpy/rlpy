@@ -81,7 +81,7 @@ class IntruderMonitoring(Domain):
         "IntruderMonitoringMaps")
 
     def __init__(self, mapname=os.path.join(
-            default_map_dir, "4x4_2A_3I.txt"), logger=None):
+            default_map_dir, "4x4_2A_3I.txt")):
 
         self.setupMap(mapname)
         self.state_space_dims                   = 2 * \
@@ -97,10 +97,7 @@ class IntruderMonitoring(Domain):
         self.ACTION_LIMITS = [5] * self.NUMBER_OF_AGENTS
         self.DimNames = []
 
-        super(IntruderMonitoring, self).__init__(logger)
-        if self.logger:
-            _, _, shortmapname = mapname.rpartition('/')
-            self.logger.log("Map Name:\t%s" % shortmapname)
+        super(IntruderMonitoring, self).__init__()
 
     def setupMap(self, mapname):
         # Load the map as an array

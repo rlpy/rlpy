@@ -2,7 +2,6 @@
 Cart-pole balancing with continuous / Kernelized iFDD
 """
 
-from rlpy.Tools import Logger
 from rlpy.Domains.PuddleWorld import PuddleGapWorld, PuddleWorld
 from rlpy.Agents import SARSA, Q_Learning
 from rlpy.Representations import *
@@ -26,18 +25,17 @@ def make_experiment(
         lambda_=0.52738,
         initial_alpha=.424409,
         discretization=30):
-    logger = Logger()
     max_steps = 400000
     num_policy_checks = 10
     checks_per_policy = 100
 
-    domain = PuddleGapWorld(logger=logger)
-    representation = Tabular(domain, logger, discretization=discretization)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=1.,
+    domain = PuddleGapWorld()
+    representation = Tabular(domain, discretization=discretization)
+    policy = eGreedy(representation, epsilon=0.1)
+    # agent           = SARSA(representation,policy,domain,initial_alpha=1.,
     # lambda_=0., alpha_decay_mode="boyan", boyan_N0=100)
     agent = Q_Learning(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

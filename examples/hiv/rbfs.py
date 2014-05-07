@@ -1,7 +1,6 @@
 """
 Cart-pole balancing with independent discretization
 """
-from rlpy.Tools import Logger
 from rlpy.Domains import HIVTreatment
 from rlpy.Agents import SARSA, Q_LEARNING
 from rlpy.Representations import *
@@ -24,18 +23,17 @@ def make_experiment(
         lambda_=0.0985,
         initial_alpha=0.090564,
         resolution=13., num_rbfs=9019):
-    logger = Logger()
     max_steps = 150000
     num_policy_checks = 30
     checks_per_policy = 1
 
-    domain = HIVTreatment(logger=logger)
-    representation = RBF(domain, num_rbfs=int(num_rbfs), logger=logger,
+    domain = HIVTreatment()
+    representation = RBF(domain, num_rbfs=int(num_rbfs),
                          resolution_max=resolution, resolution_min=resolution,
                          const_feature=False, normalize=True, seed=id)
-    policy = eGreedy(representation, logger, epsilon=0.1)
+    policy = eGreedy(representation, epsilon=0.1)
     agent = Q_LEARNING(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

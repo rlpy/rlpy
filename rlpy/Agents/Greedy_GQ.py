@@ -19,7 +19,7 @@ class Greedy_GQ(Agent):
     eligibility_trace_s = []
 
     def __init__(
-            self, representation, policy, domain, logger, initial_alpha=.1,
+            self, representation, policy, domain, initial_alpha=.1,
             lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000,
             BetaCoef=1e-6):
         self.eligibility_trace = np.zeros(
@@ -34,18 +34,12 @@ class Greedy_GQ(Agent):
             representation,
             policy,
             domain,
-            logger,
             initial_alpha,
             alpha_decay_mode,
             boyan_N0)
         self.GQWeight = copy(self.representation.theta)
         # The beta in the GQ algorithm is assumed to be alpha * THIS CONSTANT
         self.secondLearningRateCoef = BetaCoef
-        self.logger.log("Alpha_0:\t\t%0.2f" % initial_alpha)
-        self.logger.log("Decay mode:\t\t" + str(alpha_decay_mode))
-        self.logger.log("Beta:\t\t" + str(BetaCoef))
-        if lambda_:
-            self.logger.log("lambda:\t%0.2f" % lambda_)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         self.representation.pre_discover(s, False, a, ns, terminal)

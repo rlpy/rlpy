@@ -1,6 +1,7 @@
 """MDP Solver base class."""
 
 import numpy as np
+import logging
 from rlpy.Tools import className, hasFunction, printClass
 from rlpy.Tools import vec2id, checkNCreateDirectory, deltaT
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -21,8 +22,6 @@ class MDPSolver(object):
         representation (Representation):    Representation used for the value function.
 
         domain (Domain):    Domain (MDP) to solve.
-
-        logger (Logger):    Logger object to log information and debugging.
 
         planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
 
@@ -63,12 +62,12 @@ class MDPSolver(object):
     show = None          # Show the learning if possible?
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=np.inf,
+            self, job_id, representation, domain, planning_time=np.inf,
             convergence_threshold=.005, ns_samples=100, project_path='.', log_interval=5000, show=False):
         self.id = job_id
         self.representation = representation
         self.domain = domain
-        self.logger = logger
+        self.logger = logging.getLogger("rlpy.MDPSolvers." + self.__class__.__name__)
         self.ns_samples = ns_samples
         self.planning_time = planning_time
         self.project_path = project_path
@@ -80,25 +79,14 @@ class MDPSolver(object):
         np.random.seed(self.mainSeed)
         self.randomSeeds = np.random.randint(1, self.mainSeed, (self.maxRuns, 1))
         np.random.seed(self.randomSeeds[self.id - 1, 0])
-        self.logger.setOutput("%s/%d-out.txt" % (self.project_path, self.id))
-        if self.logger:
-            self.logger.line()
-            self.logger.log("Job ID:\t\t\t%d" % self.id)
-            self.logger.log("Solver:\t\t\t" + str(className(self)))
-            self.logger.log("Max Time:\t\t%0.0f(s)" % planning_time)
-            self.logger.log(
-                'Convergence Threshold:\t%0.3f' %
-                convergence_threshold)
-            if not hasFunction(self.domain, 'expectedStep'):
-                self.logger.log('Next Step Samples:\t%d' % ns_samples)
-            self.logger.log('Log Interval:\t\t%d (Backups)' % log_interval)
-            self.logger.log('Show Learning:\t\t%d' % show)
+
+        # TODO setup logging to file in experiment
 
     def solve(self):
         """Solve the domain MDP."""
         # Abstract
         self.result = np.array(self.result).T
-        self.logger.log(
+        self.logger.info(
             'Value of S0 is = %0.5f' %
             self.representation.V(*self.domain.s0()))
         self.saveStats()

@@ -101,7 +101,7 @@ class InfTrackCartPole(CartPoleBase):
 
     int_type = "rk4"
 
-    def __init__(self, logger=None):
+    def __init__(self):
         # Limits of each dimension of the state space.
         # Each row corresponds to one dimension and has two elements [min, max]
         self.statespace_limits = np.array(
@@ -109,7 +109,7 @@ class InfTrackCartPole(CartPoleBase):
         self.continuous_dims = [StateIndex.THETA, StateIndex.THETA_DOT]
         self.DimNames = ['Theta', 'Thetadot']
 
-        super(InfTrackCartPole, self).__init__(logger)
+        super(InfTrackCartPole, self).__init__()
 
     def s0(self):
         # Defined by children
@@ -206,9 +206,9 @@ class InfCartPoleBalance(InfTrackCartPole):
                                 # saturates them frequently when falling; more
                                 # realistic to use 2*pi.
 
-    def __init__(self, logger=None, episodeCap=3000):
+    def __init__(self, episodeCap=3000):
         self.episodeCap = episodeCap
-        super(InfCartPoleBalance, self).__init__(logger)
+        super(InfCartPoleBalance, self).__init__()
 
     def s0(self):
         # import ipdb; ipdb.set_trace()
@@ -262,10 +262,10 @@ class InfCartPoleSwingUp(InfTrackCartPole):
     #: Discount factor
     gamma = .90
 
-    def __init__(self, logger=None):
+    def __init__(self):
         self.statespace_limits = np.array(
             [self.ANGLE_LIMITS, self.ANGULAR_RATE_LIMITS])
-        super(InfCartPoleSwingUp, self).__init__(logger)
+        super(InfCartPoleSwingUp, self).__init__()
 
     def s0(self):
         """ Returns the initial state: pendulum straight up and unmoving. """

@@ -43,11 +43,11 @@ class FixedPolicy(Policy):
 
     gridWorldPolicyNames = ['cw_circle', 'ccw_circle']
 
-    def __init__(self, representation, logger,
+    def __init__(self, representation,
                  policyName='MISSINGNO', tableOfValues=None):
         self.policyName = policyName
         self.tableOfValues = tableOfValues
-        super(FixedPolicy, self).__init__(representation, logger)
+        super(FixedPolicy, self).__init__(representation)
 
     supportedDomains = [
         'InfCartPoleBalance', 'BlocksWorld', 'IntruderMonitoring',

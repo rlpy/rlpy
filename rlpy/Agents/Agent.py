@@ -2,6 +2,7 @@
 
 from rlpy.Tools import className, incrementalAverageUpdate
 import numpy as np
+import logging
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -74,7 +75,7 @@ class Agent(object):
     #  The N0 parameter for boyan learning rate decay
     boyan_N0 = 1000
 
-    def __init__(self, representation, policy, domain, logger,
+    def __init__(self, representation, policy, domain,
                  initial_alpha=0.1, alpha_decay_mode='dabney', boyan_N0=1000):
         """initialization.
 
@@ -95,23 +96,17 @@ class Agent(object):
         self.representation = representation
         self.policy = policy
         self.domain = domain
-        self.logger = logger
         self.initial_alpha = initial_alpha
         self.alpha = initial_alpha
         self.alpha_decay_mode = alpha_decay_mode.lower()
         self.boyan_N0 = boyan_N0
-        if self.logger:
-            self.logger.line()
-            self.logger.log("Agent:\t\t" + str(className(self)))
-            self.logger.log("Policy:\t\t" + str(className(self.policy)))
-            if self.alpha_decay_mode == 'boyan':
-                self.logger.log("boyan_N0:\t%.1f" % self.boyan_N0)
+        self.logger = logging.getLogger("rlpy.Agents." + self.__class__.__name__)
+
         # Check to make sure selected alpha_decay mode is valid
         if not self.alpha_decay_mode in self.valid_decay_modes:
             errMsg = "Invalid decay mode selected:" + self.alpha_decay_mode \
-                    + ".\nValid choices are: " + str(self.valid_decay_modes)
-            if self.logger:
-                self.logger.log(errMsg)
+                + "; valid choices are: " + str(self.valid_decay_modes)
+            self.logger.error(errMsg)
         #  Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
         #  initial_alpha will act as a permanent upper-bound on alpha.
         if self.alpha_decay_mode == 'dabney':
@@ -180,7 +175,7 @@ class Agent(object):
         elif self.alpha_decay_mode == "const":
             self.alpha = self.initial_alpha
         else:
-            self.logger.log("Unrecognized decay mode ")
+            self.logger.warn("Unrecognized decay mode ")
 
     def MC_episode(self, s=None, a=None, tolerance=0):
         """
@@ -240,7 +235,9 @@ class Agent(object):
         return Q_avg
 
     def evaluate(self, samples, MC_samples, output_file):
+        #TODO check if method is still used, otherwise delete
         """
+
         Evaluate the current policy for fixed number of samples and store them
         in a numpy 2-d array: (#samples) x (|S|+2), where the two appended
         columns correspond to the action (integer) and Q(s,a). \n
@@ -272,7 +269,7 @@ class Agent(object):
             r, s, terminal = self.domain.step(a)
             steps += 1
 
-            self.logger.log(
+            self.logger.debug(
                 "Sample " + str(steps) + ":" + str(s) + " " + str(a) + " " + str(Q))
 
         np.save(output_file, DATA)

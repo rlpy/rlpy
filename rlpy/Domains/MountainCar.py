@@ -62,7 +62,7 @@ class MountainCar(Domain):
     CAR_WIDTH = .1
     ARROW_LENGTH = .2
 
-    def __init__(self, noise=0, logger=None):
+    def __init__(self, noise=0):
         """
         :param noise: Magnitude of noise (times accelerationFactor) in stochastic velocity changes
 
@@ -81,7 +81,7 @@ class MountainCar(Domain):
             self.episodeCap
         self.MAX_RETURN = 0
         self.DimNames = ['X', 'Xdot']
-        super(MountainCar, self).__init__(logger)
+        super(MountainCar, self).__init__()
 
     def step(self, a):
         """

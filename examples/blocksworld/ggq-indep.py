@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains import BlocksWorld
 from rlpy.Agents import Greedy_GQ
 from rlpy.Representations import *
@@ -16,23 +15,21 @@ def make_experiment(
         lambda_=0.,
         boyan_N0=10.09,
         initial_alpha=.47):
-    logger = Logger()
     max_steps = 100000
     num_policy_checks = 20
     checks_per_policy = 5
     sparsify = 1
     ifddeps = 1e-7
-    domain = BlocksWorld(blocks=6, noise=0.3, logger=logger)
-    representation = IndependentDiscretization(domain, logger)
-    policy = eGreedy(representation, logger, epsilon=0.1)
+    domain = BlocksWorld(blocks=6, noise=0.3)
+    representation = IndependentDiscretization(domain)
+    policy = eGreedy(representation, epsilon=0.1)
     agent = Greedy_GQ(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 
 if __name__ == '__main__':
-    from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
     experiment.run()

@@ -16,7 +16,7 @@ class PolicyEvaluation(LSPI):
     LOAD_POLICY_FILE = False     # If Q,S,A are read from the file
 
     def __init__(
-            self, representation, policy, domain, logger, sample_window=100,
+            self, representation, policy, domain, sample_window=100,
             accuracy_test_samples=10000, MC_samples=100, target_path='.', re_iterations=100):
         self.compare_with_me = '%s/%s-FixedPolicy.npy' % (target_path,
                                                           Tools.className(domain))
@@ -27,18 +27,17 @@ class PolicyEvaluation(LSPI):
             self).__init__(representation,
                            policy,
                            domain,
-                           logger,
                            max_window=sample_window + 1,
                            steps_between_LSPI=sample_window,
                            re_iterations=re_iterations)
         # Load the fixedPolicy Estimation if it does not exist create it
         if self.LOAD_POLICY_FILE:
             if not os.path.exists(self.compare_with_me):
-                self.logger.log('Generating Fixed Policy Evaluation')
-                self.logger.log(
+                self.logger.info('Generating Fixed Policy Evaluation')
+                self.logger.info(
                     'Samples for Accuracy Test = %d' %
                     accuracy_test_samples)
-                self.logger.log(
+                self.logger.info(
                     'Samples for Monte-Carlo estimation of each Q(s,a) = %d' %
                     MC_samples)
                 DATA = self.evaluate(
@@ -48,7 +47,7 @@ class PolicyEvaluation(LSPI):
             else:
                 _, _, shortPolicyFile = self.compare_with_me.rpartition('/')
                 DATA = np.load(self.compare_with_me)
-                self.logger.log('PE File:\t\t\t%s' % shortPolicyFile)
+                self.logger.info('PE File:\t\t\t%s' % shortPolicyFile)
             self.S = DATA[:, np.arange(self.domain.state_space_dims)]
             self.A = DATA[:, self.domain.state_space_dims].astype(np.uint16)
             self.Q_MC = DATA[:, self.domain.state_space_dims + 1]
@@ -79,7 +78,7 @@ class PolicyEvaluation(LSPI):
                 if not Tools.hasFunction(self.representation, 'batchDiscover'):
                     break
                 re_iteration += 1
-                self.logger.log(
+                self.logger.info(
                     'Representation Expansion iteration #%d\n-----------------' %
                     re_iteration)
                 added_feature = self.representation.batchDiscover(
@@ -115,6 +114,5 @@ class PolicyEvaluation(LSPI):
 #            all_test_phi_s_a    = self.representation.batchPhi_s_a(test_phi_s, self.A,use_sparse=self.use_sparse)
 #            Q                   = all_test_phi_s_a * self.representation.theta.reshape(-1,1) if sp.issparse(all_test_phi_s_a) else dot(all_test_phi_s_a,self.representation.theta)
 #            PE_error            = linalg.norm(Q.ravel()-self.Q_MC)
-#            self.logger.log("||Delta V|| = %f" % PE_error)
-            self.logger.log("||TD-Errors|| = %f " % np.linalg.norm(td_errors))
+            self.logger.info("||TD-Errors|| = %f " % np.linalg.norm(td_errors))
             return PE_error, td_errors

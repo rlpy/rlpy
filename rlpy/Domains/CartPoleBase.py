@@ -84,7 +84,7 @@ class CartPoleBase(Domain):
     policy_fig = None
     policy_img = None
 
-    def __init__(self, logger=None):
+    def __init__(self):
         """
         Setup the required domain constants.
         """
@@ -97,7 +97,7 @@ class CartPoleBase(Domain):
             pass
 
         self._assignGroundVerts()
-        super(CartPoleBase, self).__init__(logger)
+        super(CartPoleBase, self).__init__()
 
         self.xTicksLabels = np.around(
             np.linspace(self.statespace_limits[0, 0] * 180 / pi,
@@ -105,13 +105,6 @@ class CartPoleBase(Domain):
         self.yTicksLabels = np.around(
             np.linspace(self.statespace_limits[1, 0] * 180 / pi,
                         self.statespace_limits[1, 1] * 180 / pi, 5)).astype(int)
-
-        if self.logger:
-            self.logger.log("Pendulum length:\t\t%0.2f(m)" % self.LENGTH)
-            self.logger.log("Timestep length dt:\t\t\t%0.2f(s)" % self.dt)
-            self.logger.log(
-                "Number of state dimensions: %d" %
-                self.state_space_dims)
 
     def _isParamsValid(self):
         if not ((2 * pi / self.dt > self.ANGULAR_RATE_LIMITS[1]) and (2 * pi / self.dt > -self.ANGULAR_RATE_LIMITS[0])):

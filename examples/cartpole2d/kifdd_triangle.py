@@ -2,7 +2,6 @@
 Cart-pole balancing with continuous / Kernelized iFDD
 """
 
-from rlpy.Tools import Logger
 from rlpy.Domains import InfCartPoleBalance
 from rlpy.Agents import SARSA, Q_LEARNING
 from rlpy.Representations import *
@@ -32,7 +31,6 @@ def make_experiment(
         boyan_N0=480.72,
         initial_alpha=.2911,
         kernel_resolution=18.435):
-    logger = Logger()
     max_steps = 10000
     num_policy_checks = 20
     checks_per_policy = 10
@@ -40,7 +38,7 @@ def make_experiment(
     max_base_feat_sim = 0.5
     sparsify = 1
 
-    domain = InfCartPoleBalance(logger=logger)
+    domain = InfCartPoleBalance()
     kernel_width = (
         domain.statespace_limits[:,
                                  1] - domain.statespace_limits[:,
@@ -49,14 +47,14 @@ def make_experiment(
                                kernel=linf_triangle_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,
-                               logger=logger, discover_threshold=discover_threshold,
+                               discover_threshold=discover_threshold,
                                normalization=True,
                                max_active_base_feat=10, max_base_feat_sim=max_base_feat_sim)
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=1.,
+    policy = eGreedy(representation, epsilon=0.1)
+    # agent           = SARSA(representation,policy,domain,initial_alpha=1.,
     # lambda_=0., alpha_decay_mode="boyan", boyan_N0=100)
     agent = Q_LEARNING(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

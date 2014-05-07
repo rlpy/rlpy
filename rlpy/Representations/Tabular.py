@@ -12,11 +12,11 @@ __author__ = "Alborz Geramifard"
 
 class Tabular(Representation):
 
-    def __init__(self, domain, logger, discretization=20):
+    def __init__(self, domain, discretization=20):
         # Already performed in call to superclass
         self.setBinsPerDimension(domain, discretization)
         self.features_num = int(np.prod(self.bins_per_dim))
-        super(Tabular, self).__init__(domain, logger, discretization)
+        super(Tabular, self).__init__(domain, discretization)
 
     def phi_nonTerminal(self, s):
         id = self.hashState(s)

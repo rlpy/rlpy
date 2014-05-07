@@ -1,7 +1,6 @@
 """
 Cart-pole balancing with continuous / Kernelized iFDD
 """
-from rlpy.Tools import Logger
 from rlpy.Domains import HIVTreatment
 from rlpy.Agents import SARSA, Q_LEARNING
 from rlpy.Representations import *
@@ -25,27 +24,25 @@ def make_experiment(
         boyan_N0=514,
         initial_alpha=.327,
         discretization=18):
-    logger = Logger()
     max_steps = 150000
     num_policy_checks = 30
     checks_per_policy = 1
     sparsify = 1
-    domain = HIVTreatment(logger=logger)
+    domain = HIVTreatment()
     initial_rep = IndependentDiscretization(
         domain,
-        logger,
         discretization=discretization)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    representation = iFDD(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           discretization=discretization,
                           useCache=True,
                           iFDDPlus=True)
     #representation.PRINT_MAX_RELEVANCE = True
-    policy = eGreedy(representation, logger, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,logger,initial_alpha=initial_alpha,
+    policy = eGreedy(representation, epsilon=0.1)
+    # agent           = SARSA(representation,policy,domain,initial_alpha=initial_alpha,
     # lambda_=.0, alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     agent = Q_LEARNING(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

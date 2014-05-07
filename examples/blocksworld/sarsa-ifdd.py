@@ -1,4 +1,3 @@
-from rlpy.Tools import Logger
 from rlpy.Domains import BlocksWorld
 from rlpy.Agents import SARSA
 from rlpy.Representations import *
@@ -19,21 +18,20 @@ def make_experiment(
         lambda_=0.,
         boyan_N0=20.84362,
         initial_alpha=0.3356222674):
-    logger = Logger()
     max_steps = 100000
     num_policy_checks = 20
     checks_per_policy = 1
     sparsify = 1
     ifddeps = 1e-7
-    domain = BlocksWorld(blocks=6, noise=0.3, logger=logger)
-    initial_rep = IndependentDiscretization(domain, logger)
-    representation = iFDD(domain, logger, discover_threshold, initial_rep,
+    domain = BlocksWorld(blocks=6, noise=0.3)
+    initial_rep = IndependentDiscretization(domain)
+    representation = iFDD(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           useCache=True,
                           iFDDPlus=1 - ifddeps)
-    policy = eGreedy(representation, logger, epsilon=0.1)
+    policy = eGreedy(representation, epsilon=0.1)
     agent = SARSA(
-        representation, policy, domain, logger, lambda_=lambda_, initial_alpha=initial_alpha,
+        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
         alpha_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

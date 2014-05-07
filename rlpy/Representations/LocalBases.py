@@ -29,12 +29,12 @@ class LocalBases(Representation):
     #: widths of bases
     widths = None
 
-    def __init__(self, domain, logger, kernel, normalization=False, **kwargs):
+    def __init__(self, domain, kernel, normalization=False, **kwargs):
         self.kernel = batch[kernel.__name__]
         self.normalization = normalization
         self.centers = np.zeros((0, domain.statespace_limits.shape[0]))
         self.widths = np.zeros((0, domain.statespace_limits.shape[0]))
-        super(LocalBases, self).__init__(domain, logger)
+        super(LocalBases, self).__init__(domain)
 
     def phi_nonTerminal(self, s):
         v = self.kernel(s, self.centers, self.widths)
@@ -63,7 +63,7 @@ class LocalBases(Representation):
 
 class NonparametricLocalBases(LocalBases):
 
-    def __init__(self, domain, logger, kernel,
+    def __init__(self, domain, kernel,
                  max_similarity=0.9, resolution=5, **kwargs):
         self.max_similarity = max_similarity
         self.common_width = (domain.statespace_limits[:, 1]
@@ -73,7 +73,6 @@ class NonparametricLocalBases(LocalBases):
             NonparametricLocalBases,
             self).__init__(
             domain,
-            logger,
             kernel,
             **kwargs)
 
@@ -108,7 +107,7 @@ class NonparametricLocalBases(LocalBases):
 
 class RandomLocalBases(LocalBases):
 
-    def __init__(self, domain, logger, kernel, num=100, resolution_min=5,
+    def __init__(self, domain, kernel, num=100, resolution_min=5,
                  resolution_max=None, seed=1, **kwargs):
         self.features_num = num
         dim_widths = (domain.statespace_limits[:, 1]
@@ -117,7 +116,6 @@ class RandomLocalBases(LocalBases):
             RandomLocalBases,
             self).__init__(
             domain,
-            logger,
             kernel,
             **kwargs)
         rand_stream = np.random.RandomState(seed=seed)

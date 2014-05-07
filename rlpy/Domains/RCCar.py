@@ -74,7 +74,7 @@ class RCCar(Domain):
     ARROW_LENGTH = .2
     car_fig = None
 
-    def __init__(self, noise=0, logger=None):
+    def __init__(self, noise=0):
         self.statespace_limits = np.array(
             [[self.XMIN,
               self.XMAX],
@@ -85,7 +85,7 @@ class RCCar(Domain):
                 [self.HEADINGMIN,
                  self.HEADINGMAX]])
         self.Noise = noise
-        super(RCCar, self).__init__(logger)
+        super(RCCar, self).__init__()
 
     def step(self, a):
         x, y, speed, heading = self.state

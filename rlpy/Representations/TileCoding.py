@@ -20,7 +20,7 @@ class TileCoding(Representation):
 
     BIG_INT = 2147483647
 
-    def __init__(self, domain, logger, memory, num_tilings,
+    def __init__(self, domain, memory, num_tilings,
                  resolutions=None,
                  resolution_matrix=None,
                  dimensions=None,
@@ -70,7 +70,7 @@ class TileCoding(Representation):
 
         """
         self.features_num = memory
-        super(TileCoding, self).__init__(domain, logger)
+        super(TileCoding, self).__init__(domain)
         try:
             self.num_tilings = tuple(num_tilings)
         except TypeError as e:
@@ -192,7 +192,7 @@ class TileCoding(Representation):
                     self.counts[h1] += 1
                     return h1
             self.collisions += 1
-            self.logger.log("Tile memory too small")
+            self.logger.warn("Tile memory too small")
             return h1
 
     def featureType(self):

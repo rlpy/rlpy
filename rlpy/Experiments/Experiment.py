@@ -1,5 +1,6 @@
 """Standard Experiment for Learning Control in RL."""
 
+import logging
 from rlpy.Tools import plt
 import numpy as np
 from copy import deepcopy
@@ -89,7 +90,7 @@ class Experiment(object):
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template = '{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
 
-    def __init__(self, agent, domain, logger, id=1, max_steps=max_steps,
+    def __init__(self, agent, domain, id=1, max_steps=max_steps, config_logging=True,
                  num_policy_checks=10, log_interval=1, path='Results/Temp',
                  checks_per_policy=1, stat_bins_per_state_dim=0, **kwargs):
         """
@@ -120,10 +121,9 @@ class Experiment(object):
         self.domain = domain
         self.max_steps = max_steps
         self.num_policy_checks = num_policy_checks
-        self.logger = logger
+        self.logger = logging.getLogger("rlpy.Experiments.Experiment")
         self.log_interval = log_interval
-        self.logger.line()
-        self.logger.log("Experiment:\t\t%s" % className(self))
+        self.config_logging = config_logging
         self._update_path(path)
         if stat_bins_per_state_dim > 0:
             self.state_counts_learn = np.zeros(
@@ -138,10 +138,19 @@ class Experiment(object):
         # compile and create output path
         self.full_path = self.compile_path(path)
         checkNCreateDirectory(self.full_path + '/')
-        self.logger.log(
+        self.logger.info(
             "Output:\t\t\t%s/%s" %
             (self.full_path, self.output_filename))
-        self.logger.setOutput("%s/%d-out.txt" % (self.full_path, self.id))
+        #TODO set up logging to file for rlpy loggers
+
+        self.log_filename = '{:0>3}.log'.format(self.id)
+        if self.config_logging:
+            rlpy_logger = logging.getLogger("rlpy")
+            for h in rlpy_logger.handlers:
+                rlpy_logger.removeHandler(h)
+            rlpy_logger.addHandler(logging.StreamHandler())
+            rlpy_logger.addHandler(logging.FileHandler(os.path.join(self.full_path, self.log_filename)))
+            rlpy_logger.setLevel(logging.INFO)
 
     def seed_components(self):
         """
@@ -155,6 +164,14 @@ class Experiment(object):
         # make sure the performance_domain has a different seed
         self.performance_domain.random_state = np.random.RandomState(
             self.randomSeeds[self.id + 20])
+
+        self.log_filename = '{:0>3}.log'.format(self.id)
+        if self.config_logging:
+            rlpy_logger = logging.getLogger("rlpy")
+            for h in rlpy_logger.handlers:
+                if isinstance(h, logging.FileHandler):
+                    rlpy_logger.removeHandler(h)
+            rlpy_logger.addHandler(logging.FileHandler(os.path.join(self.full_path, self.log_filename)))
 
     def performanceRun(self, total_steps, visualize=False):
         """
@@ -184,7 +201,6 @@ class Experiment(object):
 
             r, ns, eps_term, p_actions = self.performance_domain.step(a)
             self._gather_transition_statistics(s, a, ns, r, learning=False)
-            # self.logger.log("TEST"+str(eps_length)+"."+str(s)+"("+str(a)+")"+"=>"+str(ns))
             s = ns
             eps_return += r
             eps_discount_return += self.performance_domain.gamma ** eps_length * \
@@ -294,6 +310,7 @@ class Experiment(object):
             function.
 
         """
+
         if debug_on_sigurg:
             rlpy.Tools.ipshell.ipdb_on_SIGURG()
         self.performance_domain = deepcopy(self.domain)
@@ -346,7 +363,7 @@ class Experiment(object):
             if (terminal or eps_steps == self.domain.episodeCap) and deltaT(start_log_time) > self.log_interval:
                 start_log_time = clock()
                 elapsedTime = deltaT(self.start_time)
-                self.logger.log(
+                self.logger.info(
                     self.log_template.format(total_steps=total_steps,
                                              elapsed=hhmmss(
                                                  elapsedTime),
@@ -385,8 +402,7 @@ class Experiment(object):
         # Visual
         if visualize_steps:
             self.domain.show(a, self.agent.representation)
-        self.logger.line()
-        self.logger.log("Took %s\n" % (hhmmss(deltaT(self.start_time))))
+        self.logger.info("Total Experiment Duration %s" % (hhmmss(deltaT(self.start_time))))
 
     def evaluate(self, total_steps, episode_number, visualize=0):
         """
@@ -437,7 +453,7 @@ class Experiment(object):
                 elapsedTime * (self.max_steps - total_steps) / total_steps)
         else:
             remaining = "?"
-        self.logger.log(
+        self.logger.info(
             self.performance_log_template.format(total_steps=total_steps,
                                                  elapsed=hhmmss(
                                                      elapsedTime),

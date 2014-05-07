@@ -24,10 +24,9 @@ class SwimmerPolicy(Policy):
         "Policies",
         "swimmer3.mat")
 
-    def __init__(self, representation, logger=None,
+    def __init__(self, representation,
                  filename=default_location, epsilon=0.1):
-
-        self.logger = logger
+        super(SwimmerPolicy, self).__init__(None)
         self.representation = representation
         E = loadmat(filename)["E"]
         self.locs = E["Locs"][0][0]

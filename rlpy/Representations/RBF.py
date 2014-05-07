@@ -17,7 +17,7 @@ class RBF(Representation):
     #: The std dev of the RBFs (uniformly selected between [0, dimension width]
     rbfs_sigma = None
 
-    def __init__(self, domain, logger, num_rbfs=None, state_dimensions=None,
+    def __init__(self, domain, num_rbfs=None, state_dimensions=None,
                  const_feature=True, resolution_min=2., resolution_max=None,
                  seed=1, normalize=False, grid_bins=None, include_border=False):
 
@@ -43,7 +43,6 @@ class RBF(Representation):
             self.rbfs_sigma = np.zeros((num_rbfs, dims))
             dim_widths = (domain.statespace_limits[state_dimensions, 1]
                           - domain.statespace_limits[state_dimensions, 0])
-            # super(RBF,self).__init__(domain,logger)
             rand_stream = np.random.RandomState(seed=seed)
             for i in xrange(num_rbfs):
                 for d in state_dimensions:
@@ -60,7 +59,7 @@ class RBF(Representation):
             self.features_num += 1  # adds a constant 1 to each feature vector
         self.state_dimensions = state_dimensions
         self.normalize = normalize
-        super(RBF, self).__init__(domain, logger)
+        super(RBF, self).__init__(domain)
 
     def phi_nonTerminal(self, s):
         F_s = np.ones(self.features_num)

@@ -1,5 +1,7 @@
 """Representation base class."""
 
+import logging
+from copy import deepcopy
 from rlpy.Tools import className, addNewElementForAllActions
 from rlpy.Tools import vec2id, bin2state, findElemArray1D
 from rlpy.Tools import hasFunction, id2vec, closestDiscretization
@@ -64,7 +66,7 @@ class Representation(object):
     #: A dictionary used to cache expected results of step(). Used for planning algorithms
     expectedStepCached = None
 
-    def __init__(self, domain, logger, discretization=20):
+    def __init__(self, domain, discretization=20):
         """
         :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
         :param discretization: Number of bins used for each continuous dimension
@@ -90,14 +92,7 @@ class Representation(object):
             (self.domain.actions_num, self.features_num))
         self._arange_cache = np.arange(self.features_num)
         self.agg_states_num = np.prod(self.bins_per_dim.astype('uint64'))
-        self.logger = logger
-        self.logger.line()
-        self.logger.log("Representation:\t\t%s" % className(self))
-        self.logger.log("Features per action:\t%d" % self.features_num)
-        if len(self.domain.continuous_dims):
-            self.logger.log("Discretization:\t\t%d" % self.discretization)
-            self.logger.log("Starting Features:\t%d" % self.features_num)
-            self.logger.log("Aggregated States:\t%d" % self.agg_states_num)
+        self.logger = logging.getLogger("rlpy.Representations." + self.__class__.__name__)
 
     def V(self, s, terminal, p_actions, phi_s=None):
         """ Returns the value of state s under possible actions p_actions.
@@ -275,7 +270,6 @@ class Representation(object):
         as necessary. Then map the binstate to an integer.
         """
         ds = self.binState(s)
-        # self.logger.log(str(s)+"=>"+str(ds))
         return vec2id(ds, self.bins_per_dim)
 
     def setBinsPerDimension(self, domain, discretization):
@@ -734,3 +728,13 @@ class Representation(object):
         for d in xrange(self.domain.state_space_dims):
             s_normalized[d] = closestDiscretization(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d,:])
         return s_normalized
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            if k is "logger":
+                continue
+            setattr(result, k, deepcopy(v, memo))
+        return result

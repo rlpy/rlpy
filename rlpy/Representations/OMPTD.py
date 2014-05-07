@@ -35,7 +35,7 @@ class OMPTD(Representation):
     remainingFeatures = None  # Array of remaining features
 
     def __init__(
-            self, domain, logger, initial_representation, discretization=20,
+            self, domain, initial_representation, discretization=20,
             maxBatchDicovery=1, batchThreshold=0, bagSize=100000, sparsify=False):
         self.selectedFeatures = []
         # This is dummy since omptd will not use ifdd in the online fashion
@@ -45,7 +45,6 @@ class OMPTD(Representation):
         self.initial_representation = initial_representation
         self.iFDD = iFDD(
             domain,
-            logger,
             self.iFDD_ONLINETHRESHOLD,
             initial_representation,
             sparsify=0,
@@ -55,7 +54,7 @@ class OMPTD(Representation):
         self.features_num = self.initial_representation.features_num
         self.isDynamic = True
 
-        super(OMPTD, self).__init__(domain, logger, discretization)
+        super(OMPTD, self).__init__(domain, discretization)
 
         self.fillBag()
         self.totalFeatureSize = self.bagSize
@@ -64,25 +63,15 @@ class OMPTD(Representation):
             self.initial_representation.features_num)
         # Array of indicies of features that have not been selected
         self.remainingFeatures = np.arange(self.features_num, self.bagSize)
-        self.show()
-        if self.logger:
-            self.logger.log(
-                "Initial Representation:\t%s" %
-                className(self.initial_representation))
-            self.logger.log("Bag Size:\t\t%d" % self.bagSize)
-            self.logger.log("Batch Threshold:\t\t%0.3f" % self.batchThreshold)
-            self.logger.log("Max Batch Discovery:\t%d" % self.maxBatchDicovery)
 
     def phi_nonTerminal(self, s):
         F_s = self.iFDD.phi_nonTerminal(s)
         return F_s[self.selectedFeatures]
 
     def show(self):
-        if self.logger:
-            self.logger.log('Features:\t\t%d' % self.features_num)
-            self.logger.log(
-                'Remaining Bag Size:\t%d' %
-                len(self.remainingFeatures))
+        self.logger.info('Features:\t\t%d' % self.features_num)
+        self.logger.info('Remaining Bag Size:\t%d' %
+                         len(self.remainingFeatures))
 
     def showBag(self):
         print "Remaining Items in the feature bag:"
@@ -150,7 +139,7 @@ class OMPTD(Representation):
         max_relevance = relevances[sortedIndices[0]]
 
         # Add top <maxDiscovery> features
-        self.logger.log("OMPTD Batch: Max Relevance = %0.3f" % max_relevance)
+        self.logger.debug("OMPTD Batch: Max Relevance = %0.3f" % max_relevance)
         added_feature = False
         to_be_deleted = []  # Record the indices of items to be removed
         for j in xrange(min(self.maxBatchDicovery, len(relevances))):
@@ -159,7 +148,7 @@ class OMPTD(Representation):
             relevance = relevances[max_index]
             # print "Inspecting %s" % str(list(self.iFDD.getFeature(f).f_set))
             if relevance >= self.batchThreshold:
-                self.logger.log(
+                self.logger.debug(
                     'New Feature %d: %s, Relevance = %0.3f' %
                     (self.features_num, str(np.sort(list(self.iFDD.getFeature(f).f_set))), relevances[max_index]))
                 to_be_deleted.append(max_index)
@@ -189,10 +178,9 @@ class OMPTD(Representation):
         level_n_features = np.array(level_1_features)
         level_n_features_dim = deepcopy(level_1_features_dim)
         new_id = self.initial_representation.features_num
-        if self.logger:
-            self.logger.log(
-                "Added %d size 1 features to the feature bag." %
-                (self.initial_representation.features_num))
+        self.logger.debug(
+            "Added %d size 1 features to the feature bag." %
+            (self.initial_representation.features_num))
 
         # Loop over possible layers that conjunctions can be add. Notice that
         # layer one was already built
@@ -215,17 +203,15 @@ class OMPTD(Representation):
                             new_id += 1
                             added += 1
                             if new_id == self.bagSize:
-                                if self.logger:
-                                    self.logger.log(
-                                        "Added %d size %d features to the feature bag." %
-                                        (added, f_size))
+                                self.logger.debug(
+                                    "Added %d size %d features to the feature bag." %
+                                    (added, f_size))
                                 return
             level_n_features = next_features
             level_n_features_dim = next_features_dim
-            if self.logger:
-                self.logger.log(
-                    "Added %d size %d features to the feature bag." %
-                    (added, f_size))
+            self.logger.debug(
+                "Added %d size %d features to the feature bag." %
+                (added, f_size))
         self.bagSize = new_id
 
     def featureType(self):

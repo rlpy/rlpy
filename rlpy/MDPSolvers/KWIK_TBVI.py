@@ -26,7 +26,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
     KWIK_threshold = None
 
     def __init__(
-            self, job_id, representation, domain, logger, planning_time=np.inf,
+            self, job_id, representation, domain, planning_time=np.inf,
             convergence_threshold=.005, ns_samples=100, project_path='.',
             log_interval=500, show=False, epsilon=.1, KWIK_threshold=.1):
         super(
@@ -34,7 +34,6 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
             self).__init__(job_id,
                            representation,
                            domain,
-                           logger,
                            planning_time,
                            convergence_threshold,
                            ns_samples,
@@ -44,7 +43,6 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
         self.KWIK_threshold = KWIK_threshold
         self.KWIK_Q = np.eye(self.representation.features_num)
         self.epsilon = epsilon
-        self.logger.log('KWIK Threhsold:\t\t\t%0.2f' % self.KWIK_threshold)
 
     def solve(self):
         self.result = []
@@ -110,7 +108,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             converged = converged_trajectories >= self.MIN_CONVERGED_TRAJECTORIES
-            self.logger.log(
+            self.logger.info(
                 'PI #%d [%s]: BellmanUpdates=%d, ||Bellman_Error||=%0.4f, Return=%0.4f, Steps=%d, Features=%d' % (iteration,
                                                                                                                   hhmmss(
                                                                                                                       deltaT(
@@ -135,7 +133,7 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
                                 ])
 
         if converged:
-            self.logger.log('Converged!')
+            self.logger.info('Converged!')
         super(KWIK_TBVI, self).solve()
 
     def bestKWIKAction(self, s, terminal, p_actions):
@@ -152,16 +150,12 @@ class KWIK_TBVI(TrajectoryBasedValueIteration):
 
         max_ind = findElemArray1D(Qs, Qs.max())
 
-        if self.DEBUG:
-            self.logger.log('State:' + str(s))
-            self.logger.line()
-            for i in xrange(len(p_actions)):
-                self.logger.log('Action %d, Q = %0.3f' % (p_actions[i], Qs[i]))
-            self.logger.line()
-            self.logger.log(
-                'Best: %s, Max: %s' %
-                (str(p_actions[max_ind]), str(Qs.max())))
-            # raw_input()
+        self.logger.debug('State:' + str(s))
+        for i in xrange(len(p_actions)):
+            self.logger.debug('Action %d, Q = %0.3f' % (p_actions[i], Qs[i]))
+        self.logger.debug(
+            'Best: %s, Max: %s' %
+            (str(p_actions[max_ind]), str(Qs.max())))
         bestA = p_actions[max_ind]
         bestQ = Qs[max_ind]
         if len(bestA) > 1:

@@ -106,15 +106,10 @@ class HelicopterHoverExtended(Domain):
     actions = cartesian(list(_actions_dim))  #: all possible actions
     actions_num = np.prod(actions.shape[0])
 
-    def __init__(self, logger=None, noise_level=1., gamma=0.95):
+    def __init__(self, noise_level=1., gamma=0.95):
         self.noise_level = noise_level
         self.gamma = gamma
-        super(HelicopterHoverExtended, self).__init__(logger)
-        if self.logger:
-            self.logger.log("Actions\n{0}".format(self._actions_dim))
-            self.logger.log("Noise level:\t{0}".format(self.noise_level))
-            self.logger.log(
-                "Wind:\t\t\t{0},{0}".format(self.wind[0], self.wind[1]))
+        super(HelicopterHoverExtended, self).__init__()
 
     def s0(self):
         self.state = np.zeros((20))

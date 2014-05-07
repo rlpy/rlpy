@@ -43,13 +43,12 @@ class Swimmer(Domain):
     episodeCap = 1000
     gamma = 0.98
 
-    def __init__(self, logger=None, d=3, k1=7.5, k2=0.3):
+    def __init__(self, d=3, k1=7.5, k2=0.3):
         """
         d:
             number of joints
         """
         self.d = d
-        self.logger = logger
         self.k1 = k1
         self.k2 = k2
         self.nose = 0
@@ -84,7 +83,7 @@ class Swimmer(Domain):
             + [[-2, 2]] * 2 + [[-np.pi * 2, np.pi * 2]] * d
         self.statespace_limits = np.array(self.statespace_limits)
         self.continuous_dims = range(self.statespace_limits.shape[0])
-        super(Swimmer, self).__init__(logger)
+        super(Swimmer, self).__init__()
 
     def s0(self):
         self.theta = np.zeros(self.d)
@@ -131,7 +130,6 @@ class Swimmer(Domain):
     def showLearning(self, representation):
         good_pol = SwimmerPolicy(
             representation=representation,
-            logger=None,
             epsilon=0)
         id1 = 2
         id2 = 3
