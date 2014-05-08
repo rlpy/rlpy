@@ -1,6 +1,6 @@
 """Standard Control Agent. """
 
-from rlpy.Tools import className, incrementalAverageUpdate
+from abc import ABCMeta, abstractmethod
 import numpy as np
 import logging
 
@@ -43,6 +43,7 @@ class Agent(object):
 
     """
 
+    __metaclass__ = ABCMeta
     # The Representation to be used by the Agent
     representation = None
     # The domain the agent interacts with
@@ -113,6 +114,8 @@ class Agent(object):
             self.initial_alpha = 1.0
             self.alpha = 1.0
 
+
+    @abstractmethod
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """
         This function receives observations of a single transition and
@@ -177,104 +180,6 @@ class Agent(object):
         else:
             self.logger.warn("Unrecognized decay mode ")
 
-    def MC_episode(self, s=None, a=None, tolerance=0):
-        """
-        Run a single monte-carlo simulation episode from state *s* with action
-        *a* following the current policy of the agent.
-        See :py:meth:`~Agents.Agent.Agent.Q_MC`.
-
-        :param s: The state used in the simulation
-        :param a: The action used in the simulation
-        :param tolerance: If the tolerance is set to a non-zero value, episodes
-            will be stopped once the additive value to the sum of rewards drops
-            below this threshold.  ie, this is the lower bound on acceptable performance.
-        :return eps_return: Sum of rewards
-        :return eps_length: Length of the Episode
-        :return eps_term: Specifies the terminal condition of the episode: 0 (stopped due to length), >0 (stopped due to a terminal state)
-        :return eps_discounted_return: Sum of discounted rewards.
-
-        """
-        eps_length = 0
-        eps_return = 0
-        eps_discounted_return = 0
-        eps_term = 0
-        if s is None:
-            s = self.domain.s0()
-        if a is None:
-            a = self.policy.pi(s)
-        while not eps_term and eps_length < self.domain.episodeCap:
-            r, ns, eps_term = self.domain.step(a)
-            s = ns
-            eps_return += r
-            eps_discounted_return += self.representation.domain.gamma ** eps_length * \
-                r
-            eps_length += 1
-            a = self.policy.pi(s)
-            if self.representation.domain.gamma ** eps_length < tolerance:
-                break
-        return eps_return, eps_length, eps_term, eps_discounted_return
-
-    def Q_MC(self, s, a, MC_samples=1000, tolerance=0):
-        """
-        Use Monte-Carlo samples with the fixed policy to evaluate the Q(s,a).
-        See :py:meth:`~Agents.Agent.Agent.MC_episode`.
-
-        :param s: The state used in the simulation
-        :param a: The action used in the simulation
-        :param tolerance: If the tolerance is set to a non-zero value, episodes will be stopped once the additive value to the sum of rewards drops below this threshold
-        :param MC_samples: Number of samples to be used to evaluated the Q value
-        :return: Q_avg, Averaged sum of discounted rewards = estimate of the Q.
-
-        """
-
-        Q_avg = 0
-        for i in np.arange(MC_samples):
-            # print "MC Sample:", i
-            _, _, _, Q = self.MC_episode(s, a, tolerance)
-            Q_avg = incrementalAverageUpdate(Q_avg, Q, i + 1)
-        return Q_avg
-
-    def evaluate(self, samples, MC_samples, output_file):
-        #TODO check if method is still used, otherwise delete
-        """
-
-        Evaluate the current policy for fixed number of samples and store them
-        in a numpy 2-d array: (#samples) x (|S|+2), where the two appended
-        columns correspond to the action (integer) and Q(s,a). \n
-        Saves the data generated in a file. \n
-
-        :param samples: The number of samples (s,a)
-        :param MC_samples: The number of MC simulations used to estimate Q(s,a)
-        :param output_file: The file in which the data is saved.
-
-        :return: the data generated and stored in the output_file
-
-        """
-
-        # if gamma^steps falls bellow this number the MC-Chain will terminate
-        # since it will not have much impact in evaluation of Q
-        tolerance = 1e-10
-        cols = self.domain.state_space_dims + 2
-        DATA = np.empty((samples, cols))
-        terminal = True
-        steps = 0
-        s = 0.  # will be overwritten anyway
-        while steps < samples:
-            s = self.domain.s0() if terminal or steps % self.domain.episodeCap == 0 else s
-            a = self.policy.pi(s)
-
-            # Store the corresponding Q
-            Q = self.Q_MC(s, a, MC_samples, tolerance)
-            DATA[steps, :] = np.hstack((s, [a, Q]))
-            r, s, terminal = self.domain.step(a)
-            steps += 1
-
-            self.logger.debug(
-                "Sample " + str(steps) + ":" + str(s) + " " + str(a) + " " + str(Q))
-
-        np.save(output_file, DATA)
-        return DATA
-
     def episodeTerminated(self):
         """
         This function adjusts all necessary elements of the agent at the end of
@@ -291,9 +196,6 @@ class Agent(object):
         # Update the eligibility traces if they exist:
         # Set eligibility Traces to zero if it is end of the episode
         if hasattr(self, 'eligibility_trace'):
-            if self.lambda_:
-                self.eligibility_trace = np.zeros(
-                    self.representation.features_num *
-                    self.domain.actions_num)
-                self.eligibility_trace_s = np.zeros(
-                    self.representation.features_num)
+                self.eligibility_trace = np.zeros_like(self.eligibility_trace)
+        if hasattr(self, 'eligibility_trace_s'):
+                self.eligibility_trace_s = np.zeros_like(self.eligibility_trace_s)

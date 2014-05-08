@@ -1,9 +1,5 @@
 """Standard Experiment for Learning Control in RL"""
-from rlpy.Tools import *
-from rlpy.Agents import PolicyEvaluation
-import numpy as np
-from copy import copy, deepcopy
-import re
+
 import rlpy.Tools.ipshell
 from .Experiment import Experiment
 
@@ -47,6 +43,6 @@ class MDPSolverExperiment(Experiment):
 
         """
         if debug_on_sigurg:
-            Tools.ipshell.ipdb_on_SIGURG()
+            rlpy.Tools.ipshell.ipdb_on_SIGURG()
 
         self.agent.solve()

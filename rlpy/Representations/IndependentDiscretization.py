@@ -31,7 +31,7 @@ class IndependentDiscretization(Representation):
 
     def getDimNumber(self, f):
         # Returns the dimension number corresponding to this feature
-        dim = searchsorted(self.maxFeatureIDperDimension, f)
+        dim = np.searchsorted(self.maxFeatureIDperDimension, f)
         return dim
 
     def getFeatureName(self, id):

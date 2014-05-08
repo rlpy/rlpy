@@ -1,6 +1,7 @@
 """Policy base class"""
 
 from rlpy.Tools import className
+import numpy as np
 import logging
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -97,14 +98,14 @@ class Policy(object):
         See :py:meth:`Agents.Agent.Agent.Q_MC` and :py:meth:`Agents.Agent.Agent.MC_episode`
         """
         domain = self.representation.domain
-        S = empty(
+        S = np.empty(
             (samples,
              self.representation.domain.state_space_dims),
             dtype=type(domain.s0()))
-        A = empty((samples, 1), dtype='uint16')
+        A = np.empty((samples, 1), dtype='uint16')
         NS = S.copy()
         T = A.copy()
-        R = empty((samples, 1))
+        R = np.empty((samples, 1))
 
         sample = 0
         eps_length = 0

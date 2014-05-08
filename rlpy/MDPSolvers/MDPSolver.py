@@ -1,5 +1,6 @@
 """MDP Solver base class."""
 
+from abc import ABCMeta, abstractmethod
 import numpy as np
 import logging
 from rlpy.Tools import className, hasFunction, printClass
@@ -36,6 +37,8 @@ class MDPSolver(object):
         show (bool):    Enable visualization?
 
     """
+
+    __metaclass__=ABCMeta
 
     representation = None          # Link to the representation object
     domain = None          # Link to the domain object
@@ -82,6 +85,8 @@ class MDPSolver(object):
 
         # TODO setup logging to file in experiment
 
+
+    @abstractmethod
     def solve(self):
         """Solve the domain MDP."""
         # Abstract

@@ -4,6 +4,7 @@ from .Domain import Domain
 import numpy as np
 import scipy.integrate
 from rlpy.Tools import pl, mpatches, mpath, fromAtoB, lines, rk4, wrap, bound, colors
+from abc import ABCMeta, abstractproperty
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -36,6 +37,52 @@ class CartPoleBase(Domain):
     """
 
     __author__ = ["Robert H. Klein"]
+    __metaclass__ = ABCMeta
+
+
+    @abstractproperty
+    def AVAIL_FORCE(self):
+        pass
+
+    @abstractproperty
+    def ANGULAR_RATE_LIMITS(self):
+        pass
+
+    @abstractproperty
+    def dt(self):
+        pass
+
+    @abstractproperty
+    def POSITON_LIMITS(self):
+        pass
+
+    @abstractproperty
+    def ANGLE_LIMITS(self):
+        pass
+
+    @abstractproperty
+    def LENGTH(self):
+        pass
+
+    @abstractproperty
+    def VELOCITY_LIMITS(self):
+        pass
+
+    @abstractproperty
+    def force_noise_max(self):
+        pass
+
+    @abstractproperty
+    def _ALPHA_MASS(self):
+        pass
+
+    @abstractproperty
+    def MASS_PEND(self):
+        pass
+
+    @abstractproperty
+    def MOMENT_ARM(self):
+        pass
 
     #: m/s^2 - gravitational constant
     ACCEL_G = 9.8

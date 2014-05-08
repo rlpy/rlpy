@@ -1,5 +1,6 @@
 """Fixed policy. Encodes fixed policies for particular domains."""
 
+from rlpy.Tools import vec2id
 from .Policy import Policy
 import numpy as np
 from rlpy.Tools import randSet, className
@@ -201,18 +202,18 @@ class FixedPolicy(Policy):
             # Each UAV finds the closest danger zone to its target and go towards there.
             # If UAVs_num > Target, the rest will hold position
             # Move all agents based on the taken action
-            agents = array(s[:domain.NUMBER_OF_AGENTS * 2].reshape(-1, 2))
-            targets = array(s[domain.NUMBER_OF_AGENTS * 2:].reshape(-1, 2))
+            agents = np.array(s[:domain.NUMBER_OF_AGENTS * 2].reshape(-1, 2))
+            targets = np.array(s[domain.NUMBER_OF_AGENTS * 2:].reshape(-1, 2))
             zones = domain.danger_zone_locations
             # Default action is hold
-            actions = ones(len(agents), dtype=integer) * 4
+            actions = np.ones(len(agents), dtype=np.integer) * 4
             planned_agents_num = min(len(agents), len(targets))
-            for i in arange(planned_agents_num):
+            for i in xrange(planned_agents_num):
                 # Find cloasest zone (manhattan) to the corresponding target
                 target = targets[i, :]
-                distances = sum(
-                    abs(tile(target, (len(zones), 1)) - zones), axis=1)
-                z_row, z_col = zones[argmin(distances), :]
+                distances = np.sum(
+                    np.abs(np.tile(target, (len(zones), 1)) - zones), axis=1)
+                z_row, z_col = zones[np.argmin(distances), :]
                 # find the valid action
                 a_row, a_col = agents[i, :]
                 a = 4  # hold as a default action
@@ -230,10 +231,10 @@ class FixedPolicy(Policy):
 #                print "Zone", zones[argmin(distances),:]
 #                print "Action", a
 #                print '============'
-            return vec2id(actions, ones(len(agents), dtype=integer) * 5)
+            return vec2id(actions, np.ones(len(agents), dtype=np.integer) * 5)
         if className(domain) == 'SystemAdministrator':
             # Select a broken computer and reset it
-            brokenComputers = where(s == 0)[0]
+            brokenComputers = np.where(s == 0)[0]
             if len(brokenComputers):
                 return randSet(brokenComputers)
             else:
@@ -253,4 +254,4 @@ class FixedPolicy(Policy):
             s = domain.state2Struct(s)
             uavs = domain.NUM_UAV
             print s
-            return vec2id(zeros(uavs), ones(uavs) * 3)
+            return vec2id(np.zeros(uavs), np.ones(uavs) * 3)

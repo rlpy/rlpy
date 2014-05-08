@@ -1,7 +1,6 @@
 from rlpy.Domains import GridWorld
 from rlpy.Representations import Tabular
 from scipy.optimize import check_grad, approx_fprime
-from rlpy.Tools import Logger
 from rlpy.Policies.gibbs import GibbsPolicy
 import numpy as np
 
