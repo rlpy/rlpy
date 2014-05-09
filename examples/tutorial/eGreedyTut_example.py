@@ -9,12 +9,11 @@ Tests the policy on the GridWorld domain, with the policy and value function
 visualized.
 """
 __author__ = "Robert H. Klein"
-from Domains import GridWorld
-from Tools import Logger
-from Agents import SARSA
-from Representations import Tabular
-from Policies import eGreedyTut
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Agents import SARSA
+from rlpy.Representations import Tabular
+from rlpy.Policies import eGreedyTut
+from rlpy.Experiments import Experiment
 import os
 
 

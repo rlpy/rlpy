@@ -8,13 +8,14 @@ placed it in the Agents/ directory.
 Tests the agent on the GridWorld domain.
 """
 __author__ = "Robert H. Klein"
-from Domains import GridWorld
-from Tools import Logger
-from Agents import SARSA0
-from Representations import Tabular
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Tools import Logger
+from rlpy.Agents import SARSA0
+from rlpy.Representations import Tabular
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import os
+import logging
 
 
 def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
@@ -26,7 +27,10 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
     @param id: number used to seed the random number generators
     @param path: output directory where logs and results are stored
     """
-    logger = Logger()
+
+    # create logger with 'spam_application'
+    logger = logging.getLogger('SARSA0_example')
+    logger.setLevel(logging.DEBUG)
 
     ## Domain:
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
@@ -41,7 +45,7 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
 
     ## Agent
     agent = SARSA0(representation=representation, policy=policy,
-                       domain=domain, logger=logger,
+                       domain=domain,
                        learning_rate=0.1)
     checks_per_policy = 100
     max_steps = 2000

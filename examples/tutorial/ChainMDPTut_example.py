@@ -8,13 +8,13 @@ tutorial and placed it in the Domains/ directory.
 Tests the agent using SARSA with a tabular representation.
 """
 __author__ = "Robert H. Klein"
-from Domains import ChainMDPTut
-from Tools import Logger
-from Agents import SARSA
-from Representations import Tabular
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Domains import ChainMDPTut
+from rlpy.Agents import SARSA
+from rlpy.Representations import Tabular
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import os
+import logging
 
 
 def make_experiment(id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
@@ -26,22 +26,21 @@ def make_experiment(id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
     @param id: number used to seed the random number generators
     @param path: output directory where logs and results are stored
     """
-    logger = Logger()
 
     ## Domain:
     chainSize = 50
-    domain = ChainMDPTut(chainSize=chainSize, logger=logger)
+    domain = ChainMDPTut(chainSize=chainSize)
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
-    representation  = Tabular(domain, logger)
+    representation  = Tabular(domain)
 
     ## Policy
-    policy = eGreedy(representation, logger, epsilon=0.2)
+    policy = eGreedy(representation, epsilon=0.2)
 
     ## Agent
     agent = SARSA(representation=representation, policy=policy,
-                       domain=domain, logger=logger,
+                       domain=domain,
                        learning_rate=0.1)
     checks_per_policy = 100
     max_steps = 2000
