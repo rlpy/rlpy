@@ -11,6 +11,15 @@ __author__ = "Alborz Geramifard"
 
 
 class Tabular(Representation):
+    """
+    Tabular representation that assigns a binary feature function f_{d}() 
+    to each possible discrete state *d* in the domain. (For bounded continuous
+    dimensions of s, discretize.)
+    f_{d}(s) = 1 when d=s, 0 elsewhere.  (ie, the vector of feature functions
+    evaluated at *s* will have all zero elements except one).
+    NOTE that this representation does not support unbounded dimensions
+
+    """
 
     def __init__(self, domain, discretization=20):
         # Already performed in call to superclass
