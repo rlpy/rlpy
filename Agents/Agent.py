@@ -11,15 +11,16 @@ __author__ = "Alborz Geramifard"
 
 class Agent(object):
     """
-    The Agent receives observations from the Domain and performs actions to
-    obtain some goal.
+    The Agent receives observations from the Domain and incorporates their
+    new information into the representation, policy, etc. as needed.
 
-    The Agent interacts with the Domain in discrete timesteps.
-    At each timestep the Agent receives some observations from the Domain
-    which it uses to update its Representation of the Domain
+    In a typical Experiment, the Agent interacts with the Domain in discrete 
+    timesteps.
+    At each Experiment timestep the Agent receives some observations from the Domain
+    which it uses to update the value function Representation of the Domain
     (ie, on each call to its :py:meth:`~Agents.Agent.Agent.learn` function).
-    It then uses its Policy to select an action to perform.
-    This process (observe, update, act) repeats nuntil some goal or fail state,
+    The Policy is used to select an action to perform.
+    This process (observe, update, act) repeats until some goal or fail state,
     determined by the Domain, is reached. At this point the
     :py:class:`~Experiments.Experiment.Experiment` determines
     whether the agent starts over or has its current policy tested
@@ -223,7 +224,7 @@ class Agent(object):
     def evaluate(self,samples, MC_samples, output_file):
         """
         Evaluate the current policy for fixed number of samples and store them
-        in a numpy 2-d array: (#samples) x (|S|+2), where the two appended
+        in a numpy 2-d array: (number of samples) x (|S|+2), where the two appended
         columns correspond to the action (integer) and Q(s,a). \n
         Saves the data generated in a file. \n
 
@@ -261,7 +262,7 @@ class Agent(object):
         the episodes.
 
         .. note::
-            Every agent must call this function at the end of the learning if the
+            Every Agent must call this function at the end of the learning if the
             transition led to terminal state.
 
         """

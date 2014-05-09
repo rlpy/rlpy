@@ -10,8 +10,17 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 class eGreedy(Policy):
-    epsilon         = None
-    old_epsilon     = None
+    """
+    From a given state, it selects the action with the highest expected value
+    (greedy with respect to value function), but with some probability 
+    ``epsilon``, takes a random action instead.
+    This explicitly balances the exploration/exploitation tradeoff, and 
+    ensures that in the limit of infinite samples, the agent will
+    have explored the entire domain.
+    """
+
+    epsilon         = None # Probability of selecting a random action instead of greedy
+    old_epsilon     = None # Temporarily stores value of ``epsilon`` when exploration disabled
     forcedDeterministicAmongBestActions = None # This boolean variable is used to avoid random selection among actions with the same values
     def __init__(self,representation,logger,epsilon = .1,
                  forcedDeterministicAmongBestActions = False):

@@ -18,7 +18,13 @@ class Logger(object):
         f = open(self.filename,'w')
         f.close()
     def log(self,str, printToScreen = True):
-    # Print something both in output and in a file
+        """
+        Logs a string to the output filename associated with this logger object.
+        Optionally also print this string to screen.
+
+        :param str: String to write to log
+        :param printToScreen: Boolean, if true, also print str to screen.
+        """
         if printToScreen: print str
         self.buffer += str +'\n'
         if self.filename != '':

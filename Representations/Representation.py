@@ -61,7 +61,8 @@ class Representation(object):
     def __init__(self,domain,logger,discretization = 20):
         """
         :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
-        :param discretization: Number of bins used for each continuous dimension
+        :param discretization: Number of bins used for each continuous dimension.
+            For discrete dimensions, this parameter is ignored.
         """
         
         for v in ['features_num']:
@@ -125,8 +126,8 @@ class Representation(object):
             - A: the corresponding array of actionIDs (integers)
         
         .. note::
-            This function is distinct from
-            :py:meth:`~Representations.Representation.Representation.Q`,
+            This function is distinct 
+            from :py:meth:`~Representations.Representation.Representation.Q`,
             which computes the Q function for an (s,a) pair. \n
             Instead, this function ``Qs()`` computes all Q function values
             (for all possible actions) at a given state *s*.
@@ -165,9 +166,9 @@ class Representation(object):
         """
         Returns :py:meth:`~Representations.Representation.Representation.phi_nonTerminal`
         for a given representation, or a zero feature vector in a terminal state.
-        
+
         :param s: The state for which to compute the feature vector
-        
+
         :return: numpy array, the feature vector evaluted at state *s*.
         
         .. note::
@@ -334,8 +335,8 @@ class Representation(object):
         
         .. note::
             For adaptive representations that require access to TD-Error to
-            determine which features to add next, use
-            :py:meth:`~Representations.Representation.Representation.post_discover`
+            determine which features to add next,
+            use :py:meth:`~Representations.Representation.Representation.post_discover`
             instead.
         
         :param s: The state
@@ -358,8 +359,8 @@ class Representation(object):
         
         .. note::
             For adaptive representations that do not require access to TD-Error
-            to determine which features to add next, you may use
-            :py:meth:`~Representations.Representation.Representation.pre_discover`
+            to determine which features to add next, you may 
+            use :py:meth:`~Representations.Representation.Representation.pre_discover`
             instead.
         
         :param s: The state
@@ -397,8 +398,8 @@ class Representation(object):
     def phi_nonTerminal(self,s):
         """ *Abstract Method* \n
         Returns the feature vector evaluated at state *s* for non-terminal
-        states; see function 
-        :py:meth:`~Representations.Representation.Representation.phi
+        states; see
+        function :py:meth:`~Representations.Representation.Representation.phi
         for the general case.
             
         :param s: The given state
@@ -441,7 +442,7 @@ class Representation(object):
             If the feature vector phi(s) has already been cached,
             pass it here as input so that it need not be computed again.
         :param use_sparse: Determines whether or not to use sparse matrix
-        libraries provided with numpy.
+            libraries provided with numpy.
         
         :return: all_phi_s_a (of dimension p x (s_a) )
         """
@@ -473,10 +474,10 @@ class Representation(object):
             The mask is a binary 2-d array, where 1 indicates an active mask
             (action is unavailable) while 0 indicates a possible action.
         :param useSparse: Determines whether or not to use sparse matrix
-        libraries provided with numpy.
+            libraries provided with numpy.
         
         :return: An array of the best action associated with each state.
-        
+
         """
         p,n  = all_phi_s.shape
         a_num   = self.domain.actions_num

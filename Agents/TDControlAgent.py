@@ -37,11 +37,15 @@ class TDControlAgent(Agent):
 
     def learn(self,s,p_actions, a, r, ns, np_actions, na,terminal):
 
-        self.representation.pre_discover(s, False, a, ns, terminal)
+        # The previous state could never be terminal
+        # (otherwise the episode would have already terminated)
+        prevStateTerminal = False 
+
+        self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
         gamma           = self.representation.domain.gamma
         theta           = self.representation.theta
-        phi_s           = self.representation.phi(s, False)
-        phi             = self.representation.phi_sa(s, False, a, phi_s)
+        phi_s           = self.representation.phi(s, prevStateTerminal)
+        phi             = self.representation.phi_sa(s, prevStateTerminal, a, phi_s)
         phi_prime_s     = self.representation.phi(ns, terminal)
         na              = self._future_action(ns, terminal, np_actions, phi_prime_s, na)  # here comes the difference between SARSA and Q-Learning
         phi_prime       = self.representation.phi_sa(ns, terminal, na, phi_prime_s)
