@@ -3,6 +3,6 @@
 Experiment
 ----------
 
-.. autoclass:: Experiments.Experiment
+.. autoclass:: rlpy.Experiments.Experiment
     :members:
 

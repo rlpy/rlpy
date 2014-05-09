@@ -3,5 +3,5 @@
 Policy
 ------
 
-.. autoclass:: Policies.Policy.Policy
+.. autoclass:: rlpy.Policies.Policy.Policy
     :members:

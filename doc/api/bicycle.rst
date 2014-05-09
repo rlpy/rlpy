@@ -3,5 +3,5 @@
 Bicycle Balancing
 -----------------
 
-.. autoclass:: Domains.Bicycle.BicycleBalancing
+.. autoclass:: rlpy.Domains.Bicycle.BicycleBalancing
     :members:

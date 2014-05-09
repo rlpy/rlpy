@@ -3,5 +3,5 @@
 Agent
 -----
 
-.. autoclass:: Agents.Agent.Agent
+.. autoclass:: rlpy.Agents.Agent.Agent
     :members:

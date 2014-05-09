@@ -4,7 +4,7 @@
 Infinite Track CartPole: Balance Task
 -------------------------------------
 
-.. autoclass:: Domains.InfiniteTrackCartPole.InfCartPoleBalance
+.. autoclass:: rlpy.Domains.InfiniteTrackCartPole.InfCartPoleBalance
     :members:
     :inherited-members:
 
@@ -12,6 +12,6 @@ Infinite Track CartPole: Balance Task
 Infinite Track CartPole: Swing-Up Task
 --------------------------------------
 
-.. autoclass:: Domains.InfiniteTrackCartPole.InfCartPoleSwingUp
+.. autoclass:: rlpy.Domains.InfiniteTrackCartPole.InfCartPoleSwingUp
     :members:
     :inherited-members:

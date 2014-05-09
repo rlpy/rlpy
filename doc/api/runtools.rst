@@ -1,20 +1,20 @@
 Tools.run - Running Experiments in Batch
 ----------------------------------------
 
-.. automodule:: Tools.run
+.. automodule:: rlpy.Tools.run
     :members:
     :undoc-members:
 
 Tools.results - Analyzing results
 ---------------------------------
 
-.. automodule:: Tools.results
+.. automodule:: rlpy.Tools.results
     :members:
     :undoc-members:
 
 Tools.hypersearch - Optimizing Hyperparameters
 ----------------------------------------------
 
-.. automodule:: Tools.hypersearch
+.. automodule:: rlpy.Tools.hypersearch
 
     .. autofunction:: find_hyperparameters

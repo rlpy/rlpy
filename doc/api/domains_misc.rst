@@ -1,100 +1,100 @@
 BlocksWorld
 -----------
 
-.. autoclass:: Domains.BlocksWorld.BlocksWorld
+.. autoclass:: rlpy.Domains.BlocksWorld.BlocksWorld
     :members:
 
 
 Linear Chain MDP
 ----------------
 
-.. autoclass:: Domains.ChainMDP.ChainMDP
+.. autoclass:: rlpy.Domains.ChainMDP.ChainMDP
     :members:
 
 Fifty-State Chain MDP
 ---------------------
 
-.. autoclass:: Domains.FiftyChain.FiftyChain
+.. autoclass:: rlpy.Domains.FiftyChain.FiftyChain
     :members:
 
 FlipBoard
 ---------
 
-.. autoclass:: Domains.FlipBoard.FlipBoard
+.. autoclass:: rlpy.Domains.FlipBoard.FlipBoard
     :members:
 
 GridWorld
 ---------
 
-.. autoclass:: Domains.GridWorld.GridWorld
+.. autoclass:: rlpy.Domains.GridWorld.GridWorld
     :members:
 
 HIV Treatment
 -------------
 
-.. autoclass:: Domains.HIVTreatment.HIVTreatment
+.. autoclass:: rlpy.Domains.HIVTreatment.HIVTreatment
     :members:
 
 Helicopter Hovering
 -------------------
 
-.. autoclass:: Domains.HelicopterHover.HelicopterHoverExtended
+.. autoclass:: rlpy.Domains.HelicopterHover.HelicopterHoverExtended
     :members:
 
-.. autoclass:: Domains.HelicopterHover.HelicopterHover
+.. autoclass:: rlpy.Domains.HelicopterHover.HelicopterHover
     :members:
 
 Intruder Monitoring
 -------------------
 
-.. autoclass:: Domains.IntruderMonitoring.IntruderMonitoring
+.. autoclass:: rlpy.Domains.IntruderMonitoring.IntruderMonitoring
     :members:
 
 Mountain Car
 ------------
 
-.. autoclass:: Domains.MountainCar.MountainCar
+.. autoclass:: rlpy.Domains.MountainCar.MountainCar
     :members:
 
 
 Persistent Search and Track Mission 
 -----------------------------------
 
-.. autoclass:: Domains.PST.PST
+.. autoclass:: rlpy.Domains.PST.PST
     :members:
 
 Pacman
 ------
 
-.. autoclass:: Domains.Pacman.Pacman
+.. autoclass:: rlpy.Domains.Pacman.Pacman
     :members:
 
 Pinball
 -------
 
-.. autoclass:: Domains.Pinball.Pinball
+.. autoclass:: rlpy.Domains.Pinball.Pinball
     :members:
 
 PuddleWorld
 -----------
 
-.. autoclass:: Domains.PuddleWorld.PuddleWorld
+.. autoclass:: rlpy.Domains.PuddleWorld.PuddleWorld
     :members:
 
 RCCar
 -----
 
-.. autoclass:: Domains.RCCar.RCCar
+.. autoclass:: rlpy.Domains.RCCar.RCCar
     :members:
 
 System Administrator
 --------------------
 
-.. autoclass:: Domains.SystemAdministrator.SystemAdministrator
+.. autoclass:: rlpy.Domains.SystemAdministrator.SystemAdministrator
     :members:
 
 Swimmer
 -------
 
-.. autoclass:: Domains.Swimmer.Swimmer
+.. autoclass:: rlpy.Domains.Swimmer.Swimmer
     :members:

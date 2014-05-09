@@ -3,5 +3,5 @@
 MDP Solvers
 -----------
 
-.. autoclass:: MDPSolvers.MDPSolver.MDPSolver
+.. autoclass:: rlpy.MDPSolvers.MDPSolver.MDPSolver
     :members:
