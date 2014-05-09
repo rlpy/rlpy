@@ -6,17 +6,17 @@ Creating a New Domain
 =====================
 
 This tutorial describes the standard RLPy 
-:class:`~Domains.Domain.Domain` interface,
+:class:`~rlpy.Domains.Domain.Domain` interface,
 and illustrates a brief example of creating a new problem domain.
 
 .. Below taken directly from Domain.py
 
 The Domain controls the environment in which the
-:class:`~Agents.Agent.Agent` resides as well as the reward function the
+:class:`~rlpy.Agents.Agent.Agent` resides as well as the reward function the
 Agent is subject to.
 
 The Agent interacts with the Domain in discrete timesteps called
-*episodes* (see :func:`~Domains.Domain.Domain.step`).
+*episodes* (see :func:`~rlpy.Domains.Domain.Domain.step`).
 At each step, the Agent informs the Domain what indexed action it wants to
 perform.  The Domain then calculates the effects this action has on the
 environment and updates its internal state accordingly.
@@ -26,7 +26,7 @@ is reset to its initial state.
 
 This process repeats until the Domain determines that the Agent has either
 completed its goal or failed.
-The :py:class:`~Experiments.Experiment.Experiment` controls this cycle.
+The :py:class:`~rlpy.Experiments.Experiment.Experiment` controls this cycle.
 
 Because Agents are designed to be agnostic to the Domain that they are
 acting within and the problem they are trying to solve, the Domain needs
@@ -63,13 +63,9 @@ Note that RLPy requires the BSD 3-Clause license.
   with this implementation (and note differences, if any).
 
 * Each Domain must be a subclass of 
-  :class:`~Domains.Domain.Domain` and call the 
-  :func:`~Domains.Domain.__init__` function of the 
+  :class:`~rlpy.Domains.Domain.Domain` and call the 
+  :func:`~rlpy.Domains.Domain.__init__` function of the 
   Domain superclass.
-
-* Accordingly, each Domain must be instantiated with a Logger (or None)
-  in the ``__init__()`` function. Your code should appropriately handle 
-  the case where ``logger=None`` is passed to ``__init__()``.
 
 * Once completed, the className of the new agent must be added to the
   ``__init__.py`` file in the ``Domains/`` directory.
@@ -106,11 +102,11 @@ superclass ``__init__()`` function:
 
 REQUIRED Functions
 """"""""""""""""""
-#. :func:`~Domains.Domain.Domain.s0`,
+#. :func:`~rlpy.Domains.Domain.Domain.s0`,
    (see linked documentation), which returns a (possibly random) state in the 
    domain, to be used at the start of an *episode*.
 
-#. :func:`~Domains.Domain.Domain.step`,
+#. :func:`~rlpy.Domains.Domain.Domain.step`,
    (see linked documentation), which returns the tuple ``(r,ns,terminal, pa)`` 
    that results from taking action *a* from the current state (internal to the Domain).
 
@@ -124,9 +120,9 @@ SPECIAL Functions
 """""""""""""""""
 In many cases, the Domain will also override the functions:
 
-#. :func:`~Domains.Domain.Domain.isTerminal` - returns a boolean whether or
+#. :func:`~rlpy.Domains.Domain.Domain.isTerminal` - returns a boolean whether or
    not the current (internal) state is terminal. Default is always return False.
-#. :func:`~Domains.Domain.Domain.possibleActions` - returns an array of
+#. :func:`~rlpy.Domains.Domain.Domain.possibleActions` - returns an array of
    possible action indices, which often depend on the current state.
    Default is to enumerate **every** possible action, regardless of current state.
 
@@ -135,15 +131,15 @@ OPTIONAL Functions
 """"""""""""""""""
 Optionally, define / override the following functions, used for visualization:
 
-#. :func:`~Domains.Domain.Domain.showDomain` - Visualization of domain based
+#. :func:`~rlpy.Domains.Domain.Domain.showDomain` - Visualization of domain based
    on current internal state and an action, *a*.
    Often the header will include an optional argument *s* to display instead 
    of the current internal state.
    RLPy frequently uses `matplotlib <http://matplotlib.org/>`_
    to accomplish this - see the example below.
-#. :func:`~Domains.Domain.Domain.showLearning` - Visualization of the "learning"
+#. :func:`~rlpy.Domains.Domain.Domain.showLearning` - Visualization of the "learning"
    obtained so far on this domain, usually a value function plot and policy plot.
-   See the introductory tutorial for an example on :class:`~Domains.Gridworld.GridWorld`
+   See the introductory tutorial for an example on :class:`~rlpy.Domains.Gridworld.GridWorld`
 
 XX expectedStep(), XX
 
@@ -151,17 +147,14 @@ XX expectedStep(), XX
 Additional Information
 ----------------------
 
-* As always, the Domain can log messages using ``self.logger.log(<str>)``, see 
-  :func:`Tools.Logger.log`. 
-  Your code should be appropriately handle the case where ``logger=None`` is 
-  passed to ``__init__()``.
+* As always, the Domain can log messages using ``self.logger.info(<str>)``, see 
+  Python ``logger`` doc.
 
 * You should log values assigned to custom parameters when ``__init__()`` is called.
 
-* See :class:`~Domains.Domain.Domain` for functions 
+* See :class:`~rlpy.Domains.Domain.Domain` for functions 
   provided by the superclass, especially before defining 
   helper functions which might be redundant.
-
 
 
 Example: Creating the ``ChainMDP`` Domain
@@ -184,36 +177,36 @@ Note that the optimal policy is to always go right.
        __license__ = "BSD 3-Clause"
        __author__ = "Ray N. Forcement"
        
-       from Tools import *
-       from Domain import Domain
+       from rlpy.Tools import plt, mpatches, fromAtoB
+       from .Domain import Domain
        import numpy as np
 
 #. Declare the class, create needed members variables (here several objects to
    be used for visualization and a few domain reward parameters), and write a 
    docstring description::
 
-   class ChainMDPTut(Domain):
-       """
-       Tutorial Domain - nearly identical to ChainMDP.py
-       """
-    #: Reward for each timestep spent in the goal region
-    GOAL_REWARD = 0
-    #: Reward for each timestep
-    STEP_REWARD = -1
-    # Used for graphical normalization
-    MAX_RETURN  = 1
-    # Used for graphical normalization
-    MIN_RETURN  = 0
-    # Used for graphical shifting of arrows
-    SHIFT       = .3
-    #:Used for graphical radius of states
-    RADIUS      = .5
-    # Stores the graphical pathes for states so that we can later change their colors
-    circles     = None
-    #: Number of states in the chain
-    chainSize   = 0
-    # Y values used for drawing circles
-    Y           = 1
+       class ChainMDPTut(Domain):
+           """
+           Tutorial Domain - nearly identical to ChainMDP.py
+           """
+           #: Reward for each timestep spent in the goal region
+           GOAL_REWARD = 0
+           #: Reward for each timestep
+           STEP_REWARD = -1
+           # Used for graphical normalization
+           MAX_RETURN  = 1
+           # Used for graphical normalization
+           MIN_RETURN  = 0
+           # Used for graphical shifting of arrows
+           SHIFT       = .3
+           #:Used for graphical radius of states
+           RADIUS      = .5
+           # Stores the graphical pathes for states so that we can later change their colors
+           circles     = None
+           #: Number of states in the chain
+           chainSize   = 0
+           # Y values used for drawing circles
+           Y           = 1
 
 #. Copy the __init__ declaration from ``Domain.py``, add needed parameters
    (here the number of states in the chain, ``chainSize``), and log them.
@@ -221,7 +214,7 @@ Note that the optimal policy is to always go right.
    and ``self.gamma``.
    Then call the superclass constructor::
 
-       def __init__(self, chainSize=2,logger = None):
+       def __init__(self, chainSize=2):
            """
            :param chainSize: Number of states \'n\' in the chain.
            """
@@ -234,7 +227,7 @@ Note that the optimal policy is to always go right.
            self.DimNames           = [`State`]
            self.actions_num        = 2
            self.gamma              = 0.9
-           super(ChainMDP,self).__init__(logger)
+           super(ChainMDP,self).__init__()
 
 #. Copy the ``step()`` and function declaration and implement it accordingly
    to return the tuple (r,ns,isTerminal,possibleActions), and similarly for ``s0()``.

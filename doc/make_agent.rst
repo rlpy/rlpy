@@ -5,7 +5,7 @@
 Creating a New Agent
 ====================
 
-This tutorial describes the standard RLPy :class:`~Agents.Agent.Agent` interface,
+This tutorial describes the standard RLPy :class:`~rlpy.Agents.Agent.Agent` interface,
 and illustrates a brief example of creating a new learning agent.
 
 .. Below taken directly from Agent.py
@@ -17,7 +17,7 @@ In a typical Experiment, the Agent interacts with the Domain in discrete
 timesteps.
 At each Experiment timestep the Agent receives some observations from the Domain
 which it uses to update the value function Representation of the Domain
-(ie, on each call to its :func:`~Agents.Agent.Agent.learn` function).
+(ie, on each call to its :func:`~rlpy.Agents.Agent.Agent.learn` function).
 The Policy is used to select an action to perform.
 This process (observe, update, act) repeats until some goal or fail state,
 determined by the Domain, is reached. At this point the
@@ -47,15 +47,12 @@ Note that RLPy requires the BSD 3-Clause license.
 * If available, please include a link or reference to the publication associated 
   with this implementation (and note differences, if any).
 
-* Each learning agent must be a subclass of :class:`~Agents.Agent.Agent` and call the 
-  :func:`~Agents.Agent.__init__` function of the Agent superclass.
+* Each learning agent must be a subclass of :class:`~rlpy.Agents.Agent.Agent` and call the 
+  :func:`~rlpy.Agents.Agent.__init__` function of the Agent superclass.
 
-* Accordingly, each Agent must be instantiated with a Logger (or None), Representation, 
+* Accordingly, each Agent must be instantiated with a Representation, 
   Policy, and Domain XX Remove additional params eg boyan? XX in the 
   ``__init__()`` function
-
-* Your code should appropriately handle the case where ``logger=None`` is 
-  passed to ``__init__()``.
 
 * Once completed, the className of the new agent must be added to the
   ``__init__.py`` file in the ``Agents/`` directory.
@@ -69,20 +66,20 @@ REQUIRED Instance Variables
 
 REQUIRED Functions
 """"""""""""""""""
-:func:`~Agents.Agent.Agent.learn` - called on every timestep (see documentation)
+:func:`~rlpy.Agents.Agent.Agent.learn` - called on every timestep (see documentation)
 
   .. Note:: 
 
-      The Agent *MUST* call the (inherited) :func:`~Agents.Agent.Agent.episodeTerminated`
+      The Agent *MUST* call the (inherited) :func:`~rlpy.Agents.Agent.Agent.episodeTerminated`
       function after learning if the transition led to a terminal state
       (ie, ``learn()`` will return ``isTerminal=True``)
 
   .. Note::
 
       The ``learn()`` function *MUST* call the 
-      :func:`~Representations.Representation.Representation.pre_discover`
+      :func:`~rlpy.Representations.Representation.Representation.pre_discover`
       function at its beginning, and 
-      :func:`~Representations.Representation.Representation.post_discover`
+      :func:`~rlpy.Representations.Representation.Representation.post_discover`
       at its end.  This allows adaptive representations to add new features
       (no effect on fixed ones).
 
@@ -90,14 +87,12 @@ REQUIRED Functions
 Additional Information
 ----------------------
 
-* As always, the agent can log messages using ``self.logger.log(<str>)``, see 
-  :func:`Tools.Logger.log`. 
-  Your code should be appropriately handle the case where ``logger=None`` is 
-  passed to ``__init__()``.
+* As always, the agent can log messages using ``self.logger.info(<str>)``, see 
+  the Python ``logger`` documentation
 
 * You should log values assigned to custom parameters when ``__init__()`` is called.
 
-* See :class:`~Agents.Agent.Agent` for functions provided by the superclass.
+* See :class:`~rlpy.Agents.Agent.Agent` for functions provided by the superclass.
 
 
 
@@ -123,7 +118,7 @@ this TD error, weighted by a factor called the *learning rate*.
        __license__ = "BSD 3-Clause"
        __author__ = "Ray N. Forcement"
        
-       from Agent import Agent
+       from rlpy.Agent import Agent
        import numpy
 
 #. Declare the class, create needed members variables (here a learning rate),
@@ -138,11 +133,10 @@ this TD error, weighted by a factor called the *learning rate*.
 #. Copy the __init__ declaration from ``Agent.py``, add needed parameters
    (here the learning_rate) and log them.  Then call the superclass constructor::
 
-       def __init__(self, logger, representation, policy, domain, learning_rate=0.1):
+       def __init__(self, representation, policy, domain, learning_rate=0.1):
            self.learning_rate = learning_rate
-           super(SARSA0,self).__init__(representation,policy,domain,logger,initial_alpha,alpha_decay_mode, boyan_N0)
-           if logger:
-               self.logger.log("Learning rate:\t\t%0.2f" % learning_rate)
+           super(SARSA0,self).__init__(representation,policy,domain,initial_alpha,alpha_decay_mode, boyan_N0)
+           self.logger.info("Learning rate:\t\t%0.2f" % learning_rate)
 
 #. Copy the learn() declaration and implement accordingly.
    Here, compute the td-error, and use it to update

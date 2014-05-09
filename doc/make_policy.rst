@@ -6,20 +6,20 @@ Creating a New Policy
 =====================
 
 This tutorial describes the standard RLPy 
-:class:`~Policies.Policy.Policy` interface,
+:class:`~rlpy.Policies.Policy.Policy` interface,
 and illustrates a brief example of creating a new problem domain.
 
 .. Below taken directly from Policy.py
 
 The Policy determines the discrete action that an
-:py:class:`~Agents.Agent.Agent` will take  given its current value function
-:py:class:`~Representations.Representation.Representation`.
+:py:class:`~rlpy.Agents.Agent.Agent` will take  given its current value function
+:py:class:`~rlpy.Representations.Representation.Representation`.
 
-The Agent learns about the :py:class:`~Domains.Domain.Domain`
+The Agent learns about the :py:class:`~rlpy.Domains.Domain.Domain`
 as the two interact.
 At each step, the Agent passes information about its current state
 to the Policy; the Policy uses this to decide what discrete action the
-Agent should perform next (see :py:meth:`~Policies.Policy.Policy.pi`) \n
+Agent should perform next (see :py:meth:`~rlpy.Policies.Policy.Policy.pi`) \n
 
 
 .. warning::
@@ -49,8 +49,8 @@ Note that RLPy requires the BSD 3-Clause license.
 * If available, please include a link or reference to the publication associated 
   with this implementation (and note differences, if any).
 
-* Each Policy must be a subclass of :class:`~Policies.Policy.Policy` and call 
-  the :func:`~Policies.Policy.__init__` function of the 
+* Each Policy must be a subclass of :class:`~rlpy.Policies.Policy.Policy` and call 
+  the :func:`~rlpy.Policies.Policy.__init__` function of the 
   Policy superclass.
 
 * Accordingly, each Policy must be instantiated with a Logger (or None)
@@ -69,7 +69,7 @@ REQUIRED Instance Variables
 
 REQUIRED Functions
 """"""""""""""""""
-#. :py:meth:`~Policies.Policy.Policy.pi` - accepts the current state *s*,
+#. :py:meth:`~rlpy.Policies.Policy.Policy.pi` - accepts the current state *s*,
    whether or not *s* is *terminal*, and an array of possible actions 
    indices *p_actions* and returns an action index for the Agent to take.
 
@@ -80,28 +80,28 @@ Policies which have an explicit exploratory component (eg epsilon-greedy)
 **MUST** override the functions below to prevent exploratory behavior
 when evaluating the policy (which would skew results)
 
-#. :py:meth:`~Policies.Policy.Policy.turnOffExploration`
-#. :py:meth:`~Policies.Policy.Policy.turnOnExploration`
+#. :py:meth:`~rlpy.Policies.Policy.Policy.turnOffExploration`
+#. :py:meth:`~rlpy.Policies.Policy.Policy.turnOnExploration`
 
 
 Additional Information
 ----------------------
 
-* As always, the Policy can log messages using ``self.logger.log(<str>)``, see 
-  :func:`Tools.Logger.log`. 
+* As always, the Policy can log messages using ``self.logger.info(<str>)``, see 
+  Python ``logger`` doc. 
   Your code should be appropriately handle the case where ``logger=None`` is 
   passed to ``__init__()``.
 
 * You should log values assigned to custom parameters when ``__init__()`` is called.
 
-* See :class:`~Policies.Policy.Policy` for functions 
+* See :class:`~rlpy.Policies.Policy.Policy` for functions 
   provided by the superclass, especially before defining 
   helper functions which might be redundant. \n
 
 * Note the useful functions provided by 
-  the :class:`~Representations.Representation.Representation``,
-  e.g. :func:`~Representations.Representation.bestActions` 
-  and :func:`~Representations.Representation.bestAction`
+  the :class:`~rlpy.Representations.Representation.Representation``,
+  e.g. :func:`~rlpy.Representations.Representation.bestActions` 
+  and :func:`~rlpy.Representations.Representation.bestAction`
   to get the best action(s) with respect to the value function (greedy).
 
 
@@ -124,8 +124,8 @@ have explored the entire domain.
        __license__ = "BSD 3-Clause"
        __author__ = "Ray N. Forcement"
        
-        from Policy import *
-        import numpy as np
+       from .Policy import Policy
+       import numpy as np
 
 #. Declare the class, create needed members variables, and write a 
    docstring description.  See the role of member variables in comments::
@@ -154,11 +154,7 @@ have explored the entire domain.
                      forcedDeterministicAmongBestActions = False):
            self.epsilon = epsilon
            self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
-           super(eGreedy,self).__init__(representation,logger)
-           if self.logger:
-               self.logger.log("=" * 60)
-               self.logger.log("Policy: eGreedy")
-               self.logger.log("Epsilon\t\t{0}".format(self.epsilon))
+           super(eGreedy,self).__init__(representation)
 
 
 #. Copy the ``pi()`` declaration from ``Policy.py`` and implement it to return

@@ -6,17 +6,17 @@ Creating a New Representation
 =============================
 
 This tutorial describes the standard RLPy 
-:class:`~Representations.Representation.Representation` interface,
+:class:`~rlpy.Representations.Representation.Representation` interface,
 and illustrates a brief example of creating a new value function representation.
 
 .. Below taken directly from Representation.py
 
 The Representation is the approximation of the
-value function associated with a :py:class:`~Domains.Domain.Domain`,
+value function associated with a :py:class:`~rlpy.Domains.Domain.Domain`,
 usually in some lower-dimensional feature space.
 
 The Agent receives observations from the Domain on each step and calls 
-its :func:`~Agents.Agent.Agent.learn` function, which is responsible for updating the
+its :func:`~rlpy.Agents.Agent.Agent.learn` function, which is responsible for updating the
 Representation accordingly.
 Agents can later query the Representation for the value of being in a state
 *V(s)* or the value of taking an action in a particular state
@@ -50,18 +50,15 @@ Requirements
   with this implementation (and note differences, if any).
 
 * Each Representation must be a subclass of 
-  :class:`~Representations.Representation.Representation` and call the 
-  :func:`~Representations.Representation.__init__` function of the 
+  :class:`~rlpy.Representations.Representation.Representation` and call the 
+  :func:`~rlpy.Representations.Representation.__init__` function of the 
   Representation superclass.
 
-* Accordingly, each Representation must be instantiated with a Logger (or None)
+* Accordingly, each Representation must be instantiated with
   and a Domain in the ``__init__()`` function.  Note that an optional
   ``discretization`` parameter may be used by discrete Representations 
   attempting to represent a value function over a continuous space.
   It is ignored for discrete dimensions.
-
-* Your code should appropriately handle the case where ``logger=None`` is 
-  passed to ``__init__()``.
 
 * Once completed, the className of the new agent **must be added** to the
   ``__init__.py`` file in the ``Representations/`` directory.
@@ -86,11 +83,11 @@ REQUIRED Functions
 """"""""""""""""""
 The new Representation *MUST* define two functions:
 
-#. :func:`~Representations.Representation.Representation.phi_nonTerminal`,
+#. :func:`~rlpy.Representations.Representation.Representation.phi_nonTerminal`,
    (see linked documentation), which returns a vector of feature function 
    values associated with a particular state.
 
-#. :func:`~Representations.Representation.Representation.featureType`,
+#. :func:`~rlpy.Representations.Representation.Representation.featureType`,
    (see linked documentation), which returns the data type of the underlying
    feature functions (eg "float" or "bool").
 
@@ -101,21 +98,19 @@ Representations whose feature functions may change over the course of execution
 one or both functions below as needed.
 Note that ``self.isDynamic`` should = ``True``.
 
-#. :func:`~Representations.Representation.Representation.pre_discover`
+#. :func:`~rlpy.Representations.Representation.Representation.pre_discover`
 
-#. :func:`~Representations.Representation.Representation.post_discover`
+#. :func:`~rlpy.Representations.Representation.Representation.post_discover`
 
 Additional Information
 ----------------------
 
-* As always, the Representation can log messages using ``self.logger.log(<str>)``, see 
-  :func:`Tools.Logger.log`. 
-  Your code should be appropriately handle the case where ``logger=None`` is 
-  passed to ``__init__()``.
+* As always, the Representation can log messages using ``self.logger.info(<str>)``, see 
+  Python ``logger`` doc. 
 
 * You should log values assigned to custom parameters when ``__init__()`` is called.
 
-* See :class:`~Representations.Representation.Representation` for functions 
+* See :class:`~rlpy.Representations.Representation.Representation` for functions 
   provided by the superclass, especially before defining 
   helper functions which might be redundant.
 
@@ -123,12 +118,12 @@ Additional Information
 
 Example: Creating the ``IncrementalTabular`` Representation
 -----------------------------------------------------------
-In this example we will recreate the simple :class:`~Representations.IncrementalTabular.IncrementalTabular`  Representation, which 
+In this example we will recreate the simple :class:`~rlpy.Representations.IncrementalTabular.IncrementalTabular`  Representation, which 
 merely creates a binary feature function f\ :sub:`d`\ () that is associated with each
 discrete state ``d`` we have encountered so far.
 f\ :sub:`d`\ (s) = 1 when *d=s*, 0 elsewhere, ie, the vector of feature 
 functions evaluated at *s* will have all zero elements except one.
-Note that this is identical to the :class:`~Representations.Tabular.Tabular` 
+Note that this is identical to the :class:`~rlpy.Representations.Tabular.Tabular` 
 Representation, except that feature functions are only created as needed, not 
 instantiated for every single state at the outset.
 Though simple, neither the ``Tabular`` nor ``IncrementalTabular`` representations
@@ -146,8 +141,7 @@ are discretized.
                       "William Dabney", "Jonathan P. How"]
        __license__ = "BSD 3-Clause"
        __author__ = "Ray N. Forcement"
-       
-       from Representation import *
+
 
 #. Declare the class, create needed members variables (here an optional hash
    table to lookup feature function values previously computed), and write a 
@@ -169,7 +163,7 @@ are discretized.
            self.hash           = {}
            self.features_num   = 0
            self.isDynamic      = True
-           super(IncrTabularTut, self).__init__(domain, logger, discretization)
+           super(IncrTabularTut, self).__init__(domain, discretization)
 
 #. Copy the ``phi_nonTerminal()`` function declaration and implement it accordingly
    to return the vector of feature function values for a given state.

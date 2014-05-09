@@ -57,7 +57,7 @@ have to be set:
 .. note::
 
     Each of the components mentioned here has several realizations in RLPy, yet this 
-    website provides guidance only on the main abstaract classes, namely: 
+    website provides guidance only on the main abstract classes, namely: 
     :ref:`Agent <agent>`, :ref:`MDP Solver <mdp_solver>`, :ref:`Representation
     <representation>`, :ref:`Policy <policy>`, :ref:`Domain <domain>` and
     :ref:`Experiment <experiment>`

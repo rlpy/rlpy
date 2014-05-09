@@ -36,7 +36,7 @@ See documentation in the :ref:`Getting Started <interpret_output>` section.
 My code is slow, how can I improve its speed?
 ---------------------------------------------
 
-You can use the :func:`Tools.run.run_profiled` function which takes a
+You can use the :func:`rlpy.Tools.run.run_profiled` function which takes a
 `make_experiment` function and generates a pictorial profile of the
 resulting running time in pdf format (see api doc for details on where to
 find this files). 
