@@ -14,14 +14,14 @@ __author__ = "Alborz Geramifard"
 class Policy(object):
 
     """The Policy determines the discrete action that an
-    :py:class:`~Agents.Agent.Agent` will take  given its
-    :py:class:`~Representations.Representation.Representation`.
+    :py:class:`~rlpy.Agents.Agent.Agent` will take  given its
+    :py:class:`~rlpy.Representations.Representation.Representation`.
 
-    The Agent learns about the :py:class:`~Domains.Domain.Domain`
+    The Agent learns about the :py:class:`~rlpy.Domains.Domain.Domain`
     as the two interact.
     At each step, the Agent passes information about its current state
     to the Policy; the Policy uses this to decide what discrete action the
-    Agent should perform next (see :py:meth:`~Policies.Policy.Policy.pi`) \n
+    Agent should perform next (see :py:meth:`~rlpy.Policies.Policy.Policy.pi`) \n
 
     The Policy class is a base class that provides the basic framework for all
     policies. It provides the methods and attributes that allow child classes
@@ -37,7 +37,7 @@ class Policy(object):
 
     def __init__(self, representation):
         """
-        :param representation: the :py:class:`~Representations.Representation.Representation`
+        :param representation: the :py:class:`~rlpy.Representations.Representation.Representation`
             to use in learning the value function.
 
         """
@@ -68,7 +68,7 @@ class Policy(object):
     def turnOnExploration(self):
         """
         *Abstract Method:* \n
-        If :py:meth:Policies.Policy.Policy.turnOffExploration` was called
+        If :py:meth:`~rlpy.Policies.Policy.Policy.turnOffExploration` was called
         previously, reverse its effects (e.g. restore epsilon to its previous,
         possibly nonzero, value).
         """
@@ -95,7 +95,7 @@ class Policy(object):
         - R: (#samples) x (1) float
         - T: (#samples) x (1) bool
 
-        See :py:meth:`Agents.Agent.Agent.Q_MC` and :py:meth:`Agents.Agent.Agent.MC_episode`
+        See :py:meth:`~rlpy.Agents.Agent.Agent.Q_MC` and :py:meth:`~rlpy.Agents.Agent.Agent.MC_episode`
         """
         domain = self.representation.domain
         S = np.empty(

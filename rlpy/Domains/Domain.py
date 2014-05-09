@@ -14,11 +14,11 @@ class Domain(object):
 
     """
     The Domain controls the environment in which the
-    :py:class:`~Agents.Agent.Agent` resides as well as the reward function the
+    :py:class:`~rlpy.Agents.Agent.Agent` resides as well as the reward function the
     Agent is subject to.
 
     The Agent interacts with the Domain in discrete timesteps called
-    *episodes* (see :py:meth:`~Domains.Domain.Domain.step`).
+    *episodes* (see :py:meth:`~rlpy.Domains.Domain.Domain.step`).
     At each step, the Agent informs the Domain what indexed action it wants to
     perform.  The Domain then calculates the effects this action has on the
     environment and updates its internal state accordingly.
@@ -28,7 +28,7 @@ class Domain(object):
 
     This process repeats until the Domain determines that the Agent has either
     completed its goal or failed.
-    The :py:class:`~Experiments.Experiment.Experiment` controls this cycle.
+    The :py:class:`~rlpy.Experiments.Experiment.Experiment` controls this cycle.
 
     Because Agents are designed to be agnostic to the Domain that they are
     acting within and the problem they are trying to solve, the Domain needs
@@ -42,9 +42,9 @@ class Domain(object):
     to interact with the Agent and Experiment classes within the RLPy library.
     Domains should also provide methods that provide visualization of the
     Domain itself and of the Agent's learning
-    (:py:meth:`~Domains.Domain.Domain.showDomain` and
-    :py:meth:`~Domains.Domain.Domain.showLearning` respectively) \n
-    All new domain implementations should inherit from :py:class:`~Domains.Domain.Domain`.
+    (:py:meth:`~rlpy.Domains.Domain.Domain.showDomain` and
+    :py:meth:`~rlpy.Domains.Domain.Domain.showLearning` respectively) \n
+    All new domain implementations should inherit from :py:class:`~rlpy.Domains.Domain.Domain`.
 
     .. note::
         Though the state *s* can take on almost any value, if a dimension is not
@@ -107,8 +107,8 @@ Gamma:      {self.gamma}
         Shows a visualization of the current state of the domain and that of
         learning.
 
-        See :py:meth:`~Domains.Domain.Domain.showDomain()` and
-        :py:meth:`~Domains.Domain.Domain.showLearning()`,
+        See :py:meth:`~rlpy.Domains.Domain.Domain.showDomain()` and
+        :py:meth:`~rlpy.Domains.Domain.Domain.showLearning()`,
         both called by this method.
 
         .. note::
@@ -118,7 +118,7 @@ Gamma:      {self.gamma}
 
         :param a: The action being performed
         :param representation: The learned value function
-            :py:class:`~Representation.Representation.Representation`.
+            :py:class:`~rlpy.Representation.Representation.Representation`.
 
         """
         self.showDomain(a=a)
@@ -142,7 +142,7 @@ Gamma:      {self.gamma}
         It is thus really only possible for 1 or 2-state domains.
 
         :param representation: the learned value function
-            :py:class:`~Representation.Representation.Representation`
+            :py:class:`~rlpy.Representation.Representation.Representation`
             to generate the value function / policy plots.
 
         """
@@ -172,8 +172,8 @@ Gamma:      {self.gamma}
         .. note::
 
             *These actions must be integers*; internally they may be handled
-            using other datatypes.  See :py:meth:`~Tools.GeneralTools.vec2id`
-            and :py:meth:`~Tools.GeneralTools.id2vec` for converting between
+            using other datatypes.  See :py:meth:`~rlpy.Tools.GeneralTools.vec2id`
+            and :py:meth:`~rlpy.Tools.GeneralTools.id2vec` for converting between
             integers and multidimensional quantities.
 
         """
@@ -195,7 +195,7 @@ Gamma:      {self.gamma}
 
             Domains often specify stochastic internal state transitions, such
             that the result of a (state,action) pair might vary on different
-            calls (see also the :py:meth:`~Domains.Domain.Domain.sampleStep`
+            calls (see also the :py:meth:`~rlpy.Domains.Domain.Domain.sampleStep`
             method).
             Be sure to look at unique noise parameters of each domain if you
             require deterministic transitions.
@@ -207,7 +207,7 @@ Gamma:      {self.gamma}
 
             The action *a* **must** be an integer >= 0, and might better be
             called the "actionID".  See the class description
-            :py:class:`~Domains.Domain.Domain` above.
+            :py:class:`~rlpy.Domains.Domain.Domain` above.
 
         :return: The tuple (r, ns, t, p_actions) =
             (Reward [value], next observed state, isTerminal [boolean])
@@ -252,7 +252,7 @@ Gamma:      {self.gamma}
         deterministic transitions will yield an identical result regardless
         of *num_samples*, since repeatedly sampling a (state,action) pair
         will always yield the same tuple (r,ns,terminal).
-        See :py:meth:`~Domains.Domain.Domain.step`.
+        See :py:meth:`~rlpy.Domains.Domain.Domain.step`.
 
         :param a: The action to attempt
         :param num_samples: The number of next states and rewards to be sampled.

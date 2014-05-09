@@ -22,21 +22,21 @@ class Agent(object):
     timesteps.
     At each Experiment timestep the Agent receives some observations from the Domain
     which it uses to update the value function Representation of the Domain
-    (ie, on each call to its :py:meth:`~Agents.Agent.Agent.learn` function).
+    (ie, on each call to its :py:meth:`~rlpy.Agents.Agent.Agent.learn` function).
     The Policy is used to select an action to perform.
     This process (observe, update, act) repeats until some goal or fail state,
     determined by the Domain, is reached. At this point the
-    :py:class:`~Experiments.Experiment.Experiment` determines
+    :py:class:`~rlpy.Experiments.Experiment.Experiment` determines
     whether the agent starts over or has its current policy tested
     (without any exploration).
 
-    :py:class:`~Agents.Agent.Agent` is a base class that provides the basic
+    :py:class:`~rlpy.Agents.Agent.Agent` is a base class that provides the basic
     framework for all RL Agents. It provides the methods and attributes that
     allow child classes to interact with the
-    :py:class:`~Domains.Domain.Domain`,
-    :py:class:`~Representations.Representation.Representation`,
-    :py:class:`~Policies.Policy.Policy`, and
-    :py:class:`~Experiments.Experiment.Experiment` classes within the
+    :py:class:`~rlpy.Domains.Domain.Domain`,
+    :py:class:`~rlpy.Representations.Representation.Representation`,
+    :py:class:`~rlpy.Policies.Policy.Policy`, and
+    :py:class:`~rlpy.Experiments.Experiment.Experiment` classes within the
     RLPy library.
 
     .. note::
@@ -81,10 +81,10 @@ class Agent(object):
                  initial_alpha=0.1, alpha_decay_mode='dabney', boyan_N0=1000):
         """initialization.
 
-        :param representation: the :py:class:`~Representation.Representation.Representation`
+        :param representation: the :py:class:`~rlpy.Representation.Representation.Representation`
             to use in learning the value function.
-        :param policy: the :py:class:`~Policies.Policy.Policy` to use when selecting actions.
-        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
+        :param policy: the :py:class:`~rlpy.Policies.Policy.Policy` to use when selecting actions.
+        :param domain: the problem :py:class:`~rlpy.Domains.Domain.Domain` to learn
         :param initial_alpha: Initial learning rate to use (where applicable)
 
         .. warning::
