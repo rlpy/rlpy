@@ -47,11 +47,15 @@ class TDControlAgent(Agent):
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
 
-        self.representation.pre_discover(s, False, a, ns, terminal)
+        # The previous state could never be terminal
+        # (otherwise the episode would have already terminated)
+        prevStateTerminal = False
+
+        self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
         gamma = self.representation.domain.gamma
         theta = self.representation.theta
-        phi_s = self.representation.phi(s, False)
-        phi = self.representation.phi_sa(s, False, a, phi_s)
+        phi_s = self.representation.phi(s, prevStateTerminal)
+        phi = self.representation.phi_sa(s, prevStateTerminal, a, phi_s)
         phi_prime_s = self.representation.phi(ns, terminal)
         na = self._future_action(
             ns,
@@ -68,7 +72,6 @@ class TDControlAgent(Agent):
 
         # Set eligibility traces:
         if self.lambda_:
-            # make sure that
             expanded = (- len(self.eligibility_trace) + len(phi)) / \
                 self.domain.actions_num
             if expanded > 0:
@@ -113,12 +116,13 @@ class TDControlAgent(Agent):
         # Discover features if the representation has the discover method
         expanded = self.representation.post_discover(
             s,
-            False,
+            prevStateTerminal,
             a,
             td_error,
             phi_s)
 
         if terminal:
+            # If THIS state is terminal:
             self.episodeTerminated()
 
 

@@ -11,22 +11,26 @@ __author__ = "Alborz Geramifard"
 
 
 class eGreedy(Policy):
+    """ Greedy policy with epsilon-probability for uniformly random exploration.
+
+    From a given state, it selects the action with the highest expected value
+    (greedy with respect to value function), but with some probability 
+    ``epsilon``, takes a random action instead.
+    This explicitly balances the exploration/exploitation tradeoff, and 
+    ensures that in the limit of infinite samples, the agent will
+    have explored the entire domain.
+
     """
-    Greedy policy with epsilon-probability for uniformly random exploration.
-
-    The policy acts greedily according to the value function with probability
-    1-epsilon and choses a uniformly random action otherwise.
-
-    """
-
-    epsilon = None
-    old_epsilon = None
+    # Probability of selecting a random action instead of greedy
+    epsilon         = None
+    # Temporarily stores value of ``epsilon`` when exploration disabled
+    old_epsilon     = None
     # This boolean variable is used to avoid random selection among actions
     # with the same values
     forcedDeterministicAmongBestActions = None
 
-    def __init__(self, representation, epsilon=.1,
-                 forcedDeterministicAmongBestActions=False):
+    def __init__(self, representation, epsilon = .1,
+                 forcedDeterministicAmongBestActions = False):
         self.epsilon = epsilon
         self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
         super(eGreedy, self).__init__(representation)

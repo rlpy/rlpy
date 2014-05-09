@@ -12,6 +12,15 @@ __author__ = "Alborz Geramifard"
 
 
 class IncrementalTabular(Representation):
+    """
+    Identical to Tabular representation (ie assigns a binary feature function 
+    f_{d}() to each possible discrete state *d* in the domain, with
+    f_{d}(s) = 1 when d=s, 0 elsewhere.
+    HOWEVER, unlike *Tabular*, feature functions are only created for *s* which
+    have been encountered in the domain, not instantiated for every single 
+    state at the outset.
+
+    """
     hash = None
 
     def __init__(self, domain, discretization=20):
@@ -44,7 +53,7 @@ class IncrementalTabular(Representation):
             # New id = feature_num - 1
             id = self.features_num - 1
             self.hash[hash_id] = id
-            # Add a new element to weight theta
+            # Add a new element to the feature weight vector, theta
             self.addNewWeight()
             return 1
         return 0
