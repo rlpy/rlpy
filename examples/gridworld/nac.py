@@ -2,15 +2,16 @@
 
 __author__ = "William Dabney"
 
-from Domains import GridWorld
-from Tools import Logger
-from Agents import NaturalActorCritic
-from Representations import Tabular
-from Policies import GibbsPolicy
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Agents import NaturalActorCritic
+from rlpy.Representations import Tabular
+from rlpy.Policies import GibbsPolicy
+from rlpy.Experiments import Experiment
 import os
 
-def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
+
+def make_experiment(
+        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -24,23 +25,20 @@ def make_experiment(id=1, path="./Results/Temp/{domain}/{agent}/{representation}
     max_steps = 10000
     num_policy_checks = 10
 
-    ## Logging
-    logger = Logger()
-
-    ## Domain:
+    # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
-    ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    # Representation
+    representation = Tabular(domain, discretization=20)
 
-    ## Policy
-    policy = GibbsPolicy(representation, logger)
+    # Policy
+    policy = GibbsPolicy(representation)
 
-    ## Agent
+    # Agent
     agent = NaturalActorCritic(representation, policy, domain,
-                 logger, 0.3, 100, 1000, .7, 0.1)
+                               0.3, 100, 1000, .7, 0.1)
 
     experiment = Experiment(**locals())
     return experiment

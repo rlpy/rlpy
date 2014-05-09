@@ -1,4 +1,4 @@
-import Tools.results as rt
+import rlpy.Tools.results as rt
 
 paths = {"RBFs": "./Results/Tutorial/InfTrackCartPole/RBFs",
          "Tabular": "./Results/Tutorial/InfTrackCartPole/Tabular"}

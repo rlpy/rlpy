@@ -2,13 +2,13 @@
 
 __author__ = "William Dabney"
 
-from Domains import GridWorld
-from Tools import Logger
-from Agents import LSPI
-from Representations import Tabular
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Agents import LSPI
+from rlpy.Representations import Tabular
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import os
+
 
 def make_experiment(id=1, path="./Results/Temp"):
     """
@@ -24,23 +24,22 @@ def make_experiment(id=1, path="./Results/Temp"):
     max_steps = 10000
     num_policy_checks = 10
 
-    ## Logging
-    logger = Logger()
+    # Logging
 
-    ## Domain:
+    # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
-    ## Representation
-    representation  = Tabular(domain, logger, discretization=20)
+    # Representation
+    representation = Tabular(domain, discretization=20)
 
-    ## Policy
-    policy = eGreedy(representation, logger, epsilon=0.1)
+    # Policy
+    policy = eGreedy(representation, epsilon=0.1)
 
-    ## Agent
+    # Agent
     agent = LSPI(representation, policy, domain,
-                 logger, max_steps, max_steps/num_policy_checks)
+                 max_steps, max_steps / num_policy_checks)
 
     experiment = Experiment(**locals())
     return experiment
