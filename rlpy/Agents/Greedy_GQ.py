@@ -19,8 +19,8 @@ class Greedy_GQ(Agent):
     eligibility_trace_s = []
 
     def __init__(
-            self, representation, policy, domain, initial_alpha=.1,
-            lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000,
+            self, domain, policy, representation, initial_learn_rate=.1,
+            learn_rate_decay_mode='dabney', boyan_N0=1000, lambda_=0, 
             BetaCoef=1e-6):
         self.eligibility_trace = np.zeros(
             representation.features_num *
@@ -31,19 +31,19 @@ class Greedy_GQ(Agent):
         super(
             Greedy_GQ,
             self).__init__(
-            representation,
-            policy,
             domain,
-            initial_alpha,
-            alpha_decay_mode,
+            policy,
+            representation,
+            initial_learn_rate,
+            learn_rate_decay_mode,
             boyan_N0)
         self.GQWeight = copy(self.representation.theta)
-        # The beta in the GQ algorithm is assumed to be alpha * THIS CONSTANT
+        # The beta in the GQ algorithm is assumed to be learn_rate * THIS CONSTANT
         self.secondLearningRateCoef = BetaCoef
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         self.representation.pre_discover(s, False, a, ns, terminal)
-        gamma = self.representation.domain.gamma
+        discount_factor = self.representation.domain.discount_factor
         theta = self.representation.theta
         phi_s = self.representation.phi(s, False)
         phi = self.representation.phi_sa(s, False, a, phi_s)
@@ -65,10 +65,10 @@ class Greedy_GQ(Agent):
             self._expand_vectors(expanded)
         # Set eligibility traces:
         if self.lambda_:
-            self.eligibility_trace *= gamma * self.lambda_
+            self.eligibility_trace *= discount_factor * self.lambda_
             self.eligibility_trace += phi
 
-            self.eligibility_trace_s *= gamma * self.lambda_
+            self.eligibility_trace_s *= discount_factor * self.lambda_
             self.eligibility_trace_s += phi_s
 
             # Set max to 1
@@ -79,23 +79,23 @@ class Greedy_GQ(Agent):
             self.eligibility_trace_s = phi_s
 
         td_error                     = r + \
-            np.dot(gamma * phi_prime - phi, theta)
-        self.updateAlpha(
+            np.dot(discount_factor * phi_prime - phi, theta)
+        self.updateLearnRate(
             phi_s,
             phi_prime_s,
             self.eligibility_trace_s,
-            gamma,
+            discount_factor,
             nnz,
             terminal)
 
         if nnz > 0:  # Phi has some nonzero elements, proceed with update
             td_error_estimate_now = np.dot(phi, self.GQWeight)
             Delta_theta                 = td_error * self.eligibility_trace - \
-                gamma * td_error_estimate_now * phi_prime
-            theta += self.alpha * Delta_theta
+                discount_factor * td_error_estimate_now * phi_prime
+            theta += self.learn_rate * Delta_theta
             Delta_GQWeight = (
                 td_error - td_error_estimate_now) * phi
-            self.GQWeight               += self.alpha * \
+            self.GQWeight               += self.learn_rate * \
                 self.secondLearningRateCoef * Delta_GQWeight
 
         expanded = self.representation.post_discover(

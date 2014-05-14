@@ -23,8 +23,8 @@ class TDControlAgent(Agent):
     #: eligibility trace using state only (no copy-paste), necessary for dabney decay mode
     eligibility_trace_s = []
 
-    def __init__(self, representation, policy, domain, initial_alpha=.1,
-            lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000):
+    def __init__(self, domain, policy, representation, initial_learn_rate=.1,
+            learn_rate_decay_mode='dabney', boyan_N0=1000, lambda_=0):
         self.eligibility_trace = np.zeros(
             representation.features_num *
             domain.actions_num)
@@ -34,11 +34,11 @@ class TDControlAgent(Agent):
         super(
             TDControlAgent,
             self).__init__(
-            representation,
-            policy,
             domain,
-            initial_alpha,
-            alpha_decay_mode,
+            policy,
+            representation,
+            initial_learn_rate,
+            learn_rate_decay_mode,
             boyan_N0)
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
@@ -52,7 +52,7 @@ class TDControlAgent(Agent):
         prevStateTerminal = False
 
         self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
-        gamma = self.representation.domain.gamma
+        discount_factor = self.representation.domain.discount_factor
         theta = self.representation.theta
         phi_s = self.representation.phi(s, prevStateTerminal)
         phi = self.representation.phi_sa(s, prevStateTerminal, a, phi_s)
@@ -85,10 +85,10 @@ class TDControlAgent(Agent):
                 self.eligibility_trace_s = addNewElementForAllActions(
                     self.eligibility_trace_s, 1, np.zeros((1, expanded)))
 
-            self.eligibility_trace *= gamma * self.lambda_
+            self.eligibility_trace *= discount_factor * self.lambda_
             self.eligibility_trace += phi
 
-            self.eligibility_trace_s *= gamma * self.lambda_
+            self.eligibility_trace_s *= discount_factor * self.lambda_
             self.eligibility_trace_s += phi_s
 
             # Set max to 1
@@ -98,17 +98,17 @@ class TDControlAgent(Agent):
             self.eligibility_trace = phi
             self.eligibility_trace_s = phi_s
 
-        td_error = r + np.dot(gamma * phi_prime - phi, theta)
+        td_error = r + np.dot(discount_factor * phi_prime - phi, theta)
         if nnz > 0:
-            self.updateAlpha(
+            self.updateLearnRate(
                 phi_s,
                 phi_prime_s,
                 self.eligibility_trace_s,
-                gamma,
+                discount_factor,
                 nnz,
                 terminal)
             theta_old = theta.copy()
-            theta               += self.alpha * \
+            theta               += self.learn_rate * \
                 td_error * self.eligibility_trace
             if not np.all(np.isfinite(theta)):
                 theta = theta_old

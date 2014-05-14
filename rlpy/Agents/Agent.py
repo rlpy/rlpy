@@ -51,16 +51,16 @@ class Agent(object):
     domain = None
     # The policy to be used by the agent
     policy = None
-    # The initial learning rate. Note that initial_alpha should be set to
-    # 1 for automatic learning rate; otherwise, initial_alpha will act as
-    # a permanent upper-bound on alpha.
-    initial_alpha = 0.1
+    # The initial learning rate. Note that initial_learn_rate should be set to
+    # 1 for automatic learning rate; otherwise, initial_learn_rate will act as
+    # a permanent upper-bound on learn_rate.
+    initial_learn_rate = 0.1
     #: The learning rate
-    alpha = 0
+    learn_rate = 0
     #: Only used in the 'dabney' method of learning rate update.
-    #: This value is updated in the updateAlpha method. We use the rate
+    #: This value is updated in the updateLearnRate method. We use the rate
     #: calculated by [Dabney W 2012]: http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-    candid_alpha = 0
+    candid_learn_rate = 0
     #: The eligibility trace, which marks states as eligible for a learning
     #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
     #: parameter lambda is set. See:
@@ -68,52 +68,52 @@ class Agent(object):
     eligibility_trace = []
     #: A simple object that records the prints in a file
     logger = None
-    #: Used by some alpha_decay modes
+    #: Used by some learn_rate_decay modes
     episode_count = 0
     # Decay mode of learning rate. Options are determined by valid_decay_modes.
-    alpha_decay_mode = 'dabney'
-    # Valid selections for the ``alpha_decay_mode``.
+    learn_rate_decay_mode = 'dabney'
+    # Valid selections for the ``learn_rate_decay_mode``.
     valid_decay_modes = ['dabney', 'boyan', 'const', 'boyan_const']
     #  The N0 parameter for boyan learning rate decay
     boyan_N0 = 1000
 
-    def __init__(self, representation, policy, domain,
-                 initial_alpha=0.1, alpha_decay_mode='dabney', boyan_N0=1000):
+    def __init__(self, domain, policy, representation,
+                 initial_learn_rate=0.1, learn_rate_decay_mode='dabney', boyan_N0=1000):
         """initialization.
 
         :param representation: the :py:class:`~rlpy.Representation.Representation.Representation`
             to use in learning the value function.
         :param policy: the :py:class:`~rlpy.Policies.Policy.Policy` to use when selecting actions.
         :param domain: the problem :py:class:`~rlpy.Domains.Domain.Domain` to learn
-        :param initial_alpha: Initial learning rate to use (where applicable)
+        :param initial_learn_rate: Initial learning rate to use (where applicable)
 
         .. warning::
-            ``initial_alpha`` should be set to 1 for automatic learning rate;
-            otherwise, initial_alpha will act as a permanent upper-bound on alpha.
+            ``initial_learn_rate`` should be set to 1 for automatic learning rate;
+            otherwise, initial_learn_rate will act as a permanent upper-bound on learn_rate.
 
-        :param alpha_decay_mode: The learning rate decay mode (where applicable)
-        :param boyan_N0: Initial Boyan rate parameter (when alpha_decay_mode='boyan')
+        :param learn_rate_decay_mode: The learning rate decay mode (where applicable)
+        :param boyan_N0: Initial Boyan rate parameter (when learn_rate_decay_mode='boyan')
 
         """
         self.representation = representation
         self.policy = policy
         self.domain = domain
-        self.initial_alpha = initial_alpha
-        self.alpha = initial_alpha
-        self.alpha_decay_mode = alpha_decay_mode.lower()
+        self.initial_learn_rate = initial_learn_rate
+        self.learn_rate = initial_learn_rate
+        self.learn_rate_decay_mode = learn_rate_decay_mode.lower()
         self.boyan_N0 = boyan_N0
         self.logger = logging.getLogger("rlpy.Agents." + self.__class__.__name__)
 
-        # Check to make sure selected alpha_decay mode is valid
-        if not self.alpha_decay_mode in self.valid_decay_modes:
-            errMsg = "Invalid decay mode selected:" + self.alpha_decay_mode \
+        # Check to make sure selected learn_rate_decay mode is valid
+        if not self.learn_rate_decay_mode in self.valid_decay_modes:
+            errMsg = "Invalid decay mode selected:" + self.learn_rate_decay_mode \
                 + "; valid choices are: " + str(self.valid_decay_modes)
             self.logger.error(errMsg)
-        #  Note that initial_alpha should be set to 1 for automatic learning rate; otherwise,
-        #  initial_alpha will act as a permanent upper-bound on alpha.
-        if self.alpha_decay_mode == 'dabney':
-            self.initial_alpha = 1.0
-            self.alpha = 1.0
+        #  Note that initial_learn_rate should be set to 1 for automatic learning rate; otherwise,
+        #  initial_learn_rate will act as a permanent upper-bound on learn_rate.
+        if self.learn_rate_decay_mode == 'dabney':
+            self.initial_learn_rate = 1.0
+            self.learn_rate = 1.0
 
 
     @abstractmethod
@@ -136,48 +136,48 @@ class Agent(object):
         """
         return NotImplementedError
 
-    def updateAlpha(self, phi_s, phi_prime_s,
-                    eligibility_trace_s, gamma, nnz, terminal):
+    def updateLearnRate(self, phi_s, phi_prime_s,
+                    eligibility_trace_s, discount_factor, nnz, terminal):
         """Computes a new learning rate (alpha) for the agent based on
-        ``self.alpha_decay_mode``.
+        ``self.learn_rate_decay_mode``.
 
         :param phi_s: The feature vector evaluated at state (s)
         :param phi_prime_s: The feature vector evaluated at the new state (ns) = (s')
         :param eligibility_trace_s: Eligibility trace using state only (no copy-paste)
-        :param gamma: The discount factor for learning
+        :param discount_factor: The discount factor for learning (gamma)
         :param nnz: The number of nonzero features
         :param terminal: Boolean that determines if the step is terminal or not
 
         """
 
-        if self.alpha_decay_mode == 'dabney':
-        # We only update alpha if this step is non-terminal; else phi_prime becomes
+        if self.learn_rate_decay_mode == 'dabney':
+        # We only update learn_rate if this step is non-terminal; else phi_prime becomes
         # zero and the dot product below becomes very large, creating a very
-        # small alpha
+        # small learn_rate
             if not terminal:
                 # Automatic learning rate: [Dabney W. 2012]
                 # http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
-                self.candid_alpha = abs(
-                    np.dot(gamma * phi_prime_s - phi_s, eligibility_trace_s))
-                self.candid_alpha    = 1 / \
-                    (self.candid_alpha * 1.) if self.candid_alpha != 0 else np.inf
-                self.alpha = min(self.alpha, self.candid_alpha)
+                self.candid_learn_rate = abs(
+                    np.dot(discount_factor * phi_prime_s - phi_s, eligibility_trace_s))
+                self.candid_learn_rate    = 1 / \
+                    (self.candid_learn_rate * 1.) if self.candid_learn_rate != 0 else np.inf
+                self.learn_rate = min(self.learn_rate, self.candid_learn_rate)
             # else we take no action
-        elif self.alpha_decay_mode == 'boyan':
+        elif self.learn_rate_decay_mode == 'boyan':
             # New little change from not having +1 for episode count
-            self.alpha = self.initial_alpha * \
+            self.learn_rate = self.initial_learn_rate * \
                 (self.boyan_N0 + 1.) / \
                 (self.boyan_N0 + (self.episode_count + 1) ** 1.1)
             # divide by l1 of the features; note that this method is only
             # called if phi_s != 0
-            self.alpha /= sum(abs(phi_s))
-        elif self.alpha_decay_mode == 'boyan_const':
+            self.learn_rate /= sum(abs(phi_s))
+        elif self.learn_rate_decay_mode == 'boyan_const':
             # New little change from not having +1 for episode count
-            self.alpha = self.initial_alpha * \
+            self.learn_rate = self.initial_learn_rate * \
                 (self.boyan_N0 + 1.) / \
                 (self.boyan_N0 + (self.episode_count + 1) ** 1.1)
-        elif self.alpha_decay_mode == "const":
-            self.alpha = self.initial_alpha
+        elif self.learn_rate_decay_mode == "const":
+            self.learn_rate = self.initial_learn_rate
         else:
             self.logger.warn("Unrecognized decay mode ")
 

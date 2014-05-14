@@ -24,9 +24,9 @@ class NaturalActorCritic(Agent):
     # minimum for the cosine of the current and last gradient
     min_cos = np.cos(np.pi / 180.)
 
-    def __init__(self, representation, policy, domain, forgetting_rate,
-                 min_steps_between_updates, max_steps_between_updates, lam,
-                 alpha):
+    def __init__(self, domain, policy, representation, forgetting_rate,
+                 min_steps_between_updates, max_steps_between_updates, lambda_,
+                 learn_rate):
         """
         @param representation: function approximation used to approximate the
                                value function
@@ -39,8 +39,8 @@ class NaturalActorCritic(Agent):
         @param min_steps_between_updates: minimum number of steps between
                                 two policy updates
         @param max_steps_between_updates
-        @param lam:    e-trace parameter lambda
-        @param alpha:  learning rate
+        @param lambda_:    e-trace parameter lambda
+        @param learn_rate:  learning rate
 
         """
 
@@ -50,8 +50,8 @@ class NaturalActorCritic(Agent):
         self.representation = representation
         self.min_steps_between_updates = min_steps_between_updates
         self.max_steps_between_updates = max_steps_between_updates
-        self.lambda_ = lam
-        self.alpha = alpha
+        self.lambda_ = lambda_
+        self.learn_rate = learn_rate
 
         self.steps_between_updates = 0
         self.b = np.zeros((self.n))
@@ -59,8 +59,8 @@ class NaturalActorCritic(Agent):
         self.buf_ = np.zeros((self.n, self.n))
         self.z = np.zeros((self.n))
 
-        super(NaturalActorCritic, self).__init__(representation, policy,
-                                                 domain)
+        super(NaturalActorCritic, self).__init__(domain, policy,
+                                                 representation)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
 
@@ -76,7 +76,7 @@ class NaturalActorCritic(Agent):
         self.z *= self.lambda_
         self.z += phi_s
 
-        self.A += np.einsum("i,j", self.z, phi_s - self.domain.gamma * phi_ns,
+        self.A += np.einsum("i,j", self.z, phi_s - self.domain.discount_factor * phi_ns,
                             out=self.buf_)
         self.b += self.z * r
         if terminal:
@@ -92,7 +92,7 @@ class NaturalActorCritic(Agent):
 
             if self._gradient_sane(w) or self.steps_between_updates > self.max_steps_between_updates:
                 # update policy
-                self.policy.theta = self.policy.theta + self.alpha * w
+                self.policy.theta = self.policy.theta + self.learn_rate * w
                 self.last_w = w
                 self.logger.debug(
                     "Policy updated, norm of gradient {}".format(np.linalg.norm(w)))

@@ -30,7 +30,7 @@ class LSPI(Agent):
 
         lspi_iterations (int):  Maximum number of iterations to go through for each update with LSPI.
 
-        epsilon (float):    Stopping criteria, threshold, for when LSPI is considered to have converged.
+        tol_epsilon (float):    Stopping criteria, threshold, for when LSPI is considered to have converged.
 
         re_iterations (int):    Number of iterations of representation expansion to run.
 
@@ -45,7 +45,7 @@ class LSPI(Agent):
     steps_between_LSPI = 0         # Number of samples between each LSPI run.
     samples_count = 0         # Number of samples gathered so far
     # Minimum l_2 change required to continue iterations in LSPI
-    epsilon = 0
+    tol_epsilon = 0
 
     # Store Data in separate matrixes
     data_s = []        #
@@ -59,12 +59,12 @@ class LSPI(Agent):
     re_iterations = 0
 
     def __init__(
-            self, representation, policy, domain, max_window, steps_between_LSPI,
-            lspi_iterations=5, epsilon=1e-3, re_iterations=100, use_sparse=False):
+            self, domain, policy, representation, max_window, steps_between_LSPI,
+            lspi_iterations=5, tol_epsilon=1e-3, re_iterations=100, use_sparse=False):
         self.samples_count = 0
         self.max_window = max_window
         self.steps_between_LSPI = steps_between_LSPI
-        self.epsilon = epsilon
+        self.tol_epsilon = tol_epsilon
         self.lspi_iterations = lspi_iterations
         self.re_iterations = re_iterations
         self.use_sparse = use_sparse
@@ -126,7 +126,7 @@ class LSPI(Agent):
         Returns the TD error for each sample based on the latest weights and next actions.
         """
         start_time = Tools.clock()
-        weight_diff = self.epsilon + 1  # So that the loop starts
+        weight_diff = self.tol_epsilon + 1  # So that the loop starts
         lspi_iteration = 0
         self.best_performance = -np.inf
         self.logger.info('Running Policy Iteration:')
@@ -135,9 +135,9 @@ class LSPI(Agent):
         # action_mask is a matrix that shows which actions are available for
         # each state
         action_mask = None
-        gamma = self.domain.gamma
+        discount_factor = self.domain.discount_factor
         F1 = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :]) if self.use_sparse else self.all_phi_s_a[:self.samples_count,:]
-        while lspi_iteration < self.lspi_iterations and weight_diff > self.epsilon:
+        while lspi_iteration < self.lspi_iterations and weight_diff > self.tol_epsilon:
 
             # Find the best action for each state given the current value function
             # Notice if actions have the same value the first action is
@@ -149,10 +149,10 @@ class LSPI(Agent):
             # Solve for the new theta
             if self.use_sparse:
                 F2  = sp.csr_matrix(self.all_phi_ns_new_na[:self.samples_count, :])
-                A = F1.T * (F1 - gamma * F2)
+                A = F1.T * (F1 - discount_factor * F2)
             else:
                 F2  = self.all_phi_ns_new_na[:self.samples_count, :]
-                A = np.dot(F1.T, F1 - gamma * F2)
+                A = np.dot(F1.T, F1 - discount_factor * F2)
 
             A = Tools.regularize(A)
             new_theta, solve_time = Tools.solveLinear(A, self.b)
@@ -164,7 +164,7 @@ class LSPI(Agent):
             # Calculate the weight difference. If it is big enough update the
             # theta
             weight_diff = np.linalg.norm(self.representation.theta - new_theta)
-            if weight_diff > self.epsilon:
+            if weight_diff > self.tol_epsilon:
                 self.representation.theta = new_theta
 
             self.logger.info(
@@ -210,14 +210,14 @@ class LSPI(Agent):
             F1              = self.all_phi_s_a[:self.samples_count, :]
             F2              = self.all_phi_ns_na[:self.samples_count, :]
             R               = self.data_r[:self.samples_count, :]
-            gamma = self.domain.gamma
+            discount_factor = self.domain.discount_factor
 
             if self.use_sparse:
                 self.b = (F1.T * R).reshape(-1, 1)
-                self.A = F1.T * (F1 - gamma * F2)
+                self.A = F1.T * (F1 - discount_factor * F2)
             else:
                 self.b = np.dot(F1.T, R).reshape(-1, 1)
-                self.A = np.dot(F1.T, F1 - gamma * F2)
+                self.A = np.dot(F1.T, F1 - discount_factor * F2)
 
         A = Tools.regularize(self.A)
 
@@ -274,9 +274,9 @@ class LSPI(Agent):
             self.all_phi_s_a[self.samples_count, :] = phi_s_a
             self.all_phi_ns_na[self.samples_count, :] = phi_ns_na
 
-            gamma = self.domain.gamma
+            discount_factor = self.domain.discount_factor
             self.b += phi_s_a.reshape((-1, 1)) * r
-            d = phi_s_a - gamma * phi_ns_na
+            d = phi_s_a - discount_factor * phi_ns_na
             self.A += np.outer(phi_s_a, d)
 
         self.samples_count += 1
@@ -286,19 +286,19 @@ class LSPI(Agent):
         Returns the TD errors for all transitions with the current parameters.
         """
         # Calculates the TD-Errors in a matrix format for a set of samples = R
-        # + (gamma*F2 - F1) * Theta
-        gamma = self.representation.domain.gamma
+        # + (discount_factor*F2 - F1) * Theta
+        discount_factor = self.representation.domain.discount_factor
         R       = self.data_r[:self.samples_count, :]
         if self.use_sparse:
             F1      = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :])
             F2      = sp.csr_matrix(self.all_phi_ns_na[:self.samples_count, :])
             answer = (
-                R + (gamma * F2 - F1) * self.representation.theta.reshape(-1, 1))
+                R + (discount_factor * F2 - F1) * self.representation.theta.reshape(-1, 1))
             return np.squeeze(np.asarray(answer))
         else:
             F1 = self.all_phi_s_a[:self.samples_count, :]
             F2 = self.all_phi_ns_na[:self.samples_count, :]
-            return R.ravel() + np.dot(gamma * F2 - F1, self.representation.theta)
+            return R.ravel() + np.dot(discount_factor * F2 - F1, self.representation.theta)
 
     def representationExpansionLSPI(self):
         re_iteration = 0
