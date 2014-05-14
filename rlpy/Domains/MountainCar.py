@@ -97,7 +97,7 @@ class MountainCar(Domain):
         velocity = bound(velocity, self.XDOTMIN, self.XDOTMAX)
         position += velocity
         position = bound(position, self.XMIN, self.XMAX)
-        if position < self.XMIN and velocity < 0:
+        if position <= self.XMIN and velocity < 0:
             velocity = 0  # Bump into wall
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
