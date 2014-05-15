@@ -16,12 +16,15 @@ class BEBF(Representation):
 
     """Bellman-Error Basis Function Representation
 
-    REQUIRES the implementation of locally-weighted
-    projection regression (LWPR), available at:
-    http://wcms.inf.ed.ac.uk/ipab/slmc/research/software-lwpr
+    .. warning:: 
+    
+        REQUIRES the implementation of locally-weighted
+        projection regression (LWPR), available at:
+        http://wcms.inf.ed.ac.uk/ipab/slmc/research/software-lwpr
 
-    Parameters set according to:
-    Parr et al. 'Analyzing Feature Generation for Function Approximation'
+    Parameters set according to: Parr et al., 
+    "Analyzing Feature Generation for Function Approximation" (2007).
+    http://machinelearning.wustl.edu/mlpapers/paper_files/icml2007_ParrPLL07.pdf
 
     Bellman-Error Basis Function Representation.
     1. Initial basis function based on immediate reward.
@@ -31,6 +34,7 @@ class BEBF(Representation):
     5. Repeat the process using the new basis until the most
     recently added basis function has norm <= batchThreshold, which
     Parr et al. used as 10^-5.
+    
     """
 
     debug = 0

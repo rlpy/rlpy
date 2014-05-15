@@ -29,6 +29,16 @@ class Representation(object):
     Agents can later query the Representation for the value of being in a state
     *V(s)* or the value of taking an action in a particular state
     ( known as the Q-function, *Q(s,a)* ).
+    
+    .. note::
+    
+        Throughout the framework, ``phi`` refers to the vector of features;
+        ``phi`` or ``phi_s`` is thus the vector of feature functions evaluated
+        at the state *s*.  phi_s_a appends |A|-1 copies of phi_s, such that 
+        |phi_s_a| = |A| * |phi|, where |A| is the size of the action space and 
+        |phi| is the number of features.  Each of these blocks corresponds 
+        to a state-action pair; all blocks except for the selected action ``a``
+        are set to 0.
 
     The Representation class is a base class that provides the basic framework
     for all representations. It provides the methods and attributes
@@ -41,10 +51,8 @@ class Representation(object):
         family of representations is being used.
 
     """
-
-    DEBUG = 0
-    #: A numpy array of the Linear Weights, one for each feature
-    theta = None
+    #: A numpy array of the Linear Weights, one for each feature (theta)
+    weight_vec = None
     #: The Domain that this Representation is modeling
     domain = None
     #: Number of features in the representation
@@ -81,7 +89,7 @@ class Representation(object):
         self.domain = domain
         self.discretization = discretization
         try:
-            self.theta = np.zeros(self.features_num * self.domain.actions_num)
+            self.weight_vec = np.zeros(self.features_num * self.domain.actions_num)
         except MemoryError as m:
             print(
                 "Unable to allocate weights of size: %d\n" %
@@ -144,11 +152,11 @@ class Representation(object):
             phi_s = self.phi(s, terminal)
         if len(phi_s) == 0:
             return np.zeros((self.domain.actions_num))
-        theta_prime = self.theta.reshape(-1, self.features_num)
+        weight_vec_prime = self.weight_vec.reshape(-1, self.features_num)
         if self._phi_sa_cache.shape != (self.domain.actions_num, self.features_num):
             self._phi_sa_cache = np.empty(
                 (self.domain.actions_num, self.features_num))
-        Q = np.multiply(theta_prime, phi_s,
+        Q = np.multiply(weight_vec_prime, phi_s,
                         out=self._phi_sa_cache).sum(axis=1)
         # stacks phi_s in cache
         return Q
@@ -166,9 +174,9 @@ class Representation(object):
         :return: (float) the value of the state-action pair (s,a), Q(s,a).
 
         """
-        if len(self.theta) > 0:
+        if len(self.weight_vec) > 0:
             phi_sa, i, j = self.phi_sa(s, terminal, a, phi_s, snippet=True)
-            return np.dot(phi_sa, self.theta[i:j])
+            return np.dot(phi_sa, self.weight_vec[i:j])
         else:
             return 0.0
 
@@ -257,8 +265,8 @@ class Representation(object):
         Add a new zero weight, corresponding to a newly added feature,
         to all actions.
         """
-        self.theta = addNewElementForAllActions(
-            self.theta,
+        self.weight_vec = addNewElementForAllActions(
+            self.weight_vec,
             self.domain.actions_num)
 
     def hashState(self, s,):
@@ -505,11 +513,11 @@ class Representation(object):
         if useSparse:
             # all_phi_s_a will be ap-by-an
             all_phi_s_a = sp.kron(np.eye(a_num, a_num), all_phi_s)
-            all_q_s_a = all_phi_s_a * self.theta.reshape(-1, 1)  # ap-by-1
+            all_q_s_a = all_phi_s_a * self.weight_vec.reshape(-1, 1)  # ap-by-1
         else:
             # all_phi_s_a will be ap-by-an
             all_phi_s_a = np.kron(np.eye(a_num, a_num), all_phi_s)
-            all_q_s_a = np.dot(all_phi_s_a, self.theta.T)  # ap-by-1
+            all_q_s_a = np.dot(all_phi_s_a, self.weight_vec.T)  # ap-by-1
         all_q_s_a = all_q_s_a.reshape((a_num, -1)).T  # a-by-p
         all_q_s_a = np.ma.masked_array(all_q_s_a, mask=action_mask)
         best_action = np.argmax(all_q_s_a, axis=1)
