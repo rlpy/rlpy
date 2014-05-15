@@ -1,5 +1,5 @@
 """Greedy-GQ(lambda) learning agent"""
-from .Agent import Agent
+from .Agent import Agent, DescentAlgorithm
 from rlpy.Tools import addNewElementForAllActions, count_nonzero
 import numpy as np
 from copy import copy
@@ -11,32 +11,23 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
-class Greedy_GQ(Agent):
+class Greedy_GQ(DescentAlgorithm, Agent):
     lambda_ = 0  # lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []
     # eligibility trace using state only (no copy-paste), necessary for dabney
     # decay mode
     eligibility_trace_s = []
 
-    def __init__(
-            self, representation, policy, domain, initial_alpha=.1,
-            lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000,
-            BetaCoef=1e-6):
+    def __init__(self, representation, policy, domain, initial_alpha=.1,
+            lambda_=0, BetaCoef=1e-6, **kwargs):
         self.eligibility_trace = np.zeros(
             representation.features_num *
             domain.actions_num)
         # use a state-only version of eligibility trace for dabney decay mode
         self.eligibility_trace_s = np.zeros(representation.features_num)
         self.lambda_ = lambda_
-        super(
-            Greedy_GQ,
-            self).__init__(
-            representation,
-            policy,
-            domain,
-            initial_alpha,
-            alpha_decay_mode,
-            boyan_N0)
+        super(Greedy_GQ, self).__init__(representation=representation,
+                                        policy=policy, domain=domain, **kwargs)
         self.GQWeight = copy(self.representation.theta)
         # The beta in the GQ algorithm is assumed to be alpha * THIS CONSTANT
         self.secondLearningRateCoef = BetaCoef

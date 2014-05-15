@@ -1,5 +1,5 @@
 """Control Agents based on TD Learning, i.e., Q-Learning and SARSA"""
-from .Agent import Agent
+from .Agent import Agent, DescentAlgorithm
 from rlpy.Tools import addNewElementForAllActions, count_nonzero
 import numpy as np
 
@@ -9,7 +9,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 
 
-class TDControlAgent(Agent):
+class TDControlAgent(DescentAlgorithm, Agent):
 
     """
     abstract class for the control variants of the classical linear TD-Learning.
@@ -23,23 +23,15 @@ class TDControlAgent(Agent):
     #: eligibility trace using state only (no copy-paste), necessary for dabney decay mode
     eligibility_trace_s = []
 
-    def __init__(self, representation, policy, domain, initial_alpha=.1,
-            lambda_=0, alpha_decay_mode='dabney', boyan_N0=1000):
+    def __init__(self, representation, policy, domain, lambda_=0, **kwargs):
         self.eligibility_trace = np.zeros(
             representation.features_num *
             domain.actions_num)
         # use a state-only version of eligibility trace for dabney decay mode
         self.eligibility_trace_s = np.zeros(representation.features_num)
         self.lambda_ = lambda_
-        super(
-            TDControlAgent,
-            self).__init__(
-            representation,
-            policy,
-            domain,
-            initial_alpha,
-            alpha_decay_mode,
-            boyan_N0)
+        super(TDControlAgent, self).__init__(representation=representation, policy=policy,
+            domain=domain, **kwargs)
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """needs to be implemented by children"""
