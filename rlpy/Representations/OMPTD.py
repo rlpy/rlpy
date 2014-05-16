@@ -35,8 +35,29 @@ class OMPTD(Representation):
     remainingFeatures = None  # Array of remaining features
 
     def __init__(
-            self, domain, initial_representation, discretization=20,
+            self, domain, discretization=20, initial_representation,
             maxBatchDicovery=1, batchThreshold=0, bagSize=100000, sparsify=False):
+        """
+        :param domain: the :py:class`~rlpy.Domains.Domain.Domain` associated 
+            with the value function we want to learn.
+        :param initial_representation: The initial set of features available. 
+            OMP-TD does not dynamically introduce any features of its own, 
+            instead it takes conjunctions of initial_representation feats until 
+            all permutations have been created or bagSize has been reached.
+            OMP-TD uses an (ever-growing) subset,termed the \"active\" features.
+        :param discretization: Number of bins used for each continuous dimension.
+            For discrete dimensions, this parameter is ignored.
+        :param maxBatchDiscovery: Maximum number of features to be expanded on 
+            each iteration
+        :param batchThreshold: Minimum features \"relevance\" required to add 
+            a feature to the active set.
+        :param bagSize: The maximum number of features available for 
+            consideration.
+        :param sparsify: (Boolean)
+            See :py:class`~rlpy.Representations.iFDD.iFDD`.
+        
+        """
+        
         self.selectedFeatures = []
         # This is dummy since omptd will not use ifdd in the online fashion
         self.iFDD_ONLINETHRESHOLD = 1
@@ -74,14 +95,23 @@ class OMPTD(Representation):
                          len(self.remainingFeatures))
 
     def showBag(self):
+        """
+        Displays the non-active features that OMP-TD can select from to add 
+        to its representation.
+        
+        """
         print "Remaining Items in the feature bag:"
         for f in self.remainingFeatures:
             print "%d: %s" % (f, str(sorted(list(self.iFDD.getFeature(f).f_set))))
 
     def calculateFullPhiNormalized(self, states):
-        # In general for OMPTD it is faster to cashe the normalized phi matrix for all states for all features in one shot.
-        # If states are changed this function should be called once to recalculate the phi matrix
-        # TO BE FILLED
+        """
+        In general for OMPTD it is faster to cache the normalized feature matrix
+        at once.  Note this is only valid if possible states do not change over
+        execution.  (In the feature matrix, each column is a feature function, 
+        each row is a state; thus the matrix has rows phi(s1)', phi(s2)', ...).
+
+        """
         p = len(states)
         self.fullphi = np.empty((p, self.totalFeatureSize))
         o_s = self.domain.state
@@ -99,19 +129,20 @@ class OMPTD(Representation):
             self.fullphi[:, f] = phi_f / norm_phi_f
 
     def batchDiscover(self, td_errors, phi, states):
-        # Discovers features using OMPTD
-        # 1. Find the index of remaining features in the bag
-        # 2. Calculate the inner product of each feature with the TD_Error vector
-        # 3. Add the top maxBatchDicovery features to the selected features
-        #---------------
-        # INPUT:
-        # td_errors     p-by-1
-        # phi           p-by-n
-        # states        p-by-state-dim
-        #--------------------
-        # OUTOUT: Boolean indicating expansion of features
-        #--------------------
-
+        """
+        :param td_errors: p-by-1 vector, error associated with each state
+        :param phi: p-by-n matrix, vector-valued feature function evaluated at 
+            each state.
+        :param states: p-by-(statedimension) matrix, each state under test.
+        
+        Discovers features using OMPTD
+        1. Find the index of remaining features in the bag \n
+        2. Calculate the inner product of each feature with the TD_Error vector \n
+        3. Add the top maxBatchDicovery features to the selected features \n
+        
+        OUTPUT: Boolean indicating expansion of features
+        
+        """
         if len(self.remainingFeatures) == 0:
             # No More features to Expand
             return False
@@ -163,9 +194,12 @@ class OMPTD(Representation):
         return added_feature
 
     def fillBag(self):
-        # This function generates lists of potential features to be put in the bag each indicated by a list of initial features. The resulting feature is the conjunction of the features in the list
-        # The potential list is expanded by traversing the tree in the BFS
-        # fashion untill the bagSize is reached.
+        """
+        Generates potential features by taking conjunctions of existing ones.
+        Adds these to the bag of features available to OMPTD in a breadth-first
+        fashion until the ``bagSize`` limit is reached.
+        
+        """
         level_1_features = np.arange(
             self.initial_representation.features_num)
         # We store the dimension corresponding to each feature so we avoid

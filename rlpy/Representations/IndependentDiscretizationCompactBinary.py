@@ -26,7 +26,7 @@ class IndependentDiscretizationCompactBinary(Representation):
     """
 
     def __init__(self, domain, discretization=20):
-        # Identify binary dimensions
+        # See superclass __init__ definition
         self.setBinsPerDimension(domain, discretization)
         nontwobuckets_dims = np.where(self.bins_per_dim != 2)[0]
         self.nonbinary_dims = np.union1d(
@@ -59,8 +59,13 @@ class IndependentDiscretizationCompactBinary(Representation):
         return F_s
 
     def activeInitialFeaturesCompactBinary(self, s):
-        # Same as activeInitialFeatures of the parent except that for binary
-        # dimensions only the True value will have a corresponding feature
+        """
+        Same as :py:meth:`~rlpy.Representations.Representation.activeInitialFeatures`
+        except that for binary dimensions (taking values 0,1) only the 
+        ``1`` value will have a corresponding feature; ``0`` is expressed by 
+        that feature being inactive.
+        
+        """
         bs = self.binState(s)
         zero_index = np.where(bs == 0)[0]
         # Has zero value and is binary dimension
@@ -79,7 +84,7 @@ class IndependentDiscretizationCompactBinary(Representation):
         return index[remain_index].astype('uint32')
 
     def getDimNumber(self, f):
-        # Returns the dimension number corresponding to this feature
+        """ Returns the dimension number corresponding to feature ``f``. """
         dim = np.searchsorted(self.maxFeatureIDperDimension, f)
         return dim
 

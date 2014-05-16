@@ -14,7 +14,7 @@ __author__ = "Robert H. Klein"
 
 class BEBF(Representation):
 
-    """Bellman-Error Basis Function Representation
+    """Bellman-Error Basis Function Representation.
 
     .. warning:: 
     
@@ -26,18 +26,22 @@ class BEBF(Representation):
     "Analyzing Feature Generation for Function Approximation" (2007).
     http://machinelearning.wustl.edu/mlpapers/paper_files/icml2007_ParrPLL07.pdf
 
-    Bellman-Error Basis Function Representation.
-    1. Initial basis function based on immediate reward.
-    2. Evaluate r + Q(s', \pi{s'}) - Q(s,a) for all samples.
-    3. Train function approximator on bellman error of present solution above
-    4. Add the above as a new basis function.
+    Bellman-Error Basis Function Representation. \n
+    1. Initial basis function based on immediate reward. \n
+    2. Evaluate r + Q(s', \pi{s'}) - Q(s,a) for all samples. \n
+    3. Train function approximator on bellman error of present solution above\n
+    4. Add the above as a new basis function. \n
     5. Repeat the process using the new basis until the most
     recently added basis function has norm <= batchThreshold, which
-    Parr et al. used as 10^-5.
+    Parr et al. used as 10^-5.\n
+    
+    Note that the *USER* can select the class of feature functions to be used;
+    the BEBF function approximator itself consists of many feature functions 
+    which themselves are often approximations to their particular functions.
+    Default here is to train a support vector machine (SVM) to be used for 
+    each feature function.
     
     """
-
-    debug = 0
     # Number of features to be expanded in the batch setting; here 1 since
     # each BEBF will be identical on a given iteration
     maxBatchDicovery = 1
@@ -48,14 +52,25 @@ class BEBF(Representation):
     svm_epsilon = None
     # Array of pointers to feature functions, indexed by order created
     features = []
-    # Minimum value of feature relevance for the batch setting (10^-5 per Parr
-    # et al.
     batchThreshold = None
     # Initial number of features, initialized in __init__
     initial_features_num = 0
 
     def __init__(self, domain, discretization=20,
-                 debug=0, batchThreshold=10 ** -3, svm_epsilon=.1):
+                 batchThreshold=10 ** -3, svm_epsilon=.1):
+        """
+        :param domain: the problem :py:class:`~rlpy.Domains.Domain.Domain` to learn
+        :param discretization: Number of bins used for each continuous dimension.
+            For discrete dimensions, this parameter is ignored.
+        :param batchThreshold: Threshold below which no more features are added
+            for a given data batch.
+        :param svm_epsilon: (From sklearn, scikit-learn): \"epsilon in the 
+            epsilon-SVR model. It specifies the epsilon-tube within which no 
+            penalty is associated in the training loss function with points 
+            predicted within a distance epsilon from the actual value.\"
+        
+        """
+        
         self.setBinsPerDimension(domain, discretization)
         # Effectively initialize with IndependentDiscretization
         self.initial_features_num = int(sum(self.bins_per_dim))
@@ -63,7 +78,6 @@ class BEBF(Representation):
         # execution
         self.features_num = self.initial_features_num
        # self.features_num           = 0
-        self.debug = debug
         self.svm_epsilon = svm_epsilon
         self.batchThreshold = batchThreshold
         self.addInitialFeatures()
@@ -72,6 +86,16 @@ class BEBF(Representation):
         # @return: a function object corresponding to the
 
     def getFunctionApproximation(self, X, y):
+        """
+        :param X: Training dataset inputs
+        :param y: Outputs associated with training set.
+        
+        Accepts dataset (X,y) and trains a feature function on it
+        (default uses Support Vector Machine).
+        Returns a handle to the trained feature function.
+        
+        """
+        
         # bebfApprox = svm.SVR(kernel='rbf', degree=3, C=1.0, epsilon = 0.0005) # support vector regression
                                                  # C = penalty parameter of
                                                  # error term, default 1

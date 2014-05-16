@@ -45,6 +45,14 @@ class IncrementalTabular(Representation):
         return self._add_state(s) + self._add_state(sn)
 
     def _add_state(self, s):
+        """
+        :param s: the (possibly un-cached) state to hash.
+        
+        Accepts state ``s``; if it has been cached already, do nothing and 
+        return 0; if not, add it to the hash table and return 1.
+        
+        """
+        
         hash_id = self.hashState(s)
         id = self.hash.get(hash_id)
         if id is None:

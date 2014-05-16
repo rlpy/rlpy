@@ -30,6 +30,13 @@ class LocalBases(Representation):
     widths = None
 
     def __init__(self, domain, kernel, normalization=False, **kwargs):
+        """
+        :param domain: domain to learn on.
+        :param kernel: function handle to use for kernel function evaluations.
+        :param normalization: (Boolean) If true, normalize feature vector so 
+            that sum( phi(s) ) = 1.
+        
+        """
         self.kernel = batch[kernel.__name__]
         self.normalization = normalization
         self.centers = np.zeros((0, domain.statespace_limits.shape[0]))
@@ -45,11 +52,15 @@ class LocalBases(Representation):
 
     def plot_2d_feature_centers(self, d1=None, d2=None):
         """
-        plot the centers of all features in dimension d1 and d2.
+        :param d1: 1 (of 2 possible) indices of dimensions to plot; ignore all 
+            others, purely visual.
+        :param d2: 1 (of 2 possible) indices of dimensions to plot; ignore all 
+            others, purely visual.
+        
+        Phe centers of all features in dimension d1 and d2.
         If no dimensions are specified, the first two continuous dimensions
         are shown.
 
-        d1, d2: indices of dimensions to show
         """
         if d1 is None and d2 is None:
             # just take the first two dimensions
@@ -65,6 +76,19 @@ class NonparametricLocalBases(LocalBases):
 
     def __init__(self, domain, kernel,
                  max_similarity=0.9, resolution=5, **kwargs):
+        """
+        :param domain: domain to learn on.
+        :param kernel: function handle to use for kernel function evaluations.
+        :param max_similarity: threshold to allow feature to be added to 
+            representation.  Larger max_similarity makes it \"easier\" to add 
+            more features by permitting larger values of phi(s) before 
+            discarding.  (An existing feature function in phi() with large value
+            at phi(s) implies that it is very representative of the true 
+            function at *s*.  i.e., the value of a feature in phi(s) is 
+            inversely related to the \"similarity\" of a potential new feature.
+        :param resolution: to be used by the ``kernel()`` function, see parent.
+        
+        """
         self.max_similarity = max_similarity
         self.common_width = (domain.statespace_limits[:, 1]
                              - domain.statespace_limits[:, 0]) / resolution
@@ -97,10 +121,10 @@ class NonparametricLocalBases(LocalBases):
         self.features_num += 1
         self.centers = np.vstack((self.centers, center))
         self.widths = np.vstack((self.widths, self.common_width))
-        # TODO if normalized, use Q estimate for center to fill theta
+        # TODO if normalized, use Q estimate for center to fill feat_weights
         new = np.zeros((self.domain.actions_num, 1))
-        self.theta = addNewElementForAllActions(
-            self.theta,
+        self.feat_weights = addNewElementForAllActions(
+            self.feat_weights,
             self.domain.actions_num,
             new)
 

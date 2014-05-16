@@ -10,8 +10,22 @@ __license__ = "BSD 3-Clause"
 
 
 class Fourier(Representation):
-
+    """ Fourier representation.
+    Represents the value function using a Fourier series of the specified 
+    order (eg 3rd order, 5th order, etc).
+    See Konidaris, Osentoski, and Thomas, "Value Function Approximation in 
+    Reinforcement Learning using Fourier Basis" (2011).
+    http://lis.csail.mit.edu/pubs/konidaris-aaai11a.pdf
+    
+    """
+    
     def __init__(self, domain, order=3):
+        """
+        :param domain: the problem :py:class:`~rlpy.Domains.Domain.Domain` to learn
+        :param order: The degree of approximation to use in the Fourier series
+            (eg 3rd order, 5th order, etc).  See reference paper in class API.
+        
+        """
         dims = domain.state_space_dims
         self.coeffs = indices((order,) * dims).reshape((dims, -1)).T
         self.features_num = self.coeffs.shape[0]
