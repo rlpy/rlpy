@@ -739,6 +739,10 @@ class Representation(object):
             s_normalized[d] = closestDiscretization(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d,:])
         return s_normalized
 
+
+    def episodeTerminated(self):
+        pass
+
     def __deepcopy__(self, memo):
         cls = self.__class__
         result = cls.__new__(cls)
