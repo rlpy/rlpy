@@ -52,7 +52,7 @@ class BicycleBalancing(Domain):
         r"$\theta$",
         r"$\dot{\theta}$",
         r"$\psi")
-    gamma = 0.98
+    discount_factor = 0.98
     continuous_dims = np.arange(5)
     #: only update the graphs in showDomain every x steps
     show_domain_every = 20

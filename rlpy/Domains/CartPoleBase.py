@@ -100,7 +100,7 @@ class CartPoleBase(Domain):
     #: Max number of steps per trajectory
     episodeCap = 3000
     #: Discount factor
-    gamma = .95
+    discount_factor = .95
 
     #: Set to non-zero to enable print statements
     DEBUG = 0

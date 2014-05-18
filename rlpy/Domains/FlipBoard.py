@@ -37,7 +37,7 @@ class FlipBoard(Domain):
 
     """
 
-    gamma = 1
+    discount_factor = 1
     BOARD_SIZE = 4
     STEP_REWARD = -1
     episodeCap = 100               # Set by the domain = min(100,rows*cols)

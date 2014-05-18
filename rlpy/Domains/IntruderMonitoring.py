@@ -59,7 +59,7 @@ class IntruderMonitoring(Domain):
         #: Number of Intruders
     NUMBER_OF_INTRUDERS = 0
     NUMBER_OF_DANGER_ZONES = 0
-    gamma = .8
+    discount_factor = .8
     #: Rewards
     INTRUSION_PENALTY = -1.0
     episodeCap = 100              # Episode Cap

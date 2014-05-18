@@ -45,7 +45,7 @@ class HIVTreatment(Domain):
 
     """
     state_names = ("T1", "T1*", "T2", "T2*", "V", "E")
-    gamma = 0.98
+    discount_factor = 0.98
     continuous_dims = np.arange(6)
     actions = np.array([[0., 0.], [.7, 0.], [.3, 0.], [.7, .3]])
     actions_num = 4

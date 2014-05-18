@@ -52,7 +52,7 @@ class Domain(object):
 
     """
     #: The discount factor by which rewards are reduced
-    gamma = .9
+    discount_factor = .9
     #: The number of possible states in the domain
     states_num = 0  # was None
     #: The number of Actions the agent can perform
@@ -76,9 +76,9 @@ class Domain(object):
 #        """
         self.logger = logging.getLogger("rlpy.Domains." + self.__class__.__name__)
         self.state_space_dims = len(self.statespace_limits)
-        # To make sure type of gamma is float. This will later on be used in
+        # To make sure type of discount_factor is float. This will later on be used in
         # LSPI to force A matrix to be float
-        self.gamma = float(self.gamma)
+        self.discount_factor = float(self.discount_factor)
         # For discrete domains, limits should be extended by half on each side so that the mapping becomes identical with continuous states
         # The original limits will be saved in self.discrete_statespace_limits
         self._extendDiscreteDimensions()
@@ -98,7 +98,7 @@ Dimensions: {self.state_space_dims}
 |S|:        {self.states_num}
 |A|:        {self.actions_num}
 Episode Cap:{self.episodeCap}
-Gamma:      {self.gamma}
+Gamma:      {self.discount_factor}
 """.format(self=self)
         return res
 

@@ -62,7 +62,7 @@ class Acrobot(Domain):
     episodeCap = 1000
     dt = .2
     continuous_dims = np.arange(4)
-    gamma = 1.
+    discount_factor = 1.
 
     LINK_LENGTH_1 = 1.  # [m]
     LINK_LENGTH_2 = 1.  # [m]

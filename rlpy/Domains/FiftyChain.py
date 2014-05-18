@@ -131,7 +131,7 @@ class FiftyChain(Domain):
         # To catch errors
         self.optimal_policy = np.array([-1 for dummy in xrange(0, self.chainSize)])
         self.storeOptimalPolicy()
-        self.gamma = 0.8  # Set gamma to be 0.8 for this domain per L & P 2007
+        self.discount_factor = 0.8  # Set discount_factor to be 0.8 for this domain per L & P 2007
 
     def storeOptimalPolicy(self):
         """

@@ -76,7 +76,7 @@ class HelicopterHoverExtended(Domain):
     MIN_QW_BEFORE_HITTING_TERMINAL_STATE = np.cos(30. / 2. * np.pi / 180.)
 
     wind = np.array([.0, .0, 0.])  #: wind in neutral orientation
-    gamma = 0.95  #: discount factor
+    discount_factor = 0.95  #: discount factor
     gust_memory = 0.8
     domain_fig = None
 
@@ -106,9 +106,9 @@ class HelicopterHoverExtended(Domain):
     actions = cartesian(list(_actions_dim))  #: all possible actions
     actions_num = np.prod(actions.shape[0])
 
-    def __init__(self, noise_level=1., gamma=0.95):
+    def __init__(self, noise_level=1., discount_factor=0.95):
         self.noise_level = noise_level
-        self.gamma = gamma
+        self.discount_factor = discount_factor
         super(HelicopterHoverExtended, self).__init__()
 
     def s0(self):

@@ -99,7 +99,7 @@ class PST(Domain):
 
     """
     episodeCap = 1000  # : Maximum number of steps per episode
-    gamma = 0.9  #: Discount factor
+    discount_factor = 0.9  #: Discount factor
 
     # Domain constants
     FULL_FUEL = 10   #: Number of fuel units at start

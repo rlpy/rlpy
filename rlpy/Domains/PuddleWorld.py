@@ -35,7 +35,7 @@ class PuddleWorld(Domain):
 
     """
 
-    gamma = 1.  # discout factor
+    discount_factor = 1.  # discout factor
     domain_fig = None
     valfun_fig = None
     polfun_fig = None
@@ -49,9 +49,9 @@ class PuddleWorld(Domain):
         np.array([[1, 0], [0, 1], [-1, 0], [0, -1]], dtype="float")
     actions_num = 4
 
-    def __init__(self, noise_level=.01, gamma=1.):
+    def __init__(self, noise_level=.01, discount_factor=1.):
         self.noise_level = noise_level
-        self.gamma = gamma
+        self.discount_factor = discount_factor
         super(PuddleWorld, self).__init__()
         self.reward_map = np.zeros((100, 100))
         self.val_map = np.zeros((100, 100))

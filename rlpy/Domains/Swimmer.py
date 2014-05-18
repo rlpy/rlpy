@@ -41,7 +41,7 @@ class Swimmer(Domain):
     """
     dt = 0.03
     episodeCap = 1000
-    gamma = 0.98
+    discount_factor = 0.98
 
     def __init__(self, d=3, k1=7.5, k2=0.3):
         """

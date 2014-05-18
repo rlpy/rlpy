@@ -54,7 +54,7 @@ class BlocksWorld(Domain):
     #: reward when the tower is completed
     GOAL_REWARD = 1
     #: discount factor
-    gamma = 1
+    discount_factor = 1
     #: Total number of blocks
     blocks = 0
     #: Goal tower size
@@ -69,7 +69,7 @@ class BlocksWorld(Domain):
         self.noise = noise
         self.TABLE = blocks + 1
         self.actions_num = blocks * blocks
-        self.gamma = 1
+        self.discount_factor = 1
         # Block i is on top of what? if block i is on top of block i => block i
         # is on top of table
         self.statespace_limits = np.tile([0, blocks - 1], (blocks, 1))

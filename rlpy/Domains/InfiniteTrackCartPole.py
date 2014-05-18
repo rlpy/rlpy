@@ -260,7 +260,7 @@ class InfCartPoleSwingUp(InfTrackCartPole):
     #: Max number of steps per trajectory
     episodeCap = 300
     #: Discount factor
-    gamma = .90
+    discount_factor = .90
 
     def __init__(self):
         self.statespace_limits = np.array(

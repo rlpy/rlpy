@@ -58,7 +58,7 @@ class RCCar(Domain):
     GOAL = [.5, .5]
     GOAL_RADIUS = .1
     actions = np.outer([-1, 0, 1], [-1, 0, 1])
-    gamma = .9
+    discount_factor = .9
     episodeCap = 10000
     delta_t = .1  # time between steps
     CAR_LENGTH = .3  # L on the webpage

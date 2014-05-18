@@ -48,7 +48,7 @@ class MountainCar(Domain):
     gravityFactor = -0.0025
     #: Hill peaks are generated as sinusoid; this is freq. of that sinusoid.
     hillPeakFrequency = 3.0
-    #gamma = .9
+    #discount_factor = .9
     episodeCap = 10000  # : Maximum number of steps before terminating episode
 
     # Used for visual stuff:
@@ -76,8 +76,8 @@ class MountainCar(Domain):
         self.yTicks = np.linspace(0, self.XDot_discretization - 1, 5)
         self.yTicksLabels = np.linspace(self.XDOTMIN, self.XDOTMAX, 5)
         self.MIN_RETURN     = self.STEP_REWARD * \
-            (1 - self.gamma ** self.episodeCap) / \
-            (1 - self.gamma) if self.gamma != 1 else self.STEP_REWARD * \
+            (1 - self.discount_factor ** self.episodeCap) / \
+            (1 - self.discount_factor) if self.discount_factor != 1 else self.STEP_REWARD * \
             self.episodeCap
         self.MAX_RETURN = 0
         self.DimNames = ['X', 'Xdot']

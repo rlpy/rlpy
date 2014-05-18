@@ -197,7 +197,7 @@ class FiniteCartPoleBalance(FiniteTrackCartPole):
 
     """
     #: Discount factor
-    gamma = .999
+    discount_factor = .999
 
     def __init__(self):
         super(FiniteCartPoleBalance, self).__init__()
