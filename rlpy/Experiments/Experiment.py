@@ -203,7 +203,7 @@ class Experiment(object):
             self._gather_transition_statistics(s, a, ns, r, learning=False)
             s = ns
             eps_return += r
-            eps_discount_return += self.performance_domain.gamma ** eps_length * \
+            eps_discount_return += self.performance_domain.discount_factor ** eps_length * \
                 r
             eps_length += 1
         if visualize:
