@@ -7,14 +7,14 @@ import numpy as np
 from hyperopt import hp
 
 param_space = {'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
-               'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
+               'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(
         id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         lambda_=0.,
         boyan_N0=10.09,
-        initial_alpha=.47):
+        initial_learn_rate=.47):
     max_steps = 100000
     num_policy_checks = 20
     checks_per_policy = 5
@@ -24,8 +24,8 @@ def make_experiment(
     representation = IndependentDiscretization(domain)
     policy = eGreedy(representation, epsilon=0.1)
     agent = Greedy_GQ(
-        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
-        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+        domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 

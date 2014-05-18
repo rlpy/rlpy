@@ -38,8 +38,8 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-qlearning"):
     # Agent
     agent = Q_Learning(representation=representation, policy=policy,
                        domain=domain,
-                       initial_alpha=0.1,
-                       alpha_decay_mode="boyan", boyan_N0=100,
+                       initial_learn_rate=0.1,
+                       learn_rate_decay_mode="boyan", boyan_N0=100,
                        lambda_=0.)
     checks_per_policy = 100
     max_steps = 2000

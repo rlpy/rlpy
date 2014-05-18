@@ -11,13 +11,13 @@ from hyperopt import hp
 
 param_space = {'discretization': hp.quniform("discretization", 3, 5, 1),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
-               'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
+               'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(
         id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         boyan_N0=235,
-        initial_alpha=.05,
+        initial_learn_rate=.05,
         discretization=5):
     max_steps = 30000
     num_policy_checks = 20
@@ -29,8 +29,8 @@ def make_experiment(
         discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
     agent = Q_LEARNING(
-        representation, policy, domain, lambda_=0.9, initial_alpha=initial_alpha,
-        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+        domain, policy, representation, lambda_=0.9, initial_learn_rate=initial_learn_rate,
+        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 

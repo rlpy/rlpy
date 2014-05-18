@@ -8,12 +8,11 @@ placed it in the Representations/ directory.
 Tests the Representation on the GridWorld domain usin SARSA
 """
 __author__ = "Robert H. Klein"
-from Domains import GridWorld
-from Tools import Logger
-from Agents import SARSA
-from Representations import IncrTabularTut
-from Policies import eGreedy
-from Experiments import Experiment
+from rlpy.Domains import GridWorld
+from rlpy.Agents import SARSA
+from rlpy.Representations import IncrTabularTut
+from rlpy.Policies import eGreedy
+from rlpy.Experiments import Experiment
 import os
 
 
@@ -26,23 +25,22 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-IncrTabularTut"):
     @param id: number used to seed the random number generators
     @param path: output directory where logs and results are stored
     """
-    logger = Logger()
 
     ## Domain:
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
-    representation  = IncrTabularTut(domain, logger)
+    representation  = IncrTabularTut(domain)
 
     ## Policy
-    policy = eGreedy(representation, logger, epsilon=0.2)
+    policy = eGreedy(representation, epsilon=0.2)
 
     ## Agent
     agent = SARSA(representation=representation, policy=policy,
-                       domain=domain, logger=logger,
-                       learning_rate=0.1)
+                       domain=domain,
+                       learn_rate=0.1)
     checks_per_policy = 100
     max_steps = 2000
     num_policy_checks = 10

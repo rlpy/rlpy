@@ -21,7 +21,7 @@ param_space = {
         np.log(1e1)),
     'lambda_': hp.uniform("lambda_", 0., 1.),
     'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
-    'initial_alpha': hp.loguniform("initial_alpha", np.log(1e-3), np.log(1))}
+    'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(1e-3), np.log(1))}
 
 
 def make_experiment(
@@ -29,7 +29,7 @@ def make_experiment(
         discover_threshold=.02208,
         lambda_=0.6756,
         boyan_N0=480.72,
-        initial_alpha=.2911,
+        initial_learn_rate=.2911,
         kernel_resolution=18.435):
     max_steps = 10000
     num_policy_checks = 20
@@ -51,11 +51,11 @@ def make_experiment(
                                normalization=True,
                                max_active_base_feat=10, max_base_feat_sim=max_base_feat_sim)
     policy = eGreedy(representation, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,initial_alpha=1.,
-    # lambda_=0., alpha_decay_mode="boyan", boyan_N0=100)
+    # agent           = SARSA(representation,policy,domain,initial_learn_rate=1.,
+    # lambda_=0., learn_rate_decay_mode="boyan", boyan_N0=100)
     agent = Q_LEARNING(
-        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
-        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+        domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 

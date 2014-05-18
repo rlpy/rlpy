@@ -16,14 +16,14 @@ param_space = {
     'discretization': hp.uniform("discretization", 10, 50),
     'lambda_': hp.uniform("lambda_", 0., 1.),
     'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
-    'initial_alpha': hp.loguniform("initial_alpha", np.log(1e-3), np.log(1))}
+    'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(1e-3), np.log(1))}
 
 
 def make_experiment(
         id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         boyan_N0=389.56,
         lambda_=0.52738,
-        initial_alpha=.424409,
+        initial_learn_rate=.424409,
         discretization=30):
     max_steps = 400000
     num_policy_checks = 10
@@ -32,11 +32,11 @@ def make_experiment(
     domain = PuddleGapWorld()
     representation = Tabular(domain, discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,initial_alpha=1.,
-    # lambda_=0., alpha_decay_mode="boyan", boyan_N0=100)
+    # agent           = SARSA(representation,policy,domain,initial_learn_rate=1.,
+    # lambda_=0., learn_rate_decay_mode="boyan", boyan_N0=100)
     agent = Q_Learning(
-        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
-        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+        domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 

@@ -9,13 +9,11 @@ Tests the agent on the GridWorld domain.
 """
 __author__ = "Robert H. Klein"
 from rlpy.Domains import GridWorld
-from rlpy.Tools import Logger
 from rlpy.Agents import SARSA0
 from rlpy.Representations import Tabular
 from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import os
-import logging
 
 
 def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
@@ -28,25 +26,21 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-sarsa0"):
     @param path: output directory where logs and results are stored
     """
 
-    # create logger with 'spam_application'
-    logger = logging.getLogger('SARSA0_example')
-    logger.setLevel(logging.DEBUG)
-
     ## Domain:
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
-    representation  = Tabular(domain, logger, discretization=20)
+    representation  = Tabular(domain, discretization=20)
 
     ## Policy
-    policy = eGreedy(representation, logger, epsilon=0.2)
+    policy = eGreedy(representation, epsilon=0.2)
 
     ## Agent
     agent = SARSA0(representation=representation, policy=policy,
                        domain=domain,
-                       learning_rate=0.1)
+                       learn_rate=0.1)
     checks_per_policy = 100
     max_steps = 2000
     num_policy_checks = 10

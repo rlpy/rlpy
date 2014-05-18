@@ -26,23 +26,22 @@ def make_experiment(id=1, path="./Results/Tutorial/gridworld-eGreedyTut"):
     @param id: number used to seed the random number generators
     @param path: output directory where logs and results are stored
     """
-    logger = Logger()
 
     ## Domain:
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
-    domain = GridWorld(maze, noise=0.3, logger=logger)
+    domain = GridWorld(maze, noise=0.3)
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
-    representation  = Tabular(domain, logger, discretization=20)
+    representation  = Tabular(domain, discretization=20)
 
     ## Policy
-    policy = eGreedyTut(representation, logger, epsilon=0.2)
+    policy = eGreedyTut(representation, epsilon=0.2)
 
     ## Agent
     agent = SARSA(representation=representation, policy=policy,
-                       domain=domain, logger=logger,
-                       learning_rate=0.1)
+                       domain=domain,
+                       learn_rate=0.1)
     checks_per_policy = 100
     max_steps = 2000
     num_policy_checks = 10

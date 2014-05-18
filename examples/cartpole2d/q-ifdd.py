@@ -19,7 +19,7 @@ param_space = {'discretization': hp.quniform("discretization", 5, 40, 1),
                    np.log(1e-2),
                    np.log(1e1)),
                'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
-               'initial_alpha': hp.loguniform("initial_alpha", np.log(1e-3), np.log(1))}
+               'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(1e-3), np.log(1))}
 
 
 def make_experiment(
@@ -27,7 +27,7 @@ def make_experiment(
         discover_threshold=0.0148120884,
         lambda_=0.,
         boyan_N0=460.3858,
-        initial_alpha=0.8014120,
+        initial_learn_rate=0.8014120,
         discretization=25.):
     max_steps = 50000
     num_policy_checks = 20
@@ -45,10 +45,10 @@ def make_experiment(
                           useCache=True,
                           iFDDPlus=1 - kappa)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Q_Learning(representation, policy, domain,
+    agent = Q_Learning(domain, policy, representation,
                        lambda_=lambda_,
-                       initial_alpha=initial_alpha,
-                       alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+                       initial_learn_rate=initial_learn_rate,
+                       learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 

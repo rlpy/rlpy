@@ -8,6 +8,7 @@ from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
+from rlpy.Representations import FastKiFDD
 
 param_space = {
     'kernel_resolution':
@@ -19,7 +20,7 @@ param_space = {
         np.log(1e3)),
     'lambda_': hp.uniform("lambda_", 0., 1.),
     'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
-    'initial_alpha': hp.loguniform("initial_alpha", np.log(5e-2), np.log(1))}
+    'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(5e-2), np.log(1))}
 
 
 def make_experiment(
@@ -27,7 +28,7 @@ def make_experiment(
         discover_threshold=.21,
         boyan_N0=37.,
         lambda_=.9,
-        initial_alpha=.07,
+        initial_learn_rate=.07,
         kernel_resolution=13.14):
     max_steps = 30000
     num_policy_checks = 20
@@ -40,7 +41,6 @@ def make_experiment(
     # domain = FiniteCartPoleBalanceModern()
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
-    from rlpy.Representations.KernelizediFDD import FastKiFDD
     representation = FastKiFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
                                kernel_args=[kernel_width],
@@ -50,11 +50,11 @@ def make_experiment(
                                max_active_base_feat=10,
                                max_base_feat_sim=max_base_feat_sim)
     policy = eGreedy(representation, epsilon=0.1)
-    # agent           = SARSA(representation,policy,domain,initial_alpha=initial_alpha,
-    # lambda_=.0, alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+    # agent           = SARSA(representation,policy,domain,initial_learn_rate=initial_learn_rate,
+    # lambda_=.0, learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     agent = Q_LEARNING(
-        representation, policy, domain, lambda_=lambda_, initial_alpha=initial_alpha,
-        alpha_decay_mode="boyan", boyan_N0=boyan_N0)
+        domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment
 
