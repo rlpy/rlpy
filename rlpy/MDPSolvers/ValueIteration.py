@@ -64,7 +64,7 @@ class ValueIteration(MDPSolver):
         converged = False
         iteration = 0
         while self.hasTime() and not converged:
-            prev_theta = self.representation.theta.copy()
+            prev_weight_vec = self.representation.weight_vec.copy()
             # Sweep The State Space
             for i in xrange(0, no_of_states):
                 if not self.hasTime():
@@ -86,20 +86,20 @@ class ValueIteration(MDPSolver):
 
             # check for convergence
             iteration += 1
-            theta_change = np.linalg.norm(
-                prev_theta -
-                self.representation.theta,
+            weight_vec_change = np.linalg.norm(
+                prev_weight_vec -
+                self.representation.weight_vec,
                 np.inf)
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
-            converged = theta_change < self.convergence_threshold
+            converged = weight_vec_change < self.convergence_threshold
             self.logger.info(
-                'PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return=%0.4f, Steps=%d' % (iteration,
+                'PI #%d [%s]: BellmanUpdates=%d, ||delta-weight_vec||=%0.4f, Return=%0.4f, Steps=%d' % (iteration,
                                                                                                    hhmmss(
                                                                                                        deltaT(
                                                                                                            self.start_time)),
                                                                                                    bellmanUpdates,
-                                                                                                   theta_change,
+                                                                                                   weight_vec_change,
                                                                                                    performance_return,
                                                                                                    performance_steps))
             if self.show:

@@ -101,8 +101,8 @@ class MDPSolver(object):
 
     def BellmanBackup(self, s, a, ns_samples, policy=None):
         """Applied Bellman Backup to state-action pair s,a
-        i.e. Q(s,a) = E[r + gamma * V(s')]
-        If policy is given then Q(s,a) =  E[r + gamma * Q(s',pi(s')]
+        i.e. Q(s,a) = E[r + discount_factor * V(s')]
+        If policy is given then Q(s,a) =  E[r + discount_factor * Q(s',pi(s')]
 
         Args:
             s (ndarray):        The current state
@@ -118,8 +118,8 @@ class MDPSolver(object):
         s_index = vec2id(
             self.representation.binState(s),
             self.representation.bins_per_dim)
-        theta_index = int(self.representation.agg_states_num * a + s_index)
-        self.representation.theta[theta_index] = Q
+        weight_vec_index = int(self.representation.agg_states_num * a + s_index)
+        self.representation.weight_vec[weight_vec_index] = Q
 
     def performanceRun(self):
         """Set Exploration to zero and sample one episode from the domain."""
@@ -140,7 +140,7 @@ class MDPSolver(object):
                 p_actions)
             r, ns, eps_term, p_actions = self.domain.step(a)
             s = ns
-            eps_discounted_return += self.domain.gamma ** eps_length * r
+            eps_discounted_return += self.domain.discount_factor ** eps_length * r
             eps_return += r
             eps_length += 1
         return eps_return, eps_length, eps_term, eps_discounted_return

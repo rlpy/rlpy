@@ -104,10 +104,10 @@ class TrajectoryBasedValueIteration(MDPSolver):
                     terminal,
                     a,
                     phi_s)
-                old_Q = np.dot(phi_s_a, self.representation.theta)
+                old_Q = np.dot(phi_s_a, self.representation.weight_vec)
                 bellman_error = new_Q - old_Q
                 # print s, old_Q, new_Q, bellman_error
-                self.representation.theta   += self.alpha * \
+                self.representation.weight_vec   += self.alpha * \
                     bellman_error * phi_s_a
                 bellmanUpdates += 1
                 step += 1

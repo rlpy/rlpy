@@ -115,14 +115,14 @@ class PolicyIteration(MDPSolver):
                                 (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
 
                 # check for convergence
-                theta_change = np.linalg.norm(
-                    policy.representation.theta -
-                    self.representation.theta,
+                weight_vec_change = np.linalg.norm(
+                    policy.representation.weight_vec -
+                    self.representation.weight_vec,
                     np.inf)
-                converged = theta_change < self.convergence_threshold
+                converged = weight_vec_change < self.convergence_threshold
                 self.logger.info(
-                    'PE #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f' %
-                    (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, theta_change))
+                    'PE #%d [%s]: BellmanUpdates=%d, ||delta-weight_vec||=%0.4f' %
+                    (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, weight_vec_change))
                 if self.show:
                     self.domain.show(
                         policy.pi(s,
@@ -146,7 +146,7 @@ class PolicyIteration(MDPSolver):
                         policyChanged += 1
                 i += 1
             # This will cause the policy to be copied over
-            policy.representation.theta = self.representation.theta.copy()
+            policy.representation.weight_vec = self.representation.weight_vec.copy()
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             self.logger.info(

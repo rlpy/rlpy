@@ -119,8 +119,8 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     # print "Policy iFDD Potentials = %d" % len(policy.representation.iFDD_potentials.keys())
                     # print "Policy iFDD Sorted = %d" % len(policy.representation.sortediFDDFeatures.h)
                     # print "Policy iFDD index2feature = %d" % len(policy.representation.featureIndex2feature.keys())
-                    # print "Policy theta = %d" %
-                    # len(self.representation.theta)
+                    # print "Policy weight_vec = %d" %
+                    # len(self.representation.weight_vec)
                     new_Q = self.representation.Q_oneStepLookAhead(
                         s,
                         a,
@@ -132,10 +132,10 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                         terminal,
                         a,
                         phi_s=phi_s)
-                    old_Q = np.dot(phi_s_a, self.representation.theta)
+                    old_Q = np.dot(phi_s_a, self.representation.weight_vec)
                     bellman_error = new_Q - old_Q
 
-                    self.representation.theta   += self.alpha * \
+                    self.representation.weight_vec   += self.alpha * \
                         bellman_error * phi_s_a
                     bellmanUpdates += 1
                     step += 1
@@ -184,14 +184,14 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             # function will automatically improve the policy
             PI_iteration += 1
 
-            # Calculate the change in the theta as L2-norm
+            # Calculate the change in the weight_vec as L2-norm
             # Theta may have increased in size if the representation is
             # expanded.
             paddedTheta = padZeros(
-                policy.representation.theta,
-                len(self.representation.theta))
-            delta_theta = np.linalg.norm(paddedTheta - self.representation.theta)
-            converged = delta_theta < self.convergence_threshold
+                policy.representation.weight_vec,
+                len(self.representation.weight_vec))
+            delta_weight_vec = np.linalg.norm(paddedTheta - self.representation.weight_vec)
+            converged = delta_weight_vec < self.convergence_threshold
 
             # Update the underlying value function of the policy
             # deepcopy(self.representation)
@@ -200,12 +200,12 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             self.logger.info(
-                'PI #%d [%s]: BellmanUpdates=%d, ||delta-theta||=%0.4f, Return=%0.3f, steps=%d, features=%d' % (PI_iteration,
+                'PI #%d [%s]: BellmanUpdates=%d, ||delta-weight_vec||=%0.4f, Return=%0.3f, steps=%d, features=%d' % (PI_iteration,
                                                                                                                 hhmmss(
                                                                                                                     deltaT(
                                                                                                                         self.start_time)),
                                                                                                                 bellmanUpdates,
-                                                                                                                delta_theta,
+                                                                                                                delta_weight_vec,
                                                                                                                 performance_return,
                                                                                                                 performance_steps,
                                                                                                                 self.representation.features_num))
@@ -228,11 +228,11 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         super(TrajectoryBasedPolicyIteration, self).solve()
 
     def solveInMatrixFormat(self):
-        # while delta_theta > threshold
+        # while delta_weight_vec > threshold
         #  1. Gather data following an e-greedy policy
         #  2. Calculate A and b estimates
-        #  3. calculate new_theta, and delta_theta
-        # return policy greedy w.r.t last theta
+        #  3. calculate new_weight_vec, and delta_weight_vec
+        # return policy greedy w.r.t last weight_vec
         self.policy = eGreedy(
             self.representation,
             epsilon=self.epsilon)
@@ -254,7 +254,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             #  2. Calculate A and b estimates
             a_num = self.domain.actions_num
             n = self.representation.features_num
-            gamma = self.domain.gamma
+            discount_factor = self.domain.discount_factor
 
             self.A = np.zeros((n * a_num, n * a_num))
             self.b = np.zeros((n * a_num, 1))
@@ -263,28 +263,28 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                     S[i], Actions[i, 0]).reshape((-1, 1))
                 E_phi_ns_na = self.calculate_expected_phi_ns_na(
                     S[i], Actions[i, 0], self.ns_samples).reshape((-1, 1))
-                d = phi_s_a - gamma * E_phi_ns_na
+                d = phi_s_a - discount_factor * E_phi_ns_na
                 self.A += np.outer(phi_s_a, d.T)
                 self.b += phi_s_a * R[i, 0]
 
-            #  3. calculate new_theta, and delta_theta
-            new_theta, solve_time = solveLinear(regularize(self.A), self.b)
+            #  3. calculate new_weight_vec, and delta_weight_vec
+            new_weight_vec, solve_time = solveLinear(regularize(self.A), self.b)
             iteration += 1
             if solve_time > 1:
                 self.logger.info(
                     '#%d: Finished Policy Evaluation. Solve Time = %0.2f(s)' %
                     (iteration, solve_time))
-            delta_theta = np.linalg.norm(
-                new_theta -
-                self.representation.theta,
+            delta_weight_vec = np.linalg.norm(
+                new_weight_vec -
+                self.representation.weight_vec,
                 np.inf)
-            converged = delta_theta < self.convergence_threshold
-            self.representation.theta = new_theta
+            converged = delta_weight_vec < self.convergence_threshold
+            self.representation.weight_vec = new_weight_vec
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
             )
             self.logger.info(
                 '#%d [%s]: Samples=%d, ||weight-Change||=%0.4f, Return = %0.4f' %
-                (iteration, hhmmss(deltaT(self.start_time)), samples, delta_theta, performance_return))
+                (iteration, hhmmss(deltaT(self.start_time)), samples, delta_weight_vec, performance_return))
             if self.show:
                 self.domain.show(S[-1], Actions[-1], self.representation)
 
