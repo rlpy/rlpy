@@ -315,11 +315,11 @@ class iFDD(Representation):
         # Number of feature before adding the new one
         f = self.features_num - 1
         if self.sparsify:
-            newElem = (self.theta[p1_index::f] +
-                       self.theta[p2_index::f]).reshape((-1, 1))
+            newElem = (self.weight_vec[p1_index::f] +
+                       self.weight_vec[p2_index::f]).reshape((-1, 1))
         else:
             newElem = None
-        self.theta = addNewElementForAllActions(self.theta, a, newElem)
+        self.weight_vec = addNewElementForAllActions(self.weight_vec, a, newElem)
         # We dont want to reuse the hased phi because phi function is changed!
         self.hashed_s = None
 
@@ -341,7 +341,7 @@ class iFDD(Representation):
         self.features_num += 1
         feature = iFDD_feature(potential)
         self.iFDD_features[potential.f_set] = feature
-        # Expand the size of the theta
+        # Expand the size of the weight_vec
         self.updateWeight(feature.p1, feature.p2)
         # Update the index to feature dictionary
         self.featureIndex2feature[feature.index] = feature
@@ -458,7 +458,7 @@ class iFDD(Representation):
         for feature in reversed(self.sortediFDDFeatures.toList()):
         # for feature in self.iFDD_features.itervalues():
             # print " %d\t| %s\t| %s\t| %s\t| %s" %
-            # (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.theta[feature.index::self.features_num]))
+            # (feature.index,str(list(feature.f_set)),feature.p1,feature.p2,str(self.weight_vec[feature.index::self.features_num]))
             print " %d\t| %s\t| %s\t| %s\t| Omitted" % (feature.index, self.getStrFeatureSet(feature.index), feature.p1, feature.p2)
 
     def showPotentials(self):
@@ -533,5 +533,5 @@ class iFDD(Representation):
         ifdd.cache = deepcopy(self.cache)
         ifdd.sortediFDDFeatures = deepcopy(self.sortediFDDFeatures)
         ifdd.features_num = self.features_num
-        ifdd.theta = deepcopy(self.theta)
+        ifdd.weight_vec = deepcopy(self.weight_vec)
         return ifdd

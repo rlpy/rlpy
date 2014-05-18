@@ -35,7 +35,7 @@ class OMPTD(Representation):
     remainingFeatures = None  # Array of remaining features
 
     def __init__(
-            self, domain, discretization=20, initial_representation,
+            self, domain, initial_representation, discretization=20,
             maxBatchDicovery=1, batchThreshold=0, bagSize=100000, sparsify=False):
         """
         :param domain: the :py:class`~rlpy.Domains.Domain.Domain` associated 

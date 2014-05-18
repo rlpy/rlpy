@@ -121,10 +121,10 @@ class NonparametricLocalBases(LocalBases):
         self.features_num += 1
         self.centers = np.vstack((self.centers, center))
         self.widths = np.vstack((self.widths, self.common_width))
-        # TODO if normalized, use Q estimate for center to fill feat_weights
+        # TODO if normalized, use Q estimate for center to fill weight_vec
         new = np.zeros((self.domain.actions_num, 1))
-        self.feat_weights = addNewElementForAllActions(
-            self.feat_weights,
+        self.weight_vec = addNewElementForAllActions(
+            self.weight_vec,
             self.domain.actions_num,
             new)
 

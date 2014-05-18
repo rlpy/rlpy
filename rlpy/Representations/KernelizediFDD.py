@@ -423,13 +423,13 @@ class KernelizediFDD(Representation):
 
         # add parameter dimension
         if self.normalization:
-            self.theta = addNewElementForAllActions(
-                self.theta,
+            self.weight_vec = addNewElementForAllActions(
+                self.weight_vec,
                 self.domain.actions_num,
                 Q)
         else:
-            self.theta = addNewElementForAllActions(
-                self.theta,
+            self.weight_vec = addNewElementForAllActions(
+                self.weight_vec,
                 self.domain.actions_num)
         return self.features_num - 1
 
@@ -475,13 +475,13 @@ class KernelizediFDD(Representation):
         self.logger.debug("{} candidates".format(len(self.candidates)))
         self.features_num += 1
         if self.normalization:
-            self.theta = addNewElementForAllActions(
-                self.theta,
+            self.weight_vec = addNewElementForAllActions(
+                self.weight_vec,
                 self.domain.actions_num,
                 Q)
         else:
-            self.theta = addNewElementForAllActions(
-                self.theta,
+            self.weight_vec = addNewElementForAllActions(
+                self.weight_vec,
                 self.domain.actions_num)
 
         return self.features_num - 1
@@ -521,8 +521,8 @@ try:
                     new = Q * np.ones((self.domain.actions_num, discovered))
                 else:
                     new = np.zeros((self.domain.actions_num, discovered))
-                self.theta = addNewElementForAllActions(
-                    self.theta,
+                self.weight_vec = addNewElementForAllActions(
+                    self.weight_vec,
                     self.domain.actions_num,
                     new)
             return discovered

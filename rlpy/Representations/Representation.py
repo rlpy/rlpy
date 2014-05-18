@@ -570,13 +570,13 @@ class Representation(object):
         if hasFunction(self, 'addState'):
             self.addState(s)
 
-        gamma = self.domain.gamma
+        discount_factor = self.domain.discount_factor
         if hasFunction(self.domain, 'expectedStep'):
             p, r, ns, t, p_actions = self.domain.expectedStep(s, a)
             Q = 0
             for j in xrange(len(p)):
                 if policy is None:
-                    Q += p[j, 0] * (r[j, 0] + gamma * self.V(ns[j,:], t[j,:], p_actions[j]))
+                    Q += p[j, 0] * (r[j, 0] + discount_factor * self.V(ns[j,:], t[j,:], p_actions[j]))
                 else:
                     # For some domains such as blocks world, you may want to apply bellman backup to impossible states which may not have any possible actions.
                     # This if statement makes sure that there exist at least
@@ -584,7 +584,7 @@ class Representation(object):
                     # the fixed policy is valid
                     if len(self.domain.possibleActions(ns[j,:])):
                         na = policy.pi(ns[j,:], t[j,:], self.domain.possibleActions(ns[j,:]))
-                        Q += p[j, 0] * (r[j, 0] + gamma * self.Q(ns[j,:], t[j,:], na))
+                        Q += p[j, 0] * (r[j, 0] + discount_factor * self.Q(ns[j,:], t[j,:], na))
         else:
             # See if they are in cache:
             key = tuple(np.hstack((s, [a])))
@@ -630,9 +630,9 @@ class Representation(object):
                 # print "USED CACHED"
                 next_states, rewards = cacheHit
             if policy is None:
-                Q = np.mean([rewards[i] + gamma * self.V(next_states[i,:]) for i in xrange(ns_samples)])
+                Q = np.mean([rewards[i] + discount_factor * self.V(next_states[i,:]) for i in xrange(ns_samples)])
             else:
-                Q = np.mean([rewards[i] + gamma * self.Q(next_states[i,:], policy.pi(next_states[i,:])) for i in xrange(ns_samples)])
+                Q = np.mean([rewards[i] + discount_factor * self.Q(next_states[i,:], policy.pi(next_states[i,:])) for i in xrange(ns_samples)])
         return Q
 
     def Qs_oneStepLookAhead(self, s, ns_samples, policy=None):
