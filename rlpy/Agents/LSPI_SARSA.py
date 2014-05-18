@@ -16,24 +16,27 @@ class LSPI_SARSA(SARSA):
     """This agent uses SARSA for online learning and calls LSPI on sample_window"""
 
     def __init__(
-            self, domain, policy, representation, lspi_iterations=5, sample_window=100,
-            tol_epsilon=1e-3, re_iterations=100, initial_learn_rate=.1, lambda_=0, learn_rate_decay_mode='dabney', boyan_N0=1000):
+            self, domain, policy, representation, lspi_iterations=5, 
+            steps_between_LSPI=100,sample_window=100,
+            tol_epsilon=1e-3, re_iterations=100, initial_learn_rate=.1, 
+            lambda_=0, learn_rate_decay_mode='dabney', boyan_N0=1000):
         super(
             LSPI_SARSA,
             self).__init__(
             domain,
             policy,
             representation,
-            initial_learn_rate,
             lambda_,
+            initial_learn_rate,
             learn_rate_decay_mode,
             boyan_N0)
         self.LSPI = LSPI(
-            representation,
-            policy,
             domain,
-            lspi_iterations,
+            policy,
+            representation,
             sample_window,
+            steps_between_LSPI,
+            lspi_iterations,
             tol_epsilon,
             re_iterations)
 

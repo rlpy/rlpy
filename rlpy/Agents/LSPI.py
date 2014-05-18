@@ -99,7 +99,7 @@ class LSPI(Agent):
                 self.all_phi_s_a = np.zeros((max_window, f_size))
                 self.all_phi_ns_na = np.zeros((max_window, f_size))
 
-        super(LSPI, self).__init__(representation, policy, domain)
+        super(LSPI, self).__init__(domain, policy, representation)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """Iterative learning method for the agent.
@@ -146,7 +146,7 @@ class LSPI(Agent):
             bestAction, self.all_phi_ns_new_na, action_mask = self.representation.batchBestAction(self.data_ns[:self.samples_count, :], self.all_phi_ns, action_mask, self.use_sparse)
 
             # Recalculate A matrix (b remains the same)
-            # Solve for the new theta
+            # Solve for the new weight_vec
             if self.use_sparse:
                 F2  = sp.csr_matrix(self.all_phi_ns_new_na[:self.samples_count, :])
                 A = F1.T * (F1 - discount_factor * F2)
@@ -155,17 +155,17 @@ class LSPI(Agent):
                 A = np.dot(F1.T, F1 - discount_factor * F2)
 
             A = Tools.regularize(A)
-            new_theta, solve_time = Tools.solveLinear(A, self.b)
+            new_weight_vec, solve_time = Tools.solveLinear(A, self.b)
 
             # Calculate TD_Errors
             ####################
             td_errors = self.calculateTDErrors()
 
             # Calculate the weight difference. If it is big enough update the
-            # theta
-            weight_diff = np.linalg.norm(self.representation.theta - new_theta)
+            # weight_vec
+            weight_diff = np.linalg.norm(self.representation.weight_vec - new_weight_vec)
             if weight_diff > self.tol_epsilon:
-                self.representation.theta = new_theta
+                self.representation.weight_vec = new_weight_vec
 
             self.logger.info(
                 "%d: %0.0f(s), ||w1-w2|| = %0.4f, Sparsity=%0.1f%%, %d Features" % (lspi_iteration + 1,
@@ -221,8 +221,8 @@ class LSPI(Agent):
 
         A = Tools.regularize(self.A)
 
-        # Calculate theta
-        self.representation.theta, solve_time = Tools.solveLinear(A, self.b)
+        # Calculate weight_vec
+        self.representation.weight_vec, solve_time = Tools.solveLinear(A, self.b)
 
         # log solve time only if takes more than 1 second
         if solve_time > 1:
@@ -293,12 +293,12 @@ class LSPI(Agent):
             F1      = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :])
             F2      = sp.csr_matrix(self.all_phi_ns_na[:self.samples_count, :])
             answer = (
-                R + (discount_factor * F2 - F1) * self.representation.theta.reshape(-1, 1))
+                R + (discount_factor * F2 - F1) * self.representation.weight_vec.reshape(-1, 1))
             return np.squeeze(np.asarray(answer))
         else:
             F1 = self.all_phi_s_a[:self.samples_count, :]
             F2 = self.all_phi_ns_na[:self.samples_count, :]
-            return R.ravel() + np.dot(discount_factor * F2 - F1, self.representation.theta)
+            return R.ravel() + np.dot(discount_factor * F2 - F1, self.representation.weight_vec)
 
     def representationExpansionLSPI(self):
         re_iteration = 0
@@ -320,7 +320,7 @@ class LSPI(Agent):
                     re_iteration)
             # Run LSTD for first solution
             self.LSTD()
-            # Run Policy Iteration to change a_prime and recalculate theta in a
+            # Run Policy Iteration to change a_prime and recalculate weight_vec in a
             # loop
             td_errors = self.policyIteration()
             # Add new Features
