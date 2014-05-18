@@ -30,18 +30,18 @@ class Greedy_GQ(DescentAlgorithm, Agent):
         super(
             Greedy_GQ,
             self).__init__(
-            domain,
-            policy,
-            representation,
+            domain=domain,
+            policy=policy,
+            representation=representation,
             **kwargs)
-        self.GQWeight = copy(self.representation.theta)
+        self.GQWeight = copy(self.representation.weight_vec)
         # The beta in the GQ algorithm is assumed to be learn_rate * THIS CONSTANT
         self.secondLearningRateCoef = BetaCoef
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         self.representation.pre_discover(s, False, a, ns, terminal)
         discount_factor = self.representation.domain.discount_factor
-        theta = self.representation.theta
+        weight_vec = self.representation.weight_vec
         phi_s = self.representation.phi(s, False)
         phi = self.representation.phi_sa(s, False, a, phi_s)
         phi_prime_s = self.representation.phi(ns, terminal)
@@ -76,7 +76,7 @@ class Greedy_GQ(DescentAlgorithm, Agent):
             self.eligibility_trace_s = phi_s
 
         td_error                     = r + \
-            np.dot(discount_factor * phi_prime - phi, theta)
+            np.dot(discount_factor * phi_prime - phi, weight_vec)
         self.updateLearnRate(
             phi_s,
             phi_prime_s,
@@ -87,9 +87,9 @@ class Greedy_GQ(DescentAlgorithm, Agent):
 
         if nnz > 0:  # Phi has some nonzero elements, proceed with update
             td_error_estimate_now = np.dot(phi, self.GQWeight)
-            Delta_theta                 = td_error * self.eligibility_trace - \
+            Delta_weight_vec                 = td_error * self.eligibility_trace - \
                 discount_factor * td_error_estimate_now * phi_prime
-            theta += self.learn_rate * Delta_theta
+            weight_vec += self.learn_rate * Delta_weight_vec
             Delta_GQWeight = (
                 td_error - td_error_estimate_now) * phi
             self.GQWeight               += self.learn_rate * \

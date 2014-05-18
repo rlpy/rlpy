@@ -33,9 +33,9 @@ class TDControlAgent(DescentAlgorithm, Agent):
         super(
             TDControlAgent,
             self).__init__(
-            domain,
-            policy,
-            representation,
+            domain=domain,
+            policy=policy,
+            representation=representation,
             **kwargs)
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
@@ -50,7 +50,7 @@ class TDControlAgent(DescentAlgorithm, Agent):
 
         self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
         discount_factor = self.representation.domain.discount_factor
-        theta = self.representation.theta
+        weight_vec = self.representation.weight_vec
         phi_s = self.representation.phi(s, prevStateTerminal)
         phi = self.representation.phi_sa(s, prevStateTerminal, a, phi_s)
         phi_prime_s = self.representation.phi(ns, terminal)
@@ -95,7 +95,7 @@ class TDControlAgent(DescentAlgorithm, Agent):
             self.eligibility_trace = phi
             self.eligibility_trace_s = phi_s
 
-        td_error = r + np.dot(discount_factor * phi_prime - phi, theta)
+        td_error = r + np.dot(discount_factor * phi_prime - phi, weight_vec)
         if nnz > 0:
             self.updateLearnRate(
                 phi_s,
@@ -104,12 +104,12 @@ class TDControlAgent(DescentAlgorithm, Agent):
                 discount_factor,
                 nnz,
                 terminal)
-            theta_old = theta.copy()
-            theta               += self.learn_rate * \
+            weight_vec_old = weight_vec.copy()
+            weight_vec               += self.learn_rate * \
                 td_error * self.eligibility_trace
-            if not np.all(np.isfinite(theta)):
-                theta = theta_old
-                print "WARNING: TD-Learning diverged, theta reached infinity!"
+            if not np.all(np.isfinite(weight_vec)):
+                weight_vec = weight_vec_old
+                print "WARNING: TD-Learning diverged, weight_vec reached infinity!"
         # Discover features if the representation has the discover method
         expanded = self.representation.post_discover(
             s,
