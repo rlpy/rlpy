@@ -524,25 +524,6 @@ def nchoosek(n, k):
     return misc.comb(n, k)
 
 
-def findElem(x, lis):
-    """
-    Searches for the element ``x`` in the list (python built-in type) ``A``
-    Returns the index of the first occurrence of ``x``.
-    
-    .. warning::
-        
-        ``A`` *MUST* be a list (python built-in type)
-    
-    """
-    if type(lis) is not list
-        print 'ERROR: Tools.findElem() only accepts python lists.
-        return []
-    elif x in lis:
-        return lis.index(x)
-    else:
-        return []
-
-
 def findElemArray1D(x, arr):
     """
     :param x: a scalar
@@ -1235,6 +1216,25 @@ def rk4(derivs, y0, t, *args, **kwargs):
         k4 = np.asarray(derivs(y0 + dt * k3, thist + dt, *args, **kwargs))
         yout[i + 1] = y0 + dt / 6.0 * (k1 + 2 * k2 + 2 * k3 + k4)
     return yout
+
+# # NOT USED
+# def findElem(x, lis):
+#     """
+#     Searches for the element ``x`` in the list (python built-in type) ``A``
+#     Returns the index of the first occurrence of ``x``.
+#     
+#     .. warning::
+#         
+#         ``A`` *MUST* be a list (python built-in type)
+#     
+#     """
+#     if type(lis) is not list:
+#         print 'ERROR: Tools.findElem() only accepts python lists.
+#         return []
+#     elif x in lis:
+#         return lis.index(x)
+#     else:
+#         return []
 
 
 # def matrix_mult(A, B):
