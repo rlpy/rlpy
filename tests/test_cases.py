@@ -14,6 +14,8 @@ __license__ = "BSD 3-Clause"
 
 def test_all_100_step():
     for fn in glob.glob("examples/**/*.py"):
+        if fn in glob.glob("examples/tutorial/*"):
+            continue; # This is a tutorial file, just skip
         if "run" in fn or "plot" in fn:
             continue
         yield check_running, fn, 100
