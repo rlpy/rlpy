@@ -232,7 +232,7 @@ def find_hyperparameters(
         possible values are *max_reward*, *min_steps*, *max_steps*
     :param max_concurrent_jobs: only relevant for condor_full parallelization.
         specifies the maximum number of jobs that should run at the same time.
-    :return a tuple containing the best hyperarameter settings and the hyperopt
+    :return: a tuple containing the best hyperarameter settings and the hyperopt
         trials instance of the optimization procedure
     """
     if space is None:

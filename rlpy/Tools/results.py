@@ -186,15 +186,15 @@ class MultiExperimentResults(object):
         The quantities are specified by their id strings,
         i.e. "return" or "learning steps"
 
-        pad_x, pad_y: if not enough observations are present for some results,
-                should they be filled with the value of the last available obervation?
-        xbars, ybars: show standard error of the mean for the respective quantity
-        colors: dictionary which maps experiment keys to colors
-        markers: dictionary which maps experiment keys to markers
-        xerror_exery: show horizontal error bars only every .. observation
-        legend: show legend below plot
+        ``pad_x, pad_y``: if not enough observations are present for some results,
+        should they be filled with the value of the last available obervation?\n
+        ``xbars, ybars``: show standard error of the mean for the respective 
+        quantity colors: dictionary which maps experiment keys to colors.\n
+       ``markers``: dictionary which maps experiment keys to markers.
+        ``xerror_exery``: show horizontal error bars only every .. observation.\n
+        ``legend``: (Boolean) show legend below plot.\n
 
-        return the figure handle of the created plot
+        Returns the figure handle of the created plot
         """
         style = {
             "linewidth": 2, "alpha": .7, "linestyle": "-", "markersize": 7,

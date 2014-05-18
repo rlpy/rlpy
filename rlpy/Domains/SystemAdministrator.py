@@ -24,34 +24,34 @@ class SystemAdministrator(Domain):
     to keep as many machines running as possible, but she can only fix one
     at a time.
 
-    | **STATE:**
-    | Each computer has binary state {BROKEN, RUNNING}.
-    | The state space is thus *2^n*, where *n* is the number of computers in the system.
-    | All computers are connected to each other by a fixed topology
-    and initially have state RUNNING.
+    **STATE:** \n
+    Each computer has binary state {BROKEN, RUNNING}.\n
+    The state space is thus *2^n*, where *n* is the number of computers 
+    in the system. \n
+    All computers are connected to each other by a fixed topology
+    and initially have state RUNNING. \n
 
-    | *Example*
-    | [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
+    *Example* \n
+    [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
 
-    | **ACTIONS:**
+    **ACTIONS:**
     The action space is the integers [0,n], where 0 corresponds to taking
-    no action, and [1,n] selects a computer to repair.
+    no action, and [1,n] selects a computer to repair. \n
 
     Repairing a computer causes its state to become RUNNING regardless of its
     previous state.
-
     However, penalty -0.75 is applied for taking a repair action.
 
-    | **REWARD:**
+    **REWARD:**
     +1 is awarded for each computer with status RUNNING, but -0.75 is
-    applied for any repair action taken (ie, a != 0)
+    applied for any repair action taken (ie, a != 0) \n
 
-    | **Visualization**
+    **Visualization**
     Broken computers are colored red, and any links to other computers
     change from solid to dotted, reflecting the higher probability
-    of failure of those machines.
+    of failure of those machines. \n
 
-    | **REFERENCE**
+    **REFERENCE**
 
     .. seealso::
         Carlos Guestrin, Daphne Koller, Ronald Parr, and Shobha Venkataraman.
@@ -119,11 +119,11 @@ class SystemAdministrator(Domain):
         """
         :param path: Path to the map file, of form
             \'/Domains/SystemAdministratorMaps/mapname.txt\'
-        Sets the internal variables _Neighbors and _Edges, where each cell of
-        _Neighbors is a list containing the neighbors of computer node <i>
-        at index <i>, and
-        _Edges is a list of tuples (node1, node2) where node1 and node2
-        share an edge and node1 < node2.
+            
+        Sets the internal variables ``_Neighbors`` and ``_Edges``, where each 
+        cell of ``_Neighbors`` is a list containing the neighbors of computer 
+        node <i> at index <i>, and ``_Edges`` is a list of tuples (node1, node2)
+        where node1 and node2 share an edge and node1 < node2.
 
         """
         _Neighbors = []
@@ -273,6 +273,7 @@ class SystemAdministrator(Domain):
         """
         :param neighborsList: each element at index i is a list of nodes
             connected to the node at i.
+            
         Constructs a list (node1, node2) where node1 and node2 share an edge
         and node1 < node2 and sets the unique Edges of the network
         (all edges are bidirectional).

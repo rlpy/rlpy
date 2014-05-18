@@ -360,7 +360,7 @@ class HelicopterHover(HelicopterHoverExtended):
 
         This domain has an internal hidden state, as it actually is
         a POMDP. Besides the 12-dimensional observable state, there is an internal
-        state saved as self.hidden_state_ (time and long-term noise which
+        state saved as ``self.hidden_state_`` (time and long-term noise which
         simulated gusts of wind).
         be aware of this state if you use this class to produce samples which are
         not in order

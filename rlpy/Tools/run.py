@@ -64,7 +64,7 @@ def run_profiled(make_exp_fun, profile_location="Profiling",
                          function.
     :param profile_location: directory used to store the profiling result files.
     :param out: filename of the generated pdf file.
-    :param **kwargs: remaining parameters passed to the experiment generator function
+    :param \*\*kwargs: remaining parameters passed to the experiment generator function
     """
     dat_fn = os.path.join(profile_location, "profile.dat")
     pdf_fn = os.path.join(profile_location, out)
@@ -118,15 +118,19 @@ def read_setting_content(filename):
 
 
 def prepare_directory(setting, path, **hyperparam):
-    """creates a directory in path with a file for executing a given
+    """
+    Creates a directory in path with a file for executing a given
     setting. The function returns the executable python script file
 
     :param setting: filename which contains a make_experiment method that get
         the id and hyperparameters
         and returns an instance of Experiment ready to run
     :param path: specifies where to create the directory
-    :param \**hyperparam: all hyperparameters passed to the setting's make_experiment
-    :return filename of the file to execute in path"""
+    :param \*\*hyperparam: all hyperparameters passed to the setting's 
+        ``make_experiment()``
+    :return: filename of the file to execute in path
+    
+    """
     # create file to execute
     variables = "hyper_param = dict(" + ",\n".join(["{}={}".format(k, repr(v))
                                                     for k, v in hyperparam.items()]) + ")"

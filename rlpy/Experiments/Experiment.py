@@ -514,8 +514,8 @@ class Experiment(object):
 
     def compile_path(self, path):
         """
-        An experiment path can be specified with placeholders. For example:
-            ``Results/Temp/{domain}/{agent}/{representation}``
+        An experiment path can be specified with placeholders. For 
+        example, ``Results/Temp/{domain}/{agent}/{representation}``.
         This functions replaces the placeholders with actual values.
         """
         variables = re.findall("{([^}]*)}", path)

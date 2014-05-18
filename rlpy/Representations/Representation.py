@@ -34,11 +34,11 @@ class Representation(object):
     
         Throughout the framework, ``phi`` refers to the vector of features;
         ``phi`` or ``phi_s`` is thus the vector of feature functions evaluated
-        at the state *s*.  phi_s_a appends |A|-1 copies of phi_s, such that 
-        |phi_s_a| = |A| * |phi|, where |A| is the size of the action space and 
-        |phi| is the number of features.  Each of these blocks corresponds 
-        to a state-action pair; all blocks except for the selected action ``a``
-        are set to 0.
+        at the state *s*.  phi_s_a appends \|A\|-1 copies of phi_s, such that 
+        \|phi_s_a\| = \|A\| * \|phi\|, where \|A\| is the size of the action 
+        space and \|phi\| is the number of features.  Each of these blocks 
+        corresponds to a state-action pair; all blocks except for the selected 
+        action ``a`` are set to 0.
 
     The Representation class is a base class that provides the basic framework
     for all representations. It provides the methods and attributes
@@ -416,7 +416,7 @@ class Representation(object):
         """ *Abstract Method* \n
         Returns the feature vector evaluated at state *s* for non-terminal
         states; see
-        function :py:meth:`~rlpy.Representations.Representation.Representation.phi
+        function :py:meth:`~rlpy.Representations.Representation.Representation.phi`
         for the general case.
 
         :param s: The given state
