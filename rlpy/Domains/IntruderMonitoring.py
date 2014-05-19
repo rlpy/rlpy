@@ -31,7 +31,7 @@ class IntruderMonitoring(Domain):
 
 
     **ACTIONS:**
-    [Up, Down, Left, Right, Remain]^n (one action for each agent)
+    [Up, Down, Left, Right, Remain]^n (one action for each agent).
 
     **TRANSITION:**
     Each agent can move in 4 directions + stay still.
@@ -43,7 +43,7 @@ class IntruderMonitoring(Domain):
     contained in the ``Domains/IntruderMonitoringMaps/`` directory.
 
     **REWARD:** \n
-    -1 for every visit of an intruder to a danger zone with no camera present
+    -1 for every visit of an intruder to a danger zone with no camera present.
 
     The team receives a penalty whenever there is an intruder on a danger zone in the
     absence of an agent. The task is to allocate agents on the map so that intruders
@@ -52,11 +52,11 @@ class IntruderMonitoring(Domain):
     """
 
     map = None
-        #: Number of rows and columns of the map
+    #: Number of rows and columns of the map
     ROWS = COLS = 0
-        #: Number of Cooperating agents
+    #: Number of Cooperating agents
     NUMBER_OF_AGENTS = 0
-        #: Number of Intruders
+    #: Number of Intruders
     NUMBER_OF_INTRUDERS = 0
     NUMBER_OF_DANGER_ZONES = 0
     discount_factor = .8
@@ -117,10 +117,16 @@ class IntruderMonitoring(Domain):
         self.NUMBER_OF_DANGER_ZONES = len(self.danger_zone_locations)
 
     def step(self, a):
-        # Move all agents according to the action
-        # Move all intruders randomly
-        # Calculate the reward: Number of danger zones being violated by
-        # intruders while no agents being present
+        """
+        Move all intruders according to 
+        the :py:meth:`~rlpy.Domains.IntruderMonitoring.IntruderPolicy`, default
+        uniform random action.
+        Move all agents according to the selected action ``a``.
+        Calculate the reward = Number of danger zones being violated by
+        intruders while no agents are present (ie, intruder occupies a danger 
+        cell with no agent simultaneously occupying the cell).
+        
+        """
         s = self.state
 
         # Move all agents based on the taken action
@@ -130,7 +136,7 @@ class IntruderMonitoring(Domain):
         agents += actions
 
         # Generate actions for each intruder based on the function
-        # IntruderPolicy
+        # IntruderPolicy()
         intruders = np.array(s[self.NUMBER_OF_AGENTS * 2:].reshape(-1, 2))
         actions = [self.IntruderPolicy(intruders[i])
                    for i in xrange(self.NUMBER_OF_INTRUDERS)]
@@ -164,11 +170,17 @@ class IntruderMonitoring(Domain):
              self.intruders_initial_locations.ravel()])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
-    def possibleActionsPerAgent(self, s):
-        # 1. tile the [R,C] for all actions
-        # 2. add all actions to the results
-        # 3. Find feasible rows and add them as possible actions
-        tile_s = np.tile(s, [len(self.ACTIONS_PER_AGENT), 1])
+    def possibleActionsPerAgent(self, s_i):
+        """
+        Returns all possible actions for a single (2-D) agent state *s_i* 
+        (where the domain state s = [s_0, ... s_i ... s_NUMBER_OF_AGENTS])
+        
+            1. tile the [R,C] for all actions
+            2. add all actions to the results
+            3. Find feasible rows and add them as possible actions
+            
+        """
+        tile_s = np.tile(s_i, [len(self.ACTIONS_PER_AGENT), 1])
         next_states = tile_s + self.ACTIONS_PER_AGENT
         next_states_rows = next_states[:, 0]
         next_states_cols = next_states[:, 1]
@@ -200,6 +212,14 @@ class IntruderMonitoring(Domain):
         print 'Reward ', r
 
     def IntruderPolicy(self, s_i):
+        """
+        :param s_i: The state of a single agent
+            (where the domain state s = [s_0, ... s_i ... s_NUMBER_OF_AGENTS]).
+        :returns: a valid actions for the agent in state **s_i** to take.
+        
+        Default random action among possible.
+        
+        """
         return self.random_state.choice(self.possibleActionsPerAgent(s_i))
 
     def showDomain(self, a):

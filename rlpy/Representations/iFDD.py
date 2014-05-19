@@ -104,7 +104,7 @@ class iFDD(Representation):
     # wrong
     useCache = 0
     # Number of features to be expanded in the batch setting
-    maxBatchDicovery = 0
+    maxBatchDiscovery = 0
     # Minimum value of feature relevance for the batch setting
     batchThreshold = 0
     # ICML 11 iFDD would add sum of abs(TD-errors) while the iFDD plus uses
@@ -126,7 +126,7 @@ class iFDD(Representation):
 
     def __init__(
             self, domain, discovery_threshold, initial_representation, sparsify=True,
-            discretization=20, debug=0, useCache=0, maxBatchDicovery=1, batchThreshold=0, iFDDPlus=1):
+            discretization=20, debug=0, useCache=0, maxBatchDiscovery=1, batchThreshold=0, iFDDPlus=1):
         self.iFDD_features = {}
         self.iFDD_potentials = {}
         self.featureIndex2feature = {}
@@ -137,7 +137,7 @@ class iFDD(Representation):
         self.features_num = initial_representation.features_num
         self.debug = debug
         self.useCache = useCache
-        self.maxBatchDicovery = maxBatchDicovery
+        self.maxBatchDiscovery = maxBatchDiscovery
         self.batchThreshold = batchThreshold
         self.sortediFDDFeatures = PriorityQueueWithNovelty()
         self.initial_representation = initial_representation
@@ -374,7 +374,7 @@ class iFDD(Representation):
         # self.batchThreshold is the minimum relevance value for the feature to
         # be expanded
         SHOW_PLOT = 0  # Shows the histogram of relevances
-        maxDiscovery = self.maxBatchDicovery
+        maxDiscovery = self.maxBatchDiscovery
         n = self.features_num  # number of features
         p = len(td_errors)  # Number of samples
         counts = np.zeros((n, n))
@@ -518,7 +518,7 @@ class iFDD(Representation):
             self.discretization,
             self.debug,
             self.useCache,
-            self.maxBatchDicovery,
+            self.maxBatchDiscovery,
             self.batchThreshold,
             self.iFDDPlus)
         for s, f in self.iFDD_features.items():

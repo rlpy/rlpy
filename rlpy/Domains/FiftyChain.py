@@ -22,7 +22,15 @@ class FiftyChain(Domain):
     .. note::
         The optimal policy is to always go to the nearest goal
 
-    **REWARD:** of +1 at states 10 and 41 (indices 9 and 40) \n
+    **REWARD:** of +1 at states 10 and 41 (indices 9 and 40).  Reward is 
+    obtained when transition out of the reward state, not when first enter. \n
+    
+    Note that this class provides the 
+    function :py:meth`~rlpy.Domains.FiftyChain.L_inf_distance_to_V_star`, which 
+    accepts an arbitrary representation and returns the error between it and 
+    the optimal policy.
+    The user can also enforce actions under the optimal policy (ignoring the 
+    agent's policy) by setting ``using_optimal_policy=True`` in FiftyChain.py.
 
     **REFERENCE:**
 
@@ -239,6 +247,7 @@ class FiftyChain(Domain):
         plt.draw()
 
     def step(self, a):
+        s = self.state
         actionFailure = (
             self.random_state.random_sample(
             ) < self.p_action_failure)
@@ -248,7 +257,7 @@ class FiftyChain(Domain):
             ns = min(self.chainSize - 1, self.state + 1)
         self.state = ns
         terminal = self.isTerminal()
-        r = self.GOAL_REWARD if self.state in self.GOAL_STATES else 0
+        r = self.GOAL_REWARD if s in self.GOAL_STATES else 0
         return r, ns, terminal, self.possibleActions()
 
     def s0(self):
