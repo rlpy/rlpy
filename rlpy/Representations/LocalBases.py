@@ -11,7 +11,7 @@ try:
     from kernels import batch
 except ImportError:
     from slow_kernels import batch
-    print "C-Extensions for kernels not available, except slow runtime"
+    print "C-Extensions for kernels not available, expect slow runtime"
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -20,7 +20,6 @@ __license__ = "BSD 3-Clause"
 
 
 class LocalBases(Representation):
-
     """
     abstract base class for representations that use local basis functions
     """
@@ -35,6 +34,8 @@ class LocalBases(Representation):
         :param kernel: function handle to use for kernel function evaluations.
         :param normalization: (Boolean) If true, normalize feature vector so 
             that sum( phi(s) ) = 1.
+        
+        Associates a kernel function with each  
         
         """
         self.kernel = batch[kernel.__name__]
@@ -87,6 +88,7 @@ class NonparametricLocalBases(LocalBases):
             function at *s*.  i.e., the value of a feature in phi(s) is 
             inversely related to the \"similarity\" of a potential new feature.
         :param resolution: to be used by the ``kernel()`` function, see parent.
+            Determines *width* of basis functions, eg sigma in Gaussian basis.
         
         """
         self.max_similarity = max_similarity
@@ -133,6 +135,21 @@ class RandomLocalBases(LocalBases):
 
     def __init__(self, domain, kernel, num=100, resolution_min=5,
                  resolution_max=None, seed=1, **kwargs):
+        """
+        :param domain: domain to learn on.
+        :param kernel: function handle to use for kernel function evaluations.
+        :param num: Fixed number of feature (kernel) functions to use in 
+            EACH dimension. (for a total of features_num=numDims * num)
+        :param resolution_min: resolution selected uniform random, lower bound.
+        :param resolution_max: resolution selected uniform random, upper bound.
+        :param seed: the random seed to use when scattering basis functions.
+        
+        Randomly scatter ``num`` feature functions throughout the domain, with 
+        sigma / noise parameter selected uniform random between 
+        ``resolution_min`` and ``resolution_max``.  NOTE these are 
+        sensitive to the choice of coordinate (scale with coordinate units).
+        
+        """
         self.features_num = num
         dim_widths = (domain.statespace_limits[:, 1]
                       - domain.statespace_limits[:, 0])

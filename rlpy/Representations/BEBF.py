@@ -44,7 +44,7 @@ class BEBF(Representation):
     """
     # Number of features to be expanded in the batch setting; here 1 since
     # each BEBF will be identical on a given iteration
-    maxBatchDicovery = 1
+    maxBatchDiscovery = 1
     # from sklearn: "epsilon in the epsilon-SVR model. It specifies the
     # epsilon-tube within which no penalty is associated in the training loss
     # function with points predicted within a distance epsilon from the actual
@@ -131,7 +131,7 @@ class BEBF(Representation):
         addedFeature = False
         # PLACEHOLDER for norm of function
         norm = max(abs(td_errors))  # Norm of function
-        for j in xrange(self.maxBatchDicovery):
+        for j in xrange(self.maxBatchDiscovery):
             self.features.append(self.getFunctionApproximation(s, td_errors))
             if norm > self.batchThreshold:
                 self.addNewWeight()

@@ -37,8 +37,8 @@ class TileCoding(Representation):
         One type covers only dimensions 1 and 2 and has a
         resolution of state_range / 4 and consists of 2 tilings.
 
-        The second type covers dimensions 2, 3 and 4 with resolution state_range / 6 and
-        only 1 tiling.
+        The second type covers dimensions 2, 3 and 4 with resolution 
+        state_range / 6 and only 1 tiling.
         Such a representation can be created by passing
         >>> memory = 2000
         >>> num_tilings = [2, 1]

@@ -27,7 +27,7 @@ class OMPTD(Representation):
     """
 
     # Maximum number of features to be expanded on each iteration
-    maxBatchDicovery = 0
+    maxBatchDiscovery = 0
     batchThreshold = 0      # Minimum threshold to add features
     # List of selected features. In this implementation initial features are
     # selected initially by default
@@ -36,7 +36,7 @@ class OMPTD(Representation):
 
     def __init__(
             self, domain, initial_representation, discretization=20,
-            maxBatchDicovery=1, batchThreshold=0, bagSize=100000, sparsify=False):
+            maxBatchDiscovery=1, batchThreshold=0, bagSize=100000, sparsify=False):
         """
         :param domain: the :py:class`~rlpy.Domains.Domain.Domain` associated 
             with the value function we want to learn.
@@ -61,7 +61,7 @@ class OMPTD(Representation):
         self.selectedFeatures = []
         # This is dummy since omptd will not use ifdd in the online fashion
         self.iFDD_ONLINETHRESHOLD = 1
-        self.maxBatchDicovery = maxBatchDicovery
+        self.maxBatchDiscovery = maxBatchDiscovery
         self.batchThreshold = batchThreshold
         self.initial_representation = initial_representation
         self.iFDD = iFDD(
@@ -138,7 +138,7 @@ class OMPTD(Representation):
         Discovers features using OMPTD
         1. Find the index of remaining features in the bag \n
         2. Calculate the inner product of each feature with the TD_Error vector \n
-        3. Add the top maxBatchDicovery features to the selected features \n
+        3. Add the top maxBatchDiscovery features to the selected features \n
         
         OUTPUT: Boolean indicating expansion of features
         
@@ -173,7 +173,7 @@ class OMPTD(Representation):
         self.logger.debug("OMPTD Batch: Max Relevance = %0.3f" % max_relevance)
         added_feature = False
         to_be_deleted = []  # Record the indices of items to be removed
-        for j in xrange(min(self.maxBatchDicovery, len(relevances))):
+        for j in xrange(min(self.maxBatchDiscovery, len(relevances))):
             max_index = sortedIndices[j]
             f = self.remainingFeatures[max_index]
             relevance = relevances[max_index]
