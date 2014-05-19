@@ -1,3 +1,7 @@
+- moved rlpy code to rlpy package
+- major code clean-up
+- Learning rate related code moved from Agent to separate class
+
 Version 1.2.1
 -------------
 
