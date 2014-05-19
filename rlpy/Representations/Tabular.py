@@ -28,9 +28,9 @@ class Tabular(Representation):
         super(Tabular, self).__init__(domain, discretization)
 
     def phi_nonTerminal(self, s):
-        id = self.hashState(s)
+        hashVal = self.hashState(s)
         F_s = np.zeros(self.agg_states_num, bool)
-        F_s[id] = 1
+        F_s[hashVal] = 1
         return F_s
 
     def featureType(self):

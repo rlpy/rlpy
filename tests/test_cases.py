@@ -26,7 +26,7 @@ def check_running(filename, steps):
     local = {}
     exec content in local
     make_experiment = local["make_experiment"]
-    exp = make_experiment(id=1, path="./Results/Temp/nosetests")
+    exp = make_experiment(exp_id=1, path="./Results/Temp/nosetests")
     exp.max_steps = steps
     exp.num_policy_checks = 2
     exp.checks_per_policy = 1
@@ -38,7 +38,7 @@ def test_tutorial():
     local = {}
     exec content in local
     make_experiment = local["make_experiment"]
-    exp = make_experiment(id=1, path="./Results/Temp/nosetests")
+    exp = make_experiment(exp_id=1, path="./Results/Temp/nosetests")
     exp.run()
     print "Final Return", exp.result["return"][-1]
     assert exp.result["return"][-1] > 0.4

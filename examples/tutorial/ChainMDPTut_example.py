@@ -17,7 +17,7 @@ import os
 import logging
 
 
-def make_experiment(id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
+def make_experiment(exp_id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment

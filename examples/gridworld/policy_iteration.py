@@ -10,7 +10,7 @@ from rlpy.Experiments import MDPSolverExperiment
 import os
 
 
-def make_experiment(id=1, path="./Results/Temp", show=False):
+def make_experiment(exp_id=1, path="./Results/Temp", show=False):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -30,7 +30,7 @@ def make_experiment(id=1, path="./Results/Temp", show=False):
 
     # Agent
     agent = PolicyIteration(
-        id,
+        exp_id,
         representation,
         domain,
         project_path=path,

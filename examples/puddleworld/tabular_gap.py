@@ -20,7 +20,7 @@ param_space = {
 
 
 def make_experiment(
-        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
+        exp_id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         boyan_N0=389.56,
         lambda_=0.52738,
         initial_learn_rate=.424409,

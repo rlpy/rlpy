@@ -13,7 +13,7 @@ param_space = {'resolution': hp.quniform("resolution", 3, 30, 1),
 
 
 def make_experiment(
-        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
+        exp_id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         boyan_N0=136,
         lambda_=0.0985,
         initial_learn_rate=0.090564,

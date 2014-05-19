@@ -35,10 +35,10 @@ class IncrementalTabular(Representation):
 
     def phi_nonTerminal(self, s):
         hash_id = self.hashState(s)
-        id = self.hash.get(hash_id)
+        hashVal = self.hash.get(hash_id)
         F_s = np.zeros(self.features_num, bool)
-        if id is not None:
-            F_s[id] = 1
+        if hashVal is not None:
+            F_s[hashVal] = 1
         return F_s
 
     def pre_discover(self, s, terminal, a, sn, terminaln):
@@ -54,13 +54,13 @@ class IncrementalTabular(Representation):
         """
         
         hash_id = self.hashState(s)
-        id = self.hash.get(hash_id)
-        if id is None:
+        hashVal = self.hash.get(hash_id)
+        if hashVal is None:
             # New State
             self.features_num += 1
             # New id = feature_num - 1
-            id = self.features_num - 1
-            self.hash[hash_id] = id
+            hashVal = self.features_num - 1
+            self.hash[hash_id] = hashVal
             # Add a new element to the feature weight vector, theta
             self.addNewWeight()
             return 1

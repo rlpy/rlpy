@@ -48,7 +48,7 @@ class MDPSolver(object):
     # its performance.
     planning_time = None
     # The job id of this run of the algorithm
-    id = None
+    exp_id = None
     # To make sure all same job ids see the same random sequence
     mainSeed = 999999999
     # Maximum number of runs of an algorithm for averaging
@@ -67,7 +67,7 @@ class MDPSolver(object):
     def __init__(
             self, job_id, representation, domain, planning_time=np.inf,
             convergence_threshold=.005, ns_samples=100, project_path='.', log_interval=5000, show=False):
-        self.id = job_id
+        self.exp_id = job_id
         self.representation = representation
         self.domain = domain
         self.logger = logging.getLogger("rlpy.MDPSolvers." + self.__class__.__name__)
@@ -81,7 +81,7 @@ class MDPSolver(object):
         # Set random seed for this job id
         np.random.seed(self.mainSeed)
         self.randomSeeds = np.random.randint(1, self.mainSeed, (self.maxRuns, 1))
-        np.random.seed(self.randomSeeds[self.id - 1, 0])
+        np.random.seed(self.randomSeeds[self.exp_id - 1, 0])
 
         # TODO setup logging to file in experiment
 
@@ -149,7 +149,7 @@ class MDPSolver(object):
         checkNCreateDirectory(self.project_path + '/')
         np.savetxt(
             '%s/%d-results.txt' %
-            (self.project_path, self.id), self.result, fmt='%.18e', delimiter='\t')
+            (self.project_path, self.exp_id), self.result, fmt='%.18e', delimiter='\t')
 
     def hasTime(self):
         """Return a boolean stating if there is time left for planning."""

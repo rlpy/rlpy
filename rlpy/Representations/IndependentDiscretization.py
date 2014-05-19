@@ -34,13 +34,13 @@ class IndependentDiscretization(Representation):
         dim = np.searchsorted(self.maxFeatureIDperDimension, f)
         return dim
 
-    def getFeatureName(self, id):
+    def getFeatureName(self, feat_id):
         if hasattr(self.domain, 'DimNames'):
-            dim = np.searchsorted(self.maxFeatureIDperDimension, id)
+            dim = np.searchsorted(self.maxFeatureIDperDimension, feat_id)
             # Find the index of the feature in the corresponding dimension
-            index_in_dim = id
+            index_in_dim = feat_id
             if dim != 0:
-                index_in_dim = id - self.maxFeatureIDperDimension[dim - 1]
+                index_in_dim = feat_id - self.maxFeatureIDperDimension[dim - 1]
             print self.domain.DimNames[dim]
             f_name = self.domain.DimNames[dim] + '=' + str(index_in_dim)
 

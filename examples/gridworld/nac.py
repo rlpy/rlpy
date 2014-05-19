@@ -11,7 +11,7 @@ import os
 
 
 def make_experiment(
-        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
+        exp_id=1, path="./Results/Temp/{domain}/{agent}/{representation}/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment

@@ -243,7 +243,7 @@ def refresh():
     _canvas.update_idletasks()
 
 
-def moveCircle(id, pos, r, endpoints=None):
+def moveCircle(obj_id, pos, r, endpoints=None):
     global _canvas_x, _canvas_y
 
     x, y = pos
@@ -258,12 +258,12 @@ def moveCircle(id, pos, r, endpoints=None):
     while e[0] > e[1]:
         e[1] = e[1] + 360
 
-    edit(id, ('start', e[0]), ('extent', e[1] - e[0]))
-    move_to(id, x0, y0)
+    edit(obj_id, ('start', e[0]), ('extent', e[1] - e[0]))
+    move_to(obj_id, x0, y0)
 
 
-def edit(id, *args):
-    _canvas.itemconfigure(id, **dict(args))
+def edit(obj_id, *args):
+    _canvas.itemconfigure(obj_id, **dict(args))
 
 
 def text(pos, color, contents, font='Helvetica',
@@ -282,14 +282,14 @@ def text(pos, color, contents, font='Helvetica',
     )
 
 
-def changeText(id, newText, font=None, size=12, style='normal'):
-    _canvas.itemconfigure(id, text=newText)
+def changeText(obj_id, newText, font=None, size=12, style='normal'):
+    _canvas.itemconfigure(obj_id, text=newText)
     if font is not None:
-        _canvas.itemconfigure(id, font=(font, '-%d' % size, style))
+        _canvas.itemconfigure(obj_id, font=(font, '-%d' % size, style))
 
 
-def changeColor(id, newColor):
-    _canvas.itemconfigure(id, fill=newColor)
+def changeColor(obj_id, newColor):
+    _canvas.itemconfigure(obj_id, fill=newColor)
 
 
 def line(here, there, color=formatColor(0, 0, 0), width=2):

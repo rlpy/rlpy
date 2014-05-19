@@ -66,7 +66,7 @@ class Experiment(object):
     randomSeeds = np.random.RandomState(mainSeed).randint(1, mainSeed, maxRuns)
 
     #: ID of the current experiment (main seed used for calls to np.rand)
-    id = 1
+    exp_id = 1
 
     # The domain to be tested on
     domain = None
@@ -90,13 +90,13 @@ class Experiment(object):
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template = '{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
 
-    def __init__(self, agent, domain, id=1, max_steps=max_steps, config_logging=True,
+    def __init__(self, agent, domain, exp_id=1, max_steps=max_steps, config_logging=True,
                  num_policy_checks=10, log_interval=1, path='Results/Temp',
                  checks_per_policy=1, stat_bins_per_state_dim=0, **kwargs):
         """
         :param agent: the :py:class:`~Agents.Agent.Agent` to use for learning the task.
         :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
-        :param id: ID of this experiment (main seed used for calls to np.rand)
+        :param exp_id: ID of this experiment (main seed used for calls to np.rand)
         :param max_steps: Total number of interactions (steps) before experiment termination.
 
         .. note::
@@ -114,8 +114,8 @@ class Experiment(object):
             estimate the performance of a single policy
 
         """
-        self.id = id
-        assert id > 0
+        self.exp_id = exp_id
+        assert exp_id > 0
         self.agent = agent
         self.checks_per_policy = checks_per_policy
         self.domain = domain
@@ -143,7 +143,7 @@ class Experiment(object):
             (self.full_path, self.output_filename))
         #TODO set up logging to file for rlpy loggers
 
-        self.log_filename = '{:0>3}.log'.format(self.id)
+        self.log_filename = '{:0>3}.log'.format(self.exp_id)
         if self.config_logging:
             rlpy_logger = logging.getLogger("rlpy")
             for h in rlpy_logger.handlers:
@@ -155,17 +155,17 @@ class Experiment(object):
     def seed_components(self):
         """
         set the initial seeds for all random number generators used during
-        the experiment run based on the currently set ``id``.
+        the experiment run based on the currently set ``exp_id``.
         """
-        self.output_filename = '{:0>3}-results.json'.format(self.id)
-        np.random.seed(self.randomSeeds[self.id - 1])
+        self.output_filename = '{:0>3}-results.json'.format(self.exp_id)
+        np.random.seed(self.randomSeeds[self.exp_id - 1])
         self.domain.random_state = np.random.RandomState(
-            self.randomSeeds[self.id - 1])
+            self.randomSeeds[self.exp_id - 1])
         # make sure the performance_domain has a different seed
         self.performance_domain.random_state = np.random.RandomState(
-            self.randomSeeds[self.id + 20])
+            self.randomSeeds[self.exp_id + 20])
 
-        self.log_filename = '{:0>3}.log'.format(self.id)
+        self.log_filename = '{:0>3}.log'.format(self.exp_id)
         if self.config_logging:
             rlpy_logger = logging.getLogger("rlpy")
             for h in rlpy_logger.handlers:
@@ -269,7 +269,7 @@ class Experiment(object):
         parser.add_argument("--path", type=str)
         args = parser.parse_args()
         if args.seed is not None and args.seed > 0:
-            self.id = args.seed
+            self.exp_id = args.seed
         if args.path is not None:
             self._update_path(args.path)
         self.run(visualize_performance=args.visualize_performance,
@@ -317,7 +317,7 @@ class Experiment(object):
         self.seed_components()
 
         self.result = defaultdict(list)
-        self.result["seed"] = self.id
+        self.result["seed"] = self.exp_id
         total_steps = 0
         eps_steps = 0
         eps_return = 0
@@ -507,7 +507,7 @@ class Experiment(object):
         if save:
             path = os.path.join(
                 self.full_path,
-                "{:3}-performance.pdf".format(self.id))
+                "{:3}-performance.pdf".format(self.exp_id))
             performance_fig.savefig(path, transparent=True, pad_inches=.1)
         plt.ioff()
         plt.show()

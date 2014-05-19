@@ -18,7 +18,7 @@ param_space = {
 
 
 def make_experiment(
-        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
+        exp_id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         boyan_N0=2120,
         initial_learn_rate=.26,
         lambda_=0.9,
@@ -30,7 +30,7 @@ def make_experiment(
     domain = FiniteCartPoleBalanceOriginal(good_reward=0.)
     representation = RBF(domain, num_rbfs=int(num_rbfs),
                          resolution_max=resolution, resolution_min=resolution,
-                         const_feature=False, normalize=True, seed=id)
+                         const_feature=False, normalize=True, seed=exp_id)
     policy = eGreedy(representation, epsilon=0.1)
     agent = Q_LEARNING(
         domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,

@@ -176,7 +176,7 @@ def run(filename, location, ids, parallelization="sequential",
     # filter ids if necessary
     if not force_rerun:
         finished_ids = get_finished_ids(location)
-        ids = [id for id in ids if id not in finished_ids]
+        ids = [idtmp for idtmp in ids if idtmp not in finished_ids]
 
     if len(ids):
         # spawn jobs
@@ -188,7 +188,7 @@ def run(filename, location, ids, parallelization="sequential",
             run_joblib(fn, ids, n_jobs=1, verbose=verbose)
 
 
-def _run_helper(fn, id, verbose):
+def _run_helper(fn, job_id, verbose):
     if verbose >= 15:
         out = ""
     else:
@@ -197,7 +197,7 @@ def _run_helper(fn, id, verbose):
     subprocess.Popen(
         "python {} {} {}".format(
             filen,
-            id + 1,
+            job_id + 1,
             out),
         shell=True,
         cwd=path).wait(
@@ -233,8 +233,8 @@ def run_condor(fn, ids,
         # write submit file
         with open(os.path.join(outdir, "submit"), "w") as f:
             f.write(condor_submit_template_start)
-            for id in ids:
-                f.write(condor_submit_template_each_job.format(fn=fn, id=id))
+            for exp_id in ids:
+                f.write(condor_submit_template_each_job.format(fn=fn, exp_id=exp_id))
 
         exit_code = os.system(
             "cd {dir} && condor_submit condor/submit".format(dir=dir))

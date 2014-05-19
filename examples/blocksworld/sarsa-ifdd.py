@@ -13,7 +13,7 @@ param_space = {'discover_threshold': hp.loguniform("discover_threshold",
 
 
 def make_experiment(
-        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
+        exp_id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         discover_threshold=0.023476,
         lambda_=0.,
         boyan_N0=20.84362,

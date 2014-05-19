@@ -17,7 +17,7 @@ from rlpy.Experiments import Experiment
 import os
 
 
-def make_experiment(id=1, path="./Results/Tutorial/gridworld-eGreedyTut"):
+def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-eGreedyTut"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment

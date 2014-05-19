@@ -31,9 +31,9 @@ def submitted_jobs_user(username=None, path=None):
         if path is not None and not directory.startswith(path):
             continue
         joblist.append(
-            dict(job_id=job_id,
+            dict(job_exp_id=job_id,
                  directory=directory,
-                 run_id=run_id,
+                 run_exp_id=run_id,
                  status=status))
     return joblist
 

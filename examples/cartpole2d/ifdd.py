@@ -24,7 +24,7 @@ param_space = {'discretization': hp.quniform("discretization", 5, 40, 1),
 
 
 def make_experiment(
-        id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
+        exp_id=1, path="./Results/Temp/{domain}/{agent}/{representation}/",
         discover_threshold=.01256,
         lambda_=0.81,
         boyan_N0=9811.2337,
