@@ -472,7 +472,7 @@ class Experiment(object):
         if not os.path.exists(self.full_path):
             os.makedirs(self.full_path)
         with open(results_fn, "w") as f:
-            json.dump(self.result, f)
+            json.dump(self.result, f, indent=4, sort_keys=True)
 
     def load(self):
         """loads the experimental results from the ``results.txt`` file
