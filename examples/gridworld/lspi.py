@@ -38,7 +38,7 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     policy = eGreedy(representation, epsilon=0.1)
 
     # Agent
-    agent = LSPI(domain, policy, representation,
+    agent = LSPI(policy, representation, domain.discount_factor,
                  max_steps, max_steps / num_policy_checks)
 
     experiment = Experiment(**locals())

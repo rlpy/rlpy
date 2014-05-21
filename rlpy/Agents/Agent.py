@@ -18,7 +18,7 @@ class Agent(object):
     The Agent receives observations from the Domain and incorporates their
     new information into the representation, policy, etc. as needed.
 
-    In a typical Experiment, the Agent interacts with the Domain in discrete 
+    In a typical Experiment, the Agent interacts with the Domain in discrete
     timesteps.
     At each Experiment timestep the Agent receives some observations from the Domain
     which it uses to update the value function Representation of the Domain
@@ -47,9 +47,9 @@ class Agent(object):
     __metaclass__ = ABCMeta
     # The Representation to be used by the Agent
     representation = None
-    # The domain the agent interacts with
-    domain = None
-    # The policy to be used by the agent
+    #: discount factor determining the optimal policy
+    discount_factor = None
+    #: The policy to be used by the agent
     policy = None
     #: The eligibility trace, which marks states as eligible for a learning
     #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
@@ -58,22 +58,17 @@ class Agent(object):
     eligibility_trace = []
     #: A simple object that records the prints in a file
     logger = None
-    #: Used by some learn_rate_decay modes
+    #: number of seen episodes
     episode_count = 0
-    # Decay mode of learning rate. Options are determined by valid_decay_modes.
-    learn_rate_decay_mode = 'dabney'
-    # Valid selections for the ``learn_rate_decay_mode``.
-    valid_decay_modes = ['dabney', 'boyan', 'const', 'boyan_const']
-    #  The N0 parameter for boyan learning rate decay
-    boyan_N0 = 1000
 
-    def __init__(self, domain, policy, representation, **kwargs):
+    def __init__(self, policy, representation, discount_factor, **kwargs):
         """initialization.
 
         :param representation: the :py:class:`~rlpy.Representation.Representation.Representation`
             to use in learning the value function.
         :param policy: the :py:class:`~rlpy.Policies.Policy.Policy` to use when selecting actions.
-        :param domain: the problem :py:class:`~rlpy.Domains.Domain.Domain` to learn
+        :param discount_factor: the discount factor of the optimal policy which should be
+            learned
         :param initial_learn_rate: Initial learning rate to use (where applicable)
 
         .. warning::
@@ -86,7 +81,7 @@ class Agent(object):
         """
         self.representation = representation
         self.policy = policy
-        self.domain = domain
+        self.discount_factor = discount_factor
         self.logger = logging.getLogger("rlpy.Agents." + self.__class__.__name__)
 
 
@@ -165,8 +160,6 @@ class DescentAlgorithm(object):
 
     def __init__(self, initial_learn_rate = 0.1, learn_rate_decay_mode='dabney', boyan_N0=1000, **kwargs):
         """
-        :param policy: the :py:class:`~Policies.Policy.Policy` to use when selecting actions.
-        :param domain: the problem :py:class:`~Domains.Domain.Domain` to learn
         :param initial_learn_rate: Initial learning rate to use (where applicable)
 
         .. warning::
@@ -190,7 +183,7 @@ class DescentAlgorithm(object):
 
         super(DescentAlgorithm, self).__init__(**kwargs)
 
-    def updateLearnRate(self,phi_s, phi_prime_s, eligibility_trace_s, 
+    def updateLearnRate(self,phi_s, phi_prime_s, eligibility_trace_s,
 					discount_factor, nnz, terminal):
         """Computes a new learning rate (learn_rate) for the agent based on
         ``self.learn_rate_decay_mode``.

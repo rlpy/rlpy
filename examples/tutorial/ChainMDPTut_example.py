@@ -40,7 +40,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
 
     ## Agent
     agent = SARSA(representation=representation, policy=policy,
-                       domain=domain,
+                  disount_factor=domain.discount_factor,
                        learn_rate=0.1)
     checks_per_policy = 100
     max_steps = 2000

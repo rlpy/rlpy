@@ -29,15 +29,15 @@ class Representation(object):
     Agents can later query the Representation for the value of being in a state
     *V(s)* or the value of taking an action in a particular state
     ( known as the Q-function, *Q(s,a)* ).
-    
+
     .. note::
-    
+
         Throughout the framework, ``phi`` refers to the vector of features;
         ``phi`` or ``phi_s`` is thus the vector of feature functions evaluated
-        at the state *s*.  phi_s_a appends \|A\|-1 copies of phi_s, such that 
-        \|phi_s_a\| = \|A\| * \|phi\|, where \|A\| is the size of the action 
-        space and \|phi\| is the number of features.  Each of these blocks 
-        corresponds to a state-action pair; all blocks except for the selected 
+        at the state *s*.  phi_s_a appends \|A\|-1 copies of phi_s, such that
+        \|phi_s_a\| = \|A\| * \|phi\|, where \|A\| is the size of the action
+        space and \|phi\| is the number of features.  Each of these blocks
+        corresponds to a state-action pair; all blocks except for the selected
         action ``a`` are set to 0.
 
     The Representation class is a base class that provides the basic framework
@@ -57,6 +57,8 @@ class Representation(object):
     domain = None
     #: Number of features in the representation
     features_num = 0
+    #: Number of actions in the representation
+    actions_num = 0
     # Number of bins used for discretization of each continuous dimension
     discretization = 20
     #: Number of possible states per dimension [1-by-dim]
@@ -87,6 +89,8 @@ class Representation(object):
         self.expectedStepCached = {}
         self.setBinsPerDimension(domain, discretization)
         self.domain = domain
+        self.state_space_dims = domain.state_space_dims
+        self.actions_num = domain.actions_num
         self.discretization = discretization
         try:
             self.weight_vec = np.zeros(self.features_num * self.domain.actions_num)
@@ -140,7 +144,7 @@ class Representation(object):
             - A: the corresponding array of actionIDs (integers)
 
         .. note::
-            This function is distinct 
+            This function is distinct
             from :py:meth:`~rlpy.Representations.Representation.Representation.Q`,
             which computes the Q function for an (s,a) pair. \n
             Instead, this function ``Qs()`` computes all Q function values
@@ -376,7 +380,7 @@ class Representation(object):
 
         .. note::
             For adaptive representations that do not require access to TD-Error
-            to determine which features to add next, you may 
+            to determine which features to add next, you may
             use :py:meth:`~rlpy.Representations.Representation.Representation.pre_discover`
             instead.
 

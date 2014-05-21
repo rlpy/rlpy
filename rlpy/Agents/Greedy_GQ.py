@@ -18,19 +18,17 @@ class Greedy_GQ(DescentAlgorithm, Agent):
     # decay mode
     eligibility_trace_s = []
 
-    def __init__(
-            self, domain, policy, representation, initial_learn_rate=.1,
+    def __init__(self, policy, representation,
             lambda_=0, BetaCoef=1e-6, **kwargs):
         self.eligibility_trace = np.zeros(
             representation.features_num *
-            domain.actions_num)
+            representation.actions_num)
         # use a state-only version of eligibility trace for dabney decay mode
         self.eligibility_trace_s = np.zeros(representation.features_num)
         self.lambda_ = lambda_
         super(
             Greedy_GQ,
             self).__init__(
-            domain=domain,
             policy=policy,
             representation=representation,
             **kwargs)
@@ -40,7 +38,7 @@ class Greedy_GQ(DescentAlgorithm, Agent):
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         self.representation.pre_discover(s, False, a, ns, terminal)
-        discount_factor = self.representation.domain.discount_factor
+        discount_factor = self.discount_factor
         weight_vec = self.representation.weight_vec
         phi_s = self.representation.phi(s, False)
         phi = self.representation.phi_sa(s, False, a, phi_s)
@@ -57,7 +55,7 @@ class Greedy_GQ(DescentAlgorithm, Agent):
             phi_prime_s)
         nnz = count_nonzero(phi_s)    # Number of non-zero elements
 
-        expanded = (- len(self.GQWeight) + len(phi)) / self.domain.actions_num
+        expanded = (- len(self.GQWeight) + len(phi)) / self.representation.actions_num
         if expanded:
             self._expand_vectors(expanded)
         # Set eligibility traces:
@@ -110,17 +108,17 @@ class Greedy_GQ(DescentAlgorithm, Agent):
         """
         correct size of GQ weight and e-traces when new features were expanded
         """
-        new_elem = np.zeros((self.domain.actions_num, num_expansions))
+        new_elem = np.zeros((self.representation.actions_num, num_expansions))
         self.GQWeight = addNewElementForAllActions(
             self.GQWeight,
-            self.domain.actions_num,
+            self.representation.actions_num,
             new_elem)
         if self.lambda_:
             # Correct the size of eligibility traces (pad with zeros for new
             # features)
             self.eligibility_trace = addNewElementForAllActions(
                 self.eligibility_trace,
-                self.domain.actions_num,
+                self.representation.actions_num,
                 new_elem)
             self.eligibility_trace_s = addNewElementForAllActions(
                 self.eligibility_trace_s, 1, np.zeros((1, num_expansions)))

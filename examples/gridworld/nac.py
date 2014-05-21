@@ -37,7 +37,7 @@ def make_experiment(
     policy = GibbsPolicy(representation)
 
     # Agent
-    agent = NaturalActorCritic(domain, policy, representation,
+    agent = NaturalActorCritic(policy, representation, domain.discount_factor,
                                0.3, 100, 1000, .7, 0.1)
 
     experiment = Experiment(**locals())

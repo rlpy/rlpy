@@ -37,7 +37,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-qlearning"):
 
     # Agent
     agent = Q_Learning(representation=representation, policy=policy,
-                       domain=domain,
+                       discount_factor=domain.discount_factor,
                        initial_learn_rate=0.1,
                        learn_rate_decay_mode="boyan", boyan_N0=100,
                        lambda_=0.)

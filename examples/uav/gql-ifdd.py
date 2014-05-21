@@ -34,7 +34,8 @@ def make_experiment(
                           useCache=True,
                           iFDDPlus=1 - ifddeps)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Greedy_GQ(domain, policy, representation,
+    agent = Greedy_GQ(policy, representation,
+                      discount_factor=domain.discount_factor,
                       BetaCoef=beta_coef,
                       lambda_=lambda_, initial_learn_rate=initial_learn_rate,
                       learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)

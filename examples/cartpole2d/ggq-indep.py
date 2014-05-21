@@ -34,7 +34,8 @@ def make_experiment(
         domain,
         discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Greedy_GQ(domain, policy, representation,
+    agent = Greedy_GQ(policy, representation,
+                      discount_factor=domain.discount_factor,
                       lambda_=lambda_,
                       BetaCoef=1e-6,
                       initial_learn_rate=initial_learn_rate,

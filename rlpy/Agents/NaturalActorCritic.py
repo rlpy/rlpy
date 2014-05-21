@@ -24,7 +24,7 @@ class NaturalActorCritic(Agent):
     # minimum for the cosine of the current and last gradient
     min_cos = np.cos(np.pi / 180.)
 
-    def __init__(self, domain, policy, representation, forgetting_rate,
+    def __init__(self, policy, representation, discount_factor, forgetting_rate,
                  min_steps_between_updates, max_steps_between_updates, lambda_,
                  learn_rate):
         """
@@ -32,7 +32,6 @@ class NaturalActorCritic(Agent):
                                value function
         @param policy:  parametrized stochastic policy with parameters
                         policy.theta
-        @param domain: domain to investigate
         @param forgetting_rate: specifies the decay of previous statistics
                                 after a policy update; 1 = forget all
                                 0 = forget none
@@ -59,8 +58,8 @@ class NaturalActorCritic(Agent):
         self.buf_ = np.zeros((self.n, self.n))
         self.z = np.zeros((self.n))
 
-        super(NaturalActorCritic, self).__init__(domain, policy,
-                                                 representation)
+        super(NaturalActorCritic, self).__init__(policy,
+                                                 representation, discount_factor)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
 
@@ -76,7 +75,7 @@ class NaturalActorCritic(Agent):
         self.z *= self.lambda_
         self.z += phi_s
 
-        self.A += np.einsum("i,j", self.z, phi_s - self.domain.discount_factor * phi_ns,
+        self.A += np.einsum("i,j", self.z, phi_s - self.discount_factor * phi_ns,
                             out=self.buf_)
         self.b += self.z * r
         if terminal:

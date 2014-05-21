@@ -34,7 +34,8 @@ def make_experiment(
         domain,
         discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Q_Learning(domain, policy, representation,
+    agent = Q_Learning(policy, representation,
+                       discount_factor=domain.discount_factor,
                        lambda_=lambda_,
                        initial_learn_rate=initial_learn_rate,
                        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)

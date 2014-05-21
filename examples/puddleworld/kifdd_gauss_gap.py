@@ -55,7 +55,8 @@ def make_experiment(
     # agent           = SARSA(representation,policy,domain,initial_learn_rate=1.,
     # lambda_=0., learn_rate_decay_mode="boyan", boyan_N0=100)
     agent = Q_LEARNING(
-        domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        policy, representation, discount_factor=domain.discount_factor,
+        lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan_const", boyan_N0=boyan_N0)
     stat_bins_per_state_dim = 22
     experiment = Experiment(**locals())

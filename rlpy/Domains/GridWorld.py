@@ -345,7 +345,7 @@ class GridWorld(Domain):
             if (
                     ns[0] < 0 or ns[0] == self.ROWS or
                     ns[1] < 0 or ns[1] == self.COLS or
-                    self.map[ns[0], ns[1]] == self.BLOCKED):
+                    self.map[int(ns[0]), int(ns[1])] == self.BLOCKED):
                 continue
             possibleA = np.append(possibleA, [a])
         return possibleA

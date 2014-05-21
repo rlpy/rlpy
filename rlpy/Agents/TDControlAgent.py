@@ -23,20 +23,17 @@ class TDControlAgent(DescentAlgorithm, Agent):
     #: eligibility trace using state only (no copy-paste), necessary for dabney decay mode
     eligibility_trace_s = []
 
-    def __init__(self, domain, policy, representation, lambda_=0, **kwargs):
+    def __init__(self, policy, representation, discount_factor, lambda_=0, **kwargs):
         self.eligibility_trace = np.zeros(
             representation.features_num *
-            domain.actions_num)
+            representation.actions_num)
         # use a state-only version of eligibility trace for dabney decay mode
         self.eligibility_trace_s = np.zeros(representation.features_num)
         self.lambda_ = lambda_
         super(
             TDControlAgent,
-            self).__init__(
-            domain=domain,
-            policy=policy,
-            representation=representation,
-            **kwargs)
+            self).__init__(policy=policy,
+            representation=representation, discount_factor=discount_factor, **kwargs)
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
         """needs to be implemented by children"""
@@ -49,7 +46,7 @@ class TDControlAgent(DescentAlgorithm, Agent):
         prevStateTerminal = False
 
         self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
-        discount_factor = self.representation.domain.discount_factor
+        discount_factor = self.discount_factor
         weight_vec = self.representation.weight_vec
         phi_s = self.representation.phi(s, prevStateTerminal)
         phi = self.representation.phi_sa(s, prevStateTerminal, a, phi_s)
@@ -70,14 +67,14 @@ class TDControlAgent(DescentAlgorithm, Agent):
         # Set eligibility traces:
         if self.lambda_:
             expanded = (- len(self.eligibility_trace) + len(phi)) / \
-                self.domain.actions_num
+                self.representation.actions_num
             if expanded > 0:
                 # Correct the size of eligibility traces (pad with zeros for
                 # new features)
                 self.eligibility_trace = addNewElementForAllActions(
                     self.eligibility_trace,
-                    self.domain.actions_num,
-                    np.zeros((self.domain.actions_num,
+                    self.representation.actions_num,
+                    np.zeros((self.representation.actions_num,
                               expanded)))
                 self.eligibility_trace_s = addNewElementForAllActions(
                     self.eligibility_trace_s, 1, np.zeros((1, expanded)))

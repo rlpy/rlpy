@@ -29,7 +29,8 @@ def make_experiment(
                                              normalization=True)
     policy = eGreedy(representation, epsilon=0.1)
     agent = Q_LEARNING(
-        domain, policy, representation, lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        policy, representation,discount_factor=domain.discount_factor,
+        lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
     experiment = Experiment(**locals())
     return experiment

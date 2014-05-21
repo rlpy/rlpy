@@ -71,9 +71,6 @@ class Domain(object):
     logger = None
 
     def __init__(self):
-#        """
-#
-#        """
         self.logger = logging.getLogger("rlpy.Domains." + self.__class__.__name__)
         self.state_space_dims = len(self.statespace_limits)
         # To make sure type of discount_factor is float. This will later on be used in

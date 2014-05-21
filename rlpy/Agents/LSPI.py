@@ -20,9 +20,7 @@ class LSPI(Agent):
 
         policy (Policy):    Policy used by the agent.
 
-        domain (Domain):    Domain the agent will be acting within. This is used to get the state
-                            information and discount rate.
-
+        discount_factor (double): discount factor of future rewards
         max_window (int):   Maximum number of steps the agent will be run for,
                             which acts as the number of transitions to store.
 
@@ -59,7 +57,7 @@ class LSPI(Agent):
     re_iterations = 0
 
     def __init__(
-            self, domain, policy, representation, max_window, steps_between_LSPI,
+            self, policy, representation, discount_factor, max_window, steps_between_LSPI,
             lspi_iterations=5, tol_epsilon=1e-3, re_iterations=100, use_sparse=False):
         self.samples_count = 0
         self.max_window = max_window
@@ -70,8 +68,8 @@ class LSPI(Agent):
         self.use_sparse = use_sparse
 
         # Take memory for stored values
-        self.data_s = np.zeros((max_window, domain.state_space_dims))
-        self.data_ns = np.zeros((max_window, domain.state_space_dims))
+        self.data_s = np.zeros((max_window, representation.state_space_dims))
+        self.data_ns = np.zeros((max_window, representation.state_space_dims))
         self.data_a = np.zeros((max_window, 1), dtype=np.uint32)
         self.data_na = np.zeros((max_window, 1), dtype=np.uint32)
         self.data_r = np.zeros((max_window, 1))
@@ -79,7 +77,7 @@ class LSPI(Agent):
         # Make A and r incrementally if the representation can not expand
         self.fixedRep = not representation.isDynamic
         if self.fixedRep:
-            f_size = representation.features_num * domain.actions_num
+            f_size = representation.features_num * representation.actions_num
             self.b = np.zeros((f_size, 1))
             self.A = np.zeros((f_size, f_size))
 
@@ -99,7 +97,7 @@ class LSPI(Agent):
                 self.all_phi_s_a = np.zeros((max_window, f_size))
                 self.all_phi_ns_na = np.zeros((max_window, f_size))
 
-        super(LSPI, self).__init__(domain, policy, representation)
+        super(LSPI, self).__init__(policy, representation, discount_factor=discount_factor)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """Iterative learning method for the agent.
@@ -135,7 +133,7 @@ class LSPI(Agent):
         # action_mask is a matrix that shows which actions are available for
         # each state
         action_mask = None
-        discount_factor = self.domain.discount_factor
+        discount_factor = self.discount_factor
         F1 = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :]) if self.use_sparse else self.all_phi_s_a[:self.samples_count,:]
         while lspi_iteration < self.lspi_iterations and weight_diff > self.tol_epsilon:
 
@@ -210,7 +208,7 @@ class LSPI(Agent):
             F1              = self.all_phi_s_a[:self.samples_count, :]
             F2              = self.all_phi_ns_na[:self.samples_count, :]
             R               = self.data_r[:self.samples_count, :]
-            discount_factor = self.domain.discount_factor
+            discount_factor = self.discount_factor
 
             if self.use_sparse:
                 self.b = (F1.T * R).reshape(-1, 1)
@@ -274,7 +272,7 @@ class LSPI(Agent):
             self.all_phi_s_a[self.samples_count, :] = phi_s_a
             self.all_phi_ns_na[self.samples_count, :] = phi_ns_na
 
-            discount_factor = self.domain.discount_factor
+            discount_factor = self.discount_factor
             self.b += phi_s_a.reshape((-1, 1)) * r
             d = phi_s_a - discount_factor * phi_ns_na
             self.A += np.outer(phi_s_a, d)
@@ -287,7 +285,7 @@ class LSPI(Agent):
         """
         # Calculates the TD-Errors in a matrix format for a set of samples = R
         # + (discount_factor*F2 - F1) * Theta
-        discount_factor = self.representation.domain.discount_factor
+        discount_factor = self.discount_factor
         R       = self.data_r[:self.samples_count, :]
         if self.use_sparse:
             F1      = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :])
@@ -329,7 +327,6 @@ class LSPI(Agent):
             else:
                 added_feature = False
             # print 'L_inf distance to V*= ',
-            # self.domain.L_inf_distance_to_V_star(self.representation)
         if added_feature:
             # Run LSPI one last time with the new features
             self.LSTD()
