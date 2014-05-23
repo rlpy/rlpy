@@ -5,12 +5,18 @@ Please run:
 python setup.py build_ext --inplace
 """
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension, find_packages
 from Cython.Distutils import build_ext
-from Cython.Build import cythonize
 import numpy
 import os
 import sys
+
+# Grab the version string from the documentation.
+sys.path.insert(0, 'doc')
+import conf
+version = conf.version
+sys.path.remove('doc')
+
 if sys.platform == 'darwin':
     # by default use clang++ as this most likely to have c++11 support
     # on OSX
@@ -20,25 +26,43 @@ if sys.platform == 'darwin':
 else:
     extra_args = []
 
-setup(name="_transformations",
-      cmdclass={"build_ext": build_ext},
+setup(name="rlpy",
+      version=version,
+      description="The Reinforcement Learning Library for Education and Research",
+      url="http://acl.mit.edu/RLPy/",
+      packages=find_packages(),
+      package_data={'rlpy': [
+          'Domains/GridWorldMaps/*.txt',
+          'Domains/IntruderMonitoringMaps/*.txt',
+          'Domains/PinballConfigs/*.cfg',
+          'Domains/PacmanPackage/layouts/*.lay',
+          'Domains/SystemAdministratorMaps/*.txt',
+      ]},
+      install_requires=[
+          'numpy >= 1.7',
+          'scipy',
+          'matplotlib >= 1.2',
+          'networkx',
+          'scikit-learn',
+          'joblib',
+          'hyperopt'
+      ],
+      extras_require={'cython_extensions': ['cython']},
+      cmdclass={'build_ext': build_ext},
       ext_modules=[
           Extension("rlpy.Representations.hashing",
                     ["rlpy/Representations/hashing.pyx"],
-                    include_dirs=[numpy.get_include(
-                    ), "rlpy/Representations"]),
+                    include_dirs=[numpy.get_include(), "rlpy/Representations"]),
           Extension("rlpy.Domains.HIVTreatment_dynamics",
                     ["rlpy/Domains/HIVTreatment_dynamics.pyx"],
-                    include_dirs=[numpy.get_include(
-                    ), "rlpy/Representations"]),
+                    include_dirs=[numpy.get_include(), "rlpy/Representations"]),
           Extension("rlpy.Representations.kernels",
                     ["rlpy/Representations/kernels.pyx",
                      "rlpy/Representations/c_kernels.cc",
                      "rlpy/Representations/c_kernels.pxd"],
                     language="c++",
                     #extra_compile_args=extra_args + ["-std=c++0x"],
-                    include_dirs=[numpy.get_include(
-                    ), "rlpy.Representations"]),
+                    include_dirs=[numpy.get_include(), "rlpy.Representations"]),
           Extension("rlpy.Tools._transformations",
                     ["rlpy/Tools/transformations.c"],
                     include_dirs=[numpy.get_include()]),
@@ -50,7 +74,7 @@ setup(name="_transformations",
                     language="c++",
                     extra_compile_args=["-std=c++0x"] + extra_args,
                     include_dirs=[
-                        numpy.get_include(
-                        ),
-                        "rlpy/Representations"],
-                    ), ])
+                        numpy.get_include(), "rlpy/Representations"],
+                    )],
+      test_suite='tests'
+      )

@@ -1,10 +1,10 @@
 doc/_build/*
 build/*
 Results/*
-Representations/FastCythonKiFDD.cpp
-Representations/hashing.c
-Representations/kernels.cpp
-Domains/HIVTreatment_dynamics.c
+rlpy/Representations/FastCythonKiFDD.cpp
+rlpy/Representations/hashing.c
+rlpy/Representations/kernels.cpp
+rlpy/Domains/HIVTreatment_dynamics.c
 *.so
 *.swp
 .project
@@ -13,3 +13,5 @@ Domains/HIVTreatment_dynamics.c
 Config.py
 .ropeproject
 .nfs*
+dist
+*.egg-info
