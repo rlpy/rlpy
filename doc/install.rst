@@ -31,6 +31,11 @@ The git-repository with the latest development version can be cloned via::
 This will give you a copy of the repository in the directory `RLPy`. You might
 want to change the location as you wish.
 
+.. tip::
+    If you are cloning the repository please add the RLPy to your python path using the following command ::
+
+        PYTHONPATH=<PATH to RLPY>:$PYTHONPATH
+
 .. _dependencies:
 
 2. Dependencies
