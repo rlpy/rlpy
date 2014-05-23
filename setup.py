@@ -35,6 +35,7 @@ setup(name="rlpy",
           'Domains/GridWorldMaps/*.txt',
           'Domains/IntruderMonitoringMaps/*.txt',
           'Domains/PinballConfigs/*.cfg',
+          'Domains/PacmanPackage/layouts/*.lay',
           'Domains/SystemAdministratorMaps/*.txt',
       ]},
       install_requires=[
