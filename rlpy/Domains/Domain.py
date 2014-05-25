@@ -118,8 +118,10 @@ Gamma:      {self.discount_factor}
             :py:class:`~rlpy.Representation.Representation.Representation`.
 
         """
+        self.saveRandomState()
         self.showDomain(a=a)
         self.showLearning(representation=representation)
+        self.loadRandomState()
 
     def showDomain(self, a=0):
         """
@@ -211,6 +213,23 @@ Gamma:      {self.discount_factor}
 
         """
         raise NotImplementedError("Each domain needs to implement this method")
+
+    def saveRandomState(self):
+        """
+        Stores the state of the the random generator. Using loadRandomState this state can be loaded. 
+        Hence the following code will print a unique number all the time.
+        while True:
+            self.saveRandomState()
+            print self.random_state.randn()
+            self.loadRandomState()
+        """
+        self.random_state_backup = np.random.RandomState()
+
+    def loadRandomState(self):
+        """
+        Loads the random state stored in the self.random_state_backup 
+        """
+        self.random_state = self.random_state_backup
 
     def isTerminal(self):
         """

@@ -26,12 +26,19 @@ class PolicyIteration(MDPSolver):
         representation (Representation):    Representation used for the value function.
         domain (Domain):    Domain (MDP) to solve.
         planning_time (int):    Maximum amount of time in seconds allowed for planning. Defaults to inf (unlimited).
+
         convergence_threshold (float):  Threshold for determining if the value function has converged.
+
         ns_samples (int):   How many samples of the successor states to take.
+
         project_path (str): Output path for saving the results of running the MDPSolver on a domain.
+
         log_interval (int): Minimum number of seconds between displaying logged information.
+
         show (bool):    Enable visualization?
+
         max_PE_iterations (int):    Maximum number of Policy evaluation iterations to run.
+
     """
 
     def __init__(
@@ -50,91 +57,10 @@ class PolicyIteration(MDPSolver):
                            show)
         self.max_PE_iterations = max_PE_iterations
         self.logger.info('Max PE Iterations:\t%d' % self.max_PE_iterations)
-        self.policy_improvement_iterations = 0
-
-    def policyEvaluation(self, policy):
-        """ Evaluates the value function for the given policy 
-        """
-        # Policy Evaluation
-        no_of_states = self.representation.agg_states_num
-        converged = False
-        policy_evaluation_iteration = 0
-        bellmanUpdates = 0
-        while (not converged and self.hasTime() and 
-               policy_evaluation_iteration < self.max_PE_iterations):
-            policy_evaluation_iteration += 1
-            
-            # Sweep The State Space
-            for i in xrange(0, no_of_states):
-                
-                # Break Planning if time runs out
-                if not self.hasTime(): break
-                
-                s = self.representation.stateID2state(i)
-                if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s=s)):
-                    self.BellmanBackup(
-                        s,
-                        policy.pi(s,
-                                  False,
-                                  self.domain.possibleActions(s=s)),
-                        self.ns_samples,
-                        policy)
-                    bellmanUpdates += 1
-
-                    if bellmanUpdates % self.log_interval == 0:
-                        performance_return, _, _, _ = self.performanceRun()
-                        self.logger.info(
-                            '[%s]: BellmanUpdates=%d, Return=%0.4f' %
-                            (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
-
-            # check for convergence based on infinity norm
-            weight_vec_change = np.linalg.norm(
-                policy.representation.weight_vec -
-                self.representation.weight_vec,
-                np.inf)
-            converged = weight_vec_change < self.convergence_threshold
-            self.logger.info(
-                'PE #%d [%s]: BellmanUpdates=%d, ||delta-weight_vec||=%0.4f' %
-                    (policy_evaluation_iteration, 
-                     hhmmss(deltaT(self.start_time)), 
-                     bellmanUpdates, 
-                     weight_vec_change)
-                )
-            if self.show:
-                self.domain.show(
-                    policy.pi(s,
-                              False,
-                              self.domain.possibleActions(s=s)),
-                    self.representation,
-                    s=s)
-        return converged, bellmanUpdates
-    def policyImprovement(self, policy):
-        ''' Improve the current policy by applying bellman backup for all actions possible in each state
-            This is different from conventional way changing the policy as the policy 
-            is implicitly represented by state-action values
-        '''
-        self.policy_improvement_iterations += 1
-        no_of_states = self.representation.agg_states_num
-        policyChanged = 0
-        state_id = 0
-        while state_id < no_of_states and self.hasTime():
-            s = self.representation.stateID2state(state_id)
-            if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
-                for a in self.domain.possibleActions(s):
-                    
-                    # Check for planning time
-                    if not self.hasTime(): break
-                    
-                    self.BellmanBackup(s, a, self.ns_samples, policy)
-                if policy.pi(s, False, self.domain.possibleActions(s=s)) != self.representation.bestAction(s, False, self.domain.possibleActions(s=s)):
-                    policyChanged += 1
-            state_id += 1
 
     def solve(self):
-        """Solve the MDP using Policy Iteration"""
-        
+        """Solve the domain MDP."""
         self.result = []
-        
         # Used to show the total time took the process
         self.start_time = clock()
 
@@ -145,6 +71,9 @@ class PolicyIteration(MDPSolver):
                 "Value Iteration works only with the tabular representation.")
             return 0
 
+        no_of_states = self.representation.agg_states_num
+        bellmanUpdates = 0
+
         # Initialize the policy
         policy = eGreedy(
             deepcopy(self.representation),
@@ -152,21 +81,74 @@ class PolicyIteration(MDPSolver):
             forcedDeterministicAmongBestActions=True)  # Copy the representation so that the weight change during the evaluation does not change the policy
         policyChanged = True
 
-        self.policy_improvement_iterations = 0
+        policy_improvement_iteration = 0
         while policyChanged and deltaT(self.start_time) < self.planning_time:
 
             # Policy Evaluation
-            converged, bellmanUpdates = self.policyEvaluation(policy)
+            converged = False
+            policy_evaluation_iteration = 0
+            while not converged and self.hasTime() and policy_evaluation_iteration < self.max_PE_iterations:
+                policy_evaluation_iteration += 1
+                # Sweep The State Space
+                for i in xrange(0, no_of_states):
+                    if not self.hasTime():
+                        break
+                    s = self.representation.stateID2state(i)
+                    if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s=s)):
+                        self.BellmanBackup(
+                            s,
+                            policy.pi(s,
+                                      False,
+                                      self.domain.possibleActions(s=s)),
+                            self.ns_samples,
+                            policy)
+                        bellmanUpdates += 1
+
+                        if bellmanUpdates % self.log_interval == 0:
+                            performance_return, _, _, _ = self.performanceRun(
+                            )
+                            self.logger.info(
+                                '[%s]: BellmanUpdates=%d, Return=%0.4f' %
+                                (hhmmss(deltaT(self.start_time)), bellmanUpdates, performance_return))
+
+                # check for convergence
+                weight_vec_change = np.linalg.norm(
+                    policy.representation.weight_vec -
+                    self.representation.weight_vec,
+                    np.inf)
+                converged = weight_vec_change < self.convergence_threshold
+                self.logger.info(
+                    'PE #%d [%s]: BellmanUpdates=%d, ||delta-weight_vec||=%0.4f' %
+                    (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), bellmanUpdates, weight_vec_change))
+                if self.show:
+                    self.domain.show(
+                        policy.pi(s,
+                                  False,
+                                  self.domain.possibleActions(s=s)),
+                        self.representation,
+                        s=s)
 
             # Policy Improvement:
-            self.policyImprovement(policy)
-
-            # Copy the policy implicitly by copying the weight vector for the representation.
+            policy_improvement_iteration += 1
+            policyChanged = 0
+            i = 0
+            while i < no_of_states and self.hasTime():
+                s = self.representation.stateID2state(i)
+                if not self.domain.isTerminal(s) and len(self.domain.possibleActions(s)):
+                    for a in self.domain.possibleActions(s):
+                        if not self.hasTime():
+                            break
+                        self.BellmanBackup(s, a, self.ns_samples, policy)
+                    if policy.pi(s, False, self.domain.possibleActions(s=s)) != self.representation.bestAction(s, False, self.domain.possibleActions(s=s)):
+                        policyChanged += 1
+                i += 1
+            # This will cause the policy to be copied over
             policy.representation.weight_vec = self.representation.weight_vec.copy()
-            performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun()
+            performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun(
+            )
             self.logger.info(
                 'PI #%d [%s]: BellmanUpdates=%d, Policy Change=%d, Return=%0.4f, Steps=%d' % (
-                    self.policy_improvement_iterations,
+                    policy_improvement_iteration,
                     hhmmss(
                         deltaT(
                             self.start_time)),
@@ -183,7 +165,7 @@ class PolicyIteration(MDPSolver):
                                performance_steps,  # index = 4
                                performance_term,  # index = 5
                                performance_discounted_return,  # index = 6
-                               self.policy_improvement_iterations  # index = 7
+                               policy_improvement_iteration  # index = 7
                                 ])
 
         if converged:
