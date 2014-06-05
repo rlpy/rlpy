@@ -4,10 +4,12 @@
 from copy import deepcopy
 import numpy as np
 
-from rlpy.Tools import printClass, PriorityQueueWithNovelty, className
+from rlpy.Tools import printClass, PriorityQueueWithNovelty
 from rlpy.Tools import powerset, combinations, addNewElementForAllActions
 from rlpy.Tools import plt
 from .Representation import Representation
+import warnings
+from collections import defaultdict
 
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
@@ -535,3 +537,254 @@ class iFDD(Representation):
         ifdd.features_num = self.features_num
         ifdd.weight_vec = deepcopy(self.weight_vec)
         return ifdd
+
+
+class iFDDK_potential(iFDD_potential):
+    f_set = None     # Set of features it corresponds to [Immutable]
+    index = None     # If this feature has been discovered set this to its index else 0
+    p1 = None     # Parent 1 feature index
+    p2 = None     # Parent 2 feature index
+    a = None   # tE[phi |\delta|] estimate
+    b = None   # tE[phi \delta] estimate
+    c = 0.   # || phi ||^2_d estimate
+    n_crho = 0  # rho episode index of last update
+    e = None   # eligibility trace
+
+    nu = 0.  # w value of last statistics update
+    x_a = 0.  # y_a value of last statistics update
+    x_b = 0.  # y_b value of last stistics update
+    l = 0  # t value of last statistics update
+
+    def __init__(self, f_set, parent1, parent2):
+        self.f_set = deepcopy(f_set)
+        self.index = -1  # -1 means it has not been discovered yet
+        self.p1 = parent1
+        self.p2 = parent2
+        self.a = np.array(0., dtype="float128")
+        self.b = np.array(0., dtype="float128")
+        self.e = np.array(0., dtype="float128")
+
+    def relevance(self, kappa=None, plus=None):
+        if plus is None:
+            assert(kappa is not None)
+            plus = np.random.rand() >= kappa
+
+        if plus:
+            return np.abs(self.b) / np.sqrt(self.c)
+        else:
+            return self.a / np.sqrt(self.c)
+
+    def update_statistics(self, rho, td_error, lambda_, discount_factor, phi, n_rho):
+        # phi = phi_s[self.p1] * phi_s[self.p2]
+        if n_rho > self.n_crho:
+            self.e = 0
+        self.e = rho * (lambda_ * discount_factor * self.e + phi)
+
+        self.a += np.abs(td_error) * self.e
+        self.b += td_error * self.e
+        self.c += phi ** 2
+
+        self.n_crho = n_rho
+
+    def update_lazy_statistics(self, rho, td_error, lambda_, discount_factor, phi, y_a, y_b, t_rho, w, t, n_rho):
+        # phi = phi_s[self.p1] * phi_s[self.p2]
+        if lambda_ > 0:
+            # catch up on old updates
+            gl = np.power(np.array(discount_factor * lambda_, dtype="float128"), t_rho[n_rho] - self.l)
+            sa, sb = self.a.copy(), self.b.copy()
+            self.a += self.e * (y_a[self.n_crho] - self.x_a) * np.exp(- self.nu) * gl
+            self.b += self.e * (y_b[self.n_crho] - self.x_b) * np.exp(- self.nu) * gl
+            if not np.isfinite(self.a):
+                self.a = sa
+                warnings.warn("Overflow in potential relevance estimate")
+            if not np.isfinite(self.b):
+                self.b = sb
+                warnings.warn("Overflow in potential relevance estimate")
+            if n_rho > self.n_crho:
+                self.e = 0
+                # TODO clean up y_a and y_b
+            else:
+                self.e *= gl * (lambda_ * discount_factor) ** (t - 1 - t_rho[n_rho]) * np.exp(w - self.nu)
+
+        # updates based on current transition
+        # np.seterr(under="warn")
+        self.e = rho * (lambda_ * discount_factor * self.e + phi)
+
+        self.a += np.abs(td_error) * self.e
+        self.b += td_error * self.e
+        # np.seterr(under="raise")
+        self.c += phi ** 2
+        # save current values for next catch-up update
+        self.l = t
+        self.x_a = y_a[n_rho].copy()
+        self.x_b = y_b[n_rho].copy()
+        self.nu = w
+        self.n_crho = n_rho
+
+    def __deepcopy__(self, memo):
+        new_p = iFDD_potential(self.f_set, self.p1, self.p2)
+        for i in ["a", "b", "c", "n_crho", "e", "nu", "x_a", "x_b", "l"]:
+            new_p.__dict__[i] = self.__dict__[i]
+        return new_p
+
+
+def _set_comp_lt(a, b):
+    if len(a) < len(b):
+        return -1
+    elif len(a) > len(b):
+        return 1
+    l1 = list(a)
+    l2 = list(b)
+    l1.sort()
+    l2.sort()
+    for i in xrange(len(l1)):
+        if l1[i] < l2[i]:
+            return -1
+        if l1[i] > l2[i]:
+            return +1
+    return 0
+
+
+class iFDDK(iFDD):
+
+    """iFDD(kappa) algorithm with support for elibility traces
+    The iFDD(kappa) algorithm is a stochastic mixture of iFDD and iFDD+
+    to retain the best properties of both algorithms."""
+
+    w = 0  # log(rho) trace
+    n_rho = 0  # index for rho episodes
+    t = 0
+    y_a = defaultdict(lambda: np.array(0., dtype="float128"))
+    y_b = defaultdict(lambda: np.array(0., dtype="float128"))
+    t_rho = defaultdict(int)
+
+    def __init__(
+        self, domain, discovery_threshold, initial_representation, sparsify=True,
+        discretization=20, debug=0, useCache=0, kappa=1e-5, lambda_=0., lazy=False):
+        self.lambda_ = lambda_
+        self.kappa = kappa
+        self.discount_factor = domain.discount_factor
+        self.lazy = lazy  # lazy updating?
+        super(
+            iFDDK, self).__init__(domain, discovery_threshold, initial_representation,
+            sparsify=sparsify, discretization=discretization, debug=debug,
+            useCache=useCache)
+
+    def episodeTerminated(self):
+        self.n_rho += 1
+        self.w = 0
+        self.t_rho[self.n_rho] = self.t
+
+    def showPotentials(self):
+        print "Potentials:"
+        print "-" * 30
+        print " index\t| f_set\t| relevance\t| count\t| p1\t| p2"
+        print "-" * 30
+
+        k = sorted(self.iFDD_potentials.iterkeys(), cmp=_set_comp_lt)
+        for f_set in k:
+            potential = self.iFDD_potentials[f_set]
+            print " %d\t| %s\t| %g\t| %d\t| %s\t| %s" % (potential.index, str(np.sort(list(potential.f_set))), potential.relevance(plus=True), potential.c, potential.p1, potential.p2)
+
+    def post_discover(self, s, terminal, a, td_error, phi_s, rho=1):
+        """
+        returns the number of added features
+        """
+        self.t += 1
+        discovered = 0
+        plus = np.random.rand() >= self.kappa
+        # if self.t == 22:
+        #    import ipdb; ipdb.set_trace()
+        activeFeatures = phi_s.nonzero()[
+                                       0]  # Indices of non-zero elements of vector phi_s
+        #print "Active Features:", activeFeatures, phi_s
+        if not self.lazy:
+            dd = defaultdict(float)
+            for g_index, h_index in combinations(activeFeatures, 2):
+                # create potential if necessary
+                dd[self.get_potential(g_index, h_index).f_set] = phi_s[g_index] * phi_s[h_index]
+
+            for f, potential in self.iFDD_potentials.items():
+                potential.update_statistics(
+                    rho, td_error, self.lambda_, self.discount_factor, dd[f], self.n_rho)
+                # print plus, potential.relevance(plus=plus)
+                if potential.relevance(plus=plus) >= self.discovery_threshold:
+                    self.addFeature(potential)
+                    del self.iFDD_potentials[f]
+                    discovered += 1
+            #print "t", self.t, "td_error", td_error, discovered
+            #self.showCache()
+            #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
+            #self.showPotentials()
+
+            return discovered
+
+        for g_index, h_index in combinations(activeFeatures, 2):
+            discovered += self.inspectPair(g_index, h_index, td_error, phi_s, rho, plus)
+
+        if rho > 0:
+            self.w += np.log(rho)
+        else:
+            # cut e-traces
+            self.n_rho += 1
+            self.w = 0
+            self.t_rho[self.n_rho] = self.t
+        # "rescale" to avoid numerical problems
+        # if self.t_rho[self.n_rho] + 300 < self.t:
+        #    self.y_a[self.n_rho] *= (self.discount_factor * self.lambda_) ** (-300)
+        #    self.y_b[self.n_rho] *= (self.discount_factor * self.lambda_) ** (-300)
+        #    self.t_rho[self.n_rho] += 300
+        if self.lambda_ > 0:
+            self.y_a[self.n_rho] += np.exp(self.w) * (self.discount_factor * self.lambda_) ** (
+                self.t - self.t_rho[self.n_rho]) * np.abs(td_error)
+            self.y_b[self.n_rho] += np.exp(self.w) * (self.discount_factor * self.lambda_) ** (
+                self.t - self.t_rho[self.n_rho]) * td_error
+            assert(np.isfinite(self.y_a[self.n_rho]))
+            assert(np.isfinite(self.y_b[self.n_rho]))
+
+        #print "t", self.t, "td_error", td_error, discovered
+        #self.showCache()
+        #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
+        #self.showPotentials()
+        return discovered
+
+    def get_potential(self, g_index, h_index):
+        g = self.featureIndex2feature[g_index].f_set
+        h = self.featureIndex2feature[h_index].f_set
+        f = g.union(h)
+        feature = self.iFDD_features.get(f)
+
+        if feature is not None:
+            # Already exists
+            return None
+
+        # Look it up in potentials
+        potential = self.iFDD_potentials.get(f)
+        if potential is None:
+            # Generate a new potential and put it in the dictionary
+            potential = iFDDK_potential(f, g_index, h_index)
+            self.iFDD_potentials[f] = potential
+        return potential
+
+    def inspectPair(self, g_index, h_index, td_error, phi_s, rho, plus):
+        # Inspect feature f = g union h where g_index and h_index are the indices of features g and h
+        # If the relevance is > Threshold add it to the list of features
+        # Returns True if a new feature is added
+        potential = self.get_potential(g_index, h_index)
+        phi = phi_s[g_index] * phi_s[h_index]
+        potential.update_lazy_statistics(
+            rho, td_error, self.lambda_, self.discount_factor, phi, self.y_a,
+            self.y_b, self.t_rho, self.w, self.t, self.n_rho)
+        # Check for discovery
+
+        relevance = potential.relevance(plus=plus)
+        if relevance >= self.discovery_threshold:
+            self.maxRelevance = -np.inf
+            self.addFeature(potential)
+            del self.iFDD_potentials[potential.f_set]
+            return 1
+        else:
+            self.updateMaxRelevance(relevance)
+            return 0
+
+

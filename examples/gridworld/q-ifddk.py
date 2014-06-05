@@ -4,7 +4,7 @@ __author__ = "William Dabney"
 
 from rlpy.Domains import GridWorld
 from rlpy.Agents import Q_Learning
-from rlpy.Representations import iFDDK
+from rlpy.Representations import iFDDK, IndependentDiscretization
 from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import os
@@ -21,7 +21,7 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     """
 
     # Experiment variables
-    max_steps = 10000
+    max_steps = 100000
     num_policy_checks = 10
 
     # Logging
@@ -32,14 +32,26 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     domain = GridWorld(maze, noise=0.3)
 
     # Representation
-    representation = Tabular(domain, discretization=20)
+    discover_threshold = 1.
+    lambda_ = 0.3
+    initial_learn_rate = 0.11
+    boyan_N0 = 100
+
+    initial_rep = IndependentDiscretization(domain)
+    representation = iFDDK(domain, discover_threshold, initial_rep,
+                          sparsify=True,
+                          useCache=True, lazy=True,
+                          lambda_=lambda_)
+    policy = eGreedy(representation, epsilon=0.1)
 
     # Policy
     policy = eGreedy(representation, epsilon=0.1)
 
     # Agent
-    agent = LSPI(policy, representation, domain.discount_factor,
-                 max_steps, max_steps / num_policy_checks)
+    agent = Q_Learning(
+        policy, representation, discount_factor=domain.discount_factor,
+        lambda_=lambda_, initial_learn_rate=initial_learn_rate,
+        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
 
     experiment = Experiment(**locals())
     return experiment
@@ -48,7 +60,7 @@ if __name__ == '__main__':
     path = "./Results/Temp/{domain}/{agent}/{representation}/"
     experiment = make_experiment(1, path=path)
     experiment.run(visualize_steps=False,  # should each learning step be shown?
-                   visualize_learning=False,  # show performance runs?
+                   visualize_learning=True,  # show performance runs?
                    visualize_performance=True)  # show value function?
     experiment.plot()
     experiment.save()

@@ -140,7 +140,7 @@ class GridWorld(Domain):
             # Create quivers for each action. 4 in total
             X = np.arange(self.ROWS) - self.SHIFT
             Y = np.arange(self.COLS)
-            X, Y = plt.meshgrid(X, Y)
+            X, Y = np.meshgrid(X, Y)
             DX = DY = np.ones(X.shape)
             C = np.zeros(X.shape)
             C[0, 0] = 1  # Making sure C has both 0 and 1
@@ -166,7 +166,7 @@ class GridWorld(Domain):
             self.upArrows_fig.set_clim(vmin=0, vmax=1)
             X = np.arange(self.ROWS) + self.SHIFT
             Y = np.arange(self.COLS)
-            X, Y = plt.meshgrid(X, Y)
+            X, Y = np.meshgrid(X, Y)
             self.downArrows_fig = plt.quiver(
                 Y,
                 X,
@@ -184,7 +184,7 @@ class GridWorld(Domain):
             self.downArrows_fig.set_clim(vmin=0, vmax=1)
             X = np.arange(self.ROWS)
             Y = np.arange(self.COLS) - self.SHIFT
-            X, Y = plt.meshgrid(X, Y)
+            X, Y = np.meshgrid(X, Y)
             self.leftArrows_fig = plt.quiver(
                 Y,
                 X,
@@ -200,7 +200,7 @@ class GridWorld(Domain):
             self.leftArrows_fig.set_clim(vmin=0, vmax=1)
             X = np.arange(self.ROWS)
             Y = np.arange(self.COLS) + self.SHIFT
-            X, Y = plt.meshgrid(X, Y)
+            X, Y = np.meshgrid(X, Y)
             self.rightArrows_fig = plt.quiver(
                 Y,
                 X,
