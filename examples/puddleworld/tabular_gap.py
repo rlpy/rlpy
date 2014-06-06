@@ -9,7 +9,6 @@ from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
-from rlpy.Representations import FastKiFDD
 
 param_space = {
     # 'kernel_resolution': hp.loguniform("kernel_resolution", np.log(3), np.log(100)),

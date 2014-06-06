@@ -42,7 +42,7 @@ def make_experiment(
         domain.statespace_limits[:,
                                  1] - domain.statespace_limits[:,
                                                                0]) / kernel_resolution
-    representation = FastKiFDD(domain, sparsify=sparsify,
+    representation = KernelizediFDD(domain, sparsify=sparsify,
                                kernel=gaussian_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,

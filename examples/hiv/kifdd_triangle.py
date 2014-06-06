@@ -5,7 +5,7 @@ from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import numpy as np
 from hyperopt import hp
-from rlpy.Representations import FastKiFDD
+from rlpy.Representations import KernelizediFDD
 
 param_space = {
     'kernel_resolution':
@@ -37,7 +37,7 @@ def make_experiment(
     domain = HIVTreatment()
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
-    representation = FastKiFDD(domain, sparsify=sparsify,
+    representation = KernelizediFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,

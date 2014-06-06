@@ -10,10 +10,5 @@ from .OMPTD import OMPTD
 from .TileCoding import TileCoding
 
 from .KernelizediFDD import linf_triangle_kernel, gaussian_kernel, KernelizediFDD
-try:
-    from .KernelizediFDD import FastKiFDD
-except ImportError:
-    print "C-Extensions not build, Fast Kernelized iFDD not available"
-    FastKiFDD = KernelizediFDD
 from .LocalBases import RandomLocalBases
 from .LocalBases import NonparametricLocalBases
