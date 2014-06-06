@@ -17,7 +17,9 @@ class FiftyChain(Domain):
     Random start location, goal is to proceed to nearest reward. \n
     **STATE:** s0 <-> s1 <-> ... <-> s49 \n
     **ACTIONS:** left [0] or right [1] \n
-    Actions succeed with probability .9, otherwise execute opposite action. \n
+    Actions succeed with probability .9, otherwise execute opposite action. 
+    Note that the actions [left, right] are available in ALL states, but if 
+    left is selected in s0 or right in s49, then s remains unchanged. \n
 
     .. note::
         The optimal policy is to always go to the nearest goal
