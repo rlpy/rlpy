@@ -65,16 +65,6 @@ setup(name="rlpy",
                     include_dirs=[numpy.get_include(), "rlpy.Representations"]),
           Extension("rlpy.Tools._transformations",
                     ["rlpy/Tools/transformations.c"],
-                    include_dirs=[numpy.get_include()]),
-          Extension("rlpy.Representations.FastCythonKiFDD",
-                    ["rlpy/Representations/FastCythonKiFDD.pyx",
-                     "rlpy/Representations/c_kernels.pxd",
-                     "rlpy/Representations/c_kernels.cc",
-                     "rlpy/Representations/FastKiFDD.cc"],
-                    language="c++",
-                    extra_compile_args=["-std=c++0x"] + extra_args,
-                    include_dirs=[
-                        numpy.get_include(), "rlpy/Representations"],
-                    )],
+                    include_dirs=[numpy.get_include()])],
       test_suite='tests'
       )
