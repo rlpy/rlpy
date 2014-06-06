@@ -3,8 +3,8 @@
 __author__ = "William Dabney"
 
 from rlpy.Domains import GridWorld
-from rlpy.Agents import Q_Learning
-from rlpy.Representations import iFDDK
+from rlpy.Agents import LSPI
+from rlpy.Representations import Tabular
 from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import os
