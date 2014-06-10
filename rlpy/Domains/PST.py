@@ -125,8 +125,6 @@ class PST(Domain):
     NOM_FUEL_BURN = 1
 
     # Domain variables
-    #: Noise in action (with some probability, loiter rather than move)
-    motionNoise = 0
     # Number of UAVs in surveillance area with working sensor and actuator
     # [n_s]
     numHealthySurveil = 0
@@ -161,10 +159,9 @@ class PST(Domain):
     dist_between_locations = 0
 
     ###
-    def __init__(self, NUM_UAV=3, motionNoise=0):
+    def __init__(self, NUM_UAV=3):
         """
         :param NUM_UAV: the number of UAVs in the domain
-        :param motionNoise: probability of taking the LOITER action instead of the one selected.
 
         """
 
@@ -181,9 +178,6 @@ class PST(Domain):
         # one dimension and has two elements [min, max]
         self.statespace_limits = np.vstack(
             [locations_lim, fuel_lim, actuator_lim, sensor_lim])
-        # with some noise, when uav desires to transition to new state, remains
-        # where it is (loiter)
-        self.motionNoise = motionNoise
         # eg [3,3,3,3], number of possible actions
         self.LIMITS = UAVAction.SIZE * np.ones(NUM_UAV, dtype='int')
         # Don't have communications available yet, so no surveillance reward
@@ -478,7 +472,7 @@ class PST(Domain):
 
     def state2Struct(self, s):
         """
-        Convert generic RLPy state ``s`` to generic
+        Convert generic RLPy state ``s`` to internal state
 
         :param s: RLPy state
         :returns: PST.StateStruct -- the custom structure used by this domain.
