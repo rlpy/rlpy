@@ -45,7 +45,8 @@ setup(name="rlpy",
           'networkx',
           'scikit-learn',
           'joblib',
-          'hyperopt'
+          'hyperopt',
+          'pymongo'
       ],
       extras_require={'cython_extensions': ['cython']},
       cmdclass={'build_ext': build_ext},

@@ -560,9 +560,13 @@ class iFDDK_potential(iFDD_potential):
         self.index = -1  # -1 means it has not been discovered yet
         self.p1 = parent1
         self.p2 = parent2
-        self.a = np.array(0., dtype="float128")
-        self.b = np.array(0., dtype="float128")
-        self.e = np.array(0., dtype="float128")
+        try:
+            self.hp_dtype = np.dtype('float128')
+        except TypeError:
+            self.hp_dtype = np.dtype('float64')
+        self.a = np.array(0., dtype=self.hp_dtype)
+        self.b = np.array(0., dtype=self.hp_dtype)
+        self.e = np.array(0., dtype=self.hp_dtype)
 
     def relevance(self, kappa=None, plus=None):
         if plus is None:
@@ -590,7 +594,7 @@ class iFDDK_potential(iFDD_potential):
         # phi = phi_s[self.p1] * phi_s[self.p2]
         if lambda_ > 0:
             # catch up on old updates
-            gl = np.power(np.array(discount_factor * lambda_, dtype="float128"), t_rho[n_rho] - self.l)
+            gl = np.power(np.array(discount_factor * lambda_, dtype=self.hp_dtype), t_rho[n_rho] - self.l)
             sa, sb = self.a.copy(), self.b.copy()
             self.a += self.e * (y_a[self.n_crho] - self.x_a) * np.exp(- self.nu) * gl
             self.b += self.e * (y_b[self.n_crho] - self.x_b) * np.exp(- self.nu) * gl
@@ -654,13 +658,17 @@ class iFDDK(iFDD):
     w = 0  # log(rho) trace
     n_rho = 0  # index for rho episodes
     t = 0
-    y_a = defaultdict(lambda: np.array(0., dtype="float128"))
-    y_b = defaultdict(lambda: np.array(0., dtype="float128"))
     t_rho = defaultdict(int)
 
     def __init__(
         self, domain, discovery_threshold, initial_representation, sparsify=True,
         discretization=20, debug=0, useCache=0, kappa=1e-5, lambda_=0., lazy=False):
+        try:
+            self.hp_dtype = np.dtype('float128')
+        except TypeError:
+            self.hp_dtype = np.dtype('float64')
+    	self.y_a = defaultdict(lambda: np.array(0., dtype=self.hp_dtype))
+    	self.y_b = defaultdict(lambda: np.array(0., dtype=self.hp_dtype))
         self.lambda_ = lambda_
         self.kappa = kappa
         self.discount_factor = domain.discount_factor
