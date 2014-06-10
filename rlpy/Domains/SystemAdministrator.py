@@ -35,8 +35,8 @@ class SystemAdministrator(Domain):
     [1 1 0 1] -> computers 0,1,3 are RUNNING, computer 2 is BROKEN.
 
     **ACTIONS:**
-    The action space is the integers [0,n], where 0 corresponds to taking
-    no action, and [1,n] selects a computer to repair. \n
+    The action space is the integers [0,n], where n corresponds to taking
+    no action, and [0,n-1] selects a computer to repair. \n
 
     Repairing a computer causes its state to become RUNNING regardless of its
     previous state.
