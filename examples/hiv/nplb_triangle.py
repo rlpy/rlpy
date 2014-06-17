@@ -18,21 +18,24 @@ def make_experiment(
         lambda_=0.0985,
         initial_learn_rate=0.090564,
         resolution=13., num_rbfs=9019):
-    max_steps = 150000
-    num_policy_checks = 30
-    checks_per_policy = 1
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 150000
+    opt["num_policy_checks"] = 30
+    opt["checks_per_policy"] = 1
 
     domain = HIVTreatment()
+    opt["domain"] = domain
     representation = NonparametricLocalBases(domain,
                                              kernel=linf_triangle_kernel,
                                              resolution=resolution,
                                              normalization=True)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Q_LEARNING(
+    opt["agent"] = Q_LEARNING(
         policy, representation,discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

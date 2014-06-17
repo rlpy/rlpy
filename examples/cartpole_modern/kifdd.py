@@ -27,14 +27,17 @@ def make_experiment(
         boyan_N0=200.,
         initial_learn_rate=.1,
         kernel_resolution=13.14):
-    max_steps = 100000
-    num_policy_checks = 20
-    checks_per_policy = 1
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 100000
+    opt["num_policy_checks"] = 20
+    opt["checks_per_policy"] = 1
     active_threshold = 0.01
     max_base_feat_sim = 0.5
     sparsify = 1
 
     domain = FiniteCartPoleBalanceModern()
+    opt["domain"] = domain
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
 
@@ -49,11 +52,11 @@ def make_experiment(
     policy = eGreedy(representation, epsilon=0.)
     # agent           = SARSA(representation,policy,domain,initial_learn_rate=initial_learn_rate,
     # lambda_=.0, learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    agent = Q_LEARNING(
+    opt["agent"] = Q_LEARNING(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=0.9, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

@@ -21,19 +21,22 @@ def make_experiment(
         initial_learn_rate=.7,
         discretization=20.,
         lambda_=0.75):
-    max_steps = 5000
-    num_policy_checks = 10
-    checks_per_policy = 10
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 5000
+    opt["num_policy_checks"] = 10
+    opt["checks_per_policy"] = 10
 
     domain = InfCartPoleBalance(episodeCap=1000)
+    opt["domain"] = domain
     representation = Tabular(domain,
                              discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Q_Learning(
+    opt["agent"] = Q_Learning(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

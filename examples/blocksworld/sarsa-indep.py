@@ -15,19 +15,20 @@ def make_experiment(
         lambda_=0.,
         boyan_N0=10.25,
         initial_learn_rate=.6102):
-    max_steps = 100000
-    num_policy_checks = 20
-    checks_per_policy = 5
-    sparsify = 1
-    ifddeps = 1e-7
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 100000
+    opt["num_policy_checks"] = 20
+    opt["checks_per_policy"] = 5
     domain = BlocksWorld(blocks=6, noise=0.3)
+    opt["domain"] = domain
     representation = IndependentDiscretization(domain)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = SARSA(
+    opt["agent"] = SARSA(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':
