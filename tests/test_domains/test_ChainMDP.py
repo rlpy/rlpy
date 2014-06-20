@@ -1,5 +1,5 @@
 from rlpy.Representations import Tabular
-from rlpy.Domains import FiftyChain
+from rlpy.Domains import ChainMDP
 from rlpy.Agents.TDControlAgent import SARSA
 import numpy as np
 from rlpy.Tools import __rlpy_location__
@@ -9,8 +9,7 @@ from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
 import logging
 
-
-def _make_experiment(exp_id=1, path="./Results/Tmp/test_FiftyChain"):
+def _make_experiment(exp_id=1, path="./Results/Tmp/test_ChainMDP/"):
     """
     Each file specifying an experimental setup should contain a
     make_experiment function which returns an instance of the Experiment
@@ -21,7 +20,8 @@ def _make_experiment(exp_id=1, path="./Results/Tmp/test_FiftyChain"):
     """
 
     ## Domain:
-    domain = FiftyChain()
+    chainSize = 5
+    domain = ChainMDP(chainSize=chainSize)
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
@@ -33,7 +33,7 @@ def _make_experiment(exp_id=1, path="./Results/Tmp/test_FiftyChain"):
     ## Agent
     agent = SARSA(representation=representation, policy=policy,
                   discount_factor=domain.discount_factor,
-                       learn_rate=0.1)
+                  learn_rate=0.1)
     checks_per_policy = 3
     max_steps = 50
     num_policy_checks = 3
@@ -62,7 +62,6 @@ def _checkSameExperimentResults(exp1, exp2):
         return False
     return True
 
-
 def test_seed():
     """ Ensure that providing the same random seed yields same result """
     # [[initialize and run experiment without visual]]
@@ -85,23 +84,6 @@ def test_seed():
     # [[assert get same results]]
     assert _checkSameExperimentResults(expNoVis, expVis1)
     assert _checkSameExperimentResults(expNoVis, expVis2)
-
-def test_errs():
-    """ Ensure that we can call custom methods without error """
-    
-    domain = FiftyChain()
-    
-    # [[Test storeOptimalPolicy()]]
-    domain.storeOptimalPolicy()
-    
-    # [[Test L_inf_distance_to_V_star]]
-    exp = _make_experiment(exp_id=1)
-    exp.run(visualize_steps=False,
-            visualize_learning=False,
-            visualize_performance=0)
-    distToVStar = exp.domain.L_inf_distance_to_V_star(exp.agent.representation)
-    assert distToVStar is not np.NAN # must use `is not` because of np.NaN vs np.NAN vs...
-    assert distToVStar is not np.Inf
     
 def test_transitions():
     """
@@ -112,39 +94,42 @@ def test_transitions():
     
     """
     # [[initialize domain]]
-    domain = FiftyChain()
-    domain.p_action_failure = 0.0 # eliminate stochasticity
+    chainSize = 5
+    domain = ChainMDP(chainSize=chainSize)
     dummyS = domain.s0()
-    domain.state = 2 # state s2
-    left = domain.LEFT
-    right = domain.RIGHT
-    goals = domain.GOAL_STATES
+    domain.state = np.array([2]) # state s2
+    left = 0
+    right = 1
     
     # Check basic step
     r,ns,terminal,possibleA = domain.step(left)
-    assert ns == 1 and terminal == False
+    assert ns[0] == 1 and terminal == False
     assert np.all(possibleA == np.array([left, right])) # all actions available
-    if ns in goals: assert r > 0
-    else: assert r <= 0
+    assert r == domain.STEP_REWARD
     
-    # Check another basic step
+    # Ensure all actions available, even on corner case, to meet domain specs
     r,ns,terminal,possibleA = domain.step(left)
-    assert ns == 0 and terminal == False
+    assert ns[0] == 0 and terminal == False
     assert np.all(possibleA == np.array([left, right])) # all actions available
-    if ns in goals: assert r > 0
-    else: assert r <= 0
+    assert r == domain.STEP_REWARD
     
-    # Ensure state does not change or wrap around and that all actions 
-    # remain availableon corner case, per domain spec
+    # Ensure state does not change or wrap around per domain spec
     r,ns,terminal,possibleA = domain.step(left)
-    assert ns == 0 and terminal == False
+    assert ns[0] == 0 and terminal == False
     assert np.all(possibleA == np.array([left, right])) # all actions available
-    if ns in goals: assert r > 0
-    else: assert r <= 0
+    assert r == domain.STEP_REWARD
     
-    # A final basic step
     r,ns,terminal,possibleA = domain.step(right)
-    assert ns == 1 and terminal == False
+    assert ns[0] == 1 and terminal == False
     assert np.all(possibleA == np.array([left, right])) # all actions available
-    if ns in goals: assert r > 0
-    else: assert r <= 0
+    assert r == domain.STEP_REWARD
+    
+    r,ns,terminal,possibleA = domain.step(right)
+    r,ns,terminal,possibleA = domain.step(right)
+    r,ns,terminal,possibleA = domain.step(right)
+    
+    # Ensure goal state gives proper condition
+    assert ns[0] == 4 and terminal == True
+    assert np.all(possibleA == np.array([left, right])) # all actions available
+    assert r == domain.GOAL_REWARD
+    
