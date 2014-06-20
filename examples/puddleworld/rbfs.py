@@ -24,20 +24,23 @@ def make_experiment(
         resolution=21.,
         num_rbfs=96.,
         lambda_=.1953):
-    max_steps = 40000
-    num_policy_checks = 20
-    checks_per_policy = 100
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 40000
+    opt["num_policy_checks"] = 20
+    opt["checks_per_policy"] = 100
 
     domain = PuddleWorld()
+    opt["domain"] = domain
     representation = RBF(domain, num_rbfs=int(num_rbfs),
                          resolution_max=resolution, resolution_min=resolution,
                          const_feature=False, normalize=True, seed=exp_id)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Q_Learning(
+    opt["agent"] = Q_Learning(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

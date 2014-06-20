@@ -26,10 +26,13 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
     @param id: number used to seed the random number generators
     @param path: output directory where logs and results are stored
     """
+    opt = {}
+    opt["exp_id"] = exp_id
 
     ## Domain:
     chainSize = 50
     domain = ChainMDPTut(chainSize=chainSize)
+    opt["domain"] = domain
 
     ## Representation
     # discretization only needed for continuous state spaces, discarded otherwise
@@ -39,13 +42,13 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
     policy = eGreedy(representation, epsilon=0.2)
 
     ## Agent
-    agent = SARSA(representation=representation, policy=policy,
+    opt["agent"] = SARSA(representation=representation, policy=policy,
                   disount_factor=domain.discount_factor,
                        learn_rate=0.1)
-    checks_per_policy = 100
-    max_steps = 2000
-    num_policy_checks = 10
-    experiment = Experiment(**locals())
+    opt["checks_per_policy"] = 100
+    opt["max_steps"] = 2000
+    opt["num_policy_checks"] = 10
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

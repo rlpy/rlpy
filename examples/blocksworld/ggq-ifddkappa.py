@@ -19,23 +19,25 @@ def make_experiment(
         lambda_=0.2,
         boyan_N0=80.798,
         initial_learn_rate=0.402807):
-    max_steps = 100000
-    num_policy_checks = 20
-    checks_per_policy = 1
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 100000
+    opt["num_policy_checks"] = 20
+    opt["checks_per_policy"] = 1
     sparsify = 1
-    ifddeps = 1e-7
     domain = BlocksWorld(blocks=6, noise=0.3)
+    opt["domain"] = domain
     initial_rep = IndependentDiscretization(domain)
     representation = iFDDK(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
                           useCache=True, lazy=True,
                           lambda_=lambda_)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Greedy_GQ(
+    opt["agent"] = Greedy_GQ(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

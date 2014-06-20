@@ -24,20 +24,23 @@ def make_experiment(
         lambda_=0.52738,
         initial_learn_rate=.424409,
         discretization=30):
-    max_steps = 400000
-    num_policy_checks = 10
-    checks_per_policy = 100
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 400000
+    opt["num_policy_checks"] = 10
+    opt["checks_per_policy"] = 100
 
     domain = PuddleGapWorld()
+    opt["domain"] = domain
     representation = Tabular(domain, discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
     # agent           = SARSA(representation,policy,domain,initial_learn_rate=1.,
     # lambda_=0., learn_rate_decay_mode="boyan", boyan_N0=100)
-    agent = Q_Learning(
+    opt["agent"] = Q_Learning(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

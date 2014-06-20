@@ -31,14 +31,17 @@ def make_experiment(
         lambda_=0.52738,
         initial_learn_rate=.424409,
         kernel_resolution=8.567677):
-    max_steps = 40000
-    num_policy_checks = 20
-    checks_per_policy = 100
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 40000
+    opt["num_policy_checks"] = 20
+    opt["checks_per_policy"] = 100
     active_threshold = 0.01
     max_base_feat_sim = 0.5
     sparsify = 1
 
     domain = PuddleWorld()
+    opt["domain"] = domain
     kernel_width = (
         domain.statespace_limits[:,
                                  1] - domain.statespace_limits[:,
@@ -51,10 +54,10 @@ def make_experiment(
                                normalization=True,
                                max_active_base_feat=10, max_base_feat_sim=max_base_feat_sim)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Q_LEARNING(policy, representation, discount_factor=domain.discount_factor,
+    opt["agent"] = Q_LEARNING(policy, representation, discount_factor=domain.discount_factor,
                        lambda_=lambda_, initial_learn_rate=initial_learn_rate,
                        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

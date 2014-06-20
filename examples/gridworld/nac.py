@@ -22,13 +22,16 @@ def make_experiment(
     """
 
     # Experiment variables
-    max_steps = 10000
-    num_policy_checks = 10
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 10000
+    opt["num_policy_checks"] = 10
 
     # Domain:
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3)
+    opt["domain"] = domain
 
     # Representation
     representation = Tabular(domain, discretization=20)
@@ -37,10 +40,10 @@ def make_experiment(
     policy = GibbsPolicy(representation)
 
     # Agent
-    agent = NaturalActorCritic(policy, representation, domain.discount_factor,
+    opt["agent"] = NaturalActorCritic(policy, representation, domain.discount_factor,
                                0.3, 100, 1000, .7, 0.1)
 
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':
