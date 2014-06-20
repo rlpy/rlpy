@@ -53,7 +53,7 @@ class CartPoleBase(Domain):
         pass
 
     @abstractproperty
-    def POSITON_LIMITS(self):
+    def POSITION_LIMITS(self):
         pass
 
     @abstractproperty
@@ -187,12 +187,12 @@ class CartPoleBase(Domain):
             This function *does not* affect system dynamics.
 
         """
-        if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
+        if self.POSITION_LIMITS[0] < -100 * self.LENGTH or self.POSITION_LIMITS[1] > 100 * self.LENGTH:
             self.minPosition = 0 - self.RECT_WIDTH / 2.0
             self.maxPosition = 0 + self.RECT_WIDTH / 2.0
         else:
-            self.minPosition = self.POSITON_LIMITS[0] - self.RECT_WIDTH / 2.0
-            self.maxPosition = self.POSITON_LIMITS[1] + self.RECT_WIDTH / 2.0
+            self.minPosition = self.POSITION_LIMITS[0] - self.RECT_WIDTH / 2.0
+            self.maxPosition = self.POSITION_LIMITS[1] + self.RECT_WIDTH / 2.0
         self.GROUND_VERTS = np.array([
             (self.minPosition, -self.RECT_HEIGHT / 2.0),
             (self.minPosition, self.RECT_HEIGHT / 2.0),
@@ -294,8 +294,8 @@ class CartPoleBase(Domain):
             self.ANGULAR_RATE_LIMITS[1])
         ns[StateIndex.X] = bound(
             ns[StateIndex.X],
-            self.POSITON_LIMITS[0],
-            self.POSITON_LIMITS[1])
+            self.POSITION_LIMITS[0],
+            self.POSITION_LIMITS[1])
         ns[StateIndex.X_DOT] = bound(
             ns[StateIndex.X_DOT],
             self.VELOCITY_LIMITS[0],
@@ -463,23 +463,23 @@ class CartPoleBase(Domain):
             groundPatch = mpatches.PathPatch(groundPath, hatch="//")
             self.domain_ax.add_patch(groundPatch)
             self.timeText = self.domain_ax.text(
-                self.POSITON_LIMITS[1],
+                self.POSITION_LIMITS[1],
                 self.LENGTH,
                 "")
             self.rewardText = self.domain_ax.text(
-                self.POSITON_LIMITS[0],
+                self.POSITION_LIMITS[0],
                 self.LENGTH,
                 "")
             # Allow room for pendulum to swing without getting cut off on graph
             viewableDistance = self.LENGTH + 0.5
-            if self.POSITON_LIMITS[0] < -100 * self.LENGTH or self.POSITON_LIMITS[1] > 100 * self.LENGTH:
+            if self.POSITION_LIMITS[0] < -100 * self.LENGTH or self.POSITION_LIMITS[1] > 100 * self.LENGTH:
                 # We have huge position limits, limit the figure width so
                 # cart is still visible
                 self.domain_ax.set_xlim(-viewableDistance, viewableDistance)
             else:
                 self.domain_ax.set_xlim(
-                    self.POSITON_LIMITS[0] - viewableDistance,
-                    self.POSITON_LIMITS[1] + viewableDistance)
+                    self.POSITION_LIMITS[0] - viewableDistance,
+                    self.POSITION_LIMITS[1] + viewableDistance)
             self.domain_ax.set_ylim(-viewableDistance, viewableDistance)
             # self.domain_ax.set_aspect('equal')
 

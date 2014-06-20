@@ -67,7 +67,7 @@ class FiniteTrackCartPole(CartPoleBase):
     #: Default limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
     #: m - Default limits on cart position [Per RL Community CartPole]
-    POSITON_LIMITS = [-2.4, 2.4]
+    POSITION_LIMITS = [-2.4, 2.4]
     #: m/s - Default limits on cart velocity [per RL Community CartPole]
     VELOCITY_LIMITS = [-6.0, 6.0]
 
@@ -96,7 +96,7 @@ class FiniteTrackCartPole(CartPoleBase):
         self.statespace_limits = np.array(
             [self.ANGLE_LIMITS,
              self.ANGULAR_RATE_LIMITS,
-             self.POSITON_LIMITS,
+             self.POSITION_LIMITS,
              self.VELOCITY_LIMITS])
         self.continuous_dims = [
             StateIndex.THETA,
@@ -359,7 +359,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     #: Limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-3.0, 3.0]
     #: m - Limits on cart position
-    POSITON_LIMITS = [-2.4, 2.4]
+    POSITION_LIMITS = [-2.4, 2.4]
     #: m/s - Limits on cart velocity
     VELOCITY_LIMITS = [-3.0, 3.0]
 
@@ -382,7 +382,7 @@ class FiniteCartPoleSwingUpFriction(FiniteCartPoleSwingUp):
     def _getReward(self, a, s=None):
         if s is None:
             s = self.state
-        if not (self.POSITON_LIMITS[0] < s[StateIndex.X] < self.POSITON_LIMITS[1]):
+        if not (self.POSITION_LIMITS[0] < s[StateIndex.X] < self.POSITION_LIMITS[1]):
             return -30
         pen_pos = np.array(
             [s[StateIndex.X] + self.LENGTH * np.sin(s[StateIndex.THETA]),

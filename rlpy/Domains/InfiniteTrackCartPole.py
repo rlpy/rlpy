@@ -75,7 +75,7 @@ class InfTrackCartPole(CartPoleBase):
     #: Default limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
     #: m - Default limits on cart position (this state is ignored by the agent)
-    POSITON_LIMITS = [-np.inf, np.inf]
+    POSITION_LIMITS = [-np.inf, np.inf]
     #: m/s - Default limits on cart velocity (this state is ignored by the agent)
     VELOCITY_LIMITS = [-np.inf, np.inf]
 
