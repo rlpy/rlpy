@@ -16,7 +16,12 @@ class ChainMDP(Domain):
     A simple Chain MDP.
 
     **STATE:** s0 <-> s1 <-> ... <-> sn \n
-    **ACTIONS:** are left [0] and right [1]. \n
+    **ACTIONS:** are left [0] and right [1], deterministic. \n
+    
+    .. note::
+    
+        The actions [left, right] are available in ALL states, but if 
+        left is selected in s0 or right in sn, then s remains unchanged.
 
     The task is to reach sn from s0, after which the episode terminates.
 
