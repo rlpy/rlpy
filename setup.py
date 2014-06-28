@@ -14,7 +14,7 @@ import sys
 # Grab the version string from the documentation.
 sys.path.insert(0, 'doc')
 import conf
-version = conf.version
+version = conf.release
 sys.path.remove('doc')
 
 if sys.platform == 'darwin':
@@ -28,8 +28,25 @@ else:
 
 setup(name="rlpy",
       version=version,
-      description="The Reinforcement Learning Library for Education and Research",
-      url="http://acl.mit.edu/RLPy/",
+      maintainer="Christoph Dann",
+      maintainer_email="cdann@cdann.de",
+      license="BSD 3-clause",
+      description="Value-Function-Based Reinforcement-Learning Library for Education and Research",
+      url="http://acl.mit.edu/rlpy/",
+      classifiers=['Intended Audience :: Science/Research',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved',
+                   'Programming Language :: C++',
+                   'Programming Language :: Python',
+                   'Topic :: Scientific/Engineering',
+                   'Operating System :: Microsoft :: Windows',
+                   'Operating System :: POSIX',
+                   'Operating System :: Unix',
+                   'Operating System :: MacOS',
+                   'Programming Language :: Python :: 2',
+                   'Programming Language :: Python :: 2.7',
+                  ],
+      long_description=open('README.rst').read(),
       packages=find_packages(),
       package_data={'rlpy': [
           'Domains/GridWorldMaps/*.txt',

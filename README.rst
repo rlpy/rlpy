@@ -17,10 +17,10 @@ Important Links
 
 - Official source code repository: http://bitbucket.org/rlpy/rlpy
 - Github Mirror: http://github.com/rlpy/rlpy
-- Documentation and Homepage: http://acl.mit.edu/RLPy
+- Documentation and Homepage: http://acl.mit.edu/rlpy
 - Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
 
 Install
 =======
 
-Installation instructions can be found at http://acl.mit.edu/RLPy/install.html
+Installation instructions can be found at http://acl.mit.edu/rlpy/install.html
