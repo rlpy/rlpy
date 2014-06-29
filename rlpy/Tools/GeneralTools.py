@@ -95,8 +95,8 @@ from hashlib import sha1
 import datetime
 import csv
 from string import lower
-#from Sets import ImmutableSet
-#from heapq import *
+# from Sets import ImmutableSet
+# from heapq import *
 import multiprocessing
 from os import path
 from decimal import Decimal
@@ -166,14 +166,14 @@ def cartesian(arrays, out=None):
 
 def count_nonzero(arr):
     """
-    Custom ``nnz()`` method, moves recursively through any sublists within 
+    Custom ``nnz()`` method, moves recursively through any sublists within
     *arr*, such that only individual elements are examined. \n
     Some versions of numpy's count_nonzero only strictly compare each element;
     e.g. ``numpy.count_nonzero([[1,2,3,4,5], [6,7,8,9]])`` returns 2, while
     ``Tools.count_nonzero([[1,2,3,4,5], [6,7,8,9]])`` returns 9.
 
     """
-    
+
     nnz = 0
 
     # Is this an instance of a matrix? Use inbuilt nonzero() method and count # of indices returned.
@@ -212,10 +212,10 @@ def randint(low, high, m=1, n=1):
     :param high: Max possible random int (INCLUSIVE)
     :param m: number of rows in output
     :param n: number of cols in output
-    
+
     Generates an ``m x n`` whose elements are integers selected uniform random
     in the range [low, high].
-    
+
     """
     return np.random.randint(low, high + 1, size=(m, n))
 
@@ -225,9 +225,9 @@ def randSet(x):
     :param x: a list, array, or other iterable datatype
     Accepts a 1-D vector (list, array, etc) and returns an element from the list
     selected uniform random.
-    
+
     """
-    #i = random.random_integers(0,size(x)-1)
+    # i = random.random_integers(0,size(x)-1)
     i = np.random.randint(0, len(x) - 1)
     return x[i]
 
@@ -236,17 +236,17 @@ def closestDiscretization(s, num_bins, limits):
     """
     :param s: a state.  (possibly multidimensional) ndarray, with dimension d =
         dimensionality of state space.
-    :param num_bins: Number of discrete elements in 
-    :param limits: 2 x d ndarray, where row[0] is a row vector of the lower 
-        limit of each discrete dimension, and row[1] are corresponding upper 
+    :param num_bins: Number of discrete elements in
+    :param limits: 2 x d ndarray, where row[0] is a row vector of the lower
+        limit of each discrete dimension, and row[1] are corresponding upper
         limits.
-        
-    Returns the closest point to the state ``s`` based on the discretization 
+
+    Returns the closest point to the state ``s`` based on the discretization
     defined by the number of bins and limits. \n
     ( equivalent to state2bin(x) / (num_bins-1) * width + limits[0] )
-    
+
     """
-    #width = limits[1]-limits[0]
+    # width = limits[1]-limits[0]
     # return round((s-limits[0])*num_bins/(width*1.)) / num_bins * width + limits[0]
     return bin2state(state2bin(s, num_bins, limits), num_bins, limits)
 
@@ -255,18 +255,18 @@ def bin2state(bin, num_bins, limits):
     """
     :param bin: index in the discretization
     :param num_bins: the total number of bins in the discretization
-    :param limits: 2 x d ndarray, where row[0] is a row vector of the lower 
-        limit of each discrete dimension, and row[1] are corresponding upper 
+    :param limits: 2 x d ndarray, where row[0] is a row vector of the lower
+        limit of each discrete dimension, and row[1] are corresponding upper
         limits.
-        
+
     .. note::
-    
+
         This is the inverse of state2bin function.
-        
-    Given an index ``bin``, the number of the bins ``num_bins``, and the limits 
-    on a single state dimension, this function returns the corresponding value 
+
+    Given an index ``bin``, the number of the bins ``num_bins``, and the limits
+    on a single state dimension, this function returns the corresponding value
     in the middle of the bin (ie, the average of the discretizations around it)
-    
+
     """
     bin_width = (limits[1] - limits[0]) / (num_bins * 1.)
     return bin * bin_width + bin_width / 2.0 + limits[0]
@@ -277,10 +277,10 @@ def state2bin(s, num_bins, limits):
     :param s: a state.  (possibly multidimensional) ndarray, with dimension d =
         dimensionality of state space.
     :param num_bins: the total number of bins in the discretization
-    :param limits: 2 x d ndarray, where row[0] is a row vector of the lower 
-        limit of each discrete dimension, and row[1] are corresponding upper 
+    :param limits: 2 x d ndarray, where row[0] is a row vector of the lower
+        limit of each discrete dimension, and row[1] are corresponding upper
         limits.
-    Returns the bin number (index) corresponding to state s given a 
+    Returns the bin number (index) corresponding to state s given a
     discretization num_bins between each column of limits[0] and limits[1].
     The return value has same dimensionality as ``s``. \n
     Note that ``s`` may be continuous. \n
@@ -289,7 +289,7 @@ def state2bin(s, num_bins, limits):
     s = 0, limits = [-1,5], num_bins = 6 => 1 \n
     s = .001, limits = [-1,5], num_bins = 6 => 1 \n
     s = .4, limits = [-.5,.5], num_bins = 3 => 2 \n
-    
+
     """
 
     if s == limits[1]:
@@ -315,7 +315,7 @@ def hhmmss(t):
     """
     :param t: time elapsed (in seconds)
     Returns the string representation of ``t`` in format: ``hhmmss``
-    
+
     """
     return str(datetime.timedelta(seconds=round(t)))
 
@@ -328,9 +328,9 @@ def className(obj):
 def createColorMaps():
     """
     Create and register the colormaps to be used in domain visualizations.
-    
+
     """
-    
+
     # Make Grid World ColorMap
     mycmap = colors.ListedColormap(
         ['w', '.75', 'b', 'g', 'r', 'k'], 'GridWorld')
@@ -408,7 +408,7 @@ def showcolors(cmap):
     """
     :param cmap: A colormap.
     Debugging tool: displays all possible values of a colormap.
-    
+
     """
     plt.clf()
     x = np.linspace(0, 1, 21)
@@ -445,14 +445,14 @@ def schlieren_colormap(color=[0, 0, 0]):
 def make_amrcolors(nlevels=4):
     """
     :param nlevels: maximum number of AMR levels expected.
-    
+
     Make lists of colors useful for distinguishing different grids when
     plotting AMR results.
-    
+
     Returns the tuple (linecolors, bgcolors):\n
         linecolors = list of nlevels colors for grid lines, contour lines. \n
         bgcolors = list of nlevels pale colors for grid background.
-    
+
     """
 
     # For 4 or less levels:
@@ -477,13 +477,13 @@ def make_amrcolors(nlevels=4):
 def linearMap(x, a, b, A=0, B=1):
     """
     .. warning::
-        
+
         ``x`` *MUST* be a scalar for truth values to make sense.
-        
-    This function takes scalar ``x`` in range [a,b] and linearly maps it to 
+
+    This function takes scalar ``x`` in range [a,b] and linearly maps it to
     the range [A,B].
     Note that ``x`` is truncated to lie in possible boundaries.
-    
+
     """
     if a == b:
         res = B
@@ -495,16 +495,19 @@ def linearMap(x, a, b, A=0, B=1):
         res = B
     return res
 
+def l_infinity(x):
+    ''' Returns the L infinity norm of a vector '''
+    return np.linalg.norm(x, np.inf)
 
 def generalDot(x, y):
     """
     Takes the inner product of the inputs x and y.
     Defined because of inconsistent or confusing definition of the "dot"
     operator for numpy ndarray, matrix, and sparse.matrix.
-    
+
     """
     if sp.issparse(x):
-        #active_indices = x.nonzero()[0].flatten()
+        # active_indices = x.nonzero()[0].flatten()
         return x.multiply(y).sum()
     else:
         return np.dot(x, y)
@@ -528,11 +531,11 @@ def findElemArray1D(x, arr):
     """
     :param x: a scalar
     :param arr: a 1-dimensional numpy ndarray
-    
+
     Returns an array of indices i in arr where x == arr[i]
     or [] if x not in arr.
-    
-    
+
+
     """
     res = np.where(arr == x)
     if len(res[0]):
@@ -545,22 +548,22 @@ def findElemArray2D(x, arr2d):
     """
     :param x: a scalar
     :param arr2d: a 2-dimensional numpy ndarray or matrix
-    
-    Returns a tuple of arrays (rVec, cVec), where the corresponding elements in 
+
+    Returns a tuple of arrays (rVec, cVec), where the corresponding elements in
     each are the rows and cols where arr2d[r,c] == x.
     Returns [] if x not in arr2d. \n
-    
+
     Example: \n
     arr2d = np.array([[1,2],[3,1]]),  x = 1
     findElemArray2D(x, arr2d) --> ([0, 1],  [0, 1]).
     i.e., arr2d[0][0] and arr2d[1][1]  both == x.
-    
+
     .. note::
-    
+
         The type of each tuple member is the same as type(arr2d)
-    
+
     """
-    
+
     res = np.where(A == x)
     if len(res[0]):
         return res[0].flatten(), res[1].flatten()
@@ -573,12 +576,12 @@ def findRow(rowVec, X):
     """
     :param rowVec: a 1-dimensional numpy ndarray
     :param X: a 2-d numpy ndarray
-    
+
     Return the indices of the rows of X that are equal to rowVec. \n
     NOTE: rowVec and X must have the same number of columns
-    
+
     """
-    
+
     # return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
     # return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
     ind = np.nonzero(np.logical_and.reduce([X[:, i] == rowVec[i] for i in xrange(len(rowVec))]))
@@ -588,17 +591,17 @@ def findRow(rowVec, X):
 def perms(X):
     """
     :param X: an iterable type (ndarray, matrix, list).
-        If a 1-D array, each element e is treated as the number of discrete 
+        If a 1-D array, each element e is treated as the number of discrete
         elements to use for permutations, [0, e).
-        If a >1-D array, take permutations between the elements themselves 
+        If a >1-D array, take permutations between the elements themselves
         between dimensions.
-    
+
     Returns all permutations *in numpy array format*.  For example: \n
     X = [2 3] \n
     res = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2] \n
     X = [[1,3],[2,3]] \n
     res = [[1,2],[1,3],[3,2],[3,3] \n
-    
+
     """
     allPerms, _ = perms_r(X, perm_sample=np.array([]), allPerms=None, ind=0)
 
@@ -636,21 +639,21 @@ def vec2id2(x, limits):
     """
     :param x: A discrete (multidimensional) quantity (often the state vector)
     :param limits: The limits of the discrete quantity (often statespace_limits)
-    
-    Returns a unique id by determining the number of possible values of ``x`` 
-    that lie within ``limits``, and then seeing where this particular value of 
+
+    Returns a unique id by determining the number of possible values of ``x``
+    that lie within ``limits``, and then seeing where this particular value of
     ``x` falls in that spectrum.
-    
+
     .. warning::
-    
-        This function assumes that (elements of) ``x`` takes integer values, 
+
+        This function assumes that (elements of) ``x`` takes integer values,
         and that ``limits`` are the lower and upper bounds on ``x``.
-    
+
     .. note::
-    
-        This implementation is half as fast 
+
+        This implementation is half as fast
         as :py:meth:`~rlpy.Tools.GeneralTools.vec2id`.
-    
+
     """
     if isinstance(x, int):
         return x
@@ -662,18 +665,18 @@ def vec2id(x, limits):
     """
     :param x: A discrete (multidimensional) quantity (often the state vector)
     :param limits: The limits of the discrete quantity (often statespace_limits)
-    
-    Returns a unique id by determining the number of possible values of ``x`` 
-    that lie within ``limits``, and then seeing where this particular value of 
+
+    Returns a unique id by determining the number of possible values of ``x``
+    that lie within ``limits``, and then seeing where this particular value of
     ``x` falls in that spectrum.
-    
-    .. note:: 
-    
+
+    .. note::
+
         See :py:meth:`~rlpy.Tools.GeneralTools.id2vec`, the inverse function.
-    
+
     .. warning::
-    
-        This function assumes that (elements of) ``x`` takes integer values, 
+
+        This function assumes that (elements of) ``x`` takes integer values,
         and that ``limits`` are the lower and upper bounds on ``x``.
     """
     if isinstance(x, int):
@@ -691,15 +694,15 @@ def id2vec(_id, limits):
     """
     :param _id: a unique id, presumably generated using ``vec2id()``.
     :param limits: The limits of the discrete quantity (often statespace_limits)
-    
-    Returns the vector corresponding to the unique ``_id`` by determining the 
-    number of possible values of ``x`` that lie within ``limits``, and then 
+
+    Returns the vector corresponding to the unique ``_id`` by determining the
+    number of possible values of ``x`` that lie within ``limits``, and then
     seeing which particular vector ``x`` lies at the index ``_id``.
-    
-     .. note:: 
-    
+
+     .. note::
+
         See :py:meth:`~rlpy.Tools.GeneralTools.vec2id`, the inverse function.
-    
+
     """
     prods = np.cumprod(limits)
     s = [0] * len(limits)
@@ -716,11 +719,11 @@ def bound_vec(X, limits):
     :param X: any (multidimensional) iterable type, eg ndarray or list, len = n.
     :param limits: n x 2 iterable type, where limits[i,0] is minimum possible
         value for dimension i, and limits[i,1] is maximum possible.
-        
+
     Returns ``X ``with any dimensions that lie outside the bounds of ``limits``
     appropriately truncated. \n
     i.e limits[i,0] <= output[i] <= limits[i,1]
-    
+
     """
     MIN = limits[:, 0]
     MAX = limits[:, 1]
@@ -734,10 +737,10 @@ def bound_vec(X, limits):
 def bound(x, m, M=None):
     """
     :param x: scalar
-    
-    Either have m as scalar, so bound(x,m,M) which returns m <= x <= M *OR* 
+
+    Either have m as scalar, so bound(x,m,M) which returns m <= x <= M *OR*
     have m as length 2 vector, bound(x,m, <IGNORED>) returns m[0] <= x <= m[1].
-    
+
     """
     if M is None:
         M = m[1]
@@ -751,11 +754,11 @@ def wrap(x, m, M):
     :param x: a scalar
     :param m: minimum possible value in range
     :param M: maximum possible value in range
-    
-    Wraps ``x`` so m <= x <= M; but unlike ``bound()`` which 
+
+    Wraps ``x`` so m <= x <= M; but unlike ``bound()`` which
     truncates, ``wrap()`` wraps x around the coordinate system defined by m,M.\n
     For example, m = -180, M = 180 (degrees), x = 360 --> returns 0.
-    
+
     """
     diff = M - m
     while x > M:
@@ -768,9 +771,9 @@ def wrap(x, m, M):
 def powerset(iterable, ascending=1):
     """
     :param iterable: an iterable type (list, ndarray)
-    :param ascending: (boolean) if true, return powerset in ascending order, 
+    :param ascending: (boolean) if true, return powerset in ascending order,
         else return in descending order.
-    
+
     """
     s = list(iterable)
     if ascending:
@@ -794,23 +797,23 @@ def printClass(obj):
 
 def addNewElementForAllActions(weight_vec, actions_num, newElem=None):
     """
-    :param weight_vec: The weight vector (often feature weights from 
-        representation) used for s-a pairs 
+    :param weight_vec: The weight vector (often feature weights from
+        representation) used for s-a pairs
         (i.e, len(weight_vec) = actions_num * numFeats)
     :param actions_num: The total number of possible actions
-    :param newElem: (Optional) The weights associated with each action of the 
-        feature to  insert (often newElem = const * np.ones(actions_num, 1)). 
+    :param newElem: (Optional) The weights associated with each action of the
+        feature to  insert (often newElem = const * np.ones(actions_num, 1)).
         If not specified or = None, assume 0 weight on new features.
-    
-    Adds new elements into ``weight_vec`` in the correct location based on 
+
+    Adds new elements into ``weight_vec`` in the correct location based on
     the number of possible actions.
     [[Since the new element (usually feature) is added for all actions,
-    weight_vec should expand by the number of possible actions as for each 
+    weight_vec should expand by the number of possible actions as for each
     action the feature vector phi(s) is expand by 1 element.]]\n
     Example: \n
     x = [1,2,3,4], a = 2, newElem = None => [1,2,0,3,4,0] \n
     x = [1,2,3], a = 3, newElem = [1,1,1] => [1,1,2,1,3,1] \n
-    
+
     """
     if newElem is None:
         newElem = np.zeros((actions_num, 1))
@@ -864,7 +867,7 @@ def rank(A, eps=1e-12):
     """
     :param A: numpy arrayLike (ndarray, matrix).
     :param eps: threshold above which a singular value is considered nonzero.
-    
+
     Returns the rank of matrix ``A``, ie number of eigenvalues > ``eps``.
     """
     u, s, v = linalg.svd(A)
@@ -874,13 +877,13 @@ def rank(A, eps=1e-12):
 def fromAtoB(x1, y1, x2, y2, color='k', connectionstyle="arc3,rad=-0.4",
              shrinkA=10, shrinkB=10, arrowstyle="fancy", ax=None):
     """
-    Draws an arrow from point A=(x1,y1) to point B=(x2,y2) on the (optional) 
+    Draws an arrow from point A=(x1,y1) to point B=(x2,y2) on the (optional)
     axis ``ax``.
-    
-    .. note:: 
-    
+
+    .. note::
+
         See matplotlib documentation.
-    
+
     """
     if ax is None:
         return pl.annotate("",
@@ -913,9 +916,9 @@ def drawHist(data, bins=50, fig=101):
     :param data: Data to use in histogram.
     :param bins: number of bins to use in histogram
     :param fig: The figure number for the plot
-    
+
     Draws a histogram in its own figure using specified parameters.
-    
+
     """
     hist, bins = np.histogram(data, bins=bins)
     width = 0.7 * (bins[1] - bins[0])
@@ -927,10 +930,10 @@ def drawHist(data, bins=50, fig=101):
 def nonZeroIndex(arr):
     """
     :param arr: a numpy 1-D array.
-    
+
     Returns the list of indices of nonzero elements in ``arr``. \n
     Example: [0,0,0,1] => [4]
-    
+
     """
     return arr.nonzero()[0]
 
@@ -940,21 +943,21 @@ def sp_matrix(m, n=1, dtype='float'):
     :param m: number of rows in matrix
     :param n: number of cols in matrix
     :param dtype: datatype of sparse matrix
-    
+
     Returns an empty sparse matrix with m rows and n columns, with the dtype.
-    
+
     """
     return sp.csr_matrix((m, n), dtype=dtype)
 
 
 def sp_dot_array(sp_m, arr):
     """
-    :param sp_m: a sparse 1-D array/matrix (created 
+    :param sp_m: a sparse 1-D array/matrix (created
         with :py:meth:`~rlpy.Tools.GeneralTools.sp_matrix`)
     :param arr: a (possibly dense) 1-D iterable type (ndarray, list, matrix)
-    
+
     Returns dot product of 1-by-p matrix ``sp_m`` and length-p array arr.
-    
+
     """
     assert sp_m.shape[1] == len(arr)
     ind = sp_m.nonzero()[1]
@@ -971,12 +974,12 @@ def sp_dot_array(sp_m, arr):
 
 def sp_dot_sp(sp_1, sp_2):
     """
-    :param sp_1: a sparse 1-D array/matrix (created 
+    :param sp_1: a sparse 1-D array/matrix (created
         with :py:meth:`~rlpy.Tools.GeneralTools.sp_matrix`)
     :param sp_2: another sparse 1-D array/matrix, len(sp_2) = len(sp_1).
-    
+
     Returns dot product of 1-by-p matrices ``sp_1`` and ``sp_2``.
-    
+
     """
     assert sp_1.shape[
         0] == sp_2.shape[
@@ -1008,12 +1011,12 @@ def sp_dot_sp(sp_1, sp_2):
 
 def sp_add2_array(sp, arr):
     """
-    :param sp: sparse matrix p-by-1 (created 
+    :param sp: sparse matrix p-by-1 (created
         with :py:meth:`~rlpy.Tools.GeneralTools.sp_matrix`)
     :param arr: a 1-D iterable type (ndarray, list, matrix) of length p.
-    
+
     Returns ret = arr + sp (with type(ret) = type(arr))
-    
+
     """
     ind = sp.nonzero()[0]
     for i in ind:
@@ -1024,7 +1027,7 @@ def sp_add2_array(sp, arr):
 def checkNCreateDirectory(fullfilename):
     """
     :param fullfilename: root path to desired file/folder.
-    
+
     See if all directories in ``fullfilename`` exist; if not create as required.
 
     """
@@ -1043,7 +1046,7 @@ def pretty(X, format='%0.3f'):
     """
     Returns a formatted string for a numpy array ``X``. \n
     Example: [1,2,3], %0.3f => 1.000    2.000    3.000
-    
+
     """
     format = format + '\t'
     return ''.join(format % x for x in X)
@@ -1054,11 +1057,11 @@ def regularize(A):
     Adds REGULARIZATION*I To A, where I is identity matrix and REGULARIZATION
     is defined in GeneralTools.py.\n
     This is often done before calling the linearSolver.
-    
-    .. note:: 
-    
+
+    .. note::
+
         ``A`` must be a square matrix.
-    
+
     """
     x, y = A.shape
     assert x == y  # Square matrix
@@ -1083,9 +1086,9 @@ def incrementalAverageUpdate(avg, sample, sample_number):
     :param avg: the old average
     :param sample: the new sample to update the average with
     :param sample_number: the current sample number (#samples observed so far+1)
-    
+
     Updates an average incrementally.
-    
+
     """
     return avg + (sample - avg) / (sample_number * 1.)
 
@@ -1094,11 +1097,11 @@ def padZeros(X, L):
     """
     :param X: a 1-D numpy array
     :param L: the desired length of ``X`` (integer)
-    
-    
-    if ``len(X) < L`` pad zeros to X so it will have length ``L``, otherwise 
+
+
+    if ``len(X) < L`` pad zeros to X so it will have length ``L``, otherwise
     do nothing and return the original ``X``.
-    
+
     """
     if len(X) < L:
         new_X = np.zeros(L)
@@ -1222,11 +1225,11 @@ def rk4(derivs, y0, t, *args, **kwargs):
 #     """
 #     Searches for the element ``x`` in the list (python built-in type) ``A``
 #     Returns the index of the first occurrence of ``x``.
-#     
+#
 #     .. warning::
-#         
+#
 #         ``A`` *MUST* be a list (python built-in type)
-#     
+#
 #     """
 #     if type(lis) is not list:
 #         print 'ERROR: Tools.findElem() only accepts python lists.
@@ -1240,9 +1243,9 @@ def rk4(derivs, y0, t, *args, **kwargs):
 # def matrix_mult(A, B):
 #     """
 #     Multiples the inputs A and B using matrix multiplication.
-#     Defined because of inconsistent or confusing definition of the "*" 
+#     Defined because of inconsistent or confusing definition of the "*"
 #     operator for numpy ndarray, matrix, and sparse.matrix.
-#     
+#
 #     """
 #     if len(A.shape) == 1:
 #         A = A.reshape(1, -1)
@@ -1258,10 +1261,10 @@ def rk4(derivs, y0, t, *args, **kwargs):
 
 # Setup the latdex path
 # if sys.platform == 'darwin':
-    #os.environ['PATH'] += ':' + TEXPATH
+    # os.environ['PATH'] += ':' + TEXPATH
 # if sys.platform == 'win32':
 #    print os.environ['PATH']
-    #os.environ['PATH'] += ';' + TEXPATH
+    # os.environ['PATH'] += ';' + TEXPATH
 
 # def isLatexConfigured():
 #    return False

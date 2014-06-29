@@ -38,10 +38,10 @@ class MDPSolver(object):
 
     """
 
-    __metaclass__=ABCMeta
+    __metaclass__ = ABCMeta
 
-    representation = None          # Link to the representation object
-    domain = None          # Link to the domain object
+    representation = None  # Link to the representation object
+    domain = None  # Link to the domain object
     # A simple objects that record the prints in a file
     logger = None
     # Amount of time in seconds provided for the solver. After this it returns
@@ -56,13 +56,13 @@ class MDPSolver(object):
     # Threshold to determine the convergence of the planner
     convergence_threshold = None
     # Number of samples to be used to generate estimated bellman backup if the
-    # domain does not provide explicit probablities though expectedStep
+    # domain does not provide explicit probabilities though expectedStep
     # function.
     ns_samples = None
     # Number of bellman backups before reporting the performance. (Not all
     # planners may use this)
     log_interval = None
-    show = None          # Show the learning if possible?
+    show = None  # Show the learning if possible?
 
     def __init__(
             self, job_id, representation, domain, planning_time=np.inf,

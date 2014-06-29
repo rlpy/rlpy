@@ -28,7 +28,7 @@ def make_experiment(exp_id=1, path="./Results/Temp", show=False):
     # Representation
     representation = Tabular(domain, discretization=20)
 
-    # Agent
+    # MDP Solver
     agent = PolicyIteration(
         exp_id,
         representation,

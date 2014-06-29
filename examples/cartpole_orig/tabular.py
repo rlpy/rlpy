@@ -22,6 +22,7 @@ def make_experiment(
     max_steps = 30000
     num_policy_checks = 20
     checks_per_policy = 1
+    log_interval = 100
 
     domain = FiniteCartPoleBalanceOriginal(good_reward=0.)
     representation = IncrementalTabular(
@@ -39,6 +40,6 @@ if __name__ == '__main__':
     from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
-    experiment.run(visualize_learning=True)
+    experiment.run(visualize_learning=False)
     experiment.plot()
     # experiment.save()
