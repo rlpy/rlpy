@@ -41,4 +41,4 @@ def make_experiment(exp_id=1, path="./Results/Temp", show=False):
 if __name__ == '__main__':
     path = "./Results/Temp/{domain}/{agent}/{representation}/"
     experiment = make_experiment(1, path=path)
-    experiment.run(show=True)
+    experiment.run()

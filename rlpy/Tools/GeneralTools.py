@@ -495,9 +495,9 @@ def linearMap(x, a, b, A=0, B=1):
         res = B
     return res
 
-def l_infinity(x):
+def l_norm(x, norm = 2):
     ''' Returns the L infinity norm of a vector '''
-    return np.linalg.norm(x, np.inf)
+    return np.linalg.norm(x, norm)
 
 def generalDot(x, y):
     """

@@ -3,8 +3,9 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import logging
-from rlpy.Tools import className, hasFunction, printClass
-from rlpy.Tools import vec2id, checkNCreateDirectory, deltaT
+from copy import deepcopy
+from rlpy.Tools import className, deltaT, hhmmss, clock, l_norm, vec2id, checkNCreateDirectory
+
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                "William Dabney", "Jonathan P. How"]
@@ -154,3 +155,12 @@ class MDPSolver(object):
     def hasTime(self):
         """Return a boolean stating if there is time left for planning."""
         return deltaT(self.start_time) < self.planning_time
+
+    def IsTabularRepresentation(self):
+        '''
+        Check to see if the representation is Tabular as Policy Iteration and Value Iteration only work with
+        Tabular representation
+        '''
+        return className(self.representation) == 'Tabular'
+
+        return True

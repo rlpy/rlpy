@@ -4,7 +4,7 @@ state space. Once the errors are bounded, the policy is changed.
 """
 
 from .MDPSolver import MDPSolver
-from rlpy.Tools import className, deltaT, hhmmss, clock, l_infinity
+from rlpy.Tools import className, deltaT, hhmmss, clock, l_norm
 from copy import deepcopy
 from rlpy.Policies import eGreedy
 import numpy as np
@@ -44,7 +44,7 @@ class PolicyIteration(MDPSolver):
     def __init__(
             self, job_id, representation, domain, planning_time=np.inf, convergence_threshold=.005,
             ns_samples=100, project_path='.', log_interval=5000, show=False, max_PE_iterations=10):
-        super(PolicyIteration,self).__init__(job_id,
+        super(PolicyIteration, self).__init__(job_id,
                                              representation,
                                              domain,
                                              planning_time,
@@ -58,47 +58,47 @@ class PolicyIteration(MDPSolver):
         self.logger.info('Max PE Iterations:\t%d' % self.max_PE_iterations)
 
     def policyEvaluation(self, policy):
-        
-        ''' 
+
+        '''
         Evaluate a given policy: this is done by applying the Bellman backup over all states until the change is less than
-        a given threshold. 
-        
+        a given threshold.
+
         Returns: convergence status as a boolean
         '''
         converged = False
         policy_evaluation_iteration = 0
-        while ( not converged and 
-                self.hasTime() and 
+        while (not converged and
+                self.hasTime() and
                 policy_evaluation_iteration < self.max_PE_iterations
                 ):
             policy_evaluation_iteration += 1
-            
+
             # Sweep The State Space
             for i in xrange(0, self.representation.agg_states_num):
-                
+
                 # Check for solver time
                 if not self.hasTime(): break
-                
-                #Map an state ID to state
+
+                # Map an state ID to state
                 s = self.representation.stateID2state(i)
-                
+
                 # Skip terminal states and states with no possible action
                 possible_actions = self.domain.possibleActions(s=s)
-                if (self.domain.isTerminal(s) or 
+                if (self.domain.isTerminal(s) or
                     len(possible_actions) == 0):
                     continue
-                    
-                #Apply Bellman Backup
+
+                # Apply Bellman Backup
                 self.BellmanBackup(
                     s,
-                    policy.pi(s,False,possible_actions),
+                    policy.pi(s, False, possible_actions),
                     self.ns_samples,
                     policy)
-                
-                #Update number of backups
+
+                # Update number of backups
                 self.bellmanUpdates += 1
 
-                #Check for the performance 
+                # Check for the performance
                 if self.bellmanUpdates % self.log_interval == 0:
                     performance_return = self.performanceRun()[0]
                     self.logger.info(
@@ -106,24 +106,24 @@ class PolicyIteration(MDPSolver):
                         (hhmmss(deltaT(self.start_time)), self.bellmanUpdates, performance_return))
 
             # check for convergence: L_infinity norm of the difference between the to the weight vector of representation
-            weight_vec_change = l_infinity(policy.representation.weight_vec - self.representation.weight_vec)
+            weight_vec_change = l_norm(policy.representation.weight_vec - self.representation.weight_vec, np.inf)
             converged = weight_vec_change < self.convergence_threshold
-            
+
             # Log Status
             self.logger.info(
                 'PE #%d [%s]: BellmanUpdates=%d, ||delta-weight_vec||=%0.4f' %
                 (policy_evaluation_iteration, hhmmss(deltaT(self.start_time)), self.bellmanUpdates, weight_vec_change))
-           
-            # Show Plots 
+
+            # Show Plots
             if self.show:
                 self.domain.show(
-                                 policy.pi(s,False,possible_actions),
+                                 policy.pi(s, False, possible_actions),
                                  self.representation,
                                  s=s)
         return converged
-    
+
     def policyImprovement(self, policy):
-        ''' Given a policy improve it by taking the greedy action in each state based on the value function 
+        ''' Given a policy improve it by taking the greedy action in each state based on the value function
             Returns the new policy
         '''
         policyChanges = 0
@@ -164,16 +164,6 @@ class PolicyIteration(MDPSolver):
                            self.policy_improvement_iteration  # index = 7
                             ])
         return policy, policyChanges
-    
-    def compatibileRepresentation(self):
-        ''' 
-        Check to see if the representation is Tabular as Policy Iteration only works with 
-        Tabular representation
-        '''
-        if className(self.representation) != 'Tabular':
-            self.logger.error("Value Iteration works only with the tabular representation.")
-            return False
-        return True
 
     def solve(self):
         """Solve the domain MDP."""
@@ -183,26 +173,27 @@ class PolicyIteration(MDPSolver):
         self.start_time = clock()
 
         # Check for Tabular Representation
-        if not self.compatibileRepresentation():
+        if not self.IsTabularRepresentation():
+            self.logger.error("Policy Iteration works only with a tabular representation.")
             return 0
-        
+
         # Initialize the policy
         policy = eGreedy(
             deepcopy(self.representation),
             epsilon=0,
             forcedDeterministicAmongBestActions=True)  # Copy the representation so that the weight change during the evaluation does not change the policy
-        
+
         # Setup the number of policy changes to 1 so the while loop starts
-        policyChanges = 1 
+        policyChanges = True
 
         while policyChanges and deltaT(self.start_time) < self.planning_time:
 
-            #Evaluate the policy
+            # Evaluate the policy
             converged = self.policyEvaluation(policy)
 
-            #Improve the policy
+            # Improve the policy
             self.policy_improvement_iteration += 1
             policy, policyChanges = self.policyImprovement(policy)
-            
+
         if converged: self.logger.log('Converged!')
         super(PolicyIteration, self).solve()
