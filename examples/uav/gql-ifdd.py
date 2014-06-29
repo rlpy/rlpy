@@ -20,13 +20,16 @@ def make_experiment(
         lambda_=.8927,
         boyan_N0=2804.,
         initial_learn_rate=.2706):
-    max_steps = 1000000
-    num_policy_checks = 30
-    checks_per_policy = 10
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 1000000
+    opt["num_policy_checks"] = 30
+    opt["checks_per_policy"] = 10
     sparsify = 1
     ifddeps = 1e-7
     beta_coef = 1e-6
     domain = PST(NUM_UAV=4, motionNoise=0)
+    opt["domain"] = domain
     initial_rep = IndependentDiscretization(domain)
     representation = iFDD(domain, discover_threshold, initial_rep,
                           sparsify=sparsify,
@@ -34,12 +37,12 @@ def make_experiment(
                           useCache=True,
                           iFDDPlus=1 - ifddeps)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = Greedy_GQ(policy, representation,
+    opt["agent"] = Greedy_GQ(policy, representation,
                       discount_factor=domain.discount_factor,
                       BetaCoef=beta_coef,
                       lambda_=lambda_, initial_learn_rate=initial_learn_rate,
                       learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

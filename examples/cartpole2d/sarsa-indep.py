@@ -23,23 +23,25 @@ def make_experiment(
         boyan_N0=116.7025,
         initial_learn_rate=0.01402,
         discretization=6.):
-    max_steps = 50000
-    num_policy_checks = 20
-    checks_per_policy = 10
-    sparsify = True
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 50000
+    opt["num_policy_checks"] = 20
+    opt["checks_per_policy"] = 10
 
     domain = InfCartPoleBalance()
+    opt["domain"] = domain
 
     representation = IndependentDiscretization(
         domain,
         discretization=discretization)
     policy = eGreedy(representation, epsilon=0.1)
-    agent = SARSA(policy, representation,
+    opt["agent"] = SARSA(policy, representation,
                   discount_factor=domain.discount_factor,
                   lambda_=lambda_,
                   initial_learn_rate=initial_learn_rate,
                   learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

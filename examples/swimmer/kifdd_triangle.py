@@ -28,14 +28,17 @@ def make_experiment(
         lambda_=0.5879,
         initial_learn_rate=0.1,
         kernel_resolution=10.7920):
-    max_steps = 1000000
-    num_policy_checks = 10
-    checks_per_policy = 1
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 1000000
+    opt["num_policy_checks"] = 10
+    opt["checks_per_policy"] = 1
     active_threshold = 0.05
     max_base_feat_sim = 0.5
     sparsify = 10
 
     domain = Swimmer()
+    opt["domain"] = domain
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
     representation = KernelizediFDD(domain, sparsify=sparsify,
@@ -51,11 +54,11 @@ def make_experiment(
     stat_bins_per_state_dim = 20
     # agent           = SARSA(representation,policy,domain,initial_learn_rate=initial_learn_rate,
     # lambda_=.0, learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    agent = SARSA(
+    opt["agent"] = SARSA(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

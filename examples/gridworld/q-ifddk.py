@@ -21,8 +21,10 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     """
 
     # Experiment variables
-    max_steps = 100000
-    num_policy_checks = 10
+    opt = {}
+    opt["exp_id"] = exp_id
+    opt["max_steps"] = 100000
+    opt["num_policy_checks"] = 10
 
     # Logging
 
@@ -30,6 +32,7 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     # MAZE                = '/Domains/GridWorldMaps/1x3.txt'
     maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3)
+    opt["domain"] = domain
 
     # Representation
     discover_threshold = 1.
@@ -42,18 +45,17 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
                           sparsify=True,
                           useCache=True, lazy=True,
                           lambda_=lambda_)
-    policy = eGreedy(representation, epsilon=0.1)
 
     # Policy
     policy = eGreedy(representation, epsilon=0.1)
 
     # Agent
-    agent = Q_Learning(
+    opt["agent"] = Q_Learning(
         policy, representation, discount_factor=domain.discount_factor,
         lambda_=lambda_, initial_learn_rate=initial_learn_rate,
         learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
 
-    experiment = Experiment(**locals())
+    experiment = Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':
