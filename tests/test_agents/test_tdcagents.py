@@ -3,7 +3,7 @@ import numpy as np
 import logging
 from rlpy.Policies import eGreedy
 from rlpy.Agents import SARSA, Q_Learning
-
+from rlpy.Agents import Greedy_GQ
 
 class MockRepresentation(Representation):
     def __init__(self):
@@ -76,7 +76,7 @@ def test_sarsalambda_valfun_chain():
 
 def test_qlearn_valfun_chain():
     """
-        Check if SARSA computes the value function of a simple Markov chain correctly.
+        Check if Q-Learning computes the value function of a simple Markov chain correctly.
         This only tests value function estimation, only one action possible
     """
     rep = MockRepresentation()
@@ -92,12 +92,29 @@ def test_qlearn_valfun_chain():
 
 def test_qlambda_valfun_chain():
     """
-        Check if SARSA(lambda) computes the value function of a simple Markov chain correctly.
+        Check if Q(lambda) computes the value function of a simple Markov chain correctly.
         This only tests value function estimation, only one action possible
     """
     rep = MockRepresentation()
     pol = eGreedy(rep)
     agent = Q_Learning(pol, rep, 0.9, lambda_=0.5)
+    for i in xrange(1000):
+        if i % 4 == 3:
+            agent.episodeTerminated()
+            continue
+        agent.learn(np.array([i % 4]), [0], 0, 1., np.array([(i + 1) % 4]), [0], 0, (i + 2) % 4 == 0)
+    V_true = np.array([2.71, 1.9, 1, 0])
+    np.testing.assert_allclose(rep.weight_vec, V_true)
+
+
+def test_ggq_valfun_chain():
+    """
+        Check if Greedy-GQ computes the value function of a simple Markov chain correctly.
+        This only tests value function estimation, only one action possible
+    """
+    rep = MockRepresentation()
+    pol = eGreedy(rep)
+    agent = Greedy_GQ(pol, rep, lambda_=0., discount_factor=0.9)
     for i in xrange(1000):
         if i % 4 == 3:
             agent.episodeTerminated()
