@@ -216,8 +216,9 @@ class FiniteCartPoleBalance(FiniteTrackCartPole):
             self.GOAL_REWARD if -pi / 15 < s[StateIndex.THETA] < pi / 15 else 0
         )
 
-    def isTerminal(self):
-        s = self.state
+    def isTerminal(self, s=None):
+        if s is None:
+            s = self.state
         return (not (-pi / 15 < s[StateIndex.THETA] < pi / 15) or
                 not (-2.4 < s[StateIndex.X] < 2.4))
 

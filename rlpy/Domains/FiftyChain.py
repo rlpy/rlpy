@@ -285,5 +285,6 @@ class FiftyChain(Domain):
         :return: the L-infinity distance between the parameter representation
             and the optimal one.
         """
-        V = np.array([representation.V(s) for s in xrange(self.chainSize)])
+        V = np.array([representation.V(s, False, self.possibleActions(s=s)) \
+                      for s in xrange(self.chainSize)])
         return np.linalg.norm(V - self.V_star, np.inf)

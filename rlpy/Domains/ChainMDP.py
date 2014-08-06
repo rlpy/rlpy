@@ -127,7 +127,8 @@ class ChainMDP(Domain):
             ns = max(0, s - 1)
         if a == 1:
             ns = min(self.chainSize - 1, s + 1)
-        self.state = np.array([ns])
+        ns = np.array([ns])
+        self.state = ns
 
         terminal = self.isTerminal()
         r = self.GOAL_REWARD if terminal else self.STEP_REWARD
