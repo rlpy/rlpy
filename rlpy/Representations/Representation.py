@@ -93,16 +93,16 @@ class Representation(object):
         self.actions_num = domain.actions_num
         self.discretization = discretization
         try:
-            self.weight_vec = np.zeros(self.features_num * self.domain.actions_num)
+            self.weight_vec = np.zeros(self.features_num * self.actions_num)
         except MemoryError as m:
             print(
                 "Unable to allocate weights of size: %d\n" %
                 self.features_num *
-                self.domain.actions_num)
+                self.actions_num)
             raise m
 
         self._phi_sa_cache = np.empty(
-            (self.domain.actions_num, self.features_num))
+            (self.actions_num, self.features_num))
         self._arange_cache = np.arange(self.features_num)
         self.agg_states_num = np.prod(self.bins_per_dim.astype('uint64'))
         self.logger = logging.getLogger("rlpy.Representations." + self.__class__.__name__)
@@ -155,11 +155,11 @@ class Representation(object):
         if phi_s is None:
             phi_s = self.phi(s, terminal)
         if len(phi_s) == 0:
-            return np.zeros((self.domain.actions_num))
+            return np.zeros((self.actions_num))
         weight_vec_prime = self.weight_vec.reshape(-1, self.features_num)
-        if self._phi_sa_cache.shape != (self.domain.actions_num, self.features_num):
+        if self._phi_sa_cache.shape != (self.actions_num, self.features_num):
             self._phi_sa_cache = np.empty(
-                (self.domain.actions_num, self.features_num))
+                (self.actions_num, self.features_num))
         Q = np.multiply(weight_vec_prime, phi_s,
                         out=self._phi_sa_cache).sum(axis=1)
         # stacks phi_s in cache
@@ -243,7 +243,7 @@ class Representation(object):
             return phi_s, a * self.features_num, (a + 1) * self.features_num
 
         phi_sa = np.zeros(
-            (self.features_num * self.domain.actions_num),
+            (self.features_num * self.actions_num),
             dtype=phi_s.dtype)
         if self.features_num == 0:
             return phi_sa
@@ -259,7 +259,7 @@ class Representation(object):
         #nnz_ind = phi_s.nonzero()
         #phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
         # Alternative 2: Use of Kron
-        #A = zeros(self.domain.actions_num)
+        #A = zeros(self.actions_num)
         #A[a] = 1
         #F_sa = kron(A,F_s)
         return phi_sa
@@ -271,7 +271,7 @@ class Representation(object):
         """
         self.weight_vec = addNewElementForAllActions(
             self.weight_vec,
-            self.domain.actions_num)
+            self.actions_num)
 
     def hashState(self, s,):
         """
@@ -345,7 +345,7 @@ class Representation(object):
         Qs = Qs[p_actions]
         # Find the index of best actions
         ind = findElemArray1D(Qs, Qs.max())
-        return p_actions[ind]
+        return np.array(p_actions)[ind]
 
     def pre_discover(self, s, terminal, a, sn, terminaln):
         """
@@ -410,7 +410,9 @@ class Representation(object):
         :return: The best action at the given state.
         """
         bestA = self.bestActions(s, terminal, p_actions, phi_s)
-        if len(bestA) > 1:
+        if isinstance(bestA, int):
+            return bestA
+        elif len(bestA) > 1:
             return np.random.choice(bestA)
             # return bestA[0]
         else:
@@ -470,7 +472,7 @@ class Representation(object):
         :return: all_phi_s_a (of dimension p x (s_a) )
         """
         p, n = all_phi_s.shape
-        a_num = self.domain.actions_num
+        a_num = self.actions_num
         if use_sparse:
             phi_s_a = sp.lil_matrix(
                 (p, n * a_num), dtype=all_phi_s.dtype)
@@ -506,14 +508,14 @@ class Representation(object):
 
         """
         p, n = all_phi_s.shape
-        a_num = self.domain.actions_num
+        a_num = self.actions_num
 
         if action_mask is None:
             action_mask = np.ones((p, a_num))
             for i, s in enumerate(all_s):
                 action_mask[i, self.domain.possibleActions(s)] = 0
 
-        a_num = self.domain.actions_num
+        a_num = self.actions_num
         if useSparse:
             # all_phi_s_a will be ap-by-an
             all_phi_s_a = sp.kron(np.eye(a_num, a_num), all_phi_s)

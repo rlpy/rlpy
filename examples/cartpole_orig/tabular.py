@@ -19,6 +19,7 @@ def make_experiment(
         boyan_N0=119,
         initial_learn_rate=.06,
         discretization=34):
+
     opt = {}
     opt["exp_id"] = exp_id
     opt["max_steps"] = 30000
@@ -42,6 +43,6 @@ if __name__ == '__main__':
     from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
-    experiment.run(visualize_learning=True)
+    experiment.run(visualize_learning=False)
     experiment.plot()
     # experiment.save()

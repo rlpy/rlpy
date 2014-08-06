@@ -39,6 +39,6 @@ def make_experiment(exp_id=1, path="./Results/Temp", show=False):
     return MDPSolverExperiment(agent, domain)
 
 if __name__ == '__main__':
-    path = "./Results/Temp/{domain}/{agent}/{representation}/"
+    path = "./Results/Temp/gridworld/ValueIteration/Tabular/"
     experiment = make_experiment(1, path=path)
-    experiment.run(show=True)
+    experiment.run()
