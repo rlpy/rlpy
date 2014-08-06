@@ -22,7 +22,7 @@ def make_experiment(
     opt["num_policy_checks"] = 30
     opt["checks_per_policy"] = 10
     beta_coef = 1e-6
-    domain = PST(NUM_UAV=4, motionNoise=0)
+    domain = PST(NUM_UAV=4)
     opt["domain"] = domain
     representation = IndependentDiscretization(domain)
     policy = eGreedy(representation, epsilon=0.1)

@@ -28,7 +28,7 @@ def make_experiment(
     sparsify = 1
     ifddeps = 1e-7
     beta_coef = 1e-6
-    domain = PST(NUM_UAV=4, motionNoise=0)
+    domain = PST(NUM_UAV=4)
     opt["domain"] = domain
     initial_rep = IndependentDiscretization(domain)
     representation = iFDD(domain, discover_threshold, initial_rep,

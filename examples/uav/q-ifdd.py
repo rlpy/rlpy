@@ -27,7 +27,7 @@ def make_experiment(
     opt["checks_per_policy"] = 10
     sparsify = 1
     kappa = 1e-7
-    domain = PST(NUM_UAV=4, motionNoise=0)
+    domain = PST(NUM_UAV=4)
     opt["domain"] = domain
     initial_rep = IndependentDiscretization(domain)
     representation = iFDD(domain, discover_threshold, initial_rep,
