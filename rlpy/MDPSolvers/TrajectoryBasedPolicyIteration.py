@@ -156,7 +156,6 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
     def solve(self):
         """Solve the domain MDP."""
 
-        self.result = []
         self.start_time = clock()  # Used to track the total time for solving
         self.bellmanUpdates = 0
         converged = False
@@ -167,7 +166,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         policy = eGreedy(
             deepcopy(self.representation),
             epsilon=0,
-            forcedDeterministicAmongBestActions=True)  
+            forcedDeterministicAmongBestActions=True)
 
         while self.hasTime() and not converged:
 
@@ -178,14 +177,14 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             PI_iteration += 1
 
             # Theta can increase in size if the representation is expanded hence padding the weight vector with zeros
-            paddedTheta = padZeros(policy.representation.weight_vec,len(self.representation.weight_vec))
-            
+            paddedTheta = padZeros(policy.representation.weight_vec, len(self.representation.weight_vec))
+
             # Calculate the change in the weight_vec as L2-norm
             delta_weight_vec = np.linalg.norm(paddedTheta - self.representation.weight_vec)
             converged = delta_weight_vec < self.convergence_threshold
 
             # Update the underlying value function of the policy
-            policy.representation = deepcopy(self.representation) #self.representation
+            policy.representation = deepcopy(self.representation)  # self.representation
 
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun()
             self.logger.info(
@@ -202,15 +201,14 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 self.domain.show(a, representation=self.representation, s=s)
 
             # store stats
-            self.result.append([self.bellmanUpdates,  # index = 0
-                               performance_return,  # index = 1
-                               deltaT(self.start_time),  # index = 2
-                               self.representation.features_num,  # index = 3
-                               performance_steps,  # index = 4
-                               performance_term,  # index = 5
-                               performance_discounted_return,  # index = 6
-                               PI_iteration  # index = 7
-                                ])
+            self.result["bellman_updates"].append(self.bellmanUpdates)
+            self.result["return"].append(performance_return)
+            self.result["planning_time"].append(deltaT(self.start_time))
+            self.result["num_features"].append(self.representation.features_num)
+            self.result["steps"].append(performance_steps)
+            self.result["terminated"].append(performance_term)
+            self.result["discounted_return"].append(performance_discounted_return)
+            self.result["policy_improvemnt_iteration"].append(PI_iteration)
 
         if converged:
             self.logger.info('Converged!')
@@ -225,13 +223,12 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         self.policy = eGreedy(
             self.representation,
             epsilon=self.epsilon)
-        
+
         # Number of samples to be used for each policy evaluation phase. L1 in
         # the Geramifard et. al. FTML 2012 paper
         self.samples_num = 1000
-        self.result = []
-        
-        self.start_time = clock() # Used to track the total time for solving
+
+        self.start_time = clock()  # Used to track the total time for solving
         samples = 0
         converged = False
         iteration = 0
@@ -240,7 +237,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             #  1. Gather samples following an e-greedy policy
             S, Actions, NS, R, T = self.policy.collectSamples(self.samples_num)
             samples += self.samples_num
-            
+
             #  2. Calculate A and b estimates
             a_num = self.domain.actions_num
             n = self.representation.features_num
@@ -264,7 +261,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 self.logger.info(
                     '#%d: Finished Policy Evaluation. Solve Time = %0.2f(s)' %
                     (iteration, solve_time))
-            delta_weight_vec = l_norm(new_weight_vec -self.representation.weight_vec, np.inf)
+            delta_weight_vec = l_norm(new_weight_vec - self.representation.weight_vec, np.inf)
             converged = delta_weight_vec < self.convergence_threshold
             self.representation.weight_vec = new_weight_vec
             performance_return, performance_steps, performance_term, performance_discounted_return = self.performanceRun()
@@ -275,18 +272,18 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
                 self.domain.show(S[-1], Actions[-1], self.representation)
 
             # store stats
-            self.result.append([samples,  # index = 0
-                               performance_return,  # index = 1
-                               deltaT(self.start_time),  # index = 2
-                               self.representation.features_num,  # index = 3
-                               performance_steps,  # index = 4
-                               performance_term,  # index = 5
-                               performance_discounted_return,  # index = 6
-                               iteration  # index = 7
-                                ])
+            self.result["samples"].append(samples)
+            self.result["return"].append(performance_return)
+            self.result["planning_time"].append(deltaT(self.start_time))
+            self.result["num_features"].append(self.representation.features_num)
+            self.result["steps"].append(performance_steps)
+            self.result["terminated"].append(performance_term)
+            self.result["discounted_return"].append(performance_discounted_return)
+            self.result["iteration"].append(iteration)
 
         if converged:
             self.logger.info('Converged!')
+
         super(TrajectoryBasedPolicyIteration, self).solve()
 
     def calculate_expected_phi_ns_na(self, s, a, ns_samples):

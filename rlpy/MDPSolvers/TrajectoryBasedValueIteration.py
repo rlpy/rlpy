@@ -71,7 +71,6 @@ class TrajectoryBasedValueIteration(MDPSolver):
     def solve(self):
         """Solve the domain MDP."""
 
-        self.result = []
         # Used to show the total time took the process
         self.start_time = clock()
         bellmanUpdates = 0
@@ -107,7 +106,7 @@ class TrajectoryBasedValueIteration(MDPSolver):
                 old_Q = np.dot(phi_s_a, self.representation.weight_vec)
                 bellman_error = new_Q - old_Q
                 # print s, old_Q, new_Q, bellman_error
-                self.representation.weight_vec   += self.alpha * \
+                self.representation.weight_vec += self.alpha * \
                     bellman_error * phi_s_a
                 bellmanUpdates += 1
                 step += 1
@@ -154,15 +153,14 @@ class TrajectoryBasedValueIteration(MDPSolver):
                 self.domain.show(a, representation=self.representation, s=s)
 
             # store stats
-            self.result.append([bellmanUpdates,  # index = 0
-                               performance_return,  # index = 1
-                               deltaT(self.start_time),  # index = 2
-                               self.representation.features_num,  # index = 3
-                               performance_steps,  # index = 4
-                               performance_term,  # index = 5
-                               performance_discounted_return,  # index = 6
-                               iteration  # index = 7
-                                ])
+            self.result["bellman_updates"].append(bellmanUpdates)
+            self.result["return"].append(performance_return)
+            self.result["planning_time"].append(deltaT(self.start_time))
+            self.result["num_features"].append(self.representation.features_num)
+            self.result["steps"].append(performance_steps)
+            self.result["terminated"].append(performance_term)
+            self.result["discounted_return"].append(performance_discounted_return)
+            self.result["iteration"].append(iteration)
 
         if converged:
             self.logger.info('Converged!')
