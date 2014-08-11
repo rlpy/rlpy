@@ -69,6 +69,8 @@ class Domain(object):
     episodeCap = None
     #: A simple object that records the prints in a file
     logger = None
+    # A seeded numpy random number generator
+    random_state = None
 
     def __init__(self):
         self.logger = logging.getLogger("rlpy.Domains." + self.__class__.__name__)
@@ -223,13 +225,13 @@ Gamma:      {self.discount_factor}
             print self.random_state.randn()
             self.loadRandomState()
         """
-        self.random_state_backup = np.random.RandomState()
+        self.random_state_backup = self.random_state.get_state()
 
     def loadRandomState(self):
         """
         Loads the random state stored in the self.random_state_backup 
         """
-        self.random_state = self.random_state_backup
+        self.random_state.set_state(self.random_state_backup)
 
     def isTerminal(self):
         """
