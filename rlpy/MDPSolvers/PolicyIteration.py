@@ -154,20 +154,18 @@ class PolicyIteration(MDPSolver):
                 performance_steps))
 
         # store stats
-        self.result.append([self.bellmanUpdates,  # index = 0
-                           performance_return,  # index = 1
-                           deltaT(self.start_time),  # index = 2
-                           self.representation.features_num,  # index = 3
-                           performance_steps,  # index = 4
-                           performance_term,  # index = 5
-                           performance_discounted_return,  # index = 6
-                           self.policy_improvement_iteration  # index = 7
-                            ])
+        self.result["bellman_updates"].append(self.bellmanUpdates)
+        self.result["return"].append(performance_return)
+        self.result["planning_time"].append(deltaT(self.start_time))
+        self.result["num_features"].append(self.representation.features_num)
+        self.result["steps"].append(performance_steps)
+        self.result["terminated"].append(performance_term)
+        self.result["discounted_return"].append(performance_discounted_return)
+        self.result["policy_improvement_iteration"].append(self.policy_improvement_iteration)
         return policy, policyChanges
 
     def solve(self):
         """Solve the domain MDP."""
-        self.result = []
         self.bellmanUpdates = 0
         self.policy_improvement_iteration = 0
         self.start_time = clock()
