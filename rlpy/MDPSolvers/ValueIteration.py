@@ -48,7 +48,6 @@ class ValueIteration(MDPSolver):
     def solve(self):
         """Solve the domain MDP."""
 
-        self.result = []
         self.start_time = clock()  # Used to show the total time took the process
         bellmanUpdates = 0  # used to track the performance improvement.
         converged = False
@@ -108,15 +107,14 @@ class ValueIteration(MDPSolver):
                 self.domain.show(a, s=s, representation=self.representation)
 
             # store stats
-            self.result.append([bellmanUpdates,  # index = 0
-                               performance_return,  # index = 1
-                               deltaT(self.start_time),  # index = 2
-                               self.representation.features_num,  # index = 3
-                               performance_steps,  # index = 4
-                               performance_term,  # index = 5
-                               performance_discounted_return,  # index = 6
-                               iteration  # index = 7
-                                ])
+            self.result["bellman_updates"].append(bellmanUpdates)
+            self.result["return"].append(performance_return)
+            self.result["planning_time"].append(deltaT(self.start_time))
+            self.result["num_features"].append(self.representation.features_num)
+            self.result["steps"].append(performance_steps)
+            self.result["terminated"].append(performance_term)
+            self.result["discounted_return"].append(performance_discounted_return)
+            self.result["iteration"].append(iteration)
 
         if converged: self.logger.info('Converged!')
         super(ValueIteration, self).solve()

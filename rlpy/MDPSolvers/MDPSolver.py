@@ -5,6 +5,9 @@ import numpy as np
 import logging
 from copy import deepcopy
 from rlpy.Tools import className, deltaT, hhmmss, clock, l_norm, vec2id, checkNCreateDirectory
+from collections import defaultdict
+import os
+import json
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -86,12 +89,15 @@ class MDPSolver(object):
 
         # TODO setup logging to file in experiment
 
+        # create a dictionary of results
+        self.result = defaultdict(list)
+        self.result["seed"] = self.exp_id
+        self.output_filename = '{:0>3}-results.json'.format(self.exp_id)
 
     @abstractmethod
     def solve(self):
         """Solve the domain MDP."""
         # Abstract
-        self.result = np.array(self.result).T
         self.logger.info(
             'Value of S0 is = %0.5f' %
             self.representation.V(*self.domain.s0()))
@@ -147,10 +153,11 @@ class MDPSolver(object):
         return eps_return, eps_length, eps_term, eps_discounted_return
 
     def saveStats(self):
+        fullpath_output = os.path.join(self.project_path, self.output_filename)
+        print ">>> ", fullpath_output
         checkNCreateDirectory(self.project_path + '/')
-        np.savetxt(
-            '%s/%d-results.txt' %
-            (self.project_path, self.exp_id), self.result, fmt='%.18e', delimiter='\t')
+        with open(fullpath_output, "w") as f:
+            json.dump(self.result, f, indent=4, sort_keys=True)
 
     def hasTime(self):
         """Return a boolean stating if there is time left for planning."""
