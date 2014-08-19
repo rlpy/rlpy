@@ -89,6 +89,15 @@ class Domain(object):
 
         # a new stream of random numbers for each domain
         self.random_state = np.random.RandomState()
+    
+    def init_randomization(self):
+        """
+        Any stochastic behavior in __init__() is broken out into this function
+        so that if the random seed is later changed (eg, by the Experiment),
+        other member variables and functions are updated accordingly.
+        
+        """
+        pass
 
     def __str__(self):
         res = """{self.__class__}:
@@ -304,5 +313,15 @@ Gamma:      {self.discount_factor}
         for k, v in self.__dict__.items():
             if k is "logger":
                 continue
-            setattr(result, k, deepcopy(v, memo))
+            # This block bandles matplotlib transformNode objects, 
+                # which cannot be coped
+            try:
+                setattr(result, k, deepcopy(v, memo))
+            except:
+                # Try this: if this doesnt work, just let theat error get thrown
+                try:
+                    setattr(result, k, v.frozen())
+                except:
+                    self.logger.warning('Could not copy attribute when ' \
+                                        'duplicating domain.')
         return result

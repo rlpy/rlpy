@@ -60,8 +60,10 @@ class Agent(object):
     logger = None
     #: number of seen episodes
     episode_count = 0
-
-    def __init__(self, policy, representation, discount_factor, **kwargs):
+    # A seeded numpy random number generator
+    random_state = None
+    
+    def __init__(self, policy, representation, discount_factor, seed=1, **kwargs):
         """initialization.
 
         :param representation: the :py:class:`~rlpy.Representation.Representation.Representation`
@@ -84,7 +86,18 @@ class Agent(object):
         self.discount_factor = discount_factor
         self.logger = logging.getLogger("rlpy.Agents." + self.__class__.__name__)
 
+        # a new stream of random numbers for each domain
+        self.random_state = np.random.RandomState(seed=seed)
 
+    def init_randomization(self):
+        """
+        Any stochastic behavior in __init__() is broken out into this function
+        so that if the random seed is later changed (eg, by the Experiment),
+        other member variables and functions are updated accordingly.
+        
+        """
+        pass
+    
     @abstractmethod
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """

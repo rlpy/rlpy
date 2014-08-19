@@ -90,8 +90,9 @@ class Experiment(object):
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template = '{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
 
-    def __init__(self, agent, domain, exp_id=1, max_steps=max_steps, config_logging=True,
-                 num_policy_checks=10, log_interval=1, path='Results/Temp',
+    def __init__(self, agent, domain, exp_id=1, max_steps=max_steps, 
+                 config_logging=True, num_policy_checks=10, log_interval=1, 
+                 path='Results/Temp',
                  checks_per_policy=1, stat_bins_per_state_dim=0, **kwargs):
         """
         :param agent: the :py:class:`~Agents.Agent.Agent` to use for learning the task.
@@ -161,9 +162,21 @@ class Experiment(object):
         np.random.seed(self.randomSeeds[self.exp_id - 1])
         self.domain.random_state = np.random.RandomState(
             self.randomSeeds[self.exp_id - 1])
+        self.domain.init_randomization()
         # make sure the performance_domain has a different seed
         self.performance_domain.random_state = np.random.RandomState(
             self.randomSeeds[self.exp_id + 20])
+        
+        # Its ok if use same seed as domain, random calls completely different
+        self.agent.random_state = np.random.RandomState(
+            self.randomSeeds[self.exp_id - 1])
+        self.agent.init_randomization()
+        self.agent.representation.random_state = np.random.RandomState(
+            self.randomSeeds[self.exp_id - 1])
+        self.agent.representation.init_randomization()
+        self.agent.policy.random_state = np.random.RandomState(
+            self.randomSeeds[self.exp_id - 1])
+        self.agent.policy.init_randomization()
 
         self.log_filename = '{:0>3}.log'.format(self.exp_id)
         if self.config_logging:
