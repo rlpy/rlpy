@@ -14,8 +14,8 @@ __author__ = "Alborz Geramifard"
 class BasicPuddlePolicy(Policy):
     __author__ = "Christoph Dann"
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, seed=1, *args, **kwargs):
+        self.random_state = np.random.RandomState()
 
     def pi(self, s, terminal, p_actions):
         # 0 up, 1 down
@@ -27,7 +27,7 @@ class BasicPuddlePolicy(Policy):
             assert(0 in p_actions)
             return 0
         d = np.ones(2) - s
-        if np.random.rand() * d.sum() < d[0]:
+        if self.random_state.rand() * d.sum() < d[0]:
             return 0
         else:
             return 1
@@ -45,10 +45,10 @@ class FixedPolicy(Policy):
     gridWorldPolicyNames = ['cw_circle', 'ccw_circle']
 
     def __init__(self, representation,
-                 policyName='MISSINGNO', tableOfValues=None):
+                 policyName='MISSINGNO', tableOfValues=None, seed=1):
         self.policyName = policyName
         self.tableOfValues = tableOfValues
-        super(FixedPolicy, self).__init__(representation)
+        super(FixedPolicy, self).__init__(representation, seed)
 
     supportedDomains = [
         'InfCartPoleBalance', 'BlocksWorld', 'IntruderMonitoring',
@@ -143,7 +143,7 @@ class FixedPolicy(Policy):
 
             # Random Action with some probability
             # TODO fix isTerminal use here
-            if np.random.rand() < .3 or domain.isTerminal():
+            if self.random_state.rand() < .3 or domain.isTerminal():
                 return randSet(domain.possibleActions(s))
 
             # non-Random Policy

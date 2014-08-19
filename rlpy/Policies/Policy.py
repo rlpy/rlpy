@@ -34,8 +34,10 @@ class Policy(object):
 
     representation = None
     DEBUG = False
+    # A seeded numpy random number generator
+    random_state = None
 
-    def __init__(self, representation):
+    def __init__(self, representation, seed=1):
         """
         :param representation: the :py:class:`~rlpy.Representations.Representation.Representation`
             to use in learning the value function.
@@ -44,7 +46,18 @@ class Policy(object):
         self.representation = representation
         # An object to record the print outs in a file
         self.logger = logging.getLogger("rlpy.Policies." + self.__class__.__name__)
-
+        # a new stream of random numbers for each domain
+        self.random_state = np.random.RandomState(seed=seed)
+    
+    def init_randomization(self):
+        """
+        Any stochastic behavior in __init__() is broken out into this function
+        so that if the random seed is later changed (eg, by the Experiment),
+        other member variables and functions are updated accordingly.
+        
+        """
+        pass
+        
     def pi(self, s, terminal, p_actions):
         """
         *Abstract Method:*\n Select an action given a state.

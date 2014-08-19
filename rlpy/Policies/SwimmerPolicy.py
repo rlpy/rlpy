@@ -25,9 +25,8 @@ class SwimmerPolicy(Policy):
         "swimmer3.mat")
 
     def __init__(self, representation,
-                 filename=default_location, epsilon=0.1):
-        super(SwimmerPolicy, self).__init__(None)
-        self.representation = representation
+                 filename=default_location, epsilon=0.1, seed=1):
+        super(SwimmerPolicy, self).__init__(representation, seed)
         E = loadmat(filename)["E"]
         self.locs = E["Locs"][0][0]
         self.nlocs = E["Nlocs"][0][0]
@@ -44,16 +43,16 @@ class SwimmerPolicy(Policy):
         self.actions_num = len(self.actions)
 
     def pi(self, s, terminal, p_actions):
-        coin = np.random.rand()
+        coin = self.random_state.rand()
         if coin < self.epsilon:
-            return np.random.choice(p_actions)
+            return self.random_state.choice(p_actions)
         else:
             if self.eGreedy:
                 b_actions = self.representation.bestActions(
                     s,
                     terminal,
                     p_actions)
-                return np.random.choice(b_actions)
+                return self.random_state.choice(b_actions)
             else:
                 return self.pi_sam(s, terminal, p_actions)
     """

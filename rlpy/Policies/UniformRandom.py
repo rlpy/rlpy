@@ -12,9 +12,12 @@ __author__ = "Alborz Geramifard"
 
 class UniformRandom(Policy):
 
+    def __init__(self, representation, seed=1):
+        super(UniformRandom, self).__init__(representation, seed)
+    
     def prob(self, s, terminal, p_actions):
         p = np.ones(len(p_actions)) / len(p_actions)
         return p
 
     def pi(self, s, terminal, p_actions):
-        return np.random.choice(p_actions)
+        return self.random_state.choice(p_actions)

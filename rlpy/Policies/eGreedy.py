@@ -30,22 +30,22 @@ class eGreedy(Policy):
     forcedDeterministicAmongBestActions = None
 
     def __init__(self, representation, epsilon = .1,
-                 forcedDeterministicAmongBestActions = False):
+                 forcedDeterministicAmongBestActions = False, seed=1):
         self.epsilon = epsilon
         self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
-        super(eGreedy, self).__init__(representation)
+        super(eGreedy, self).__init__(representation,seed)
 
     def pi(self, s, terminal, p_actions):
-        coin = np.random.rand()
+        coin = self.random_state.rand()
         # print "coin=",coin
         if coin < self.epsilon:
-            return np.random.choice(p_actions)
+            return self.random_state.choice(p_actions)
         else:
             b_actions = self.representation.bestActions(s, terminal, p_actions)
             if self.forcedDeterministicAmongBestActions:
                 return b_actions[0]
             else:
-                return np.random.choice(b_actions)
+                return self.random_state.choice(b_actions)
 
     def prob(self, s, terminal, p_actions):
         p = np.ones(len(p_actions)) / len(p_actions)
