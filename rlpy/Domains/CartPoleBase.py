@@ -369,7 +369,7 @@ class CartPoleBase(Domain):
             will not be updated.
 
         """
-        if self.policy_fig is None:
+        if self.policy_fig is None or self.policy_img is None:
             self.policy_fig = pl.figure("Policy")
             ax = self.policy_fig.add_subplot(111)
             self.policy_img = ax.imshow(
@@ -397,7 +397,7 @@ class CartPoleBase(Domain):
             will not be updated.
 
         """
-        if self.valueFunction_fig is None:
+        if self.valueFunction_fig is None or self.valueFunction_img is None:
             maxV = VMat.max()
             minV = VMat.min()
             self.valueFunction_fig = pl.figure("Value Function")
@@ -431,7 +431,8 @@ class CartPoleBase(Domain):
         is displayed as an arrow (not including noise!)
         """
         s = fourDimState
-        if self.domain_fig is None:  # Need to initialize the figure
+        if (self.domain_fig is None or self.pendulumArm is None) or \
+           (self.cartBox is None or self.cartBlob is None):  # Need to initialize the figure
             self.domain_fig = pl.figure("Domain")
 #             pl.xlabel(r"$x$ position (meters)")
 #             pl.ylabel(r"$y$ position (meters)")
