@@ -70,13 +70,15 @@ class Representation(object):
     agg_states_num = 0
     # A simple object that records the prints in a file
     logger = None
+    # A seeded numpy random number generator
+    random_state = None
 
     #: True if the number of features may change during execution.
     isDynamic = False
     #: A dictionary used to cache expected results of step(). Used for planning algorithms
     expectedStepCached = None
 
-    def __init__(self, domain, discretization=20):
+    def __init__(self, domain, discretization=20, seed=1):
         """
         :param domain: the problem :py:class:`~rlpy.Domains.Domain.Domain` to learn
         :param discretization: Number of bins used for each continuous dimension.
@@ -106,7 +108,19 @@ class Representation(object):
         self._arange_cache = np.arange(self.features_num)
         self.agg_states_num = np.prod(self.bins_per_dim.astype('uint64'))
         self.logger = logging.getLogger("rlpy.Representations." + self.__class__.__name__)
-
+        
+        # a new stream of random numbers for each representation
+        self.random_state = np.random.RandomState(seed=seed)
+        
+    def init_randomization(self):
+        """
+        Any stochastic behavior in __init__() is broken out into this function
+        so that if the random seed is later changed (eg, by the Experiment),
+        other member variables and functions are updated accordingly.
+        
+        """
+        pass
+        
     def V(self, s, terminal, p_actions, phi_s=None):
         """ Returns the value of state s under possible actions p_actions.
 
@@ -413,7 +427,7 @@ class Representation(object):
         if isinstance(bestA, int):
             return bestA
         elif len(bestA) > 1:
-            return np.random.choice(bestA)
+            return self.random_state.choice(bestA)
             # return bestA[0]
         else:
             return bestA[0]
@@ -619,7 +633,7 @@ class Representation(object):
                             w = self.binWidth_per_dim[d]
                             # Sample each dimension of the new_s within the
                             # cell
-                            new_s[d] = (np.random.rand() - .5) * w + s[d]
+                            new_s[d] = (self.random_state.rand() - .5) * w + s[d]
                             # If the dimension is discrete make make the
                             # sampled value to be int
                             if not d in self.domain.continuous_dims:

@@ -54,47 +54,58 @@ class RBF(Representation):
             the domain boundaries.
         
         """
-
+        self.grid_bins = grid_bins
+        self.resolution_max = resolution_max
+        self.resolution_min = resolution_min
+        self.num_rbfs = num_rbfs
+        
         if resolution_max is None:
             resolution_max = resolution_min
 
         if state_dimensions is not None:
-            dims = len(state_dimensions)
+            self.dims = len(state_dimensions)
         else:  # just consider all dimensions
             state_dimensions = range(domain.state_space_dims)
-            dims = domain.state_space_dims
-
-        if grid_bins is not None:
+            self.dims = domain.state_space_dims
+            
+        if self.grid_bins is not None:
             # uniform grid of rbfs
-            self.rbfs_mu, num_rbfs = self.uniformRBFs(
-                grid_bins, include_border)
+            self.rbfs_mu, self.num_rbfs = self.uniformRBFs(
+                self.grid_bins, include_border)
             self.rbfs_sigma = np.ones(
-                (num_rbfs, dims)) * (resolution_max + resolution_min) / 2
-        else:
-            # uniformly scattered
-            assert(num_rbfs is not None)
-            self.rbfs_mu = np.zeros((num_rbfs, dims))
-            self.rbfs_sigma = np.zeros((num_rbfs, dims))
-            dim_widths = (domain.statespace_limits[state_dimensions, 1]
-                          - domain.statespace_limits[state_dimensions, 0])
-            rand_stream = np.random.RandomState(seed=seed)
-            for i in xrange(num_rbfs):
-                for d in state_dimensions:
-                    self.rbfs_mu[i, d] = rand_stream.uniform(
-                        domain.statespace_limits[d, 0],
-                        domain.statespace_limits[d, 1])
-                    self.rbfs_sigma[i,
-                                    d] = rand_stream.uniform(
-                        dim_widths[d] / resolution_max,
-                        dim_widths[d] / resolution_min)
+                (self.num_rbfs, self.dims)) * (self.resolution_max + self.resolution_min) / 2
+
         self.const_feature = const_feature
         self.features_num = num_rbfs
         if const_feature:
             self.features_num += 1  # adds a constant 1 to each feature vector
         self.state_dimensions = state_dimensions
         self.normalize = normalize
-        super(RBF, self).__init__(domain)
+        
+        super(RBF, self).__init__(domain, seed)
+        
+        self.init_randomization()
 
+    def init_randomization(self):
+        if self.grid_bins is not None:
+            return
+        else:
+            # uniformly scattered
+            assert(self.num_rbfs is not None)
+            self.rbfs_mu = np.zeros((self.num_rbfs, self.dims))
+            self.rbfs_sigma = np.zeros((self.num_rbfs, self.dims))
+            dim_widths = (self.domain.statespace_limits[self.state_dimensions, 1])
+
+            for i in xrange(self.num_rbfs):
+                for d in self.state_dimensions:
+                    self.rbfs_mu[i, d] = self.random_state.uniform(
+                        self.domain.statespace_limits[d, 0],
+                        self.domain.statespace_limits[d, 1])
+                    self.rbfs_sigma[i,
+                                    d] = self.random_state.uniform(
+                        dim_widths[d] / self.resolution_max,
+                        dim_widths[d] / self.resolution_min)
+                          
     def phi_nonTerminal(self, s):
         F_s = np.ones(self.features_num)
         if self.state_dimensions is not None:

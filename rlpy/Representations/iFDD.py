@@ -127,8 +127,9 @@ class iFDD(Representation):
     use_chirstoph_ordered_features = True
 
     def __init__(
-            self, domain, discovery_threshold, initial_representation, sparsify=True,
-            discretization=20, debug=0, useCache=0, maxBatchDiscovery=1, batchThreshold=0, iFDDPlus=1):
+            self, domain, discovery_threshold, initial_representation, 
+            sparsify=True, discretization=20, debug=0, useCache=0, 
+            maxBatchDiscovery=1, batchThreshold=0, iFDDPlus=1, seed=1):
         self.iFDD_features = {}
         self.iFDD_potentials = {}
         self.featureIndex2feature = {}
@@ -146,7 +147,7 @@ class iFDD(Representation):
         self.iFDDPlus = iFDDPlus
         self.isDynamic = True
         self.addInitialFeatures()
-        super(iFDD, self).__init__(domain, discretization)
+        super(iFDD, self).__init__(domain, discretization, seed)
 
     def phi_nonTerminal(self, s):
         """ Based on Tuna's Master Thesis 2012 """
@@ -291,7 +292,7 @@ class iFDD(Representation):
         potential.count += 1
         # Check for discovery
 
-        if np.random.rand() < self.iFDDPlus:
+        if self.random_state.rand() < self.iFDDPlus:
             relevance = abs(potential.cumtderr) / np.sqrt(potential.count)
         else:
             relevance = potential.cumabstderr
@@ -571,7 +572,7 @@ class iFDDK_potential(iFDD_potential):
     def relevance(self, kappa=None, plus=None):
         if plus is None:
             assert(kappa is not None)
-            plus = np.random.rand() >= kappa
+            plus = self.random_state.rand() >= kappa
 
         if plus:
             return np.abs(self.b) / np.sqrt(self.c)
@@ -700,7 +701,7 @@ class iFDDK(iFDD):
         """
         self.t += 1
         discovered = 0
-        plus = np.random.rand() >= self.kappa
+        plus = self.random_state.rand() >= self.kappa
         # if self.t == 22:
         #    import ipdb; ipdb.set_trace()
         activeFeatures = phi_s.nonzero()[

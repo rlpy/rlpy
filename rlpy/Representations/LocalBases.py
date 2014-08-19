@@ -28,7 +28,7 @@ class LocalBases(Representation):
     #: widths of bases
     widths = None
 
-    def __init__(self, domain, kernel, normalization=False, **kwargs):
+    def __init__(self, domain, kernel, normalization=False, seed=1, **kwargs):
         """
         :param domain: domain to learn on.
         :param kernel: function handle to use for kernel function evaluations.
@@ -42,7 +42,7 @@ class LocalBases(Representation):
         self.normalization = normalization
         self.centers = np.zeros((0, domain.statespace_limits.shape[0]))
         self.widths = np.zeros((0, domain.statespace_limits.shape[0]))
-        super(LocalBases, self).__init__(domain)
+        super(LocalBases, self).__init__(domain, seed=seed)
 
     def phi_nonTerminal(self, s):
         v = self.kernel(s, self.centers, self.widths)
@@ -151,22 +151,28 @@ class RandomLocalBases(LocalBases):
         
         """
         self.features_num = num
-        dim_widths = (domain.statespace_limits[:, 1]
+        self.dim_widths = (domain.statespace_limits[:, 1]
                       - domain.statespace_limits[:, 0])
+        self.resolution_max = resolution_max
+        self.resolution_min = resolution_min
+        
         super(
             RandomLocalBases,
             self).__init__(
             domain,
             kernel,
+            seed=seed,
             **kwargs)
-        rand_stream = np.random.RandomState(seed=seed)
-        self.centers = np.zeros((num, len(dim_widths)))
-        self.widths = np.zeros((num, len(dim_widths)))
-        for i in xrange(num):
-            for d in xrange(len(dim_widths)):
-                self.centers[i, d] = rand_stream.uniform(
-                    domain.statespace_limits[d, 0],
-                    domain.statespace_limits[d, 1])
-                self.widths[i, d] = rand_stream.uniform(
-                    dim_widths[d] / resolution_max,
-                    dim_widths[d] / resolution_min)
+        self.centers = np.zeros((num, len(self.dim_widths)))
+        self.widths = np.zeros((num, len(self.dim_widths)))
+        self.init_randomization()
+    
+    def init_randomization(self):
+        for i in xrange(self.features_num):
+            for d in xrange(len(self.dim_widths)):
+                self.centers[i, d] = self.random_state.uniform(
+                    self.domain.statespace_limits[d, 0],
+                    self.domain.statespace_limits[d, 1])
+                self.widths[i, d] = self.random_state.uniform(
+                    self.dim_widths[d] / self.resolution_max,
+                    self.dim_widths[d] / self.resolution_min)

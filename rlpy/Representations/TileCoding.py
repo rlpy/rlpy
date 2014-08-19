@@ -25,7 +25,7 @@ class TileCoding(Representation):
                  resolution_matrix=None,
                  dimensions=None,
                  safety="super",
-                 seed=0):
+                 seed=1):
         """
 
         The TileCoding class can represent several types of tilings at the same
@@ -70,7 +70,7 @@ class TileCoding(Representation):
 
         """
         self.features_num = memory
-        super(TileCoding, self).__init__(domain)
+        super(TileCoding, self).__init__(domain, seed)
         try:
             self.num_tilings = tuple(num_tilings)
         except TypeError as e:
@@ -111,13 +111,13 @@ class TileCoding(Representation):
             self.check_data = -np.ones((self.features_num), dtype=np.long)
         self.counts = np.zeros(self.features_num, dtype=np.long)
         self.collisions = 0
-        self.R = np.random.RandomState(
-            seed).randint(
-            self.BIG_INT / 4,
-            size=self.features_num).astype(
-            np.int)
+        self.init_randomization()
 
-        if safety == "none":
+    def init_randomization(self):
+        self.R = self.random_state.randint(self.BIG_INT / 4,
+            size=self.features_num).astype(np.int)
+
+        if self.safety == "none":
             try:
                 import hashing as h
                 f = lambda self, A: h.physical_addr(A, self.R, self.check_data,
@@ -127,7 +127,7 @@ class TileCoding(Representation):
             except Exception as e:
                 print e
                 print "Cython extension for TileCoding hashing trick not available"
-
+        
     def phi_nonTerminal(self, s):
 
         phi = np.zeros((self.features_num))
