@@ -45,15 +45,15 @@ def _make_experiment(exp_id=1, path="./Results/Tmp/test_PST"):
 
 def _checkSameExperimentResults(exp1, exp2):
     """ Returns False if experiments gave same results, true if they match. """
-#     if not np.array_equiv(exp1.result["learning_steps"], exp2.result["learning_steps"]):
-#         # Same number of steps before failure (where applicable)
-#         return False
-#     if not np.array_equiv(exp1.result["return"], exp2.result["return"]):
-#         # Same return on each test episode
-#         return False
-#     if not np.array_equiv(exp1.result["steps"], exp2.result["steps"]):
-#         # Same number of steps taken on each training episode
-#         return False
+    if not np.array_equiv(exp1.result["learning_steps"], exp2.result["learning_steps"]):
+        # Same number of steps before failure (where applicable)
+        return False
+    if not np.array_equiv(exp1.result["return"], exp2.result["return"]):
+        # Same return on each test episode
+        return False
+    if not np.array_equiv(exp1.result["steps"], exp2.result["steps"]):
+        # Same number of steps taken on each training episode
+        return False
     return True
 
 def test_seed():

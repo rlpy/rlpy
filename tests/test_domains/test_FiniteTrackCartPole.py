@@ -62,59 +62,59 @@ def _checkSameExperimentResults(exp1, exp2):
     return True
 
 ## TODO FIXME - test fails
-# def test_seed_balance():
-#     """ Ensure that providing the same random seed yields same result """
-#       
-#     domain = FiniteCartPoleBalance()
-#     # [[initialize and run experiment without visual]]
-#     expNoVis = _make_experiment(domain=domain, exp_id=1)
-#     expNoVis.run(visualize_steps=False,
-#             visualize_learning=False,
-#             visualize_performance=0)
-#       
-#     # [[initialize and run experiment with visual]]
-#     domain = FiniteCartPoleBalance()
-#     expVis1 = _make_experiment(domain=domain, exp_id=1)
-#     expVis1.run(visualize_steps=True,
-#             visualize_learning=False,
-#             visualize_performance=1)
-#       
-#     domain = FiniteCartPoleBalance()
-#     expVis2 = _make_experiment(domain=domain, exp_id=1)
-#     expVis2.run(visualize_steps=False,
-#             visualize_learning=True,
-#             visualize_performance=1)
-#       
-#     # [[assert get same results]]
-#     assert _checkSameExperimentResults(expNoVis, expVis1)
-#     assert _checkSameExperimentResults(expNoVis, expVis2)
-#   
-#
-## TODO FIXME - test fails
-# def test_seed_swingup():
-#     # [[initialize and run experiment without visual]]
-#     domain = FiniteCartPoleSwingUp()
-#     expNoVis = _make_experiment(domain=domain, exp_id=1)
-#     expNoVis.run(visualize_steps=False,
-#             visualize_learning=False,
-#             visualize_performance=0)
-#       
-#     # [[initialize and run experiment with visual]]
-#     domain = FiniteCartPoleSwingUp()
-#     expVis1 = _make_experiment(domain=domain, exp_id=1)
-#     expVis1.run(visualize_steps=True,
-#             visualize_learning=False,
-#             visualize_performance=1)
-#       
-#     #FIXME - Experiment line 315 cannot make deepcopy of matplotlib object
-# #     expVis2 = _make_experiment(domain=domain, exp_id=1)
-# #     expVis2.run(visualize_steps=False,
-# #             visualize_learning=True,
-# #             visualize_performance=1)
-#       
-#     # [[assert get same results]]
-#     assert _checkSameExperimentResults(expNoVis, expVis1)
-# #     assert _checkSameExperimentResults(expNoVis, expVis2)
+def test_seed_balance():
+    """ Ensure that providing the same random seed yields same result """
+       
+    domain = FiniteCartPoleBalance()
+    # [[initialize and run experiment without visual]]
+    expNoVis = _make_experiment(domain=domain, exp_id=1)
+    expNoVis.run(visualize_steps=False,
+            visualize_learning=False,
+            visualize_performance=0)
+       
+    # [[initialize and run experiment with visual]]
+    domain = FiniteCartPoleBalance()
+    expVis1 = _make_experiment(domain=domain, exp_id=1)
+    expVis1.run(visualize_steps=True,
+            visualize_learning=False,
+            visualize_performance=1)
+       
+    domain = FiniteCartPoleBalance()
+    expVis2 = _make_experiment(domain=domain, exp_id=1)
+    expVis2.run(visualize_steps=False,
+            visualize_learning=True,
+            visualize_performance=1)
+       
+     # [[assert get same results]]
+    assert _checkSameExperimentResults(expNoVis, expVis1)
+    assert _checkSameExperimentResults(expNoVis, expVis2)
+   
+
+# TODO FIXME - test fails
+def test_seed_swingup():
+    # [[initialize and run experiment without visual]]
+    domain = FiniteCartPoleSwingUp()
+    expNoVis = _make_experiment(domain=domain, exp_id=1)
+    expNoVis.run(visualize_steps=False,
+            visualize_learning=False,
+            visualize_performance=0)
+       
+    # [[initialize and run experiment with visual]]
+    domain = FiniteCartPoleSwingUp()
+    expVis1 = _make_experiment(domain=domain, exp_id=1)
+    expVis1.run(visualize_steps=True,
+            visualize_learning=False,
+            visualize_performance=1)
+      
+    #FIXME - Experiment line 315 cannot make deepcopy of matplotlib object
+    expVis2 = _make_experiment(domain=domain, exp_id=1)
+    expVis2.run(visualize_steps=False,
+            visualize_learning=True,
+            visualize_performance=1)
+      
+    # [[assert get same results]]
+    assert _checkSameExperimentResults(expNoVis, expVis1)
+    assert _checkSameExperimentResults(expNoVis, expVis2)
 
 def test_physicality():
     """

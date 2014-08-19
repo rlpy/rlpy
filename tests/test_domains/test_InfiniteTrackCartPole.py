@@ -40,64 +40,73 @@ def _make_experiment(domain, exp_id=1, \
 
 def _checkSameExperimentResults(exp1, exp2):
     """ Returns False if experiments gave same results, true if they match. """
-    if not np.all(exp1.result["learning_steps"] == exp2.results["learning_steps"]):
+    if not np.all(exp1.result["learning_steps"] == exp2.result["learning_steps"]):
         # Same number of steps before failure (where applicable)
+        print 'LEARNING STEPS DIFFERENT'
+        print exp1.result["learning_steps"]
+        print exp2.result["learning_steps"]
         return False
     if not np.all(exp1.result["return"] == exp2.result["return"]):
         # Same return on each test episode
+        print 'RETURN DIFFERENT'
+        print exp1.result["return"]
+        print exp2.result["return"]
         return False
     if not np.all(exp1.result["steps"] == exp2.result["steps"]):
         # Same number of steps taken on each training episode
+        print 'STEPS DIFFERENT'
+        print exp1.result["steps"]
+        print exp2.result["steps"]
         return False
     return True
 
-# def test_seed_balance():
-#     """ Ensure that providing the same random seed yields same result """
-#     
-#     domain = InfCartPoleBalance()
-#     # [[initialize and run experiment without visual]]
-#     expNoVis = _make_experiment(domain=domain, exp_id=1)
-#     expNoVis.run(visualize_steps=False,
-#             visualize_learning=False,
-#             visualize_performance=0)
-#     
-#     # [[initialize and run experiment with visual]]
-#     expVis1 = _make_experiment(domain=domain, exp_id=1)
-#     expVis1.run(visualize_steps=True,
-#             visualize_learning=False,
-#             visualize_performance=1)
-#     
-#     expVis2 = _make_experiment(domain=domain, exp_id=1)
-#     expVis2.run(visualize_steps=False,
-#             visualize_learning=True,
-#             visualize_performance=1)
-#     
-#     # [[assert get same results]]
-#     assert _checkSameExperimentResults(expNoVis, expVis1)
-#     assert _checkSameExperimentResults(expNoVis, expVis2)
-#     
-# def test_seed_swingup():
-#     domain = InfCartPoleSwingUp()
-#     # [[initialize and run experiment without visual]]
-#     expNoVis = _make_experiment(domain=domain, exp_id=1)
-#     expNoVis.run(visualize_steps=False,
-#             visualize_learning=False,
-#             visualize_performance=0)
-#     
-#     # [[initialize and run experiment with visual]]
-#     expVis1 = _make_experiment(domain=domain, exp_id=1)
-#     expVis1.run(visualize_steps=True,
-#             visualize_learning=False,
-#             visualize_performance=1)
-#     
-#     expVis2 = _make_experiment(domain=domain, exp_id=1)
-#     expVis2.run(visualize_steps=False,
-#             visualize_learning=True,
-#             visualize_performance=1)
-#     
-#     # [[assert get same results]]
-#     assert _checkSameExperimentResults(expNoVis, expVis1)
-#     assert _checkSameExperimentResults(expNoVis, expVis2)
+def test_seed_balance():
+    """ Ensure that providing the same random seed yields same result """
+     
+    domain = InfCartPoleBalance()
+    # [[initialize and run experiment without visual]]
+    expNoVis = _make_experiment(domain=domain, exp_id=1)
+    expNoVis.run(visualize_steps=False,
+            visualize_learning=False,
+            visualize_performance=0)
+     
+    # [[initialize and run experiment with visual]]
+    expVis1 = _make_experiment(domain=domain, exp_id=1)
+    expVis1.run(visualize_steps=True,
+            visualize_learning=False,
+            visualize_performance=1)
+     
+    expVis2 = _make_experiment(domain=domain, exp_id=1)
+    expVis2.run(visualize_steps=False,
+            visualize_learning=True,
+            visualize_performance=1)
+     
+    # [[assert get same results]]
+    assert _checkSameExperimentResults(expNoVis, expVis1)
+    assert _checkSameExperimentResults(expNoVis, expVis2)
+     
+def test_seed_swingup():
+    domain = InfCartPoleSwingUp()
+    # [[initialize and run experiment without visual]]
+    expNoVis = _make_experiment(domain=domain, exp_id=1)
+    expNoVis.run(visualize_steps=False,
+            visualize_learning=False,
+            visualize_performance=0)
+     
+    # [[initialize and run experiment with visual]]
+    expVis1 = _make_experiment(domain=domain, exp_id=1)
+    expVis1.run(visualize_steps=True,
+            visualize_learning=False,
+            visualize_performance=1)
+     
+    expVis2 = _make_experiment(domain=domain, exp_id=1)
+    expVis2.run(visualize_steps=False,
+            visualize_learning=True,
+            visualize_performance=1)
+     
+    # [[assert get same results]]
+    assert _checkSameExperimentResults(expNoVis, expVis1)
+    assert _checkSameExperimentResults(expNoVis, expVis2)
 
 def test_physicality():
     """

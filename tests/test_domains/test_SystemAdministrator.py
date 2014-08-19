@@ -53,28 +53,28 @@ def _checkSameExperimentResults(exp1, exp2):
     return True
 
 
-# def test_seed():
-#     """ Ensure that providing the same random seed yields same result """
-#     # [[initialize and run experiment without visual]]
-#     expNoVis = _make_experiment(exp_id=1)
-#     expNoVis.run(visualize_steps=False,
-#             visualize_learning=False,
-#             visualize_performance=0)
-#     
-#     # [[initialize and run experiment with visual]]
-#     expVis1 = _make_experiment(exp_id=1)
-#     expVis1.run(visualize_steps=True,
-#             visualize_learning=False,
-#             visualize_performance=1)
-#     
-#     expVis2 = _make_experiment(exp_id=1)
-#     expVis2.run(visualize_steps=False,
-#             visualize_learning=True,
-#             visualize_performance=1)
-#     
-#     # [[assert get same results]]
-#     assert _checkSameExperimentResults(expNoVis, expVis1)
-#     assert _checkSameExperimentResults(expNoVis, expVis2)
+def test_seed():
+    """ Ensure that providing the same random seed yields same result """
+    # [[initialize and run experiment without visual]]
+    expNoVis = _make_experiment(exp_id=1)
+    expNoVis.run(visualize_steps=False,
+            visualize_learning=False,
+            visualize_performance=0)
+     
+    # [[initialize and run experiment with visual]]
+    expVis1 = _make_experiment(exp_id=1)
+    expVis1.run(visualize_steps=True,
+            visualize_learning=False,
+            visualize_performance=1)
+     
+    expVis2 = _make_experiment(exp_id=1)
+    expVis2.run(visualize_steps=False,
+            visualize_learning=True,
+            visualize_performance=1)
+     
+    # [[assert get same results]]
+    assert _checkSameExperimentResults(expNoVis, expVis1)
+    assert _checkSameExperimentResults(expNoVis, expVis2)
 
 def test_errs():
     """ Ensure that we can call custom methods without error """
