@@ -67,11 +67,18 @@ Note that RLPy requires the BSD 3-Clause license.
   :func:`~rlpy.Domains.Domain.__init__` function of the 
   Domain superclass.
 
+* Any randomization that occurs at object construction *MUST* occur in the 
+  ``init_randomization()`` function, which can be called by ``__init__()``.
+
+* Any random calls should use self.random_state, not random() or np.random(),
+  as this will ensure consistent seeded results during experiments.
+
 * Once completed, the className of the new agent must be added to the
   ``__init__.py`` file in the ``Domains/`` directory.
   (This allows other files to import the new Domain).
 
-* After your Domain is complete, you should define a unit test XX Add info here XX
+* After your agent is complete, you should define a unit test to ensure future
+  revisions do not alter behavior.  See rlpy/tests/test_domains for some examples.
 
 
 REQUIRED Instance Variables
@@ -97,7 +104,8 @@ superclass ``__init__()`` function:
    of the action space).  This number **MUST** be a finite integer - continuous action
    spaces are not currently supported.
 
-#. ``gamma`` - float, the discount factor by which rewards are reduced.
+#. ``discount_factor`` - float, the discount factor (gamma in literature)
+   by which rewards are reduced.
 
 
 REQUIRED Functions
@@ -211,7 +219,7 @@ Note that the optimal policy is to always go right.
 #. Copy the __init__ declaration from ``Domain.py``, add needed parameters
    (here the number of states in the chain, ``chainSize``), and log them.
    Assign ``self.statespace_limits, self.episodeCap, self.continuous_dims, self.DimNames, self.actions_num,`` 
-   and ``self.gamma``.
+   and ``self.discount_factor``.
    Then call the superclass constructor::
 
        def __init__(self, chainSize=2):
@@ -226,7 +234,7 @@ Note that the optimal policy is to always go right.
            self.continuous_dims    = []
            self.DimNames           = [`State`]
            self.actions_num        = 2
-           self.gamma              = 0.9
+           self.discount_factor    = 0.9
            super(ChainMDP,self).__init__()
 
 #. Copy the ``step()`` and function declaration and implement it accordingly
@@ -299,7 +307,7 @@ That's it! Now add your new Domain to ``Domains/__init__.py``::
 
     ``from ChainMDPTut import ChainMDPTut``
 
-Finally, create a unit test for your Domain XX XX.
+Finally, create a unit test for your agent as described in :ref:`unittests`
 
 Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
@@ -318,7 +326,7 @@ In this Domain tutorial, we have seen how to
 * Create a visualization
 * Add the Domain to RLPy and test it
 
-If you would like to add your new Domain to the RLPy project, email ``rlpy@mit.edu``
-or create a pull request to the 
+If you would like to add your new Domain to the RLPy project, email the community
+list ``rlpy@mit.edu`` or create a pull request to the 
 `RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
 

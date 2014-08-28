@@ -86,7 +86,7 @@ class Agent(object):
         self.discount_factor = discount_factor
         self.logger = logging.getLogger("rlpy.Agents." + self.__class__.__name__)
 
-        # a new stream of random numbers for each domain
+        # a new stream of random numbers for each agent
         self.random_state = np.random.RandomState(seed=seed)
 
     def init_randomization(self):

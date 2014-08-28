@@ -60,11 +60,18 @@ Requirements
   attempting to represent a value function over a continuous space.
   It is ignored for discrete dimensions.
 
-* Once completed, the className of the new agent **must be added** to the
+* Any randomization that occurs at object construction *MUST* occur in the 
+  ``init_randomization()`` function, which can be called by ``__init__()``.
+
+* Any random calls should use self.random_state, not random() or np.random(),
+  as this will ensure consistent seeded results during experiments.
+
+* Once completed, the className of the new Representation **must be added** to the
   ``__init__.py`` file in the ``Representations/`` directory.
   (This allows other files to import the new Representation).
 
-* After your Representation is complete, you should define a unit test XX Add info here XX
+* After your Representation is complete, you should define a unit test to ensure future
+  revisions do not alter behavior.  See rlpy/tests/test_representations for some examples.
 
 
 REQUIRED Instance Variables
@@ -218,7 +225,7 @@ That's it! Now add your new Representation to ``Representations/__init__.py``::
 
     ``from IncrTabularTut import IncrTabularTut``
 
-Finally, create a unit test for your representation XX XX.
+Finally, create a unit test for your Representation as described in :ref:`unittests`
 
 Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
@@ -236,7 +243,7 @@ In this Representation tutorial, we have seen how to
   ``Representation`` class
 * Add the Representation to RLPy and test it
 
-If you would like to add your new Representation to the RLPy project, email ``rlpy@mit.edu``
-or create a pull request to the 
-`RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
 
+If you would like to add your new Representation to the RLPy project, email the community
+list ``rlpy@mit.edu`` or create a pull request to the 
+`RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.

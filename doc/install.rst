@@ -18,7 +18,7 @@ The installation consists of three steps:
 
 Stable Version
 --------------
-You can download the latest stable version (1.2.1) of RLPy from http://acl.mit.edu/rlpy/rlpy-1.2.1.zip.
+You can download the latest stable version (1.3a) of RLPy from https://pypi.python.org/pypi/rlpy
 Extract the package in your desired location.
 
 Development Version
@@ -28,8 +28,8 @@ The git-repository with the latest development version can be cloned via::
 
     git clone https://bitbucket.org/rlpy/rlpy.git RLPy
 
-This will give you a copy of the repository in the directory `RLPy`. You might
-want to change the location as you wish.
+This will give you a copy of the repository in the directory `rlpy`.
+You might want to change the location as you wish.
 
 .. tip::
     If you are cloning the repository please add the RLPy to your python path using the following command ::
@@ -43,12 +43,12 @@ want to change the location as you wish.
 
 RLPy requires the following packages besides Python:
 
-GCC >= 4.6
+Tk
+    as a backend for matplotlib and for visualizations of some domains.
+GCC >= 4.6 (optional)
     for compiling some C++ extensions which use the C++11 standard.
 Graphviz (optional) 
     for creating the graphical ouput of the code profiling tool.
-Tk
-    as a backend for matplotlib and for visualizations of some domains.
 
 In addition, RLPy requires Python 2.7 to run. We do not support Python 3 at the
 moment since most scientific libraries still require Python 2.

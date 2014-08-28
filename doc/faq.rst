@@ -13,7 +13,7 @@ find many ready-to-run examples of reinforcement learning experiments.
 What does each line of output mean?
 -----------------------------------
 
-See documentation in the :ref:`Getting Started <interpret_output>` section.
+See documentation in the Getting Started section of the :ref:`tutorial`.
 
     88825: E[0:01:23]-R[0:00:10]: Return=-1.00, Steps=56, Features = 174
 

@@ -57,6 +57,12 @@ Note that RLPy requires the BSD 3-Clause license.
   in the ``__init__()`` function. Your code should be appropriately handle 
   the case where ``logger=None`` is passed to ``__init__()``.
 
+* Any randomization that occurs at object construction *MUST* occur in the 
+  ``init_randomization()`` function, which can be called by ``__init__()``.
+
+* Any random calls should use self.random_state, not random() or np.random(),
+  as this will ensure consistent seeded results during experiments.
+
 * Once completed, the className of the new agent must be added to the
   ``__init__.py`` file in the ``Policies/`` directory.
   (This allows other files to import the new Policy).
@@ -89,21 +95,12 @@ Additional Information
 
 * As always, the Policy can log messages using ``self.logger.info(<str>)``, see 
   Python ``logger`` doc. 
-  Your code should be appropriately handle the case where ``logger=None`` is 
-  passed to ``__init__()``.
 
 * You should log values assigned to custom parameters when ``__init__()`` is called.
 
 * See :class:`~rlpy.Policies.Policy.Policy` for functions 
   provided by the superclass, especially before defining 
   helper functions which might be redundant. \n
-
-* Note the useful functions provided by 
-  the :class:`~rlpy.Representations.Representation.Representation``,
-  e.g. :func:`~rlpy.Representations.Representation.bestActions` 
-  and :func:`~rlpy.Representations.Representation.bestAction`
-  to get the best action(s) with respect to the value function (greedy).
-
 
 
 Example: Creating the ``Epsilon-Greedy`` Policy
@@ -150,8 +147,8 @@ have explored the entire domain.
    multiple best actions exist, ie with the same 
    value, ``forcedDeterministicAmongBestActions``::
 
-       def __init__(self,representation,logger,epsilon = .1,
-                     forcedDeterministicAmongBestActions = False):
+       def __init__(self,representation, epsilon = .1,
+                     forcedDeterministicAmongBestActions = False, seed=1):
            self.epsilon = epsilon
            self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
            super(eGreedy,self).__init__(representation)
@@ -165,16 +162,16 @@ have explored the entire domain.
    the best actions or always select the one with lowest index::
 
        def pi(self,s, terminal, p_actions):
-           coin = np.random.rand()
+           coin = self.random_state.rand()
            #print "coin=",coin
            if coin < self.epsilon:
-               return np.random.choice(p_actions)
+               return self.random_state.choice(p_actions)
            else:
                b_actions = self.representation.bestActions(s, terminal, p_actions)
                if self.forcedDeterministicAmongBestActions:
                    return b_actions[0]
                else:
-                   return np.random.choice(b_actions)
+                   return self.random_state.choice(b_actions)
 
 #. Because this policy has an exploratory component, we must override the
    ``turnOffExploration()`` and ``turnOnExploration()`` functions, so that when
@@ -199,7 +196,7 @@ That's it! Now add your new Policy to ``Policies/__init__.py``::
 
     ``from eGreedyTut import eGreedyTut``
 
-Finally, create a unit test for your Policy XX XX.
+Finally, create a unit test for your Policy as described in :ref:`unittests`
 
 Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
@@ -217,7 +214,6 @@ In this Policy tutorial, we have seen how to
 * Override several base functions, including those that manage exploration/exploitation
 * Add the Policy to RLPy and test it
 
-If you would like to add your new Policy to the RLPy project, email ``rlpy@mit.edu``
-or create a pull request to the 
+If you would like to add your new policy to the RLPy project, email the community
+list ``rlpy@mit.edu`` or create a pull request to the 
 `RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
-

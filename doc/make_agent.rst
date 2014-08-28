@@ -51,14 +51,20 @@ Note that RLPy requires the BSD 3-Clause license.
   :func:`~rlpy.Agents.Agent.__init__` function of the Agent superclass.
 
 * Accordingly, each Agent must be instantiated with a Representation, 
-  Policy, and Domain XX Remove additional params eg boyan? XX in the 
-  ``__init__()`` function
+  Policy, and Domain in the ``__init__()`` function
+
+* Any randomization that occurs at object construction *MUST* occur in the 
+  ``init_randomization()`` function, which can be called by ``__init__()``.
+
+* Any random calls should use self.random_state, not random() or np.random(),
+  as this will ensure consistent seeded results during experiments.
 
 * Once completed, the className of the new agent must be added to the
   ``__init__.py`` file in the ``Agents/`` directory.
   (This allows other files to import the new agent).
 
-* After your agent is complete, you should define a unit test XX Add info here XX
+* After your agent is complete, you should define a unit test to ensure future
+  revisions do not alter behavior.  See rlpy/tests for some examples.
 
 REQUIRED Instance Variables
 """""""""""""""""""""""""""
@@ -124,25 +130,26 @@ this TD error, weighted by a factor called the *learning rate*.
 #. Declare the class, create needed members variables (here a learning rate),
    described above) and write a docstring description::
 
-       class SARSA0(Agent):
+       class SARSA0(DescentAlgorithm, Agent):
            """
            Standard SARSA algorithm without eligibility trace (ie lambda=0)
            """
-           learning_rate = 0 # The weight on TD updates ('alpha' in the paper)
 
-#. Copy the __init__ declaration from ``Agent.py``, add needed parameters
-   (here the learning_rate) and log them.  Then call the superclass constructor::
+#. Copy the __init__ declaration from ``Agent`` and ``DescentAlgorithm``
+   in ``Agent.py``, and add needed parameters
+   (here the initial_learn_rate) and log them.  (kwargs is a catch-all for
+   initialization parameters.)  Then call the superclass constructor::
 
-       def __init__(self, representation, policy, domain, learning_rate=0.1):
-           self.learning_rate = learning_rate
-           super(SARSA0,self).__init__(representation,policy,domain,initial_alpha,alpha_decay_mode, boyan_N0)
+       def __init__(self, policy, representation, discount_factor, initial_learn_rate=0.1, **kwargs):
+           super(SARSA0,self).__init__(policy=policy,
+            representation=representation, discount_factor=discount_factor, **kwargs)
            self.logger.info("Learning rate:\t\t%0.2f" % learning_rate)
 
 #. Copy the learn() declaration and implement accordingly.
    Here, compute the td-error, and use it to update
    the value function estimate (by adjusting feature weights)::
 
-      def learn(self,s,p_actions, a, r, ns, np_actions, na,terminal):
+      def learn(self, s, p_actions, a, r, ns, np_actions, na,terminal):
    
            # The previous state could never be terminal
            # (otherwise the episode would have already terminated)
@@ -189,7 +196,7 @@ That's it! Now add your new agent to ``Agents/__init__.py``::
 
     from SARSA0 import SARSA0
 
-Finally, create a unit test for your agent XX XX.
+Finally, create a unit test for your agent as described in :ref:`unittests`
 
 Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
@@ -206,7 +213,7 @@ In this Agent tutorial, we have seen how to
 * Write a learning agent that inherits from the RLPy base ``Agent`` class
 * Add the agent to RLPy and test it
 
-If you would like to add your new agent to the RLPy project, email ``rlpy@mit.edu``
-or create a pull request to the 
+If you would like to add your new agent to the RLPy project, email the community
+list ``rlpy@mit.edu`` or create a pull request to the 
 `RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
 
