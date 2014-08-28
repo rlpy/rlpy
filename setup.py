@@ -1,8 +1,5 @@
 """
-This script can be used to compile further extensions that may
-speed up computations.
-Please run:
-python setup.py build_ext --inplace
+Installation script for RLPy
 """
 
 from setuptools import setup, Extension, find_packages
@@ -12,10 +9,11 @@ import os
 import sys
 
 # Grab the version string from the documentation.
-sys.path.insert(0, 'doc')
+doc_dir = os.path.join(os.path.basename(__file__), 'doc')
+sys.path.insert(0, doc_dir)
 import conf
 version = conf.release
-sys.path.remove('doc')
+sys.path.remove(doc_dir)
 
 if sys.platform == 'darwin':
     # by default use clang++ as this most likely to have c++11 support
