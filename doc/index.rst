@@ -44,3 +44,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`search`
 
+Staying Connected
+=================
+Feel free to join the rlpy list, rlpy@mit.edu by sending a message with subject line SUBSCRIBE.
+This list is intended for open discussion about questions, potential improvements, etc.
