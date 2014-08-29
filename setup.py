@@ -60,6 +60,7 @@ setup(name="rlpy",
           'Domains/PinballConfigs/*.cfg',
           'Domains/PacmanPackage/layouts/*.lay',
           'Domains/SystemAdministratorMaps/*.txt',
+          "Representations/c_kernels.h",
       ]},
       install_requires=[
           'numpy >= 1.7',
