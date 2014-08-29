@@ -6,14 +6,22 @@ from setuptools import setup, Extension, find_packages
 from Cython.Distutils import build_ext
 import numpy
 import os
+import re
 import sys
 
-# Grab the version string from the documentation.
-doc_dir = os.path.join(os.path.basename(__file__), 'doc')
-sys.path.insert(0, doc_dir)
-import conf
-version = conf.release
-sys.path.remove(doc_dir)
+
+def get_version_string():
+    # Grab the version string from the documentation.
+    conf_fn = os.path.join(os.path.dirname(__file__), 'doc', 'conf.py')
+    VERSION_PATTERN = re.compile("release = '([^']+)'")
+    with open(conf_fn) as source:
+        for line in source:
+            match = VERSION_PATTERN.search(line)
+            if match:
+                return match.group(1)
+    raise ValueError('Could not extract release version from sphinx doc')
+
+version = get_version_string()
 
 if sys.platform == 'darwin':
     # by default use clang++ as this most likely to have c++11 support
@@ -77,7 +85,6 @@ setup(name="rlpy",
                      "rlpy/Representations/c_kernels.cc",
                      "rlpy/Representations/c_kernels.pxd"],
                     language="c++",
-                    #extra_compile_args=extra_args + ["-std=c++0x"],
                     include_dirs=[numpy.get_include(), "rlpy.Representations"]),
           Extension("rlpy.Tools._transformations",
                     ["rlpy/Tools/transformations.c"],
