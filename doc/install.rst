@@ -30,7 +30,7 @@ The current development version of RLPy can be installed in distutils editable m
 
     pip install -e git+https://bitbucket.org/rlpy/rlpy.git#egg=rlpy
 
-This command clones the RLPy repository into the directory `rlpy`, compiles all C-extensions and tells the Python distribution where to find RLPy by creating a `.egg-link` file in the default package directory.
+This command clones the RLPy repository into the directory `src/rlpy`, compiles all C-extensions and tells the Python distribution where to find RLPy by creating a `.egg-link` file in the default package directory.
 
 Alternatively, you can clone the RLPy directory manually by::
 
