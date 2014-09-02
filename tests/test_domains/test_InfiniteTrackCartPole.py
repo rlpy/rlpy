@@ -2,12 +2,9 @@ from rlpy.Representations import Tabular
 from rlpy.Domains.InfiniteTrackCartPole import InfTrackCartPole, InfCartPoleBalance, InfCartPoleSwingUp
 from rlpy.Agents.TDControlAgent import SARSA
 import numpy as np
-from rlpy.Tools import __rlpy_location__
-import os
-
+from .helpers import check_seed_vis
 from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
-import logging
 
 def _make_experiment(domain, exp_id=1, \
                      path="./Results/Tmp/test_InfTrackCartPole"):
@@ -60,53 +57,18 @@ def _checkSameExperimentResults(exp1, exp2):
         return False
     return True
 
+
 def test_seed_balance():
     """ Ensure that providing the same random seed yields same result """
-     
-    domain = InfCartPoleBalance()
-    # [[initialize and run experiment without visual]]
-    expNoVis = _make_experiment(domain=domain, exp_id=1)
-    expNoVis.run(visualize_steps=False,
-            visualize_learning=False,
-            visualize_performance=0)
-     
-    # [[initialize and run experiment with visual]]
-    expVis1 = _make_experiment(domain=domain, exp_id=1)
-    expVis1.run(visualize_steps=True,
-            visualize_learning=False,
-            visualize_performance=1)
-     
-    expVis2 = _make_experiment(domain=domain, exp_id=1)
-    expVis2.run(visualize_steps=False,
-            visualize_learning=True,
-            visualize_performance=1)
-     
-    # [[assert get same results]]
-    assert _checkSameExperimentResults(expNoVis, expVis1)
-    assert _checkSameExperimentResults(expNoVis, expVis2)
-     
+
+    def myfn(*args, **kwargs):
+        return _make_experiment(InfCartPoleBalance(), *args, **kwargs)
+    check_seed_vis(myfn)
+
 def test_seed_swingup():
-    domain = InfCartPoleSwingUp()
-    # [[initialize and run experiment without visual]]
-    expNoVis = _make_experiment(domain=domain, exp_id=1)
-    expNoVis.run(visualize_steps=False,
-            visualize_learning=False,
-            visualize_performance=0)
-     
-    # [[initialize and run experiment with visual]]
-    expVis1 = _make_experiment(domain=domain, exp_id=1)
-    expVis1.run(visualize_steps=True,
-            visualize_learning=False,
-            visualize_performance=1)
-     
-    expVis2 = _make_experiment(domain=domain, exp_id=1)
-    expVis2.run(visualize_steps=False,
-            visualize_learning=True,
-            visualize_performance=1)
-     
-    # [[assert get same results]]
-    assert _checkSameExperimentResults(expNoVis, expVis1)
-    assert _checkSameExperimentResults(expNoVis, expVis2)
+    def myfn(*args, **kwargs):
+        return _make_experiment(InfCartPoleSwingUp(), *args, **kwargs)
+    check_seed_vis(myfn)
 
 def test_physicality():
     """
@@ -119,30 +81,30 @@ def test_physicality():
     LEFT_FORCE = 0
     NO_FORCE = 1
     RIGHT_FORCE = 2
-    
+
     domain = InfCartPoleSwingUp()
     domain.force_noise_max = 0 # no stochasticity in applied FORCE
-    
+
     # Positive angle (right)
     s = np.array([10.0 * np.pi/180.0, 0.0]) # pendulum slightly right
     domain.state = s.copy()
-    
+
     for i in np.arange(5): # do for 5 steps and ensure works
         domain.step(NO_FORCE)
         assert np.all(domain.state > s) # angle and angular velocity increase
         s = domain.state.copy()
-    
+
     # Negative angle (left)
     s = np.array([-10.0 * np.pi/180.0, 0.0]) # pendulum slightly right
     domain.state = s.copy()
-    
+
     for i in np.arange(5): # do for 5 steps and ensure works
         domain.step(NO_FORCE)
         assert np.all(domain.state < s) # angle and angular velocity increase
         s = domain.state.copy()
-    
+
     # Ensure that reward racks up while in region
-    
+
 def test_physicality_hanging():
     """
     Test that energy does not spontaneously enter system
@@ -152,14 +114,14 @@ def test_physicality_hanging():
     LEFT_FORCE = 0
     NO_FORCE = 1
     RIGHT_FORCE = 2
-    
+
     domain = InfCartPoleSwingUp()
     domain.force_noise_max = 0 # no stochasticity in applied FORCE
-    
+
     # Positive angle (right)
     s = np.array([179.6 * np.pi/180.0, 0.0]) # pendulum hanging down
     domain.state = s
-    
+
     for i in np.arange(5): # do for 5 steps and ensure works
         domain.step(NO_FORCE)
         assert np.abs(domain.state[0]) <=179.5 # angle does not increase

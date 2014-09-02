@@ -8,4 +8,4 @@ before_install:
 install: 
     - "pip install cython networkx joblib hyperopt pymongo --use-mirrors"
     - "python setup.py build_ext --inplace"
-script: "xvfb-run --server-args=\"-screen 0 1024x768x24\" nosetests tests"
+script: "xvfb-run --server-args=\"-screen 0 1024x768x24\" nosetests tests --logging-clear-handlers -v"

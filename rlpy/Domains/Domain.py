@@ -1,8 +1,7 @@
 """Domain base class"""
 import numpy as np
-import rlpy.Tools as Tools
 import logging
-from copy import copy, deepcopy
+from copy import deepcopy
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -89,13 +88,13 @@ class Domain(object):
 
         # a new stream of random numbers for each domain
         self.random_state = np.random.RandomState()
-    
+
     def init_randomization(self):
         """
         Any stochastic behavior in __init__() is broken out into this function
         so that if the random seed is later changed (eg, by the Experiment),
         other member variables and functions are updated accordingly.
-        
+
         """
         pass
 
@@ -227,7 +226,7 @@ Gamma:      {self.discount_factor}
 
     def saveRandomState(self):
         """
-        Stores the state of the the random generator. Using loadRandomState this state can be loaded. 
+        Stores the state of the the random generator. Using loadRandomState this state can be loaded.
         Hence the following code will print a unique number all the time.
         while True:
             self.saveRandomState()
@@ -238,7 +237,7 @@ Gamma:      {self.discount_factor}
 
     def loadRandomState(self):
         """
-        Loads the random state stored in the self.random_state_backup 
+        Loads the random state stored in the self.random_state_backup
         """
         self.random_state.set_state(self.random_state_backup)
 
@@ -313,7 +312,7 @@ Gamma:      {self.discount_factor}
         for k, v in self.__dict__.items():
             if k is "logger":
                 continue
-            # This block bandles matplotlib transformNode objects, 
+            # This block bandles matplotlib transformNode objects,
                 # which cannot be coped
             try:
                 setattr(result, k, deepcopy(v, memo))
@@ -322,6 +321,6 @@ Gamma:      {self.discount_factor}
                 try:
                     setattr(result, k, v.frozen())
                 except:
-                    self.logger.warning('Could not copy attribute when ' \
-                                        'duplicating domain.')
+                    self.logger.warning('Could not copy attribute ' + k +
+                                        ' when duplicating domain.')
         return result

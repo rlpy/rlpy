@@ -388,6 +388,31 @@ class CartPoleBase(Domain):
         self.policy_img.set_data(piMat)
         self.policy_fig.canvas.draw()
 
+    """
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            if k is "logger":
+                continue
+            if k is 'policy_fig' or k is 'domain_fig':
+                # do not copy figure handles, use new ones
+                setattr(result, k, None)
+                continue
+            # This block bandles matplotlib transformNode objects,
+                # which cannot be coped
+            try:
+                setattr(result, k, deepcopy(v, memo))
+            except:
+                # Try this: if this doesnt work, just let theat error get thrown
+                try:
+                    setattr(result, k, v.frozen())
+                except:
+                    self.logger.warning('Could not copy attribute ' + k +
+                                        ' when duplicating domain.')
+        return result
+    """
     def _plot_valfun(self, VMat):
         """
         :returns: handle to the figure
@@ -411,8 +436,6 @@ class CartPoleBase(Domain):
                 vmax=maxV)
             pl.xticks(self.xTicks, self.xTicksLabels, fontsize=12)
             # Don't need the y labels since we share axes on subplot
-#             pl.yticks(self.yTicks,self.yTicksLabels, fontsize=12)
-#             pl.ylabel(r"$\dot{\theta}$ (degree/sec)")
             pl.xlabel(r"$\theta$ (degree)")
             pl.title('Value Function')
 
@@ -434,9 +457,6 @@ class CartPoleBase(Domain):
         if (self.domain_fig is None or self.pendulumArm is None) or \
            (self.cartBox is None or self.cartBlob is None):  # Need to initialize the figure
             self.domain_fig = pl.figure("Domain")
-#             pl.xlabel(r"$x$ position (meters)")
-#             pl.ylabel(r"$y$ position (meters)")
-#             pl.title('Domain State')
             self.domain_ax = self.domain_fig.add_axes(
                 [0, 0, 1, 1], frameon=True, aspect=1.)
             self.pendulumArm = lines.Line2D(
@@ -486,7 +506,6 @@ class CartPoleBase(Domain):
 
             pl.show()
 
-#         self.domain_fig = pl.figure("Domain")
         forceAction = self.AVAIL_FORCE[a]
         curX = s[StateIndex.X]
         curTheta = s[StateIndex.THETA]
@@ -494,7 +513,6 @@ class CartPoleBase(Domain):
         pendulumBobX = curX + self.LENGTH * np.sin(curTheta)
         pendulumBobY = self.PENDULUM_PIVOT_Y + self.LENGTH * np.cos(curTheta)
 
-#         self.rewardText.set_text("Reward {0:g}".format(r, pendulumBobX, pendulumBobY))
         if self.DEBUG:
             print 'Pendulum Position: ', pendulumBobX, pendulumBobY
 

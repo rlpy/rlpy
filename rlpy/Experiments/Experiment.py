@@ -90,8 +90,8 @@ class Experiment(object):
     log_template = '{total_steps: >6}: E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
     performance_log_template = '{total_steps: >6}: >>> E[{elapsed}]-R[{remaining}]: Return={totreturn: >10.4g}, Steps={steps: >4}, Features = {num_feat}'
 
-    def __init__(self, agent, domain, exp_id=1, max_steps=max_steps, 
-                 config_logging=True, num_policy_checks=10, log_interval=1, 
+    def __init__(self, agent, domain, exp_id=1, max_steps=max_steps,
+                 config_logging=True, num_policy_checks=10, log_interval=1,
                  path='Results/Temp',
                  checks_per_policy=1, stat_bins_per_state_dim=0, **kwargs):
         """
@@ -125,7 +125,7 @@ class Experiment(object):
         self.logger = logging.getLogger("rlpy.Experiments.Experiment")
         self.log_interval = log_interval
         self.config_logging = config_logging
-        self._update_path(path)
+        self.path = path
         if stat_bins_per_state_dim > 0:
             self.state_counts_learn = np.zeros(
                 (domain.statespace_limits.shape[0],
@@ -158,6 +158,7 @@ class Experiment(object):
         set the initial seeds for all random number generators used during
         the experiment run based on the currently set ``exp_id``.
         """
+        self._update_path(self.path)
         self.output_filename = '{:0>3}-results.json'.format(self.exp_id)
         np.random.seed(self.randomSeeds[self.exp_id - 1])
         self.domain.random_state = np.random.RandomState(
@@ -166,7 +167,7 @@ class Experiment(object):
         # make sure the performance_domain has a different seed
         self.performance_domain.random_state = np.random.RandomState(
             self.randomSeeds[self.exp_id + 20])
-        
+
         # Its ok if use same seed as domain, random calls completely different
         self.agent.random_state = np.random.RandomState(
             self.randomSeeds[self.exp_id - 1])
@@ -527,7 +528,7 @@ class Experiment(object):
 
     def compile_path(self, path):
         """
-        An experiment path can be specified with placeholders. For 
+        An experiment path can be specified with placeholders. For
         example, ``Results/Temp/{domain}/{agent}/{representation}``.
         This functions replaces the placeholders with actual values.
         """
