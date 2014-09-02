@@ -19,6 +19,7 @@ class NaturalActorCritic(Agent):
     as described in algorithm 1 of
         Peters, J. & Schaal, S. Natural Actor-Critic.
         Neurocomputing 71, 1180-1190 (2008).
+
     """
 
     # minimum for the cosine of the current and last gradient
@@ -30,8 +31,8 @@ class NaturalActorCritic(Agent):
         """
         @param representation: function approximation used to approximate the
                                value function
-        @param policy:  parametrized stochastic policy with parameters
-                        policy.theta
+        @param policy:  parametrized stochastic policy that is an instance of
+                                DifferentiablePolicy
         @param forgetting_rate: specifies the decay of previous statistics
                                 after a policy update; 1 = forget all
                                 0 = forget none
