@@ -37,6 +37,12 @@ class BasicPuddlePolicy(Policy):
 
 
 class FixedPolicy(Policy):
+    """
+    Actions on a particular domain are determined according to a 
+    fixed (though not necessarily deterministic) policy; ie, 
+    it is not based on a learning component.
+
+    """
 
     # The name of the desired policy, where applicable. Otherwise ignored.
     policyName = ''

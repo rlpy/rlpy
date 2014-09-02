@@ -16,6 +16,10 @@ RLPy is available on Pypi. The latest stable version can be installed directly w
 This command downloads the latest release of RLPy and installs it into the default package location
 of your python distribution. For more information of the disutils package systems, have a look at the `documentation <https://docs.python.org/2/install/index.html#install-index>`_. 
 
+If you are using MacOS make sure you have the latest version of Xcode using::
+
+    xcode-select --install
+
 Alternatively, you can download RLPy manually, extract the package and execute the installer by hand::
     
     python setup.py install
