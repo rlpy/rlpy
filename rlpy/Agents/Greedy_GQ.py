@@ -12,6 +12,14 @@ __author__ = "Alborz Geramifard"
 
 
 class Greedy_GQ(DescentAlgorithm, Agent):
+    """
+    A variant of Q-learning for use with linear function approximation.
+    Convergence guarantees are available even without an exact value 
+    function representation.
+    See Maei et al., 2010 (http://www.icml2010.org/papers/627.pdf)
+
+    """
+
     lambda_ = 0  # lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []
     # eligibility trace using state only (no copy-paste), necessary for dabney

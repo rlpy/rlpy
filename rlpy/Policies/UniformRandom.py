@@ -11,6 +11,11 @@ __author__ = "Alborz Geramifard"
 
 
 class UniformRandom(Policy):
+    """
+    Select an action uniformly at random from those available in a particular
+    state.
+
+    """
 
     def __init__(self, representation, seed=1):
         super(UniformRandom, self).__init__(representation, seed)

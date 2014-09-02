@@ -17,12 +17,14 @@ class OMPTD(Representation):
 
     """OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr.
 
-    This implementation assumes an initial representation exists and the bag of features is the conjunctions of existing features
-    As a results OMP-TD uses iFDD to represents its features, yet its discovery method is different compared to
-    iFDD as it does not have to look at the fringe of the tree rather it looks through a predefined set of features
-    iFDD initially will expand all the features in the bag
+    This implementation assumes an initial representation exists and the bag 
+    of features is the conjunctions of existing features.
+    OMP-TD uses iFDD to represents its features, yet its discovery method is 
+    different; while iFDD looks at the fringe of the tree of expanded features,
+    OMPTD only looks through a predefined set of features.
 
-    The set of features used by OMPTD aside from the initial_features are represented by self.expandedFeatures
+    The set of features used by OMPTD aside from the initial_features are 
+    represented by self.expandedFeatures
 
     """
 

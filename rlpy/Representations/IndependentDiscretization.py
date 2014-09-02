@@ -11,6 +11,17 @@ __author__ = "Alborz Geramifard"
 
 
 class IndependentDiscretization(Representation):
+    """
+    Creates a feature for each discrete bin in each dimension; the feature 
+    vector for a given state is comprised of binary features, where only the 
+    single feature in a particular dimension is 1, all others 0.
+    I.e., in a particular state, the sum of all elements of a feature vector
+    equals the number of dimensions in the state space.
+
+    Note that This is the minimum number of binary features required to 
+    uniquely represent a state in a given finite discrete domain.
+
+    """
 
     def __init__(self, domain, discretization=20):
         self.setBinsPerDimension(domain, discretization)
