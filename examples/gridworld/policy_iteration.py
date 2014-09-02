@@ -5,7 +5,6 @@ __author__ = "William Dabney"
 from rlpy.Domains import GridWorld
 from rlpy.MDPSolvers import PolicyIteration
 from rlpy.Representations import Tabular
-from rlpy.Policies import GibbsPolicy
 from rlpy.Experiments import MDPSolverExperiment
 import os
 

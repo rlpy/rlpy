@@ -1,8 +1,9 @@
 """Policy base class"""
 
-from rlpy.Tools import className
+from rlpy.Tools import className, discrete_sample
 import numpy as np
 import logging
+from abc import ABCMeta, abstractmethod
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -32,6 +33,7 @@ class Policy(object):
 
     """
 
+    __netaclass__ = ABCMeta
     representation = None
     DEBUG = False
     # A seeded numpy random number generator
@@ -48,16 +50,17 @@ class Policy(object):
         self.logger = logging.getLogger("rlpy.Policies." + self.__class__.__name__)
         # a new stream of random numbers for each domain
         self.random_state = np.random.RandomState(seed=seed)
-    
+
     def init_randomization(self):
         """
         Any stochastic behavior in __init__() is broken out into this function
         so that if the random seed is later changed (eg, by the Experiment),
         other member variables and functions are updated accordingly.
-        
+
         """
         pass
-        
+
+    @abstractmethod
     def pi(self, s, terminal, p_actions):
         """
         *Abstract Method:*\n Select an action given a state.
@@ -144,3 +147,41 @@ class Policy(object):
             a = self.pi(s)
 
         return S, A, NS, R, T
+
+
+class DifferentiablePolicy(Policy):
+
+    __metaclass__ = ABCMeta
+
+    def pi(self, s, terminal, p_actions):
+        """Sample action from policy"""
+        p = self.probabilities(s, terminal)
+        return discrete_sample(p)
+
+    @abstractmethod
+    def dlogpi(self, s, a):
+        """derivative of the log probabilities of the policy"""
+        return NotImplementedError
+
+    def prob(self, s, a):
+        """
+        probability of chosing action a given the state s
+        """
+        v = self.probabilities(s, False)
+        return v[a]
+
+    @property
+    def theta(self):
+        return self.representation.weight_vec
+
+    @theta.setter
+    def theta(self, v):
+        self.representation.weight_vec = v
+
+    @abstractmethod
+    def probabilities(self, s, terminal):
+        """
+        returns a vector of num_actions length containing the normalized
+        probabilities for taking each action given the state s
+        """
+        return NotImplementedError

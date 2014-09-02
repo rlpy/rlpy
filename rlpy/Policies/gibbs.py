@@ -1,8 +1,7 @@
 """Gibbs policy"""
 
-from .Policy import Policy
+from .Policy import DifferentiablePolicy
 import numpy as np
-from rlpy.Tools import discrete_sample
 
 __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -10,7 +9,7 @@ __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
 __license__ = "BSD 3-Clause"
 
 
-class GibbsPolicy(Policy):
+class GibbsPolicy(DifferentiablePolicy):
 
     """
     Gibbs policy for finite number of actions
@@ -18,10 +17,6 @@ class GibbsPolicy(Policy):
     Warning: assumes that the features for each action are stacked, i.e.,
     a feature vector consists of |A| identical stacked vectors.
     """
-
-    def pi(self, s, terminal, p_actions):
-        p = self.probabilities(s, terminal)
-        return discrete_sample(p)
 
     def dlogpi(self, s, a):
 
@@ -32,23 +27,7 @@ class GibbsPolicy(Policy):
         res.shape = self.representation.weight_vec.shape
         res[a * n:(a + 1) * n] += phi
         assert not np.any(np.isnan(res))
-        #res.shape = self.representation.weight_vec.shape
         return res
-
-    def prob(self, s, a):
-        """
-        probability of chosing action a given the state s
-        """
-        v = self.probabilities(s, False)
-        return v[a]
-
-    @property
-    def theta(self):
-        return self.representation.weight_vec
-
-    @theta.setter
-    def theta(self, v):
-        self.representation.weight_vec = v
 
     def probabilities(self, s, terminal):
 
