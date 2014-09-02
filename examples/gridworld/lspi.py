@@ -22,6 +22,7 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
 
     # Experiment variables
     opt = {}
+    opt["path"] = path
     opt["exp_id"] = exp_id
     opt["max_steps"] = 10000
     opt["num_policy_checks"] = 10

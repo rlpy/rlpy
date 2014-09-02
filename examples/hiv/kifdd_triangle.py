@@ -28,6 +28,7 @@ def make_experiment(
         initial_learn_rate=0.87831,
         kernel_resolution=14.7920):
     opt = {}
+    opt["path"] = path
     opt["exp_id"] = exp_id
     opt["max_steps"] = 150000
     opt["num_policy_checks"] = 30

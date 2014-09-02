@@ -28,6 +28,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
     """
     opt = {}
     opt["exp_id"] = exp_id
+    opt["path"] = path
 
     ## Domain:
     chainSize = 50

@@ -17,11 +17,11 @@ def make_experiment(
         boyan_N0=3571.6541,
         initial_learn_rate=0.62267772):
     opt = {}
+    opt["path"] = path
     opt["exp_id"] = exp_id
     opt["max_steps"] = 500000
     opt["num_policy_checks"] = 30
     opt["checks_per_policy"] = 10
-    beta_coef = 1e-6
     domain = PST(NUM_UAV=4)
     opt["domain"] = domain
     representation = IndependentDiscretization(domain)

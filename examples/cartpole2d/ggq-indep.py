@@ -25,6 +25,7 @@ def make_experiment(
         discretization=6.):
     opt = {}
     opt["exp_id"] = exp_id
+    opt["path"] = path
     opt["max_steps"] = 50000
     opt["num_policy_checks"] = 20
     opt["checks_per_policy"] = 10

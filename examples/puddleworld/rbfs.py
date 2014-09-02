@@ -25,6 +25,7 @@ def make_experiment(
         num_rbfs=96.,
         lambda_=.1953):
     opt = {}
+    opt["path"] = path
     opt["exp_id"] = exp_id
     opt["max_steps"] = 40000
     opt["num_policy_checks"] = 20

@@ -22,6 +22,7 @@ def make_experiment(
         boyan_N0=20.1,
         initial_learn_rate=0.330):
     opt = {}
+    opt["path"] = path
     opt["exp_id"] = exp_id
     opt["max_steps"] = 100000
     opt["num_policy_checks"] = 10

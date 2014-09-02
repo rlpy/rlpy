@@ -30,6 +30,7 @@ def make_experiment(
         initial_learn_rate=0.8014120,
         discretization=25.):
     opt = {}
+    opt["path"] = path
     opt["exp_id"] = exp_id
     opt["max_steps"] = 50000
     opt["num_policy_checks"] = 20
