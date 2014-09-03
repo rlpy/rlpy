@@ -85,7 +85,7 @@ class HelicopterHoverExtended(Domain):
     noise_std = np.array([0.1941, 0.2975, 0.6058, 0.1508, 0.2492, 0.0734])
     drag_vel_body = np.array([.18, .43, .49])
     drag_ang_rate = np.array([12.78, 10.12, 8.16])
-    u_coeffs = np.array([-33.04, -33.32, 70.54, -42.15])
+    u_coeffs = np.array([33.04, -33.32, 70.54, -42.15])
     tail_rotor_side_thrust = -0.54
 
     dt = 0.01  #: length of one timestep
