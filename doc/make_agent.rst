@@ -33,35 +33,20 @@ whether the agent starts over or has its current policy tested
 Requirements 
 ------------
 
-* At the top of the file (before the class definition), include the heading::
-
-    __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
-    __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann", 
-                    "William Dabney", "Jonathan P. How"]
-    __license__ = "BSD 3-Clause"
-    __author__ = "Tim Beaver"
-
-Fill in the appropriate ``__author__`` name and ``__credits__`` as needed.
-Note that RLPy requires the BSD 3-Clause license.
-
-* If available, please include a link or reference to the publication associated 
-  with this implementation (and note differences, if any).
-
-* Each learning agent must be a subclass of :class:`~rlpy.Agents.Agent.Agent` and call the 
-  :func:`~rlpy.Agents.Agent.__init__` function of the Agent superclass.
+* Each learning agent must be a subclass of :class:`~rlpy.Agents.Agent.Agent` 
+  and call 
+  the :func:`~rlpy.Agents.Agent.Agent.__init__` function of the Agent superclass.
 
 * Accordingly, each Agent must be instantiated with a Representation, 
   Policy, and Domain in the ``__init__()`` function
 
-* Any randomization that occurs at object construction *MUST* occur in the 
-  ``init_randomization()`` function, which can be called by ``__init__()``.
+* Any randomization that occurs at object construction *MUST* occur in
+  the :func:`~rlpy.Agents.Agent.Agent.init_randomization` function, 
+  which can be called by ``__init__()``.
 
-* Any random calls should use self.random_state, not random() or np.random(),
-  as this will ensure consistent seeded results during experiments.
-
-* Once completed, the className of the new agent must be added to the
-  ``__init__.py`` file in the ``Agents/`` directory.
-  (This allows other files to import the new agent).
+* Any random calls should use ``self.random_state``, not ``random()`` or 
+  ``np.random()``, as this will ensure consistent seeded results during 
+  experiments.
 
 * After your agent is complete, you should define a unit test to ensure future
   revisions do not alter behavior.  See rlpy/tests for some examples.
@@ -196,7 +181,7 @@ That's it! Now add your new agent to ``Agents/__init__.py``::
 
     from SARSA0 import SARSA0
 
-Finally, create a unit test for your agent as described in :ref:`unittests`
+Finally, create a unit test for your agent as described in :doc:`unittests`
 
 Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
@@ -213,7 +198,34 @@ In this Agent tutorial, we have seen how to
 * Write a learning agent that inherits from the RLPy base ``Agent`` class
 * Add the agent to RLPy and test it
 
-If you would like to add your new agent to the RLPy project, email the community
-list ``rlpy@mit.edu`` or create a pull request to the 
+
+Adding your component to RLPy
+"""""""""""""""""""""""""""""
+If you would like to add your component to RLPy, we recommend developing on the 
+development version (see :ref:`devInstall`).
+Please use the following header at the top of each file:: 
+
+    __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+    __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann", 
+                    "William Dabney", "Jonathan P. How"]
+    __license__ = "BSD 3-Clause"
+    __author__ = "Tim Beaver"
+
+* Fill in the appropriate ``__author__`` name and ``__credits__`` as needed.
+  Note that RLPy requires the BSD 3-Clause license.
+
+* If you installed RLPy in a writeable directory, the className of the new 
+  agent can be added to
+  the ``__init__.py`` file in the ``Agents/`` directory.
+  (This allows other files to import the new agent).
+
+* If available, please include a link or reference to the publication associated 
+  with this implementation (and note differences, if any).
+
+If you would like to add your new agent to the RLPy project, we recommend
+you branch the project and create a pull request to the 
 `RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
+
+You can also email the community list ``rlpy@mit.edu`` for comments or 
+questions. 
 

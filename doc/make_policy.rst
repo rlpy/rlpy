@@ -5,8 +5,8 @@
 Creating a New Policy
 =====================
 
-This tutorial describes the standard RLPy 
-:class:`~rlpy.Policies.Policy.Policy` interface,
+This tutorial describes the standard 
+RLPy :class:`~rlpy.Policies.Policy.Policy` interface,
 and illustrates a brief example of creating a new problem domain.
 
 .. Below taken directly from Policy.py
@@ -34,40 +34,20 @@ Agent should perform next (see :py:meth:`~rlpy.Policies.Policy.Policy.pi`) \n
 
 Requirements 
 ------------
-
-* At the top of the file (before the class definition), include the heading::
-
-    __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
-    __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann", 
-                    "William Dabney", "Jonathan P. How"]
-    __license__ = "BSD 3-Clause"
-    __author__ = "Tim Beaver"
-
-Fill in the appropriate ``__author__`` name and ``__credits__`` as needed.
-Note that RLPy requires the BSD 3-Clause license.
-
-* If available, please include a link or reference to the publication associated 
-  with this implementation (and note differences, if any).
-
 * Each Policy must be a subclass of :class:`~rlpy.Policies.Policy.Policy` and call 
-  the :func:`~rlpy.Policies.Policy.__init__` function of the 
+  the :func:`~rlpy.Policies.Policy.Policy.__init__` function of the 
   Policy superclass.
 
-* Accordingly, each Policy must be instantiated with a Logger (or None)
-  in the ``__init__()`` function. Your code should be appropriately handle 
-  the case where ``logger=None`` is passed to ``__init__()``.
+* Any randomization that occurs at object construction *MUST* occur in
+  the :func:`~rlpy.Policies.Policy.Policy.init_randomization()` function, 
+  which can be called by ``__init__()``.
 
-* Any randomization that occurs at object construction *MUST* occur in the 
-  ``init_randomization()`` function, which can be called by ``__init__()``.
+* Any random calls should use ``self.random_state``, not ``random()`` 
+  or ``np.random()``, as this will ensure consistent seeded results during 
+  experiments.
 
-* Any random calls should use self.random_state, not random() or np.random(),
-  as this will ensure consistent seeded results during experiments.
-
-* Once completed, the className of the new agent must be added to the
-  ``__init__.py`` file in the ``Policies/`` directory.
-  (This allows other files to import the new Policy).
-
-* After your Policy is complete, you should define a unit test XX Add info here XX
+* After your Policy is complete, you should define a unit test to ensure future
+  revisions do not alter behavior.  See rlpy/tests for some examples. 
 
 REQUIRED Instance Variables
 """""""""""""""""""""""""""
@@ -94,13 +74,12 @@ Additional Information
 ----------------------
 
 * As always, the Policy can log messages using ``self.logger.info(<str>)``, see 
-  Python ``logger`` doc. 
+  Python ``logger`` documentation. 
 
 * You should log values assigned to custom parameters when ``__init__()`` is called.
 
 * See :class:`~rlpy.Policies.Policy.Policy` for functions 
-  provided by the superclass, especially before defining 
-  helper functions which might be redundant. \n
+  provided by the superclass. 
 
 
 Example: Creating the ``Epsilon-Greedy`` Policy
@@ -196,7 +175,7 @@ That's it! Now add your new Policy to ``Policies/__init__.py``::
 
     ``from eGreedyTut import eGreedyTut``
 
-Finally, create a unit test for your Policy as described in :ref:`unittests`
+Finally, create a unit test for your Policy as described in :doc:`unittests`
 
 Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
@@ -211,9 +190,37 @@ What to do next?
 In this Policy tutorial, we have seen how to 
 
 * Write a Policy that inherits from the RLPy base ``Policy`` class
-* Override several base functions, including those that manage exploration/exploitation
+* Override several base functions, including those that manage 
+  exploration/exploitation
 * Add the Policy to RLPy and test it
 
-If you would like to add your new policy to the RLPy project, email the community
-list ``rlpy@mit.edu`` or create a pull request to the 
+Adding your component to RLPy
+"""""""""""""""""""""""""""""
+If you would like to add your component to RLPy, we recommend developing on the 
+development version (see :ref:`devInstall`).
+Please use the following header at the top of each file:: 
+
+    __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+    __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann", 
+                    "William Dabney", "Jonathan P. How"]
+    __license__ = "BSD 3-Clause"
+    __author__ = "Tim Beaver"
+
+* Fill in the appropriate ``__author__`` name and ``__credits__`` as needed.
+  Note that RLPy requires the BSD 3-Clause license.
+
+* If you installed RLPy in a writeable directory, the className of the new 
+  policy can be added to 
+  the ``__init__.py`` file in the ``Policies/`` directory.
+  (This allows other files to import the new policy).
+
+* If available, please include a link or reference to the publication associated 
+  with this implementation (and note differences, if any).
+
+If you would like to add your new policy to the RLPy project, we recommend
+you branch the project and create a pull request to the 
 `RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
+
+You can also email the community list ``rlpy@mit.edu`` for comments or 
+questions. 
+

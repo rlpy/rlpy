@@ -27,6 +27,8 @@ Alternatively, you can download RLPy manually, extract the package and execute t
 RLPy is now successfully installed. For an introduction on how to use the
 framework have a look at :ref:`tutorial`.
 
+.. _devInstall:
+
 Development Version
 ===================
 

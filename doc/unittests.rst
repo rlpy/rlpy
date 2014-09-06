@@ -1,7 +1,5 @@
 .. _unittests:
 
-.. this is a comment. see http://sphinx-doc.org/rest.html for markup instructions
-
 Creating a Unit Test
 =====================
 
@@ -15,19 +13,26 @@ Python Nose
 RLPy uses `nose <https://nose.readthedocs.org/en/latest/>`_ to perform unit 
 tests.
 The syntax is::
+
     nosetests <directory or file to test>
+
 If a directory is supplied, ``nose`` attempts to recursively 
 locate all files that it thinks contain tests.
 Include the word **test** in your filename and ``nose`` will search the file
 for any methods that look like tests; ie, again, include **test** in your method
 name and nose will execute it.
 Note for example, the tabular domain can be tested by running::
+
     nosetests rlpy/tests/test_representations/test_Tabular.py
+
 And that all representations (that have tests defined)
 can be tested by running::
+
     nosetests rlpy/tests/test_representations/
+
 And that in fact all modules with tests
 can be tested by running::
+
     nosetests rlpy/tests/
 
 .. warning::
@@ -60,7 +65,8 @@ Open ``rlpy/tests/test_representations/test_Tabular.py``
 Observe the filename includes the word *test*, as does each method name.
 
 Many, many tests are possible, but the author identified the most pertinent 
-ones as:
+ones as::
+
     * Ensure appropriate number of cells are created
     * Ensure the correct binary feature is activated for a particular state
     * Ensure correct discretization in continuous state spaces
@@ -72,6 +78,7 @@ The integrity of the module is always tested with a statement of the form
 
 For
 example, the code::
+
     mapname=os.path.join(mapDir, "4x5.txt") # expect 4*5 = 20 states
     domain = GridWorld(mapname=mapname)
     rep = Tabular(domain, discretization=100)
