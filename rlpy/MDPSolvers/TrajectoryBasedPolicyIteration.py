@@ -9,7 +9,7 @@
 """
 
 from .MDPSolver import MDPSolver
-from rlpy.Tools import className, hhmmss, deltaT, randSet, hasFunction, solveLinear, regularize, clock, padZeros
+from rlpy.Tools import className, hhmmss, deltaT, randSet, hasFunction, solveLinear, regularize, clock, padZeros, l_norm
 from rlpy.Policies import eGreedy
 import numpy as np
 from copy import deepcopy
@@ -235,7 +235,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         while self.hasTime() and not converged:
 
             #  1. Gather samples following an e-greedy policy
-            S, Actions, NS, R, T = self.policy.collectSamples(self.samples_num)
+            S, Actions, NS, R, T = self.collectSamples(self.samples_num)
             samples += self.samples_num
 
             #  2. Calculate A and b estimates
@@ -247,7 +247,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             self.b = np.zeros((n * a_num, 1))
             for i in xrange(self.samples_num):
                 phi_s_a = self.representation.phi_sa(
-                    S[i], Actions[i, 0]).reshape((-1, 1))
+                    S[i], T[i], Actions[i, 0]).reshape((-1, 1))
                 E_phi_ns_na = self.calculate_expected_phi_ns_na(
                     S[i], Actions[i, 0], self.ns_samples).reshape((-1, 1))
                 d = phi_s_a - discount_factor * E_phi_ns_na
@@ -290,13 +290,13 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
         # calculate the expected next feature vector (phi(ns,pi(ns)) given s
         # and a. Eqns 2.20 and 2.25 in [Geramifard et. al. 2012 FTML Paper]
         if hasFunction(self.domain, 'expectedStep'):
-            p, r, ns, t = self.domain.expectedStep(s, a)
+            p, r, ns, t, pa = self.domain.expectedStep(s, a)
             phi_ns_na = np.zeros(
                 self.representation.features_num *
                 self.domain.actions_num)
             for j in xrange(len(p)):
-                na = self.policy.pi(ns[j])
-                phi_ns_na += p[j] * self.representation.phi_sa(ns[j], na)
+                na = self.policy.pi(ns[j], t[j], pa[j])
+                phi_ns_na += p[j] * self.representation.phi_sa(ns[j], t[j], na)
         else:
             next_states, rewards = self.domain.sampleStep(s, a, ns_samples)
             phi_ns_na = np.mean(

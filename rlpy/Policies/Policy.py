@@ -97,57 +97,6 @@ class Policy(object):
         for property, value in vars(self).iteritems():
             print property, ": ", value
 
-    def collectSamples(self, samples):
-        """
-        DEPRECATED
-
-
-        Return matrices of S,A,NS,R,T where each row of each numpy 2d-array
-        is a sample by following the current policy.
-
-        - S: (#samples) x (# state space dimensions)
-        - A: (#samples) x (1) int [we are storing actionIDs here, integers]
-        - NS:(#samples) x (# state space dimensions)
-        - R: (#samples) x (1) float
-        - T: (#samples) x (1) bool
-
-        See :py:meth:`~rlpy.Agents.Agent.Agent.Q_MC` and :py:meth:`~rlpy.Agents.Agent.Agent.MC_episode`
-        """
-        domain = self.representation.domain
-        S = np.empty(
-            (samples,
-             self.representation.domain.state_space_dims),
-            dtype=type(domain.s0()))
-        A = np.empty((samples, 1), dtype='uint16')
-        NS = S.copy()
-        T = A.copy()
-        R = np.empty((samples, 1))
-
-        sample = 0
-        eps_length = 0
-        # So the first sample forces initialization of s and a
-        terminal = True
-        while sample < samples:
-            if terminal or eps_length > self.representation.domain.episodeCap:
-                s = domain.s0()
-                a = self.pi(s)
-
-            # Transition
-            r, ns, terminal = domain.step(a)
-            # Collect Samples
-            S[sample] = s
-            A[sample] = a
-            NS[sample] = ns
-            T[sample] = terminal
-            R[sample] = r
-
-            sample += 1
-            eps_length += 1
-            s = ns
-            a = self.pi(s)
-
-        return S, A, NS, R, T
-
 
 class DifferentiablePolicy(Policy):
 
