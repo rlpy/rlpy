@@ -20,6 +20,16 @@ __author__ = "Alborz Geramifard"
 
 
 class iFDD_feature(object):
+    ''' This object represents a feature used for linear function approximation.
+        The feature can be an initial feature or made using the conjunction of existing features.
+        index: is the location of the feature in the feature vector
+        f_set: set of features that their conjunction creates this feature.
+        p1, p2: parents of the current feature. Notice that multiple combinations of parents may
+                lead to the same feature. For example given 3 basic features of X, Y, and Z
+                P1=XY and P2=XZ and P1=X and P2=XZ both lead to the new features XYZ.
+                Both these parameters are used for visualizations only.
+    '''
+
     # Unique index Corresponding to its location in a vector (0 based!)
     index = None
     f_set = None  # A set of basic features that this feature corresponds to
@@ -55,13 +65,17 @@ class iFDD_feature(object):
 
 
 class iFDD_potential(object):
-    relevance = None     # Sum of errors corresponding to this feature
-    f_set = None     # Set of features it corresponds to [Immutable]
+    ''' This object represents a potential feature that can be promoted to a permanent feature.
+        The structure of this object is very similar to iFDD feature object, except it has a relevance parameter
+        that measures the importance of creating a new feature out of this potential feature.
+    '''
+    relevance = None  # Sum of errors corresponding to this feature
+    f_set = None  # Set of features it corresponds to [Immutable]
     # If this feature has been discovered set this to its index else 0
     index = None
-    p1 = None     # Parent 1 feature index
-    p2 = None     # Parent 2 feature index
-    count = None     # Number of times this feature was visited
+    p1 = None  # Parent 1 feature index
+    p2 = None  # Parent 2 feature index
+    count = None  # Number of times this feature was visited
 
     def __init__(self, f_set, parent1, parent2):
         self.f_set = deepcopy(f_set)
@@ -83,6 +97,13 @@ class iFDD_potential(object):
 
 
 class iFDD(Representation):
+    ''' The incremental Feature Dependency Discovery Representation based on
+    [Geramifard et al. 2011 ICML paper]. This representation starts with a set of given
+    binary features and adds new features as the conjunction of existing features. Given n features
+    iFDD can expand the set of features up to 2^n-1 features (i.e. conjunction of each subset of n
+    features can be considered as a new feature.
+    '''
+
     # It is a good starting point to see how relevances grow if threshold is
     # set to infinity.
     PRINT_MAX_RELEVANCE = False
@@ -97,7 +118,7 @@ class iFDD(Representation):
     iFDD_potentials = None
     # dictionary mapping each feature index (ID) to its feature object
     featureIndex2feature = None
-    debug = 0     # Print more stuff
+    debug = 0  # Print more stuff
     # dictionary mapping  initial active feature set phi_0(s) to its
     # corresponding active features at phi(s). Based on Tuna's Trick to speed
     # up iFDD
@@ -127,8 +148,8 @@ class iFDD(Representation):
     use_chirstoph_ordered_features = True
 
     def __init__(
-            self, domain, discovery_threshold, initial_representation, 
-            sparsify=True, discretization=20, debug=0, useCache=0, 
+            self, domain, discovery_threshold, initial_representation,
+            sparsify=True, discretization=20, debug=0, useCache=0,
             maxBatchDiscovery=1, batchThreshold=0, iFDDPlus=1, seed=1):
         self.iFDD_features = {}
         self.iFDD_potentials = {}
@@ -189,13 +210,13 @@ class iFDD(Representation):
                               if frozenset(c) in self.iFDD_features]
                     # sort (recent features (big ids) first)
                     cand_i.sort(key=lambda x: x[1], reverse=True)
-                    #idx = -1
+                    # idx = -1
                     for candidate, ind in cand_i:
                         # the next block is for testing only
-                        #cur_idx = self.iFDD_features[frozenset(candidate)].index
+                        # cur_idx = self.iFDD_features[frozenset(candidate)].index
                         # if idx > 0:
                         #    assert(idx > cur_idx)
-                        #idx = cur_idx
+                        # idx = cur_idx
 
                         if len(initialSet) == 0:
                             # No more initial features to be mapped to extended
@@ -383,7 +404,7 @@ class iFDD(Representation):
         counts = np.zeros((n, n))
         relevances = np.zeros((n, n))
         for i in xrange(p):
-            phiphiT = np.outer(phi[i, :], phi[i,:])
+            phiphiT = np.outer(phi[i, :], phi[i, :])
             if self.iFDDPlus:
                 relevances += phiphiT * td_errors[i]
             else:
@@ -541,15 +562,15 @@ class iFDD(Representation):
 
 
 class iFDDK_potential(iFDD_potential):
-    f_set = None     # Set of features it corresponds to [Immutable]
-    index = None     # If this feature has been discovered set this to its index else 0
-    p1 = None     # Parent 1 feature index
-    p2 = None     # Parent 2 feature index
-    a = None   # tE[phi |\delta|] estimate
-    b = None   # tE[phi \delta] estimate
-    c = 0.   # || phi ||^2_d estimate
+    f_set = None  # Set of features it corresponds to [Immutable]
+    index = None  # If this feature has been discovered set this to its index else 0
+    p1 = None  # Parent 1 feature index
+    p2 = None  # Parent 2 feature index
+    a = None  # tE[phi |\delta|] estimate
+    b = None  # tE[phi \delta] estimate
+    c = 0.  # || phi ||^2_d estimate
     n_crho = 0  # rho episode index of last update
-    e = None   # eligibility trace
+    e = None  # eligibility trace
 
     nu = 0.  # w value of last statistics update
     x_a = 0.  # y_a value of last statistics update
@@ -597,8 +618,8 @@ class iFDDK_potential(iFDD_potential):
             # catch up on old updates
             gl = np.power(np.array(discount_factor * lambda_, dtype=self.hp_dtype), t_rho[n_rho] - self.l)
             sa, sb = self.a.copy(), self.b.copy()
-            self.a += self.e * (y_a[self.n_crho] - self.x_a) * np.exp(- self.nu) * gl
-            self.b += self.e * (y_b[self.n_crho] - self.x_b) * np.exp(- self.nu) * gl
+            self.a += self.e * (y_a[self.n_crho] - self.x_a) * np.exp(-self.nu) * gl
+            self.b += self.e * (y_b[self.n_crho] - self.x_b) * np.exp(-self.nu) * gl
             if not np.isfinite(self.a):
                 self.a = sa
                 warnings.warn("Overflow in potential relevance estimate")
@@ -706,7 +727,7 @@ class iFDDK(iFDD):
         #    import ipdb; ipdb.set_trace()
         activeFeatures = phi_s.nonzero()[
                                        0]  # Indices of non-zero elements of vector phi_s
-        #print "Active Features:", activeFeatures, phi_s
+        # print "Active Features:", activeFeatures, phi_s
         if not self.lazy:
             dd = defaultdict(float)
             for g_index, h_index in combinations(activeFeatures, 2):
@@ -721,10 +742,10 @@ class iFDDK(iFDD):
                     self.addFeature(potential)
                     del self.iFDD_potentials[f]
                     discovered += 1
-            #print "t", self.t, "td_error", td_error, discovered
-            #self.showCache()
-            #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
-            #self.showPotentials()
+            # print "t", self.t, "td_error", td_error, discovered
+            # self.showCache()
+            # print [ f.f_set for f in self.sortediFDDFeatures.toList()]
+            # self.showPotentials()
 
             return discovered
 
@@ -751,10 +772,10 @@ class iFDDK(iFDD):
             assert(np.isfinite(self.y_a[self.n_rho]))
             assert(np.isfinite(self.y_b[self.n_rho]))
 
-        #print "t", self.t, "td_error", td_error, discovered
-        #self.showCache()
-        #print [ f.f_set for f in self.sortediFDDFeatures.toList()]
-        #self.showPotentials()
+        # print "t", self.t, "td_error", td_error, discovered
+        # self.showCache()
+        # print [ f.f_set for f in self.sortediFDDFeatures.toList()]
+        # self.showPotentials()
         return discovered
 
     def get_potential(self, g_index, h_index):
