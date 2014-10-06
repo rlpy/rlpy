@@ -1,5 +1,5 @@
 """Least-Squares Policy Iteration [Lagoudakis and Parr 2003]."""
-from .Agent import Agent
+from .BatchAgent import BatchAgent
 import rlpy.Tools as Tools
 import numpy as np
 from scipy import sparse as sp
@@ -11,7 +11,7 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
-class LSPI(Agent):
+class LSPI(BatchAgent):
 
     """Least Squares Policy Iteration reinforcement learning agent.
 
@@ -36,21 +36,13 @@ class LSPI(Agent):
 
     """
 
-    use_sparse = 0         # Use sparse operators for building A?
-    lspi_iterations = 0         # Number of LSPI iterations
+    use_sparse = 0  # Use sparse operators for building A?
+    lspi_iterations = 0  # Number of LSPI iterations
     # Number of samples to be used to calculate the A and b matrices
-    max_window = 0
-    steps_between_LSPI = 0         # Number of samples between each LSPI run.
-    samples_count = 0         # Number of samples gathered so far
+    steps_between_LSPI = 0  # Number of samples between each LSPI run.
+    samples_count = 0  # Number of samples gathered so far
     # Minimum l_2 change required to continue iterations in LSPI
     tol_epsilon = 0
-
-    # Store Data in separate matrixes
-    data_s = []        #
-    data_a = []        #
-    data_r = []        #
-    data_ns = []        #
-    data_na = []        #
 
     # Reprsentation Expansion
     # Maximum number of iterations over LSPI and Representation expansion
@@ -59,20 +51,12 @@ class LSPI(Agent):
     def __init__(
             self, policy, representation, discount_factor, max_window, steps_between_LSPI,
             lspi_iterations=5, tol_epsilon=1e-3, re_iterations=100, use_sparse=False):
-        self.samples_count = 0
-        self.max_window = max_window
+
         self.steps_between_LSPI = steps_between_LSPI
         self.tol_epsilon = tol_epsilon
         self.lspi_iterations = lspi_iterations
         self.re_iterations = re_iterations
         self.use_sparse = use_sparse
-
-        # Take memory for stored values
-        self.data_s = np.zeros((max_window, representation.state_space_dims))
-        self.data_ns = np.zeros((max_window, representation.state_space_dims))
-        self.data_a = np.zeros((max_window, 1), dtype=np.uint32)
-        self.data_na = np.zeros((max_window, 1), dtype=np.uint32)
-        self.data_r = np.zeros((max_window, 1))
 
         # Make A and r incrementally if the representation can not expand
         self.fixedRep = not representation.isDynamic
@@ -97,7 +81,7 @@ class LSPI(Agent):
                 self.all_phi_s_a = np.zeros((max_window, f_size))
                 self.all_phi_ns_na = np.zeros((max_window, f_size))
 
-        super(LSPI, self).__init__(policy, representation, discount_factor=discount_factor)
+        super(LSPI, self).__init__(policy, representation, discount_factor, max_window)
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """Iterative learning method for the agent.
@@ -134,7 +118,7 @@ class LSPI(Agent):
         # each state
         action_mask = None
         discount_factor = self.discount_factor
-        F1 = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :]) if self.use_sparse else self.all_phi_s_a[:self.samples_count,:]
+        F1 = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :]) if self.use_sparse else self.all_phi_s_a[:self.samples_count, :]
         while lspi_iteration < self.lspi_iterations and weight_diff > self.tol_epsilon:
 
             # Find the best action for each state given the current value function
@@ -146,10 +130,10 @@ class LSPI(Agent):
             # Recalculate A matrix (b remains the same)
             # Solve for the new weight_vec
             if self.use_sparse:
-                F2  = sp.csr_matrix(self.all_phi_ns_new_na[:self.samples_count, :])
+                F2 = sp.csr_matrix(self.all_phi_ns_new_na[:self.samples_count, :])
                 A = F1.T * (F1 - discount_factor * F2)
             else:
-                F2  = self.all_phi_ns_new_na[:self.samples_count, :]
+                F2 = self.all_phi_ns_new_na[:self.samples_count, :]
                 A = np.dot(F1.T, F1 - discount_factor * F2)
 
             A = Tools.regularize(A)
@@ -196,18 +180,18 @@ class LSPI(Agent):
                 (p, n), dtype=self.representation.featureType())
 
             for i in np.arange(self.samples_count):
-                self.all_phi_s[i, :]  = self.representation.phi(self.data_s[i])
+                self.all_phi_s[i, :] = self.representation.phi(self.data_s[i])
                 self.all_phi_ns[i, :] = self.representation.phi(self.data_ns[i])
 
             # build phi_s_a and phi_ns_na for all samples given phi_s and
             # phi_ns
-            self.all_phi_s_a     = self.representation.batchPhi_s_a(self.all_phi_s[:self.samples_count, :], self.data_a[:self.samples_count,:], use_sparse=self.use_sparse)
-            self.all_phi_ns_na   = self.representation.batchPhi_s_a(self.all_phi_ns[:self.samples_count, :], self.data_na[:self.samples_count,:], use_sparse=self.use_sparse)
+            self.all_phi_s_a = self.representation.batchPhi_s_a(self.all_phi_s[:self.samples_count, :], self.data_a[:self.samples_count, :], use_sparse=self.use_sparse)
+            self.all_phi_ns_na = self.representation.batchPhi_s_a(self.all_phi_ns[:self.samples_count, :], self.data_na[:self.samples_count, :], use_sparse=self.use_sparse)
 
             # calculate A and b for LSTD
-            F1              = self.all_phi_s_a[:self.samples_count, :]
-            F2              = self.all_phi_ns_na[:self.samples_count, :]
-            R               = self.data_r[:self.samples_count, :]
+            F1 = self.all_phi_s_a[:self.samples_count, :]
+            F2 = self.all_phi_ns_na[:self.samples_count, :]
+            R = self.data_r[:self.samples_count, :]
             discount_factor = self.discount_factor
 
             if self.use_sparse:
@@ -234,12 +218,6 @@ class LSPI(Agent):
 
     def process(self, s, a, r, ns, na, terminal):
         """Process one transition instance."""
-        # Save samples
-        self.data_s[self.samples_count, :]   = s
-        self.data_a[self.samples_count] = a
-        self.data_r[self.samples_count] = r
-        self.data_ns[self.samples_count, :]  = ns
-        self.data_na[self.samples_count] = na
 
         # Update A and b if representation is going to be fix together with all
         # features
@@ -277,7 +255,7 @@ class LSPI(Agent):
             d = phi_s_a - discount_factor * phi_ns_na
             self.A += np.outer(phi_s_a, d)
 
-        self.samples_count += 1
+            super(LSPI, self).process(s, a, r, ns, na, terminal)
 
     def calculateTDErrors(self):
         """Calculate TD errors over the transition instances stored.
@@ -286,10 +264,10 @@ class LSPI(Agent):
         # Calculates the TD-Errors in a matrix format for a set of samples = R
         # + (discount_factor*F2 - F1) * Theta
         discount_factor = self.discount_factor
-        R       = self.data_r[:self.samples_count, :]
+        R = self.data_r[:self.samples_count, :]
         if self.use_sparse:
-            F1      = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :])
-            F2      = sp.csr_matrix(self.all_phi_ns_na[:self.samples_count, :])
+            F1 = sp.csr_matrix(self.all_phi_s_a[:self.samples_count, :])
+            F2 = sp.csr_matrix(self.all_phi_ns_na[:self.samples_count, :])
             answer = (
                 R + (discount_factor * F2 - F1) * self.representation.weight_vec.reshape(-1, 1))
             return np.squeeze(np.asarray(answer))
@@ -323,7 +301,7 @@ class LSPI(Agent):
             td_errors = self.policyIteration()
             # Add new Features
             if Tools.hasFunction(self.representation, 'batchDiscover'):
-                added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s[:self.samples_count, :], self.data_s[:self.samples_count,:])
+                added_feature = self.representation.batchDiscover(td_errors, self.all_phi_s[:self.samples_count, :], self.data_s[:self.samples_count, :])
             else:
                 added_feature = False
             # print 'L_inf distance to V*= ',
@@ -331,13 +309,3 @@ class LSPI(Agent):
             # Run LSPI one last time with the new features
             self.LSTD()
             self.policyIteration()
-
-    def episodeTerminated(self):
-        """This function adjusts all necessary elements of the agent at the end of
-        the episodes.
-        .. note::
-            Every agent must call this function at the end of the learning if the
-            transition led to terminal state.
-        """
-        # Increase the number of episodes
-        self.episode_count += 1
