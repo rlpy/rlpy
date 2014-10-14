@@ -6,15 +6,10 @@ Overview
 Vision
 ------
 
-The aim of the RLPy is to simplify education and research in solving 
-Markov Decision Processes by providing a plug-n-play framework, 
+RLPy is a framework for conducting sequential decision making experiments that involve
+value-function based approaches.
+It provides a modular toolbox, 
 where various components can be linked together to create experiments.
-
-.. note::
-    
-    At the moment RLPy is mostly focused on value function based reinforcement
-    learning algorithms. However, direct policy search methods are currently
-    being implemented.
 
 The Big Picture
 ---------------

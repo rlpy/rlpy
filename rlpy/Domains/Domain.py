@@ -226,13 +226,8 @@ Gamma:      {self.discount_factor}
 
     def saveRandomState(self):
         """
-        Stores the state of the the random generator. 
+        Stores the state of the the random generator.
         Using loadRandomState this state can be loaded.
-        Hence the following code will print a unique number all the time.
-        while True:
-            self.saveRandomState()
-            print self.random_state.randn()
-            self.loadRandomState()
         """
         self.random_state_backup = self.random_state.get_state()
 
