@@ -26,6 +26,7 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     opt["exp_id"] = exp_id
     opt["max_steps"] = 10000
     opt["num_policy_checks"] = 10
+    opt["checks_per_policy"] = 50
 
     # Logging
 
@@ -36,14 +37,14 @@ def make_experiment(exp_id=1, path="./Results/Temp"):
     opt["domain"] = domain
 
     # Representation
-    representation = Tabular(domain, discretization=20)
+    representation = Tabular(domain)
 
     # Policy
     policy = eGreedy(representation, epsilon=0.1)
 
     # Agent
     opt["agent"] = LSPI(policy, representation, domain.discount_factor,
-                 opt["max_steps"], opt["max_steps"] / opt["num_policy_checks"])
+                 opt["max_steps"], 1000)
 
     experiment = Experiment(**opt)
     return experiment
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     path = "./Results/Temp/{domain}/{agent}/{representation}/"
     experiment = make_experiment(1, path=path)
     experiment.run(visualize_steps=False,  # should each learning step be shown?
-                   visualize_learning=False,  # show performance runs?
+                   visualize_learning=True,  # show performance runs?
                    visualize_performance=True)  # show value function?
     experiment.plot()
     experiment.save()
