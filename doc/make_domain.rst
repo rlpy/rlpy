@@ -338,5 +338,5 @@ you branch the project and create a pull request to the
 `RLPy repository <https://bitbucket.org/rlpy/rlpy>`_.
 
 You can also email the community list ``rlpy@mit.edu`` for comments or 
-questions. 
+questions. To subscribe `click here <http://mailman.mit.edu/mailman/listinfo/rlpy>`_.
 

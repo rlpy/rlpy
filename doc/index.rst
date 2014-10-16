@@ -19,7 +19,7 @@ Important Links
 - Documentation and Homepage: http://acl.mit.edu/rlpy
 - Download latest version: https://pypi.python.org/pypi/rlpy
 - Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
-- Mailing list: rlpy@mit.edu
+- Mailing list: rlpy@mit.edu (`***Subscribe here*** <http://mailman.mit.edu/mailman/listinfo/rlpy>`_)
 
 Documentation
 =============
@@ -43,8 +43,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
-
-Staying Connected
-=================
-Feel free to join the rlpy list, rlpy@mit.edu by sending a message with subject line SUBSCRIBE.
-This list is intended for open discussion about questions, potential improvements, etc.

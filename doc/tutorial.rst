@@ -441,7 +441,7 @@ rlpy of each flavor are always welcome!
 
 Staying Connected
 -----------------
-Feel free to join the rlpy list, rlpy@mit.edu by sending a message with subject line SUBSCRIBE.
+Feel free to join the rlpy list, rlpy@mit.edu by `clicking here <http://mailman.mit.edu/mailman/listinfo/rlpy>`_.
 This list is intended for open discussion about questions, potential improvements, etc.
 
 .. epigraph::
