@@ -6,22 +6,9 @@ from setuptools import setup, Extension, find_packages
 from Cython.Distutils import build_ext
 import numpy
 import os
-import re
 import sys
 
-
-def get_version_string():
-    # Grab the version string from the documentation.
-    conf_fn = os.path.join(os.path.dirname(__file__), 'doc', 'conf.py')
-    VERSION_PATTERN = re.compile("release = '([^']+)'")
-    with open(conf_fn) as source:
-        for line in source:
-            match = VERSION_PATTERN.search(line)
-            if match:
-                return match.group(1)
-    raise ValueError('Could not extract release version from sphinx doc')
-
-version = get_version_string()
+version = '1.3.1'
 
 if sys.platform == 'darwin':
     # by default use clang++ as this most likely to have c++11 support
@@ -37,7 +24,8 @@ setup(name="rlpy",
       maintainer="Christoph Dann",
       maintainer_email="cdann@cdann.de",
       license="BSD 3-clause",
-      description="Value-Function-Based Reinforcement-Learning Library for Education and Research",
+      description="Value-Function-Based Reinforcement-Learning Library for"
+                  + " Education and Research",
       url="http://acl.mit.edu/rlpy/",
       classifiers=['Intended Audience :: Science/Research',
                    'Intended Audience :: Developers',
@@ -54,14 +42,16 @@ setup(name="rlpy",
                   ],
       long_description=open('README.rst').read(),
       packages=find_packages(),
-      package_data={'rlpy': [
-          'Domains/GridWorldMaps/*.txt',
-          'Domains/IntruderMonitoringMaps/*.txt',
-          'Domains/PinballConfigs/*.cfg',
-          'Domains/PacmanPackage/layouts/*.lay',
-          'Domains/SystemAdministratorMaps/*.txt',
-          "Representations/c_kernels.h",
-      ]},
+      include_package_data=True,
+#      package_data={'rlpy': [
+#          'Domains/GridWorldMaps/*.txt',
+#          'Domains/IntruderMonitoringMaps/*.txt',
+#          'Domains/PinballConfigs/*.cfg',
+#          'Domains/PacmanPackage/layouts/*.lay',
+#          'Domains/SystemAdministratorMaps/*.txt',
+#          "Representations/c_kernels.h",
+#      ]
+#      },
       install_requires=[
           'numpy >= 1.7',
           'scipy',

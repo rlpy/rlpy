@@ -74,16 +74,18 @@ def run_profiled(make_exp_fun, profile_location="Profiling",
     p = pstats.Stats(dat_fn)
     p.sort_stats('time').print_stats(5)
 
+    gprof2dot_fn = os.path.join(__rlpy_location__, 'Tools', 'gprof2dot.py')
     if(platform.system() == 'Windows'):
         # Load the STATS and prepare the dot file for graphvis
-        command = '.\Profiling\gprof2dot.py -f pstats {dat_fn} > {dot_fn}'.format(
+        command = gprof2dot_fn + ' -f pstats {dat_fn} > {dot_fn}'.format(
             dat_fn=dat_fn,
             dot_fn=dot_fn)
         os.system(command)
 
     else:
         # Load the STATS and prepare the dot file for graphvis
-        command = '/usr/bin/env python ./Profiling/gprof2dot.py -f pstats {dat_fn} > {dot_fn}'.format(
+        command = '/usr/bin/env python ' + gprof2dot_fn \
+                  + ' -f pstats {dat_fn} > {dot_fn}'.format(
             dat_fn=dat_fn,
             dot_fn=dot_fn)
         os.system(command)
@@ -126,10 +128,10 @@ def prepare_directory(setting, path, **hyperparam):
         the id and hyperparameters
         and returns an instance of Experiment ready to run
     :param path: specifies where to create the directory
-    :param \*\*hyperparam: all hyperparameters passed to the setting's 
+    :param \*\*hyperparam: all hyperparameters passed to the setting's
         ``make_experiment()``
     :return: filename of the file to execute in path
-    
+
     """
     # create file to execute
     variables = "hyper_param = dict(" + ",\n".join(["{}={}".format(k, repr(v))
