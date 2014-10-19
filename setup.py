@@ -41,7 +41,7 @@ setup(name="rlpy",
                    'Programming Language :: Python :: 2.7',
                   ],
       long_description=open('README.rst').read(),
-      packages=find_packages(),
+      packages=find_packages(exclude=['tests', 'tests.*']),
       include_package_data=True,
 #      package_data={'rlpy': [
 #          'Domains/GridWorldMaps/*.txt',
