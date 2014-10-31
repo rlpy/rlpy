@@ -7,6 +7,14 @@ This tutorial covers the most common type of experiment in reinforcement
 learning: the control experiment. An agent is supposed to find a good policy
 while interacting with the domain. 
 
+.. note::
+
+    If you don't use the developer verion of rlpy but installed the toolbox via pip
+    you can get the example scripts referenced in this tutorial as follows:
+    Download the latest RLPy package from https://pypi.python.org/pypi/rlpy and extract
+    the `examples` folder from the archive. In this folder you find several examples
+    of how to use RLPy.
+
 First Run
 ---------
 

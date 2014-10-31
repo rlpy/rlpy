@@ -27,8 +27,19 @@ Alternatively, you can download RLPy manually, extract the package and execute t
     
     python setup.py install
 
-RLPy is now successfully installed. For an introduction on how to use the
-framework have a look at :ref:`tutorial`.
+All RLPy packages are now successfully installed in Python's site-package directory. 
+
+.. note::
+
+    Only the Python files necessary to use the toolbox are installed. 
+    Documentation and example scripts how to use the toolbox are not installed by pip.
+    They are, however, included in the package, which can be downloaded from
+    https://pypi.python.org/pypi/rlpy. We recommend to download the archive and extract the 
+    `examples` folder to get examples of how to use the toolbox. Please also check out 
+    the tutorial at :ref:`tutorial`.
+
+
+
 
 .. _devInstall:
 
