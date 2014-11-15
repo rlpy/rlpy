@@ -4,7 +4,7 @@ virtualenv:
 python:
     - "2.7"
 before_install:
-    - "sudo apt-get install python-tk python-matplotlib python-sklearn python-scipy cython"
+    - "sudo apt-get install python-tk python-matplotlib python-sklearn python-scipy"
 install: 
     - "pip install cython"
     - "python setup.py develop"
