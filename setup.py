@@ -9,7 +9,7 @@ import sys
 try:
     from setuptools import setup, Command, find_packages
 except ImportError:
-    sys.exit("The setup requires setuptools")
+    sys.exit("The setup requires setuptools, you can install it with 'easy_install setuptools'")
 
 from distutils.extension import Extension
 from distutils.command.build import build
