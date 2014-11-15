@@ -3,12 +3,12 @@ Installation script for RLPy
 """
 
 from setuptools import setup, Extension, find_packages
-from Cython.Distutils import build_ext
+#from Cython.Distutils import build_ext
 import numpy
 import os
 import sys
 
-version = '1.3.1'
+version = '1.3.2'
 
 if sys.platform == 'darwin':
     # by default use clang++ as this most likely to have c++11 support
@@ -18,6 +18,48 @@ if sys.platform == 'darwin':
         extra_args = ["-std=c++0x", "-stdlib=libc++"]
 else:
     extra_args = []
+
+# only use Cython if explicitly told
+USE_CYTHON =  os.getenv('USE_CYTHON', False)
+extensions = [
+          Extension("rlpy.Representations.hashing",
+                    ["rlpy/Representations/hashing.pyx"],
+                    include_dirs=[numpy.get_include(), "rlpy/Representations"]),
+          Extension("rlpy.Domains.HIVTreatment_dynamics",
+                    ["rlpy/Domains/HIVTreatment_dynamics.pyx"],
+                    include_dirs=[numpy.get_include(), "rlpy/Representations"]),
+          Extension("rlpy.Representations.kernels",
+                    ["rlpy/Representations/kernels.pyx",
+                     "rlpy/Representations/c_kernels.cc",
+                     "rlpy/Representations/c_kernels.pxd"],
+                    language="c++",
+                    include_dirs=[numpy.get_include(), "rlpy.Representations"]),
+          Extension("rlpy.Tools._transformations",
+                    ["rlpy/Tools/transformations.c"],
+                    include_dirs=[numpy.get_include()])]
+
+def no_cythonize(extensions, **_ignore):
+    for extension in extensions:
+        sources = []
+        for sfile in extension.sources:
+            path, ext = os.path.splitext(sfile)
+            if ext in ('.pyx', '.py'):
+                if extension.language == 'c++':
+                    ext = '.cpp'
+                else:
+                    ext = '.c'
+                sfile = path + ext
+            elif ext in ('.pxd'):
+                continue
+            sources.append(sfile)
+        extension.sources[:] = sources
+    return extensions
+
+if USE_CYTHON:
+    from Cython.Build import cythonize
+    extensions = cythonize(extensions)
+else:
+    extensions = no_cythonize(extensions)
 
 setup(name="rlpy",
       version=version,
@@ -62,23 +104,6 @@ setup(name="rlpy",
           'hyperopt',
           'pymongo'
       ],
-      extras_require={'cython_extensions': ['cython']},
-      cmdclass={'build_ext': build_ext},
-      ext_modules=[
-          Extension("rlpy.Representations.hashing",
-                    ["rlpy/Representations/hashing.pyx"],
-                    include_dirs=[numpy.get_include(), "rlpy/Representations"]),
-          Extension("rlpy.Domains.HIVTreatment_dynamics",
-                    ["rlpy/Domains/HIVTreatment_dynamics.pyx"],
-                    include_dirs=[numpy.get_include(), "rlpy/Representations"]),
-          Extension("rlpy.Representations.kernels",
-                    ["rlpy/Representations/kernels.pyx",
-                     "rlpy/Representations/c_kernels.cc",
-                     "rlpy/Representations/c_kernels.pxd"],
-                    language="c++",
-                    include_dirs=[numpy.get_include(), "rlpy.Representations"]),
-          Extension("rlpy.Tools._transformations",
-                    ["rlpy/Tools/transformations.c"],
-                    include_dirs=[numpy.get_include()])],
+      ext_modules=extensions,
       test_suite='tests'
       )
