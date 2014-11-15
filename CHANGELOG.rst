@@ -1,3 +1,6 @@
+- added abstract DifferentiablePolicy class
+- added abstract BatchAgent class
+- new installer, rlpy now on pypi
 - moved rlpy code to rlpy package
 - major code clean-up
 - Learning rate related code moved from Agent to separate class
