@@ -21,6 +21,8 @@ else:
 
 # only use Cython if explicitly told
 USE_CYTHON =  os.getenv('USE_CYTHON', False)
+# always cythonize if C-files are not present
+USE_CYTHON = not os.path.exists("rlpy/Representations/hashing.c") or USE_CYTHON
 extensions = [
           Extension("rlpy.Representations.hashing",
                     ["rlpy/Representations/hashing.pyx"],
