@@ -4,8 +4,7 @@ virtualenv:
 python:
     - "2.7"
 before_install:
-    - "sudo apt-get install python-tk python-matplotlib python-sklearn python-scipy"
+    - "sudo apt-get install python-tk python-matplotlib python-sklearn python-scipy cython"
 install: 
-    - "pip install cython networkx joblib hyperopt pymongo --use-mirrors"
-    - "python setup.py build_ext --inplace"
+    - "python setup.py develop"
 script: "xvfb-run --server-args=\"-screen 0 1024x768x24\" nosetests tests --logging-clear-handlers -v"
