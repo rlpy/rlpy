@@ -1,0 +1,10 @@
+include doc/*
+include doc/api/*
+include doc/_static/*
+include doc/_templates/*
+recursive-include examples *.py
+include Profiling/Example.pdf
+include READme.rst
+include LICENSE.txt
+include CHANGELOG.rst
+include INSTALL.rst

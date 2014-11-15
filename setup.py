@@ -207,7 +207,7 @@ def no_cythonize(extensions, **_ignore):
         extension.sources[:] = sources
     return extensions
 
-if USE_CYTHON:
+if cython:
     from Cython.Build import cythonize
     extensions = cythonize(extensions)
 else:

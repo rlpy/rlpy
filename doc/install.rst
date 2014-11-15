@@ -60,6 +60,11 @@ and make your Python distribution aware of RLPy by::
 
     python setup.py develop
 
+.. note::
+    
+    If you install rlpy directly from the development repository, you need cython to build the
+    cython extensions. You can get the latest version of cython by: "pip install cython -U"
+
 .. _dependencies:
 
 ************
