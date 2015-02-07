@@ -1,3 +1,5 @@
+Version 1.3
+-----------
 - added abstract DifferentiablePolicy class
 - added abstract BatchAgent class
 - new installer, rlpy now on pypi
