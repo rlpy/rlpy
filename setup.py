@@ -239,7 +239,7 @@ setup(name="rlpy",
       cmdclass=cmdclass,
       long_description=open('README.rst').read(),
       packages=find_packages(exclude=['tests', 'tests.*']),
-      include_package_data=True,
+      #include_package_data=True,
       install_requires=[
           'numpy >= 1.7',
           'scipy',
@@ -251,6 +251,6 @@ setup(name="rlpy",
           'pymongo'
       ],
       setup_requires=['numpy >= 1.7'],
-      ext_modules=extensions,
+      #ext_modules=extensions,
       test_suite='tests'
       )

@@ -15,6 +15,6 @@ install:
     - "python -c \"import nose; print nose.__version__\""
     - "pip install networkx"
     - "python -c \"import nose; print nose.__version__\""
-    - "python setup.py develop -x"
+    - "python setup.py develop"
     - "python -c \"import nose; print nose.__version__\""
-script: "xvfb-run --server-args=\"-screen 0 1024x768x24\" nosetests tests --logging-clear-handlers -v"
+script: "nosetests tests --logging-clear-handlers -v"
