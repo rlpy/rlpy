@@ -1,11 +1,6 @@
-from rlpy.Domains.Bicycle import BicycleBalancing, BicycleRiding
-from rlpy.Agents import Q_Learning
-from rlpy.Representations import *
-from rlpy.Policies import eGreedy
-from rlpy.Experiments import Experiment
+import rlpy
 import numpy as np
 from hyperopt import hp
-from rlpy.Representations import KernelizediFDD
 
 param_space = {
     'kernel_resolution':
@@ -37,25 +32,25 @@ def make_experiment(
     max_base_feat_sim = 0.5
     sparsify = 1
 
-    domain = BicycleRiding()
+    domain = rlpy.Domains.BicycleRiding()
     opt["domain"] = domain
     kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
         / kernel_resolution
-    representation = KernelizediFDD(domain, sparsify=sparsify,
-                               kernel=linf_triangle_kernel,
+    representation = rlpy.Representations.KernelizediFDD(domain, sparsify=sparsify,
+                               kernel=rlpy.Representations.linf_triangle_kernel,
                                kernel_args=[kernel_width],
                                active_threshold=active_threshold,
                                discover_threshold=discover_threshold,
                                normalization=True,
                                max_active_base_feat=10,
                                max_base_feat_sim=max_base_feat_sim)
-    policy = eGreedy(representation, epsilon=0.1)
+    policy = rlpy.Policies.eGreedy(representation, epsilon=0.1)
     # agent           = SARSA(representation,policy,domain,initial_learn_rate=initial_learn_rate,
     # lambda_=.0, learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    opt["agent"] = Q_Learning(policy, representation, discount_factor=domain.discount_factor,
+    opt["agent"] = rlpy.Agents.Q_Learning(policy, representation, discount_factor=domain.discount_factor,
                        lambda_=lambda_, initial_learn_rate=initial_learn_rate,
                        learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
-    experiment = Experiment(**opt)
+    experiment = rlpy.Experiments.Experiment(**opt)
     return experiment
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ from .FiftyChain import FiftyChain
 from .FlipBoard import FlipBoard
 from .RCCar import RCCar
 from .Acrobot import Acrobot, AcrobotLegacy
-from .Bicycle import BicycleBalancing
+from .Bicycle import BicycleBalancing, BicycleRiding
 from .Swimmer import Swimmer
 from .Pinball import Pinball
 from .FiniteTrackCartPole import (FiniteCartPoleBalance,
