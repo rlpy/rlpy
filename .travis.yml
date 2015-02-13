@@ -7,7 +7,8 @@ before_install:
     - "sudo apt-get update -qq"
     - "sudo apt-get install python-tk python-matplotlib python-sklearn python-scipy"
 install: 
-    - "pip install pip\\<6 setuptools\\<8"
+    - "pip install nose==1.3.4"
+    - "python -c \"import nose; print nose.__version__\""
     - "pip install cython"
     - "python setup.py develop"
     - "python -c \"import nose; print nose.__version__\""
