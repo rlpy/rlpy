@@ -6,6 +6,7 @@ Large parts of this file were taken from the pandas project
 BSD license.
 """
 import sys
+import multiprocessing
 try:
     from setuptools import setup, Command, find_packages
 except ImportError:
