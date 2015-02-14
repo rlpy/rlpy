@@ -251,6 +251,7 @@ setup(name="rlpy",
           'pymongo'
       ],
       setup_requires=['numpy >= 1.7'],
-      #ext_modules=extensions,
+      ext_modules=extensions,
+      #ext_modules=[],
       test_suite='tests'
       )
