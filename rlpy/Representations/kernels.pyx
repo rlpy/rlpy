@@ -8,7 +8,6 @@ __author__ = "Christoph Dann <cdann@cdann.de>"
 from libcpp.vector cimport vector
 from libcpp.string cimport string as stlstring
 from libcpp cimport bool
-from libcpp.set cimport set as sett
 cimport numpy as np
 import numpy as np
 cimport cython
