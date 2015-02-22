@@ -127,7 +127,7 @@ class Q_Learning(TDControlAgent):
     """
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
-        """Q Learning choses the optimal action"""
+        """Q Learning chooses the optimal action"""
         return self.representation.bestAction(ns, terminal, np_actions, ns_phi)
 
 
@@ -138,5 +138,5 @@ class SARSA(TDControlAgent):
     """
 
     def _future_action(self, ns, terminal, np_actions, ns_phi, na):
-        """SARS-->A<--, so SARSA simply choses the action the agent will follow"""
+        """SARS-->A<--, so SARSA simply chooses the action the agent will follow"""
         return na
