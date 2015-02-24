@@ -19,7 +19,7 @@ Important Links
 - Documentation and Homepage: http://acl.mit.edu/rlpy
 - Download latest version: https://pypi.python.org/pypi/rlpy
 - Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
-- Mailing list: rlpy@mit.edu (`***Subscribe here*** <http://mailman.mit.edu/mailman/listinfo/rlpy>`_)
+- Mailing list: rlpy@mit.edu (`Subscribe here <http://mailman.mit.edu/mailman/listinfo/rlpy>`_)
 
 Documentation
 =============
