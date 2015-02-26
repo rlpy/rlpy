@@ -100,90 +100,84 @@ It then updates the representation by summing the current function with
 this TD error, weighted by a factor called the *learning rate*.
 
 
-#. Create a new file in the ``Agents/`` directory, ``SARSA0.py``.
+#. Create a new file in the current working directory, ``SARSA0.py``.
    Add the header block at the top::
 
-       __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
-       __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-                      "William Dabney", "Jonathan P. How"]
-       __license__ = "BSD 3-Clause"
-       __author__ = "Ray N. Forcement"
-       
-       from rlpy.Agent import Agent
-       import numpy
+        __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+        __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+                       "William Dabney", "Jonathan P. How"]
+        __license__ = "BSD 3-Clause"
+        __author__ = "Ray N. Forcement"
+
+        from rlpy.Agents.Agent import Agent, DescentAlgorithm
+        import numpy
 
 #. Declare the class, create needed members variables (here a learning rate),
    described above) and write a docstring description::
 
-       class SARSA0(DescentAlgorithm, Agent):
-           """
-           Standard SARSA algorithm without eligibility trace (ie lambda=0)
-           """
+        class SARSA0(DescentAlgorithm, Agent):
+            """
+            Standard SARSA algorithm without eligibility trace (ie lambda=0)
+            """
 
 #. Copy the __init__ declaration from ``Agent`` and ``DescentAlgorithm``
    in ``Agent.py``, and add needed parameters
    (here the initial_learn_rate) and log them.  (kwargs is a catch-all for
    initialization parameters.)  Then call the superclass constructor::
 
-       def __init__(self, policy, representation, discount_factor, initial_learn_rate=0.1, **kwargs):
-           super(SARSA0,self).__init__(policy=policy,
-            representation=representation, discount_factor=discount_factor, **kwargs)
-           self.logger.info("Learning rate:\t\t%0.2f" % learning_rate)
+            def __init__(self, policy, representation, discount_factor, initial_learn_rate=0.1, **kwargs):
+                super(SARSA0,self).__init__(policy=policy,
+                 representation=representation, discount_factor=discount_factor, **kwargs)
+                self.logger.info("Initial learning rate:\t\t%0.2f" % initial_learn_rate)
 
 #. Copy the learn() declaration and implement accordingly.
    Here, compute the td-error, and use it to update
    the value function estimate (by adjusting feature weights)::
 
-      def learn(self, s, p_actions, a, r, ns, np_actions, na,terminal):
-   
-           # The previous state could never be terminal
-           # (otherwise the episode would have already terminated)
-           prevStateTerminal = False 
-   
-           # MUST call this at start of learn()
-           self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
-   
-           # Compute feature function values and next action to be taken
-   
-           discount_factor = self.representation.domain.gamma # 'gamma' in literature
-           feat_weights    = self.representation.theta # Value function, expressed as feature weights
-           features_s      = self.representation.phi(s, prevStateTerminal) # active feats in state
-           features        = self.representation.phi_sa(s, prevStateTerminal, a, features_s) # active features for an (s,a) pair
-           features_prime_s= self.representation.phi(ns, terminal)
-           features_prime  = self.representation.phi_sa(ns, terminal, na, features_prime_s)
-           nnz             = count_nonzero(phi_s)    # Number of non-zero elements
+            def learn(self, s, p_actions, a, r, ns, np_actions, na,terminal):
 
-           # Compute td-error
-           td_error            = r + np.dot(discount_factor*features_prime - features, theta)
+                # The previous state could never be terminal
+                # (otherwise the episode would have already terminated)
+                prevStateTerminal = False
 
-           # Update value function (or if TD-learning diverges, take no action)
-           if nnz > 0:
-               feat_weights_old = feat_weights.copy()
-               feat_weights               += self.alpha * td_error
-               if not np.all(np.isfinite(theta)):
-                   feat_weights = feat_weights_old
-                   print "WARNING: TD-Learning diverged, theta reached infinity!"
+                # MUST call this at start of learn()
+                self.representation.pre_discover(s, prevStateTerminal, a, ns, terminal)
 
-           # MUST call this at end of learn() - add new features to representation as required.
-           expanded = self.representation.post_discover(s, False, a, td_error, phi_s)
+                # Compute feature function values and next action to be taken
 
-           # MUST call this at end of learn() - handle episode termination cleanup as required.
-           if terminal:
-               self.episodeTerminated()
+                discount_factor = self.representation.domain.gamma # 'gamma' in literature
+                feat_weights    = self.representation.theta # Value function, expressed as feature weights
+                features_s      = self.representation.phi(s, prevStateTerminal) # active feats in state
+                features        = self.representation.phi_sa(s, prevStateTerminal, a, features_s) # active features or an (s,a) pair
+                features_prime_s= self.representation.phi(ns, terminal)
+                features_prime  = self.representation.phi_sa(ns, terminal, na, features_prime_s)
+                nnz             = count_nonzero(phi_s)    # Number of non-zero elements
+
+                # Compute td-error
+                td_error            = r + np.dot(discount_factor*features_prime - features, theta)
+
+                # Update value function (or if TD-learning diverges, take no action)
+                if nnz > 0:
+                    feat_weights_old = feat_weights.copy()
+                    feat_weights               += self.alpha * td_error
+                    if not np.all(np.isfinite(theta)):
+                        feat_weights = feat_weights_old
+                        print "WARNING: TD-Learning diverged, theta reached infinity!"
+
+                # MUST call this at end of learn() - add new features to representation as required.
+                expanded = self.representation.post_discover(s, False, a, td_error, phi_s)
+
+                # MUST call this at end of learn() - handle episode termination cleanup as required.
+                if terminal:
+                    self.episodeTerminated()
 
 .. note::
 
     You can and should define helper functions in your agents as needed, and 
-    arrange class heirarchy. (See eg TDControlAgent.py)
+    arrange class hierarchy. (See eg TDControlAgent.py)
 
 
-That's it! Now add your new agent to ``Agents/__init__.py``::
-
-    from SARSA0 import SARSA0
-
-Finally, create a unit test for your agent as described in :doc:`unittests`
-
-Now test it by creating a simple settings file on the domain of your choice.
+That's it! Now test the agent by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
 
 .. literalinclude:: ../examples/tutorial/SARSA0_example.py

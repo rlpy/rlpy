@@ -4,12 +4,12 @@ Agent Tutorial for RLPy
 =================================
 
 Assumes you have created the SARSA0.py agent according to the tutorial and
-placed it in the Agents/ directory.
+placed it in the current working directory.
 Tests the agent on the GridWorld domain.
 """
 __author__ = "Robert H. Klein"
 from rlpy.Domains import GridWorld
-from rlpy.Agents import SARSA0
+from SARSA0 import SARSA0
 from rlpy.Representations import Tabular
 from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
@@ -30,7 +30,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-sarsa0"):
     opt["path"] = path
 
     ## Domain:
-    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
+    maze = '4x5.txt'
     domain = GridWorld(maze, noise=0.3)
     opt["domain"] = domain
 
@@ -44,7 +44,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-sarsa0"):
     ## Agent
     opt["agent"] = SARSA0(representation=representation, policy=policy,
                    discount_factor=domain.discount_factor,
-                       learn_rate=0.1)
+                       initial_learn_rate=0.1)
     opt["checks_per_policy"] = 100
     opt["max_steps"] = 2000
     opt["num_policy_checks"] = 10

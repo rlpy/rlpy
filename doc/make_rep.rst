@@ -123,37 +123,41 @@ are as many feature functions as there are states in the entire space).
 Continuous dimensions of ``s`` (assumed to be bounded in this Representation) 
 are discretized.
 
-#. Create a new file in the ``Representations/`` directory, ``IncrTabularTut.py``.
+#. Create a new file in your current working directory, ``IncrTabularTut.py``.
    Add the header block at the top::
 
-       __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
-       __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-                      "William Dabney", "Jonathan P. How"]
-       __license__ = "BSD 3-Clause"
-       __author__ = "Ray N. Forcement"
+        __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+        __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+                       "William Dabney", "Jonathan P. How"]
+        __license__ = "BSD 3-Clause"
+        __author__ = "Ray N. Forcement"
+
+        from rlpy.Representations.Representation import Representation
+        import numpy as np
+        from copy import deepcopy
 
 
 #. Declare the class, create needed members variables (here an optional hash
    table to lookup feature function values previously computed), and write a 
    docstring description::
 
-       class IncrTabularTut(Representation):
-           """
-           Tutorial representation: identical to IncrementalTabular
+        class IncrTabularTut(Representation):
+            """
+            Tutorial representation: identical to IncrementalTabular
 
-           """
-           hash = None
+            """
+            hash = None
 
 #. Copy the __init__ declaration from ``Representation.py``, add needed parameters
    (here none), and log them.
    Assign self.features_num and self.isDynamic, then
    call the superclass constructor::
 
-       def __init__(self, domain, logger, discretization=20):
-           self.hash           = {}
-           self.features_num   = 0
-           self.isDynamic      = True
-           super(IncrTabularTut, self).__init__(domain, discretization)
+            def __init__(self, domain, discretization=20):
+                self.hash           = {}
+                self.features_num   = 0
+                self.isDynamic      = True
+                super(IncrTabularTut, self).__init__(domain, discretization)
 
 #. Copy the ``phi_nonTerminal()`` function declaration and implement it accordingly
    to return the vector of feature function values for a given state.
@@ -161,56 +165,50 @@ are discretized.
    parent class.
    Note here that self.hash should always contain hash_id if ``pre_discover()``
    is called as required::
-
-       def phi_nonTerminal(self, s):
-           hash_id = self.hashState(s)
-           id  = self.hash.get(hash_id)
-           F_s = np.zeros(self.features_num, bool)
-           if id is not None:
-               F_s[id] = 1
-           return F_s
+                
+            def phi_nonTerminal(self, s):
+                hash_id = self.hashState(s)
+                id  = self.hash.get(hash_id)
+                F_s = np.zeros(self.features_num, bool)
+                if id is not None:
+                    F_s[id] = 1
+                return F_s
 
 #. Copy the ``featureType()`` function declaration and implement it accordingly
    to return the datatype returned by each feature function.
    Here, feature functions are binary, so the datatype is boolean::
 
-       def featureType(self):
-           return bool
+            def featureType(self):
+                return bool
 
 #. Override parent functions as necessary; here we require a ``pre_discover()``
    function to populate the hash table for each new encountered state::
 
-       def pre_discover(self, s, terminal, a, sn, terminaln):
-           return self._add_state(s) + self._add_state(sn)
+            def pre_discover(self, s, terminal, a, sn, terminaln):
+                return self._add_state(s) + self._add_state(sn)
 
 #. Finally, define any needed helper functions::
 
-       def _add_state(self, s):
-           hash_id = self.hashState(s)
-           id  = self.hash.get(hash_id)
-           if id is None:
-               #New State
-               self.features_num += 1
-               #New id = feature_num - 1
-               id = self.features_num - 1
-               self.hash[hash_id] = id
-               #Add a new element to the feature weight vector
-               self.addNewWeight()
-               return 1
-           return 0
+            def _add_state(self, s):
+                hash_id = self.hashState(s)
+                id  = self.hash.get(hash_id)
+                if id is None:
+                    #New State
+                    self.features_num += 1
+                    #New id = feature_num - 1
+                    id = self.features_num - 1
+                    self.hash[hash_id] = id
+                    #Add a new element to the feature weight vector
+                    self.addNewWeight()
+                    return 1
+                return 0
 
-       def __deepcopy__(self, memo):
-           new_copy = IncrementalTabular(self.domain, self.logger, self.discretization)
-           new_copy.hash = deepcopy(self.hash)
-           return new_copy
+            def __deepcopy__(self, memo):
+                new_copy = IncrementalTabular(self.domain, self.discretization)
+                new_copy.hash = deepcopy(self.hash)
+                return new_copy
 
-That's it! Now add your new Representation to ``Representations/__init__.py``::
-
-    ``from IncrTabularTut import IncrTabularTut``
-
-Finally, create a unit test for your Representation as described in :doc:`unittests`
-
-Now test it by creating a simple settings file on the domain of your choice.
+That's it! Now test your Representation by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
 
 .. literalinclude:: ../examples/tutorial/IncrTabularTut_example.py

@@ -160,45 +160,47 @@ But the transitions are noisy, and the opposite of the desired action is taken
 instead with some probability.
 Note that the optimal policy is to always go right.
 
-#. Create a new file in the ``Domains/`` directory, ``ChainMDPTut.py``.
+#. Create a new file in your current working directory, ``ChainMDPTut.py``.
    Add the header block at the top::
 
-       __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
-       __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
-                      "William Dabney", "Jonathan P. How"]
-       __license__ = "BSD 3-Clause"
-       __author__ = "Ray N. Forcement"
-       
-       from rlpy.Tools import plt, mpatches, fromAtoB
-       from .Domain import Domain
-       import numpy as np
+        __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+        __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+                       "William Dabney", "Jonathan P. How"]
+        __license__ = "BSD 3-Clause"
+        __author__ = "Ray N. Forcement"
+
+        from rlpy.Tools import plt, mpatches, fromAtoB
+        from rlpy.Domains.Domain import Domain
+        import numpy as np
 
 #. Declare the class, create needed members variables (here several objects to
    be used for visualization and a few domain reward parameters), and write a 
    docstring description::
 
-       class ChainMDPTut(Domain):
-           """
-           Tutorial Domain - nearly identical to ChainMDP.py
-           """
-           #: Reward for each timestep spent in the goal region
-           GOAL_REWARD = 0
-           #: Reward for each timestep
-           STEP_REWARD = -1
-           # Used for graphical normalization
-           MAX_RETURN  = 1
-           # Used for graphical normalization
-           MIN_RETURN  = 0
-           # Used for graphical shifting of arrows
-           SHIFT       = .3
-           #:Used for graphical radius of states
-           RADIUS      = .5
-           # Stores the graphical pathes for states so that we can later change their colors
-           circles     = None
-           #: Number of states in the chain
-           chainSize   = 0
-           # Y values used for drawing circles
-           Y           = 1
+        class ChainMDPTut(Domain):
+            """
+            Tutorial Domain - nearly identical to ChainMDP.py
+            """
+            #: Reward for each timestep spent in the goal region
+            GOAL_REWARD = 0
+            #: Reward for each timestep
+            STEP_REWARD = -1
+            #: Set by the domain = min(100,rows*cols)
+            episodeCap = 0
+            # Used for graphical normalization
+            MAX_RETURN  = 1
+            # Used for graphical normalization
+            MIN_RETURN  = 0
+            # Used for graphical shifting of arrows
+            SHIFT       = .3
+            #:Used for graphical radius of states
+            RADIUS      = .5
+            # Stores the graphical pathes for states so that we can later change their colors
+            circles     = None
+            #: Number of states in the chain
+            chainSize   = 0
+            # Y values used for drawing circles
+            Y           = 1
 
 #. Copy the __init__ declaration from ``Domain.py``, add needed parameters
    (here the number of states in the chain, ``chainSize``), and log them.
@@ -206,48 +208,48 @@ Note that the optimal policy is to always go right.
    and ``self.discount_factor``.
    Then call the superclass constructor::
 
-       def __init__(self, chainSize=2):
-           """
-           :param chainSize: Number of states \'n\' in the chain.
-           """
-           self.chainSize          = chainSize
-           self.start              = 0
-           self.goal               = chainSize - 1
-           self.statespace_limits  = array([[0,chainSize-1]])
-           self.episodeCap         = 2*chainSize
-           self.continuous_dims    = []
-           self.DimNames           = [`State`]
-           self.actions_num        = 2
-           self.discount_factor    = 0.9
-           super(ChainMDP,self).__init__()
+            def __init__(self, chainSize=2):
+                """
+                :param chainSize: Number of states \'n\' in the chain.
+                """
+                self.chainSize          = chainSize
+                self.start              = 0
+                self.goal               = chainSize - 1
+                self.statespace_limits  = np.array([[0,chainSize-1]])
+                self.episodeCap         = 2*chainSize
+                self.continuous_dims    = []
+                self.DimNames           = ['State']
+                self.actions_num        = 2
+                self.discount_factor    = 0.9
+                super(ChainMDPTut,self).__init__()
 
 #. Copy the ``step()`` and function declaration and implement it accordingly
    to return the tuple (r,ns,isTerminal,possibleActions), and similarly for ``s0()``.
    We want the agent to always start at state *[0]* to begin, and only achieves reward 
    and terminates when *s = [n-1]*::
 
-       def step(self,a):
-           s = self.state[0]
-           if a == 0: #left
-               ns = max(0,s-1)
-           if a == 1: #right
-               ns = min(self.chainSize-1,s+1)
-           self.state = array([ns])
+            def step(self,a):
+                s = self.state[0]
+                if a == 0: #left
+                    ns = max(0,s-1)
+                if a == 1: #right
+                    ns = min(self.chainSize-1,s+1)
+                self.state = np.array([ns])
 
-           terminal = self.isTerminal()
-           r = self.GOAL_REWARD if terminal else self.STEP_REWARD
-           return r, ns, terminal, self.possibleActions()
+                terminal = self.isTerminal()
+                r = self.GOAL_REWARD if terminal else self.STEP_REWARD
+                return r, ns, terminal, self.possibleActions()
 
-       def s0(self):
-           self.state = np.array([0])
-           return self.state, self.isTerminal(), self.possibleActions()
+            def s0(self):
+                self.state = np.array([0])
+                return self.state, self.isTerminal(), self.possibleActions()
 
 #. In accordance with the above termination condition, override the ``isTerminal()``
    function by copying its declaration from ``Domain.py``::
 
-       def isTerminal(self):
-           s = self.state
-           return (s[0] == self.chainSize - 1)
+            def isTerminal(self):
+                s = self.state
+                return (s[0] == self.chainSize - 1)
 
 #. For debugging convenience, demonstration, and entertainment, create a domain
    visualization by overriding the default (which is to do nothing).
@@ -257,43 +259,37 @@ Note that the optimal policy is to always go right.
    and action *a*::
 
 
-    def showDomain(self, a = 0):
-        #Draw the environment
-        s = self.state
-        s = s[0]
-        if self.circles is None: # We need to draw the figure for the first time
-           fig = pl.figure(1, (self.chainSize*2, 2))
-           ax = fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
-           ax.set_xlim(0, self.chainSize*2)
-           ax.set_ylim(0, 2)
-           ax.add_patch(mpatches.Circle((1+2*(self.chainSize-1), self.Y), self.RADIUS*1.1, fc="w")) #Make the last one double circle
-           ax.xaxis.set_visible(False)
-           ax.yaxis.set_visible(False)
-           self.circles = [mpatches.Circle((1+2*i, self.Y), self.RADIUS, fc="w") for i in arange(self.chainSize)]
-           for i in arange(self.chainSize):
-               ax.add_patch(self.circles[i])
-               if i != self.chainSize-1:
-                    fromAtoB(1+2*i+self.SHIFT,self.Y+self.SHIFT,1+2*(i+1)-self.SHIFT, self.Y+self.SHIFT)
-                    if i != self.chainSize-2: fromAtoB(1+2*(i+1)-self.SHIFT,self.Y-self.SHIFT,1+2*i+self.SHIFT, self.Y-self.SHIFT, 'r')
-               fromAtoB(.75,self.Y-1.5*self.SHIFT,.75,self.Y+1.5*self.SHIFT,'r',connectionstyle='arc3,rad=-1.2')
-               pl.show()
+            def showDomain(self, a = 0):
+                #Draw the environment
+                s = self.state
+                s = s[0]
+                if self.circles is None: # We need to draw the figure for the first time
+                   fig = plt.figure(1, (self.chainSize*2, 2))
+                   ax = fig.add_axes([0, 0, 1, 1], frameon=False, aspect=1.)
+                   ax.set_xlim(0, self.chainSize*2)
+                   ax.set_ylim(0, 2)
+                   ax.add_patch(mpatches.Circle((1+2*(self.chainSize-1), self.Y), self.RADIUS*1.1, fc="w")) #Make the last one double circle
+                   ax.xaxis.set_visible(False)
+                   ax.yaxis.set_visible(False)
+                   self.circles = [mpatches.Circle((1+2*i, self.Y), self.RADIUS, fc="w") for i in np.arange(self.chainSize)]
+                   for i in np.arange(self.chainSize):
+                       ax.add_patch(self.circles[i])
+                       if i != self.chainSize-1:
+                            fromAtoB(1+2*i+self.SHIFT,self.Y+self.SHIFT,1+2*(i+1)-self.SHIFT, self.Y+self.SHIFT)
+                            if i != self.chainSize-2: fromAtoB(1+2*(i+1)-self.SHIFT,self.Y-self.SHIFT,1+2*i+self.SHIFT, self.Y-self.SHIFT, 'r')
+                       fromAtoB(.75,self.Y-1.5*self.SHIFT,.75,self.Y+1.5*self.SHIFT,'r',connectionstyle='arc3,rad=-1.2')
+                       plt.show()
 
-        [p.set_facecolor('w') for p in self.circles]
-        self.circles[s].set_facecolor('k')
-        pl.draw()
+                [p.set_facecolor('w') for p in self.circles]
+                self.circles[s].set_facecolor('k')
+                plt.draw()
 
 .. note::
 
     When first creating a matplotlib figure, you must call pl.show(); when
     updating the figure on subsequent steps, use pl.draw().
 
-That's it! Now add your new Domain to ``Domains/__init__.py``::
-
-    ``from ChainMDPTut import ChainMDPTut``
-
-Finally, create a unit test for your agent as described in :doc:`unittests`
-
-Now test it by creating a simple settings file on the domain of your choice.
+That's it!  Now test it by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
 
 .. literalinclude:: ../examples/tutorial/ChainMDPTut_example.py
@@ -314,7 +310,7 @@ Adding your component to RLPy
 """""""""""""""""""""""""""""
 If you would like to add your component to RLPy, we recommend developing on the 
 development version (see :ref:`devInstall`).
-Please use the following header at the top of each file:: 
+Please use the following header template at the top of each file:: 
 
     __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
     __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann", 

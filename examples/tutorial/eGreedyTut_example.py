@@ -4,7 +4,7 @@ Policy Tutorial for RLPy
 =================================
 
 Assumes you have created the eGreedyTut.py agent according to the tutorial and
-placed it in the Policies/ directory.
+placed it in the current working directory.
 Tests the policy on the GridWorld domain, with the policy and value function
 visualized.
 """
@@ -12,7 +12,7 @@ __author__ = "Robert H. Klein"
 from rlpy.Domains import GridWorld
 from rlpy.Agents import SARSA
 from rlpy.Representations import Tabular
-from rlpy.Policies import eGreedyTut
+from eGreedyTut import eGreedyTut
 from rlpy.Experiments import Experiment
 import os
 
@@ -31,7 +31,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-eGreedyTut"):
     opt["path"] = path
 
     ## Domain:
-    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
+    maze = '4x5.txt'
     domain = GridWorld(maze, noise=0.3)
     opt["domain"] = domain
 
@@ -45,7 +45,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-eGreedyTut"):
     ## Agent
     opt["agent"] = SARSA(representation=representation, policy=policy,
                   discount_factor=domain.discount_factor,
-                       learn_rate=0.1)
+                       initial_learn_rate=0.1)
     opt["checks_per_policy"] = 100
     opt["max_steps"] = 2000
     opt["num_policy_checks"] = 10

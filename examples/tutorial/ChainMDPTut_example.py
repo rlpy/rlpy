@@ -4,15 +4,15 @@ Domain Tutorial for RLPy
 =================================
 
 Assumes you have created the ChainMDPTut.py domain according to the
-tutorial and placed it in the Domains/ directory.
+tutorial and placed it in the current working directory.
 Tests the agent using SARSA with a tabular representation.
 """
 __author__ = "Robert H. Klein"
-from rlpy.Domains import ChainMDPTut
 from rlpy.Agents import SARSA
 from rlpy.Representations import Tabular
 from rlpy.Policies import eGreedy
 from rlpy.Experiments import Experiment
+from ChainMDPTut import ChainMDPTut
 import os
 import logging
 
@@ -43,9 +43,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/ChainMDPTut-SARSA"):
     policy = eGreedy(representation, epsilon=0.2)
 
     ## Agent
-    opt["agent"] = SARSA(representation=representation, policy=policy,
-                  disount_factor=domain.discount_factor,
-                       learn_rate=0.1)
+    opt["agent"] = SARSA(policy=policy, representation=representation, discount_factor=domain.discount_factor, initial_learn_rate=0.1)
     opt["checks_per_policy"] = 100
     opt["max_steps"] = 2000
     opt["num_policy_checks"] = 10

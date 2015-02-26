@@ -91,22 +91,22 @@ takes a random action instead.  This explicitly balances the exploration/exploit
 tradeoff, and ensures that in the limit of infinite samples, the agent will
 have explored the entire domain.
 
-#. Create a new file in the ``Policies/`` directory, ``eGreedyTut.py``.
+#. Create a new file in your current working directory, ``eGreedyTut.py``.
    Add the header block at the top::
 
-       __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
-       __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
+        __copyright__ = "Copyright 2013, RLPy http://www.acl.mit.edu/RLPy"
+        __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
                       "William Dabney", "Jonathan P. How"]
-       __license__ = "BSD 3-Clause"
-       __author__ = "Ray N. Forcement"
-       
-       from .Policy import Policy
-       import numpy as np
+        __license__ = "BSD 3-Clause"
+        __author__ = "Ray N. Forcement"
+
+        from rlpy.Policies.Policy import Policy
+        import numpy as np
 
 #. Declare the class, create needed members variables, and write a 
    docstring description.  See the role of member variables in comments::
 
-       class eGreedy(Policy):
+        class eGreedyTut(Policy):
            """
            From the tutorial in policy creation.  Identical to eGreedy.py.
            """
@@ -126,11 +126,11 @@ have explored the entire domain.
    multiple best actions exist, ie with the same 
    value, ``forcedDeterministicAmongBestActions``::
 
-       def __init__(self,representation, epsilon = .1,
-                     forcedDeterministicAmongBestActions = False, seed=1):
-           self.epsilon = epsilon
-           self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
-           super(eGreedy,self).__init__(representation)
+           def __init__(self,representation, epsilon = .1,
+              forcedDeterministicAmongBestActions = False, seed=1):
+               self.epsilon = epsilon
+               self.forcedDeterministicAmongBestActions = forcedDeterministicAmongBestActions
+               super(eGreedyTut,self).__init__(representation)
 
 
 #. Copy the ``pi()`` declaration from ``Policy.py`` and implement it to return
@@ -140,28 +140,28 @@ have explored the entire domain.
    ``self.forcedDeterministicAmongBestActions``, either pick randomly from among
    the best actions or always select the one with lowest index::
 
-       def pi(self,s, terminal, p_actions):
-           coin = self.random_state.rand()
-           #print "coin=",coin
-           if coin < self.epsilon:
-               return self.random_state.choice(p_actions)
-           else:
-               b_actions = self.representation.bestActions(s, terminal, p_actions)
-               if self.forcedDeterministicAmongBestActions:
-                   return b_actions[0]
+           def pi(self,s, terminal, p_actions):
+               coin = self.random_state.rand()
+               #print "coin=",coin
+               if coin < self.epsilon:
+                   return self.random_state.choice(p_actions)
                else:
-                   return self.random_state.choice(b_actions)
+                   b_actions = self.representation.bestActions(s, terminal, p_actions)
+                   if self.forcedDeterministicAmongBestActions:
+                       return b_actions[0]
+                   else:
+                       return self.random_state.choice(b_actions)
 
 #. Because this policy has an exploratory component, we must override the
    ``turnOffExploration()`` and ``turnOnExploration()`` functions, so that when
    evaluating the policy's performance the exploratory component may be
    automatically disabled so as not to influence results::
 
-       def turnOffExploration(self):
-           self.old_epsilon = self.epsilon
-           self.epsilon = 0
-       def turnOnExploration(self):
-           self.epsilon = self.old_epsilon
+           def turnOffExploration(self):
+               self.old_epsilon = self.epsilon
+               self.epsilon = 0
+           def turnOnExploration(self):
+               self.epsilon = self.old_epsilon
 
 
 .. warning::
@@ -171,13 +171,7 @@ have explored the entire domain.
     will be worse, since exploratory actions by definition are suboptimal based
     on the current model.
 
-That's it! Now add your new Policy to ``Policies/__init__.py``::
-
-    ``from eGreedyTut import eGreedyTut``
-
-Finally, create a unit test for your Policy as described in :doc:`unittests`
-
-Now test it by creating a simple settings file on the domain of your choice.
+That's it! Now test your new Policy by creating a simple settings file on the domain of your choice.
 An example experiment is given below:
 
 .. literalinclude:: ../examples/tutorial/eGreedyTut_example.py
