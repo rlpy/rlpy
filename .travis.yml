@@ -15,7 +15,7 @@ install:
     - "python -vc \"import nose; print nose.__version__\""
     - "cat /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/easy-install.pth; ls /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/"
     - "python -c \"import sys; print sys.path\""
-    - "sed -i '/^\/usr\/lib/d' /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/easy-install.pth || echo Error"
+    - "sed -i \"/^\/usr\/lib/d\" /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/easy-install.pth || echo Error"
     - "cat /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/easy-install.pth; ls /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/"
     - "python -c \"import sys; print sys.path\""
 script: "nosetests tests --logging-clear-handlers -v"
