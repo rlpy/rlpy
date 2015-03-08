@@ -18,4 +18,4 @@ install:
     - "sed -i \"/^\\/usr\\/lib/d\" /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/easy-install.pth || echo Error"
     - "cat /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/easy-install.pth; ls /home/travis/virtualenv/python2.7_with_system_site_packages/local/lib/python2.7/site-packages/"
     - "python -c \"import sys; print sys.path\""
-script: "nosetests tests --logging-clear-handlers -v"
+script: "xvfb-run --server-args=\"-screen 0 1024x768x24\" nosetests tests --logging-clear-handlers -v" 
