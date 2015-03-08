@@ -29,7 +29,7 @@ def make_experiment(exp_id=1, path="./Results/Tutorial/gridworld-qlearning"):
     opt["path"] = path
 
     # Domain:
-    maze = '4x5.txt'
+    maze = os.path.join(GridWorld.default_map_dir, '4x5.txt')
     domain = GridWorld(maze, noise=0.3)
     opt["domain"] = domain
 
