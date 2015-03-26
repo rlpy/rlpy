@@ -47,7 +47,7 @@ class HIVTreatment(Domain):
     state_names = ("T1", "T1*", "T2", "T2*", "V", "E")
     discount_factor = 0.98
     continuous_dims = np.arange(6)
-    actions = np.array([[0., 0.], [.7, 0.], [.3, 0.], [.7, .3]])
+    actions = np.array([[0., 0.], [.7, 0.], [0., .3], [.7, .3]])
     actions_num = 4
     episodeCap = 200  #: total of 1000 days with a measurement every 5 days
     dt = 5  #: measurement every 5 days
