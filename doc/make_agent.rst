@@ -145,7 +145,7 @@ this TD error, weighted by a factor called the *learning rate*.
 
                 # Compute feature function values and next action to be taken
 
-                discount_factor = self.representation.domain.gamma # 'gamma' in literature
+                discount_factor = self.discount_factor # 'gamma' in literature
                 feat_weights    = self.representation.theta # Value function, expressed as feature weights
                 features_s      = self.representation.phi(s, prevStateTerminal) # active feats in state
                 features        = self.representation.phi_sa(s, prevStateTerminal, a, features_s) # active features or an (s,a) pair
