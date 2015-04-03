@@ -62,7 +62,7 @@ class Agent(object):
     episode_count = 0
     # A seeded numpy random number generator
     random_state = None
-    
+
     def __init__(self, policy, representation, discount_factor, seed=1, **kwargs):
         """initialization.
 
@@ -94,10 +94,10 @@ class Agent(object):
         Any stochastic behavior in __init__() is broken out into this function
         so that if the random seed is later changed (eg, by the Experiment),
         other member variables and functions are updated accordingly.
-        
+
         """
         pass
-    
+
     @abstractmethod
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """
@@ -248,7 +248,7 @@ class DescentAlgorithm(object):
         # Increase the number of episodes
         self.episode_count += 1
         self.representation.episodeTerminated()
-        #super(DescentAlgorithm, self).episodeTerminated()
+        super(DescentAlgorithm, self).episodeTerminated()
 
 
 
