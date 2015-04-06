@@ -58,7 +58,7 @@ class CheckingBuildExt(build_ext):
             for src in ext.sources:
                 if not os.path.exists(src):
                     raise Exception("""Cython-generated file '%s' not found.
-                Cython is required to compile pandas from a development branch.
+                Cython is required to compile rlpy from a development branch.
                 Please install Cython or download a release package of rlpy.
                 """ % src)
 
