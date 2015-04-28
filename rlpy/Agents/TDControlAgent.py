@@ -91,6 +91,7 @@ class TDControlAgent(DescentAlgorithm, Agent):
                 terminal)
             weight_vec_old = weight_vec.copy()
             weight_vec               += self.learn_rate * \
+                self.representation.featureLearningRate() * \
                 td_error * self.eligibility_trace
             if not np.all(np.isfinite(weight_vec)):
                 weight_vec = weight_vec_old
