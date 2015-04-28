@@ -131,12 +131,9 @@ class Agent(object):
         # Increase the number of episodes
         self.episode_count += 1
 
-        # Update the eligibility traces if they exist:
         # Set eligibility Traces to zero if it is end of the episode
         if hasattr(self, 'eligibility_trace'):
                 self.eligibility_trace = np.zeros_like(self.eligibility_trace)
-        if hasattr(self, 'eligibility_trace_s'):
-                self.eligibility_trace_s = np.zeros_like(self.eligibility_trace_s)
 
 
 class DescentAlgorithm(object):
@@ -151,10 +148,6 @@ class DescentAlgorithm(object):
     initial_learn_rate       = 0.1
     #: The learning rate
     learn_rate               = 0
-    #: Only used in the 'dabney' method of learning rate update.
-    #: This value is updated in the updateLearnRate method. We use the rate
-    #: calculated by [Dabney W 2012]: http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
-    candid_learn_rate        = 0
     #: The eligibility trace, which marks states as eligible for a learning
     #: update. Used by \ref Agents.SARSA.SARSA "SARSA" agent when the
     #: parameter lambda is set. See:
@@ -196,14 +189,14 @@ class DescentAlgorithm(object):
 
         super(DescentAlgorithm, self).__init__(**kwargs)
 
-    def updateLearnRate(self,phi_s, phi_prime_s, eligibility_trace_s,
+    def updateLearnRate(self, phi, phi_prime, eligibility_trace,
 					discount_factor, nnz, terminal):
         """Computes a new learning rate (learn_rate) for the agent based on
         ``self.learn_rate_decay_mode``.
 
-        :param phi_s: The feature vector evaluated at state (s)
-        :param phi_prime_s: The feature vector evaluated at the new state (ns) = (s')
-        :param eligibility_trace_s: Eligibility trace using state only (no copy-paste)
+        :param phi: The feature vector evaluated at state (s) and action (a)
+        :param phi_prime_: The feature vector evaluated at the new state (ns) = (s') and action (na)
+        :param eligibility_trace: Eligibility trace
         :param discount_factor: The discount factor for learning (gamma)
         :param nnz: The number of nonzero features
         :param terminal: Boolean that determines if the step is terminal or not
@@ -211,20 +204,22 @@ class DescentAlgorithm(object):
         """
 
         if self.learn_rate_decay_mode == 'dabney':
-        # We only update learn_rate if this step is non-terminal; else phi_prime becomes
-        # zero and the dot product below becomes very large, creating a very
-        # small learn_rate
+            # We only update learn_rate if this step is non-terminal; else phi_prime becomes
+            # zero and the dot product below becomes very large, creating a very
+            # small learn_rate
             if not terminal:
-                #Automatic learning rate: [Dabney W. 2012]
-                self.candid_learn_rate = np.abs(np.dot(discount_factor * phi_prime_s - phi_s,
-                                                   eligibility_trace_s))
-                #  http://people.cs.umass.edu/~wdabney/papers/alphaBounds.p
-                self.candid_learn_rate = 1 / (self.candid_learn_rate*1.) if self.candid_learn_rate != 0 else np.inf
-                self.learn_rate = np.minimum(self.learn_rate,self.candid_learn_rate)
-            # else we take no action
+                # Automatic learning rate: [Dabney W. 2012]
+                # http://people.cs.umass.edu/~wdabney/papers/alphaBounds.pdf
+                candid_learn_rate = np.dot(discount_factor * phi_prime - phi,
+                                                   eligibility_trace)
+                if candid_learn_rate < 0:
+                    self.learn_rate = np.minimum(self.learn_rate,-1.0/candid_learn_rate)
         elif self.learn_rate_decay_mode == 'boyan':
-            self.learn_rate = self.initial_learn_rate * (self.boyan_N0 + 1.) / (self.boyan_N0 + (self.episode_count+1) ** 1.1)
-            self.learn_rate /= np.sum(np.abs(phi_s))  # divide by l1 of the features; note that this method is only called if phi_s != 0
+            self.learn_rate = self.initial_learn_rate * \
+                (self.boyan_N0 + 1.) / \
+                (self.boyan_N0 + (self.episode_count + 1) ** 1.1)
+            # divide by l1 of the features; note that this method is only called if phi != 0
+            self.learn_rate /= np.sum(np.abs(phi))
         elif self.learn_rate_decay_mode == 'boyan_const':
             # New little change from not having +1 for episode count
             self.learn_rate = self.initial_learn_rate * \
@@ -249,6 +244,3 @@ class DescentAlgorithm(object):
         self.episode_count += 1
         self.representation.episodeTerminated()
         super(DescentAlgorithm, self).episodeTerminated()
-
-
-
