@@ -495,7 +495,7 @@ def linearMap(x, a, b, A=0, B=1):
         res = B
     return res
 
-def l_norm(x, norm = 2):
+def l_norm(x, norm=2):
     ''' Returns the L infinity norm of a vector '''
     return np.linalg.norm(x, norm)
 
@@ -564,7 +564,7 @@ def findElemArray2D(x, arr2d):
 
     """
 
-    res = np.where(A == x)
+    res = np.where(arr2d == x)
     if len(res[0]):
         return res[0].flatten(), res[1].flatten()
     else:
