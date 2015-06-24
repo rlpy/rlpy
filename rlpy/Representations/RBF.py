@@ -54,13 +54,13 @@ class RBF(Representation):
             the domain boundaries.
 
         """
+        if resolution_max is None:
+            resolution_max = resolution_min
+
         self.grid_bins = grid_bins
         self.resolution_max = resolution_max
         self.resolution_min = resolution_min
         self.num_rbfs = num_rbfs
-
-        if resolution_max is None:
-            resolution_max = resolution_min
 
         if state_dimensions is not None:
             self.dims = len(state_dimensions)

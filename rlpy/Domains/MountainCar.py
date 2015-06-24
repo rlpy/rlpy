@@ -224,7 +224,7 @@ class MountainCar(Domain):
 
         for row, xDot in enumerate(np.linspace(self.XDOTMIN, self.XDOTMAX, self.XDot_discretization)):
             for col, x in enumerate(np.linspace(self.XMIN, self.XMAX, self.X_discretization)):
-                s = [x, xDot]
+                s = np.array([x, xDot])
                 Qs = representation.Qs(s, False)
                 As = self.possibleActions()
                 pi[row, col] = representation.bestAction(s, False, As)
