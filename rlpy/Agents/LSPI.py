@@ -115,15 +115,14 @@ class LSPI(BatchAgent):
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
         """Iterative learning method for the agent.
 
-        Args:
-            s (ndarray):    The current state features
-            p_actions (ndarray):    The actions available in state s
-            a (int):    The action taken by the agent in state s
-            r (float):  The reward received by the agent for taking action a in state s
-            ns (ndarray):   The next state features
-            np_actions (ndarray): The actions available in state ns
-            na (int):   The action taken by the agent in state ns
-            terminal (bool): Whether or not ns is a terminal state
+        :param ndarray s: The current state features.
+        :param ndarray p_actions: The actions available in state s.
+        :param int a: The action taken by the agent in state s.
+        :param float r: The reward received by the agent for taking action a in state s.
+        :param ndarray ns: The next state features.
+        :param ndarray np_actions: The actions available in state ns.
+        :param int na: The action taken by the agent in state ns.
+        :param bool terminal: Whether or not ns is a terminal state.
         """
         super(LSPI, self).learn(s, p_actions, a, r, ns, np_actions, na, terminal)
         if (self.samples_count) % self.steps_between_LSPI == 0:
