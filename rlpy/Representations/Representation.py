@@ -1,8 +1,9 @@
 """Representation base class."""
 
 import logging
+from abc import ABCMeta, abstractmethod
 from copy import deepcopy
-from rlpy.Tools import className, addNewElementForAllActions
+from rlpy.Tools import addNewElementForAllActions
 from rlpy.Tools import vec2id, bin2state, findElemArray1D
 from rlpy.Tools import hasFunction, id2vec, closestDiscretization
 import scipy.sparse as sp
@@ -51,6 +52,8 @@ class Representation(object):
         family of representations is being used.
 
     """
+    
+    __metaclass__ = ABCMeta
     #: A numpy array of the Linear Weights, one for each feature (theta)
     weight_vec = None
     #: The Domain that this Representation is modeling
@@ -432,6 +435,7 @@ class Representation(object):
         else:
             return bestA[0]
 
+    @abstractmethod
     def phi_nonTerminal(self, s):
         """ *Abstract Method* \n
         Returns the feature vector evaluated at state *s* for non-terminal
@@ -550,6 +554,7 @@ class Representation(object):
             useSparse)
         return best_action, phi_s_a, action_mask
 
+    @abstractmethod
     def featureType(self):
         """ *Abstract Method* \n
         Return the data type for the underlying features (eg 'float').
