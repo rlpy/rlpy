@@ -18,8 +18,8 @@ cdef extern from "<cmath>" namespace "std":
     double sin(double)
     double exp(double)
     double floor(double)
-    double fmin(double, double)
-    double fmax(double, double)
+    double min(double, double)
+    double max(double, double)
 
 
 def truncated_gaussian_kernel(np.ndarray[np.double_t, ndim=1] x,
@@ -40,7 +40,7 @@ def truncated_gaussian_kernel(np.ndarray[np.double_t, ndim=1] x,
     res = exp(-res)
     res -= threshold
     res *= 1. / (1. - threshold)
-    res = fmax(res, 0.)
+    res = max(res, 0.)
     return res
 
 
@@ -145,5 +145,5 @@ def linf_triangle_kernel(np.ndarray[np.double_t, ndim=1] x,
         if r <= 0:
             return 0.
         else:
-            mi = fmin(r, mi)
+            mi = min(r, mi)
     return mi
