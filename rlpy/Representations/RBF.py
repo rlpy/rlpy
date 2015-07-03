@@ -76,7 +76,7 @@ class RBF(Representation):
                 (self.num_rbfs, self.dims)) * (self.resolution_max + self.resolution_min) / 2
 
         self.const_feature = const_feature
-        self.features_num = num_rbfs
+        self.features_num = self.num_rbfs
         if const_feature:
             self.features_num += 1  # adds a constant 1 to each feature vector
         self.state_dimensions = state_dimensions
