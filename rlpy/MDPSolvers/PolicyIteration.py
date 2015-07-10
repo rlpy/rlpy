@@ -193,5 +193,4 @@ class PolicyIteration(MDPSolver):
             self.policy_improvement_iteration += 1
             policy, policyChanges = self.policyImprovement(policy)
 
-        if converged: self.logger.log('Converged!')
         super(PolicyIteration, self).solve()
