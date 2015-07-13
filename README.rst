@@ -15,12 +15,12 @@ learning. The project is distributed under the 3-Clause BSD License.
 Important Links
 ===============
 
-- Official source code repository: http://bitbucket.org/rlpy/rlpy
-- Github Mirror: http://github.com/rlpy/rlpy
-- Documentation and Homepage: http://acl.mit.edu/rlpy
-- Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
+- Official source code repository: http://github.com/rlpy/rlpy
+- Bitbucket mirror: http://bitbucket.org/rlpy/rlpy
+- Documentation: http://rlpy.readthedocs.org
+- Issue tracker: https://github.com/rlpy/rlpy/issues
 
 Install
 =======
 
-Installation instructions can be found at http://acl.mit.edu/rlpy/install.html
+Installation instructions can be found at http://rlpy.readthedocs.org/en/latest/install.html

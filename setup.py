@@ -21,7 +21,7 @@ import shutil
 import pkg_resources
 from os.path import join as pjoin
 
-version = '1.3.5'
+version = '1.3.6'
 
 if sys.platform == 'darwin':
     # by default use clang++ as this most likely to have c++11 support

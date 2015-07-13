@@ -14,11 +14,11 @@ The project is distributed under the 3-Clause BSD License.
 Important Links
 ===============
 
-- Official source code repository: http://bitbucket.org/rlpy/rlpy
-- Github Mirror: http://github.com/rlpy/rlpy
-- Documentation and Homepage: http://acl.mit.edu/rlpy
+- Official source code repository: http://github.com/rlpy/rlpy
+- Bitbucket mirror: http://bitbucket.org/rlpy/rlpy
+- Documentation: http://rlpy.readthedocs.org
+- Issue Tracker: https://github.com/rlpy/rlpy/issues
 - Download latest version: https://pypi.python.org/pypi/rlpy
-- Issue Tracker: http://bitbucket.org/rlpy/rlpy/issues
 - Mailing list: rlpy@mit.edu (`Subscribe here <http://mailman.mit.edu/mailman/listinfo/rlpy>`_)
 
 Documentation
