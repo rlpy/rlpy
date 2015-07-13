@@ -762,6 +762,13 @@ class Representation(object):
 
     def episodeTerminated(self):
         pass
+    
+    def featureLearningRate(self):
+        """
+        :return: An array or scalar used to adapt the learning rate of each
+        feature individually.
+        """
+        return 1.0
 
     def __deepcopy__(self, memo):
         cls = self.__class__

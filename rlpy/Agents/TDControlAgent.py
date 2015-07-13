@@ -20,15 +20,11 @@ class TDControlAgent(DescentAlgorithm, Agent):
 
     lambda_ = 0        #: lambda Parameter in SARSA [Sutton Book 1998]
     eligibility_trace = []  #: eligibility trace
-    #: eligibility trace using state only (no copy-paste), necessary for dabney decay mode
-    eligibility_trace_s = []
 
     def __init__(self, policy, representation, discount_factor, lambda_=0, **kwargs):
         self.eligibility_trace = np.zeros(
             representation.features_num *
             representation.actions_num)
-        # use a state-only version of eligibility trace for dabney decay mode
-        self.eligibility_trace_s = np.zeros(representation.features_num)
         self.lambda_ = lambda_
         super(
             TDControlAgent,
@@ -40,7 +36,6 @@ class TDControlAgent(DescentAlgorithm, Agent):
         pass
 
     def learn(self, s, p_actions, a, r, ns, np_actions, na, terminal):
-
         # The previous state could never be terminal
         # (otherwise the episode would have already terminated)
         prevStateTerminal = False
@@ -76,33 +71,27 @@ class TDControlAgent(DescentAlgorithm, Agent):
                     self.representation.actions_num,
                     np.zeros((self.representation.actions_num,
                               expanded)))
-                self.eligibility_trace_s = addNewElementForAllActions(
-                    self.eligibility_trace_s, 1, np.zeros((1, expanded)))
 
             self.eligibility_trace *= discount_factor * self.lambda_
             self.eligibility_trace += phi
 
-            self.eligibility_trace_s *= discount_factor * self.lambda_
-            self.eligibility_trace_s += phi_s
-
             # Set max to 1
             self.eligibility_trace[self.eligibility_trace > 1] = 1
-            self.eligibility_trace_s[self.eligibility_trace_s > 1] = 1
         else:
             self.eligibility_trace = phi
-            self.eligibility_trace_s = phi_s
 
         td_error = r + np.dot(discount_factor * phi_prime - phi, weight_vec)
         if nnz > 0:
             self.updateLearnRate(
-                phi_s,
-                phi_prime_s,
-                self.eligibility_trace_s,
+                phi,
+                phi_prime,
+                self.eligibility_trace,
                 discount_factor,
                 nnz,
                 terminal)
             weight_vec_old = weight_vec.copy()
             weight_vec               += self.learn_rate * \
+                self.representation.featureLearningRate() * \
                 td_error * self.eligibility_trace
             if not np.all(np.isfinite(weight_vec)):
                 weight_vec = weight_vec_old
