@@ -1,7 +1,6 @@
 """Representation base class."""
 
 import logging
-from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from rlpy.Tools import className, addNewElementForAllActions
 from rlpy.Tools import vec2id, bin2state, findElemArray1D
@@ -52,33 +51,31 @@ class Representation(object):
         family of representations is being used.
 
     """
-
-    __metaclass__ = ABCMeta
-    # : A numpy array of the Linear Weights, one for each feature (theta)
+    #: A numpy array of the Linear Weights, one for each feature (theta)
     weight_vec = None
-    # : The Domain that this Representation is modeling
+    #: The Domain that this Representation is modeling
     domain = None
-    # : Number of features in the representation
+    #: Number of features in the representation
     features_num = 0
-    # : Number of actions in the representation
+    #: Number of actions in the representation
     actions_num = 0
     # Number of bins used for discretization of each continuous dimension
     discretization = 20
-    # : Number of possible states per dimension [1-by-dim]
+    #: Number of possible states per dimension [1-by-dim]
     bins_per_dim = 0
-    # : Width of bins in each dimension
+    #: Width of bins in each dimension
     binWidth_per_dim = 0
-    # : Number of aggregated states based on the discretization.
-    # : If the represenation is adaptive, set to the best resolution possible
+    #: Number of aggregated states based on the discretization.
+    #: If the represenation is adaptive, set to the best resolution possible
     agg_states_num = 0
     # A simple object that records the prints in a file
     logger = None
     # A seeded numpy random number generator
     random_state = None
 
-    # : True if the number of features may change during execution.
+    #: True if the number of features may change during execution.
     isDynamic = False
-    # : A dictionary used to cache expected results of step(). Used for planning algorithms
+    #: A dictionary used to cache expected results of step(). Used for planning algorithms
     expectedStepCached = None
 
     def __init__(self, domain, discretization=20, seed=1):
@@ -111,19 +108,19 @@ class Representation(object):
         self._arange_cache = np.arange(self.features_num)
         self.agg_states_num = np.prod(self.bins_per_dim.astype('uint64'))
         self.logger = logging.getLogger("rlpy.Representations." + self.__class__.__name__)
-
+        
         # a new stream of random numbers for each representation
         self.random_state = np.random.RandomState(seed=seed)
-
+        
     def init_randomization(self):
         """
         Any stochastic behavior in __init__() is broken out into this function
         so that if the random seed is later changed (eg, by the Experiment),
         other member variables and functions are updated accordingly.
-
+        
         """
         pass
-
+        
     def V(self, s, terminal, p_actions, phi_s=None):
         """ Returns the value of state s under possible actions p_actions.
 
@@ -273,12 +270,12 @@ class Representation(object):
         phi_sa[self._arange_cache] = phi_s
         # Slower alternatives
         # Alternative 1: Set only non_zeros (Very close on running time with the current solution. In fact it is sometimes better)
-        # nnz_ind = phi_s.nonzero()
-        # phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
+        #nnz_ind = phi_s.nonzero()
+        #phi_sa[nnz_ind+a*self.features_num] = phi_s[nnz_ind]
         # Alternative 2: Use of Kron
-        # A = zeros(self.actions_num)
-        # A[a] = 1
-        # F_sa = kron(A,F_s)
+        #A = zeros(self.actions_num)
+        #A[a] = 1
+        #F_sa = kron(A,F_s)
         return phi_sa
 
     def addNewWeight(self):
@@ -318,7 +315,7 @@ class Representation(object):
             else:
                 self.bins_per_dim[d] = domain.statespace_limits[d, 1] - \
                     domain.statespace_limits[d, 0]
-            self.binWidth_per_dim[d] = (domain.statespace_limits[d, 1] - domain.statespace_limits[d, 0]) / (self.bins_per_dim[d] * 1.)
+            self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d, 0]) / (self.bins_per_dim[d] * 1.)
 
     def binState(self, s):
         """
@@ -435,7 +432,6 @@ class Representation(object):
         else:
             return bestA[0]
 
-    @abstractmethod
     def phi_nonTerminal(self, s):
         """ *Abstract Method* \n
         Returns the feature vector evaluated at state *s* for non-terminal
@@ -500,7 +496,7 @@ class Representation(object):
         for i in xrange(a_num):
             rows = np.where(all_actions == i)[0]
             if len(rows):
-                phi_s_a[rows, i * n:(i + 1) * n] = all_phi_s[rows, :]
+                phi_s_a[rows, i * n:(i + 1) * n] = all_phi_s[rows,:]
         return phi_s_a
 
     def batchBestAction(self, all_s, all_phi_s,
@@ -554,7 +550,6 @@ class Representation(object):
             useSparse)
         return best_action, phi_s_a, action_mask
 
-    @abstractmethod
     def featureType(self):
         """ *Abstract Method* \n
         Return the data type for the underlying features (eg 'float').
@@ -601,15 +596,15 @@ class Representation(object):
             Q = 0
             for j in xrange(len(p)):
                 if policy is None:
-                    Q += p[j, 0] * (r[j, 0] + discount_factor * self.V(ns[j, :], t[j, :], p_actions[j]))
+                    Q += p[j, 0] * (r[j, 0] + discount_factor * self.V(ns[j,:], t[j,:], p_actions[j]))
                 else:
                     # For some domains such as blocks world, you may want to apply bellman backup to impossible states which may not have any possible actions.
                     # This if statement makes sure that there exist at least
                     # one action in the next state so the bellman backup with
                     # the fixed policy is valid
-                    if len(self.domain.possibleActions(ns[j, :])):
-                        na = policy.pi(ns[j, :], t[j, :], self.domain.possibleActions(ns[j, :]))
-                        Q += p[j, 0] * (r[j, 0] + discount_factor * self.Q(ns[j, :], t[j, :], na))
+                    if len(self.domain.possibleActions(ns[j,:])):
+                        na = policy.pi(ns[j,:], t[j,:], self.domain.possibleActions(ns[j,:]))
+                        Q += p[j, 0] * (r[j, 0] + discount_factor * self.Q(ns[j,:], t[j,:], na))
         else:
             # See if they are in cache:
             key = tuple(np.hstack((s, [a])))
@@ -645,7 +640,7 @@ class Representation(object):
                                 new_s[d] = int(new_s[d])
                         # print new_s
                         ns, r = self.domain.sampleStep(new_s, a, ns_samples_)
-                        next_states[i * ns_samples_:(i + 1) * ns_samples_, :] = ns
+                        next_states[i * ns_samples_:(i + 1) * ns_samples_,:] = ns
                         rewards[i * ns_samples_:(i + 1) * ns_samples_] = r
                 else:
                     next_states, rewards = self.domain.sampleStep(
@@ -655,9 +650,9 @@ class Representation(object):
                 # print "USED CACHED"
                 next_states, rewards = cacheHit
             if policy is None:
-                Q = np.mean([rewards[i] + discount_factor * self.V(next_states[i, :]) for i in xrange(ns_samples)])
+                Q = np.mean([rewards[i] + discount_factor * self.V(next_states[i,:]) for i in xrange(ns_samples)])
             else:
-                Q = np.mean([rewards[i] + discount_factor * self.Q(next_states[i, :], policy.pi(next_states[i, :])) for i in xrange(ns_samples)])
+                Q = np.mean([rewards[i] + discount_factor * self.Q(next_states[i,:], policy.pi(next_states[i,:])) for i in xrange(ns_samples)])
         return Q
 
     def Qs_oneStepLookAhead(self, s, ns_samples, policy=None):
@@ -740,7 +735,7 @@ class Representation(object):
 
         # Find the value corresponding to each bin number
         for d in xrange(self.domain.state_space_dims):
-            s[d] = bin2state(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d, :])
+            s[d] = bin2state(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d,:])
 
         if len(self.domain.continuous_dims) == 0:
             s = s.astype(int)
@@ -761,13 +756,13 @@ class Representation(object):
         """
         s_normalized = s.copy()
         for d in xrange(self.domain.state_space_dims):
-            s_normalized[d] = closestDiscretization(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d, :])
+            s_normalized[d] = closestDiscretization(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d,:])
         return s_normalized
 
 
     def episodeTerminated(self):
         pass
-
+    
     def featureLearningRate(self):
         """
         :return: An array or scalar used to adapt the learning rate of each

@@ -33,7 +33,7 @@ class Policy(object):
 
     """
 
-    __metaclass__ = ABCMeta
+    __netaclass__ = ABCMeta
     representation = None
     DEBUG = False
     # A seeded numpy random number generator
