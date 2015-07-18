@@ -51,7 +51,7 @@ def make_experiment(
                                max_active_base_feat=100,
                                max_base_feat_sim=max_base_feat_sim)
     policy = SwimmerPolicy(representation)
-    #policy = eGreedy(representation, epsilon=0.1)
+    # policy = eGreedy(representation, epsilon=0.1)
     stat_bins_per_state_dim = 20
     # agent           = SARSA(representation,policy,domain,initial_learn_rate=initial_learn_rate,
     # lambda_=.0, learn_rate_decay_mode="boyan", boyan_N0=boyan_N0)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
-    experiment.run(visualize_performance=1, visualize_learning=True)
+    experiment.run(visualize_learning=True, visualize_performance=True)
     # experiment.plot()
     # experiment.save()
     from rlpy.Tools import plt

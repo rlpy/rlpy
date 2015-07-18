@@ -45,6 +45,6 @@ if __name__ == '__main__':
     from rlpy.Tools.run import run_profiled
     # run_profiled(make_experiment)
     experiment = make_experiment(1)
-    experiment.run()
+    experiment.run(visualize_performance=True, visualize_learning=True)
     # experiment.plot()
     # experiment.save()

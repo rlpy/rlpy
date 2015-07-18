@@ -454,8 +454,7 @@ class Experiment(object):
         self.result["learning_steps"].append(total_steps)
         self.result["return"].append(performance_return)
         self.result["learning_time"].append(self.elapsed_time)
-        self.result["num_features"].append(
-            self.agent.representation.features_num)
+        self.result["num_features"].append(self.agent.representation.features_num)
         self.result["steps"].append(performance_steps)
         self.result["terminated"].append(performance_term)
         self.result["learning_episode"].append(episode_number)

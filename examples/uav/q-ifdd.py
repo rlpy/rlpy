@@ -9,7 +9,7 @@ from hyperopt import hp
 param_space = {  # 'discretization': hp.quniform("discretization", 5, 50, 1),
     'discover_threshold': hp.loguniform("discover_threshold",
                                         np.log(5e1), np.log(1e4)),
-    #'lambda_': hp.uniform("lambda_", 0., 1.),
+    # 'lambda_': hp.uniform("lambda_", 0., 1.),
     'boyan_N0': hp.loguniform("boyan_N0", np.log(1e1), np.log(1e5)),
     'initial_learn_rate': hp.loguniform("initial_learn_rate", np.log(5e-2), np.log(1))}
 
@@ -45,8 +45,8 @@ def make_experiment(
 
 if __name__ == '__main__':
     from rlpy.Tools.run import run_profiled
-    run_profiled(make_experiment)
-    #experiment = make_experiment(1)
-    # experiment.run()
-    # experiment.plot()
-    # experiment.save()
+    # run_profiled(make_experiment)
+    experiment = make_experiment(1)
+    experiment.run(visualize_performance=True, visualize_learning=True)
+    experiment.plot()
+    experiment.save()
