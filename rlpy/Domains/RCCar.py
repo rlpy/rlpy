@@ -84,7 +84,7 @@ class RCCar(Domain):
                  self.SPEEDMAX],
                 [self.HEADINGMIN,
                  self.HEADINGMAX]])
-        self.Noise = noise
+        self.noise = noise
         super(RCCar, self).__init__()
 
     def step(self, a):

@@ -69,7 +69,7 @@ class MountainCar(Domain):
         """
         self.statespace_limits = np.array(
             [[self.XMIN, self.XMAX], [self.XDOTMIN, self.XDOTMAX]])
-        self.Noise = noise
+        self.noise = noise
         # Visual stuff:
         self.xTicks = np.linspace(0, self.X_discretization - 1, 5)
         self.xTicksLabels = np.linspace(self.XMIN, self.XMAX, 5)
