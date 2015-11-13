@@ -82,7 +82,7 @@ class RBF(Representation):
         self.state_dimensions = state_dimensions
         self.normalize = normalize
 
-        super(RBF, self).__init__(domain)
+        super(RBF, self).__init__(domain, seed=seed)
 
         self.init_randomization()
 
