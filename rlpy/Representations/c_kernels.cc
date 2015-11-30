@@ -34,7 +34,7 @@ double linf_triangle_kernel(const double* s1, const double* s2,
         if (r <= 0) 
             return 0;
         else 
-            res = fmin(r, res);
+            res = std::min(r, res);
     }
     return res;
 
