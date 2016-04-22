@@ -88,7 +88,10 @@ class GridWorld(Domain):
         self.DimNames = ['Row', 'Col']
         # 2*self.ROWS*self.COLS, small values can cause problem for some
         # planning techniques
-        self.episodeCap = 1000
+        if not self.episodeCap:
+            self.episodeCap = 1000
+        else:
+            self.episodeCap = episodeCap
         super(GridWorld, self).__init__()
 
     def showDomain(self, a=0, s=None):
