@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 # textGridworldDisplay.py
 # -----------------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,11 +11,18 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-import util
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
+from . import util
 from functools import reduce
 
 
-class TextGridworldDisplay:
+class TextGridworldDisplay(object):
 
     def __init__(self, gridworld):
         self.gridworld = gridworld
@@ -25,7 +35,7 @@ class TextGridworldDisplay:
 
     def displayValues(self, agent, currentState=None, message=None):
         if message is not None:
-            print message
+            print(message)
         values = util.Counter()
         policy = {}
         states = self.gridworld.getStates()
@@ -36,12 +46,12 @@ class TextGridworldDisplay:
 
     def displayNullValues(self, agent, currentState=None, message=None):
         if message is not None:
-            print message
+            print(message)
         prettyPrintNullValues(self.gridworld, currentState)
 
     def displayQValues(self, agent, currentState=None, message=None):
         if message is not None:
-            print message
+            print(message)
         qValues = util.Counter()
         states = self.gridworld.getStates()
         for state in states:
@@ -85,16 +95,16 @@ def prettyPrintValues(gridWorld, values, policy=None, currentState=None):
                     text[1] = '*'
                 else:
                     text[1] = "|" + ' ' * \
-                        int((l - 1) / 2 - 1) + '*' + \
-                        ' ' * int((l) / 2 - 1) + "|"
+                        int(old_div((l - 1), 2) - 1) + '*' + \
+                        ' ' * int(old_div((l), 2) - 1) + "|"
             if action == 'east':
                 text[2] = '  ' + text[2] + ' >'
             elif action == 'west':
                 text[2] = '< ' + text[2] + '  '
             elif action == 'north':
-                text[0] = ' ' * int(maxLen / 2) + '^' + ' ' * int(maxLen / 2)
+                text[0] = ' ' * int(old_div(maxLen, 2)) + '^' + ' ' * int(old_div(maxLen, 2))
             elif action == 'south':
-                text[4] = ' ' * int(maxLen / 2) + 'v' + ' ' * int(maxLen / 2)
+                text[4] = ' ' * int(old_div(maxLen, 2)) + 'v' + ' ' * int(old_div(maxLen, 2))
             newCell = "\n".join(text)
             newRow.append(newCell)
         newRows.append(newRow)
@@ -105,7 +115,7 @@ def prettyPrintValues(gridWorld, values, policy=None, currentState=None):
     colLabels = [str(colNum) for colNum in range(numCols)]
     colLabels.insert(0, ' ')
     finalRows = [colLabels] + newRows
-    print indent(finalRows, separateRows=True, delim='|', prefix='|', postfix='|', justify='center', hasHeader=True)
+    print(indent(finalRows, separateRows=True, delim='|', prefix='|', postfix='|', justify='center', hasHeader=True))
 
 
 def prettyPrintNullValues(gridWorld, currentState=None):
@@ -155,17 +165,17 @@ def prettyPrintNullValues(gridWorld, currentState=None):
                     text[1] = '*'
                 else:
                     text[1] = "|" + ' ' * \
-                        int((l - 1) / 2 - 1) + '*' + \
-                        ' ' * int((l) / 2 - 1) + "|"
+                        int(old_div((l - 1), 2) - 1) + '*' + \
+                        ' ' * int(old_div((l), 2) - 1) + "|"
 
             if action == 'east':
                 text[2] = '  ' + text[2] + ' >'
             elif action == 'west':
                 text[2] = '< ' + text[2] + '  '
             elif action == 'north':
-                text[0] = ' ' * int(maxLen / 2) + '^' + ' ' * int(maxLen / 2)
+                text[0] = ' ' * int(old_div(maxLen, 2)) + '^' + ' ' * int(old_div(maxLen, 2))
             elif action == 'south':
-                text[4] = ' ' * int(maxLen / 2) + 'v' + ' ' * int(maxLen / 2)
+                text[4] = ' ' * int(old_div(maxLen, 2)) + 'v' + ' ' * int(old_div(maxLen, 2))
             newCell = "\n".join(text)
             newRow.append(newCell)
         newRows.append(newRow)
@@ -176,7 +186,7 @@ def prettyPrintNullValues(gridWorld, currentState=None):
     colLabels = [str(colNum) for colNum in range(numCols)]
     colLabels.insert(0, ' ')
     finalRows = [colLabels] + newRows
-    print indent(finalRows, separateRows=True, delim='|', prefix='|', postfix='|', justify='center', hasHeader=True)
+    print(indent(finalRows, separateRows=True, delim='|', prefix='|', postfix='|', justify='center', hasHeader=True))
 
 
 def prettyPrintQValues(gridWorld, qValues, currentState=None):
@@ -254,7 +264,7 @@ def prettyPrintQValues(gridWorld, qValues, currentState=None):
     colLabels.insert(0, ' ')
     finalRows = [colLabels] + newRows
 
-    print indent(finalRows, separateRows=True, delim='|', prefix='|', postfix='|', justify='center', hasHeader=True)
+    print(indent(finalRows, separateRows=True, delim='|', prefix='|', postfix='|', justify='center', hasHeader=True))
 
 
 def border(text):
@@ -268,7 +278,7 @@ def border(text):
 # Indenting code based on a post from George Sakkis
 # (http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/267662)
 
-import cStringIO
+import io
 import operator
 
 
@@ -292,12 +302,12 @@ def indent(rows, hasHeader=False, headerChar='-', delim=' | ', justify='left',
     def rowWrapper(row):
         newRows = [wrapfunc(item).split('\n') for item in row]
         return (
-            [[substr or '' for substr in item] for item in map(None, *newRows)]
+            [[substr or '' for substr in item] for item in list(*newRows)]
         )
     # break each logical row into one or more physical ones
     logicalRows = [rowWrapper(row) for row in rows]
     # columns of physical rows
-    columns = map(None, *reduce(operator.add, logicalRows))
+    columns = list(*reduce(operator.add, logicalRows))
     # get the maximum of each column by the string length of its items
     maxWidths = [max([len(str(item)) for item in column])
                  for column in columns]
@@ -306,17 +316,16 @@ def indent(rows, hasHeader=False, headerChar='-', delim=' | ', justify='left',
     # select the appropriate justify method
     justify = {'center': str.center, 'right':
                str.rjust, 'left': str.ljust}[justify.lower()]
-    output = cStringIO.StringIO()
+    output = io.StringIO()
     if separateRows:
-        print >> output, rowSeparator
+        print(rowSeparator, file=output)
     for physicalRows in logicalRows:
         for row in physicalRows:
-            print >> output, \
-                prefix \
+            print(prefix \
                 + delim.join([justify(str(item), width) for (item, width) in zip(row, maxWidths)]) \
-                + postfix
+                + postfix, file=output)
         if separateRows or hasHeader:
-            print >> output, rowSeparator
+            print(rowSeparator, file=output)
             hasHeader = False
     return output.getvalue()
 
@@ -327,17 +336,17 @@ def wrap_always(text, width):
     """A simple word-wrap function that wraps text on exactly width characters.
        It doesn't split the text in words."""
     return '\n'.join([text[width * i:width * (i + 1)]
-                      for i in xrange(int(math.ceil(1. * len(text) / width)))])
+                      for i in range(int(math.ceil(1. * len(text) / width)))])
 
 
 # TEST OF DISPLAY CODE
 
 if __name__ == '__main__':
-    import gridworld
-    import util
+    from . import gridworld
+    from . import util
 
     grid = gridworld.getCliffGrid3()
-    print grid.getStates()
+    print(grid.getStates())
 
     policy = dict([(state, 'east') for state in grid.getStates()])
     values = util.Counter(dict([(state, 1000.23)

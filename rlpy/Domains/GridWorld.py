@@ -1,4 +1,7 @@
 """Gridworld Domain."""
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 from rlpy.Tools import plt, FONTSIZE, linearMap
 import numpy as np
 from .Domain import Domain
@@ -66,7 +69,7 @@ class GridWorld(Domain):
 
     actions_num = 4
     # Constants in the map
-    EMPTY, BLOCKED, START, GOAL, PIT, AGENT = range(6)
+    EMPTY, BLOCKED, START, GOAL, PIT, AGENT = list(range(6))
     #: Up, Down, Left, Right
     ACTIONS = np.array([[-1, 0], [+1, 0], [0, -1], [0, +1]])
     # directory of maps shipped with rlpy
@@ -161,8 +164,8 @@ class GridWorld(Domain):
                 units='y',
                 cmap='Actions',
                 scale_units="height",
-                scale=self.ROWS /
-                arrow_ratio,
+                scale=old_div(self.ROWS,
+                arrow_ratio),
                 width=-
                 1 *
                 ARROW_WIDTH)
@@ -179,8 +182,8 @@ class GridWorld(Domain):
                 units='y',
                 cmap='Actions',
                 scale_units="height",
-                scale=self.ROWS /
-                arrow_ratio,
+                scale=old_div(self.ROWS,
+                arrow_ratio),
                 width=-
                 1 *
                 ARROW_WIDTH)
@@ -197,8 +200,8 @@ class GridWorld(Domain):
                 units='x',
                 cmap='Actions',
                 scale_units="width",
-                scale=self.COLS /
-                arrow_ratio,
+                scale=old_div(self.COLS,
+                arrow_ratio),
                 width=ARROW_WIDTH)
             self.leftArrows_fig.set_clim(vmin=0, vmax=1)
             X = np.arange(self.ROWS)
@@ -213,8 +216,8 @@ class GridWorld(Domain):
                 units='x',
                 cmap='Actions',
                 scale_units="width",
-                scale=self.COLS /
-                arrow_ratio,
+                scale=old_div(self.COLS,
+                arrow_ratio),
                 width=ARROW_WIDTH)
             self.rightArrows_fig.set_clim(vmin=0, vmax=1)
             plt.show()
@@ -238,8 +241,8 @@ class GridWorld(Domain):
              self.ROWS,
              self.actions_num),
             dtype='uint8')
-        for r in xrange(self.ROWS):
-            for c in xrange(self.COLS):
+        for r in range(self.ROWS):
+            for c in range(self.COLS):
                 if self.map[r, c] == self.BLOCKED:
                     V[r, c] = 0
                 if self.map[r, c] == self.GOAL:
@@ -256,7 +259,7 @@ class GridWorld(Domain):
                     Mask[c, r, As] = False
                     arrowColors[c, r, bestA] = 1
 
-                    for i in xrange(len(As)):
+                    for i in range(len(As)):
                         a = As[i]
                         Q = Qs[i]
                         value = linearMap(
@@ -343,7 +346,7 @@ class GridWorld(Domain):
         if s is None:
             s = self.state
         possibleA = np.array([], np.uint8)
-        for a in xrange(self.actions_num):
+        for a in range(self.actions_num):
             ns = s + self.ACTIONS[a]
             if (
                     ns[0] < 0 or ns[0] == self.ROWS or

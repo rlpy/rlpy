@@ -1,5 +1,12 @@
 """Kernelized Incremental Feature Dependency Discovery"""
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import numpy as np
 from .Representation import Representation
 from itertools import combinations
@@ -101,7 +108,7 @@ class KernelizediFDD(Representation):
         l.sort(key=key)
         for i in l:
             f = self.features[i]
-            print "{:>5} {:>20}".format(i, f)
+            print("{:>5} {:>20}".format(i, f))
 
     def plot_1d_features(self, dimension_idx=None):
         """Creates a plot for each specified dimension of the state space and shows
@@ -116,7 +123,7 @@ class KernelizediFDD(Representation):
         elif idx is None:
             idx = self.domain.continuous_dims
 
-        feat_list = range(self.features_num)
+        feat_list = list(range(self.features_num))
         key = lambda x: (
             len(self.features[x].base_ids),
             tuple(self.features[x].dim),
@@ -166,7 +173,7 @@ class KernelizediFDD(Representation):
             idx = [d1, d2]
         idx.sort()
 
-        feat_list = range(self.features_num)
+        feat_list = list(range(self.features_num))
         key = lambda x: (
             len(self.features[x].base_ids),
             tuple(self.features[x].dim),
@@ -206,8 +213,8 @@ class KernelizediFDD(Representation):
                         "Feature Dimensions {} and {}".format(cur_i, cur_j))
             if cur_i in idx and cur_j in idx:
                 Z = np.zeros_like(X)
-                for m in xrange(100):
-                    for n in xrange(100):
+                for m in range(100):
+                    for n in range(100):
                         x = np.zeros(self.domain.statespace_limits.shape[0])
                         x[cur_i] = X[m, n]
                         x[cur_j] = Y[m, n]
@@ -233,7 +240,7 @@ class KernelizediFDD(Representation):
             idx = [d1, d2]
         idx.sort()
 
-        feat_list = range(self.features_num)
+        feat_list = list(range(self.features_num))
         key = lambda x: (
             len(self.features[x].base_ids),
             tuple(self.features[x].dim),
@@ -267,7 +274,7 @@ class KernelizediFDD(Representation):
     def phi_nonTerminal(self, s):
         out = np.zeros(self.features_num)
         if not self.sparsify:
-            for i in xrange(self.features_num):
+            for i in range(self.features_num):
                 out[i] = self.features[i].output(s)
         else:
             # get all base feature values and check if they are activated
@@ -306,7 +313,7 @@ class KernelizediFDD(Representation):
     def phi_raw(self, s, terminal):
         assert(terminal is False)
         out = np.zeros(self.features_num)
-        for i in xrange(self.features_num):
+        for i in range(self.features_num):
             out[i] = self.features[i].output(s)
         return out
 
@@ -330,7 +337,7 @@ class KernelizediFDD(Representation):
                 closest_neighbor[j] = max(closest_neighbor[j], phi_s_unnorm[i])
 
         # add new base features for all dimension not regarded
-        for j in xrange(len(s)):
+        for j in range(len(s)):
             if active_dimensions[j] < self.max_active_base_feat and (closest_neighbor[j] < self.max_base_feat_sim or active_dimensions[j] < 1):
                 active_indices.append(self.add_base_feature(s, j, Q=Q))
                 discovered += 1
@@ -340,7 +347,7 @@ class KernelizediFDD(Representation):
             phi_s = self.phi(s, terminal)
         la = len(active_indices)
         if la * (la - 1) < len(self.candidates):
-            for ind, cand in self.candidates.items():
+            for ind, cand in list(self.candidates.items()):
                 g, h = ind
                 rel = self.update_relevance_stat(
                     cand,
@@ -392,8 +399,8 @@ class KernelizediFDD(Representation):
         candidate.activation_count += phi_s[index1] ** 2 * phi_s[index2] ** 2
         if candidate.activation_count == 0.:
             return 0.
-        rel = np.abs(candidate.td_error_sum) / \
-            np.sqrt(candidate.activation_count)
+        rel = old_div(np.abs(candidate.td_error_sum), \
+            np.sqrt(candidate.activation_count))
         return rel
 
     def add_base_feature(self, center, dim, Q):
@@ -414,10 +421,10 @@ class KernelizediFDD(Representation):
 
         # add combinations with all existing features as candidates
         new_cand = {(f, self.features_num): Candidate(f, self.features_num)
-                    for f in xrange(self.features_num) if dim not in self.features[f].dim}
+                    for f in range(self.features_num) if dim not in self.features[f].dim}
 
         self.candidates.update(new_cand)
-        for f, _ in new_cand.keys():
+        for f, _ in list(new_cand.keys()):
             self.base_id_sets.add(new_f.base_ids | self.features[f].base_ids)
         self.features_num += 1
 
@@ -462,10 +469,10 @@ class KernelizediFDD(Representation):
         del self.candidates[(index1, index2)]
 
         # add new candidates
-        new_cand = {(f, self.features_num): Candidate(f, self.features_num) for f in xrange(self.features_num)
+        new_cand = {(f, self.features_num): Candidate(f, self.features_num) for f in range(self.features_num)
                     if (self.features[f].base_ids | new_base_ids) not in self.base_id_sets
                     and len(frozenset(self.features[f].dim) & frozenset(new_dim)) == 0}
-        for c, _ in new_cand.keys():
+        for c, _ in list(new_cand.keys()):
             self.base_id_sets.add(new_base_ids | self.features[c].base_ids)
         self.candidates.update(new_cand)
         self.logger.debug(
@@ -488,7 +495,7 @@ class KernelizediFDD(Representation):
 
 
 try:
-    from kernels import *
+    from .kernels import *
 except ImportError:
-    print "C-Extension for kernels not available, expect slow runtime"
-    from slow_kernels import *
+    print("C-Extension for kernels not available, expect slow runtime")
+    from .slow_kernels import *

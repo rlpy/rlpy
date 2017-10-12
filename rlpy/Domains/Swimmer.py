@@ -1,5 +1,10 @@
 """multi-link swimmer moving in a fluid."""
+from __future__ import division
+from __future__ import print_function
 
+from builtins import str
+from builtins import range
+from past.utils import old_div
 from .Domain import Domain
 import numpy as np
 from rlpy.Tools import plt, rk4, cartesian, colors
@@ -65,7 +70,7 @@ class Swimmer(Domain):
         Q[-1, :] = self.masses
         A = np.eye(self.d, k=1) + np.eye(self.d)
         A[-1, -1] = 0.
-        self.P = np.dot(np.linalg.inv(Q), A * self.lengths[None, :]) / 2.
+        self.P = old_div(np.dot(np.linalg.inv(Q), A * self.lengths[None, :]), 2.)
 
         self.U = np.eye(self.d) - np.eye(self.d, k=-1)
         self.U = self.U[:, :-1]
@@ -82,7 +87,7 @@ class Swimmer(Domain):
         self.statespace_limits = [[-15, 15]] * 2 + [[-np.pi, np.pi]] * (d - 1) \
             + [[-2, 2]] * 2 + [[-np.pi * 2, np.pi * 2]] * d
         self.statespace_limits = np.array(self.statespace_limits)
-        self.continuous_dims = range(self.statespace_limits.shape[0])
+        self.continuous_dims = list(range(self.statespace_limits.shape[0]))
         super(Swimmer, self).__init__()
 
     def s0(self):
@@ -113,8 +118,8 @@ class Swimmer(Domain):
         R2 = R + .5 * self.lengths[:, None] * T
         Rx = np.hstack([R1[:, 0], R2[:, 0]]) + self.pos_cm[0]
         Ry = np.hstack([R1[:, 1], R2[:, 1]]) + self.pos_cm[1]
-        print Rx
-        print Ry
+        print(Rx)
+        print(Ry)
         f = plt.figure("Swimmer Domain")
         if not hasattr(self, "swimmer_lines"):
             plt.plot(0., 0., "ro")
@@ -350,10 +355,10 @@ def dsdt(s, t, a, P, I, G, U, lengths, masses, k1, k2):
     ds = np.zeros_like(s)
     ds[:2] = vcm
     ds[2:2 + d] = dtheta
-    ds[2 + d] = - \
-        (k1 * np.sum(-sth * Vn) + k2 * np.sum(cth * Vt)) / np.sum(masses)
-    ds[3 + d] = - \
-        (k1 * np.sum(cth * Vn) + k2 * np.sum(sth * Vt)) / np.sum(masses)
+    ds[2 + d] = old_div(- \
+        (k1 * np.sum(-sth * Vn) + k2 * np.sum(cth * Vt)), np.sum(masses))
+    ds[3 + d] = old_div(- \
+        (k1 * np.sum(cth * Vn) + k2 * np.sum(sth * Vt)), np.sum(masses))
     ds[4 + d:] = np.linalg.solve(EL3, EL1 + EL2 + np.dot(U, a))
     return ds
 

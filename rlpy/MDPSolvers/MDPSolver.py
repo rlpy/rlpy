@@ -1,5 +1,7 @@
 """MDP Solver base class."""
+from __future__ import print_function
 
+from builtins import object
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import logging
@@ -8,6 +10,7 @@ from rlpy.Tools import className, deltaT, hhmmss, clock, l_norm, vec2id, checkNC
 from collections import defaultdict
 import os
 import json
+from future.utils import with_metaclass
 
 __copyright__ = "Copyright 2013, RLPy http://acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -16,7 +19,7 @@ __license__ = "BSD 3-Clause"
 __author__ = "N. Kemal Ure"
 
 
-class MDPSolver(object):
+class MDPSolver(with_metaclass(ABCMeta, object)):
 
     """MDPSolver is the base class for model based reinforcement learning agents and
     planners.
@@ -41,8 +44,6 @@ class MDPSolver(object):
         show (bool):    Enable visualization?
 
     """
-
-    __metaclass__ = ABCMeta
 
     representation = None  # Link to the representation object
     domain = None  # Link to the domain object
@@ -154,7 +155,7 @@ class MDPSolver(object):
 
     def saveStats(self):
         fullpath_output = os.path.join(self.project_path, self.output_filename)
-        print ">>> ", fullpath_output
+        print(">>> ", fullpath_output)
         checkNCreateDirectory(self.project_path + '/')
         with open(fullpath_output, "w") as f:
             json.dump(self.result, f, indent=4, sort_keys=True)

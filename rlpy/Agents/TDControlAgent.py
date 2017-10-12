@@ -1,4 +1,7 @@
 """Control Agents based on TD Learning, i.e., Q-Learning and SARSA"""
+from __future__ import division
+from __future__ import print_function
+from past.utils import old_div
 from .Agent import Agent, DescentAlgorithm
 from rlpy.Tools import addNewElementForAllActions, count_nonzero
 import numpy as np
@@ -61,8 +64,8 @@ class TDControlAgent(DescentAlgorithm, Agent):
 
         # Set eligibility traces:
         if self.lambda_:
-            expanded = (- len(self.eligibility_trace) + len(phi)) / \
-                self.representation.actions_num
+            expanded = old_div((- len(self.eligibility_trace) + len(phi)), \
+                self.representation.actions_num)
             if expanded > 0:
                 # Correct the size of eligibility traces (pad with zeros for
                 # new features)
@@ -95,7 +98,7 @@ class TDControlAgent(DescentAlgorithm, Agent):
                 td_error * self.eligibility_trace
             if not np.all(np.isfinite(weight_vec)):
                 weight_vec = weight_vec_old
-                print "WARNING: TD-Learning diverged, weight_vec reached infinity!"
+                print("WARNING: TD-Learning diverged, weight_vec reached infinity!")
         # Discover features if the representation has the discover method
         expanded = self.representation.post_discover(
             s,

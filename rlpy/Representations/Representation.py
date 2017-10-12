@@ -1,5 +1,10 @@
 """Representation base class."""
+from __future__ import division
+from __future__ import print_function
 
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import logging
 from copy import deepcopy
 from rlpy.Tools import className, addNewElementForAllActions
@@ -309,13 +314,13 @@ class Representation(object):
         """
         self.bins_per_dim = np.zeros(domain.state_space_dims, np.uint16)
         self.binWidth_per_dim = np.zeros(domain.state_space_dims)
-        for d in xrange(domain.state_space_dims):
+        for d in range(domain.state_space_dims):
             if d in domain.continuous_dims:
                 self.bins_per_dim[d] = discretization
             else:
                 self.bins_per_dim[d] = domain.statespace_limits[d, 1] - \
                     domain.statespace_limits[d, 0]
-            self.binWidth_per_dim[d] = (domain.statespace_limits[d,1] - domain.statespace_limits[d, 0]) / (self.bins_per_dim[d] * 1.)
+            self.binWidth_per_dim[d] = old_div((domain.statespace_limits[d,1] - domain.statespace_limits[d, 0]), (self.bins_per_dim[d] * 1.))
 
     def binState(self, s):
         """
@@ -493,7 +498,7 @@ class Representation(object):
         else:
             phi_s_a = np.zeros((p, n * a_num), dtype=all_phi_s.dtype)
 
-        for i in xrange(a_num):
+        for i in range(a_num):
             rows = np.where(all_actions == i)[0]
             if len(rows):
                 phi_s_a[rows, i * n:(i + 1) * n] = all_phi_s[rows,:]
@@ -594,7 +599,7 @@ class Representation(object):
         if hasFunction(self.domain, 'expectedStep'):
             p, r, ns, t, p_actions = self.domain.expectedStep(s, a)
             Q = 0
-            for j in xrange(len(p)):
+            for j in range(len(p)):
                 if policy is None:
                     Q += p[j, 0] * (r[j, 0] + discount_factor * self.V(ns[j,:], t[j,:], p_actions[j]))
                 else:
@@ -623,13 +628,13 @@ class Representation(object):
                         (ns_samples, self.domain.state_space_dims))
                     rewards = np.empty(ns_samples)
                     # next states per samples initial state
-                    ns_samples_ = ns_samples / \
-                        self.continuous_state_starting_samples
-                    for i in xrange(self.continuous_state_starting_samples):
+                    ns_samples_ = old_div(ns_samples, \
+                        self.continuous_state_starting_samples)
+                    for i in range(self.continuous_state_starting_samples):
                         # sample a random state within the grid corresponding
                         # to input s
                         new_s = s.copy()
-                        for d in xrange(self.domain.state_space_dims):
+                        for d in range(self.domain.state_space_dims):
                             w = self.binWidth_per_dim[d]
                             # Sample each dimension of the new_s within the
                             # cell
@@ -650,9 +655,9 @@ class Representation(object):
                 # print "USED CACHED"
                 next_states, rewards = cacheHit
             if policy is None:
-                Q = np.mean([rewards[i] + discount_factor * self.V(next_states[i,:]) for i in xrange(ns_samples)])
+                Q = np.mean([rewards[i] + discount_factor * self.V(next_states[i,:]) for i in range(ns_samples)])
             else:
-                Q = np.mean([rewards[i] + discount_factor * self.Q(next_states[i,:], policy.pi(next_states[i,:])) for i in xrange(ns_samples)])
+                Q = np.mean([rewards[i] + discount_factor * self.Q(next_states[i,:], policy.pi(next_states[i,:])) for i in range(ns_samples)])
         return Q
 
     def Qs_oneStepLookAhead(self, s, ns_samples, policy=None):
@@ -734,7 +739,7 @@ class Representation(object):
         s = np.array(id2vec(s_id, self.bins_per_dim))
 
         # Find the value corresponding to each bin number
-        for d in xrange(self.domain.state_space_dims):
+        for d in range(self.domain.state_space_dims):
             s[d] = bin2state(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d,:])
 
         if len(self.domain.continuous_dims) == 0:
@@ -755,7 +760,7 @@ class Representation(object):
         :return: The nearest state *s* which is captured by the discretization.
         """
         s_normalized = s.copy()
-        for d in xrange(self.domain.state_space_dims):
+        for d in range(self.domain.state_space_dims):
             s_normalized[d] = closestDiscretization(s[d], self.bins_per_dim[d], self.domain.statespace_limits[d,:])
         return s_normalized
 
@@ -774,7 +779,7 @@ class Representation(object):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
-        for k, v in self.__dict__.items():
+        for k, v in list(self.__dict__.items()):
             if k is "logger":
                 continue
             setattr(result, k, deepcopy(v, memo))

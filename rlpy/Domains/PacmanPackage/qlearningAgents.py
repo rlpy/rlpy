@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # qlearningAgents.py
 # ------------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,12 +9,12 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-from game import *
-from learningAgents import ReinforcementAgent
-from featureExtractors import *
+from .game import *
+from .learningAgents import ReinforcementAgent
+from .featureExtractors import *
 
 import random
-import util
+from . import util
 import math
 
 

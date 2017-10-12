@@ -1,5 +1,8 @@
 """Fourier representation"""
+from __future__ import division
 
+from builtins import map
+from past.utils import old_div
 from .Representation import Representation
 from numpy import indices, pi, cos, dot
 from numpy.linalg import norm
@@ -34,9 +37,9 @@ class Fourier(Representation):
         self.features_num = self.coeffs.shape[0]
 
         if scaling:
-            coeff_norms = numpy.array(map(norm, self.coeffs))
+            coeff_norms = numpy.array(list(map(norm, self.coeffs)))
             coeff_norms[0] = 1.0
-            self.alpha_scale = numpy.tile(1.0/coeff_norms, (domain.actions_num,))
+            self.alpha_scale = numpy.tile(old_div(1.0,coeff_norms), (domain.actions_num,))
         else:
             self.alpha_scale = 1.0
 
@@ -45,7 +48,7 @@ class Fourier(Representation):
     def phi_nonTerminal(self, s):
         # normalize the state
         s_min, s_max = self.domain.statespace_limits.T
-        norm_state = (s - s_min) / (s_max - s_min)
+        norm_state = old_div((s - s_min), (s_max - s_min))
         return cos(pi * dot(self.coeffs, norm_state))
 
     def featureType(self):

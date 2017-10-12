@@ -13,7 +13,7 @@ __license__ = "BSD 3-Clause"
 
 
 def test_random_trajectory():
-    for d in rlpy.Domains.__dict__.values():
+    for d in list(rlpy.Domains.__dict__.values()):
         if d == Domain:
             continue
         if inspect.isclass(d) and issubclass(d, Domain):
@@ -21,7 +21,7 @@ def test_random_trajectory():
 
 
 def test_specification():
-    for d in rlpy.Domains.__dict__.values():
+    for d in list(rlpy.Domains.__dict__.values()):
         if d == Domain:
             continue
         if inspect.isclass(d) and issubclass(d, Domain):

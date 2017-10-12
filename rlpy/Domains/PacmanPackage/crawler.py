@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 # crawler.py
 # ----------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -9,9 +11,12 @@
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
 #!/usr/bin/python
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import math
 from math import pi as PI
-import environment
+from . import environment
 
 
 class CrawlingRobotEnvironment(environment.Environment):
@@ -33,8 +38,8 @@ class CrawlingRobotEnvironment(environment.Environment):
         minArmAngle, maxArmAngle = self.crawlingRobot.getMinAndMaxArmAngles()
         minHandAngle, maxHandAngle = self.crawlingRobot.getMinAndMaxHandAngles(
         )
-        armIncrement = (maxArmAngle - minArmAngle) / (self.nArmStates - 1)
-        handIncrement = (maxHandAngle - minHandAngle) / (self.nHandStates - 1)
+        armIncrement = old_div((maxArmAngle - minArmAngle), (self.nArmStates - 1))
+        handIncrement = old_div((maxHandAngle - minHandAngle), (self.nHandStates - 1))
         self.armBuckets = [minArmAngle + (armIncrement * i)
                            for i in range(self.nArmStates)]
         self.handBuckets = [minHandAngle + (handIncrement * i)
@@ -125,8 +130,8 @@ class CrawlingRobotEnvironment(environment.Environment):
         # Also call self.crawlingRobot.setAngles()
         # to the initial arm and hand angle
 
-        armState = self.nArmStates / 2
-        handState = self.nHandStates / 2
+        armState = old_div(self.nArmStates, 2)
+        handState = old_div(self.nHandStates, 2)
         self.state = armState, handState
         self.crawlingRobot.setAngles(
             self.armBuckets[armState],
@@ -135,7 +140,7 @@ class CrawlingRobotEnvironment(environment.Environment):
             20, self.crawlingRobot.getRobotPosition()[0]]
 
 
-class CrawlingRobot:
+class CrawlingRobot(object):
 
     def setAngles(self, armAngle, handAngle):
         """
@@ -233,7 +238,7 @@ class CrawlingRobot:
         y = self.armLength * armSin + \
             self.handLength * handSin + self.robotHeight
         if y < 0:
-            return math.atan(-y / x)
+            return math.atan(old_div(-y, x))
         return 0.0
 
     # You shouldn't need methods below here
@@ -327,7 +332,7 @@ class CrawlingRobot:
  #       self.velAvg2 = g * self.velAvg2 + (1 - g) * velocity
         pos = self.positions[-1]
         velocity = pos - self.positions[-2]
-        vel2 = (pos - self.positions[0]) / len(self.positions)
+        vel2 = old_div((pos - self.positions[0]), len(self.positions))
         self.velAvg = .9 * self.velAvg + .1 * vel2
         velMsg = '100-step Avg Velocity: %.2f' % self.velAvg
 #        velMsg2 = '1000-step Avg Velocity: %.2f' % self.velAvg2
@@ -361,13 +366,13 @@ class CrawlingRobot:
 
         ## Arm and Hand Degrees ##
         self.armAngle = self.oldArmDegree = 0.0
-        self.handAngle = self.oldHandDegree = -PI / 6
+        self.handAngle = self.oldHandDegree = old_div(-PI, 6)
 
-        self.maxArmAngle = PI / 6
-        self.minArmAngle = -PI / 6
+        self.maxArmAngle = old_div(PI, 6)
+        self.minArmAngle = old_div(-PI, 6)
 
         self.maxHandAngle = 0
-        self.minHandAngle = -(5.0 / 6.0) * PI
+        self.minHandAngle = -(old_div(5.0, 6.0)) * PI
 
         ## Draw Ground ##
         self.totWidth = canvas.winfo_reqwidth()
@@ -406,5 +411,5 @@ class CrawlingRobot:
 
 
 if __name__ == '__main__':
-    from graphicsCrawlerDisplay import run
+    from .graphicsCrawlerDisplay import run
     run()

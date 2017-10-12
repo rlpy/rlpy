@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 # reinforcementTestClasses.py
 # ---------------------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,18 +10,22 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-import testClasses
+from builtins import zip
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from . import testClasses
 import random
 import math
 import traceback
 import sys
 import os
-import layout
-import textDisplay
-import pacman
-import gridworld
+from . import layout
+from . import textDisplay
+from . import pacman
+from . import gridworld
 import time
-from util import Counter, TimeoutFunction, FixedRandom
+from .util import Counter, TimeoutFunction, FixedRandom
 from collections import defaultdict
 from pprint import PrettyPrinter
 from hashlib import sha1
@@ -27,7 +33,7 @@ from functools import reduce
 pp = PrettyPrinter()
 VERBOSE = False
 
-import gridworld
+from . import gridworld
 
 LIVINGREWARD = -0.1
 NOISE = 0.2
@@ -45,8 +51,8 @@ class ValueIterationTest(testClasses.TestCase):
         if 'livingReward' in testDict:
             self.grid.setLivingReward(float(testDict['livingReward']))
         maxPreIterations = 10
-        self.numsIterationsForDisplay = range(
-            min(iterations, maxPreIterations))
+        self.numsIterationsForDisplay = list(range(
+            min(iterations, maxPreIterations)))
         self.testOutFile = testDict['test_out_file']
         if maxPreIterations < iterations:
             self.numsIterationsForDisplay.append(iterations)
@@ -275,8 +281,8 @@ class ApproximateQLearningTest(testClasses.TestCase):
             'alpha': self.learningRate}
         numExperiences = int(testDict['numExperiences'])
         maxPreExperiences = 10
-        self.numsExperiencesForDisplay = range(
-            min(numExperiences, maxPreExperiences))
+        self.numsExperiencesForDisplay = list(range(
+            min(numExperiences, maxPreExperiences)))
         self.testOutFile = testDict['test_out_file']
         if maxPreExperiences < numExperiences:
             self.numsExperiencesForDisplay.append(numExperiences)
@@ -364,8 +370,7 @@ class ApproximateQLearningTest(testClasses.TestCase):
             extractor=self.extractor,
             **self.opts)
         states = sorted(
-            filter(lambda state: len(self.grid.getPossibleActions(state)) > 0,
-                   self.grid.getStates()))
+            [state for state in self.grid.getStates() if len(self.grid.getPossibleActions(state)) > 0])
         randObj = FixedRandom().random
         # choose a random start state and a random possible action from that state
         # get the next state and reward from the transition function
@@ -469,8 +474,8 @@ class QLearningTest(testClasses.TestCase):
             'alpha': self.learningRate}
         numExperiences = int(testDict['numExperiences'])
         maxPreExperiences = 10
-        self.numsExperiencesForDisplay = range(
-            min(numExperiences, maxPreExperiences))
+        self.numsExperiencesForDisplay = list(range(
+            min(numExperiences, maxPreExperiences)))
         self.testOutFile = testDict['test_out_file']
         if maxPreExperiences < numExperiences:
             self.numsExperiencesForDisplay.append(numExperiences)
@@ -584,8 +589,7 @@ class QLearningTest(testClasses.TestCase):
     def runAgent(self, moduleDict, numExperiences):
         agent = moduleDict['qlearningAgents'].QLearningAgent(**self.opts)
         states = sorted(
-            filter(lambda state: len(self.grid.getPossibleActions(state)) > 0,
-                   self.grid.getStates()))
+            [state for state in self.grid.getStates() if len(self.grid.getPossibleActions(state)) > 0])
         randObj = FixedRandom().random
         # choose a random start state and a random possible action from that state
         # get the next state and reward from the transition function
@@ -714,8 +718,7 @@ class EpsilonGreedyTest(testClasses.TestCase):
     def runAgent(self, moduleDict):
         agent = moduleDict['qlearningAgents'].QLearningAgent(**self.opts)
         states = sorted(
-            filter(lambda state: len(self.grid.getPossibleActions(state)) > 0,
-                   self.grid.getStates()))
+            [state for state in self.grid.getStates() if len(self.grid.getPossibleActions(state)) > 0])
         randObj = FixedRandom().random
         # choose a random start state and a random possible action from that state
         # get the next state and reward from the transition function
@@ -744,9 +747,9 @@ class EpsilonGreedyTest(testClasses.TestCase):
             # g = n * [(1-e) + e/k] -> e = (n - g) / (n - n/k)
             empiricalEpsilonNumerator = self.numIterations - numGreedyChoices
             empiricalEpsilonDenominator = self.numIterations - \
-                self.numIterations / float(numLegalActions)
-            empiricalEpsilon = empiricalEpsilonNumerator / \
-                empiricalEpsilonDenominator
+                old_div(self.numIterations, float(numLegalActions))
+            empiricalEpsilon = old_div(empiricalEpsilonNumerator, \
+                empiricalEpsilonDenominator)
             error = abs(empiricalEpsilon - self.epsilon)
             if error > tolerance:
                 self.addMessage(
@@ -829,7 +832,7 @@ class EvalAgentTest(testClasses.TestCase):
             'games': games, 'scores': [g.state.getScore() for g in games],
             'timeouts': [g.agentTimeout for g in games].count(True), 'crashes': [g.agentCrashed for g in games].count(True)}
 
-        averageScore = sum(stats['scores']) / float(len(stats['scores']))
+        averageScore = old_div(sum(stats['scores']), float(len(stats['scores'])))
         nonTimeouts = numGames - stats['timeouts']
         wins = stats['wins']
 

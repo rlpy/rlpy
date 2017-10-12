@@ -3,6 +3,7 @@ Performs Bellman Backup on a given s,a pair given a fixed policy by sweeping thr
 state space. Once the errors are bounded, the policy is changed.
 """
 
+from builtins import range
 from .MDPSolver import MDPSolver
 from rlpy.Tools import className, deltaT, hhmmss, clock, l_norm
 from copy import deepcopy
@@ -74,7 +75,7 @@ class PolicyIteration(MDPSolver):
             policy_evaluation_iteration += 1
 
             # Sweep The State Space
-            for i in xrange(0, self.representation.agg_states_num):
+            for i in range(0, self.representation.agg_states_num):
 
                 # Check for solver time
                 if not self.hasTime(): break

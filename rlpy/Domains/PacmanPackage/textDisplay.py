@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 # textDisplay.py
 # --------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,7 +10,10 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-import pacman
+from builtins import str
+from builtins import range
+from builtins import object
+from . import pacman
 import time
 
 DRAW_EVERY = 1
@@ -17,7 +22,7 @@ DISPLAY_MOVES = False
 QUIET = False  # Supresses output
 
 
-class NullGraphics:
+class NullGraphics(object):
 
     def initialize(self, state, isBlue=False):
         pass
@@ -32,7 +37,7 @@ class NullGraphics:
         time.sleep(SLEEP_TIME)
 
     def draw(self, state):
-        print state
+        print(state)
 
     def updateDistributions(self, dist):
         pass
@@ -41,7 +46,7 @@ class NullGraphics:
         pass
 
 
-class PacmanGraphics:
+class PacmanGraphics(object):
 
     def __init__(self, speed=None):
         if speed is not None:
@@ -62,7 +67,7 @@ class PacmanGraphics:
             if DISPLAY_MOVES:
                 ghosts = [pacman.nearestPoint(state.getGhostPosition(i))
                           for i in range(1, numAgents)]
-                print "%4d) P: %-8s" % (self.turn, str(pacman.nearestPoint(state.getPacmanPosition()))), '| Score: %-5d' % state.score, '| Ghosts:', ghosts
+                print("%4d) P: %-8s" % (self.turn, str(pacman.nearestPoint(state.getPacmanPosition()))), '| Score: %-5d' % state.score, '| Ghosts:', ghosts)
             if self.turn % DRAW_EVERY == 0:
                 self.draw(state)
                 self.pause()
@@ -73,7 +78,7 @@ class PacmanGraphics:
         time.sleep(SLEEP_TIME)
 
     def draw(self, state):
-        print state
+        print(state)
 
     def finish(self):
         pass

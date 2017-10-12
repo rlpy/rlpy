@@ -1,5 +1,8 @@
 """Network administrator task."""
 
+from builtins import zip
+from builtins import map
+from builtins import range
 from rlpy.Tools import plt, nx
 import numpy as np
 import csv
@@ -131,7 +134,7 @@ class SystemAdministrator(Domain):
         reader = csv.reader(f, delimiter=',')
         self.computers_num = 0
         for row in reader:
-            row = map(int, row)
+            row = list(map(int, row))
             _Neighbors.append(row)
             self.computers_num = max(max(row) + 1, self.computers_num)
         self.setUniqueEdges(_Neighbors)
@@ -257,7 +260,7 @@ class SystemAdministrator(Domain):
     def s0(self):
         # Omits final index
         self.state = np.array(
-            [self.RUNNING for dummy in xrange(0, self.state_space_dims)])
+            [self.RUNNING for dummy in range(0, self.state_space_dims)])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def possibleActions(self):

@@ -1,5 +1,7 @@
 """Gibbs policy"""
+from __future__ import division
 
+from past.utils import old_div
 from .Policy import DifferentiablePolicy
 import numpy as np
 
@@ -35,6 +37,6 @@ class GibbsPolicy(DifferentiablePolicy):
         n = self.representation.features_num
         v = np.exp(np.dot(self.representation.weight_vec.reshape(-1, n), phi))
         v[v > 1e50] = 1e50
-        r = v / v.sum()
+        r = old_div(v, v.sum())
         assert not np.any(np.isnan(r))
         return r

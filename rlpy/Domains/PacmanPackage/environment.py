@@ -11,7 +11,8 @@
 #!/usr/bin/python
 
 
-class Environment:
+from builtins import object
+class Environment(object):
 
     def getCurrentState(self):
         """

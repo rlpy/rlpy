@@ -1,5 +1,8 @@
 """BlocksWorld domain, stacking of blocks to form a tower."""
+from __future__ import print_function
 
+from builtins import str
+from builtins import range
 from .Domain import Domain
 from rlpy.Tools import id2vec, vec2id, findElemArray1D
 from rlpy.Tools import nchoosek, factorial, findElemArray2D, plt, FONTSIZE
@@ -77,12 +80,12 @@ class BlocksWorld(Domain):
         self.real_states_num = sum(
             [nchoosek(blocks,
                       i) * factorial(blocks - i) * pow(i,
-                                                       blocks - i) for i in xrange(blocks)])
+                                                       blocks - i) for i in range(blocks)])
         # [0 0 1 2 3 .. blocks-2] meaning block 0 on the table and all other stacked on top of e
         self.GOAL_STATE = np.hstack(([0], np.arange(0, blocks - 1)))
         # Make Dimension Names
         self.DimNames = []
-        for a in xrange(blocks):
+        for a in range(blocks):
             self.DimNames.append(['%d on' % a])
         super(BlocksWorld, self).__init__()
 
@@ -129,9 +132,9 @@ class BlocksWorld(Domain):
         [A, B] = id2vec(a, [self.blocks, self.blocks])
         # print 'taking action %d->%d' % (A,B)
         if not self.validAction(s, A, B):
-            print 'State:%s, Invalid move from %d to %d' % (str(s), A, B)
-            print self.possibleActions()
-            print id2vec(self.possibleActions(), [self.blocks, self.blocks])
+            print('State:%s, Invalid move from %d to %d' % (str(s), A, B))
+            print(self.possibleActions())
+            print(id2vec(self.possibleActions(), [self.blocks, self.blocks]))
 
         if self.random_state.random_sample() < self.noise:
             B = A  # Drop on Table
@@ -151,7 +154,7 @@ class BlocksWorld(Domain):
         s = self.state
         # return the id of possible actions
         # find empty blocks (nothing on top)
-        empty_blocks = [b for b in xrange(self.blocks) if self.clear(b, s)]
+        empty_blocks = [b for b in range(self.blocks) if self.clear(b, s)]
         actions = [[a,
                     b] for a in empty_blocks for b in empty_blocks if not self.destination_is_table(
             a,

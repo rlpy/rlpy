@@ -1,5 +1,10 @@
 """Parsing, extracting statistics and plotting of experimental results."""
+from __future__ import division
 
+from builtins import zip
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import json
@@ -99,13 +104,13 @@ def avg_quantity(results, quantity, pad=False):
     over all runs of a certain quantity.
     If pad is true, missing entries for runs with less entries are filled with the last value
     """
-    length = max([len(v[quantity]) for v in results.itervalues()])
+    length = max([len(v[quantity]) for v in results.values()])
     mean = np.zeros(length)
     std = np.zeros(length)
     num = np.zeros(length, dtype="int")
     last_values = {}
-    for i in xrange(length):
-        for k, v in results.iteritems():
+    for i in range(length):
+        for k, v in results.items():
             if len(v[quantity]) > i:
                 last_values[k] = v[quantity][i]
                 num[i] += 1
@@ -118,7 +123,7 @@ def avg_quantity(results, quantity, pad=False):
         if num[i] > 0:
             mean[i] /= num[i]
 
-        for k, v in results.iteritems():
+        for k, v in results.items():
             if len(v[quantity]) > i:
                 last_values[k] = v[quantity][i]
                 num[i] += 1
@@ -143,7 +148,7 @@ def first_close_to_final(x, y, min_rel_proximity=0.05):
     """
     min_abs_proximity = (y[-1] - y[0]) * min_rel_proximity
     final_y = y[-1]
-    for i in xrange(len(x)):
+    for i in range(len(x)):
         if abs(y[i] - final_y) < min_abs_proximity:
             return x[i]
 
@@ -155,7 +160,7 @@ def add_first_close_entries(results, new_label="95_time",
     5% of the final quantity.
     returns nothing as the results are added in place
     """
-    for v in results.itervalues():
+    for v in results.values():
         v[new_label] = first_close_to_final(x, y, min_rel_proximity)
 
 
@@ -173,8 +178,8 @@ class MultiExperimentResults(object):
         """
         self.data = {}
         if isinstance(paths, list):
-            paths = dict(zip(paths, paths))
-        for label, path in paths.iteritems():
+            paths = dict(list(zip(paths, paths)))
+        for label, path in paths.items():
             self.data[label] = load_results(path)
 
     def plot_avg_sem(
@@ -209,13 +214,13 @@ class MultiExperimentResults(object):
         min_ = np.inf
         max_ = - np.inf
         fig = plt.figure()
-        for label, results in self.data.items():
+        for label, results in list(self.data.items()):
             style["color"] = colors[label]
             style["marker"] = markers[label]
             y_mean, y_std, y_num = avg_quantity(results, y, pad_y)
-            y_sem = y_std / np.sqrt(y_num)
+            y_sem = old_div(y_std, np.sqrt(y_num))
             x_mean, x_std, x_num = avg_quantity(results, x, pad_x)
-            x_sem = x_std / np.sqrt(x_num)
+            x_sem = old_div(x_std, np.sqrt(x_num))
 
             if xbars:
                 plt.errorbar(x_mean, y_mean, xerr=x_sem, label=label,

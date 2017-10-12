@@ -1,10 +1,19 @@
 """Pinball domain for reinforcement learning
 """
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import next
+from builtins import zip
+from builtins import map
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from .Domain import Domain
 import numpy as np
-from itertools import tee, izip
+from itertools import tee
 import itertools
-from Tkinter import Tk, Canvas
+from tkinter import Tk, Canvas
 import os
 from rlpy.Tools import __rlpy_location__
 
@@ -124,7 +133,7 @@ class Pinball(Domain):
         return self.environment.episode_ended()
 
 
-class BallModel:
+class BallModel(object):
 
     """ This class maintains the state of the ball
     in the pinball domain. It takes care of moving
@@ -152,8 +161,8 @@ class BallModel:
         :param delta_ydot: The change in velocity in the y direction
         :type delta_ydot: float
         """
-        self.xdot += delta_xdot / 5.0
-        self.ydot += delta_ydot / 5.0
+        self.xdot += old_div(delta_xdot, 5.0)
+        self.ydot += old_div(delta_ydot, 5.0)
         self.xdot = self._clip(self.xdot)
         self.ydot = self._clip(self.ydot)
 
@@ -176,7 +185,7 @@ class BallModel:
         return val
 
 
-class PinballObstacle:
+class PinballObstacle(object):
 
     """ This class represents a single polygon obstacle in the
     pinball domain and detects when a :class:`BallModel` hits it.
@@ -219,7 +228,7 @@ class PinballObstacle:
         a, b = tee(np.vstack([np.array(self.points), self.points[0]]))
         next(b, None)
         intercept_found = False
-        for pt_pair in izip(a, b):
+        for pt_pair in zip(a, b):
             if self._intercept_edge(pt_pair, ball):
                 if intercept_found:
                     # Ball has hit a corner
@@ -289,7 +298,7 @@ class PinballObstacle:
         if angle1 > np.pi:
             angle2 -= np.pi
 
-        if np.abs(angle1 - (np.pi / 2.0)) < np.abs(angle2 - (np.pi / 2.0)):
+        if np.abs(angle1 - (old_div(np.pi, 2.0))) < np.abs(angle2 - (old_div(np.pi, 2.0))):
             return intersect1
         return intersect2
 
@@ -324,8 +333,8 @@ class PinballObstacle:
         obstacle_edge = pt_pair[1] - pt_pair[0]
         difference = np.array(ball.position) - pt_pair[0]
 
-        scalar_proj = difference.dot(
-            obstacle_edge) / obstacle_edge.dot(obstacle_edge)
+        scalar_proj = old_div(difference.dot(
+            obstacle_edge), obstacle_edge.dot(obstacle_edge))
         if scalar_proj > 1.0:
             scalar_proj = 1.0
         elif scalar_proj < 0.0:
@@ -345,7 +354,7 @@ class PinballObstacle:
             if angle > np.pi:
                 angle = 2 * np.pi - angle
 
-            if angle > np.pi / 1.99:
+            if angle > old_div(np.pi, 1.99):
                 return False
 
             return True
@@ -353,7 +362,7 @@ class PinballObstacle:
             return False
 
 
-class PinballModel:
+class PinballModel(object):
 
     """ This class is a self-contained model of the pinball
     domain for reinforcement learning.
@@ -399,12 +408,12 @@ class PinballModel:
                     continue
                 elif tokens[0] == 'polygon':
                     self.obstacles.append(
-                        PinballObstacle(zip(*[iter(map(float, tokens[1:]))] * 2)))
+                        PinballObstacle(list(zip(*[iter(map(float, tokens[1:]))] * 2))))
                 elif tokens[0] == 'target':
                     self.target_pos = [float(tokens[1]), float(tokens[2])]
                     self.target_rad = float(tokens[3])
                 elif tokens[0] == 'start':
-                    start_pos = zip(*[iter(map(float, tokens[1:]))] * 2)
+                    start_pos = list(zip(*[iter(map(float, tokens[1:]))] * 2))
                 elif tokens[0] == 'ball':
                     ball_rad = float(tokens[1])
         self.start_pos = start_pos[0]
@@ -432,7 +441,7 @@ class PinballModel:
         :type action: int
 
         """
-        for i in xrange(20):
+        for i in range(20):
             if i == 0:
                 self.ball.add_impulse(*self.action_effects[action])
 
@@ -491,7 +500,7 @@ class PinballModel:
             self.ball.position[1] = 0.05
 
 
-class PinballView:
+class PinballView(object):
 
     """ This class displays a :class:`PinballModel`
 
@@ -520,7 +529,7 @@ class PinballView:
         self.TARGET_COLOR = [255, 0, 0]
 
         for obs in model.obstacles:
-            coords_list = map(self._to_pixels, obs.points)
+            coords_list = list(map(self._to_pixels, obs.points))
             chain = itertools.chain(*coords_list)
             coords = list(chain)
             self.screen.create_polygon(coords, fill='blue')

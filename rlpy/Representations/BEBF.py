@@ -1,6 +1,7 @@
 """Bellman-Error Basis Function Representation."""
 
 #from rlpy.Tools import
+from builtins import range
 import numpy as np
 from .Representation import Representation
 from rlpy.Tools import svm
@@ -131,7 +132,7 @@ class BEBF(Representation):
         addedFeature = False
         # PLACEHOLDER for norm of function
         norm = max(abs(td_errors))  # Norm of function
-        for j in xrange(self.maxBatchDiscovery):
+        for j in range(self.maxBatchDiscovery):
             self.features.append(self.getFunctionApproximation(s, td_errors))
             if norm > self.batchThreshold:
                 self.addNewWeight()

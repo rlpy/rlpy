@@ -1,5 +1,6 @@
 """Helicopter hovering task."""
 
+from builtins import range
 from .Domain import Domain
 import numpy as np
 import rlpy.Tools.transformations as trans

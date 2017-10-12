@@ -8,10 +8,11 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
+from builtins import object
 import random
 
 
-class MarkovDecisionProcess:
+class MarkovDecisionProcess(object):
 
     def getStates(self):
         """

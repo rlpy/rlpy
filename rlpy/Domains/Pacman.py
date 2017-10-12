@@ -1,4 +1,7 @@
 """Pacman game domain."""
+from builtins import str
+from builtins import range
+from builtins import object
 from rlpy.Tools import __rlpy_location__
 from .Domain import Domain
 from .PacmanPackage import layout, pacman, game, ghostAgents

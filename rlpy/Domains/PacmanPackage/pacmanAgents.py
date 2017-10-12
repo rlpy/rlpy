@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # pacmanAgents.py
 # ---------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,11 +9,11 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-from pacman import Directions
-from game import Agent
+from .pacman import Directions
+from .game import Agent
 import random
-import game
-import util
+from . import game
+from . import util
 
 
 class LeftTurnAgent(game.Agent):

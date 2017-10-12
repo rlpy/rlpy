@@ -1,3 +1,4 @@
+from __future__ import print_function
 # testClasses.py
 # --------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -9,6 +10,7 @@
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
 # import modules from python standard library
+from builtins import object
 import inspect
 import re
 import sys
@@ -20,7 +22,7 @@ import sys
 class Question(object):
 
     def raiseNotDefined(self):
-        print 'Method not implemented: %s' % inspect.stack()[1][3]
+        print('Method not implemented: %s' % inspect.stack()[1][3])
         sys.exit(1)
 
     def __init__(self, questionDict, display):
@@ -129,7 +131,7 @@ class NumberPassedQuestion(Question):
 class TestCase(object):
 
     def raiseNotDefined(self):
-        print 'Method not implemented: %s' % inspect.stack()[1][3]
+        print('Method not implemented: %s' % inspect.stack()[1][3])
         sys.exit(1)
 
     def getPath(self):

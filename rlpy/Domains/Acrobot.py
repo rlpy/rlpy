@@ -1,4 +1,7 @@
 """classic Acrobot task"""
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 from rlpy.Tools import wrap, bound, lines, fromAtoB, rk4
 from .Domain import Domain
 import numpy as np
@@ -145,21 +148,20 @@ class Acrobot(Domain):
         d1 = m1 * lc1 ** 2 + m2 * \
             (l1 ** 2 + lc2 ** 2 + 2 * l1 * lc2 * np.cos(theta2)) + I1 + I2
         d2 = m2 * (lc2 ** 2 + l1 * lc2 * np.cos(theta2)) + I2
-        phi2 = m2 * lc2 * g * np.cos(theta1 + theta2 - np.pi / 2.)
+        phi2 = m2 * lc2 * g * np.cos(theta1 + theta2 - old_div(np.pi, 2.))
         phi1 = - m2 * l1 * lc2 * dtheta2 ** 2 * np.sin(theta2) \
                - 2 * m2 * l1 * lc2 * dtheta2 * dtheta1 * np.sin(theta2)  \
-            + (m1 * lc1 + m2 * l1) * g * np.cos(theta1 - np.pi / 2) + phi2
+            + (m1 * lc1 + m2 * l1) * g * np.cos(theta1 - old_div(np.pi, 2)) + phi2
         if self.book_or_nips == "nips":
             # the following line is consistent with the description in the
             # paper
-            ddtheta2 = (a + d2 / d1 * phi1 - phi2) / \
-                (m2 * lc2 ** 2 + I2 - d2 ** 2 / d1)
+            ddtheta2 = old_div((a + d2 / d1 * phi1 - phi2), \
+                (m2 * lc2 ** 2 + I2 - old_div(d2 ** 2, d1)))
         else:
             # the following line is consistent with the java implementation and the
             # book
-            ddtheta2 = (a + d2 / d1 * phi1 - m2 * l1 * lc2 * dtheta1 ** 2 * np.sin(theta2) - phi2) \
-                / (m2 * lc2 ** 2 + I2 - d2 ** 2 / d1)
-        ddtheta1 = -(d2 * ddtheta2 + phi1) / d1
+            ddtheta2 = old_div((a + d2 / d1 * phi1 - m2 * l1 * lc2 * dtheta1 ** 2 * np.sin(theta2) - phi2), (m2 * lc2 ** 2 + I2 - old_div(d2 ** 2, d1)))
+        ddtheta1 = old_div(-(d2 * ddtheta2 + phi1), d1)
         return (dtheta1, dtheta2, ddtheta1, ddtheta2, 0.)
 
     def showDomain(self, a=0):
@@ -197,12 +199,12 @@ class Acrobot(Domain):
         torque = self.AVAIL_TORQUE[a]
         SHIFT = .5
         if torque > 0:  # counterclockwise torque
-            self.action_arrow = fromAtoB(SHIFT / 2.0, .5 * SHIFT, -SHIFT / 2.0,
+            self.action_arrow = fromAtoB(old_div(SHIFT, 2.0), .5 * SHIFT, old_div(-SHIFT, 2.0),
                                          -.5 * SHIFT, 'k', connectionstyle="arc3,rad=+1.2",
                                          ax=self.domain_ax)
         elif torque < 0:  # clockwise torque
             self.action_arrow = fromAtoB(
-                -SHIFT / 2.0, .5 * SHIFT, +SHIFT / 2.0,
+                old_div(-SHIFT, 2.0), .5 * SHIFT, old_div(+SHIFT, 2.0),
                 -.5 * SHIFT, 'r', connectionstyle="arc3,rad=-1.2",
                 ax=self.domain_ax)
 

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import rlpy
 import numpy as np
 from hyperopt import hp
@@ -34,8 +36,7 @@ def make_experiment(
 
     domain = rlpy.Domains.BicycleRiding()
     opt["domain"] = domain
-    kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
-        / kernel_resolution
+    kernel_width = old_div((domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]), kernel_resolution)
     representation = rlpy.Representations.KernelizediFDD(domain, sparsify=sparsify,
                                kernel=rlpy.Representations.linf_triangle_kernel,
                                kernel_args=[kernel_width],

@@ -1,3 +1,6 @@
+from __future__ import print_function
+from builtins import zip
+from builtins import range
 import numpy as np
 import pickle
 from nose.tools import eq_
@@ -9,7 +12,7 @@ def test_cartpole():
     try:
         from rlpy.Domains import InfCartPoleBalance
     except ImportError:
-        print "use old Cartpole class!"
+        print("use old Cartpole class!")
         from rlpy.Domains import Pendulum_InvertedBalance as InfCartPoleBalance
 
     yield check_traj, InfCartPoleBalance, os.path.join(
@@ -18,7 +21,7 @@ def test_cartpole():
     try:
         from rlpy.Domains import FiniteCartPoleBalanceOriginal
     except ImportError:
-        print "use old Cartpole class!"
+        print("use old Cartpole class!")
         from rlpy.Domains import CartPoleBalanceOriginal as FiniteCartPoleBalanceOriginal
 
     yield check_traj, FiniteCartPoleBalanceOriginal, os.path.join(
@@ -30,14 +33,14 @@ def check_traj(domain_class, filename):
     with open(filename) as f:
         traj = pickle.load(f)
     traj_now = sample_random_trajectory(domain_class)
-    for i, e1, e2 in zip(range(len(traj_now)), traj_now, traj):
-        print i
-        print e1[0], e2[0]
+    for i, e1, e2 in zip(list(range(len(traj_now))), traj_now, traj):
+        print(i)
+        print(e1[0], e2[0])
         if not np.allclose(e1[0], e2[0]):  # states
-            print e1[0], e2[0]
+            print(e1[0], e2[0])
             assert False
         eq_(e1[-1], e2[-1])  # reward
-        print "Terminal", e1[1], e2[1]
+        print("Terminal", e1[1], e2[1])
         eq_(e1[1], e2[1])  # terminal
         eq_(len(e1[2]), len(e2[2]))
         assert np.all([a == b for a, b in zip(e1[2], e2[2])])  # p_actions

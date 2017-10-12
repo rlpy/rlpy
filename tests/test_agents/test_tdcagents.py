@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 from rlpy.Representations.Representation import Representation
 import numpy as np
 import logging
@@ -49,7 +51,7 @@ def test_sarsa_valfun_chain():
     rep = MockRepresentation()
     pol = eGreedy(rep)
     agent = SARSA(pol, rep, 0.9, lambda_=0.)
-    for i in xrange(1000):
+    for i in range(1000):
         if i % 4 == 3:
             continue
         agent.learn(np.array([i % 4]), [0], 0, 1., np.array([(i + 1) % 4]), [0, ], 0, (i + 2) % 4 == 0)
@@ -65,7 +67,7 @@ def test_sarsalambda_valfun_chain():
     rep = MockRepresentation()
     pol = eGreedy(rep)
     agent = SARSA(pol, rep, 0.9, lambda_=0.5)
-    for i in xrange(1000):
+    for i in range(1000):
         if i % 4 == 3:
             agent.episodeTerminated()
             continue
@@ -82,7 +84,7 @@ def test_qlearn_valfun_chain():
     rep = MockRepresentation()
     pol = eGreedy(rep)
     agent = Q_Learning(pol, rep, 0.9, lambda_=0.)
-    for i in xrange(1000):
+    for i in range(1000):
         if i % 4 == 3:
             continue
         agent.learn(np.array([i % 4]), [0], 0, 1., np.array([(i + 1) % 4]), [0], 0, (i + 2) % 4 == 0)
@@ -98,7 +100,7 @@ def test_qlambda_valfun_chain():
     rep = MockRepresentation()
     pol = eGreedy(rep)
     agent = Q_Learning(pol, rep, 0.9, lambda_=0.5)
-    for i in xrange(1000):
+    for i in range(1000):
         if i % 4 == 3:
             agent.episodeTerminated()
             continue
@@ -115,7 +117,7 @@ def test_ggq_valfun_chain():
     rep = MockRepresentation()
     pol = eGreedy(rep)
     agent = Greedy_GQ(pol, rep, lambda_=0., discount_factor=0.9)
-    for i in xrange(1000):
+    for i in range(1000):
         if i % 4 == 3:
             agent.episodeTerminated()
             continue

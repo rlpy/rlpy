@@ -1,5 +1,7 @@
 """Pendulum base domain."""
+from __future__ import division
 
+from past.utils import old_div
 from .CartPoleBase import CartPoleBase, StateIndex
 import numpy as np
 from rlpy.Tools import plt
@@ -71,7 +73,7 @@ class InfTrackCartPole(CartPoleBase):
     __author__ = "Robert H. Klein"
 
     #: Default limits on theta
-    ANGLE_LIMITS = [-np.pi / 15.0, np.pi / 15.0]
+    ANGLE_LIMITS = [old_div(-np.pi, 15.0), old_div(np.pi, 15.0)]
     #: Default limits on pendulum rate
     ANGULAR_RATE_LIMITS = [-2.0, 2.0]
     #: m - Default limits on cart position (this state is ignored by the agent)
@@ -90,10 +92,10 @@ class InfTrackCartPole(CartPoleBase):
     # lies at half this distance)
     LENGTH = 1.0
     # m - Length of moment-arm to center of mass (= half the pendulum length)
-    MOMENT_ARM = LENGTH / 2.
+    MOMENT_ARM = old_div(LENGTH, 2.)
     # 1/kg - Used in dynamics computations, equal to 1 / (MASS_PEND +
     # MASS_CART)
-    _ALPHA_MASS = 1.0 / (MASS_CART + MASS_PEND)
+    _ALPHA_MASS = old_div(1.0, (MASS_CART + MASS_PEND))
     # Time between steps
     dt = 0.1
     # Newtons, N - Maximum noise possible, uniformly distributed
@@ -199,7 +201,7 @@ class InfCartPoleBalance(InfTrackCartPole):
     #: Reward received when the pendulum falls below the horizontal
     FELL_REWARD = -1
     #: Limit on theta (Note that this may affect your representation's discretization)
-    ANGLE_LIMITS = [-np.pi / 2.0, np.pi / 2.0]
+    ANGLE_LIMITS = [old_div(-np.pi, 2.0), old_div(np.pi, 2.0)]
     #: Limits on pendulum rate, per 1Link of Lagoudakis & Parr
     ANGULAR_RATE_LIMITS = [
         -2., 2.]  # NOTE that L+P's rate limits [-2,2] are actually unphysically slow, and the pendulum
@@ -231,7 +233,7 @@ class InfCartPoleBalance(InfTrackCartPole):
             s = self.state
         return (
             # per L & P 2003
-            not (-np.pi / 2.0 < s[StateIndex.THETA] < np.pi / 2.0)
+            not (old_div(-np.pi, 2.0) < s[StateIndex.THETA] < old_div(np.pi, 2.0))
         )
 
 
@@ -252,7 +254,7 @@ class InfCartPoleSwingUp(InfTrackCartPole):
     __author__ = "Robert H. Klein"
 
     #: Goal region for reward
-    GOAL_LIMITS = [-np.pi / 6, np.pi / 6]
+    GOAL_LIMITS = [old_div(-np.pi, 6), old_div(np.pi, 6)]
     #: Limits on theta
     ANGLE_LIMITS = [-np.pi, np.pi]
     #: Limits on pendulum rate

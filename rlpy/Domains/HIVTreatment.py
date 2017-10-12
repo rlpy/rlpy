@@ -1,4 +1,7 @@
 """HIV Treatment domain"""
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import range
 from .Domain import Domain
 import numpy as np
 from scipy.integrate import odeint
@@ -178,7 +181,7 @@ def dsdt(s, t, eps1, eps2):
     return np.array([dT1, dT2, dT1s, dT2s, dV, dE])
 
 try:
-    from HIVTreatment_dynamics import dsdt
+    from .HIVTreatment_dynamics import dsdt
 except Exception as e:
-    print e
-    print "Cython extension for HIVTreatment dynamics not available, expect slow runtime"
+    print(e)
+    print("Cython extension for HIVTreatment dynamics not available, expect slow runtime")

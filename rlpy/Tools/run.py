@@ -1,3 +1,4 @@
+from __future__ import print_function
 import joblib
 import os
 import glob
@@ -135,7 +136,7 @@ def prepare_directory(setting, path, **hyperparam):
     """
     # create file to execute
     variables = "hyper_param = dict(" + ",\n".join(["{}={}".format(k, repr(v))
-                                                    for k, v in hyperparam.items()]) + ")"
+                                                    for k, v in list(hyperparam.items())]) + ")"
     final_path = path
     if not os.path.exists(final_path):
         os.makedirs(final_path)
@@ -230,7 +231,7 @@ def run_condor(fn, ids,
                 if job["run_id"] in ids:
                     ids.remove(job["run_id"])
                     if verbose:
-                        print "Jobs #{} already submitted".format(job["run_id"])
+                        print("Jobs #{} already submitted".format(job["run_id"]))
     if len(ids) > 0:
         # write submit file
         with open(os.path.join(outdir, "submit"), "w") as f:
@@ -241,10 +242,10 @@ def run_condor(fn, ids,
         exit_code = os.system(
             "cd {dir} && condor_submit condor/submit".format(dir=dir))
         if verbose:
-            print "Jobs submitted with exit code", exit_code
+            print("Jobs submitted with exit code", exit_code)
     else:
         if verbose:
-            print "All jobs have been already submitted"
+            print("All jobs have been already submitted")
     # if blocking mode in enabled, wait until all result files are there
     # WARNING: this does not recognize killed or dead jobs and would wait
     #          infinitely long
@@ -254,6 +255,6 @@ def run_condor(fn, ids,
             finished_ids = set(get_finished_ids(dir))
             finished_ids &= set(ids)
             if verbose > 100:
-                print len(finished_ids), "of", len(ids), "jobs finished"
+                print(len(finished_ids), "of", len(ids), "jobs finished")
             if len(finished_ids) == len(ids):
                 return

@@ -1,5 +1,11 @@
 """Standard Experiment for Learning Control in RL."""
+from __future__ import division
+from __future__ import print_function
 
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import logging
 from rlpy.Tools import plt
 import numpy as np
@@ -10,7 +16,7 @@ from rlpy.Tools import deltaT, clock, hhmmss
 from rlpy.Tools import className, checkNCreateDirectory
 from rlpy.Tools import printClass
 import rlpy.Tools.results
-from rlpy.Tools import lower
+# from rlpy.Tools import lower
 import os
 import rlpy.Tools.ipshell
 import json
@@ -254,7 +260,7 @@ class Experiment(object):
         idx[idx < 0] = 0
         idx[idx >= d + 2] = d + 1
         #import ipdb; ipdb.set_trace()
-        counts[range(counts.shape[0]), idx] += 1
+        counts[list(range(counts.shape[0])), idx] += 1
 
     def run_from_commandline(self):
         """
@@ -396,7 +402,7 @@ class Experiment(object):
                 self.domain.show(a, self.agent.representation)
 
             # Check Performance
-            if total_steps % (self.max_steps / self.num_policy_checks) == 0:
+            if total_steps % (old_div(self.max_steps, self.num_policy_checks)) == 0:
                 self.elapsed_time = deltaT(
                     self.start_time) - self.total_eval_time
 
@@ -440,7 +446,7 @@ class Experiment(object):
         performance_steps = 0.
         performance_term = 0.
         performance_discounted_return = 0.
-        for j in xrange(self.checks_per_policy):
+        for j in range(self.checks_per_policy):
             p_ret, p_step, p_term, p_dret = self.performanceRun(
                 total_steps, visualize=visualize > j)
             performance_return += p_ret
@@ -534,17 +540,18 @@ class Experiment(object):
         variables = re.findall("{([^}]*)}", path)
         replacements = {}
         for v in variables:
-            if lower(v).startswith('representation') or lower(v).startswith('policy'):
+            if v.lower().startswith('representation') or v.lower().startswith('policy'):
                 obj = 'self.agent.' + v
             else:
                 obj = 'self.' + v
 
-            if len([x for x in ['self.domain', 'self.agent', 'self.agent.policy', 'self.agent.representation'] if x == lower(obj)]):
+            if len([x for x in ['self.domain', 'self.agent', 'self.agent.policy', 'self.agent.representation'] if x ==
+                obj.lower()]):
                 replacements[v] = eval('className(%s)' % obj)
             else:
                 try:
                     replacements[v] = str(eval('%s' % v))
                 except:
-                    print "Warning: Could not interpret path variable", repr(v)
+                    print("Warning: Could not interpret path variable", repr(v))
 
         return path.format(**replacements)

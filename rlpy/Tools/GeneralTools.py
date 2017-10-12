@@ -1,6 +1,13 @@
 """General Tools for use throughout RLPy"""
+from __future__ import division
+from __future__ import print_function
 
 
+from builtins import str
+from builtins import filter
+from builtins import zip
+from builtins import range
+from past.utils import old_div
 def module_exists(module_name):
     try:
         __import__(module_name)
@@ -46,7 +53,7 @@ def available_matplotlib_backends():
 
     # filter all files in that directory to identify all files which provide a
     # backend
-    backend_fnames = filter(is_backend_module, os.listdir(backends_dir))
+    backend_fnames = list(filter(is_backend_module, os.listdir(backends_dir)))
 
     backends = [backend_fname_formatter(fname) for fname in backend_fnames]
     return backends
@@ -60,8 +67,8 @@ if module_exists('matplotlib'):
     if matplotlib_backend in mpl_backends:
         plt.switch_backend(matplotlib_backend)
     else:
-        print "Warning: Matplotlib backend", matplotlib_backend, "not available"
-        print "Available backends:", mpl_backends
+        print("Warning: Matplotlib backend", matplotlib_backend, "not available")
+        print("Available backends:", mpl_backends)
     from matplotlib import pylab as pl
     import matplotlib.ticker as ticker
     from matplotlib import rc, colors
@@ -74,7 +81,7 @@ if module_exists('matplotlib'):
     from matplotlib.patches import ConnectionStyle  # for cartpole
     pl.ion()
 else:
-    print 'matplotlib is not available => No Graphics'
+    print('matplotlib is not available => No Graphics')
 
 if module_exists('networkx'):
     import networkx as nx
@@ -94,7 +101,7 @@ from time import clock
 from hashlib import sha1
 import datetime
 import csv
-from string import lower
+# from string import lower
 # from Sets import ImmutableSet
 # from heapq import *
 import multiprocessing
@@ -153,11 +160,11 @@ def cartesian(arrays, out=None):
     if out is None:
         out = np.zeros([n, len(arrays)], dtype=dtype)
 
-    m = n / arrays[0].size
+    m = old_div(n, arrays[0].size)
     out[:, 0] = np.repeat(arrays[0], m)
     if arrays[1:]:
         cartesian(arrays[1:], out=out[0:m, 1:])
-        for j in xrange(1, arrays[0].size):
+        for j in range(1, arrays[0].size):
             out[j * m:(j + 1) * m, 1:] = out[0:m, 1:]
     return out
 
@@ -202,7 +209,7 @@ def count_nonzero(arr):
                 nnz += 1
         return nnz
 
-    print "In tools.py attempted count_nonzero with unsupported type of", type(arr)
+    print("In tools.py attempted count_nonzero with unsupported type of", type(arr))
     return None
 
 
@@ -268,8 +275,8 @@ def bin2state(bin, num_bins, limits):
     in the middle of the bin (ie, the average of the discretizations around it)
 
     """
-    bin_width = (limits[1] - limits[0]) / (num_bins * 1.)
-    return bin * bin_width + bin_width / 2.0 + limits[0]
+    bin_width = old_div((limits[1] - limits[0]), (num_bins * 1.))
+    return bin * bin_width + old_div(bin_width, 2.0) + limits[0]
 
 
 def state2bin(s, num_bins, limits):
@@ -296,11 +303,11 @@ def state2bin(s, num_bins, limits):
         return num_bins - 1
     width = limits[1] - limits[0]
     if s > limits[1]:
-        print 'Tools.py: WARNING: ', s, ' > ', limits[1], '. Using the chopped value of s'
-        print 'Ignoring', limits[1] - s
+        print('Tools.py: WARNING: ', s, ' > ', limits[1], '. Using the chopped value of s')
+        print('Ignoring', limits[1] - s)
         s = limits[1]
     elif s < limits[0]:
-        print 'Tools.py: WARNING: ', s, ' < ', limits[0], '. Using the chopped value of s'
+        print('Tools.py: WARNING: ', s, ' < ', limits[0], '. Using the chopped value of s')
 #        print("WARNING: %s is out of limits of %s . Using the chopped value of s" %(str(s),str(limits)))
         s = limits[0]
     return int((s - limits[0]) * num_bins / (width * 1.))
@@ -373,17 +380,17 @@ def make_colormap(colors):
 
     from matplotlib.colors import LinearSegmentedColormap, ColorConverter
 
-    z = np.sort(colors.keys())
+    z = np.sort(list(colors.keys()))
     n = len(z)
     z1 = min(z)
     zn = max(z)
-    x0 = (z - z1) / ((zn - z1) * 1.)
+    x0 = old_div((z - z1), ((zn - z1) * 1.))
 
     CC = ColorConverter()
     R = []
     G = []
     B = []
-    for i in xrange(n):
+    for i in range(n):
         # i'th color at level z[i]:
         Ci = colors[z[i]]
         if isinstance(Ci, str):
@@ -397,9 +404,9 @@ def make_colormap(colors):
         B.append(RGB[2])
 
     cmap_dict = {}
-    cmap_dict['red'] = [(x0[i], R[i], R[i]) for i in xrange(len(R))]
-    cmap_dict['green'] = [(x0[i], G[i], G[i]) for i in xrange(len(G))]
-    cmap_dict['blue'] = [(x0[i], B[i], B[i]) for i in xrange(len(B))]
+    cmap_dict['red'] = [(x0[i], R[i], R[i]) for i in range(len(R))]
+    cmap_dict['green'] = [(x0[i], G[i], G[i]) for i in range(len(G))]
+    cmap_dict['blue'] = [(x0[i], B[i], B[i]) for i in range(len(B))]
     mymap = LinearSegmentedColormap('mymap', cmap_dict)
     return mymap
 
@@ -469,7 +476,7 @@ def make_amrcolors(nlevels=4):
         linecolors = linecolors[:nlevels]
         bgcolors = bgcolors[:nlevels]
     else:
-        print "*** Warning, suggest nlevels <= 16"
+        print("*** Warning, suggest nlevels <= 16")
 
     return (linecolors, bgcolors)
 
@@ -584,7 +591,7 @@ def findRow(rowVec, X):
 
     # return nonzero(any(logical_and.reduce([X[:, i] == r[i] for i in arange(len(r))])))
     # return any(logical_and(X[:, 0] == r[0], X[:, 1] == r[1]))
-    ind = np.nonzero(np.logical_and.reduce([X[:, i] == rowVec[i] for i in xrange(len(rowVec))]))
+    ind = np.nonzero(np.logical_and.reduce([X[:, i] == rowVec[i] for i in range(len(rowVec))]))
     return ind[0]
 
 
@@ -628,7 +635,7 @@ def perms_r(X, perm_sample=np.array([]), allPerms=None, ind=0):
                 allPerms, ind = perms_r(
                     X[1:], np.hstack((perm_sample, [x])), allPerms, ind)
         else:
-            for x in xrange(X[0]):
+            for x in range(X[0]):
                 allPerms, ind = perms_r(
                     X[1:], np.hstack((perm_sample, [x])), allPerms, ind)
     return allPerms, ind
@@ -658,7 +665,7 @@ def vec2id2(x, limits):
     if isinstance(x, int):
         return x
     lim_prod = np.cumprod(limits[:-1])
-    return x[0] + sum(map(lambda x_y: x_y[0] * x_y[1], zip(x[1:], lim_prod)))
+    return x[0] + sum([x_y[0] * x_y[1] for x_y in zip(x[1:], lim_prod)])
 
 
 def vec2id(x, limits):
@@ -682,7 +689,7 @@ def vec2id(x, limits):
     if isinstance(x, int):
         return x
     _id = 0
-    for d in xrange(len(x) - 1, -1, -1):
+    for d in range(len(x) - 1, -1, -1):
         _id *= limits[d]
         _id += x[d]
 
@@ -706,7 +713,7 @@ def id2vec(_id, limits):
     """
     prods = np.cumprod(limits)
     s = [0] * len(limits)
-    for d in xrange(len(prods) - 1, 0, -1):
+    for d in range(len(prods) - 1, 0, -1):
 #       s[d] = _id / prods[d-1]
 #       _id %= prods[d-1]
         s[d], _id = divmod(_id, prods[d - 1])
@@ -778,21 +785,21 @@ def powerset(iterable, ascending=1):
     s = list(iterable)
     if ascending:
         return (
-            chain.from_iterable(combinations(s, r) for r in xrange(len(s) + 1))
+            chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
         )
     else:
         return (
             chain.from_iterable(combinations(s, r)
-                                for r in xrange(len(s) + 1, -1, -1))
+                                for r in range(len(s) + 1, -1, -1))
         )
 
 
 def printClass(obj):
     """ Print class name and all attributes of object ``obj``. """
-    print className(obj)
-    print '======================================='
-    for property, value in vars(obj).iteritems():
-        print property, ": ", value
+    print(className(obj))
+    print('=======================================')
+    for property, value in vars(obj).items():
+        print(property, ": ", value)
 
 
 def addNewElementForAllActions(weight_vec, actions_num, newElem=None):
@@ -855,11 +862,11 @@ def solveLinear(A, b):
             error = np.linalg.norm(
                 (np.dot(A, result.reshape(-1, 1)) - b.reshape(-1, 1))[0])
         else:
-            print 'Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.'
+            print('Attempted to solve linear equation Ax=b in solveLinear() of Tools.py with a non-numpy (array / matrix) type.')
             sys.exit(1)
 
     if error > RESEDUAL_THRESHOLD:
-        print "||Ax-b|| = %0.1f" % error
+        print("||Ax-b|| = %0.1f" % error)
     return result.ravel(), solve_time
 
 
@@ -922,7 +929,7 @@ def drawHist(data, bins=50, fig=101):
     """
     hist, bins = np.histogram(data, bins=bins)
     width = 0.7 * (bins[1] - bins[0])
-    center = (bins[:-1] + bins[1:]) / 2
+    center = old_div((bins[:-1] + bins[1:]), 2)
     plt.figure(fig)
     plt.bar(center, hist, align='center', width=width)
 
@@ -1070,14 +1077,14 @@ def regularize(A):
         # print 'REGULARIZE', type(A)
     else:
         # print 'REGULARIZE', type(A)
-        for i in xrange(x):
+        for i in range(x):
             A[i, i] += REGULARIZATION
     return A
 
 
 def sparsity(A):
     """ Returns the percentage of nonzero elements in ``A``. """
-    return (1 - np.count_nonzero(A) / (np.prod(A.shape) * 1.)) * 100
+    return (1 - old_div(np.count_nonzero(A), (np.prod(A.shape) * 1.))) * 100
 
 
 # CURRENTLY UNUSED
@@ -1090,7 +1097,7 @@ def incrementalAverageUpdate(avg, sample, sample_number):
     Updates an average incrementally.
 
     """
-    return avg + (sample - avg) / (sample_number * 1.)
+    return avg + old_div((sample - avg), (sample_number * 1.))
 
 
 def padZeros(X, L):
@@ -1210,7 +1217,7 @@ def rk4(derivs, y0, t, *args, **kwargs):
 
         thist = t[i]
         dt = t[i + 1] - thist
-        dt2 = dt / 2.0
+        dt2 = old_div(dt, 2.0)
         y0 = yout[i]
 
         k1 = np.asarray(derivs(y0, thist, *args, **kwargs))

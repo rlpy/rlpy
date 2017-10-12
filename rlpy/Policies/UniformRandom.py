@@ -1,5 +1,7 @@
 """Uniform Random policy"""
+from __future__ import division
 
+from past.utils import old_div
 from .Policy import Policy
 import numpy as np
 
@@ -21,7 +23,7 @@ class UniformRandom(Policy):
         super(UniformRandom, self).__init__(representation, seed)
     
     def prob(self, s, terminal, p_actions):
-        p = np.ones(len(p_actions)) / len(p_actions)
+        p = old_div(np.ones(len(p_actions)), len(p_actions))
         return p
 
     def pi(self, s, terminal, p_actions):
