@@ -5,13 +5,6 @@ Large parts of this file were taken from the pandas project
 (https://github.com/pydata/pandas) which have been permitted for use under the
 BSD license.
 """
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from builtins import open
-from future import standard_library
-standard_library.install_aliases()
 import sys
 import glob
 import multiprocessing
@@ -266,7 +259,8 @@ setup(name="rlpy",
           'joblib',
           'hyperopt',
           'pymongo',
-          'cairocffi'
+          'cairocffi',
+          'future'
       ],
       setup_requires=['numpy >= 1.7'],
       ext_modules=extensions,

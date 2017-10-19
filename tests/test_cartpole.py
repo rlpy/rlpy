@@ -12,6 +12,7 @@ import pickle
 from nose.tools import eq_
 from rlpy.Tools import __rlpy_location__
 import os
+import sys
 
 
 def test_cartpole():
@@ -37,7 +38,10 @@ def test_cartpole():
 
 def check_traj(domain_class, filename):
     with open(filename, 'rb') as f:
-        traj = pickle.load(f, encoding='latin1')
+        if not sys.version_info[:2] == (2, 7):
+            traj = pickle.load(f, encoding='latin1')
+        else:
+            traj = pickle.load(f)
     traj_now = sample_random_trajectory(domain_class)
     for i, e1, e2 in zip(list(range(len(traj_now))), traj_now, traj):
         print(i)
