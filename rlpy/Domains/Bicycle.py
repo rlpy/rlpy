@@ -182,10 +182,11 @@ class BicycleBalancing(Domain):
             ax.set_xlabel("Days")
         for i in range(n):
             handles[i].set_ydata(self.episode_data[i])
-            ax = handles[i].get_axes()
+            ax = handles[i].axes
             ax.relim()
             ax.autoscale_view()
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
 
 class BicycleRiding(BicycleBalancing):

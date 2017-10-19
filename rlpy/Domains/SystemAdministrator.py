@@ -130,7 +130,7 @@ class SystemAdministrator(Domain):
 
         """
         _Neighbors = []
-        f = open(path, 'rb')
+        f = open(path, 'r')
         reader = csv.reader(f, delimiter=',')
         self.computers_num = 0
         for row in reader:
@@ -142,6 +142,8 @@ class SystemAdministrator(Domain):
 
     def showDomain(self, a=0):
         s = self.state
+        plt.figure("Domain")
+
         if self.networkGraph is None:  # or self.networkPos is None:
             self.networkGraph = nx.Graph()
             # enumerate all computer_ids, simulatenously iterating through
@@ -215,7 +217,8 @@ class SystemAdministrator(Domain):
                     width=2,
                     style='dotted')
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
     def step(self, a):
         # ns = s[:] # make copy of state so as not to affect original mid-step

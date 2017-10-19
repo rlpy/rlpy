@@ -130,7 +130,8 @@ class GridWorld(Domain):
                s[0],
                'k>',
                markersize=20.0 - self.COLS)
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
     def showLearning(self, representation):
         if self.valueFunction_fig is None:

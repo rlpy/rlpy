@@ -172,6 +172,7 @@ class FiftyChain(Domain):
         s = self.state
         # Draw the environment
         if self.circles is None:
+            plt.figure("Domain")
             self.domain_fig = plt.subplot(3, 1, 1)
             plt.figure(1, (self.chainSize * 2 / 10.0, 2))
             self.domain_fig.set_xlim(0, self.chainSize * 2 / 10.0)
@@ -193,7 +194,8 @@ class FiftyChain(Domain):
         for p in self.GOAL_STATES:
             self.circles[p].set_facecolor('g')
         self.circles[s].set_facecolor('k')
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
     def showLearning(self, representation):
         allStates = np.arange(0, self.chainSize)

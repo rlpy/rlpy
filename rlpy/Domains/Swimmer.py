@@ -130,7 +130,8 @@ class Swimmer(Domain):
         else:
             self.swimmer_lines.set_data(Rx, Ry)
             self.action_text.set_text(str(a))
-        plt.draw()
+        plt.figure("Swimmer Domain").canvas.draw()
+        plt.figure("Swimmer Domain").canvas.flush_events()
 
     def showLearning(self, representation):
         good_pol = SwimmerPolicy(

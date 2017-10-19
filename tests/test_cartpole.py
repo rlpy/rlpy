@@ -30,8 +30,8 @@ def test_cartpole():
 
 
 def check_traj(domain_class, filename):
-    with open(filename) as f:
-        traj = pickle.load(f)
+    with open(filename, 'rb') as f:
+        traj = pickle.load(f, encoding='latin1')
     traj_now = sample_random_trajectory(domain_class)
     for i, e1, e2 in zip(list(range(len(traj_now))), traj_now, traj):
         print(i)
@@ -48,7 +48,7 @@ def check_traj(domain_class, filename):
 
 def save_trajectory(domain_class, filename):
     traj = sample_random_trajectory(domain_class)
-    with open(filename, "w") as f:
+    with open(filename, 'wb') as f:
         pickle.dump(traj, f)
 
 

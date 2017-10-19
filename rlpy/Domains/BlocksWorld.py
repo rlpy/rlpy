@@ -109,6 +109,7 @@ class BlocksWorld(Domain):
                     # Put it in the back of the list
                     undrawn_blocks = np.hstack((undrawn_blocks, [A]))
         if self.domain_fig is None:
+            plt.figure("Domain")
             self.domain_fig = plt.imshow(
                 world,
                 cmap='BlocksWorld',
@@ -121,7 +122,8 @@ class BlocksWorld(Domain):
             plt.show()
         else:
             self.domain_fig.set_data(world)
-            plt.draw()
+            plt.figure("Domain").canvas.draw()
+            plt.figure("Domain").canvas.flush_events()
 
     def showLearning(self, representation):
         pass  # cant show 6 dimensional value function

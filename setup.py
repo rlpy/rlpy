@@ -6,6 +6,7 @@ Large parts of this file were taken from the pandas project
 BSD license.
 """
 import sys
+import glob
 import multiprocessing
 try:
     from setuptools import setup, Command, find_packages
@@ -238,8 +239,17 @@ setup(name="rlpy",
       zip_safe=False,
       cmdclass=cmdclass,
       long_description=open('README.rst').read(),
-      packages=find_packages(exclude=['tests', 'tests.*']),
       include_package_data=True,
+      data_files=[
+          ('rlpy/Domains/GridWorldMaps', glob.glob('./rlpy/Domains/GridWorldMaps/*.txt')),
+          ('rlpy/Domains/IntruderMonitoringMaps', glob.glob('./rlpy/Domains/IntruderMonitoringMaps/*.txt')),
+          ('rlpy/Domains/SystemAdministratorMaps', glob.glob('./rlpy/Domains/SystemAdministratorMaps/*.txt')),
+          ('rlpy/Domains/PinballConfigs', glob.glob('./rlpy/Domains/PinballConfigs/*.cfg')),
+          ('rlpy/Domains/PacmanPackage/layouts', glob.glob('./rlpy/Domains/PacmanPackage/layouts/*.lay')),
+          ('rlpy/Policies', glob.glob('./rlpy/Policies/*.mat'))
+      ],
+
+      packages=find_packages(exclude=['tests', 'tests.*']),
       install_requires=[
           'numpy >= 1.7',
           'scipy',
@@ -248,7 +258,8 @@ setup(name="rlpy",
           'scikit-learn',
           'joblib',
           'hyperopt',
-          'pymongo'
+          'pymongo',
+          'cairocffi'
       ],
       setup_requires=['numpy >= 1.7'],
       ext_modules=extensions,

@@ -228,6 +228,7 @@ class IntruderMonitoring(Domain):
         s = self.state
         # Draw the environment
         if self.domain_fig is None:
+            plt.figure("Domain")
             self.domain_fig = plt.imshow(
                 self.map,
                 cmap='IntruderMonitoring',
@@ -264,4 +265,5 @@ class IntruderMonitoring(Domain):
             alpha=.7,
             markeredgecolor='k',
             markeredgewidth=2)
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()

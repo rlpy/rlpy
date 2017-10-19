@@ -112,11 +112,13 @@ class PuddleWorld(Domain):
             self.reward_im = plt.imshow(self.reward_map, extent=(0, 1, 0, 1),
                                         origin="lower")
             self.state_mark = plt.plot(s[0], s[1], 'kd', markersize=20)
-            plt.draw()
+            plt.figure("Domain").canvas.draw()
+            plt.figure("Domain").canvas.flush_events()
         else:
             self.domain_fig = plt.figure("Domain")
             self.state_mark[0].set_data([s[0]], [s[1]])
-            plt.draw()
+            plt.figure("Domain").canvas.draw()
+            plt.figure("Domain").canvas.flush_events()
 
     def showLearning(self, representation):
         a = np.zeros((2))

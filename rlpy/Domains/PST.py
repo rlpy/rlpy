@@ -205,6 +205,7 @@ class PST(Domain):
     def showDomain(self, a=0):
         s = self.state
         if self.domain_fig is None:
+            plt.figure("Domain")
             self.domain_fig = plt.figure(
                 1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
             plt.show()
@@ -382,7 +383,8 @@ class PST(Domain):
             if numHealthySurveil > 0:
                 self.location_rect_vis[
                     len(self.location_rect_vis) - 1].set_color('green')
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
         sleep(0.5)
 
     def showLearning(self, representation):
