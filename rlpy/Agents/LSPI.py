@@ -1,5 +1,11 @@
 """Least-Squares Policy Iteration [Lagoudakis and Parr 2003]."""
 from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from .BatchAgent import BatchAgent
 import rlpy.Tools as Tools
 import numpy as np

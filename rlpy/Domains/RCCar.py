@@ -1,6 +1,12 @@
 """RC-Car domain"""
 from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from past.utils import old_div
 from rlpy.Tools import plt, bound, wrap, mpatches, id2vec
 import matplotlib as mpl

@@ -1,5 +1,7 @@
 from __future__ import division
 from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import print_function
 # crawler.py
 # ----------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -11,6 +13,8 @@ from __future__ import absolute_import
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
 #!/usr/bin/python
+from future import standard_library
+standard_library.install_aliases()
 from builtins import range
 from builtins import object
 from past.utils import old_div

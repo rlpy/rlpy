@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import division
 # analysis.py
 # -----------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -18,6 +20,8 @@ from __future__ import absolute_import
 # value iteration.
 
 
+from future import standard_library
+standard_library.install_aliases()
 from builtins import str
 def question2():
     answerDiscount = 0.9

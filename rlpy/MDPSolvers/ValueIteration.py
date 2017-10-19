@@ -1,7 +1,14 @@
 """Classical Value Iteration
 Performs full Bellman Backup on a given s,a pair by sweeping through the state space
 """
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from builtins import range
 from .MDPSolver import MDPSolver
 from rlpy.Tools import hhmmss, deltaT, className, clock, l_norm
