@@ -1,7 +1,6 @@
 """Classical Value Iteration
 Performs full Bellman Backup on a given s,a pair by sweeping through the state space
 """
-from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import

@@ -2,9 +2,8 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
-from __future__ import unicode_literals
 
-from builtins import open
+# from builtins import open
 from builtins import int
 from future import standard_library
 standard_library.install_aliases()
@@ -164,7 +163,10 @@ class MDPSolver(with_metaclass(ABCMeta, object)):
         fullpath_output = os.path.join(self.project_path, self.output_filename)
         print(">>> ", fullpath_output)
         checkNCreateDirectory(self.project_path + '/')
-        with open(fullpath_output, "wb") as f:
+        with open(fullpath_output, "w") as f:
+            print("BOO", self.result)
+            for k, v in self.result.items():
+                print(type(k), type(v))
             json.dump(self.result, f, indent=4, sort_keys=True)
 
     def hasTime(self):
