@@ -344,9 +344,9 @@ class GridWorld(Domain):
     def isTerminal(self, s=None):
         if s is None:
             s = self.state
-        if self.map[s[0], s[1]] == self.GOAL:
+        if self.map[int(s[0]), int(s[1])] == self.GOAL:
             return True
-        if self.map[s[0], s[1]] == self.PIT:
+        if self.map[int(s[0]), int(s[1])] == self.PIT:
             return True
         return False
 
@@ -385,8 +385,8 @@ class GridWorld(Domain):
         pa = np.array([self.possibleActions(sn) for sn in ns])
         # Make rewards
         r = np.ones((k, 1)) * self.STEP_REWARD
-        goal = self.map[ns[:, 0], ns[:, 1]] == self.GOAL
-        pit = self.map[ns[:, 0], ns[:, 1]] == self.PIT
+        goal = self.map[ns[:, 0].astype(np.int), ns[:, 1].astype(np.int)] == self.GOAL
+        pit = self.map[ns[:, 0].astype(np.int), ns[:, 1].astype(np.int)] == self.PIT
         r[goal] = self.GOAL_REWARD
         r[pit] = self.PIT_REWARD
         # Make terminals
