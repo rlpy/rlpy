@@ -6,6 +6,6 @@ before_install:
     - "sudo apt-get update -qq"
     - "sudo apt-get install python-tk python3-tk"
 install: 
-    - "pip install cython"
+    - "pip install cython matplotlib scikit-learn scipy"
     - "python setup.py develop"
 script: "xvfb-run --server-args=\"-screen 0 1024x768x24\" nosetests tests --logging-clear-handlers -v"
