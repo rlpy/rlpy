@@ -1,5 +1,15 @@
 """Fifty state chain."""
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 from rlpy.Tools import plt, mpatches
 import numpy as np
 from .Domain import Domain
@@ -139,7 +149,7 @@ class FiftyChain(Domain):
         self.statespace_limits = np.array([[0, self.chainSize - 1]])
         super(FiftyChain, self).__init__()
         # To catch errors
-        self.optimal_policy = np.array([-1 for dummy in xrange(0, self.chainSize)])
+        self.optimal_policy = np.array([-1 for dummy in range(0, self.chainSize)])
         self.storeOptimalPolicy()
         self.discount_factor = 0.8  # Set discount_factor to be 0.8 for this domain per L & P 2007
 
@@ -169,18 +179,19 @@ class FiftyChain(Domain):
         s = self.state
         # Draw the environment
         if self.circles is None:
+            plt.figure("Domain")
             self.domain_fig = plt.subplot(3, 1, 1)
             plt.figure(1, (self.chainSize * 2 / 10.0, 2))
             self.domain_fig.set_xlim(0, self.chainSize * 2 / 10.0)
             self.domain_fig.set_ylim(0, 2)
             self.domain_fig.add_patch(
-                mpatches.Circle((1 / 5.0 + 2 / 10.0 * (self.chainSize - 1),
+                mpatches.Circle((old_div(1, 5.0) + 2 / 10.0 * (self.chainSize - 1),
                                  self.Y),
                                 self.RADIUS * 1.1,
                                 fc="w"))  # Make the last one double circle
             self.domain_fig.xaxis.set_visible(False)
             self.domain_fig.yaxis.set_visible(False)
-            self.circles = [mpatches.Circle((1 / 5.0 + 2 / 10.0 * i, self.Y), self.RADIUS, fc="w")
+            self.circles = [mpatches.Circle((old_div(1, 5.0) + 2 / 10.0 * i, self.Y), self.RADIUS, fc="w")
                             for i in range(self.chainSize)]
             for i in range(self.chainSize):
                 self.domain_fig.add_patch(self.circles[i])
@@ -190,7 +201,8 @@ class FiftyChain(Domain):
         for p in self.GOAL_STATES:
             self.circles[p].set_facecolor('g')
         self.circles[s].set_facecolor('k')
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
     def showLearning(self, representation):
         allStates = np.arange(0, self.chainSize)
@@ -286,5 +298,5 @@ class FiftyChain(Domain):
             and the optimal one.
         """
         V = np.array([representation.V(s, False, self.possibleActions(s=s)) \
-                      for s in xrange(self.chainSize)])
+                      for s in range(self.chainSize)])
         return np.linalg.norm(V - self.V_star, np.inf)

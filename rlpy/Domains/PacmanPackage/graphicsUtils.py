@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import absolute_import
 # graphicsUtils.py
 # ----------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,13 +12,20 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
+from builtins import dict
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import sys
 import math
 import random
 import string
 import time
 import types
-import Tkinter
+import tkinter
 
 _Windows = sys.platform == 'win32'  # True if on Win95/98/NT
 
@@ -35,7 +46,7 @@ def formatColor(r, g, b):
 
 def colorToVector(color):
     return (
-        map(lambda x: int(x, 16) / 256.0, [color[1:3], color[3:5], color[5:7]])
+        [old_div(int(x, 16), 256.0) for x in [color[1:3], color[3:5], color[5:7]]]
     )
 
 if _Windows:
@@ -71,14 +82,14 @@ def begin_graphics(width=640, height=480,
     _bg_color = color
 
     # Create the root window
-    _root_window = Tkinter.Tk()
+    _root_window = tkinter.Tk()
     _root_window.protocol('WM_DELETE_WINDOW', _destroy_window)
     _root_window.title(title or 'Graphics Window')
     _root_window.resizable(0, 0)
 
     # Create the canvas object
     try:
-        _canvas = Tkinter.Canvas(_root_window, width=width, height=height)
+        _canvas = tkinter.Canvas(_root_window, width=width, height=height)
         _canvas.pack()
         draw_background()
         _canvas.update()
@@ -164,7 +175,7 @@ def end_graphics():
             if _root_window is not None:
                 _root_window.destroy()
         except SystemExit as e:
-            print 'Ending graphics raised an exception:', e
+            print('Ending graphics raised an exception:', e)
     finally:
         _root_window = None
         _canvas = None
@@ -230,8 +241,8 @@ def image(pos, file="../../blueghost.gif"):
         _canvas.create_image(
             x,
             y,
-            image=Tkinter.PhotoImage(file=file),
-            anchor=Tkinter.NW)
+            image=tkinter.PhotoImage(file=file),
+            anchor=tkinter.NW)
     )
 
 
@@ -350,17 +361,17 @@ def _clear_keys(event=None):
     _got_release = None
 
 
-def keys_pressed(d_o_e=Tkinter.tkinter.dooneevent,
-                 d_w=Tkinter.tkinter.DONT_WAIT):
+def keys_pressed(d_o_e=lambda arg: _root_window.dooneevent(arg),
+                 d_w=tkinter._tkinter.DONT_WAIT):
     d_o_e(d_w)
     if _got_release:
         d_o_e(d_w)
-    return _keysdown.keys()
+    return list(_keysdown.keys())
 
 
 def keys_waiting():
     global _keyswaiting
-    keys = _keyswaiting.keys()
+    keys = list(_keyswaiting.keys())
     _keyswaiting = {}
     return keys
 
@@ -376,8 +387,8 @@ def wait_for_keys():
 
 
 def remove_from_screen(x,
-                       d_o_e=Tkinter.tkinter.dooneevent,
-                       d_w=Tkinter.tkinter.DONT_WAIT):
+                       d_o_e=lambda arg: _root_window.dooneevent(arg),
+                       d_w=tkinter._tkinter.DONT_WAIT):
     _canvas.delete(x)
     d_o_e(d_w)
 
@@ -390,8 +401,8 @@ def _adjust_coords(coord_list, x, y):
 
 
 def move_to(object, x, y=None,
-            d_o_e=Tkinter.tkinter.dooneevent,
-            d_w=Tkinter.tkinter.DONT_WAIT):
+            d_o_e=lambda arg: _root_window.dooneevent(arg),
+            d_w=tkinter._tkinter.DONT_WAIT):
     if y is None:
         try:
             x, y = x
@@ -415,8 +426,8 @@ def move_to(object, x, y=None,
 
 
 def move_by(object, x, y=None,
-            d_o_e=Tkinter.tkinter.dooneevent,
-            d_w=Tkinter.tkinter.DONT_WAIT, lift=False):
+            d_o_e=lambda arg: _root_window.dooneevent(arg),
+            d_w=tkinter._tkinter.DONT_WAIT, lift=False):
     if y is None:
         try:
             x, y = x

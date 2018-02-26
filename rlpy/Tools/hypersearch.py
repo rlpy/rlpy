@@ -1,5 +1,16 @@
 """Functions to be used with hyperopt for doing hyper parameter optimization."""
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import absolute_import
 
+from builtins import super
+from builtins import open
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import os
 import rlpy.Tools.results as tres
 import rlpy.Tools.run as rt
@@ -30,14 +41,14 @@ def _search_condor_parallel(path, space, trials_per_point, setting,
     enqueuing loop
     """
 
-    trials = CondorTrials(path=path, ids=range(1, trials_per_point + 1),
+    trials = CondorTrials(path=path, ids=list(range(1, trials_per_point + 1)),
                           setting=setting, objective=objective)
     domain = hyperopt.Domain(dummy_f, space, rseed=123)
     trial_path = os.path.join(path, "trials.pck")
     if os.path.exists(trial_path):
         with open(trial_path) as f:
             old_trials = pickle.load(f)
-        print "Loaded existing trials"
+        print("Loaded existing trials")
         if old_trials.setting == trials.setting and trials.ids == old_trials.ids:
             trials = old_trials
     n_queued = trials.count_by_state_unsynced(hyperopt.JOB_STATES)
@@ -127,13 +138,13 @@ class CondorTrials(hyperopt.Trials):
         return rval
 
     def unwrap_hyperparam(self, vals):
-        return {a: b[0] for a, b in vals.items()}
+        return {a: b[0] for a, b in list(vals.items())}
 
     def make_full_path(self, hyperparam):
         return (
             os.path.join(
                 self.path,
-                "-".join([str(v) for v in hyperparam.values()]))
+                "-".join([str(v) for v in list(hyperparam.values())]))
         )
 
     def update_trials(self, trials):
@@ -159,9 +170,9 @@ class CondorTrials(hyperopt.Trials):
                 finished_ids = rt.get_finished_ids(path=full_path)
                 if set(finished_ids).issuperset(set(self.ids)):
                     trial["state"] = hyperopt.JOB_STATE_DONE
-                    print trial["tid"], "done"
+                    print(trial["tid"], "done")
                     trial["result"] = self.get_results(full_path)
-                    print "Parameters", hyperparam
+                    print("Parameters", hyperparam)
         return count
 
     def get_results(self, path):
@@ -173,9 +184,9 @@ class CondorTrials(hyperopt.Trials):
         avg, std, n_trials = tres.avg_quantity(res, quan)
         avg *= neg
         weights = (np.arange(len(avg)) + 1) ** 2
-        loss = (avg * weights).sum() / weights.sum()
-        print time.ctime()
-        print "Loss: {:.4g}".format(loss)
+        loss = old_div((avg * weights).sum(), weights.sum())
+        print(time.ctime())
+        print("Loss: {:.4g}".format(loss))
         # use #steps/eps at the moment
         return {"loss": loss,
                 "num_trials": n_trials[-1],
@@ -244,10 +255,10 @@ def find_hyperparameters(
         # "temporary" directory to use
         full_path = os.path.join(
             path,
-            "-".join([str(v) for v in hyperparam.values()]))
+            "-".join([str(v) for v in list(hyperparam.values())]))
 
         # execute experiment
-        rt.run(setting, location=full_path, ids=range(1, trials_per_point + 1),
+        rt.run(setting, location=full_path, ids=list(range(1, trials_per_point + 1)),
                parallelization=parallelization, force_rerun=False, block=True, **hyperparam)
 
         # all jobs should be done
@@ -266,12 +277,12 @@ def find_hyperparameters(
             val = -m
             std = s[-1]
         else:
-            print "unknown objective"
+            print("unknown objective")
         weights = (np.arange(len(val)) + 1) ** 2
-        loss = (val * weights).sum() / weights.sum()
-        print time.ctime()
-        print "Parameters", hyperparam
-        print "Loss", loss
+        loss = old_div((val * weights).sum(), weights.sum())
+        print(time.ctime())
+        print("Parameters", hyperparam)
+        print("Loss", loss)
         # use #steps/eps at the moment
         return {"loss": loss,
                 "num_trials": n[-1],
@@ -279,7 +290,7 @@ def find_hyperparameters(
                 "std_last_mean": std}
 
     if parallelization == "condor_all":
-        trials = CondorTrials(path=path, ids=range(1, trials_per_point + 1),
+        trials = CondorTrials(path=path, ids=list(range(1, trials_per_point + 1)),
                               setting=setting, objective=objective)
         domain = hyperopt.Domain(dummy_f, space, rseed=123)
         rval = hyperopt.FMinIter(hyperopt.rand.suggest, domain, trials,

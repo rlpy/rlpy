@@ -1,6 +1,14 @@
 """
 Experimental Implementation of Natural Actor Critic
 """
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
 import numpy as np
 from .Agent import Agent
 from rlpy.Tools import solveLinear, regularize
@@ -23,7 +31,7 @@ class NaturalActorCritic(Agent):
     """
 
     # minimum for the cosine of the current and last gradient
-    min_cos = np.cos(np.pi / 180.)
+    min_cos = np.cos(old_div(np.pi, 180.))
 
     def __init__(self, policy, representation, discount_factor, forgetting_rate,
                  min_steps_between_updates, max_steps_between_updates, lambda_,

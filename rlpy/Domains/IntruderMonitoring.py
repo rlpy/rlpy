@@ -1,5 +1,13 @@
 """Intruder monitoring task."""
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from rlpy.Tools import plt, id2vec, bound_vec
 import numpy as np
 from .Domain import Domain
@@ -65,7 +73,7 @@ class IntruderMonitoring(Domain):
     episodeCap = 100              # Episode Cap
 
     # Constants in the map
-    EMPTY, INTRUDER, AGENT, DANGER = xrange(4)
+    EMPTY, INTRUDER, AGENT, DANGER = range(4)
         #: Actions: Up, Down, Left, Right, Null
     ACTIONS_PER_AGENT = np.array([[-1, 0], [+1, 0], [0, -1], [0, +1], [0, 0], ])
 
@@ -139,7 +147,7 @@ class IntruderMonitoring(Domain):
         # IntruderPolicy()
         intruders = np.array(s[self.NUMBER_OF_AGENTS * 2:].reshape(-1, 2))
         actions = [self.IntruderPolicy(intruders[i])
-                   for i in xrange(self.NUMBER_OF_INTRUDERS)]
+                   for i in range(self.NUMBER_OF_INTRUDERS)]
         actions = self.ACTIONS_PER_AGENT[actions]
         intruders += actions
 
@@ -195,21 +203,21 @@ class IntruderMonitoring(Domain):
         return possibleActions
 
     def printDomain(self, s, a):
-        print '--------------'
+        print('--------------')
 
-        for i in xrange(0, self.NUMBER_OF_AGENTS):
+        for i in range(0, self.NUMBER_OF_AGENTS):
             s_a = s[i * 2:i * 2 + 2]
             aa = id2vec(a, self.ACTION_LIMITS)
             # print 'Agent {} X: {} Y: {}'.format(i,s_a[0],s_a[1])
-            print 'Agent {} Location: {} Action {}'.format(i, s_a, aa)
+            print('Agent {} Location: {} Action {}'.format(i, s_a, aa))
         offset = 2 * self.NUMBER_OF_AGENTS
-        for i in xrange(0, self.NUMBER_OF_INTRUDERS):
+        for i in range(0, self.NUMBER_OF_INTRUDERS):
             s_i = s[offset + i * 2:offset + i * 2 + 2]
             # print 'Intruder {} X: {} Y: {}'.format(i,s_i[0],s_i[1])
-            print 'Intruder', s_i
+            print('Intruder', s_i)
         r, ns, terminal = self.step(s, a)
 
-        print 'Reward ', r
+        print('Reward ', r)
 
     def IntruderPolicy(self, s_i):
         """
@@ -226,6 +234,7 @@ class IntruderMonitoring(Domain):
         s = self.state
         # Draw the environment
         if self.domain_fig is None:
+            plt.figure("Domain")
             self.domain_fig = plt.imshow(
                 self.map,
                 cmap='IntruderMonitoring',
@@ -262,4 +271,5 @@ class IntruderMonitoring(Domain):
             alpha=.7,
             markeredgecolor='k',
             markeredgewidth=2)
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()

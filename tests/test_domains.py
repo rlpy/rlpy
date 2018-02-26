@@ -1,5 +1,11 @@
 """Nosetests for testing the domains and their methods."""
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
 import rlpy.Domains
 from rlpy.Domains.Domain import Domain
 import numpy as np
@@ -13,7 +19,7 @@ __license__ = "BSD 3-Clause"
 
 
 def test_random_trajectory():
-    for d in rlpy.Domains.__dict__.values():
+    for d in list(rlpy.Domains.__dict__.values()):
         if d == Domain:
             continue
         if inspect.isclass(d) and issubclass(d, Domain):
@@ -21,7 +27,7 @@ def test_random_trajectory():
 
 
 def test_specification():
-    for d in rlpy.Domains.__dict__.values():
+    for d in list(rlpy.Domains.__dict__.values()):
         if d == Domain:
             continue
         if inspect.isclass(d) and issubclass(d, Domain):

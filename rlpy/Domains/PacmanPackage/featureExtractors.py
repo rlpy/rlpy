@@ -9,12 +9,21 @@
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
 "Feature extractors for Pacman game states"
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import print_function
 
-from game import Directions, Actions
-import util
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from builtins import object
+from .game import Directions, Actions
+from . import util
 
 
-class FeatureExtractor:
+class FeatureExtractor(object):
 
     def getFeatures(self, state, action):
         """
@@ -105,7 +114,7 @@ class SimpleExtractor(FeatureExtractor):
         if dist is not None:
             # make the distance a number less than one otherwise the update
             # will diverge wildly
-            features["closest-food"] = float(dist) / \
-                (walls.width * walls.height)
+            features["closest-food"] = old_div(float(dist), \
+                (walls.width * walls.height))
         features.divideAll(10.0)
         return features

@@ -1,5 +1,13 @@
 """Fixed policy. Encodes fixed policies for particular domains."""
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from rlpy.Tools import vec2id
 from .Policy import Policy
 import numpy as np
@@ -69,13 +77,13 @@ class FixedPolicy(Policy):
     def pi2(self, s, terminal, p_actions):
         domain = self.representation.domain
         if not className(domain) in self.supportedDomains:
-            print "ERROR: There is no fixed policy defined for %s" % className(domain)
+            print("ERROR: There is no fixed policy defined for %s" % className(domain))
             return None
 
         if className(domain) == 'GridWorld':
             # Actions are Up, Down, Left, Right
             if not self.policyName in self.gridWorldPolicyNames:
-                print "Error: There is no GridWorld policy with name %s" % self.policyName
+                print("Error: There is no GridWorld policy with name %s" % self.policyName)
                 return None
 
             if self.policyName == 'cw_circle':
@@ -97,7 +105,7 @@ class FixedPolicy(Policy):
                     elif self.curAction == 2:  # left
                         self.curAction = 0
                     else:
-                        print 'Something terrible happened...got an invalid action on GridWorld Fixed Policy'
+                        print('Something terrible happened...got an invalid action on GridWorld Fixed Policy')
     #                 self.curAction = self.curAction % domain.actions_num
             elif self.policyName == 'ccw_circle':
                 # Cycle through actions, starting with 0, causing agent to go
@@ -117,12 +125,12 @@ class FixedPolicy(Policy):
                     elif self.curAction == 1:  # down
                         self.curAction = 3
                     else:
-                        print 'Something terrible happened...got an invalid action on GridWorld Fixed Policy'
+                        print('Something terrible happened...got an invalid action on GridWorld Fixed Policy')
     #                 self.curAction = self.curAction % domain.actions_num
 
             else:
-                print "Error: No policy defined with name %s, but listed in gridWorldPolicyNames" % self.policyName
-                print "You need to create a switch statement for the policy name above, or remove it from gridWorldPolicyNames"
+                print("Error: No policy defined with name %s, but listed in gridWorldPolicyNames" % self.policyName)
+                print("You need to create a switch statement for the policy name above, or remove it from gridWorldPolicyNames")
                 return None
             return self.curAction
 
@@ -214,7 +222,7 @@ class FixedPolicy(Policy):
             # Default action is hold
             actions = np.ones(len(agents), dtype=np.integer) * 4
             planned_agents_num = min(len(agents), len(targets))
-            for i in xrange(planned_agents_num):
+            for i in range(planned_agents_num):
                 # Find cloasest zone (manhattan) to the corresponding target
                 target = targets[i, :]
                 distances = np.sum(
@@ -256,8 +264,8 @@ class FixedPolicy(Policy):
         if className(domain) == 'PST':
             # One stays at comm, n-1 stay at target area. Whenever fuel is
             # lower than reaching the base the move back
-            print s
+            print(s)
             s = domain.state2Struct(s)
             uavs = domain.NUM_UAV
-            print s
+            print(s)
             return vec2id(np.zeros(uavs), np.ones(uavs) * 3)

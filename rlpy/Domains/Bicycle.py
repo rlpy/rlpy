@@ -1,5 +1,13 @@
 """Bicycle balancing task."""
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 from .Domain import Domain
 import numpy as np
 from itertools import product
@@ -76,7 +84,7 @@ class BicycleBalancing(Domain):
         T, d = self.actions[a]
         omega, domega, theta, dtheta, psi = s
 
-        v = 10 / 3.6
+        v = old_div(10, 3.6)
         g = 9.82
         d_CM = 0.3
         c = 0.66
@@ -86,7 +94,7 @@ class BicycleBalancing(Domain):
         M_p = 60.
         M = M_c + M_p
         r = 0.34
-        dsigma = v / r
+        dsigma = old_div(v, r)
         I = 13 / 3. * M_c * h ** 2 + M_p * (h + d_CM) ** 2
         I_dc = M_d * r ** 2
         I_dv = 3 / 2. * M_d * r ** 2
@@ -95,9 +103,9 @@ class BicycleBalancing(Domain):
 
         w = self.random_state.uniform(-0.02, 0.02)
 
-        phi = omega + np.arctan(d + w) / h
-        invr_f = np.abs(np.sin(theta)) / l
-        invr_b = np.abs(np.tan(theta)) / l
+        phi = omega + old_div(np.arctan(d + w), h)
+        invr_f = old_div(np.abs(np.sin(theta)), l)
+        invr_b = old_div(np.abs(np.tan(theta)), l)
         invr_CM = ((l - c) ** 2 + invr_b ** (-2)
                    ) ** (-.5) if theta != 0. else 0.
 
@@ -106,11 +114,11 @@ class BicycleBalancing(Domain):
                                       (I_dc * dsigma * dtheta +
                                        np.sign(theta) * v ** 2 * (M_d * r * (invr_f + invr_b) + M * h * invr_CM))) / I
         out = theta + self.dt * dtheta
-        ntheta = out if abs(out) <= (80. / 180) * \
-            np.pi else np.sign(out) * (80. / 180) * np.pi
+        ntheta = out if abs(out) <= (old_div(80., 180)) * \
+            np.pi else np.sign(out) * (old_div(80., 180)) * np.pi
         ndtheta = dtheta + self.dt * \
             (T - I_dv * dsigma * domega) / \
-            I_dl if abs(out) <= (80. / 180) * np.pi else 0.
+            I_dl if abs(out) <= (old_div(80., 180)) * np.pi else 0.
         npsi = psi + self.dt * np.sign(theta) * v * invr_b
 
         # Where are these three lines from? Having a hard time finding them in
@@ -179,10 +187,11 @@ class BicycleBalancing(Domain):
             ax.set_xlabel("Days")
         for i in range(n):
             handles[i].set_ydata(self.episode_data[i])
-            ax = handles[i].get_axes()
+            ax = handles[i].axes
             ax.relim()
             ax.autoscale_view()
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
 
 class BicycleRiding(BicycleBalancing):

@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import absolute_import
 # util.py
 # -------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,14 +12,23 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from builtins import zip
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import sys
 import inspect
 import heapq
 import random
-import cStringIO
+import io
 
 
-class FixedRandom:
+class FixedRandom(object):
 
     def __init__(self):
         fixedState = (
@@ -117,7 +130,7 @@ class FixedRandom:
 """
 
 
-class Stack:
+class Stack(object):
 
     "A container with a last-in-first-out (LIFO) queuing policy."
 
@@ -137,7 +150,7 @@ class Stack:
         return len(self.list) == 0
 
 
-class Queue:
+class Queue(object):
 
     "A container with a first-in-first-out (FIFO) queuing policy."
 
@@ -160,7 +173,7 @@ class Queue:
         return len(self.list) == 0
 
 
-class PriorityQueue:
+class PriorityQueue(object):
 
     """
       Implements a priority queue data structure. Each inserted item
@@ -289,9 +302,9 @@ class Counter(dict):
         """
         Returns the key with the highest value.
         """
-        if len(self.keys()) == 0:
+        if len(list(self.keys())) == 0:
             return None
-        all = self.items()
+        all = list(self.items())
         values = [x[1] for x in all]
         maxIndex = values.index(max(values))
         return all[maxIndex][0]
@@ -308,7 +321,7 @@ class Counter(dict):
         >>> a.sortedKeys()
         ['second', 'third', 'first']
         """
-        sortedItems = self.items()
+        sortedItems = list(self.items())
         compare = lambda x, y: sign(y[1] - x[1])
         sortedItems.sort(cmp=compare)
         return [x[0] for x in sortedItems]
@@ -329,8 +342,8 @@ class Counter(dict):
         total = float(self.totalCount())
         if total == 0:
             return
-        for key in self.keys():
-            self[key] = self[key] / total
+        for key in list(self.keys()):
+            self[key] = old_div(self[key], total)
 
     def divideAll(self, divisor):
         """
@@ -387,7 +400,7 @@ class Counter(dict):
         >>> a['first']
         1
         """
-        for key, value in y.items():
+        for key, value in list(y.items()):
             self[key] += value
 
     def __add__(self, y):
@@ -448,7 +461,7 @@ def raiseNotDefined():
     line = inspect.stack()[1][2]
     method = inspect.stack()[1][3]
 
-    print "*** Method not implemented: %s at line %s of %s" % (method, line, fileName)
+    print("*** Method not implemented: %s at line %s of %s" % (method, line, fileName))
     sys.exit(1)
 
 
@@ -462,16 +475,16 @@ def normalize(vectorOrCounter):
         total = float(counter.totalCount())
         if total == 0:
             return counter
-        for key in counter.keys():
+        for key in list(counter.keys()):
             value = counter[key]
-            normalizedCounter[key] = value / total
+            normalizedCounter[key] = old_div(value, total)
         return normalizedCounter
     else:
         vector = vectorOrCounter
         s = float(sum(vector))
         if s == 0:
             return vector
-        return [el / s for el in vector]
+        return [old_div(el, s) for el in vector]
 
 
 def nSample(distribution, values, n):
@@ -492,7 +505,7 @@ def nSample(distribution, values, n):
 
 def sample(distribution, values=None):
     if isinstance(distribution, Counter):
-        items = distribution.items()
+        items = list(distribution.items())
         distribution = [i[1] for i in items]
         values = [i[0] for i in items]
     if sum(distribution) != 1:
@@ -506,7 +519,7 @@ def sample(distribution, values=None):
 
 
 def sampleFromCounter(ctr):
-    items = ctr.items()
+    items = list(ctr.items())
     return sample([v for k, v in items], [k for k, v in items])
 
 
@@ -596,11 +609,11 @@ def lookup(name, namespace):
         module = __import__(moduleName)
         return getattr(module, objName)
     else:
-        modules = [obj for obj in namespace.values() if str(
+        modules = [obj for obj in list(namespace.values()) if str(
             type(obj)) == "<type 'module'>"]
         options = [getattr(module, name)
                    for module in modules if name in dir(module)]
-        options += [obj[1] for obj in namespace.items() if obj[0] == name]
+        options += [obj[1] for obj in list(namespace.items()) if obj[0] == name]
         if len(options) == 1:
             return options[0]
         if len(options) > 1:
@@ -612,8 +625,8 @@ def pause():
     """
     Pauses the output stream awaiting user feedback.
     """
-    print "<Press enter/return to continue>"
-    raw_input()
+    print("<Press enter/return to continue>")
+    input()
 
 
 # code to handle timeouts
@@ -634,7 +647,7 @@ class TimeoutFunctionException(Exception):
     pass
 
 
-class TimeoutFunction:
+class TimeoutFunction(object):
 
     def __init__(self, function, timeout):
         self.timeout = timeout
@@ -669,7 +682,7 @@ _ORIGINAL_STDERR = None
 _MUTED = False
 
 
-class WritableNull:
+class WritableNull(object):
 
     def write(self, string):
         pass

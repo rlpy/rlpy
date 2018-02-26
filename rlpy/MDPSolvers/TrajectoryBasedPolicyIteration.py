@@ -7,7 +7,15 @@
     * There is solveInMatrixFormat function which does policy evaluation in one shot using samples collected in the matrix format.
       Since the algorithm toss out the samples, convergence is hardly reached because the policy may alternate.
 """
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from .MDPSolver import MDPSolver
 from rlpy.Tools import className, hhmmss, deltaT, randSet, hasFunction, solveLinear, regularize, clock, padZeros, l_norm
 from rlpy.Policies import eGreedy
@@ -245,7 +253,7 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
 
             self.A = np.zeros((n * a_num, n * a_num))
             self.b = np.zeros((n * a_num, 1))
-            for i in xrange(self.samples_num):
+            for i in range(self.samples_num):
                 phi_s_a = self.representation.phi_sa(
                     S[i], T[i], Actions[i, 0]).reshape((-1, 1))
                 E_phi_ns_na = self.calculate_expected_phi_ns_na(
@@ -294,12 +302,12 @@ class TrajectoryBasedPolicyIteration(MDPSolver):
             phi_ns_na = np.zeros(
                 self.representation.features_num *
                 self.domain.actions_num)
-            for j in xrange(len(p)):
+            for j in range(len(p)):
                 na = self.policy.pi(ns[j], t[j], pa[j])
                 phi_ns_na += p[j] * self.representation.phi_sa(ns[j], t[j], na)
         else:
             next_states, rewards = self.domain.sampleStep(s, a, ns_samples)
             phi_ns_na = np.mean(
                 [self.representation.phisa(next_states[i],
-                                           self.policy.pi(next_states[i])) for i in xrange(ns_samples)])
+                                           self.policy.pi(next_states[i])) for i in range(ns_samples)])
         return phi_ns_na

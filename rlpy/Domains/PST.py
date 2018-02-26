@@ -1,5 +1,15 @@
 """Persistent search and track mission domain."""
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from time import sleep
 from rlpy.Tools import plt, vec2id, mpatches, lines, id2vec
 from .Domain import Domain
@@ -192,15 +202,16 @@ class PST(Domain):
         self.comms_line = None
         self.dist_between_locations = self.RECT_GAP + self.LOCATION_WIDTH
         self.DimNames = []
-        [self.DimNames.append('UAV%d-loc' % i) for i in xrange(NUM_UAV)]
-        [self.DimNames.append('UAV%d-fuel' % i) for i in xrange(NUM_UAV)]
-        [self.DimNames.append('UAV%d-act' % i) for i in xrange(NUM_UAV)]
-        [self.DimNames.append('UAV%d-sen' % i) for i in xrange(NUM_UAV)]
+        [self.DimNames.append('UAV%d-loc' % i) for i in range(NUM_UAV)]
+        [self.DimNames.append('UAV%d-fuel' % i) for i in range(NUM_UAV)]
+        [self.DimNames.append('UAV%d-act' % i) for i in range(NUM_UAV)]
+        [self.DimNames.append('UAV%d-sen' % i) for i in range(NUM_UAV)]
         super(PST, self).__init__()
 
     def showDomain(self, a=0):
         s = self.state
         if self.domain_fig is None:
+            plt.figure("Domain")
             self.domain_fig = plt.figure(
                 1, (UAVLocation.SIZE * self.dist_between_locations + 1, self.NUM_UAV + 1))
             plt.show()
@@ -225,9 +236,9 @@ class PST(Domain):
         self.subplot_axes.yaxis.set_visible(False)
 
         # Assign coordinates of each possible uav location on figure
-        self.location_coord = [0.5 + (self.LOCATION_WIDTH / 2) +
+        self.location_coord = [0.5 + (old_div(self.LOCATION_WIDTH, 2)) +
                                (self.dist_between_locations) * i for i in range(UAVLocation.SIZE - 1)]
-        self.location_coord.append(crashLocationX + self.LOCATION_WIDTH / 2)
+        self.location_coord.append(crashLocationX + old_div(self.LOCATION_WIDTH, 2))
 
          # Create rectangular patches at each of those locations
         self.location_rect_vis = [mpatches.Rectangle(
@@ -370,7 +381,7 @@ class PST(Domain):
                 sStruct.sensor))
         # We have comms coverage: draw a line between comms states to show this
         if (any(sStruct.locations == UAVLocation.COMMS)):
-            for i in xrange(len(self.comms_line)):
+            for i in range(len(self.comms_line)):
                 self.comms_line[i].set_visible(True)
                 self.comms_line[i].set_color('black')
                 self.subplot_axes.add_line(self.comms_line[i])
@@ -378,7 +389,8 @@ class PST(Domain):
             if numHealthySurveil > 0:
                 self.location_rect_vis[
                     len(self.location_rect_vis) - 1].set_color('green')
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
         sleep(0.5)
 
     def showLearning(self, representation):
@@ -397,10 +409,10 @@ class PST(Domain):
 
         # TODO - incorporate cost graph as in matlab.
         fuelBurnedBool = [(actionVector[i] == UAVAction.LOITER and (nsStruct.locations[i] == UAVLocation.REFUEL or nsStruct.locations[i] == UAVLocation.BASE))
-                          for i in xrange(self.NUM_UAV)]
+                          for i in range(self.NUM_UAV)]
         fuelBurnedBool = np.array(fuelBurnedBool) == 0.
         nsStruct.fuel = np.array([sStruct.fuel[i] - self.NOM_FUEL_BURN * fuelBurnedBool[i]
-                                  for i in xrange(self.NUM_UAV)])  # if fuel
+                                  for i in range(self.NUM_UAV)])  # if fuel
         self.fuelUnitsBurned = np.sum(fuelBurnedBool)
         distanceTraveled = np.sum(
             np.logical_and(
@@ -409,13 +421,13 @@ class PST(Domain):
 
         # Actuator failure transition
         randomFails = np.array([self.random_state.random_sample()
-                                for dummy in xrange(self.NUM_UAV)])
+                                for dummy in range(self.NUM_UAV)])
         randomFails = randomFails > self.P_ACT_FAIL
         nsStruct.actuator = np.logical_and(sStruct.actuator, randomFails)
 
         # Sensor failure transition
         randomFails = np.array([self.random_state.random_sample()
-                                for dummy in xrange(self.NUM_UAV)])
+                                for dummy in range(self.NUM_UAV)])
         randomFails = randomFails > self.P_SENSOR_FAIL
         nsStruct.sensor = np.logical_and(sStruct.sensor, randomFails)
 
@@ -619,7 +631,7 @@ class PST(Domain):
         )
 
 
-class UAVLocation:
+class UAVLocation(object):
 
     """
     Enumerated type for possible UAV Locations
@@ -632,7 +644,7 @@ class UAVLocation:
     SIZE = 4
 
 
-class StateStruct:
+class StateStruct(object):
 
     """
     Custom internal state structure
@@ -646,7 +658,7 @@ class StateStruct:
         self.sensor = sensor
 
 
-class ActuatorState:
+class ActuatorState(object):
 
     """
     Enumerated type for individual actuator state.
@@ -656,7 +668,7 @@ class ActuatorState:
     SIZE = 2
 
 
-class SensorState:
+class SensorState(object):
 
     """
     Enumerated type for individual sensor state.
@@ -669,7 +681,7 @@ class SensorState:
 # retreat, advance, loiter
 
 
-class UAVAction:
+class UAVAction(object):
 
     """
     Enumerated type for individual UAV actions.
@@ -681,7 +693,7 @@ class UAVAction:
 # NOTE: properties2StateVec assumes the order loc,fuel,actuator,sensor
 
 
-class UAVIndex:
+class UAVIndex(object):
 
     """
     Enumerated type for individual UAV Locations

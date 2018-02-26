@@ -1,5 +1,13 @@
 """RC-Car domain"""
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
 from rlpy.Tools import plt, bound, wrap, mpatches, id2vec
 import matplotlib as mpl
 from .Domain import Domain
@@ -42,12 +50,12 @@ class RCCar(Domain):
 
     ROOM_WIDTH = 3  # in meters
     ROOM_HEIGHT = 2  # in meters
-    XMIN = -ROOM_WIDTH / 2.0
-    XMAX = ROOM_WIDTH / 2.0
-    YMIN = -ROOM_HEIGHT / 2.0
-    YMAX = ROOM_HEIGHT / 2.0
+    XMIN = old_div(-ROOM_WIDTH, 2.0)
+    XMAX = old_div(ROOM_WIDTH, 2.0)
+    YMIN = old_div(-ROOM_HEIGHT, 2.0)
+    YMAX = old_div(ROOM_HEIGHT, 2.0)
     ACCELERATION = .1
-    TURN_ANGLE = np.pi / 6
+    TURN_ANGLE = old_div(np.pi, 6)
     SPEEDMIN = -.3
     SPEEDMAX = .3
     HEADINGMIN = -np.pi
@@ -130,7 +138,7 @@ class RCCar(Domain):
         # Plot the car
         x, y, speed, heading = s
         car_xmin = x - self.REAR_WHEEL_RELATIVE_LOC
-        car_ymin = y - self.CAR_WIDTH / 2.
+        car_ymin = y - old_div(self.CAR_WIDTH, 2.)
         if self.domain_fig is None:  # Need to initialize the figure
             self.domain_fig = plt.figure()
             # Goal

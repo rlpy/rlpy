@@ -1,3 +1,7 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import division
 # analysis.py
 # -----------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -16,6 +20,9 @@
 # value iteration.
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 def question2():
     answerDiscount = 0.9
     answerNoise = 0.2
@@ -69,8 +76,8 @@ def question6():
     # If not possible, return 'NOT POSSIBLE'
 
 if __name__ == '__main__':
-    print 'Answers to analysis questions:'
-    import analysis
+    print('Answers to analysis questions:')
+    from . import analysis
     for q in [q for q in dir(analysis) if q.startswith('question')]:
         response = getattr(analysis, q)()
-        print '  Question %s:\t%s' % (q, str(response))
+        print('  Question %s:\t%s' % (q, str(response)))

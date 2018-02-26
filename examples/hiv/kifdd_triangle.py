@@ -1,3 +1,10 @@
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
 from rlpy.Domains.HIVTreatment import HIVTreatment
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *
@@ -39,8 +46,7 @@ def make_experiment(
 
     domain = HIVTreatment()
     opt["domain"] = domain
-    kernel_width = (domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]) \
-        / kernel_resolution
+    kernel_width = old_div((domain.statespace_limits[:, 1] - domain.statespace_limits[:, 0]), kernel_resolution)
     representation = KernelizediFDD(domain, sparsify=sparsify,
                                kernel=linf_triangle_kernel,
                                kernel_args=[kernel_width],

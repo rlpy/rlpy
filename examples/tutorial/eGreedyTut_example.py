@@ -8,6 +8,12 @@ placed it in the current working directory.
 Tests the policy on the GridWorld domain, with the policy and value function
 visualized.
 """
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
 __author__ = "Robert H. Klein"
 from rlpy.Domains import GridWorld
 from rlpy.Agents import SARSA

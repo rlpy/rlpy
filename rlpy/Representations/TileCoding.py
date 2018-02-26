@@ -1,5 +1,15 @@
 """Tile Coding Representation"""
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
+from builtins import super
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 import numpy as np
 from .Representation import Representation
 
@@ -95,8 +105,8 @@ class TileCoding(Representation):
                     resolution_matrix[i, d] = resolutions[i]
         resolution_matrix = resolution_matrix.astype("float")
         resolution_matrix[resolution_matrix == 0] = 1e-50
-        self.scaling_matrix = (self.domain.statespace_limits[:, 1] -
-                               self.domain.statespace_limits[:, 0]) / resolution_matrix
+        self.scaling_matrix = old_div((self.domain.statespace_limits[:, 1] -
+                               self.domain.statespace_limits[:, 0]), resolution_matrix)
 
         # now only hashing stuff
         self.seed = seed
@@ -114,19 +124,19 @@ class TileCoding(Representation):
         self.init_randomization()
 
     def init_randomization(self):
-        self.R = self.random_state.randint(self.BIG_INT / 4,
+        self.R = self.random_state.randint(old_div(self.BIG_INT, 4),
             size=self.features_num).astype(np.int)
 
         if self.safety == "none":
             try:
-                import hashing as h
+                from . import hashing as h
                 f = lambda self, A: h.physical_addr(A, self.R, self.check_data,
                                                     self.counts)[0]
                 self._physical_addr = type(TileCoding._physical_addr)(f, self, TileCoding)
-                print "Use cython extension for TileCoding hashing trick"
+                print("Use cython extension for TileCoding hashing trick")
             except Exception as e:
-                print e
-                print "Cython extension for TileCoding hashing trick not available"
+                print(e)
+                print("Cython extension for TileCoding hashing trick not available")
         
     def phi_nonTerminal(self, s):
 
@@ -136,8 +146,8 @@ class TileCoding(Representation):
             # first dimension is used to avoid collisions between different
             # tilings
             sn[0] = e
-            sn[1:] = (s - self.domain.statespace_limits[:, 0]) / \
-                self.scaling_matrix[e]
+            sn[1:] = old_div((s - self.domain.statespace_limits[:, 0]), \
+                self.scaling_matrix[e])
             for i in range(n_t):
                 # compute "virtual" address
                 A = sn - np.mod(sn - i, n_t)
@@ -184,8 +194,8 @@ class TileCoding(Representation):
             self.collisions += 1
             return h1
         else:
-            h2 = 1 + 2 * self._hash(A, max=self.BIG_INT / 4)
-            for i in xrange(self.features_num):
+            h2 = 1 + 2 * self._hash(A, max=old_div(self.BIG_INT, 4))
+            for i in range(self.features_num):
                 h1 = (h1 + h2) % self.features_num
                 if self.counts[h1] == 0 or np.all(self.check_data[h1] == check_val):
                     self.check_data[h1] = check_val

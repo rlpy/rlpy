@@ -7,6 +7,12 @@ Assumes you have created the ChainMDPTut.py domain according to the
 tutorial and placed it in the current working directory.
 Tests the agent using SARSA with a tabular representation.
 """
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
 __author__ = "Robert H. Klein"
 from rlpy.Agents import SARSA
 from rlpy.Representations import Tabular

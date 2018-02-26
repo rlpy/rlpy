@@ -1,3 +1,10 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from rlpy.Domains import GridWorld
 from rlpy.Representations import Tabular
 from scipy.optimize import check_grad, approx_fprime
@@ -34,5 +41,5 @@ def test_fdcheck_dlogpi():
             # print "df", df(theta, s, a)
             # print "df_approx", df_approx(theta, s, a)
             error = check_grad(f, df, theta, s, a)
-            print error
+            print(error)
             assert np.abs(error) < 1e-6

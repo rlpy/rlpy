@@ -1,3 +1,9 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
 from rlpy.Domains import BlocksWorld
 from rlpy.Agents import Q_Learning
 from rlpy.Representations import *

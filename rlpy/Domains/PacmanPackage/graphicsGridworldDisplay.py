@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 # graphicsGridworldDisplay.py
 # ---------------------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,12 +12,19 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-import util
-from graphicsUtils import *
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
+from . import util
+from .graphicsUtils import *
 from functools import reduce
 
 
-class GraphicsGridworldDisplay:
+class GraphicsGridworldDisplay(object):
 
     def __init__(self, gridworld, size=120, speed=1.0):
         self.gridworld = gridworld
@@ -35,7 +46,7 @@ class GraphicsGridworldDisplay:
             values[state] = agent.getValue(state)
             policy[state] = agent.getPolicy(state)
         drawValues(self.gridworld, values, policy, currentState, message)
-        sleep(0.05 / self.speed)
+        sleep(old_div(0.05, self.speed))
 
     def displayNullValues(self, currentState=None, message=''):
         values = util.Counter()
@@ -46,7 +57,7 @@ class GraphicsGridworldDisplay:
             #policy[state] = agent.getPolicy(state)
         drawNullValues(self.gridworld, currentState, '')
         # drawValues(self.gridworld, values, policy, currentState, message)
-        sleep(0.05 / self.speed)
+        sleep(old_div(0.05, self.speed))
 
     def displayQValues(self, agent, currentState=None,
                        message='Agent Q-Values'):
@@ -56,7 +67,7 @@ class GraphicsGridworldDisplay:
             for action in self.gridworld.getPossibleActions(state):
                 qValues[(state, action)] = agent.getQValue(state, action)
         drawQValues(self.gridworld, qValues, currentState, message)
-        sleep(0.05 / self.speed)
+        sleep(old_div(0.05, self.speed))
 
 BACKGROUND_COLOR = formatColor(0, 0, 0)
 EDGE_COLOR = formatColor(1, 1, 1)
@@ -99,7 +110,7 @@ def drawNullValues(gridworld, currentState=None, message=''):
                 drawSquare(x, y, 0, 0, 0, None, None, True, False, isCurrent)
             else:
                 drawNullSquare(gridworld.grid, x, y, False, isExit, isCurrent)
-    pos = to_screen(((grid.width - 1.0) / 2.0, - 0.8))
+    pos = to_screen((old_div((grid.width - 1.0), 2.0), - 0.8))
     text(pos, TEXT_COLOR, message, "Courier", -32, "bold", "c")
 
 
@@ -138,7 +149,7 @@ def drawValues(gridworld, values, policy,
                     False,
                     isExit,
                     isCurrent)
-    pos = to_screen(((grid.width - 1.0) / 2.0, - 0.8))
+    pos = to_screen((old_div((grid.width - 1.0), 2.0), - 0.8))
     text(pos, TEXT_COLOR, message, "Courier", -32, "bold", "c")
 
 
@@ -199,7 +210,7 @@ def drawQValues(gridworld, qValues, currentState=None,
                     valStrings,
                     actions,
                     isCurrent)
-    pos = to_screen(((grid.width - 1.0) / 2.0, - 0.8))
+    pos = to_screen((old_div((grid.width - 1.0), 2.0), - 0.8))
     text(pos, TEXT_COLOR, message, "Courier", -32, "bold", "c")
 
 
@@ -359,7 +370,7 @@ def drawSquareQ(x, y, qVals, minVal, maxVal, valStrs, bestActions, isCurrent):
     w = (screen_x - 0.5 * GRID_SIZE + 5, screen_y)
     e = (screen_x + 0.5 * GRID_SIZE - 5, screen_y)
 
-    actions = qVals.keys()
+    actions = list(qVals.keys())
     for action in actions:
 
         wedge_color = getColor(qVals[action], minVal, maxVal)
@@ -468,7 +479,7 @@ def to_screen(point):
 
 def to_grid(point):
     (x, y) = point
-    x = int((y - MARGIN + GRID_SIZE * 0.5) / GRID_SIZE)
-    y = int((x - MARGIN + GRID_SIZE * 0.5) / GRID_SIZE)
-    print point, "-->", (x, y)
+    x = int(old_div((y - MARGIN + GRID_SIZE * 0.5), GRID_SIZE))
+    y = int(old_div((x - MARGIN + GRID_SIZE * 0.5), GRID_SIZE))
+    print(point, "-->", (x, y))
     return (x, y)

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
 # keyboardAgents.py
 # -----------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,8 +12,10 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-from game import Agent
-from game import Directions
+from future import standard_library
+standard_library.install_aliases()
+from .game import Agent
+from .game import Directions
 import random
 
 
@@ -32,8 +38,8 @@ class KeyboardAgent(Agent):
         self.keys = []
 
     def getAction(self, state):
-        from graphicsUtils import keys_waiting
-        from graphicsUtils import keys_pressed
+        from .graphicsUtils import keys_waiting
+        from .graphicsUtils import keys_pressed
         keys = keys_waiting() + keys_pressed()
         if keys != []:
             self.keys = keys

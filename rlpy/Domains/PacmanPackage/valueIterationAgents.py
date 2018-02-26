@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
 # valueIterationAgents.py
 # -----------------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,10 +12,12 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-import mdp
-import util
+from future import standard_library
+standard_library.install_aliases()
+from . import mdp
+from . import util
 
-from learningAgents import ValueEstimationAgent
+from .learningAgents import ValueEstimationAgent
 
 
 class ValueIterationAgent(ValueEstimationAgent):

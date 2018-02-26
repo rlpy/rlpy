@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 # gridworld.py
 # ------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,11 +12,17 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import random
 import sys
-import mdp
-import environment
-import util
+from . import mdp
+from . import environment
+from . import util
 import optparse
 
 
@@ -143,8 +153,8 @@ class Gridworld(mdp.MarkovDecisionProcess):
                 successors.append((southState, 1 - self.noise))
 
             massLeft = self.noise
-            successors.append((westState, massLeft / 2.0))
-            successors.append((eastState, massLeft / 2.0))
+            successors.append((westState, old_div(massLeft, 2.0)))
+            successors.append((eastState, old_div(massLeft, 2.0)))
 
         if action == 'west' or action == 'east':
             if action == 'west':
@@ -153,8 +163,8 @@ class Gridworld(mdp.MarkovDecisionProcess):
                 successors.append((eastState, 1 - self.noise))
 
             massLeft = self.noise
-            successors.append((northState, massLeft / 2.0))
-            successors.append((southState, massLeft / 2.0))
+            successors.append((northState, old_div(massLeft, 2.0)))
+            successors.append((southState, old_div(massLeft, 2.0)))
 
         successors = self.__aggregate(successors)
 
@@ -165,7 +175,7 @@ class Gridworld(mdp.MarkovDecisionProcess):
         for state, prob in statesAndProbs:
             counter[state] += prob
         newStatesAndProbs = []
-        for state, prob in counter.items():
+        for state, prob in list(counter.items()):
             newStatesAndProbs.append((state, prob))
         return newStatesAndProbs
 
@@ -216,7 +226,7 @@ class GridworldEnvironment(environment.Environment):
         self.state = self.gridWorld.getStartState()
 
 
-class Grid:
+class Grid(object):
 
     """
     A 2-dimensional array of immutables backed by a list of lists.  Data is accessed
@@ -332,7 +342,7 @@ def getUserAction(state, actionFunction):
 
     Used for debugging and lecture demos.
     """
-    import graphicsUtils
+    from . import graphicsUtils
     action = None
     while True:
         keys = graphicsUtils.wait_for_keys()
@@ -356,7 +366,7 @@ def getUserAction(state, actionFunction):
 
 
 def printString(x):
-    print x
+    print(x)
 
 
 def runEpisode(agent, environment, discount, decision,
@@ -459,7 +469,7 @@ def parseOptions():
     opts, args = optParser.parse_args()
 
     if opts.manual and opts.agent != 'q':
-        print '## Disabling Agents in Manual Mode (-m) ##'
+        print('## Disabling Agents in Manual Mode (-m) ##')
         opts.agent = None
 
     # MANAGE CONFLICTS
@@ -482,7 +492,7 @@ if __name__ == '__main__':
     # GET THE GRIDWORLD
     ###########################
 
-    import gridworld
+    from . import gridworld
     mdpFunction = getattr(gridworld, "get" + opts.grid)
     mdp = mdpFunction()
     mdp.setLivingReward(opts.livingReward)
@@ -492,10 +502,10 @@ if __name__ == '__main__':
     ###########################
     # GET THE DISPLAY ADAPTER
     ###########################
-    import textGridworldDisplay
+    from . import textGridworldDisplay
     display = textGridworldDisplay.TextGridworldDisplay(mdp)
     if not opts.textDisplay:
-        import graphicsGridworldDisplay
+        from . import graphicsGridworldDisplay
         display = graphicsGridworldDisplay.GraphicsGridworldDisplay(
             mdp,
             opts.gridSize,
@@ -509,8 +519,8 @@ if __name__ == '__main__':
     # GET THE AGENT
     ###########################
 
-    import valueIterationAgents
-    import qlearningAgents
+    from . import valueIterationAgents
+    from . import qlearningAgents
     a = None
     if opts.agent == 'value':
         a = valueIterationAgents.ValueIterationAgent(
@@ -532,7 +542,7 @@ if __name__ == '__main__':
         if opts.episodes == 0:
             opts.episodes = 10
 
-        class RandomAgent:
+        class RandomAgent(object):
 
             def getAction(self, state):
                 return random.choice(mdp.getPossibleActions(state))
@@ -624,18 +634,18 @@ if __name__ == '__main__':
 
     # RUN EPISODES
     if opts.episodes > 0:
-        print
-        print "RUNNING", opts.episodes, "EPISODES"
-        print
+        print()
+        print("RUNNING", opts.episodes, "EPISODES")
+        print()
     returns = 0
     for episode in range(1, opts.episodes + 1):
         returns += runEpisode(a, env, opts.discount, decisionCallback,
                               displayCallback, messageCallback, pauseCallback, episode)
     if opts.episodes > 0:
-        print
-        print "AVERAGE RETURNS FROM START STATE: " + str((returns + 0.0) / opts.episodes)
-        print
-        print
+        print()
+        print("AVERAGE RETURNS FROM START STATE: " + str(old_div((returns + 0.0), opts.episodes)))
+        print()
+        print()
 
     # DISPLAY POST-LEARNING VALUES / Q-VALUES
     if opts.agent == 'q' and not opts.manual:

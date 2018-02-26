@@ -1,5 +1,15 @@
 """OMP-TD implementation based on ICML 2012 paper of Wakefield and Parr."""
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.utils import old_div
 from .Representation import Representation
 import numpy as np
 from .iFDD import iFDD
@@ -82,8 +92,8 @@ class OMPTD(Representation):
         self.fillBag()
         self.totalFeatureSize = self.bagSize
         # Add initial features to the selected list
-        self.selectedFeatures = range(
-            self.initial_representation.features_num)
+        self.selectedFeatures = list(range(
+            self.initial_representation.features_num))
         # Array of indicies of features that have not been selected
         self.remainingFeatures = np.arange(self.features_num, self.bagSize)
 
@@ -102,9 +112,9 @@ class OMPTD(Representation):
         to its representation.
         
         """
-        print "Remaining Items in the feature bag:"
+        print("Remaining Items in the feature bag:")
         for f in self.remainingFeatures:
-            print "%d: %s" % (f, str(sorted(list(self.iFDD.getFeature(f).f_set))))
+            print("%d: %s" % (f, str(sorted(list(self.iFDD.getFeature(f).f_set)))))
 
     def calculateFullPhiNormalized(self, states):
         """
@@ -123,12 +133,12 @@ class OMPTD(Representation):
                 self.fullphi[i, :] = self.iFDD.phi_nonTerminal(s)
         self.domain.state = o_s
         # Normalize features
-        for f in xrange(self.totalFeatureSize):
+        for f in range(self.totalFeatureSize):
             phi_f = self.fullphi[:, f]
             norm_phi_f = np.linalg.norm(phi_f)    # L2-Norm of phi_f
             if norm_phi_f == 0:
                 norm_phi_f = 1          # This helps to avoid divide by zero
-            self.fullphi[:, f] = phi_f / norm_phi_f
+            self.fullphi[:, f] = old_div(phi_f, norm_phi_f)
 
     def batchDiscover(self, td_errors, phi, states):
         """
@@ -175,7 +185,7 @@ class OMPTD(Representation):
         self.logger.debug("OMPTD Batch: Max Relevance = %0.3f" % max_relevance)
         added_feature = False
         to_be_deleted = []  # Record the indices of items to be removed
-        for j in xrange(min(self.maxBatchDiscovery, len(relevances))):
+        for j in range(min(self.maxBatchDiscovery, len(relevances))):
             max_index = sortedIndices[j]
             f = self.remainingFeatures[max_index]
             relevance = relevances[max_index]
@@ -207,7 +217,7 @@ class OMPTD(Representation):
         # We store the dimension corresponding to each feature so we avoid
         # adding pairs of features in the same dimension
         level_1_features_dim = {}
-        for i in xrange(self.initial_representation.features_num):
+        for i in range(self.initial_representation.features_num):
             level_1_features_dim[i] = np.array(
                 [self.initial_representation.getDimNumber(i)])
             # print i,level_1_features_dim[i]

@@ -3,15 +3,24 @@ Representations which use local bases function (e.g. kernels) distributed
 in the statespace according to some scheme (e.g. grid, random, on previous
 samples)
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 from .Representation import Representation
 import numpy as np
 from rlpy.Tools.GeneralTools import addNewElementForAllActions
 import matplotlib.pyplot as plt
 try:
-    from kernels import batch
+    from .kernels import batch
 except ImportError:
-    from slow_kernels import batch
-    print "C-Extensions for kernels not available, expect slow runtime"
+    from .slow_kernels import batch
+    print("C-Extensions for kernels not available, expect slow runtime")
 
 __copyright__ = "Copyright 2013, RLPy http://acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -67,7 +76,7 @@ class LocalBases(Representation):
             # just take the first two dimensions
             d1, d2 = self.domain.continuous_dims[:2]
         plt.figure("Feature Dimensions {} and {}".format(d1, d2))
-        for i in xrange(self.centers.shape[0]):
+        for i in range(self.centers.shape[0]):
             plt.plot([self.centers[i, d1]],
                      [self.centers[i, d2]], "r", marker="x")
         plt.draw()
@@ -92,8 +101,8 @@ class NonparametricLocalBases(LocalBases):
         
         """
         self.max_similarity = max_similarity
-        self.common_width = (domain.statespace_limits[:, 1]
-                             - domain.statespace_limits[:, 0]) / resolution
+        self.common_width = old_div((domain.statespace_limits[:, 1]
+                             - domain.statespace_limits[:, 0]), resolution)
         self.features_num = 0
         super(
             NonparametricLocalBases,
@@ -168,11 +177,11 @@ class RandomLocalBases(LocalBases):
         self.init_randomization()
     
     def init_randomization(self):
-        for i in xrange(self.features_num):
-            for d in xrange(len(self.dim_widths)):
+        for i in range(self.features_num):
+            for d in range(len(self.dim_widths)):
                 self.centers[i, d] = self.random_state.uniform(
                     self.domain.statespace_limits[d, 0],
                     self.domain.statespace_limits[d, 1])
                 self.widths[i, d] = self.random_state.uniform(
-                    self.dim_widths[d] / self.resolution_max,
-                    self.dim_widths[d] / self.resolution_min)
+                    old_div(self.dim_widths[d], self.resolution_max),
+                    old_div(self.dim_widths[d], self.resolution_min))

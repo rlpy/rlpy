@@ -1,4 +1,11 @@
 """HIV Treatment domain"""
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from .Domain import Domain
 import numpy as np
 from scipy.integrate import odeint
@@ -127,10 +134,11 @@ class HIVTreatment(Domain):
             ax.set_xlabel("Days")
         for i in range(n):
             handles[i].set_ydata(self.episode_data[i])
-            ax = handles[i].get_axes()
+            ax = handles[i].axes
             ax.relim()
             ax.autoscale_view()
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
 
 def dsdt(s, t, eps1, eps2):
@@ -178,7 +186,7 @@ def dsdt(s, t, eps1, eps2):
     return np.array([dT1, dT2, dT1s, dT2s, dV, dE])
 
 try:
-    from HIVTreatment_dynamics import dsdt
+    from .HIVTreatment_dynamics import dsdt
 except Exception as e:
-    print e
-    print "Cython extension for HIVTreatment dynamics not available, expect slow runtime"
+    print(e)
+    print("Cython extension for HIVTreatment dynamics not available, expect slow runtime")

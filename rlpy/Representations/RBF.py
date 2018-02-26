@@ -1,5 +1,14 @@
 """Radial Basis Function Representation"""
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 from rlpy.Tools import perms
 from .Representation import Representation
 import numpy as np
@@ -65,7 +74,7 @@ class RBF(Representation):
         if state_dimensions is not None:
             self.dims = len(state_dimensions)
         else:  # just consider all dimensions
-            state_dimensions = range(domain.state_space_dims)
+            state_dimensions = list(range(domain.state_space_dims))
             self.dims = domain.state_space_dims
 
         if self.grid_bins is not None:
@@ -96,15 +105,15 @@ class RBF(Representation):
             self.rbfs_sigma = np.zeros((self.num_rbfs, self.dims))
             dim_widths = (self.domain.statespace_limits[self.state_dimensions, 1])
 
-            for i in xrange(self.num_rbfs):
+            for i in range(self.num_rbfs):
                 for d in self.state_dimensions:
                     self.rbfs_mu[i, d] = self.random_state.uniform(
                         self.domain.statespace_limits[d, 0],
                         self.domain.statespace_limits[d, 1])
                     self.rbfs_sigma[i,
                                     d] = self.random_state.uniform(
-                        dim_widths[d] / self.resolution_max,
-                        dim_widths[d] / self.resolution_min)
+                        old_div(dim_widths[d], self.resolution_max),
+                        old_div(dim_widths[d], self.resolution_min))
 
     def phi_nonTerminal(self, s):
         F_s = np.ones(self.features_num)
@@ -112,7 +121,7 @@ class RBF(Representation):
             s = s[self.state_dimensions]
 
         exponent = np.sum(
-            0.5 * ((s - self.rbfs_mu) / self.rbfs_sigma) ** 2,
+            0.5 * (old_div((s - self.rbfs_mu), self.rbfs_sigma)) ** 2,
             axis=1)
         if self.const_feature:
             F_s[:-1] = np.exp(-exponent)
@@ -160,7 +169,7 @@ class RBF(Representation):
         else:
             rbfs_num = np.prod(bins_per_dimension[:] - 1)
         all_centers = []
-        for d in xrange(dims):
+        for d in range(dims):
             centers = np.linspace(domain.statespace_limits[d, 0],
                                   domain.statespace_limits[d, 1],
                                   bins_per_dimension[d] + 1)

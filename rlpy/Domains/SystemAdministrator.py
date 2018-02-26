@@ -1,5 +1,15 @@
 """Network administrator task."""
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from builtins import open
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import map
+from builtins import range
 from rlpy.Tools import plt, nx
 import numpy as np
 import csv
@@ -127,11 +137,11 @@ class SystemAdministrator(Domain):
 
         """
         _Neighbors = []
-        f = open(path, 'rb')
+        f = open(path, 'r')
         reader = csv.reader(f, delimiter=',')
         self.computers_num = 0
         for row in reader:
-            row = map(int, row)
+            row = list(map(int, row))
             _Neighbors.append(row)
             self.computers_num = max(max(row) + 1, self.computers_num)
         self.setUniqueEdges(_Neighbors)
@@ -139,6 +149,8 @@ class SystemAdministrator(Domain):
 
     def showDomain(self, a=0):
         s = self.state
+        plt.figure("Domain")
+
         if self.networkGraph is None:  # or self.networkPos is None:
             self.networkGraph = nx.Graph()
             # enumerate all computer_ids, simulatenously iterating through
@@ -212,7 +224,8 @@ class SystemAdministrator(Domain):
                     width=2,
                     style='dotted')
         nx.draw_networkx_labels(self.networkGraph, self.networkPos)
-        plt.draw()
+        plt.figure("Domain").canvas.draw()
+        plt.figure("Domain").canvas.flush_events()
 
     def step(self, a):
         # ns = s[:] # make copy of state so as not to affect original mid-step
@@ -257,7 +270,7 @@ class SystemAdministrator(Domain):
     def s0(self):
         # Omits final index
         self.state = np.array(
-            [self.RUNNING for dummy in xrange(0, self.state_space_dims)])
+            [self.RUNNING for dummy in range(0, self.state_space_dims)])
         return self.state.copy(), self.isTerminal(), self.possibleActions()
 
     def possibleActions(self):

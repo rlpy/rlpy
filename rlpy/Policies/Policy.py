@@ -1,9 +1,17 @@
 """Policy base class"""
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from rlpy.Tools import className, discrete_sample
 import numpy as np
 import logging
 from abc import ABCMeta, abstractmethod
+from future.utils import with_metaclass
 
 __copyright__ = "Copyright 2013, RLPy http://acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -92,15 +100,13 @@ class Policy(object):
 
     def printAll(self):
         """ Prints all class information to console. """
-        print className(self)
-        print '======================================='
-        for property, value in vars(self).iteritems():
-            print property, ": ", value
+        print(className(self))
+        print('=======================================')
+        for property, value in vars(self).items():
+            print(property, ": ", value)
 
 
-class DifferentiablePolicy(Policy):
-
-    __metaclass__ = ABCMeta
+class DifferentiablePolicy(with_metaclass(ABCMeta, Policy)):
 
     def pi(self, s, terminal, p_actions):
         """Sample action from policy"""

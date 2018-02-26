@@ -1,3 +1,10 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from rlpy.Representations import IncrementalTabular
 from rlpy.Domains import SystemAdministrator
 from rlpy.Agents.TDControlAgent import SARSA
@@ -86,7 +93,7 @@ def test_transitions():
     up = domain.RUNNING # shorthand
     down = domain.BROKEN # shorthand
 
-    state = np.array([up for dummy in xrange(0, domain.state_space_dims)])
+    state = np.array([up for dummy in range(0, domain.state_space_dims)])
     domain.state = state.copy()
     a = 5 # =n on this 5-machine map, ie no action
     ns = state.copy()

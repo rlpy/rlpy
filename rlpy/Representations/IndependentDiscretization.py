@@ -1,5 +1,14 @@
 """Independent Discretization"""
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import super
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from .Representation import Representation
 import numpy as np
 
@@ -52,7 +61,7 @@ class IndependentDiscretization(Representation):
             index_in_dim = feat_id
             if dim != 0:
                 index_in_dim = feat_id - self.maxFeatureIDperDimension[dim - 1]
-            print self.domain.DimNames[dim]
+            print(self.domain.DimNames[dim])
             f_name = self.domain.DimNames[dim] + '=' + str(index_in_dim)
 
     def featureType(self):

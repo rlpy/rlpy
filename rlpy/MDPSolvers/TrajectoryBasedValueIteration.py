@@ -4,6 +4,13 @@
 
 The algorithm terminates if the maximum bellman-error in a consequent set of trajectories is below a threshold
 """
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from .MDPSolver import MDPSolver
 from rlpy.Tools import deltaT, hhmmss, randSet, className, clock
 import numpy as np

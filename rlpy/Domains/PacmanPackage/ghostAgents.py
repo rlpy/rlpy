@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import print_function
 # ghostAgents.py
 # --------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,12 +12,16 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-from game import Agent
-from game import Actions
-from game import Directions
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from past.utils import old_div
+from .game import Agent
+from .game import Actions
+from .game import Directions
 import random
-from util import manhattanDistance
-import util
+from .util import manhattanDistance
+from . import util
 
 
 class GhostAgent(Agent):
@@ -88,8 +96,8 @@ class DirectionalGhost(GhostAgent):
         # Construct distribution
         dist = util.Counter()
         for a in bestActions:
-            dist[a] = bestProb / len(bestActions)
+            dist[a] = old_div(bestProb, len(bestActions))
         for a in legalActions:
-            dist[a] += (1 - bestProb) / len(legalActions)
+            dist[a] += old_div((1 - bestProb), len(legalActions))
         dist.normalize()
         return dist

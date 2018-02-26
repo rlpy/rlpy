@@ -1,5 +1,10 @@
 """Nosetests for testing the use cases contained in the cases directory."""
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
 import numpy as np
 from nose.tools import ok_, eq_
 import glob
@@ -24,7 +29,7 @@ def test_all_100_step():
 def check_running(filename, steps):
     content = read_setting_content(filename)
     local = {}
-    exec content in local
+    exec(content, local)
     make_experiment = local["make_experiment"]
     exp = make_experiment(exp_id=1, path="./Results/Temp/nosetests")
     exp.max_steps = steps
@@ -37,10 +42,10 @@ def check_running(filename, steps):
 def test_tutorial():
     content = read_setting_content("examples/tutorial/gridworld.py")
     local = {}
-    exec content in local
+    exec(content, local)
     make_experiment = local["make_experiment"]
     exp = make_experiment(exp_id=1, path="./Results/Temp/nosetests")
     exp.config_logging = False
     exp.run()
-    print "Final Return", exp.result["return"][-1]
+    print("Final Return", exp.result["return"][-1])
     assert exp.result["return"][-1] > 0.4

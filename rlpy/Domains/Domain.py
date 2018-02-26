@@ -1,4 +1,13 @@
 """Domain base class"""
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
 import numpy as np
 import logging
 from copy import deepcopy
@@ -262,7 +271,7 @@ Gamma:      {self.discount_factor}
         # Store the original limits for other types of calculations
         self.discrete_statespace_limits = self.statespace_limits
         self.statespace_limits = self.statespace_limits.astype('float')
-        for d in xrange(self.state_space_dims):
+        for d in range(self.state_space_dims):
             if d not in self.continuous_dims:
                 self.statespace_limits[d, 0] += -.5
                 self.statespace_limits[d, 1] += +.5
@@ -287,7 +296,7 @@ Gamma:      {self.discount_factor}
         next_states = []
         rewards = []
         s = self.state.copy()
-        for i in xrange(num_samples):
+        for i in range(num_samples):
             r, ns, terminal = self.step(a)
             self.state = s.copy()
             next_states.append(ns)
@@ -305,7 +314,7 @@ Gamma:      {self.discount_factor}
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
-        for k, v in self.__dict__.items():
+        for k, v in list(self.__dict__.items()):
             if k is "logger":
                 continue
             # This block bandles matplotlib transformNode objects,

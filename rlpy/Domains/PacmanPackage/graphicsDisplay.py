@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 # graphicsDisplay.py
 # ------------------
 # Licensing Information: Please do not distribute or publish solutions to this
@@ -8,10 +12,18 @@
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
-from graphicsUtils import *
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import zip
+from builtins import range
+from builtins import object
+from past.utils import old_div
+from .graphicsUtils import *
 import math
 import time
-from game import Directions
+from .game import Directions
 
 ###########################
 #  GRAPHICS DISPLAY CODE  #
@@ -24,7 +36,7 @@ from game import Directions
 DEFAULT_GRID_SIZE = 30.0
 INFO_PANE_HEIGHT = 35
 BACKGROUND_COLOR = formatColor(0, 0, 0)
-WALL_COLOR = formatColor(0.0 / 255.0, 51.0 / 255.0, 255.0 / 255.0)
+WALL_COLOR = formatColor(old_div(0.0, 255.0), old_div(51.0, 255.0), old_div(255.0, 255.0))
 INFO_PANE_COLOR = formatColor(.4, .4, 0)
 SCORE_COLOR = formatColor(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
@@ -56,9 +68,9 @@ GHOST_SHAPE = [
 GHOST_SIZE = 0.65
 SCARED_COLOR = formatColor(1, 1, 1)
 
-GHOST_VEC_COLORS = map(colorToVector, GHOST_COLORS)
+GHOST_VEC_COLORS = list(map(colorToVector, GHOST_COLORS))
 
-PACMAN_COLOR = formatColor(255.0 / 255.0, 255.0 / 255.0, 61.0 / 255)
+PACMAN_COLOR = formatColor(old_div(255.0, 255.0), old_div(255.0, 255.0), old_div(61.0, 255))
 PACMAN_SCALE = 0.5
 #pacman_speed = 0.25
 
@@ -78,7 +90,7 @@ CAPSULE_SIZE = 0.25
 WALL_RADIUS = 0.15
 
 
-class InfoPane:
+class InfoPane(object):
 
     def __init__(self, layout, gridSize):
         self.gridSize = gridSize
@@ -123,7 +135,7 @@ class InfoPane:
 
         for i, d in enumerate(distances):
             t = text(
-                self.toScreen(self.width / 2 + self.width / 8 * i,
+                self.toScreen(old_div(self.width, 2) + self.width / 8 * i,
                               0),
                 GHOST_COLORS[i + 1],
                 d,
@@ -176,7 +188,7 @@ class InfoPane:
         pass
 
 
-class PacmanGraphics:
+class PacmanGraphics(object):
 
     def __init__(self, zoom=1.0, frameTime=0.0, capture=False):
         self.have_window = 0
@@ -287,7 +299,7 @@ class PacmanGraphics:
                 remove_from_screen(f)
 
     def removeAllCapsules(self):
-        for c in self.capsules.values():
+        for c in list(self.capsules.values()):
             remove_from_screen(c)
 
     def make_window(self, width, height):
@@ -325,7 +337,7 @@ class PacmanGraphics:
         pos = x - int(x) + y - int(y)
         width = 30 + 80 * math.sin(math.pi * pos)
 
-        delta = width / 2
+        delta = old_div(width, 2)
         if (direction == 'West'):
             endpoints = (180 + delta, 180 - delta)
         elif (direction == 'North'):
@@ -345,7 +357,7 @@ class PacmanGraphics:
 
     def animatePacman(self, pacman, prevPacman, image):
         if self.frameTime < 0:
-            print 'Press any key to step forward, "q" to play'
+            print('Press any key to step forward, "q" to play')
             keys = wait_for_keys()
             if 'q' in keys:
                 self.frameTime = 0.1
@@ -360,7 +372,7 @@ class PacmanGraphics:
                     frames + fy * (frames - i) / frames
                 self.movePacman(pos, self.getDirection(pacman), image)
                 refresh()
-                sleep(abs(self.frameTime) / frames)
+                sleep(old_div(abs(self.frameTime), frames))
         else:
             self.movePacman(
                 self.getPosition(pacman),
@@ -400,14 +412,14 @@ class PacmanGraphics:
         if dir == 'West':
             dx = -0.2
         leftEye = circle(
-            (screen_x + self.gridSize * GHOST_SIZE * (-0.3 + dx / 1.5),
-             screen_y - self.gridSize * GHOST_SIZE * (0.3 - dy / 1.5)),
+            (screen_x + self.gridSize * GHOST_SIZE * (-0.3 + old_div(dx, 1.5)),
+             screen_y - self.gridSize * GHOST_SIZE * (0.3 - old_div(dy, 1.5))),
             self.gridSize * GHOST_SIZE * 0.2,
             WHITE,
             WHITE)
         rightEye = circle(
-            (screen_x + self.gridSize * GHOST_SIZE * (0.3 + dx / 1.5),
-             screen_y - self.gridSize * GHOST_SIZE * (0.3 - dy / 1.5)),
+            (screen_x + self.gridSize * GHOST_SIZE * (0.3 + old_div(dx, 1.5)),
+             screen_y - self.gridSize * GHOST_SIZE * (0.3 - old_div(dy, 1.5))),
             self.gridSize * GHOST_SIZE * 0.2,
             WHITE,
             WHITE)
@@ -447,13 +459,13 @@ class PacmanGraphics:
             dx = -0.2
         moveCircle(
             eyes[0],
-            (screen_x + self.gridSize * GHOST_SIZE * (-0.3 + dx / 1.5),
-             screen_y - self.gridSize * GHOST_SIZE * (0.3 - dy / 1.5)),
+            (screen_x + self.gridSize * GHOST_SIZE * (-0.3 + old_div(dx, 1.5)),
+             screen_y - self.gridSize * GHOST_SIZE * (0.3 - old_div(dy, 1.5))),
             self.gridSize * GHOST_SIZE * 0.2)
         moveCircle(
             eyes[1],
-            (screen_x + self.gridSize * GHOST_SIZE * (0.3 + dx / 1.5),
-             screen_y - self.gridSize * GHOST_SIZE * (0.3 - dy / 1.5)),
+            (screen_x + self.gridSize * GHOST_SIZE * (0.3 + old_div(dx, 1.5)),
+             screen_y - self.gridSize * GHOST_SIZE * (0.3 - old_div(dy, 1.5))),
             self.gridSize * GHOST_SIZE * 0.2)
         moveCircle(
             eyes[2],
@@ -870,7 +882,7 @@ class PacmanGraphics:
     def updateDistributions(self, distributions):
         "Draws an agent's belief distributions"
         # copy all distributions so we don't change their state
-        distributions = map(lambda x: x.copy(), distributions)
+        distributions = [x.copy() for x in distributions]
         if self.distributionImages is None:
             self.drawDistributions(self.previousState)
         for x in range(len(self.distributionImages)):

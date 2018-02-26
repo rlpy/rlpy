@@ -1,5 +1,13 @@
 """epsilon-Greedy Policy"""
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
 from .Policy import Policy
 import numpy as np
 
@@ -48,13 +56,13 @@ class eGreedy(Policy):
                 return self.random_state.choice(b_actions)
 
     def prob(self, s, terminal, p_actions):
-        p = np.ones(len(p_actions)) / len(p_actions)
+        p = old_div(np.ones(len(p_actions)), len(p_actions))
         p *= self.epsilon
         b_actions = self.representation.bestActions(s, terminal, p_actions)
         if self.forcedDeterministicAmongBestActions:
             p[b_actions[0]] += (1 - self.epsilon)
         else:
-            p[b_actions] += (1 - self.epsilon) / len(b_actions)
+            p[b_actions] += old_div((1 - self.epsilon), len(b_actions))
         return p
 
     def turnOffExploration(self):

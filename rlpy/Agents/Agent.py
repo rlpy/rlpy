@@ -1,8 +1,18 @@
 """Standard Control Agent. """
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from builtins import object
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import logging
+from future.utils import with_metaclass
 
 __copyright__ = "Copyright 2013, RLPy http://acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",
@@ -11,7 +21,7 @@ __license__ = "BSD 3-Clause"
 __author__ = "Alborz Geramifard"
 
 
-class Agent(object):
+class Agent(with_metaclass(ABCMeta, object)):
 
     """Learning Agent for obtaining good policices.
 
@@ -43,8 +53,6 @@ class Agent(object):
         All new agent implementations should inherit from this class.
 
     """
-
-    __metaclass__ = ABCMeta
     # The Representation to be used by the Agent
     representation = None
     #: discount factor determining the optimal policy
@@ -213,7 +221,7 @@ class DescentAlgorithm(object):
                 candid_learn_rate = np.dot(discount_factor * phi_prime - phi,
                                                    eligibility_trace)
                 if candid_learn_rate < 0:
-                    self.learn_rate = np.minimum(self.learn_rate,-1.0/candid_learn_rate)
+                    self.learn_rate = np.minimum(self.learn_rate,old_div(-1.0,candid_learn_rate))
         elif self.learn_rate_decay_mode == 'boyan':
             self.learn_rate = self.initial_learn_rate * \
                 (self.boyan_N0 + 1.) / \
